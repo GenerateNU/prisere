@@ -1,12 +1,18 @@
 {
-	"compilerOptions": {
-		"target": "ESNext",
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
-		"strict": true,
-		"lib": ["ESNext", "DOM", "DOM.Iterable"],
-		"types": ["@cloudflare/workers-types", "vite/client"],
-		"jsx": "react-jsx",
-		"jsxImportSource": "hono/jsx"
-	}
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "lib": ["ES2022"],
+    "types": ["node"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  }
 }
