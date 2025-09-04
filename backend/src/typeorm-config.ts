@@ -1,20 +1,18 @@
 import { DataSource, DataSourceOptions } from "typeorm";
 import { SeederOptions } from 'typeorm-extension';
-import { User } from "./src/entities/User";
-
+import { User } from "./entities/User";
 
 const options: DataSourceOptions & SeederOptions = {
   type: "postgres",
-  url: process.env.NODE_ENV == "production" 
-    ? process.env.SUPABASE_PROD_URL 
-    : process.env.SUPABASE_LOCAL_URL,
+  url: process.env.POSTGRES_URL,
+  password: process.env.SUPABASE_PASSWORD,
   synchronize: false,               
-  logging: true,
+  logging: false,
   entities: [User],
   migrations: ["supabase/migrations/*.ts"],
-  seeds: ['src/database/seeds/**/*{.ts}'],
+  seeds: ['src/database/seeds/**/*.ts'],
   seedTracking: false,
-  factories: ['src/database/factories/**/*{.ts}'],
+  factories: ['src/database/factories/**/*.ts'],
 };
 
 export const AppDataSource = new DataSource(options);

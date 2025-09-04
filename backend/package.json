@@ -1,19 +1,19 @@
 {
-  "name": "hono-vite-jsx",
-  "type": "module",
+  "name": "backend",
   "scripts": {
-    "dev": "ts-node src/server.ts",
+    "dev": "bun run src/server.ts",
     "dev:watch": "nodemon --exec ts-node src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js"
   },
+  "type": "module",
   "dependencies": {
     "@hono/node-server": "^1.12.2",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.10",
     "hono": "^4.5.10",
+    "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
-    "ts-node": "^10.9.2",
     "typeorm": "^0.3.26",
     "typeorm-extension": "^3.7.1",
     "typescript": "^5.9.2"
@@ -21,7 +21,8 @@
   "devDependencies": {
     "@hono/vite-build": "^1.1.0",
     "@hono/vite-dev-server": "^0.17.0",
-    "@types/node": "^20.19.11",
+    "@types/node": "^20.19.12",
+    "ts-node": "^10.9.2",
     "vite": "^5.4.2"
   }
 }
