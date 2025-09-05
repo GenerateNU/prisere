@@ -2,7 +2,7 @@ import { DataSource, DataSourceOptions } from "typeorm";
 import { runSeeders, SeederOptions } from 'typeorm-extension';
 import { User } from "./entities/User.js";
 import { config } from "dotenv";
-import UserSeeder from "./database/seeds/User.js";
+import UserSeeder from "./database/seeds/user.seed.js";
 import UserFactory from "./database/factories/user.factory.js";
 config({ path: ".env" });
 
