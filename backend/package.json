@@ -1,10 +1,14 @@
 {
   "name": "backend",
   "scripts": {
-    "dev": "bun run src/server.ts",
-    "dev:watch": "nodemon --exec ts-node src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js"
+    "migration:gen": "NODE_ENV=development typeorm-ts-node-esm migration:generate",
+    "migration:dev": "NODE_ENV=development typeorm-ts-node-esm migration:run -d ./src/typeorm-config.ts",
+    "migration:prod": "NODE_ENV=production typeorm-ts-node-esm migration:run -d ./src/typeorm-config.ts",
+    "dev": "bun run --watch src/server.ts",
+    "seed": "bun run src/scripts/seed.ts",
+    "start": "bun src/server.ts",
+    "build": "bun build src/server.ts --outdir ./dist --target bun",
+    "start:built": "bun dist/server.js"
   },
   "type": "module",
   "dependencies": {
@@ -14,6 +18,7 @@
     "hono": "^4.5.10",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
+    "supabase": "^2.39.2",
     "typeorm": "^0.3.26",
     "typeorm-extension": "^3.7.1",
     "typescript": "^5.9.2"
@@ -22,7 +27,6 @@
     "@hono/vite-build": "^1.1.0",
     "@hono/vite-dev-server": "^0.17.0",
     "@types/node": "^20.19.12",
-    "ts-node": "^10.9.2",
     "vite": "^5.4.2"
   }
 }
