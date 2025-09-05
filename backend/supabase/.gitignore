@@ -2,3 +2,5 @@
 .branches
 .temp
 .env
+supabase/.branches
+supabase/.temp
