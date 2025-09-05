@@ -5,7 +5,7 @@
     "migration:dev": "NODE_ENV=development typeorm-ts-node-esm migration:run -d ./src/typeorm-config.ts",
     "migration:prod": "NODE_ENV=production typeorm-ts-node-esm migration:run -d ./src/typeorm-config.ts",
     "dev": "bun run --watch src/server.ts",
-    "seed": "bun run src/scripts/seed.ts",
+    "seed": "bun run scripts/seed.ts",
     "start": "bun src/server.ts",
     "build": "bun build src/server.ts --outdir ./dist --target bun",
     "start:built": "bun dist/server.js"
