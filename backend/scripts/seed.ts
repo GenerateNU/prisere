@@ -1,4 +1,4 @@
-import { runDatabaseSeeders } from "../typeorm-config.js";
+import { runDatabaseSeeders } from "../src/typeorm-config.js";
 
 
 const seedDatabase = async () => {
