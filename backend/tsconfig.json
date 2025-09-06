@@ -5,7 +5,7 @@
     "moduleResolution": "Node",
     "strict": true,
     "lib": ["ES2022"],
-    "types": ["node"],
+    "types": ["node", "@types/bun"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
     "outDir": "./dist",

@@ -12,4 +12,4 @@ export const userRoutes = (db: DataSource): Hono => {
   
     user.post("/", (ctx) => userController.createUser(ctx));
     return user;
-};
+}; 

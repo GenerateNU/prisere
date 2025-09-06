@@ -13,7 +13,7 @@ const apiRoutes = (
     const api = new Hono();
     api.route("/users", userRoutes(db))
     return api;
-  };
+};
 
 (async function setUpServer() {
     try {
