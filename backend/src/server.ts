@@ -5,7 +5,7 @@ import {AppDataSource} from "./typeorm-config";
 import { DataSource } from "typeorm";
 import { userRoutes } from "./modules/user/route";
 import { errorHandler } from "./utilities/error";
-import { logToFile } from "./utilities/logger";
+import { logMessageToFile } from "./utilities/logger";
 
 const app = new Hono();
 
@@ -25,7 +25,7 @@ const apiRoutes = (
         app.use("*", logger())
 
         // custom logging to /log files
-        app.use("*", logger(logToFile));
+        app.use("*", logger(logMessageToFile));
         
         app.onError(errorHandler);
 
