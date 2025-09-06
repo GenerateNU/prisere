@@ -1,7 +1,9 @@
 import Boom from "@hapi/boom";
-import { Context} from "hono";
+import { ErrorHandler, Context} from "hono";
 import { ValidationError } from "class-validator";
 import { ContentfulStatusCode } from "hono/utils/http-status";
+import { HTTPException } from 'hono/http-exception';
+import { logToFile } from "./logger";
 
 export const handleServiceError = async (fn: () => Promise<any>) => {
     try {
@@ -46,4 +48,43 @@ export const handleAppError = <T>(thunk: () => T) => {
     };
   };
 
+export const errorHandler: ErrorHandler = (err: Error, c: Context) => {
+    logErrors(err, c)
 
+    if (err instanceof HTTPException) {
+        return c.json({
+            error: err.message,
+            status: err.status
+        }, err.status);
+    }
+
+    return c.json({
+        error: 'Internal Server Error',
+        ...(process.env.NODE_ENV === 'development' && {
+            details: err.message,
+            stack: err.stack
+        })
+    }, 500);
+}
+
+const logErrors = (err: Error, c: Context) => {
+  const includeStack = process.env.NODE_ENV === 'development'
+  console.error('Error occurred:', {
+                message: err.message,
+                ...(includeStack && {
+                  stack: err.stack,
+                }),
+                path: c.req.path,
+                method: c.req.method,
+                timestamp: new Date().toISOString()
+  });
+
+  logToFile(
+    'Error occurred:',
+    `message: ${err.message}`,
+    ...(includeStack ? [`stack: ${err.stack}`] : []),
+    `path: ${c.req.path}`,
+    `method: ${c.req.method}`,
+    `timestamp: ${new Date().toISOString()}`
+  );
+}
