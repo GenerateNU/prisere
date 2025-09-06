@@ -13,7 +13,7 @@ export interface IUserTransaction {
     createUser(payload: CreateUserDTO): Promise<User | null>;
 }
 
-export class UserTransaction implements UserTransaction {
+export class UserTransaction implements IUserTransaction {
     private db: DataSource;
 
     constructor(db: DataSource) {

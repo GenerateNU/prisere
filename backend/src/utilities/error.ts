@@ -39,7 +39,6 @@ export const handleAppError = <T>(thunk: () => T) => {
           const messages = error.map((err: ValidationError) =>
             Object.values(err.constraints || {}).join(", ")
           ).join("; ");
-  
           return ctx.json({ error: messages }, 400);
         }
         return ctx.json({ error: "Internal Server Error" }, 500);
