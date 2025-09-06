@@ -9,6 +9,6 @@ const seedDatabase = async () => {
         console.log("Error Seeding Database");
     } finally {
         process.exit(0);
-      }
+    }
 }
 await seedDatabase();
