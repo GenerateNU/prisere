@@ -13,7 +13,7 @@ const stripAnsi = (str: string): string => {
     return str.replace(/\x1b\[[0-9;]*m/g, '').replace(/\x1b\[[0-9;]*[A-Za-z]/g, '');
 };
 
-export const logToFile = (message: string, ...rest: string[]) => {
+export const logMessageToFile = (message: string, ...rest: string[]) => {
     const timestamp = new Date().toISOString();
     const cleanMessage = stripAnsi(message);
     const cleanRest = rest.map(stripAnsi);
@@ -23,3 +23,12 @@ export const logToFile = (message: string, ...rest: string[]) => {
         if (err) console.error('Failed to write to log:', err);
     });
 };
+
+export const logObjectToFile = (data: object) => {
+    const timestamp = new Date().toISOString();
+    const fullMessage = `[${timestamp}] ${data}\n`;
+
+    appendFile(LOG_FILE, fullMessage, 'utf8', (err) => {
+        if (err) console.error('Failed to write to log:', err);
+    });
+}

@@ -3,7 +3,7 @@ import { ErrorHandler, Context} from "hono";
 import { ValidationError } from "class-validator";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { HTTPException } from 'hono/http-exception';
-import { logToFile } from "./logger";
+import { logMessageToFile, logObjectToFile } from "./logger";
 
 export const handleServiceError = async (fn: () => Promise<any>) => {
     try {
@@ -43,6 +43,16 @@ export const handleAppError = <T>(thunk: () => T) => {
           ).join("; ");
           return ctx.json({ error: messages }, 400);
         }
+
+        // log unknown errors:
+        if (error instanceof Error) {
+          logErrors(error, ctx)
+        } else if (error instanceof Object) {
+          logObjectToFile(error)
+        } else {
+          logMessageToFile('Unknown error occured')
+        }
+        
         return ctx.json({ error: "Internal Server Error" }, 500);
       }
     };
@@ -79,7 +89,7 @@ const logErrors = (err: Error, c: Context) => {
                 timestamp: new Date().toISOString()
   });
 
-  logToFile(
+  logMessageToFile(
     'Error occurred:',
     `message: ${err.message}`,
     ...(includeStack ? [`stack: ${err.stack}`] : []),
