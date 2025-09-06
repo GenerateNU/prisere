@@ -1,24 +1,35 @@
 {
-  "name": "hono-vite-jsx",
-  "type": "module",
+  "name": "backend",
   "scripts": {
-    "dev": "ts-node src/server.ts",
-    "dev:watch": "nodemon --exec ts-node src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js"
+    "migration:gen": "NODE_ENV=development typeorm-ts-node-esm migration:generate",
+    "migration:dev": "NODE_ENV=development typeorm-ts-node-esm migration:run -d ./src/typeorm-config.ts",
+    "migration:prod": "NODE_ENV=production typeorm-ts-node-esm migration:run -d ./src/typeorm-config.ts",
+    "dev": "bun --hot run src/server.ts",
+    "seed": "bun run scripts/seed.ts",
+    "start": "bun src/server.ts",
+    "build": "bun build src/server.ts --outdir ./dist --target bun",
+    "start:built": "bun dist/server.js"
   },
+  "type": "module",
   "dependencies": {
+    "@hapi/boom": "^10.0.1",
     "@hono/node-server": "^1.12.2",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.10",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
     "hono": "^4.5.10",
-    "ts-node": "^10.9.2",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "supabase": "^2.39.2",
+    "typeorm": "^0.3.26",
+    "typeorm-extension": "^3.7.1",
     "typescript": "^5.9.2"
   },
   "devDependencies": {
     "@hono/vite-build": "^1.1.0",
     "@hono/vite-dev-server": "^0.17.0",
-    "@types/node": "^20.19.11",
+    "@types/node": "^20.19.12",
     "vite": "^5.4.2"
   }
 }
