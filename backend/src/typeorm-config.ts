@@ -26,14 +26,3 @@ const options: DataSourceOptions & SeederOptions = {
 };
 
 export const AppDataSource = new DataSource(options);
-
-export const initializeDataSource = async () => {
-  if (!AppDataSource.isInitialized) {
-    await AppDataSource.initialize();
-  }
-};
-
-export const runDatabaseSeeders = async () => {
-  await initializeDataSource();
-  await runSeeders(AppDataSource);
-};
