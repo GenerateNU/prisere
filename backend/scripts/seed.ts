@@ -5,7 +5,7 @@ const seedDatabase = async () => {
     try {
         await runDatabaseSeeders();
         console.log("Sucessfully Seeded Database");
-    } catch(err:any) {
+    } catch(_err) {
         console.log("Error Seeding Database");
     } finally {
         process.exit(0);
