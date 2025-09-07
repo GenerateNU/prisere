@@ -28,8 +28,14 @@ export default defineConfig([
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-non-null-assertion': 'warn',
       '@typescript-eslint/no-require-imports': 'error',
+      '@typescript-eslint/no-unused-vars': ["error", { 
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_",
+      }],
 
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'no-unused-vars': 'off', // only works with the typescript-eslint version
       'no-console': 'off',
       'no-debugger': 'error',
       'prefer-const': 'error',
