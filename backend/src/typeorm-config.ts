@@ -8,32 +8,32 @@ config({ path: ".env" });
 
 const databaseUrl =
   process.env.NODE_ENV === "production"
-    ? process.env.SUPABASE_PROD_DB_URL
-    : process.env.SUPABASE_DB_URL;
+      ? process.env.SUPABASE_PROD_DB_URL
+      : process.env.SUPABASE_DB_URL;
 
 
 const options: DataSourceOptions & SeederOptions = {
-  type: "postgres",
-  url: databaseUrl,
-  password: process.env.SUPABASE_PASSWORD,
-  synchronize: false,               
-  logging: false,
-  entities: [User],
-  migrations: ["src/migrations/*.ts"],
-  seeds: [UserSeeder],
-  seedTracking: false,
-  factories: [UserFactory],
+    type: "postgres",
+    url: databaseUrl,
+    password: process.env.SUPABASE_PASSWORD,
+    synchronize: false,               
+    logging: false,
+    entities: [User],
+    migrations: ["src/migrations/*.ts"],
+    seeds: [UserSeeder],
+    seedTracking: false,
+    factories: [UserFactory],
 };
 
 export const AppDataSource = new DataSource(options);
 
 export const initializeDataSource = async () => {
-  if (!AppDataSource.isInitialized) {
-    await AppDataSource.initialize();
-  }
+    if (!AppDataSource.isInitialized) {
+        await AppDataSource.initialize();
+    }
 };
 
 export const runDatabaseSeeders = async () => {
-  await initializeDataSource();
-  await runSeeders(AppDataSource);
+    await initializeDataSource();
+    await runSeeders(AppDataSource);
 };
