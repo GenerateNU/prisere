@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import { DataSource} from "typeorm";
-import { newDb, DataType} from 'pg-mem';
+import { DataSource } from "typeorm";
+import { newDb, DataType } from 'pg-mem';
 import { runSeeders } from "typeorm-extension";
 import { setUpRoutes } from "../routes";
 import { User } from "../entities/User.js";
@@ -45,5 +45,5 @@ export const startTestApp = async (): Promise<TestAppData> => {
     const backup = db.backup();
 
     setUpRoutes(app, TestDataSource)
-    return {app, backup};
+    return { app, backup };
 };
