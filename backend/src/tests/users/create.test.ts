@@ -1,9 +1,11 @@
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, } from "bun:test";
-import { startTestApp } from "../setup-tests";
+import { describe, test, expect, beforeAll, afterEach, afterAll } from "bun:test";
+import { resetDatabase, startTestApp } from "../setup-tests";
+import { IBackup} from 'pg-mem';
 
 describe('Example', () => {
     let app: Hono;
+    let backup: IBackup;
     const requestBody = {
       firstName: "Zahra",
       lastName: "Wibisana",
@@ -11,7 +13,13 @@ describe('Example', () => {
     };
 
     beforeAll(async () => {
-      app = await startTestApp();
+      const testAppData = await startTestApp();
+      app = testAppData.app
+      backup = testAppData.backup
+    });
+
+    afterEach(async () => {
+      resetDatabase(backup);
     });
 
     test('POST /users', async () => {

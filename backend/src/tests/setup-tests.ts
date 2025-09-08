@@ -1,14 +1,52 @@
 import { Hono } from "hono";
-import { AppDataSource } from "../typeorm-config";
+import { DataSource} from "typeorm";
+import { IBackup, newDb, DataType} from 'pg-mem';
 import { runSeeders } from "typeorm-extension";
 import { setUpRoutes } from "../routes";
+import { User } from "../entities/User.js";
+import { v4 } from 'uuid';
+import { TestAppData } from "../types/Test";
 
-export const startTestApp = async (): Promise<Hono> => {
+
+
+const db = newDb({
+    autoCreateForeignKeyIndices: true,
+});
+
+db.public.registerFunction({
+    name: 'version',
+    returns: DataType.text,
+    implementation: () => 'PostgreSQL 13.0',
+});
+
+db.public.registerFunction({
+    name: 'current_database',
+    returns: DataType.text,
+    implementation: () => 'test_db',
+});
+
+db.public.registerFunction({
+    name: 'uuid_generate_v4',
+    returns: DataType.uuid,
+    implementation: v4,
+    impure: true,
+})
+
+const TestDataSource: DataSource = await db.adapters.createTypeormDataSource({
+    type: 'postgres',
+    entities: [User],
+});
+
+export const resetDatabase = (backup: IBackup) => {
+   backup.restore()
+}
+export const startTestApp = async (): Promise<TestAppData> => {
     const app = new Hono();
-  
-    await AppDataSource.initialize();
-    await runSeeders(AppDataSource);
+    await TestDataSource.initialize();
+    await TestDataSource.synchronize();
+    await runSeeders(TestDataSource);
+    const backup = db.backup();
 
-    setUpRoutes(app, AppDataSource)
-    return app;
+    setUpRoutes(app, TestDataSource)
+    return {app, backup};
 };
