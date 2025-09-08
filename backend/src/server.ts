@@ -1,16 +1,27 @@
 import "reflect-metadata"
-import { Hono} from "hono"
+import { Hono } from "hono"
 import { logger } from 'hono/logger'
-import {AppDataSource} from "./typeorm-config";
+import { AppDataSource } from "./typeorm-config";
 import { setUpRoutes } from "./routes";
+import { errorHandler } from "./utilities/error";
+import { logMessageToFile } from "./utilities/logger";
 
 const app = new Hono();
 
 (async function setUpServer() {
     try {
         await AppDataSource.initialize()
-        app.use("*", logger());
+
+        // built in hono logging to console
+        app.use("*", logger())
+
+        // custom logging to /log files
+        app.use("*", logger(logMessageToFile));
+        
+        app.onError(errorHandler);
+
         setUpRoutes(app, AppDataSource)
+
         console.log("Connected to Postgres!")
     } catch(err:any) {
         console.log("Error starting app", err)

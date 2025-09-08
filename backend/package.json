@@ -8,7 +8,9 @@
     "seed": "bun run scripts/seed.ts",
     "start": "bun src/server.ts",
     "build": "bun build src/server.ts --outdir ./dist --target bun",
-    "start:built": "bun dist/server.js"
+    "start:built": "bun dist/server.js",
+    "lint": "eslint . --config eslint.config.ts",
+    "lint:fix": "eslint . --config eslint.config.ts --fix"
   },
   "type": "module",
   "dependencies": {
@@ -32,6 +34,10 @@
     "@hono/vite-dev-server": "^0.17.0",
     "@types/bun": "^1.2.21",
     "@types/node": "^20.19.12",
+    "@typescript-eslint/eslint-plugin": "^8.42.0",
+    "@typescript-eslint/parser": "^8.42.0",
+    "eslint": "^9.35.0",
+    "jiti": "^2.5.1",
     "vite": "^5.4.2"
   }
 }

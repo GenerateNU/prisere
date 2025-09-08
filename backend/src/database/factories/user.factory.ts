@@ -6,7 +6,7 @@ export default setSeederFactory(User, (faker) => {
     user.id = faker.string.uuid();
     user.firstName = faker.person.firstName()
     user.lastName = faker.person.lastName();
-    user.email = faker.internet.email({firstName: user.firstName, lastName: user.lastName})
+    user.email = faker.internet.email({ firstName: user.firstName, lastName: user.lastName })
 
     return user;
 })

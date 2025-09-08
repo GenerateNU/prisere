@@ -7,8 +7,8 @@ config({ path: ".env" });
 
 const databaseUrl =
   process.env.NODE_ENV === "production"
-    ? process.env.SUPABASE_PROD_DB_URL
-    : process.env.SUPABASE_DB_URL;
+      ? process.env.SUPABASE_PROD_DB_URL
+      : process.env.SUPABASE_DB_URL;
 
 
 const options: DataSourceOptions & SeederOptions = {
