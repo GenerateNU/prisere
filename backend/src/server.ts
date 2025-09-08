@@ -2,20 +2,11 @@ import "reflect-metadata"
 import { Hono } from "hono"
 import { logger } from 'hono/logger'
 import { AppDataSource } from "./typeorm-config";
-import { DataSource } from "typeorm";
-import { userRoutes } from "./modules/user/route";
+import { setUpRoutes } from "./routes";
 import { errorHandler } from "./utilities/error";
 import { logMessageToFile } from "./utilities/logger";
 
 const app = new Hono();
-
-const apiRoutes = (
-    db: DataSource,
-): Hono => {
-    const api = new Hono();
-    api.route("/users", userRoutes(db))
-    return api;
-};
 
 (async function setUpServer() {
     try {
@@ -29,9 +20,7 @@ const apiRoutes = (
         
         app.onError(errorHandler);
 
-        app.get("/health", (c) => c.json({ status: "ok" }));
-        app.get("/", (c) => c.text("Server is running!"));
-        app.route("/api/v1", apiRoutes(AppDataSource));
+        setUpRoutes(app, AppDataSource)
 
         console.log("Connected to Postgres!")
     } catch(err:any) {
