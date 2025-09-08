@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach, afterAll } from "bun:test";
-import { resetDatabase, startTestApp } from "../setup-tests";
+import {startTestApp } from "../setup-tests";
 import { IBackup} from 'pg-mem';
 
 describe('Example', () => {
@@ -19,7 +19,7 @@ describe('Example', () => {
     });
 
     afterEach(async () => {
-      resetDatabase(backup);
+      backup.restore()
     });
 
     test('POST /users', async () => {

@@ -12,11 +12,11 @@ const app = new Hono();
     try {
         await AppDataSource.initialize()
         app.use("*", logger());
+        setUpRoutes(app, AppDataSource)
         console.log("Connected to Postgres!")
     } catch(err:any) {
         console.log("Error starting app", err)
     }
-    setUpRoutes(app, AppDataSource)
 })();
 
 const server = {

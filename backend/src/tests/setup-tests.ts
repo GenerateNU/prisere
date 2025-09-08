@@ -16,7 +16,7 @@ const db = newDb({
 db.public.registerFunction({
     name: 'version',
     returns: DataType.text,
-    implementation: () => 'PostgreSQL 13.0',
+    implementation: () => 'PostgreSQL 17.4',
 });
 
 db.public.registerFunction({
@@ -37,9 +37,6 @@ const TestDataSource: DataSource = await db.adapters.createTypeormDataSource({
     entities: [User],
 });
 
-export const resetDatabase = (backup: IBackup) => {
-   backup.restore()
-}
 export const startTestApp = async (): Promise<TestAppData> => {
     const app = new Hono();
     await TestDataSource.initialize();
