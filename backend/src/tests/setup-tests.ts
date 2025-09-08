@@ -11,6 +11,8 @@ const db = newDb({
     autoCreateForeignKeyIndices: true,
 });
 
+// pg-mem doesn't support all functions so we have to define
+// these customs ones for it to work with our tests
 db.public.registerFunction({
     name: 'version',
     returns: DataType.text,
