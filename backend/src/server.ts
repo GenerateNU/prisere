@@ -1,7 +1,7 @@
 import "reflect-metadata"
-import { Hono} from "hono"
+import { Hono } from "hono"
 import { logger } from 'hono/logger'
-import {AppDataSource} from "./typeorm-config";
+import { AppDataSource } from "./typeorm-config";
 import { DataSource } from "typeorm";
 import { userRoutes } from "./modules/user/route";
 import { errorHandler } from "./utilities/error";
@@ -11,11 +11,11 @@ const app = new Hono();
 
 const apiRoutes = (
     db: DataSource,
-  ): Hono => {
+): Hono => {
     const api = new Hono();
     api.route("/users", userRoutes(db))
     return api;
-  };
+};
 
 (async function setUpServer() {
     try {

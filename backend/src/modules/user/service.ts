@@ -1,6 +1,6 @@
 import { CreateUserDTO } from "../../types/User";
 import { User } from "../../entities/User";
-import { IUserTransaction} from "./transaction";
+import { IUserTransaction } from "./transaction";
 import Boom from "@hapi/boom";
 import { withServiceErrorHandling} from "../../utilities/error";
 

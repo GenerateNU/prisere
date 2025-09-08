@@ -7,7 +7,7 @@ import { withControllerErrorHandling } from "../../utilities/error";
 
 
 export interface IUserController {
-  createUser(ctx: Context): Promise<TypedResponse<CreateUserAPIResponse>>;
+  createUser(_ctx: Context): Promise<TypedResponse<CreateUserAPIResponse>>;
 }
 
 export class UserController {

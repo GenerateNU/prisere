@@ -17,7 +17,7 @@ export class UserTransaction implements IUserTransaction {
     private db: DataSource;
 
     constructor(db: DataSource) {
-      this.db = db;
+        this.db = db;
     }
 
     async createUser(payload: CreateUserDTO): Promise<User | null>{
