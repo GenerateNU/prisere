@@ -1,3 +1,4 @@
+/* eslint-disable no-control-regex */
 import { appendFile, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
@@ -23,7 +24,7 @@ export const logMessageToFile = (message: string, ...rest: string[]) => {
     const fullMessage = `[${timestamp}] ${cleanMessage}${cleanRest.length ? ' ' + cleanRest.join(' ') : ''}\n`;
     
     appendFile(LOG_FILE, fullMessage, 'utf8', (err) => {
-        if (err) console.error('Failed to write to log:', err);
+        if (err) {console.error('Failed to write to log:', err);}
     });
 };
 
@@ -33,6 +34,6 @@ export const logObjectToFile = (data: object) => {
     const fullMessage = `[${timestamp}] ${data}\n`;
 
     appendFile(LOG_FILE, fullMessage, 'utf8', (err) => {
-        if (err) console.error('Failed to write to log:', err);
+        if (err) {console.error('Failed to write to log:', err);}
     });
 }

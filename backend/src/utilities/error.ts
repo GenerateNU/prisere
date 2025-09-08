@@ -1,5 +1,5 @@
 import Boom from "@hapi/boom";
-import { ErrorHandler, Context} from "hono";
+import { ErrorHandler, Context } from "hono";
 import { ValidationError } from "class-validator";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { HTTPException } from 'hono/http-exception';
@@ -17,14 +17,14 @@ export const withServiceErrorHandling = <T extends any[], R>(
             }
             else if (error?.name === 'QueryFailedError') {
                 switch (error.code) {
-                    case '23505': 
-                        throw Boom.conflict('Resource already exists');
-                    case '23503':
-                        throw Boom.badRequest('Invalid reference');
-                    case '23502':
-                        throw Boom.badRequest('Missing required field');
-                    default:
-                        throw Boom.internal(error, { message: 'An expected error occured' });
+                case '23505': 
+                    throw Boom.conflict('Resource already exists');
+                case '23503':
+                    throw Boom.badRequest('Invalid reference');
+                case '23502':
+                    throw Boom.badRequest('Missing required field');
+                default:
+                    throw Boom.internal(error, { message: 'An expected error occured' });
                 }
             } else {
                 throw Boom.boomify(error);
@@ -41,7 +41,7 @@ export const withControllerErrorHandling = <T extends any[], R>(
             return await handler(ctx, ...args);
         } catch (error) {
             if (Boom.isBoom(error)) {
-                return ctx.json({error: error.output.payload.message}, error.output.statusCode as ContentfulStatusCode);
+                return ctx.json({ error: error.output.payload.message }, error.output.statusCode as ContentfulStatusCode);
             }
             if (Array.isArray(error) && error[0] instanceof ValidationError) {
                 const messages = error.map((err: ValidationError) =>
@@ -52,11 +52,11 @@ export const withControllerErrorHandling = <T extends any[], R>(
 
             // log unknown errors:
             if (error instanceof Error) {
-              logErrors(error, ctx)
+                logErrors(error, ctx)
             } else if (error instanceof Object) {
-              logObjectToFile(error)
+                logObjectToFile(error)
             } else {
-              logMessageToFile('Unknown error occured')
+                logMessageToFile('Unknown error occured')
             }
 
             return ctx.json({ error: "Internal Server Error" }, 500);
@@ -84,23 +84,23 @@ export const errorHandler: ErrorHandler = (err: Error, c: Context) => {
 }
 
 const logErrors = (err: Error, c: Context) => {
-  const includeStack = process.env.NODE_ENV === 'development'
-  console.error('Error occurred:', {
-                message: err.message,
-                ...(includeStack && {
-                  stack: err.stack,
-                }),
-                path: c.req.path,
-                method: c.req.method,
-                timestamp: new Date().toISOString()
-  });
+    const includeStack = process.env.NODE_ENV === 'development'
+    console.error('Error occurred:', {
+        message: err.message,
+        ...(includeStack && {
+            stack: err.stack,
+        }),
+        path: c.req.path,
+        method: c.req.method,
+        timestamp: new Date().toISOString()
+    });
 
-  logMessageToFile(
-    'Error occurred:',
-    `message: ${err.message}`,
-    ...(includeStack ? [`stack: ${err.stack}`] : []),
-    `path: ${c.req.path}`,
-    `method: ${c.req.method}`,
-    `timestamp: ${new Date().toISOString()}`
-  );
+    logMessageToFile(
+        'Error occurred:',
+        `message: ${err.message}`,
+        ...(includeStack ? [`stack: ${err.stack}`] : []),
+        `path: ${c.req.path}`,
+        `method: ${c.req.method}`,
+        `timestamp: ${new Date().toISOString()}`
+    );
 }
