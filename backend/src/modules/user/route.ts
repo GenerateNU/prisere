@@ -8,7 +8,7 @@ export const userRoutes = (db: DataSource): Hono => {
   
     const userTransaction: IUserTransaction = new UserTransaction(db);
     const userService: IUserService = new UserService(userTransaction);
-    const userController: IUserController = new UserController(userService);
+    const userController: UserController = new UserController(userService);
   
     user.post("/", (ctx) => userController.createUser(ctx));
     return user;

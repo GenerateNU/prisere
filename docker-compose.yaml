@@ -1,0 +1,22 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env 
+    ports:
+      - "3000:3000"
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./backend
+          target: ./app
+    container_name: backend
+    command: bun run dev
+    networks:
+      - app-network
+  
+networks:
+  app-network:
+    driver: bridge
