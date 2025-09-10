@@ -1,21 +1,50 @@
 ## Setup
 
-- Run `npm install` to install the dependencies.
+- Run `bun  install` to install the dependencies.
 - Run `cp .env.example .env`.
 - Set the required environment vairables in your `.env` file.
 
 ## Commands
 
-Run the `vite` dev server
+Start a local supabase instance:
 
 ```bash
-npm run dev
+bun run supabase start
 ```
+See MIGRATION_TUTOTORIAL.md for more information on how to handle migrations with local/remote Supabase.
 
-Building
+
+Run the server in dev mode (uses the local supabase instance):
+
+LOG_VOLUME_MOUNT will change where the logging middleware will sending logging to. That's up to you if you want to change it, just make sure it's not checked into git. `./log` is in the .gitignore, so anything in there works. If you don't want your logs to be re-routed to your local checkout, just exclude the LOG_VOLUME_MOUNT option and they will stay in the Docker container. 
+```bash
+# Powershell
+$env:MODE="dev"; $env:LOG_VOLUME_MOUNT="./backend/log"; docker-compose up --build --watch
+
+# Unix
+MODE=dev LOG_VOLUME_MOUNT=./backend/log docker-compose up --build --watch
+```
+NOTE: you need to have SUPABASE_DB_URL defined properly in your .env
+
+
+Run the server in production mode (uses the remote supabase instance):
 
 ```bash
-npm run build
+docker compose up --build
+
+# optionally add --watch to automatically sync changes to code
+```
+NOTE: you need to have SUPABASE_PROD_DB_URL defined properly in your .env
+
+
+Run the linter to see failures and warnings:
+```bash
+bun run lint
 ```
 
-This project is configured to use `node` runtime, you can change it to your desired runtime in the `vite.config.js` file. We are using [@hono/vite-build](https://www.npmjs.com/package/@hono/vite-build) package for building the project and [@hono/vite-dev-server](https://www.npmjs.com/package/@hono/vite-dev-server) for running the dev server.
+Run the linter to automatically fix "fixable" issues (such as spacing):
+```bash
+bun run lint:fix
+```
+
+
