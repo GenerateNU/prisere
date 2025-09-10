@@ -19,19 +19,14 @@ The following pathway allows you to make and test schema changes locally via mig
    ``` 
    Your migration-name should be concise but descriptive of what's going on!
    - Ex. `bun run migration:gen ./src/migrations/UpdateTrackAddURL -d ./src/typeorm-config.ts` if adding a URL column to the track table.
-5. Add or update the factories and seeds in `database/factories` and `database/seeds`. Make sure to import both in typeorm-config.ts. Then run: 
-   ```bash
-   bun run seed
-   ```
-   to seed the database
-7. Then apply your db changes locally with:
+5. Then apply your db changes locally with:
    ```bash
    bun run migration:dev
    ```
-8. If applying the db changes goes smoothly, go to <http://localhost:54323> to see a local version of the Supabase dashboard, where your sample data will be visible. Feel free to add/update data to test out your new schema and any constraints.
+6. If applying the db changes goes smoothly, go to <http://localhost:54323> to see a local version of the Supabase dashboard, where your sample data will be visible. Feel free to add/update data to test out your new schema and any constraints.
    - Anything you do in this local database won't impact our shared instance
-9. Test the changes against a locally running DB.
-10. When done, run `suabase stop` to stop the local instance of the DB.
+7. Test the changes against a locally running DB.
+8. When done, run `suabase stop` to stop the local instance of the DB.
 
 ### After script is approved/merged:
 
