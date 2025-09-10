@@ -22,6 +22,6 @@ export class UserController {
         const payload = plainToInstance(CreateUserDTO, json);
         await validateOrReject(payload);
         const user = await this.userService.createUser(payload);
-        return ctx.json(user, 200);
+        return ctx.json(user, 201);
     });
 }
