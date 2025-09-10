@@ -9,8 +9,8 @@
     "start": "bun src/server.ts",
     "build": "bun build src/server.ts --outdir ./dist --target bun",
     "start:built": "bun dist/server.js",
-    "lint": "eslint . --config eslint.config.ts",
-    "lint:fix": "eslint . --config eslint.config.ts --fix"
+    "lint": "eslint . --config src/eslint.config.ts",
+    "lint:fix": "eslint . --config src/eslint.config.ts --fix"
   },
   "type": "module",
   "dependencies": {
@@ -21,6 +21,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "hono": "^4.5.10",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3",
     "pg-mem": "^3.0.5",
     "reflect-metadata": "^0.2.2",

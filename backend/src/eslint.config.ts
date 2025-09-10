@@ -20,7 +20,7 @@ export default defineConfig([
       }
     },
     plugins: {
-      '@typescript-eslint': tseslint,
+      '@typescript-eslint': tseslint as any, //TO-DO: fix this
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn',

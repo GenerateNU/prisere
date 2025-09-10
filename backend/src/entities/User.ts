@@ -6,11 +6,5 @@ export class User {
       id!: string;
 
   @Column()
-      firstName!: string ;
-
-  @Column()
-      lastName!: string ;
-
-  @Column({ nullable: true })
-      email?: string;
+      email!: string;
 }

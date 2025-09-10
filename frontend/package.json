@@ -8,6 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
+    "@types/bun": "^1.2.21",
     "next": "15.5.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",

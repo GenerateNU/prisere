@@ -6,6 +6,15 @@ export const setUpRoutes = (
     app: Hono,
     db: DataSource,
 ) => {
-    app.route("/users", userRoutes(db));
+    app.route("/api", apiRoutes(db));
 };
+
+const apiRoutes = (
+    db: DataSource,
+) => {
+    const api = new Hono()
+    api.route("/users", userRoutes(db));
+
+    return api
+}
 

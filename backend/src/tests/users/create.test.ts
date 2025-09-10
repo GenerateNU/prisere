@@ -23,7 +23,7 @@ describe('Example', () => {
     });
 
     test('POST /users', async () => {
-        const response = await app.request('/users', {
+        const response = await app.request('/api/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
