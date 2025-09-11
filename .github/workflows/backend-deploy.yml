@@ -8,7 +8,7 @@ jobs:
     uses: GenerateNU/shiperate/.github/workflows/backend-deploy.yml@main
     with:
       context: .
-      dockerfile: backend.Dockerfile
-      repo: registry.digitalocean.com/gen-sw-fall-2025/test
+      dockerfile: backend/Dockerfile
+      repo: registry.digitalocean.com/gen-sw-fall-2025/prisere
       tag: latest
     secrets: inherit
