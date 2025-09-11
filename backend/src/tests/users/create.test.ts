@@ -30,6 +30,6 @@ describe('Example', () => {
             },
             body: JSON.stringify(requestBody)
         })
-        expect(response.status).toBe(200)
+        expect(response.status).toBe(201)
     })
 })
