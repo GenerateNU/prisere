@@ -16,6 +16,8 @@ services:
         - action: sync+restart
           path: ./backend
           target: ./app
+          ignore:
+            - log/
     container_name: backend
     networks:
       - app-network
