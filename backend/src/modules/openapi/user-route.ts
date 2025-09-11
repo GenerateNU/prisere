@@ -5,40 +5,38 @@ import { UserController } from "../user/controller";
 import { IUserService, UserService } from "../user/service";
 import { IUserTransaction, UserTransaction } from "../user/transaction";
 
-export const openApiRoutes = (db: DataSource): OpenAPIHono => {
-    const openApi = new OpenAPIHono();
-  
+export const addOpenApiUserRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const userTransaction: IUserTransaction = new UserTransaction(db);
     const userService: IUserService = new UserService(userTransaction);
     const userController: UserController = new UserController(userService);
   
     openApi.openapi(createUserRoute, (ctx) => userController.createUser(ctx));
     return openApi;
-};
+}
 
 const createUserRoute = createRoute({
-  method: 'post',
-  path: '/users',
-  summary: 'Create a new user',
-  description: 'Creates a new user with the provided information',
-  request: {
-    body: {
-      content: {
-        'application/json': {
-          schema: CreateUserDTOSchema,
+    method: 'post',
+    path: '/users',
+    summary: 'Create a new user',
+    description: 'Creates a new user with the provided information',
+    request: {
+        body: {
+            content: {
+                'application/json': {
+                    schema: CreateUserDTOSchema,
+                },
+            },
         },
-      },
     },
-  },
-  responses: {
-    201: {
-        content: {
-        'application/json': {
-            schema: CreateUserAPIResponseSchema,
+    responses: {
+        201: {
+            content: {
+                'application/json': {
+                    schema: CreateUserAPIResponseSchema,
+                },
+            },
+            description: 'Create user response',
         },
-        },
-        description: 'Create user response',
     },
-},
-  tags: ['Users'],
+    tags: ['Users'],
 });
