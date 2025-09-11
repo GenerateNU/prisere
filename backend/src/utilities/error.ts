@@ -1,6 +1,5 @@
 import Boom from "@hapi/boom";
 import { ErrorHandler, Context } from "hono";
-import { ValidationError } from "class-validator";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { HTTPException } from 'hono/http-exception';
 import { logMessageToFile, logObjectToFile } from "./logger";
