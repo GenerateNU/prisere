@@ -1,29 +1,5 @@
-import { IsEmail, IsNotEmpty, Length, IsOptional } from "class-validator";
 import { z } from "zod";
 import { ErrorResponseSchema } from "./Utils";
-
-export class CreateUserDTO {
-  @IsNotEmpty()
-  @Length(3, 20)
-      firstName!: string;
-
-  @IsNotEmpty()
-      lastName!: string;
-
-  @IsOptional()
-  @IsEmail()
-      email?: string;
-}
-
-
-export class CreateUserResponse {
-    id!: string;
-    firstName!: string;
-    lastName!:string;
-    email?: string;
-}
-
-export type CreateUserAPIResponse = CreateUserResponse | { error: string };
 
 /* Zod schemas for OpenAPI docs */
 export const CreateUserDTOSchema = z.object({
@@ -43,3 +19,8 @@ export const CreateUserAPIResponseSchema = z.union([
     CreateUserResponseSchema,
     ErrorResponseSchema
 ]);
+
+/* Zod types for payload validation */
+export type CreateUserDTO = z.infer<typeof CreateUserDTOSchema>;
+export type CreateUserResponse = z.infer<typeof CreateUserResponseSchema>;
+export type CreateUserAPIResponse = z.infer<typeof CreateUserAPIResponseSchema>;
