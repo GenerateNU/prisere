@@ -4,6 +4,7 @@ import { ValidationError } from "class-validator";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { HTTPException } from 'hono/http-exception';
 import { logMessageToFile, logObjectToFile } from "./logger";
+import { z } from 'zod';
 
 export const withServiceErrorHandling = <T extends any[], R>(
     handler: (...args: T) => Promise<R>
@@ -43,11 +44,8 @@ export const withControllerErrorHandling = <T extends any[], R>(
             if (Boom.isBoom(error)) {
                 return ctx.json({ error: error.output.payload.message }, error.output.statusCode as ContentfulStatusCode);
             }
-            if (Array.isArray(error) && error[0] instanceof ValidationError) {
-                const messages = error.map((err: ValidationError) =>
-                    Object.values(err.constraints || {}).join(", ")
-                ).join("; ");
-                return ctx.json({ error: messages }, 400);
+            if (error instanceof z.ZodError) {
+                return ctx.json({ error: z.prettifyError(error) }, 400);
             }
 
             // log unknown errors:
