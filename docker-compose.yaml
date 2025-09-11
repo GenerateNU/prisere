@@ -1,0 +1,25 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - MODE=${MODE-prod}
+    env_file:
+      - ./backend/.env 
+    ports:
+      - "3000:3000"
+    volumes:
+      - ${LOG_VOLUME_MOUNT:-/app/log}:/app/log
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./backend
+          target: ./app
+    container_name: backend
+    networks:
+      - app-network
+  
+networks:
+  app-network:
+    driver: bridge

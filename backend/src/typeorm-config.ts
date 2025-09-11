@@ -14,7 +14,6 @@ const databaseUrl =
 const options: DataSourceOptions & SeederOptions = {
     type: "postgres",
     url: databaseUrl,
-    password: process.env.SUPABASE_PASSWORD,
     synchronize: false,               
     logging: false,
     entities: ["src/entities/*.ts"],
