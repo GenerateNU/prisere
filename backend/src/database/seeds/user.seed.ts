@@ -7,7 +7,7 @@ export default class UserSeeder implements Seeder {
     public async run(
         dataSource: DataSource,
         _factoryManager: SeederFactoryManager
-    ): Promise<any> {  
+    ): Promise<void> {  
         const repository =  dataSource.getRepository(User);
         await repository.insert([
             {
