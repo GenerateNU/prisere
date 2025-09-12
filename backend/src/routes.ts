@@ -7,8 +7,7 @@ export const setUpRoutes = (
     app: Hono,
     db: DataSource,
 ) => {
-    app.route("/users", userRoutes(db));
-
+    app.route("/api/users", userRoutes(db));
     app.route('/openapi', setUpOpenApiRoutes(db));
 };
 

@@ -26,7 +26,7 @@ The following pathway allows you to make and test schema changes locally via mig
 6. If applying the db changes goes smoothly, go to <http://localhost:54323> to see a local version of the Supabase dashboard, where your sample data will be visible. Feel free to add/update data to test out your new schema and any constraints.
    - Anything you do in this local database won't impact our shared instance
 7. Test the changes against a locally running DB.
-8. When done, run `suabase stop` to stop the local instance of the DB.
+8. When done, run `supabase stop` to stop the local instance of the DB.
 
 ### After script is approved/merged:
 
