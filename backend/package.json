@@ -8,8 +8,8 @@
     "start": "NODE_ENV=production bun src/server.ts",
     "build": "bun build src/server.ts --outdir ./dist --target bun",
     "start:built": "NODE_ENV=production bun dist/server.js",
-    "lint": "eslint . --config eslint.config.ts",
-    "lint:fix": "eslint . --config eslint.config.ts --fix"
+    "lint": "eslint . --config src/eslint.config.ts",
+    "lint:fix": "eslint . --config src/eslint.config.ts --fix"
   },
   "type": "module",
   "dependencies": {
