@@ -1,6 +1,6 @@
 import { defineConfig } from 'eslint/config';
 import js from '@eslint/js';
-import tseslint from '@typescript-eslint/eslint-plugin';
+import tseslint from 'typescript-eslint';
 import tsparser from '@typescript-eslint/parser';
 
 export default defineConfig([
@@ -20,7 +20,7 @@ export default defineConfig([
       }
     },
     plugins: {
-      '@typescript-eslint': tseslint,
+      '@typescript-eslint': tseslint.plugin,
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn',
