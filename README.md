@@ -30,11 +30,11 @@ The template repository is laid out as follows below.
 │       └── types 
 │       └── utilities 
 │       └── eslint.config.ts # configuration for eslint
-│       └── MIGRATION_TUTORIAL.md # guide to creating/running migrations
 │       └── routes.ts # sets up routes for entire app
 │       └── server.ts # sets up server 
 │       └── typeorm-config.ts # configuration for typeorm
 │   └── supabase # includes config for local supabase
+│       └── MIGRATION_TUTORIAL.md # guide to creating/running migrations
 │   └── .gitignore
 │   └── Dockerfile
 │   └── package.json
