@@ -1,14 +1,16 @@
 import { z } from "zod";
 import { ErrorResponseSchema } from "./Utils";
 
+const FIPSState = z.number().gte(1).lte(56)
+
 /* Zod schemas for OpenAPI docs */
 export const CreateDisasterDTOSchema = z.object({
     id: z.string(),
-    state: z.number().min(2).max(2),
-    declaration_date : z.date(),
-    start_date: z.date().optional(),
-    end_date: z.date().optional(),
-    fips_county_codes: z.number().min(3).max(3),
+    state: FIPSState,
+    declaration_date : z.iso.datetime(),
+    start_date: z.iso.datetime().optional(),
+    end_date: z.iso.datetime().optional(),
+    fips_county_codes: z.number(),
     declaration_type: z.string(),
     designated_area: z.string(),
     designated_incident_types: z.string(),
@@ -16,8 +18,8 @@ export const CreateDisasterDTOSchema = z.object({
 
 export const CreateDisasterResponseSchema = z.object({
     id: z.string(),
-    state: z.number().min(2).max(2),
-    declaration_date : z.date(),
+    state: FIPSState,
+    declaration_date : z.iso.datetime(),
     declaration_type: z.string(),
     designated_incident_types: z.string(),
     // maybe can add more to this success message

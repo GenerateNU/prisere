@@ -1,6 +1,6 @@
 import { Context, TypedResponse } from "hono";
 import { withControllerErrorHandling } from "../../utilities/error";
-import { CreateDisasterAPIResponse} from "../../types/FemaDisaster";
+import { CreateDisasterAPIResponse } from "../../types/FemaDisaster";
 import { IDisasterService } from "./service";
 import { CreateDisasterDTOSchema } from "../../types/FemaDisaster";
 
@@ -16,11 +16,15 @@ export class DisasterController implements IDisasterController{
         this.disasterService = service;
     }
 
-    createDisaster = withControllerErrorHandling(async (ctx: Context): Promise<Response & TypedResponse<CreateDisasterAPIResponse>> => {
+    createDisaster = withControllerErrorHandling(async (ctx: Context): Promise<TypedResponse<CreateDisasterAPIResponse>> => {
         const json = await ctx.req.json();
         const payload = CreateDisasterDTOSchema.parse(json)
         const disaster = await this.disasterService.createDisaster(payload);
-        // @ts-ignore the null will get caught by the error catcher in service layer
         return ctx.json(disaster, 201);
     });
+
+    getAllDisasters = withControllerErrorHandling(async (ctx) => {
+        const disaster = await this.disasterService.getAllDisasters();
+        return ctx.json(disaster, 200);
+    })
 }

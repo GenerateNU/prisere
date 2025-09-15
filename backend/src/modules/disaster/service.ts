@@ -1,11 +1,11 @@
 import { CreateDisasterDTO } from "../../types/FemaDisaster";
 import { FemaDisaster } from "../../entities/FemaDisaster";
-import { IDisasterTransaction} from "./transaction";
-import Boom from "@hapi/boom";
+import { IDisasterTransaction } from "./transaction";
 import { withServiceErrorHandling } from "../../utilities/error";
 
 export interface IDisasterService {
     createDisaster(payload: CreateDisasterDTO): Promise<FemaDisaster>;
+    getAllDisasters(): Promise<FemaDisaster[]>
 }
 
 
@@ -20,9 +20,13 @@ export class DisasterService implements IDisasterService {
         const disaster = await this.disasterTransaction.createDisaster({
             ...payload,
         });
-        if (!disaster) {
-            throw Boom.internal("Creating Disaster Failed")
-        }
+        
         return disaster;
     });
+
+    getAllDisasters = withServiceErrorHandling(async (): Promise<FemaDisaster[]> => {
+        const disasters = await this.disasterTransaction.getAllDisasters()
+
+        return disasters
+    })
 }
