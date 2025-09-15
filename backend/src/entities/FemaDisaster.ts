@@ -1,21 +1,24 @@
-import {Entity, PrimaryGeneratedColumn, Column, PrimaryColumn} from "typeorm";
+import { Entity, Column, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class FemaDisaster {
 
     @PrimaryColumn()
-        id!: string;
+    id!: string;
     // unique id assigned to the record, uuid, vs. disaster number, which one is more useful for
     // filling insurance?
 
-   @Column()
-        state!: number; // why not use the FIPS State code like for county instead of state name?
+    @Column()
+    disaster_number!: number;
 
-   @Column({ type: 'date' })
-        declaration_date!: Date;
+    @Column()
+    state!: number; // why not use the FIPS State code like for county instead of state name?
 
-   @Column({ nullable: true, type: 'date' })
-        start_date?: Date;
+    @Column({ type: 'date' })
+    declaration_date!: Date;
+
+    @Column({ nullable: true, type: 'date' })
+    start_date?: Date;
 
 
     @Column({ nullable: true, type: 'date' })
@@ -23,7 +26,7 @@ export class FemaDisaster {
 
 
     @Column()
-        fips_county_codes!: number;
+    fips_county_codes!: number;
 
 
     // possible additions

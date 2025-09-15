@@ -1,6 +1,6 @@
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { CreateDisasterDTO } from "../../types/FemaDisaster";
-import { DataSource, InsertResult } from "typeorm";
+import { DataSource } from "typeorm";
 import { plainToClass } from 'class-transformer';
 
 
@@ -10,7 +10,9 @@ export interface IDisasterTransaction {
      * @param payload FemaDisaster to be inserted into Database
      * @returns Promise resolving to inserted FemaDisaster or null if failed
      */
-    createDisaster(payload: CreateDisasterDTO): Promise<FemaDisaster| null>;
+    createDisaster(payload: CreateDisasterDTO): Promise<FemaDisaster>;
+
+    getAllDisasters(): Promise<FemaDisaster[]>;
 }
 
 export class DisasterTransaction implements IDisasterTransaction {
@@ -20,15 +22,24 @@ export class DisasterTransaction implements IDisasterTransaction {
         this.db = db;
     }
 
-    async createDisaster(payload: CreateDisasterDTO): Promise<FemaDisaster | null>{
-        const disaster:FemaDisaster = plainToClass(FemaDisaster, payload);
-        const result:InsertResult = await this.db.createQueryBuilder()
+    async createDisaster(payload: CreateDisasterDTO) {
+        const disaster = plainToClass(FemaDisaster, payload);
+        const result = await this.db.createQueryBuilder()
             .insert()
             .into(FemaDisaster)
             .values(disaster)
             .returning("*")
             .execute();
-        return result.raw[0] ?? null;
+
+        return result.raw[0] as FemaDisaster;
     }
 
+    async getAllDisasters() {
+        const result = await this.db.createQueryBuilder()
+            .select()
+            .from(FemaDisaster, "fema_disaster")
+            .getMany();
+
+        return result;
+    }
 }
