@@ -8,7 +8,6 @@ export const setUpRoutes = (
     db: DataSource,
 ) => {
     app.route("/users", userRoutes(db));
-
     app.route('/openapi', setUpOpenApiRoutes(db));
 };
 
