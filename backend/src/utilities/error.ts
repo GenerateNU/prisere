@@ -10,6 +10,7 @@ export const withServiceErrorHandling = <T extends any[], R>(handler: (...args: 
         try {
             return await handler(...args);
         } catch (error: any) {
+            console.log(error);
             if (error.isBoom?.()) {
                 throw error;
             } else if (error?.name === "QueryFailedError") {
