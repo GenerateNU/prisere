@@ -5,24 +5,23 @@ import { addOpenApiUserRoutes } from "./user-route";
 
 export const setUpOpenApiRoutes = (db: DataSource) => {
     const openApiApp = openApiRoutes(db);
-    
-    openApiApp.doc('/spec.json', {
-        openapi: '3.0.0',
+
+    openApiApp.doc("/spec.json", {
+        openapi: "3.0.0",
         info: {
-            version: '1.0.0',
-            title: 'Prisere API',
+            version: "1.0.0",
+            title: "Prisere API",
         },
     });
 
-    openApiApp.get('/docs', swaggerUI({ url: '/openapi/spec.json' }));
-    return openApiApp
-}; 
-
+    openApiApp.get("/docs", swaggerUI({ url: "/openapi/spec.json" }));
+    return openApiApp;
+};
 
 const openApiRoutes = (db: DataSource): OpenAPIHono => {
     const openApi = new OpenAPIHono();
 
-    addOpenApiUserRoutes(openApi, db)
-  
+    addOpenApiUserRoutes(openApi, db);
+
     return openApi;
 };

@@ -8,8 +8,8 @@
     "start": "NODE_ENV=production bun src/server.ts",
     "build": "bun build src/server.ts --outdir ./dist --target bun",
     "start:built": "NODE_ENV=production bun dist/server.js",
-    "lint": "eslint . --config src/eslint.config.ts",
-    "lint:fix": "eslint . --config src/eslint.config.ts --fix"
+    "lint": "eslint . --config src/eslint.config.ts && prettier . --check",
+    "lint:fix": "eslint . --config src/eslint.config.ts --fix && prettier . --write"
   },
   "type": "module",
   "dependencies": {
@@ -41,6 +41,7 @@
     "@typescript-eslint/parser": "^8.42.0",
     "eslint": "^9.35.0",
     "jiti": "^2.5.1",
+    "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "vite": "^5.4.2"
   }

@@ -5,20 +5,17 @@ import { ErrorResponseSchema } from "./Utils";
 export const CreateUserDTOSchema = z.object({
     firstName: z.string().min(3).max(20),
     lastName: z.string().min(1),
-    email: z.string().email().optional()
+    email: z.string().email().optional(),
 });
 
 export const CreateUserResponseSchema = z.object({
     id: z.string(),
     firstName: z.string(),
     lastName: z.string(),
-    email: z.string().optional()
+    email: z.string().optional(),
 });
 
-export const CreateUserAPIResponseSchema = z.union([
-    CreateUserResponseSchema,
-    ErrorResponseSchema
-]);
+export const CreateUserAPIResponseSchema = z.union([CreateUserResponseSchema, ErrorResponseSchema]);
 
 /* Zod types for payload validation */
 export type CreateUserDTO = z.infer<typeof CreateUserDTOSchema>;

@@ -1,8 +1,7 @@
 import { User } from "../../entities/User";
 import { CreateUserDTO } from "../../types/User";
 import { DataSource, InsertResult } from "typeorm";
-import { plainToClass } from 'class-transformer';
-
+import { plainToClass } from "class-transformer";
 
 export interface IUserTransaction {
     /**
@@ -20,9 +19,10 @@ export class UserTransaction implements IUserTransaction {
         this.db = db;
     }
 
-    async createUser(payload: CreateUserDTO): Promise<User | null>{
-        const user:User = plainToClass(User, payload);
-        const result:InsertResult = await this.db.createQueryBuilder()
+    async createUser(payload: CreateUserDTO): Promise<User | null> {
+        const user: User = plainToClass(User, payload);
+        const result: InsertResult = await this.db
+            .createQueryBuilder()
             .insert()
             .into(User)
             .values(user)
@@ -30,5 +30,4 @@ export class UserTransaction implements IUserTransaction {
             .execute();
         return result.raw[0] ?? null;
     }
-
 }
