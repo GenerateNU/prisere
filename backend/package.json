@@ -26,11 +26,11 @@
     "pg-mem": "^3.0.5",
     "reflect-metadata": "^0.2.2",
     "supabase": "^2.39.2",
+    "ts-node": "^10.9.2",
     "typeorm": "^0.3.26",
     "typeorm-extension": "^3.7.1",
     "typescript": "^5.9.2",
-    "zod": "^4.1.5",
-    "typescript-eslint": "^8.43.0"
+    "zod": "^4.1.8"
   },
   "devDependencies": {
     "@hono/vite-build": "^1.1.0",
