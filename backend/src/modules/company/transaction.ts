@@ -2,6 +2,7 @@ import { Company } from "../../entities/Company";
 import { CreateCompanyDTO, GetCompanyByIdDTO } from "../../types/Company";
 import { DataSource, InsertResult,  } from "typeorm";
 import { plainToClass } from 'class-transformer';
+import Boom from "@hapi/boom";
 
 
 export interface ICompanyTransaction {
@@ -27,32 +28,59 @@ export class CompanyTransaction implements ICompanyTransaction {
         this.db = db;
     }
 
-    async createCompany(payload: CreateCompanyDTO): Promise<Company | null>{
+    async createCompany(payload: CreateCompanyDTO): Promise<Company | null> {
         if (payload.lastQuickBooksImportTime && typeof payload.lastQuickBooksImportTime === "string") {
             payload.lastQuickBooksImportTime = new Date(payload.lastQuickBooksImportTime);
         }
-        // const company:Company = plainToClass(Company, payload);
-        const result:InsertResult = await this.db.createQueryBuilder()
+
+        const result: InsertResult = await this.db.createQueryBuilder()
             .insert()
             .into(Company)
             .values(payload)
             .returning("*")
             .execute();
-        return result.raw[0] ?? null;
+
+        const rawCompany = result.raw[0];
+        if (!rawCompany) return null;
+
+        // Convert import time to Date type if needed
+        if (rawCompany.lastQuickBooksImportTime && typeof rawCompany.lastQuickBooksImportTime === "string") {
+            rawCompany.lastQuickBooksImportTime = new Date(rawCompany.lastQuickBooksImportTime);
+        }
+
+        return rawCompany;
     }
 
     async getCompanyById(payload: GetCompanyByIdDTO): Promise<Company | null> {
         if (typeof payload.id !== "string") {
             throw new Error("ID must be of type string")
         }
-      const company:Company = plainToClass(Company, payload);
-      
-      const result:Company | null = await this.db.createQueryBuilder()
-        .select("company")
-        .from(Company, "company")
-        .where("company.id = :id", { id: company.id })
-        .getOne();
-      return result;
+
+        try {
+            const result: Company | null = await this.db.createQueryBuilder()
+                .select("company")
+                .from(Company, "company")
+                .where("company.id = :id", { id: payload.id })
+                .getOne();
+
+            // Transform the date field to Date type, if it exists and is a string
+            if (result && result.lastQuickBooksImportTime && typeof result.lastQuickBooksImportTime === "string") {
+                result.lastQuickBooksImportTime = new Date(result.lastQuickBooksImportTime);
+            }
+
+            return result;
+        } catch (error) {
+            console.log("Transaction error:", error);
+        
+            // Check if the ID is not in UIUD format
+            const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+            if (!uuidRegex.test(payload.id)) {
+                throw Boom.badRequest("Invalid UUID format");
+            } else {
+                throw Boom.notFound("Company Not Found");
+            }
+            // other option is to just rethrow error instead of notFound assumption
+        }
     }
 
 }
