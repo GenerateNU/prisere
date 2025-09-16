@@ -11,7 +11,7 @@ export const companyRoutes = (db: DataSource): Hono => {
   const companyService: ICompanyService = new CompanyService(companyTransaction);
   const companyController: ICompanyController = new CompanyController(companyService);
 
-  company.get("/:cid", (ctx) => companyController.getCompanyById(ctx));
+  company.get("/:id", (ctx) => companyController.getCompanyById(ctx));
   company.post("/", (ctx) => companyController.createCompany(ctx))
 
   return company;

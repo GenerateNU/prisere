@@ -4,12 +4,12 @@
  * - id that does not exist
  * - no id
  * - wrong type id (not string)
- * - 
+ * - SQL Injection...
  * 
  */
 
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, afterEach } from "bun:test";
+import { describe, test, expect, beforeAll, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from 'pg-mem';
 
@@ -38,74 +38,83 @@ describe('Example', () => {
         console.log("Created ID: ", createdCompanyId)
     });
 
-    afterEach(async () => {
-        backup.restore()
+    beforeEach(async () => {
+        backup.restore(); // Restore to clean state before each test
+        
+        // Re-create the company for each test and save ID
+        const response = await app.request('/companies', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: "Test Company" })
+        });
+        const body = await response.json();
+        createdCompanyId = body.id;
     });
 
     test('GET /companies/:id - id that exists', async () => {
-        console.log("Getting company from created ID:", createdCompanyId)
-        const response = await app.request(`/companies/${createdCompanyId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
+        const response = await app.request(`/companies/${createdCompanyId}`)
         expect(response.status).toBe(200)
         const body = await response.json()
         expect(body.name).toBe(requestBody.name)
     })
 
+    test('GET /companies/:id - validates response structure', async () => {
+        const response = await app.request(`/companies/${createdCompanyId}`)
+        expect(response.status).toBe(200)
+        
+        const body = await response.json()
+        expect(body).toHaveProperty('id')
+        expect(body).toHaveProperty('name')
+        expect(body.id).toBe(createdCompanyId)
+        expect(typeof body.id).toBe('string')
+        expect(typeof body.name).toBe('string')
+    })
+
+    test('GET /companies/:id - error response structure', async () => {
+        const nonExistentUUID = "12345678-1234-1234-1234-123456789012"
+        const response = await app.request(`/companies/${nonExistentUUID}`)
+        expect(response.status).toBe(404)
+        
+        const body = await response.json()
+        expect(body).toHaveProperty('error')
+        expect(typeof body.error).toBe('string')
+    })
+
     test('GET /companies/:id - id that does not exist', async () => {
-        const response = await app.request('/companies/999', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-        console.log("ID that doesnt exist RESPONSE:")
-        console.log(response)
-        console.log("Body:", await response.text());
+        const nonExistentUUID = "12345678-1234-1234-1234-123456789012";
+        const response = await app.request(`/companies/${nonExistentUUID}`)
         expect(response.status).toBe(404)
     })
 
+    test('GET /companies/:id - id not in UIUD format', async () => {
+        const nonExistentUUID = "baka";
+        const response = await app.request(`/companies/${nonExistentUUID}`)
+        expect(response.status).toBe(400)
+    })
+
+    test('GET /companies/:id - uuid with invalid characters', async () => {
+        const response = await app.request('/companies/1234567g-1234-1234-1234-123456789012') // g is not hex
+        expect(response.status).toBe(400)
+    })
+
     test('GET /companies/:id - no id', async () => {
-        const response = await app.request('/companies/', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-        // console.log("No ID RESPONSE:")
-        // console.log("Body:", await response.text());
+        const response = await app.request('/companies/')
         expect([400, 404]).toContain(response.status)
     })
 
-    test('GET /companies/:id - wrong type id (not string)', async () => {
-        // If your route expects a string, try passing an object or array
-        // Here, we use a non-numeric string if your id is numeric
-        const response = await app.request('/companies/abc', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-        console.log("Wrong ID type RESPONSE:")
-        console.log(response)
-        console.log("Body:", await response.text());
+    test('GET /companies/:id - white space', async () => {
+        const response = await app.request('/companies/   ')
         expect([400, 404]).toContain(response.status)
     })
 
-    test('GET /companies', async () => {
-        const response = await app.request('/companies/1', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-        console.log("RESPONSE:")
-        console.log(response)
-        console.log("Body:", await response.text());
+    test('GET /companies/:id - concurrent requests', async () => {
+        const requests = Array(10).fill(null).map(() => 
+            app.request(`/companies/${createdCompanyId}`)
+        )
         
-        expect(response.status).toBe(200)
+        const responses = await Promise.all(requests)
+        responses.forEach(response => {
+            expect(response.status).toBe(200)
+        })
     })
 })

@@ -29,11 +29,13 @@ export class CompanyService implements CompanyService {
 
 
     getCompanyById = withServiceErrorHandling(async (payload: GetCompanyByIdDTO): Promise<Company> => {
+        console.log("Attempting to get company with payload: ", payload);
         const company = await this.companyTransaction.getCompanyById({
           ...payload,
         });
+        console.log("Found company: ", company)
         if (!company) {
-          throw Boom.internal("Company Not Found");
+          throw Boom.notFound("Company Not Found");
         }
         return company;
     })
