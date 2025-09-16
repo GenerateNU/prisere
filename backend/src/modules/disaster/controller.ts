@@ -3,10 +3,12 @@ import { withControllerErrorHandling } from "../../utilities/error";
 import { CreateDisasterAPIResponse } from "../../types/FemaDisaster";
 import { IDisasterService } from "./service";
 import { CreateDisasterDTOSchema } from "../../types/FemaDisaster";
+import {FemaDisaster} from "../../entities/FemaDisaster";
 
 
 export interface IDisasterController {
     createDisaster(_ctx: Context): Promise<TypedResponse<CreateDisasterAPIResponse> | Response>;
+    getAllDisasters(_ctx: Context): Promise<FemaDisaster[] | Response>;
 }
 
 export class DisasterController implements IDisasterController{
