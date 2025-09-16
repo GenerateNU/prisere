@@ -1,8 +1,8 @@
 ## Setup
 
-- Run `bun  install` to install the dependencies.
-- Run `cp .env.example .env`.
-- Set the required environment vairables in your `.env` file.
+-   Run `bun  install` to install the dependencies.
+-   Run `cp .env.example .env`.
+-   Set the required environment vairables in your `.env` file.
 
 ## Commands
 
