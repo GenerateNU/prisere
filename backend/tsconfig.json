@@ -5,7 +5,7 @@
     "moduleResolution": "bundler",
     "strict": true,
     "lib": ["ES2022", "DOM"],
-    "types": ["node", "@types/bun", "bun-tyopes"],
+    "types": ["node", "@types/bun", "bun-types"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
     "outDir": "./dist",
@@ -16,5 +16,7 @@
     "forceConsistentCasingInFileNames": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["eslint.config.ts"]
 }

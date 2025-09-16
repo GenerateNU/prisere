@@ -1,11 +1,13 @@
+import "reflect-metadata"
 import { Hono } from "hono";
 import { DataSource } from "typeorm";
 import { newDb, DataType } from 'pg-mem';
 import { runSeeders } from "typeorm-extension";
 import { setUpRoutes } from "../routes";
-import { User } from "../entities/User.js";
+// import { User } from "../entities/User.js";
 import { v4 } from 'uuid';
 import { TestAppData } from "../types/Test";
+import { Company } from "../entities/Company";
 
 const db = newDb({
     autoCreateForeignKeyIndices: true,
@@ -34,7 +36,7 @@ db.public.registerFunction({
 
 const TestDataSource: DataSource = await db.adapters.createTypeormDataSource({
     type: 'postgres',
-    entities: [User],
+    entities: [Company],
 });
 
 export const startTestApp = async (): Promise<TestAppData> => {
