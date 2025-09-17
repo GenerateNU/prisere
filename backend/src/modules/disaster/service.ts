@@ -1,13 +1,12 @@
-import { CreateDisasterDTO } from "../../types/FemaDisaster";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { IDisasterTransaction } from "./transaction";
 import { withServiceErrorHandling } from "../../utilities/error";
+import { CreateDisasterDTO } from "../../types/disaster";
 
 export interface IDisasterService {
     createDisaster(payload: CreateDisasterDTO): Promise<FemaDisaster>;
-    getAllDisasters(): Promise<FemaDisaster[]>
+    getAllDisasters(): Promise<FemaDisaster[]>;
 }
-
 
 export class DisasterService implements IDisasterService {
     private disasterTransaction: IDisasterTransaction;
@@ -20,13 +19,13 @@ export class DisasterService implements IDisasterService {
         const disaster = await this.disasterTransaction.createDisaster({
             ...payload,
         });
-        
+
         return disaster;
     });
 
     getAllDisasters = withServiceErrorHandling(async (): Promise<FemaDisaster[]> => {
         const disasters = await this.disasterTransaction.getAllDisasters();
         console.log(disasters.length);
-        return disasters
-    })
+        return disasters;
+    });
 }
