@@ -11,13 +11,13 @@ export class FemaDisaster {
     @Column()
     state!: number; // why not use the FIPS State code like for county instead of state name?
 
-    @Column({ type: "date" })
+    @Column({ type: "timestamp" })
     declarationDate!: Date;
 
-    @Column({ nullable: true, type: "date" })
+    @Column({ nullable: true, type: "timestamp" })
     startDate?: Date;
 
-    @Column({ nullable: true, type: "date" })
+    @Column({ nullable: true, type: "timestamp" })
     endDate?: Date;
 
     @Column()
