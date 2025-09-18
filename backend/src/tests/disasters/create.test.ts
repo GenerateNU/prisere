@@ -2,7 +2,12 @@ import { afterEach, beforeAll, describe, expect, it } from "bun:test";
 import { Hono } from "hono";
 import { IBackup } from "pg-mem";
 import { startTestApp } from "../setup-tests";
-import { CreateDisasterAPIResponse, CreateDisasterDTO } from "../../types/disaster";
+import {
+    CreateDisasterAPIResponse,
+    CreateDisasterDTO,
+    CreateDisasterDTOSchema,
+    GetAllDisastersResponseSchema
+} from "../../types/disaster";
 import { randomUUIDv7 } from "bun";
 
 describe("Create disasters", () => {
@@ -202,3 +207,107 @@ describe("Create disasters", () => {
         expect(responseBody.error).toContain("Start date must be after or equal to end date");
     });
 });
+
+describe("Create disasters", () => {
+    let app: Hono;
+    let backup: IBackup;
+
+    beforeAll(async () => {
+        const testAppData = await startTestApp();
+        app = testAppData.app;
+        backup = testAppData.backup;
+    });
+
+    afterEach(async () => {
+        backup.restore();
+    });
+
+    it("should return empty array when no disasters in db", async () => {
+        const response = await app.request("/disaster", {
+            method: "GET"
+        });
+
+        expect(response.status).toBe(200);
+        const responseBody = await response.json();
+        expect(Array.isArray(responseBody)).toBe(true);
+        expect(responseBody.length).toBe(0);
+    });
+
+    it("should return an array with all the disasters in db when db not empty", async () => {
+        const now = new Date().toISOString();
+        const constructedObject1 = {
+            femaId: randomUUIDv7(),
+            state: 25,
+            declarationDate: now,
+            declarationType: "FM",
+            designatedIncidentTypes: "Z",
+            designatedArea: "Boston (County)",
+            disasterNumber: 1,
+            fipsCountyCode: 1000,
+            startDate: now,
+            endDate: now,
+        } satisfies CreateDisasterDTO;
+
+        const constructedObject2 = {
+            femaId: randomUUIDv7(),
+            state: 22,
+            declarationDate: now,
+            declarationType: "FM",
+            designatedIncidentTypes: "U",
+            designatedArea: "Suffolk (County)",
+            disasterNumber: 2,
+            fipsCountyCode: 1000,
+            startDate: now,
+            endDate: now,
+        } satisfies CreateDisasterDTO;
+
+        const constructedObject3 = {
+            femaId: randomUUIDv7(),
+            state: 20,
+            declarationDate: now,
+            declarationType: "FM",
+            designatedIncidentTypes: "E",
+            designatedArea: "Suffolk (County)",
+            disasterNumber: 3,
+            fipsCountyCode: 1000,
+            startDate: now,
+            endDate: now,
+        } satisfies CreateDisasterDTO;
+
+        await app.request("/disaster", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(constructedObject1),
+        });
+
+        await app.request("/disaster", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(constructedObject2),
+        });
+
+        await app.request("/disaster", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(constructedObject3),
+        });
+
+        const response = await app.request("/disaster", {
+            method: "GET"
+        });
+        expect(response.status).toBe(200);
+        const responseBody = await response.json();
+        expect(Array.isArray(responseBody)).toBe(true);
+        expect(() => GetAllDisastersResponseSchema.parse(responseBody)).not.toThrow();
+        expect(responseBody.length).toBe(3);
+        expect(responseBody[0]).toEqual(constructedObject1);
+        expect(responseBody[1]).toEqual(constructedObject2);
+        expect(responseBody[2]).toEqual(constructedObject3);
+    });
+} )
