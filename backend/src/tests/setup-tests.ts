@@ -7,7 +7,7 @@ import { User } from "../entities/User.js";
 import { v4 } from "uuid";
 import { TestAppData } from "../types/Test";
 
-const createNewDB = async () : Promise<IMemoryDb> => {
+const createNewDB = async (): Promise<IMemoryDb> => {
     const db = newDb({
         autoCreateForeignKeyIndices: true,
     });
@@ -33,8 +33,8 @@ const createNewDB = async () : Promise<IMemoryDb> => {
         impure: true,
     });
 
-    return db
-}
+    return db;
+};
 
 export const startTestApp = async (): Promise<TestAppData> => {
     const app = new Hono();
