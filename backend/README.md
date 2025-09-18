@@ -49,3 +49,8 @@ Run the linter to automatically fix "fixable" issues (such as spacing):
 ```bash
 bun run lint:fix
 ```
+
+To run the tests:
+```bash
+bun test
+```
