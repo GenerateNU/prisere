@@ -1,0 +1,62 @@
+import { Context, TypedResponse } from "hono";
+import { ILocationAddressService } from "./service";
+import { withControllerErrorHandling } from "../../utilities/error";
+import {
+    CreateLocationAddressAPIResponse,
+    CreateLocationAddressSchema,
+    GetLocationAddressAPIResponse,
+    GetLocationAddressSchema,
+} from "./types";
+
+export interface ILocationAddressController {
+    /**
+     * Will make request to the location address service to create a new location address
+     * @param ctx The Hono Context
+     * @returns The result of the location address creation or an error
+     */
+    createLocationAddress(ctx: Context): Promise<Response | TypedResponse<CreateLocationAddressAPIResponse>>;
+
+    /**
+     * Will make request to the location address service to get an existing location address
+     * @param ctx The Hono Context
+     * @returns The result of the location address fetching or an error
+     */
+    getLocationAddress(ctx: Context): Promise<Response | TypedResponse<GetLocationAddressAPIResponse>>;
+}
+
+// Rename the class to avoid naming conflict
+export class LocationAddressController implements ILocationAddressController {
+    private locationAddressService: ILocationAddressService;
+
+    constructor(service: ILocationAddressService) {
+        this.locationAddressService = service;
+    }
+
+    /**
+     * Will make request to the location address service to create a new location address
+     * @param ctx The Hono Context
+     * @returns The result of the location address creation or an error
+     */
+    getLocationAddress = withControllerErrorHandling(
+        async (ctx: Context): Promise<TypedResponse<GetLocationAddressAPIResponse>> => {
+            const json = await ctx.req.json();
+            const payload = GetLocationAddressSchema.parse(json);
+            const resultingLocationAddress = await this.locationAddressService.getLocationAddress(payload);
+            return ctx.json(resultingLocationAddress, 201);
+        }
+    );
+
+    /**
+     * Will make request to the location address service to get an existing location address
+     * @param ctx The Hono Context
+     * @returns The result of the location address fetching or an error
+     */
+    createLocationAddress = withControllerErrorHandling(
+        async (ctx: Context): Promise<TypedResponse<CreateLocationAddressAPIResponse>> => {
+            const json = await ctx.req.json();
+            const payload = CreateLocationAddressSchema.parse(json);
+            const resultingLocationAddress = await this.locationAddressService.createLocationAddress(payload);
+            return ctx.json(resultingLocationAddress, 201);
+        }
+    );
+}
