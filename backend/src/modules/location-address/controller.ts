@@ -40,6 +40,7 @@ export class LocationAddressController implements ILocationAddressController {
     getLocationAddress = withControllerErrorHandling(
         async (ctx: Context): Promise<TypedResponse<GetLocationAddressAPIResponse>> => {
             const json = await ctx.req.json();
+            console.log("GOT JSON", json);
             const payload = GetLocationAddressSchema.parse(json);
             const resultingLocationAddress = await this.locationAddressService.getLocationAddress(payload);
             return ctx.json(resultingLocationAddress, 201);

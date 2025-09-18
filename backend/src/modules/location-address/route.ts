@@ -15,8 +15,8 @@ export const locationAddressRoute = (db: DataSource): Hono => {
     const locationAddressService: ILocationAddressService = new LocationAddressService(locationAddressTransaction);
     const locationAddressController: ILocationAddressController = new LocationAddressController(locationAddressService);
 
-    locationAddress.post(defaultPath, (ctx) => locationAddressController.createLocationAddress(ctx));
-    locationAddress.get(defaultPath, (ctx) => locationAddressController.getLocationAddress(ctx));
+    locationAddress.post("/", (ctx) => locationAddressController.createLocationAddress(ctx));
+    locationAddress.get("/", (ctx) => locationAddressController.getLocationAddress(ctx));
 
     return locationAddress;
 };

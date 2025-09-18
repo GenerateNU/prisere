@@ -34,13 +34,17 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
      * @returns Promise resolving to inserted LocationAddress or null if failed
      */
     async createLocationAddress(payload: CreateLocationAddressDTO): Promise<LocationAddress | null> {
-        let user: LocationAddress = new LocationAddress();
-        user = {
-            ...user,
+        let address: LocationAddress = new LocationAddress();
+        address = {
+            ...address,
             ...payload,
         };
-        const newAddress: LocationAddress = await this.db.getRepository(LocationAddress).save(user);
 
+        console.log("USER TO SAVE", address);
+
+        const newAddress: LocationAddress = await this.db.getRepository(LocationAddress).save(address);
+
+        console.log("new address", newAddress);
         return newAddress ?? null;
     }
 
