@@ -8,10 +8,9 @@ export interface IUserService {
     createUser(payload: CreateUserDTO): Promise<User>;
 }
 
-
 export class UserService implements UserService {
     private userTransaction: IUserTransaction;
-    
+
     constructor(UserTransaction: IUserTransaction) {
         this.userTransaction = UserTransaction;
     }
@@ -21,8 +20,8 @@ export class UserService implements UserService {
             ...payload,
         });
         if (!user) {
-            throw Boom.internal("Creating User Failed")
-        } 
+            throw Boom.internal("Creating User Failed");
+        }
         return user;
     });
 }
