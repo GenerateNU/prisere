@@ -1,10 +1,11 @@
 import { Context, TypedResponse } from "hono";
 import { IUserService } from "./service";
-import { CreateUserAPIResponse, CreateUserDTOSchema } from "../../types/User";
+import { CreateUserDTOSchema, CreateUserResponse } from "../../types/User";
 import { withControllerErrorHandling } from "../../utilities/error";
+import { ControllerResponse } from "../../utilities/response";
 
 export interface IUserController {
-    createUser(_ctx: Context): Promise<TypedResponse<CreateUserAPIResponse> | Response>;
+    createUser(_ctx: Context): ControllerResponse<TypedResponse<CreateUserResponse, 201>>;
 }
 
 export class UserController implements IUserController {
@@ -14,7 +15,7 @@ export class UserController implements IUserController {
         this.userService = service;
     }
 
-    createUser = withControllerErrorHandling(async (ctx: Context): Promise<TypedResponse<CreateUserAPIResponse>> => {
+    createUser = withControllerErrorHandling(async (ctx: Context) => {
         const json = await ctx.req.json();
         const payload = CreateUserDTOSchema.parse(json);
         const user = await this.userService.createUser(payload);

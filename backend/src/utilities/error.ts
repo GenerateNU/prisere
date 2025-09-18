@@ -1,6 +1,5 @@
 import Boom from "@hapi/boom";
 import { ErrorHandler, Context } from "hono";
-import { ContentfulStatusCode } from "hono/utils/http-status";
 import { HTTPException } from "hono/http-exception";
 import { logMessageToFile, logObjectToFile } from "./logger";
 import { z } from "zod";
@@ -31,14 +30,14 @@ export const withServiceErrorHandling = <T extends any[], R>(handler: (...args: 
 };
 
 export const withControllerErrorHandling = <T extends any[], R>(handler: (ctx: Context, ...args: T) => Promise<R>) => {
-    return async (ctx: Context, ...args: T): Promise<R | Response> => {
+    return async (ctx: Context, ...args: T) => {
         try {
             return await handler(ctx, ...args);
         } catch (error) {
             if (Boom.isBoom(error)) {
                 return ctx.json(
                     { error: error.output.payload.message },
-                    error.output.statusCode as ContentfulStatusCode
+                    error.output.statusCode as 400 // instead of ContentfulErrorCode, we need to bound it to 400 or 500 so the types don't blow up down the road
                 );
             }
             if (error instanceof z.ZodError) {
@@ -105,3 +104,24 @@ const logErrors = (err: Error, c: Context) => {
         `timestamp: ${new Date().toISOString()}`
     );
 };
+
+export function openApiErrorCodes(description: string) {
+    return {
+        400: {
+            content: {
+                "application/json": {
+                    schema: z.object({ error: z.string() }),
+                },
+            },
+            description,
+        },
+        500: {
+            content: {
+                "application/json": {
+                    schema: z.object({ error: z.string() }),
+                },
+            },
+            description,
+        },
+    };
+}
