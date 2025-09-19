@@ -1,4 +1,6 @@
+'use client'
 import { login, signup } from '@/actions/auth'
+
 
 export default function LoginPage() {
   return (
@@ -18,7 +20,7 @@ export default function LoginPage() {
                 name="email" 
                 type="email" 
                 required 
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
               />
             </div>
             <div>
@@ -30,7 +32,7 @@ export default function LoginPage() {
                 name="password" 
                 type="password" 
                 required 
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
               />
             </div>
           </div>
