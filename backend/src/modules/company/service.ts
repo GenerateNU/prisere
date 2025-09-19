@@ -3,7 +3,6 @@ import { Company } from "../../entities/Company";
 import { ICompanyTransaction } from "./transaction";
 import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
-import { CreateUserDTO } from "../../types/User";
 
 export interface ICompanyService {
     createCompany(payload: CreateCompanyDTO): Promise<Company>;
@@ -29,11 +28,9 @@ export class CompanyService implements CompanyService {
 
 
     getCompanyById = withServiceErrorHandling(async (payload: GetCompanyByIdDTO): Promise<Company> => {
-        console.log("Attempting to get company with payload: ", payload);
         const company = await this.companyTransaction.getCompanyById({
           ...payload,
         });
-        console.log("Found company: ", company)
         if (!company) {
           throw Boom.notFound("Company Not Found");
         }
