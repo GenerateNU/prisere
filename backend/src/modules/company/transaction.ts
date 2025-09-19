@@ -1,9 +1,7 @@
 import { Company } from "../../entities/Company";
 import { CreateCompanyDTO, GetCompanyByIdDTO } from "../../types/Company";
-import { DataSource, InsertResult,  } from "typeorm";
-import { plainToClass } from 'class-transformer';
+import { DataSource, InsertResult } from "typeorm";
 import Boom from "@hapi/boom";
-
 
 export interface ICompanyTransaction {
     /**
@@ -33,7 +31,8 @@ export class CompanyTransaction implements ICompanyTransaction {
             payload.lastQuickBooksImportTime = new Date(payload.lastQuickBooksImportTime);
         }
 
-        const result: InsertResult = await this.db.createQueryBuilder()
+        const result: InsertResult = await this.db
+            .createQueryBuilder()
             .insert()
             .into(Company)
             .values(payload)
@@ -41,7 +40,9 @@ export class CompanyTransaction implements ICompanyTransaction {
             .execute();
 
         const rawCompany = result.raw[0];
-        if (!rawCompany) return null;
+        if (!rawCompany) {
+            return null;
+        }
 
         // Convert import time to Date type if needed
         if (rawCompany.lastQuickBooksImportTime && typeof rawCompany.lastQuickBooksImportTime === "string") {
@@ -53,11 +54,12 @@ export class CompanyTransaction implements ICompanyTransaction {
 
     async getCompanyById(payload: GetCompanyByIdDTO): Promise<Company | null> {
         if (typeof payload.id !== "string") {
-            throw new Error("ID must be of type string")
+            throw new Error("ID must be of type string");
         }
 
         try {
-            const result: Company | null = await this.db.createQueryBuilder()
+            const result: Company | null = await this.db
+                .createQueryBuilder()
                 .select("company")
                 .from(Company, "company")
                 .where("company.id = :id", { id: payload.id })
@@ -71,7 +73,7 @@ export class CompanyTransaction implements ICompanyTransaction {
             return result;
         } catch (error) {
             console.log("Transaction error:", error);
-        
+
             // Check if the ID is not in UIUD format
             const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
             if (!uuidRegex.test(payload.id)) {
@@ -82,5 +84,4 @@ export class CompanyTransaction implements ICompanyTransaction {
             // other option is to just rethrow error instead of notFound assumption
         }
     }
-
 }

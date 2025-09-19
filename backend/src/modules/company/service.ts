@@ -24,16 +24,15 @@ export class CompanyService implements CompanyService {
             throw Boom.internal("Creating Company Failed");
         }
         return company;
-    })
-
+    });
 
     getCompanyById = withServiceErrorHandling(async (payload: GetCompanyByIdDTO): Promise<Company> => {
         const company = await this.companyTransaction.getCompanyById({
-          ...payload,
+            ...payload,
         });
         if (!company) {
-          throw Boom.notFound("Company Not Found");
+            throw Boom.notFound("Company Not Found");
         }
         return company;
-    })
+    });
 }
