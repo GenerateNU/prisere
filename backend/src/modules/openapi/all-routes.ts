@@ -15,7 +15,7 @@ export const setUpOpenApiRoutes = (db: DataSource) => {
         },
     });
 
-    openApiApp.get("/docs", swaggerUI({ url: "/openapi/spec.json" }));
+    openApiApp.get("/docs", swaggerUI({ url: "spec.json" }));
     return openApiApp;
 };
 
