@@ -1,4 +1,4 @@
 bun.lock
-/supabase
+supabase
 /node_modules
 .bun-version
