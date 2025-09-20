@@ -12,12 +12,7 @@ const CompanySchema = z.object({
 
 /* Zod schema for POST company */
 export const CreateCompanyDTOSchema = z.object({
-    name: z.string().min(1),
-    // convert string to Date if needed
-    lastQuickBooksImportTime: z.preprocess(
-        (val) => (typeof val === "string" ? new Date(val) : val),
-        z.date().optional()
-    ),
+    name: z.string().min(1)
 });
 
 export const CreateCompanyResponseSchema = CompanySchema;
@@ -34,6 +29,11 @@ export const GetCompanyByIdResponseSchema = CompanySchema;
 
 export const GetCompanyByIdAPIResponseSchema = z.union([GetCompanyByIdResponseSchema, ErrorResponseSchema]);
 
+export const UpdateQuickBooksImportTimeDTOSchema = z.object({
+    companyId: z.string(),
+    importTime: z.date()
+});
+
 /* Zod types for payload validation */
 export type CreateCompanyDTO = z.infer<typeof CreateCompanyDTOSchema>;
 export type CreateCompanyResponse = z.infer<typeof CreateCompanyResponseSchema>;
@@ -42,3 +42,5 @@ export type CreateCompanyAPIResponse = z.infer<typeof CreateCompanyAPIResponseSc
 export type GetCompanyByIdDTO = z.infer<typeof GetCompanyByIdDTOSchema>;
 export type GetCompanyByIdResponse = z.infer<typeof GetCompanyByIdResponseSchema>;
 export type GetCompanyByIdAPIResponse = z.infer<typeof GetCompanyByIdAPIResponseSchema>;
+
+export type UpdateQuickBooksImportTimeDTO = z.infer<typeof UpdateQuickBooksImportTimeDTOSchema>;

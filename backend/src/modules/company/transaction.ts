@@ -1,7 +1,8 @@
 import { Company } from "../../entities/Company";
-import { CreateCompanyDTO, GetCompanyByIdDTO } from "../../types/Company";
+import { CreateCompanyDTO, GetCompanyByIdDTO, UpdateQuickBooksImportTimeDTO } from "../../types/Company";
 import { DataSource, InsertResult } from "typeorm";
 import Boom from "@hapi/boom";
+import { logMessageToFile } from "../../utilities/logger";
 
 export interface ICompanyTransaction {
     /**
@@ -17,6 +18,12 @@ export interface ICompanyTransaction {
      * @returns Promise resolving to fetched Company or null if not found
      */
     getCompanyById(payload: GetCompanyByIdDTO): Promise<Company | null>;
+
+    /**
+     * Updates a company's last quickbooks import time
+     * @param paylaod ID of company import time to update, Last quickbooks import time, Date
+     */
+    updateLastQuickBooksImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company | null>;
 }
 
 export class CompanyTransaction implements ICompanyTransaction {
@@ -27,9 +34,6 @@ export class CompanyTransaction implements ICompanyTransaction {
     }
 
     async createCompany(payload: CreateCompanyDTO): Promise<Company | null> {
-        if (payload.lastQuickBooksImportTime && typeof payload.lastQuickBooksImportTime === "string") {
-            payload.lastQuickBooksImportTime = new Date(payload.lastQuickBooksImportTime);
-        }
 
         const result: InsertResult = await this.db
             .createQueryBuilder()
@@ -42,11 +46,6 @@ export class CompanyTransaction implements ICompanyTransaction {
         const rawCompany = result.raw[0];
         if (!rawCompany) {
             return null;
-        }
-
-        // Convert import time to Date type if needed
-        if (rawCompany.lastQuickBooksImportTime && typeof rawCompany.lastQuickBooksImportTime === "string") {
-            rawCompany.lastQuickBooksImportTime = new Date(rawCompany.lastQuickBooksImportTime);
         }
 
         return rawCompany;
@@ -72,7 +71,7 @@ export class CompanyTransaction implements ICompanyTransaction {
 
             return result;
         } catch (error) {
-            console.log("Transaction error:", error);
+            logMessageToFile(`Transaction error: ${error}`);
 
             // Check if the ID is not in UIUD format
             const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -84,4 +83,27 @@ export class CompanyTransaction implements ICompanyTransaction {
             // other option is to just rethrow error instead of notFound assumption
         }
     }
+
+    async updateLastQuickBooksImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company | null> {
+    const result = await this.db
+        .createQueryBuilder()
+        .update(Company)
+        .set({ lastQuickBooksImportTime: payload.importTime })
+        .where("id = :id", { id: payload.companyId })
+        .returning("*")
+        .execute();
+
+    const updatedCompany = result.raw[0];
+    if (!updatedCompany) {
+        return null;
+    }
+
+    // Ensure the date is a Date object
+    if (updatedCompany.lastQuickBooksImportTime && typeof updatedCompany.lastQuickBooksImportTime === "string") {
+        updatedCompany.lastQuickBooksImportTime = new Date(updatedCompany.lastQuickBooksImportTime);
+    }
+
+    return updatedCompany;
+}
+
 }
