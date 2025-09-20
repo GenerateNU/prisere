@@ -37,13 +37,15 @@ export class CompanyService implements CompanyService {
         return company;
     });
 
-    updateLastQuickBooksImportTime = withServiceErrorHandling(async (payload: UpdateQuickBooksImportTimeDTO): Promise<Company> => {
-        const company = await this.companyTransaction.updateLastQuickBooksImportTime({
-            ...payload
-        })
-        if (!company) {
-            throw Boom.notFound("Company Not Found");
+    updateLastQuickBooksImportTime = withServiceErrorHandling(
+        async (payload: UpdateQuickBooksImportTimeDTO): Promise<Company> => {
+            const company = await this.companyTransaction.updateLastQuickBooksImportTime({
+                ...payload,
+            });
+            if (!company) {
+                throw Boom.notFound("Company Not Found");
+            }
+            return company;
         }
-        return company;
-    })
+    );
 }

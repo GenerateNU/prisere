@@ -89,7 +89,7 @@ const updateCompanyImportTimeRoute = createRoute({
         body: {
             content: {
                 "application/json": {
-                    schema: UpdateQuickBooksImportTimeDTOSchema,
+                    schema: UpdateQuickBooksImportTimeDTOSchema.omit({ companyId: true }),
                 },
             },
         },

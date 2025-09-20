@@ -19,7 +19,7 @@ describe("Example", () => {
 
     test("POST /companies - All Fields Given - String Date 2", async () => {
         const requestBody = {
-            name: "Cool Company"
+            name: "Cool Company",
         };
         const response = await app.request("/companies", {
             method: "POST",
@@ -36,7 +36,7 @@ describe("Example", () => {
 
     test("POST /companies - All Fields Given - String Date 1", async () => {
         const requestBody = {
-            name: "Cool Company"
+            name: "Cool Company",
         };
         const response = await app.request("/companies", {
             method: "POST",
@@ -53,7 +53,7 @@ describe("Example", () => {
 
     test("POST /companies - All Fields Given, Date Object", async () => {
         const requestBody = {
-            name: "Cool Company"
+            name: "Cool Company",
         };
         const response = await app.request("/companies", {
             method: "POST",
