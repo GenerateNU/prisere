@@ -45,7 +45,7 @@ describe("Company - Update lastQuickBooksImportTime", () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ importTime: "not-a-date" }), // <-- use importTime
         });
-        expect(response.status).toBe(500);
+        expect(response.status).toBe(400);
     });
 
     test("PATCH /companies/:id/quickbooks-import-time - Missing date", async () => {
@@ -54,7 +54,7 @@ describe("Company - Update lastQuickBooksImportTime", () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({}),
         });
-        expect(response.status).toBe(500);
+        expect(response.status).toBe(400);
     });
 
     test("PATCH /companies/:id/quickbooks-import-time - Non-existent company", async () => {
