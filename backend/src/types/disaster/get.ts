@@ -11,7 +11,7 @@ export const GetAllDisastersResponseSchema = z.array(
         startDate: z.iso.datetime().optional(),
         endDate: z.iso.datetime().optional(),
         fipsCountyCode: FIPSCounty,
-        declarationType: z.string(),
+        declarationType: z.string().length(2),
         designatedArea: z.string(),
         designatedIncidentTypes: incidentTypeString,
     })

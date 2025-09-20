@@ -3,11 +3,7 @@ import { DataSource } from "typeorm";
 import { CreateDisasterDTO } from "../../types/disaster";
 
 export interface IDisasterTransaction {
-    /**
-     * Adds a new FemaDisaster to the database
-     * @param payload FemaDisaster to be inserted into Database
-     * @returns Promise resolving to inserted FemaDisaster or null if failed
-     */
+
     createDisaster(payload: CreateDisasterDTO): Promise<FemaDisaster>;
 
     getAllDisasters(): Promise<FemaDisaster[]>;
