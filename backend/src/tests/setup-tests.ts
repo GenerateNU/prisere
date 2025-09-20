@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Hono } from "hono";
 import { DataSource } from "typeorm";
 import { newDb, DataType, IMemoryDb } from "pg-mem";
@@ -6,6 +7,7 @@ import { setUpRoutes } from "../routes";
 import { User } from "../entities/User.js";
 import { v4 } from "uuid";
 import { TestAppData } from "../types/Test";
+import { Company } from "../entities/Company";
 
 const createNewDB = async (): Promise<IMemoryDb> => {
     const db = newDb({
@@ -41,7 +43,7 @@ export const startTestApp = async (): Promise<TestAppData> => {
     const db = await createNewDB();
     const TestDataSource: DataSource = await db.adapters.createTypeormDataSource({
         type: "postgres",
-        entities: [User],
+        entities: [User, Company],
     });
 
     await TestDataSource.initialize();
