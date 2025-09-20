@@ -5,6 +5,6 @@ COPY . .
 
 RUN bun install
 
-EXPOSE 3000
+EXPOSE 3001
 
 CMD ["sh", "-c", "echo ${MODE} && if [ \"$MODE\" = \"prod\" ]; then bun run start; else bun run dev; fi"]
