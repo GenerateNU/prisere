@@ -5,7 +5,7 @@
     "moduleResolution": "bundler",
     "strict": true,
     "lib": ["ES2022", "DOM"],
-    "types": ["node", "@types/bun", "bun-types"],
+    "types": ["node", "@types/bun"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
     "outDir": "./dist",
