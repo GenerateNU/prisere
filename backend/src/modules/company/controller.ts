@@ -20,6 +20,10 @@ export class CompanyController implements ICompanyController {
     getCompanyById = withControllerErrorHandling(
         async (ctx: Context): Promise<TypedResponse<GetCompanyByIdAPIResponse>> => {
             const id = ctx.req.param("id");
+            const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+            if (!uuidRegex.test(id)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
             const companyIdResponse = await this.companyService.getCompanyById({ id: id });
             return ctx.json(companyIdResponse, 200);
         }

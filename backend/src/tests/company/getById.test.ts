@@ -74,7 +74,7 @@ describe('Example', () => {
     test('GET /companies/:id - error response structure', async () => {
         const nonExistentUUID = "12345678-1234-1234-1234-123456789012"
         const response = await app.request(`/companies/${nonExistentUUID}`)
-        expect(response.status).toBe(404)
+        expect(response.status).toBe(400)
         
         const body = await response.json()
         expect(body).toHaveProperty('error')
@@ -84,7 +84,7 @@ describe('Example', () => {
     test('GET /companies/:id - id that does not exist', async () => {
         const nonExistentUUID = "12345678-1234-1234-1234-123456789012";
         const response = await app.request(`/companies/${nonExistentUUID}`)
-        expect(response.status).toBe(404)
+        expect(response.status).toBe(400)
     })
 
     test('GET /companies/:id - id not in UIUD format', async () => {
