@@ -1,1 +1,4 @@
-node_modules
+bun.lock
+/supabase
+/node_modules
+.bun-version
