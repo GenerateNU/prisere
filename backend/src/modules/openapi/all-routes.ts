@@ -11,7 +11,7 @@ export const setUpOpenApiRoutes = (db: DataSource) => {
         info: {
             version: "1.0.0",
             title: "Prisere API",
-        }
+        },
     });
 
     openApiApp.get("/docs", swaggerUI({ url: "api/openapi/spec.json" }));
