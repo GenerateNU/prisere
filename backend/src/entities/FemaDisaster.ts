@@ -9,7 +9,7 @@ export class FemaDisaster {
     disasterNumber!: number;
 
     @Column()
-    state!: number; // why not use the FIPS State code like for county instead of state name?
+    state!: number;
 
     @Column({ type: "timestamp" })
     declarationDate!: Date;
@@ -23,16 +23,12 @@ export class FemaDisaster {
     @Column()
     fipsCountyCode!: number;
 
-    // possible additions
-
     @Column()
     declarationType!: string;
 
     @Column()
-    designatedArea!: string; // description for business owners to know where exactly disater happened,
-    // counties are big
+    designatedArea!: string;
 
     @Column()
-    designatedIncidentTypes!: string; // for business owners to identify if the disaster has anything to do
-    // with the expenses they want to reinburse
+    designatedIncidentTypes!: string;
 }

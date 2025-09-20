@@ -25,7 +25,6 @@ export class DisasterService implements IDisasterService {
 
     getAllDisasters = withServiceErrorHandling(async (): Promise<FemaDisaster[]> => {
         const disasters = await this.disasterTransaction.getAllDisasters();
-        console.log(disasters.length);
         return disasters;
     });
 }

@@ -1,6 +1,5 @@
 import z from "zod";
 
-// https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt
 export const FIPSState = z.number().gte(1).lte(56);
 export const FIPSCounty = z.number().gte(1000).lte(56045);
 
@@ -45,7 +44,9 @@ type IncidentCode = keyof typeof INCIDENT_MAPPING;
 const INCIDENT_CODES = Object.keys(INCIDENT_MAPPING) as IncidentCode[];
 
 export const incidentTypeString = z.string().refine((s) => {
-    // the format should be: "[code],[code],[code],..."
+    /**
+     * the format should be: "[code],[code],[code],..."
+     */
     const codes = s.split(",").map((s) => s.trim());
     return codes.length > 0 && codes.every((c) => INCIDENT_CODES.includes(c as IncidentCode));
 });

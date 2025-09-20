@@ -2,9 +2,6 @@ import z from "zod";
 import { FIPSCounty, FIPSState, incidentTypeString } from "./common";
 import { ErrorResponseSchema } from "../Utils";
 
-/**
- * @see https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2
- */
 export const CreateDisasterDTOSchema = z
     .object({
         femaId: z.uuid(),
@@ -38,9 +35,8 @@ export const CreateDisasterResponseSchema = z.object({
     femaId: z.uuid(),
     state: FIPSState,
     declarationDate: z.iso.datetime(),
-    declarationType: z.string(),
+    declarationType: z.string().length(2),
     designatedIncidentTypes: incidentTypeString,
-    // maybe can add more to this success message
 });
 
 export const CreateDisasterAPIResponseSchema = z.union([CreateDisasterResponseSchema, ErrorResponseSchema]);

@@ -40,7 +40,7 @@ const createDisasterRoute = createRoute({
                     schema: CreateDisasterAPIResponseSchema,
                 },
             },
-            description: "Create disaster response",
+            description: "A disaster was created",
         },
     },
     tags: ["Disaster"],
