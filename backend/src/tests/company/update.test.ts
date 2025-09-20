@@ -66,5 +66,4 @@ describe("Company - Update lastQuickBooksImportTime", () => {
         });
         expect(response.status).toBe(500);
     });
-
 });

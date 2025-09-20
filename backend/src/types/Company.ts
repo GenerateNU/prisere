@@ -12,7 +12,7 @@ const CompanySchema = z.object({
 
 /* Zod schema for POST company */
 export const CreateCompanyDTOSchema = z.object({
-    name: z.string().min(1)
+    name: z.string().min(1),
 });
 
 export const CreateCompanyResponseSchema = CompanySchema;
@@ -31,7 +31,7 @@ export const GetCompanyByIdAPIResponseSchema = z.union([GetCompanyByIdResponseSc
 
 export const UpdateQuickBooksImportTimeDTOSchema = z.object({
     companyId: z.string(),
-    importTime: z.date()
+    importTime: z.date(),
 });
 
 /* Zod types for payload validation */
