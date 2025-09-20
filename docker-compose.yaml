@@ -21,6 +21,14 @@ services:
     container_name: backend
     networks:
       - app-network
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      - MODE=${MODE-prod}
+    ports:
+      - "3000:3000"
   
 networks:
   app-network:
