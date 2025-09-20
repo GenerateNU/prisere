@@ -8,6 +8,7 @@ import {
     CreateCompanyDTOSchema,
     GetCompanyByIdAPIResponseSchema,
     GetCompanyByIdDTOSchema,
+    UpdateQuickBooksImportTimeDTOSchema,
 } from "../../types/Company";
 
 export const addOpenApiCompanyRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
@@ -17,6 +18,7 @@ export const addOpenApiCompanyRoutes = (openApi: OpenAPIHono, db: DataSource): O
 
     openApi.openapi(createCompanyRoute, (ctx) => companyController.createCompany(ctx));
     openApi.openapi(getCompanyByIdRoute, (ctx) => companyController.getCompanyById(ctx));
+    openApi.openapi(updateCompanyImportTimeRoute, (ctx) => companyController.updateQuickbooksImportTime(ctx));
     return openApi;
 };
 
@@ -66,6 +68,40 @@ const getCompanyByIdRoute = createRoute({
                 },
             },
             description: "Company fetched successfully",
+        },
+        400: {
+            description: "Bad Request - Invalid input data",
+        },
+        404: {
+            description: "Company not found",
+        },
+    },
+    tags: ["Companies"],
+});
+
+const updateCompanyImportTimeRoute = createRoute({
+    method: "patch",
+    path: "/companies/{id}/import-time",
+    summary: "Update a company's lastQuickBooksImportTime",
+    description: "Updates the lastQuickBooksImportTime for a company by ID",
+    request: {
+        params: GetCompanyByIdDTOSchema,
+        body: {
+            content: {
+                "application/json": {
+                    schema: UpdateQuickBooksImportTimeDTOSchema,
+                },
+            },
+        },
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: CreateCompanyAPIResponseSchema,
+                },
+            },
+            description: "Company updated successfully",
         },
         400: {
             description: "Bad Request - Invalid input data",
