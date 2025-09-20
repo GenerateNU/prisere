@@ -1,3 +1,0 @@
-http://localhost:3000/openapi/docs
-
-
