@@ -6,7 +6,6 @@ import { runSeeders } from "typeorm-extension";
 import { setUpRoutes } from "../routes";
 import { v4 } from "uuid";
 import { TestAppData } from "../types/Test";
-import { Company } from "../entities/Company";
 
 const createNewDB = async (): Promise<IMemoryDb> => {
     const db = newDb({
