@@ -2,6 +2,7 @@ import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { DataSource } from "typeorm";
 import { addOpenApiUserRoutes } from "./user-route";
+import { addOpenApiDisasterRoutes } from "./disaster-routes";
 import { addOpenApiCompanyRoutes } from "./company-routes";
 
 export const setUpOpenApiRoutes = (db: DataSource) => {
@@ -24,6 +25,7 @@ const openApiRoutes = (db: DataSource): OpenAPIHono => {
 
     addOpenApiUserRoutes(openApi, db);
     addOpenApiCompanyRoutes(openApi, db);
+    addOpenApiDisasterRoutes(openApi, db);
 
     return openApi;
 };
