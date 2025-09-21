@@ -2,12 +2,7 @@ import { afterEach, beforeAll, describe, expect, it } from "bun:test";
 import { Hono } from "hono";
 import { IBackup } from "pg-mem";
 import { startTestApp } from "../setup-tests";
-import {
-    CreateDisasterAPIResponse,
-    CreateDisasterDTO,
-    CreateDisasterDTOSchema,
-    GetAllDisastersResponseSchema
-} from "../../types/disaster";
+import { CreateDisasterAPIResponse, CreateDisasterDTO, GetAllDisastersResponseSchema } from "../../types/disaster";
 import { randomUUIDv7 } from "bun";
 
 describe("Create disasters", () => {
@@ -224,7 +219,7 @@ describe("Create disasters", () => {
 
     it("should return empty array when no disasters in db", async () => {
         const response = await app.request("/disaster", {
-            method: "GET"
+            method: "GET",
         });
 
         expect(response.status).toBe(200);
@@ -299,7 +294,7 @@ describe("Create disasters", () => {
         });
 
         const response = await app.request("/disaster", {
-            method: "GET"
+            method: "GET",
         });
         expect(response.status).toBe(200);
         const responseBody = await response.json();
@@ -310,4 +305,4 @@ describe("Create disasters", () => {
         expect(responseBody[1]).toEqual(constructedObject2);
         expect(responseBody[2]).toEqual(constructedObject3);
     });
-} )
+});
