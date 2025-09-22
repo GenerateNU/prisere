@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-import { Company } from "./Company.js";
+import type { Company } from "./Company";
 
 @Entity("user")
 export class User {
@@ -15,7 +15,7 @@ export class User {
     @Column({ nullable: true })
     email?: string;
 
-    @ManyToOne(() => Company, { nullable: true })
+    @ManyToOne("Company", (company: Company) => company.users, { nullable: true })
     @JoinColumn({ name: "companyId" })
     company?: Company;
 
