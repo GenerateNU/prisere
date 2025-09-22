@@ -6,6 +6,7 @@ import { locationAddressRoute } from "./modules/location-address/route";
 import { companyRoutes } from "./modules/company/route";
 import { disasterRoutes } from "./modules/disaster/route";
 import { disasterNotificationRoutes } from "./modules/disasterNotifications/route";
+import { quickbooksRoutes } from "./modules/quickbooks/routes";
 import { invoiceRoutes } from "./modules/invoice/route";
 
 export const setUpRoutes = (app: Hono, db: DataSource) => {
@@ -15,5 +16,6 @@ export const setUpRoutes = (app: Hono, db: DataSource) => {
     app.route("/openapi", setUpOpenApiRoutes(db));
     app.route("/disaster", disasterRoutes(db));
     app.route("/disasterNotification", disasterNotificationRoutes(db));
+    app.route("/quickbooks", quickbooksRoutes(db));
     app.route("/quickbooks/invoice", invoiceRoutes(db));
 };
