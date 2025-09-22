@@ -71,7 +71,7 @@ const getLocationAddressRoute = createRoute({
         },
     },
     responses: {
-        201: {
+        200: {
             content: {
                 "application/json": {
                     schema: GetLocationAddressAPIResponseSchema,
@@ -79,13 +79,14 @@ const getLocationAddressRoute = createRoute({
             },
             description: "Finds the associated location address for the given information",
         },
+        400: {
+            description: "The given ID was omitted or is not a well formed UUID",
+        },
+        404: {
+            description: "The given UUID does not have an associated location address in the database",
+        },
         500: {
-            content: {
-                "application/json": {
-                    schema: GetLocationAddressAPIResponseSchema,
-                },
-            },
-            description: "Unable to find the location with the given id",
+            description: "There was an internal issue with finding the location address with the provided id",
         },
     },
     tags: ["Location Address"],
