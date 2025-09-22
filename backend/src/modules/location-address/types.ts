@@ -18,7 +18,7 @@ export const CreateLocationAddressSchema = z.object({
     stateProvince: z.string().nonempty(),
     city: z.string().nonempty(),
     streetAddress: z.string().nonempty(),
-    postalCode: z.number(),
+    postalCode: z.number().positive(),
     county: z.string().nonempty().optional(),
 });
 

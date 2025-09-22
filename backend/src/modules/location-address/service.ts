@@ -57,8 +57,9 @@ export class LocationAddressService implements ILocationAddressService {
         const locationAddress = await this.locationAddressTransaction.getLocationAddressById(payload);
 
         if (!locationAddress) {
-            throw Boom.internal(`Failed to fetch a location address from the given payload: ${payload}`);
+            throw Boom.notFound(`Failed to fetch a location address from the given payload: ${payload}`);
         }
+
         return locationAddress;
     });
 }

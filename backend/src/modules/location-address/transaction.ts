@@ -40,11 +40,8 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
             ...payload,
         };
 
-        console.log("USER TO SAVE", address);
-
         const newAddress: LocationAddress = await this.db.getRepository(LocationAddress).save(address);
 
-        console.log("new address", newAddress);
         return newAddress ?? null;
     }
 

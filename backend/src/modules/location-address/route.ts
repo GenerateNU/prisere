@@ -9,14 +9,13 @@ import { ILocationAddressController, LocationAddressController } from "./control
  */
 export const locationAddressRoute = (db: DataSource): Hono => {
     const locationAddress = new Hono();
-    const defaultPath = `/location-address`;
 
     const locationAddressTransaction: ILocationAddressTransaction = new LocationAddressTransactions(db);
     const locationAddressService: ILocationAddressService = new LocationAddressService(locationAddressTransaction);
     const locationAddressController: ILocationAddressController = new LocationAddressController(locationAddressService);
 
     locationAddress.post("/", (ctx) => locationAddressController.createLocationAddress(ctx));
-    locationAddress.get("/", (ctx) => locationAddressController.getLocationAddress(ctx));
+    locationAddress.get("/:id", (ctx) => locationAddressController.getLocationAddress(ctx));
 
     return locationAddress;
 };
