@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import type { CompanyExternal } from "./CompanyExternals";
+import type { User } from "./User";
 
 @Entity()
 export class Company {
@@ -10,4 +12,10 @@ export class Company {
 
     @Column({ type: "timestamptz", nullable: true })
     lastQuickBooksImportTime?: Date;
+
+    @OneToMany("CompanyExternal", (external: CompanyExternal) => external.company)
+    externals!: CompanyExternal[];
+
+    @OneToMany("User", (user: User) => user.company)
+    users!: User[];
 }
