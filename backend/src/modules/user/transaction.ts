@@ -1,7 +1,14 @@
 import { User } from "../../entities/User";
-import { CreateUserDTO } from "../../types/User";
-import { DataSource, InsertResult } from "typeorm";
+import { DataSource } from "typeorm";
 import { plainToClass } from "class-transformer";
+import {
+    GetUserDTO,
+    CreateUserDTO,
+    GetUserCompanyAPIResponse,
+    GetUserCompanyDTO,
+    GetUserCompanyResponse,
+} from "./types";
+import { Company } from "../../entities/Company";
 
 export interface IUserTransaction {
     /**
@@ -10,6 +17,20 @@ export interface IUserTransaction {
      * @returns Promise resolving to inserted User or null if failed
      */
     createUser(payload: CreateUserDTO): Promise<User | null>;
+
+    /**
+     * Fetches the user with the given id
+     * @param payload The id of the user to be fetched
+     * @returns The found User of the given id or null if it DNE
+     */
+    getUser(payload: GetUserDTO): Promise<User | null>;
+
+    /**
+     * Fetches the comapny associated with the given User id
+     * @param payload The id of the user whose company data will be returned
+     * @returns The found comapny ID and name
+     */
+    getCompany(payload: GetUserCompanyDTO): Promise<GetUserCompanyResponse | null>;
 }
 
 export class UserTransaction implements IUserTransaction {
@@ -21,13 +42,24 @@ export class UserTransaction implements IUserTransaction {
 
     async createUser(payload: CreateUserDTO): Promise<User | null> {
         const user: User = plainToClass(User, payload);
-        const result: InsertResult = await this.db
-            .createQueryBuilder()
-            .insert()
-            .into(User)
-            .values(user)
-            .returning("*")
-            .execute();
-        return result.raw[0] ?? null;
+        const result: User = await this.db.manager.save(User, user);
+        return result ?? null;
+    }
+
+    async getUser(payload: GetUserDTO): Promise<User | null> {
+        const { id: givenId } = payload;
+        const result: User | null = await this.db.manager.findOne(User, { where: { id: givenId } });
+        return result;
+    }
+
+    async getCompany(payload: GetUserCompanyDTO): Promise<GetUserCompanyResponse | null> {
+        const { id: givenId } = payload;
+        const result = await this.db.manager.findOne(User, {
+            select: { company: true },
+            where: { id: givenId },
+            relations: { company: true },
+        });
+        //Check to make sure that the User entity and its associated company were found
+        return result && result.company ? { companyId: result.company.id, companyName: result.company.name } : null;
     }
 }

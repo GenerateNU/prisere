@@ -12,5 +12,6 @@ export const userRoutes = (db: DataSource): Hono => {
     const userController: IUserController = new UserController(userService);
 
     user.post("/", (ctx) => userController.createUser(ctx));
+    user.get("/:id", (ctx) => userController.getUser(ctx));
     return user;
 };
