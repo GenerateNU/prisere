@@ -1,5 +1,6 @@
 import { Context, TypedResponse } from "hono";
 import { IQuickbooksService } from "./service";
+import { RedirectEndpointParams } from "../../types/Quickbooks";
 
 export interface IQuickbooksController {
     redirectToAuthorization(ctx: Context): Promise<TypedResponse<undefined, 302>>;
@@ -8,14 +9,11 @@ export interface IQuickbooksController {
     ): Promise<TypedResponse<{ success: true }, 200> | TypedResponse<{ error: string }, 400>>;
 }
 
-// TODO: test disconnect flow. opens about:blank tab on disconnect from browser interface?
-
 export class QuickbooksController implements IQuickbooksController {
     constructor(private service: IQuickbooksService) {}
 
     async redirectToAuthorization(ctx: Context) {
-        // TODO: how are we doing auth right now
-        // const url = await this.service.generateAuthUrl({ userId: "" });
+        // TODO: how are we doing auth? we need to get this userId in the Context I think
         const url = await this.service.generateAuthUrl({ userId: "086c8b52-69bc-411c-8346-30857fd2138d" });
 
         return ctx.redirect(url);
@@ -23,29 +21,24 @@ export class QuickbooksController implements IQuickbooksController {
 
     async generateSession(ctx: Context) {
         // TODO: what to do when "no" selected on permissions?
+        const params = RedirectEndpointParams.parse(ctx.req.query());
 
-        const code = ctx.req.query("code");
-        const state = ctx.req.query("state");
-        const realmId = ctx.req.query("realmId");
+        if ("error" in params) {
+            await this.service.consumeOAuthState({ state: params.state });
 
-        if (!code) {
-            return ctx.json({ error: "missing code query param" }, 400);
+            return ctx.json({ error: "Did not approve" }, 400);
         }
 
-        if (!state) {
-            return ctx.json({ error: "missing state query param" }, 400);
-        }
-
-        if (!realmId) {
-            return ctx.json({ error: "missing realm id" }, 400);
-        }
-
-        const _session = await this.service.createQuickbooksSession({
-            code,
-            state,
-            realmId,
-        });
+        const _session = await this.service.createQuickbooksSession(params);
 
         return ctx.json({ success: true }, 200);
+    }
+
+    async _queryExample(ctx: Context) {
+        // TODO: how are we doing auth? we need to get this userId in the Context I think
+        // @ts-expect-error this example is not listed on the public interface
+        const data = await this.service._queryExample({ userId: "086c8b52-69bc-411c-8346-30857fd2138d" });
+
+        return ctx.json(data);
     }
 }

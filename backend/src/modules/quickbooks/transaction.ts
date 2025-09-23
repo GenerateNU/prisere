@@ -16,6 +16,10 @@ export interface IQuickbooksTransaction {
         refreshExpiryTimestamp: Date;
         companyId: string;
     }): Promise<QuickbooksSession>;
+    getSessionForUser(args: {
+        userId: string;
+    }): Promise<{ session: QuickbooksSession | null; externalId: string | undefined }>;
+    destroyQuickbooksSession(args: { externalId: string }): Promise<void>;
 }
 
 export class QuickbooksTransaction implements IQuickbooksTransaction {
@@ -109,10 +113,49 @@ export class QuickbooksTransaction implements IQuickbooksTransaction {
                     skipUpdateIfNoValuesChanged: true,
                 }
             )
-            .printSql()
             .returning("*")
             .execute();
 
         return res.raw[0] as QuickbooksSession;
+    }
+
+    async getSessionForUser({ userId }: { userId: string }) {
+        const session = await this.db
+            .getRepository(QuickbooksSession)
+            .createQueryBuilder("qs")
+            .innerJoinAndSelect("qs.company", "c")
+            .innerJoinAndSelect("c.externals", "e", "e.source = :source", {
+                source: "quickbooks" satisfies CompanyExternalSource,
+            })
+            .innerJoin("c.users", "u")
+            .where("u.id = :userId", { userId })
+            .getOne();
+
+        return { session, externalId: session?.company?.externals[0]?.externalId };
+    }
+
+    async destroyQuickbooksSession({ externalId }: { externalId: string }) {
+        const external = await this.db.getRepository(CompanyExternal).findOneBy({
+            externalId,
+            source: "quickbooks",
+        });
+
+        if (!external) {
+            return;
+        }
+
+        const session = await this.db.getRepository(QuickbooksSession).findOneBy({
+            companyId: external.companyId,
+        });
+
+        await Promise.allSettled([
+            this.db.getRepository(CompanyExternal).delete({
+                id: external.id,
+            }),
+            this.db.getRepository(QuickbooksSession).delete({
+                accessToken: session?.accessToken,
+                companyId: external?.companyId,
+            }),
+        ]);
     }
 }

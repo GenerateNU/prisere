@@ -12,26 +12,19 @@ export function quickbooksRoutes(db: DataSource) {
     const client = new QuickbooksClient({
         clientId: process.env.QUICKBOOKS_CLIENT_ID!,
         clientSecret: process.env.QUICKBOOKS_CLIENT_SECRET!,
-        enviornment: "sandbox", // TODO: dev vs. prod
-        redirectUri: "http://localhost:3001/quickbooks/redirect", // TODO: dev vs. prod, TODO: get a real frontend page to redirect to?
+        environment: "sandbox", // TODO: dev vs. prod
     });
 
     const service = new QuickbooksService(transaction, client);
     const controller = new QuickbooksController(service);
 
     router.get("/", (ctx) => controller.redirectToAuthorization(ctx));
-    router.get("/redirect", async (ctx) => {
+    router.get("/redirect", async (ctx) =>
         // TODO: do a zod validator here? or in controller
-        /* 
-        queryParams: {
-  code: [ "XAB11758485059iDGHLvhMCYLvAwk6Rw6oKLPYhqIzcf2Wxylh" ],
-  state: [ "cqNl4IXn-GLDNrovM-GPwsGA-QstopRmIqho" ],
-  realmId: [ "9341455368035451" ],
-}
-        */
+        controller.generateSession(ctx)
+    );
 
-        return controller.generateSession(ctx);
-    });
+    router.get("/example", (ctx) => controller._queryExample(ctx));
 
     return router;
 }
