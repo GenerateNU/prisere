@@ -3,7 +3,7 @@ import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { GetUserResponseSchema } from "../../modules/user/types";
-import isIdWellFormed from "../../utilities/isIdWellFormed";
+import { validate } from "uuid";
 
 describe("GET /users/:id", () => {
     let app: Hono;
@@ -166,12 +166,12 @@ describe("GET /users/:id", () => {
 
         // Test valid UUIDs
         validUUIDs.forEach((uuid) => {
-            expect(isIdWellFormed(uuid)).toBe(true);
+            expect(validate(uuid)).toBe(true);
         });
 
         // Test invalid UUIDs
         invalidUUIDs.forEach((uuid) => {
-            expect(isIdWellFormed(uuid)).toBe(false);
+            expect(validate(uuid)).toBe(false);
         });
     });
 

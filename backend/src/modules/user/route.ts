@@ -13,5 +13,6 @@ export const userRoutes = (db: DataSource): Hono => {
 
     user.post("/", (ctx) => userController.createUser(ctx));
     user.get("/:id", (ctx) => userController.getUser(ctx));
+    user.get("/:id/company", (ctx) => userController.getCompany(ctx));
     return user;
 };

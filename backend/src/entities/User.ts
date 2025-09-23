@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Relation } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { Company } from "./Company.js";
 
 @Entity("user")
@@ -17,7 +17,7 @@ export class User {
 
     @ManyToOne(() => Company, { nullable: true })
     @JoinColumn({ name: "companyId" })
-    company?: Relation<Company>;
+    company?: Company;
 
     @Column({ nullable: true })
     companyId?: string;

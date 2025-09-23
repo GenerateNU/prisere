@@ -1,8 +1,8 @@
 import { Context, TypedResponse } from "hono";
 import { IUserService } from "./service";
 import { withControllerErrorHandling } from "../../utilities/error";
-import isIdWellFormed from "../../utilities/isIdWellFormed";
 import { GetUserAPIResponse, CreateUserAPIResponse, CreateUserDTOSchema, GetUserCompanyAPIResponse } from "./types";
+import { validate } from "uuid";
 
 export interface IUserController {
     createUser(_ctx: Context): Promise<TypedResponse<CreateUserAPIResponse> | Response>;
@@ -27,7 +27,7 @@ export class UserController implements IUserController {
     getUser = withControllerErrorHandling(async (ctx: Context): Promise<TypedResponse<GetUserAPIResponse>> => {
         const maybeId = await ctx.req.param("id");
 
-        if (!isIdWellFormed(maybeId)) {
+        if (!validate(maybeId)) {
             return ctx.json({ error: "The given ID must be well formed and present to get a User." }, 400);
         }
 
@@ -39,7 +39,7 @@ export class UserController implements IUserController {
         async (ctx: Context): Promise<TypedResponse<GetUserCompanyAPIResponse>> => {
             const maybeId = await ctx.req.param("id");
 
-            if (!isIdWellFormed(maybeId)) {
+            if (!validate(maybeId)) {
                 return ctx.json(
                     { error: "The given ID must be well formed and present to get the company of a user." },
                     400

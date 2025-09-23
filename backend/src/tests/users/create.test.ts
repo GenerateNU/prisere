@@ -3,12 +3,13 @@ import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { CreateUserResponseSchema } from "../../modules/user/types";
-import isIdWellFormed from "../../utilities/isIdWellFormed";
+import { validate } from "uuid";
 
 const resetZahra = () => ({
     firstName: "Zahra",
     lastName: "Wibisana",
     email: "zahra.w@gmail.com",
+    comapnyId: null,
 });
 
 describe("POST users/", () => {
@@ -42,8 +43,9 @@ describe("POST users/", () => {
             firstName: requestBody.firstName,
             lastName: requestBody.lastName,
             email: requestBody.email,
+            companyId: null,
         });
-        expect(isIdWellFormed(validatedResponse.id)).toBe(true);
+        expect(validate(validatedResponse.id)).toBe(true);
     });
 
     test("test that emails are optinal when creating a user", async () => {
@@ -63,7 +65,38 @@ describe("POST users/", () => {
             lastName: requestBody.lastName,
             email: null,
         });
-        expect(isIdWellFormed(responseData.id)).toBe(true);
+        expect(validate(responseData.id)).toBe(true);
+    });
+
+    test("test that company ID is saved", async () => {
+        const companyResponse = await app.request("/companies", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name: "Josh & Co." }),
+        });
+
+        const newCompanyId = (await companyResponse.json()).id;
+        (requestBody as unknown as { companyId: string }).companyId = newCompanyId;
+
+        const userResponse = await app.request("/users", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+        expect(userResponse.status).toBe(201);
+        const responseData = await userResponse.json();
+
+        expect(responseData).toMatchObject({
+            firstName: requestBody.firstName,
+            lastName: requestBody.lastName,
+            email: null,
+            companyId: newCompanyId,
+        });
+        expect(validate(responseData.id)).toBe(true);
     });
 
     test("test that first names are not optional when creating a user", async () => {

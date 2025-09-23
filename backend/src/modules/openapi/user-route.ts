@@ -4,6 +4,9 @@ import {
     CreateUserAPIResponseSchema,
     CreateUserDTOSchema,
     GetUserAPIResponseSchema,
+    GetUserComapnyAPIResponseSchema as GetUserCompanyAPIResponseSchema,
+    GetUserComapnyDTOSchema as GetUserCompanyDTOSchema,
+    GetUserCompanyResponseSchema,
     GetUserDTOSchema,
 } from "../user/types";
 import { UserController } from "../user/controller";
@@ -17,6 +20,7 @@ export const addOpenApiUserRoutes = (openApi: OpenAPIHono, db: DataSource): Open
 
     openApi.openapi(createUserRoute, (ctx) => userController.createUser(ctx));
     openApi.openapi(getUserRoute, (ctx) => userController.getUser(ctx));
+    openApi.openapi(getUserCompanyRoute, (ctx) => userController.getCompany(ctx));
     return openApi;
 };
 
@@ -75,6 +79,41 @@ const getUserRoute = createRoute({
         },
         404: {
             description: "There does not exist any user in the database such that the given id matches their id",
+        },
+    },
+
+    tags: ["Users"],
+});
+
+const getUserCompanyRoute = createRoute({
+    method: "get",
+    path: "/users/:id/company",
+    summary: "Fetches a user's associated company by the given user ID",
+    description: "Finds the user's comapny with the given user's ID in the database",
+    request: {
+        body: {
+            content: {
+                "application/json": {
+                    schema: GetUserCompanyDTOSchema,
+                },
+            },
+        },
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetUserCompanyAPIResponseSchema,
+                },
+            },
+            description: "Successfull fetch of a user's company from the databse",
+        },
+        400: {
+            description: "The given id is not a well formed UUID",
+        },
+        404: {
+            description:
+                "There does not exist any user in the database such that the given id matches their id OR there is no such user with the given ID that has a non-null company",
         },
     },
 

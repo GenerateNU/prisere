@@ -1,14 +1,7 @@
 import { User } from "../../entities/User";
 import { DataSource } from "typeorm";
 import { plainToClass } from "class-transformer";
-import {
-    GetUserDTO,
-    CreateUserDTO,
-    GetUserCompanyAPIResponse,
-    GetUserCompanyDTO,
-    GetUserCompanyResponse,
-} from "./types";
-import { Company } from "../../entities/Company";
+import { GetUserDTO, CreateUserDTO, GetUserCompanyDTO, GetUserCompanyResponse } from "./types";
 
 export interface IUserTransaction {
     /**
