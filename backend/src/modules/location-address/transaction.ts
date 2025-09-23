@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
 import { LocationAddress } from "../../entities/LocationAddress";
 import { CreateLocationAddressDTO, GetLocationAddressDTO } from "./types";
+import { plainToClass } from "class-transformer";
 
 export interface ILocationAddressTransaction {
     /**
@@ -34,11 +35,7 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
      * @returns Promise resolving to inserted LocationAddress or null if failed
      */
     async createLocationAddress(payload: CreateLocationAddressDTO): Promise<LocationAddress | null> {
-        let address: LocationAddress = new LocationAddress();
-        address = {
-            ...address,
-            ...payload,
-        };
+        let address: LocationAddress = plainToClass(LocationAddress, payload);
 
         const newAddress: LocationAddress = await this.db.getRepository(LocationAddress).save(address);
 
