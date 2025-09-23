@@ -1,4 +1,6 @@
 import "reflect-metadata";
+import "../dayjs.config";
+
 import { Hono } from "hono";
 import { DataSource } from "typeorm";
 import { newDb, DataType, IMemoryDb } from "pg-mem";

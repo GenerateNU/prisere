@@ -1,6 +1,15 @@
 import Csrf from "csrf";
 import { btoa } from "buffer";
 import { fetch } from "bun";
+import {
+    QBAuthenticationErrorResponse,
+    QBOAuthTokenResponse,
+    QBQueryResponse,
+    QBSuccessfulQueryResponse,
+} from "./types";
+
+const PROD_BASE_URL = "https://quickbooks.api.intuit.com";
+const SANDBOX_BASE_URL = "https://sandbox-quickbooks.api.intuit.com";
 
 export class QuickbooksClient {
     private static readonly SCOPES = {
@@ -18,10 +27,10 @@ export class QuickbooksClient {
     };
 
     // generate authorization for getting token
-    private static readonly authorizationEndpoint = "https://appcenter.intuit.com/connect/oauth2";
+    private static readonly AUTHORIZATION_ENDPOINT = "https://appcenter.intuit.com/connect/oauth2";
 
     // generate/refresh access tokens
-    private static readonly tokenEndpoint = "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer";
+    private static readonly TOKEN_ENDPOINT = "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer";
 
     // sandbox
     // https://developer.api.intuit.com/.well-known/openid_sandbox_configuration
@@ -32,28 +41,34 @@ export class QuickbooksClient {
     private state = new Csrf();
     private clientId: string;
     private clientSecret: string;
-    private enviornment: "sandbox" | "production";
+    private environment: "sandbox" | "production";
     private redirectUri: string;
 
     private authHeaderToken: string;
+    private BASE_URL: string;
 
     constructor({
         clientId,
         clientSecret,
-        enviornment,
-        redirectUri,
+        environment,
     }: {
         clientId: string;
         clientSecret: string;
-        enviornment: "sandbox" | "production";
-        redirectUri: string;
+        environment: "sandbox" | "production";
     }) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
-        this.enviornment = enviornment;
-        this.redirectUri = redirectUri;
+        this.environment = environment;
 
         this.authHeaderToken = btoa(`${this.clientId}:${this.clientSecret}`);
+        this.BASE_URL = environment === "production" ? PROD_BASE_URL : SANDBOX_BASE_URL;
+        this.redirectUri =
+            environment === "production"
+                ? // TODO: get a real redirect for prod
+                  ""
+                : // TODO: finalize if this is the real route we want to redirect to, I think we need a better frontend page or something,
+                  // maybe we redirect from the server after going here?
+                  "http://localhost:3001/quickbooks/redirect";
     }
 
     public generateUrl({ scopes }: { scopes: (keyof typeof QuickbooksClient.SCOPES)[] }) {
@@ -69,14 +84,13 @@ export class QuickbooksClient {
             state,
         });
 
-        const url = `${QuickbooksClient.authorizationEndpoint}?${params.toString()}`;
-        console.log("auth url", url);
+        const url = `${QuickbooksClient.AUTHORIZATION_ENDPOINT}?${params.toString()}`;
 
         return { url, state };
     }
 
     public async generateToken({ code }: { code: string }) {
-        const response = await fetch(QuickbooksClient.tokenEndpoint, {
+        const response = await fetch(QuickbooksClient.TOKEN_ENDPOINT, {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -89,13 +103,13 @@ export class QuickbooksClient {
                 code,
                 redirect_uri: this.redirectUri,
             }),
-        }).then((res) => res.json() as unknown as OauthTokenResponse);
+        }).then((res) => res.json() as unknown as QBOAuthTokenResponse);
 
         return response;
     }
 
     public async refreshToken({ refreshToken }: { refreshToken: string }) {
-        const response = await fetch(QuickbooksClient.tokenEndpoint, {
+        const response = await fetch(QuickbooksClient.TOKEN_ENDPOINT, {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -107,19 +121,54 @@ export class QuickbooksClient {
                 grant_type: "refresh_token",
                 refresh_token: refreshToken,
             }),
-        }).then((res) => res.json() as unknown as OauthTokenResponse);
+        }).then((res) => res.json() as unknown as QBOAuthTokenResponse);
 
         return response;
     }
 
-    // TODO: when making requests, always update the refresh_token to the latest thing returned by the server
-    // https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/faq
-}
+    async _exampleQueryData({
+        qbRealm,
+        accessToken,
+    }: {
+        qbRealm: string;
+        accessToken: string;
+    }): Promise<QBQueryResponse<unknown>> {
+        const params = new URLSearchParams({
+            // [FUTURE]: This query string is changed out based on what we are requestign (sort of like SQL)
+            // We might want to create a query builder or something down the road
+            query: "select * from bill maxresults 2",
+            minorVersion: "75",
+        });
 
-type OauthTokenResponse = {
-    expires_in: number;
-    x_refresh_token_expires_in: number;
-    refresh_token: string;
-    access_token: string;
-    token_type: "bearer";
-};
+        const url = `${this.BASE_URL}/v3/company/${qbRealm}/query?${params}`;
+
+        const response = await fetch(url, {
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${accessToken}`,
+            },
+        }).then(async (res): Promise<QBQueryResponse<unknown>> => {
+            if (res.status === 401) {
+                const response = (await res.json()) as unknown as QBAuthenticationErrorResponse;
+
+                if (response.fault.error[0].detail === "Token revoked") {
+                    return { _id: "revoked" };
+                }
+
+                return { _id: "unauthorized" };
+            }
+
+            return { _id: "valid", data: (await res.json()) as any };
+        });
+
+        if (response._id === "valid") {
+            return {
+                _id: "valid",
+                // [FUTURE]: once we start querying data, this can be cleaned up
+                data: response.data as QBSuccessfulQueryResponse<unknown>["data"],
+            };
+        }
+
+        return response;
+    }
+}
