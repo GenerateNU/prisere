@@ -35,8 +35,7 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
      * @returns Promise resolving to inserted LocationAddress or null if failed
      */
     async createLocationAddress(payload: CreateLocationAddressDTO): Promise<LocationAddress | null> {
-        let address: LocationAddress = plainToClass(LocationAddress, payload);
-
+        const address: LocationAddress = plainToClass(LocationAddress, payload);
         const newAddress: LocationAddress = await this.db.getRepository(LocationAddress).save(address);
 
         return newAddress ?? null;
