@@ -8,7 +8,7 @@ import {
     UpdateQuickBooksImportTimeDTOSchema,
 } from "../../types/Company";
 import { logMessageToFile } from "../../utilities/logger";
-import isIdWellFormed from "../../utilities/isIdWellFormed";
+import { validate } from "uuid";
 
 export interface ICompanyController {
     getCompanyById(_ctx: Context): Promise<TypedResponse<GetCompanyByIdAPIResponse> | Response>;
@@ -26,7 +26,7 @@ export class CompanyController implements ICompanyController {
     getCompanyById = withControllerErrorHandling(
         async (ctx: Context): Promise<TypedResponse<GetCompanyByIdAPIResponse>> => {
             const id = ctx.req.param("id");
-            if (!isIdWellFormed(id)) {
+            if (!validate(id)) {
                 return ctx.json({ error: "Invalid company ID format" }, 400);
             }
             const companyIdResponse = await this.companyService.getCompanyById({ id: id });
