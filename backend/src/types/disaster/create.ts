@@ -1,16 +1,16 @@
 import z from "zod";
-import { FIPSCounty, FIPSState, incidentTypeString } from "./common";
+import { FIPSState, incidentTypeString } from "./common";
 import { ErrorResponseSchema } from "../Utils";
 
 export const CreateDisasterDTOSchema = z
     .object({
-        femaId: z.uuid(),
+        femaId: z.string(),
         disasterNumber: z.number(),
-        state: FIPSState,
+        state: z.coerce.number(),
         declarationDate: z.iso.datetime(),
         startDate: z.iso.datetime().optional(),
         endDate: z.iso.datetime().optional(),
-        fipsCountyCode: FIPSCounty,
+        fipsCountyCode: z.coerce.number(),
         /**
          * 2 character code for emergency declaration: major disaster, fire management, or emergency declaration
          */

@@ -310,4 +310,60 @@ describe("Create disasters", () => {
         expect(responseBody[1]).toEqual(constructedObject2);
         expect(responseBody[2]).toEqual(constructedObject3);
     });
+
+    it("should overwrite the current disaster if there is a duplicate", async () => {
+        const now = new Date().toISOString();
+        const femaId = randomUUIDv7();
+        const constructedObject1 = {
+            femaId: femaId,
+            state: 25,
+            declarationDate: now,
+            declarationType: "FM",
+            designatedIncidentTypes: "Z",
+            designatedArea: "Boston (County)",
+            disasterNumber: 1,
+            fipsCountyCode: 1000,
+            startDate: now,
+            endDate: now,
+        } satisfies CreateDisasterDTO;
+
+        const constructedObject2 = {
+            femaId: femaId,
+            state: 22,
+            declarationDate: now,
+            declarationType: "FM",
+            designatedIncidentTypes: "U",
+            designatedArea: "Suffolk (County)",
+            disasterNumber: 2,
+            fipsCountyCode: 1000,
+            startDate: now,
+            endDate: now,
+        } satisfies CreateDisasterDTO;
+
+        await app.request("/disaster", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(constructedObject1),
+        });
+
+        await app.request("/disaster", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(constructedObject2),
+        });
+
+        const response = await app.request("/disaster", {
+            method: "GET"
+        });
+        expect(response.status).toBe(200);
+        const responseBody = await response.json();
+        expect(Array.isArray(responseBody)).toBe(true);
+        expect(() => GetAllDisastersResponseSchema.parse(responseBody)).not.toThrow();
+        expect(responseBody.length).toBe(1);
+        expect(responseBody[0]).toEqual(constructedObject2);
+    });
 } )

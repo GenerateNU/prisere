@@ -5,6 +5,7 @@ import { AppDataSource } from "./typeorm-config";
 import { setUpRoutes } from "./routes";
 import { errorHandler } from "./utilities/error";
 import { logMessageToFile } from "./utilities/logger";
+import { FemaService } from "./modules/clients/fema-client/service";
 
 const app = new Hono();
 
@@ -21,6 +22,8 @@ const app = new Hono();
         app.onError(errorHandler);
 
         setUpRoutes(app, AppDataSource);
+
+        new FemaService(AppDataSource).fetchFemaDisasters({ lastRefreshDate: new Date("2025-09-01") });
 
         console.log("Connected to Postgres!");
     } catch (err) {
