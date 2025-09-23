@@ -2,7 +2,7 @@ import { Context, TypedResponse } from "hono";
 import { ILocationAddressService } from "./service";
 import { withControllerErrorHandling } from "../../utilities/error";
 import { CreateLocationAddressAPIResponse, CreateLocationAddressSchema, GetLocationAddressAPIResponse } from "./types";
-import isIdWellFormed from "../../utilities/isIdWellFormed";
+import { validate } from "uuid";
 
 export interface ILocationAddressController {
     /**
@@ -37,7 +37,7 @@ export class LocationAddressController implements ILocationAddressController {
         async (ctx: Context): Promise<TypedResponse<GetLocationAddressAPIResponse>> => {
             const maybeId = await ctx.req.param("id");
 
-            if (!isIdWellFormed(maybeId)) {
+            if (!validate(maybeId)) {
                 return ctx.json({ error: "An ID must be provided to get a location address" }, 400);
             }
             const resultingLocationAddress = await this.locationAddressService.getLocationAddress({

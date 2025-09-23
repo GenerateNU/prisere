@@ -3,7 +3,7 @@ import { CreateCompanyDTO, GetCompanyByIdDTO, UpdateQuickBooksImportTimeDTO } fr
 import { DataSource, InsertResult } from "typeorm";
 import Boom from "@hapi/boom";
 import { logMessageToFile } from "../../utilities/logger";
-import isIdWellFormed from "../../utilities/isIdWellFormed";
+import { validate } from "uuid";
 
 export interface ICompanyTransaction {
     /**
@@ -74,7 +74,7 @@ export class CompanyTransaction implements ICompanyTransaction {
             logMessageToFile(`Transaction error: ${error}`);
 
             // Check if the ID is not in UIUD format
-            if (!isIdWellFormed(payload.id)) {
+            if (!validate(payload.id)) {
                 throw Boom.badRequest("Invalid UUID format");
             } else {
                 throw Boom.notFound("Company Not Found");
