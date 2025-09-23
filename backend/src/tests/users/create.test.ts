@@ -15,7 +15,7 @@ const resetZahra = () => ({
 describe("POST users/", () => {
     let app: Hono;
     let backup: IBackup;
-    let requestBody = resetZahra();
+    const requestBody = resetZahra();
 
     beforeAll(async () => {
         const testAppData = await startTestApp();

@@ -344,20 +344,6 @@ describe("GET /users/:id/company", () => {
         expect(errorData).toHaveProperty("error");
     });
 
-    test("should handle company that exists in user reference but not in companies table", async () => {
-        // This is an edge case where data integrity might be compromised
-        // You might need to seed this scenario directly in the database
-
-        const nonExistentCompanyId = "550e8400-e29b-41d4-a716-446655440000";
-
-        // This test might require direct database manipulation to create
-        // a user with a companyId reference that doesn't exist in companies table
-        // The exact implementation depends on your data seeding capabilities
-
-        // For now, we'll skip this test if direct DB manipulation isn't available
-        // expect().skip(); // Uncomment if you can't seed this scenario
-    });
-
     test("should return appropriate headers", async () => {
         // Create company and user
         const createCompanyResponse = await app.request("/companies", {

@@ -6,7 +6,6 @@ import {
     GetUserAPIResponseSchema,
     GetUserComapnyAPIResponseSchema as GetUserCompanyAPIResponseSchema,
     GetUserComapnyDTOSchema as GetUserCompanyDTOSchema,
-    GetUserCompanyResponseSchema,
     GetUserDTOSchema,
 } from "../user/types";
 import { UserController } from "../user/controller";
