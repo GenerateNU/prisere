@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import type { Company } from "./Company";
 
 export const COMPANY_EXTERNAL_SOURCES = ["quickbooks"] as const;
@@ -18,7 +18,12 @@ export class CompanyExternal {
     @Column()
     companyId!: string;
 
-    // avoiding circular imports
     @ManyToOne("Company", (company: Company) => company.externals)
     company!: Company;
+
+    @CreateDateColumn()
+    createdAt!: Date;
+
+    @UpdateDateColumn()
+    updatedAt!: Date;
 }

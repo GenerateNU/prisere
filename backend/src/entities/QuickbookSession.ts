@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryColumn, UpdateDateColumn } from "typeorm";
 import type { Company } from "./Company";
 
 @Entity()
@@ -21,4 +21,10 @@ export class QuickbooksSession {
     @OneToOne("Company", { onUpdate: "CASCADE", onDelete: "CASCADE", nullable: false })
     @JoinColumn()
     company!: Company;
+
+    @CreateDateColumn()
+    createdAt!: Date;
+
+    @UpdateDateColumn()
+    updatedAt!: Date;
 }
