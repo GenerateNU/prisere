@@ -3,7 +3,7 @@ import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 
-describe("Example", () => {
+describe("GET /comapnies/:id", () => {
     let app: Hono;
     let backup: IBackup;
 
