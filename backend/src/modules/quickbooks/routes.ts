@@ -19,10 +19,7 @@ export function quickbooksRoutes(db: DataSource) {
     const controller = new QuickbooksController(service);
 
     router.get("/", (ctx) => controller.redirectToAuthorization(ctx));
-    router.get("/redirect", async (ctx) =>
-        // TODO: do a zod validator here? or in controller
-        controller.generateSession(ctx)
-    );
+    router.get("/redirect", async (ctx) => controller.generateSession(ctx));
 
     router.get("/example", (ctx) => controller._queryExample(ctx));
 
