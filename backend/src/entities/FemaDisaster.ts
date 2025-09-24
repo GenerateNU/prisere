@@ -3,13 +3,13 @@ import { Entity, Column, PrimaryColumn } from "typeorm";
 @Entity()
 export class FemaDisaster {
     @PrimaryColumn()
-    femaId!: string;
+    id!: string;
 
     @Column()
     disasterNumber!: number;
 
     @Column()
-    state!: number;
+    fipsStateCode!: number;
 
     @Column({ type: "timestamp" })
     declarationDate!: Date;

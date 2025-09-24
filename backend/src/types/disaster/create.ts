@@ -4,9 +4,9 @@ import { ErrorResponseSchema } from "../Utils";
 
 export const CreateDisasterDTOSchema = z
     .object({
-        femaId: z.string(),
+        id: z.string(),
         disasterNumber: z.number(),
-        state: z.coerce.number(),
+        fipsStateCode: z.coerce.number(),
         declarationDate: z.iso.datetime(),
         startDate: z.iso.datetime().optional(),
         endDate: z.iso.datetime().optional(),

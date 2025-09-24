@@ -5,9 +5,17 @@ import { AppDataSource } from "./typeorm-config";
 import { setUpRoutes } from "./routes";
 import { errorHandler } from "./utilities/error";
 import { logMessageToFile } from "./utilities/logger";
-import { FemaService } from "./modules/clients/fema-client/service";
+import { IFemaService, FemaService } from "./modules/clients/fema-client/service";
+import { FemaFetching } from "./utilities/cron_job_handler";
 
 const app = new Hono();
+
+const preloadFemaDisasters= async (femaService: IFemaService) => {
+    const threeMonths = new Date();
+    threeMonths.setMonth(threeMonths.getMonth() - 3);
+    console.log();
+    femaService.fetchFemaDisasters({lastRefreshDate: threeMonths});
+}
 
 (async function setUpServer() {
     try {
@@ -23,13 +31,19 @@ const app = new Hono();
 
         setUpRoutes(app, AppDataSource);
 
-        new FemaService(AppDataSource).fetchFemaDisasters({ lastRefreshDate: new Date("2025-09-01") });
+
+        // this is for fetching fema disasters, first the three month backlog
+        const femaService = new FemaService(AppDataSource);
+        await preloadFemaDisasters(femaService);
+        // then initialize cron job
+        const cronJob = new FemaFetching(femaService);
+        cronJob.initializeCron();
 
         console.log("Connected to Postgres!");
     } catch (err) {
         console.log("Error starting app", err);
     }
-})();
+});
 
 const server = {
     port: 3000,
