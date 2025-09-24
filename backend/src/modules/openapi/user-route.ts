@@ -5,7 +5,7 @@ import {
     CreateUserDTOSchema,
     GetUserAPIResponseSchema,
     GetUserComapnyAPIResponseSchema as GetUserCompanyAPIResponseSchema,
-    GetUserComapnyDTOSchema as GetUserCompanyDTOSchema,
+    GetUserComapnyDTOSchema,
     GetUserDTOSchema,
 } from "../user/types";
 import { UserController } from "../user/controller";
@@ -84,7 +84,7 @@ const getUserCompanyRoute = createRoute({
     summary: "Fetches a user's associated company by the given user ID",
     description: "Finds the user's comapny with the given user's ID in the database",
     request: {
-        params: GetUserDTOSchema,
+        params: GetUserComapnyDTOSchema,
     },
     responses: {
         200: {
