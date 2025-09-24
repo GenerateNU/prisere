@@ -8,18 +8,18 @@ import {
     GetUserComapnyDTOSchema,
     GetUserDTOSchema,
 } from "../user/types";
-import { UserController } from "../user/controller";
+import { IUserController, UserController } from "../user/controller";
 import { IUserService, UserService } from "../user/service";
 import { IUserTransaction, UserTransaction } from "../user/transaction";
 
 export const addOpenApiUserRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const userTransaction: IUserTransaction = new UserTransaction(db);
     const userService: IUserService = new UserService(userTransaction);
-    const userController: UserController = new UserController(userService);
+    const userController: IUserController = new UserController(userService);
 
     openApi.openapi(createUserRoute, (ctx) => userController.createUser(ctx));
-    openApi.openapi(getUserRoute, (ctx) => userController.getUser(ctx));
-    openApi.openapi(getUserCompanyRoute, (ctx) => userController.getCompany(ctx));
+    //openApi.openapi(getUserCompanyRoute, (ctx) => userController.getCompany(ctx));
+    //openApi.openapi(getUserRoute, (ctx) => userController.getUser(ctx));
     return openApi;
 };
 
@@ -50,7 +50,7 @@ const createUserRoute = createRoute({
     tags: ["Users"],
 });
 
-const getUserRoute = createRoute({
+const _getUserRoute = createRoute({
     method: "get",
     path: "/users/:id",
     summary: "Fetches a user by the given ID",
@@ -78,7 +78,7 @@ const getUserRoute = createRoute({
     tags: ["Users"],
 });
 
-const getUserCompanyRoute = createRoute({
+const _getUserCompanyRoute = createRoute({
     method: "get",
     path: "/users/:id/company",
     summary: "Fetches a user's associated company by the given user ID",
