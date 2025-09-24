@@ -15,21 +15,20 @@ export class FemaService implements IFemaService {
         this.db = db;
     }
 
-    fetchFemaDisasters = async ( { lastRefreshDate } : { lastRefreshDate: Date }) => {
+    fetchFemaDisasters= async ( { lastRefreshDate } : { lastRefreshDate: Date }) => {
         const femaApi = "https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries"
         const threeMonthsAgo = new Date();
         threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+        
+            const response = await fetch(femaApi + `?$filter=declarationDate ge ${threeMonthsAgo.toISOString()} and lastRefresh gt ${lastRefreshDate.toISOString()}`);
+            const { DisasterDeclarationsSummaries } = await response.json();
+            const disasterTransaction = new DisasterTransaction(this.db);
+            const disasterArray = [];
+            for (const disaster of DisasterDeclarationsSummaries) {
+                const parsedDisaster = CreateDisasterDTOSchema.parse(disaster);
+                const disasterEntity = await disasterTransaction.createDisaster(parsedDisaster);
+            }
 
-        const response = await fetch(femaApi + `?$filter=declarationDate ge ${threeMonthsAgo.toISOString()} and lastRefresh gt ${lastRefreshDate.toISOString()}`);
-        const { DisasterDeclarationsSummaries } = await response.json();
-
-        const disasterTransaction = new DisasterTransaction(this.db);
-        const disasterArray = [];
-        for (const disaster of DisasterDeclarationsSummaries) {
-            const parsedDisaster = CreateDisasterDTOSchema.parse(disaster);
-            const disasterEntity = await disasterTransaction.createDisaster(parsedDisaster);
-        }
-
-    }
+    };
 }
 

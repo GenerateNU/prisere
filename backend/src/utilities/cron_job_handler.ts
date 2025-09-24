@@ -19,7 +19,6 @@ export class FemaFetching implements CronJobHander {
         return CronJob.from({
             cronTime: '10 * * * *',
             onTick: async function() {
-                console.log("disasters fetched")
                 await femaService.fetchFemaDisasters({ lastRefreshDate: new Date() });
             },
             start: true,

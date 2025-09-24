@@ -10,12 +10,12 @@ import { FemaFetching } from "./utilities/cron_job_handler";
 
 const app = new Hono();
 
-const preloadFemaDisasters= async (femaService: IFemaService) => {
+async function preloadDisasters(femaService: IFemaService){
     const threeMonths = new Date();
     threeMonths.setMonth(threeMonths.getMonth() - 3);
-    console.log();
-    femaService.fetchFemaDisasters({lastRefreshDate: threeMonths});
+    await femaService.fetchFemaDisasters({lastRefreshDate : threeMonths})
 }
+
 
 (async function setUpServer() {
     try {
@@ -30,20 +30,18 @@ const preloadFemaDisasters= async (femaService: IFemaService) => {
         app.onError(errorHandler);
 
         setUpRoutes(app, AppDataSource);
-
-
-        // this is for fetching fema disasters, first the three month backlog
+        
+        
         const femaService = new FemaService(AppDataSource);
-        await preloadFemaDisasters(femaService);
-        // then initialize cron job
+        await preloadDisasters(femaService);
         const cronJob = new FemaFetching(femaService);
         cronJob.initializeCron();
-
+        
         console.log("Connected to Postgres!");
     } catch (err) {
         console.log("Error starting app", err);
     }
-});
+})();
 
 const server = {
     port: 3000,
