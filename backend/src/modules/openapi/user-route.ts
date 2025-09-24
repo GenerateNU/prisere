@@ -8,18 +8,18 @@ import {
     GetUserComapnyDTOSchema,
     GetUserDTOSchema,
 } from "../user/types";
-import { UserController } from "../user/controller";
+import { IUserController, UserController } from "../user/controller";
 import { IUserService, UserService } from "../user/service";
 import { IUserTransaction, UserTransaction } from "../user/transaction";
 
 export const addOpenApiUserRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const userTransaction: IUserTransaction = new UserTransaction(db);
     const userService: IUserService = new UserService(userTransaction);
-    const userController: UserController = new UserController(userService);
+    const userController: IUserController = new UserController(userService);
 
     openApi.openapi(createUserRoute, (ctx) => userController.createUser(ctx));
-    openApi.openapi(getUserRoute, (ctx) => userController.getUser(ctx));
-    openApi.openapi(getUserCompanyRoute, (ctx) => userController.getCompany(ctx));
+    //openApi.openapi(getUserCompanyRoute, (ctx) => userController.getCompany(ctx));
+    //openApi.openapi(getUserRoute, (ctx) => userController.getUser(ctx));
     return openApi;
 };
 
