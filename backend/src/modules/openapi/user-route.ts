@@ -56,13 +56,7 @@ const getUserRoute = createRoute({
     summary: "Fetches a user by the given ID",
     description: "Finds the user with the given ID in the database",
     request: {
-        body: {
-            content: {
-                "application/json": {
-                    schema: GetUserDTOSchema,
-                },
-            },
-        },
+        params: GetUserDTOSchema,
     },
     responses: {
         200: {
@@ -90,13 +84,7 @@ const getUserCompanyRoute = createRoute({
     summary: "Fetches a user's associated company by the given user ID",
     description: "Finds the user's comapny with the given user's ID in the database",
     request: {
-        body: {
-            content: {
-                "application/json": {
-                    schema: GetUserCompanyDTOSchema,
-                },
-            },
-        },
+        params: GetUserDTOSchema,
     },
     responses: {
         200: {
@@ -105,7 +93,7 @@ const getUserCompanyRoute = createRoute({
                     schema: GetUserCompanyAPIResponseSchema,
                 },
             },
-            description: "Successfull fetch of a user's company from the databse",
+            description: "Successfull fetch of a user's company from the database",
         },
         400: {
             description: "The given id is not a well formed UUID",
