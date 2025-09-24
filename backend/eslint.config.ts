@@ -12,7 +12,7 @@ export default defineConfig([
             parserOptions: {
                 ecmaVersion: "latest",
                 sourceType: "module",
-                project: "../tsconfig.json",
+                project: "./tsconfig.json",
             },
             globals: {
                 console: "readonly",
@@ -45,6 +45,7 @@ export default defineConfig([
             "no-var": "error",
             eqeqeq: ["error", "always"],
             curly: ["error", "all"],
+            "no-undef": "off", // not needed, we have TS to tell us what's undefined
         },
     },
     {
