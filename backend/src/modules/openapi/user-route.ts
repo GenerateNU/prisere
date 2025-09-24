@@ -50,7 +50,7 @@ const createUserRoute = createRoute({
     tags: ["Users"],
 });
 
-const getUserRoute = createRoute({
+const _getUserRoute = createRoute({
     method: "get",
     path: "/users/:id",
     summary: "Fetches a user by the given ID",
@@ -78,7 +78,7 @@ const getUserRoute = createRoute({
     tags: ["Users"],
 });
 
-const getUserCompanyRoute = createRoute({
+const _getUserCompanyRoute = createRoute({
     method: "get",
     path: "/users/:id/company",
     summary: "Fetches a user's associated company by the given user ID",
