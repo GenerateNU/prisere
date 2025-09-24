@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from "typeorm";
 import type { User } from "./User";
 
 /**
@@ -18,4 +18,10 @@ export class QuickbooksPendingOAuth {
 
     @Column({ type: "timestamptz", nullable: true })
     consumedAt!: Date | null;
+
+    @CreateDateColumn()
+    createdAt!: Date;
+
+    @UpdateDateColumn()
+    updatedAt!: Date;
 }
