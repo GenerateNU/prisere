@@ -62,7 +62,13 @@ const getLocationAddressRoute = createRoute({
     summary: "Gets an address for some location of a company",
     description: "Creates a new location address with the provided information",
     request: {
-        params: GetLocationAddressSchema,
+        body: {
+            content: {
+                "application/json": {
+                    schema: GetLocationAddressSchema,
+                },
+            },
+        },
     },
     responses: {
         200: {

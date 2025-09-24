@@ -1,7 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-import { Company } from "./Company.js";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity("user")
+@Entity()
 export class User {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
@@ -14,11 +13,4 @@ export class User {
 
     @Column({ nullable: true })
     email?: string;
-
-    @ManyToOne(() => Company, { nullable: true })
-    @JoinColumn({ name: "companyId" })
-    company?: Company;
-
-    @Column({ nullable: true })
-    companyId?: string;
 }

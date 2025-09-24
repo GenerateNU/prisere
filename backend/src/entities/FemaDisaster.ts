@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryColumn } from "typeorm";
 
-@Entity("fema_disaster")
+@Entity()
 export class FemaDisaster {
     @PrimaryColumn()
     femaId!: string;
