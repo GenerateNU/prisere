@@ -43,10 +43,19 @@ type IncidentCode = keyof typeof INCIDENT_MAPPING;
 
 const INCIDENT_CODES = Object.keys(INCIDENT_MAPPING) as IncidentCode[];
 
-export const incidentTypeString = z.string().refine((s) => {
+export const LABEL_TO_CODE: Record<string, IncidentCode> = Object.fromEntries(
+    Object.entries(INCIDENT_MAPPING).map(([code, label]) => [
+        label,
+        code as IncidentCode
+    ])
+)
+
+export const incidentTypeString = z.string().nullable().refine((s) => {
     /**
      * the format should be: "[code],[code],[code],..."
+     * or null as it will not be null when merged with incidentType field
      */
+    if (s === null) return true;
     const codes = s.split(",").map((s) => s.trim());
     return codes.length > 0 && codes.every((c) => INCIDENT_CODES.includes(c as IncidentCode));
 });

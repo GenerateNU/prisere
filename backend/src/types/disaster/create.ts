@@ -1,5 +1,5 @@
 import z from "zod";
-import { FIPSState, incidentTypeString } from "./common";
+import { FIPSState, incidentTypeString, LABEL_TO_CODE } from "./common";
 import { ErrorResponseSchema } from "../Utils";
 
 export const CreateDisasterDTOSchema = z
@@ -20,6 +20,7 @@ export const CreateDisasterDTOSchema = z
          */
         designatedArea: z.string(),
         designatedIncidentTypes: incidentTypeString,
+        incidentType: z.string(),
     })
     .superRefine(({ startDate, endDate }, ctx) => {
         if (startDate && endDate && startDate > endDate) {
@@ -29,6 +30,20 @@ export const CreateDisasterDTOSchema = z
             });
             return z.NEVER;
         }
+    })
+    .transform(({ designatedIncidentTypes, incidentType, ...rest }) => {
+        const incidentTypeCode = LABEL_TO_CODE[incidentType];
+
+        // designated incident types might be null, so turn it to empty string if null
+        const currentCodes = (designatedIncidentTypes ?? "")
+            .split(",").map((s) => s.trim())
+            .filter((s) => s.trim() !== "")
+
+        const mergedIncidentTypes = Array.from(new Set([...currentCodes, incidentTypeCode])).join(",");
+        return {
+            ...rest,
+            designatedIncidentTypes : mergedIncidentTypes,
+        };
     });
 
 export const CreateDisasterResponseSchema = z.object({
