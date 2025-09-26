@@ -127,7 +127,7 @@ export class QuickbooksTransaction implements IQuickbooksTransaction {
             .innerJoinAndSelect("c.externals", "e", "e.source = :source", {
                 source: "quickbooks" satisfies CompanyExternalSource,
             })
-            .innerJoin("c.users", "u")
+            .innerJoin("c.user", "u")
             .where("u.id = :userId", { userId })
             .getOne();
 
