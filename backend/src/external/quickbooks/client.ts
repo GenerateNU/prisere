@@ -15,15 +15,6 @@ export class QuickbooksClient {
     private static readonly SCOPES = {
         accounting: "com.intuit.quickbooks.accounting",
         payment: "com.intuit.quickbooks.payment",
-        payroll: "com.intuit.quickbooks.payroll",
-        timeTracking: "com.intuit.quickbooks.payroll.timetracking",
-        benefits: "com.intuit.quickbooks.payroll.benefits",
-        profile: "profile",
-        email: "email",
-        phone: "phone",
-        address: "address",
-        openId: "openid",
-        intuitName: "intuit_name",
     };
 
     // generate authorization for getting token
@@ -130,6 +121,11 @@ export class QuickbooksClient {
         qbRealm,
         accessToken,
     }: {
+        /**
+         * The QuickBooks realm is the externalId of the company's QuickBooks company.
+         *
+         * QuickBooks calls this a "realm", it's just an ID
+         */
         qbRealm: string;
         accessToken: string;
     }): Promise<QBQueryResponse<unknown>> {

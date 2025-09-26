@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    OneToMany,
+    CreateDateColumn,
+    UpdateDateColumn,
+    OneToOne,
+} from "typeorm";
 import type { CompanyExternal } from "./CompanyExternals";
 import type { User } from "./User";
 
@@ -16,8 +24,8 @@ export class Company {
     @OneToMany("CompanyExternal", (external: CompanyExternal) => external.company)
     externals!: CompanyExternal[];
 
-    @OneToMany("User", (user: User) => user.company)
-    users!: User[];
+    @OneToOne("User", (user: User) => user.company)
+    user!: User;
 
     @CreateDateColumn()
     createdAt!: Date;
