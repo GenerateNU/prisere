@@ -45,6 +45,7 @@ export default defineConfig([
             "no-var": "error",
             eqeqeq: ["error", "always"],
             curly: ["error", "all"],
+            "no-undef": "off", // not needed, we have TS to tell us what's undefined
         },
     },
     {
