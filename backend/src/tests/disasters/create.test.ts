@@ -7,7 +7,6 @@ import {
     CreateDisasterDTO,
     CreateDisasterDTOInput,
     GetAllDisastersResponseSchema,
-    GetAllDisastersAPIResponse,
     CreateDisasterResponseSchema,
 } from "../../types/disaster";
 import { randomUUIDv7 } from "bun";

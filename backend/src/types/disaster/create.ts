@@ -1,5 +1,5 @@
 import z from "zod";
-import { FIPSState, incidentTypeString, LABEL_TO_CODE, FIPSCounty } from "./common";
+import { FIPSState, incidentTypeString, LABEL_TO_CODE } from "./common";
 import { ErrorResponseSchema } from "../Utils";
 
 export const CreateDisasterDTOInputSchema = z

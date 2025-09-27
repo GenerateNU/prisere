@@ -15,7 +15,7 @@ export class FemaFetching implements CronJobHander {
 
     initializeCron(): CronJob {
         const femaService = this.femaService;
-        let lastRefreshDate = new Date();
+        const lastRefreshDate = new Date();
         lastRefreshDate.setDate(lastRefreshDate.getDate() - 1);
         return CronJob.from({
             cronTime: '10 * * * *',

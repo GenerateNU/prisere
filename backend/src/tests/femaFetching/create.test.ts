@@ -72,7 +72,7 @@ describe("Test Fetching Disasters", () => {
         const disastersAfter = GetAllDisastersResponseSchema.parse(responseBodyAfter);
 
         expect(disasters.length).toEqual(disastersAfter.length);
-        let ids: string[] = [];
+        const ids: string[] = [];
         for (let i = 0, n = disasters.length; i < n; i++) {
             expect(ids.includes(disastersAfter[i].id)).toBeFalse();
             expect(disasters[i].id).toEqual(disastersAfter[i].id);

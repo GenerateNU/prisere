@@ -1,5 +1,4 @@
 import { DataSource } from "typeorm";
-import { withServiceErrorHandling } from "../../../utilities/error";
 import { DisasterTransaction } from "../../disaster/transaction";
 import { CreateDisasterDTOSchema } from "../../../types/disaster";
 import { FemaFetching } from "../../../utilities/cron_job_handler";
