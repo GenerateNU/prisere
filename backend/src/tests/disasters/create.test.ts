@@ -86,8 +86,8 @@ describe("Create disasters", () => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(constructedObject)});
-        expect(response.status).toBe(201);
-        // expect((await response.json()).error).toContain("expected number to be <=56");
+
+        expect((await response.json()).error).toContain("expected number to be <=56");
     });
 
     it("should not accept an invalid county number", async () => {
@@ -110,8 +110,8 @@ describe("Create disasters", () => {
                 incidentType: "Other",
             } satisfies CreateDisasterDTOInput),
         });
-        expect(response.status).toBe(201);
-        // expect((await response.json()).error).toContain("expected number to be <=56045");
+
+        expect((await response.json()).error).toContain("expected number to be <=1000");
     });
 
     it("should not accept an invalid set of incident codes", async () => {

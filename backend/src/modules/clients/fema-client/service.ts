@@ -2,6 +2,7 @@ import { DataSource } from "typeorm";
 import { withServiceErrorHandling } from "../../../utilities/error";
 import { DisasterTransaction } from "../../disaster/transaction";
 import { CreateDisasterDTOSchema } from "../../../types/disaster";
+import { FemaFetching } from "../../../utilities/cron_job_handler";
 
 export interface IFemaService {
     fetchFemaDisasters({ lastRefreshDate } : { lastRefreshDate: Date }): Promise<void>;
@@ -20,15 +21,26 @@ export class FemaService implements IFemaService {
         const threeMonthsAgo = new Date();
         threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
         
-            const response = await fetch(femaApi + `?$filter=declarationDate ge ${threeMonthsAgo.toISOString()} and lastRefresh gt ${lastRefreshDate.toISOString()}`);
-            const { DisasterDeclarationsSummaries } = await response.json();
-            const disasterTransaction = new DisasterTransaction(this.db);
-            const disasterArray = [];
-            for (const disaster of DisasterDeclarationsSummaries) {
-                const parsedDisaster = CreateDisasterDTOSchema.parse(disaster);
-                const disasterEntity = await disasterTransaction.createDisaster(parsedDisaster);
-            }
-
+        const response = await fetch(femaApi + `?$filter=declarationDate ge ${threeMonthsAgo.toISOString()} and lastRefresh gt ${lastRefreshDate.toISOString()}`);
+        const { DisasterDeclarationsSummaries } = await response.json();
+        const disasterTransaction = new DisasterTransaction(this.db);
+        for (const disaster of DisasterDeclarationsSummaries) {
+            const parsedDisaster = CreateDisasterDTOSchema.parse(disaster);
+            await disasterTransaction.createDisaster(parsedDisaster);
+        }
     };
+
+    public static async initializeFemaService(dataSource: DataSource): Promise<FemaFetching> {
+        const femaService = new FemaService(dataSource);
+        await femaService.preloadDisasters();
+        return new FemaFetching(femaService);
+    }
+
+
+    async preloadDisasters(){
+        const threeMonths = new Date();
+        threeMonths.setMonth(threeMonths.getMonth() - 3);
+        await this.fetchFemaDisasters({lastRefreshDate : threeMonths})
+    }
 }
 

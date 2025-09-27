@@ -10,12 +10,6 @@ import { FemaFetching } from "./utilities/cron_job_handler";
 
 const app = new Hono();
 
-async function preloadDisasters(femaService: IFemaService){
-    const threeMonths = new Date();
-    threeMonths.setMonth(threeMonths.getMonth() - 3);
-    await femaService.fetchFemaDisasters({lastRefreshDate : threeMonths})
-}
-
 
 (async function setUpServer() {
     try {
@@ -30,12 +24,9 @@ async function preloadDisasters(femaService: IFemaService){
         app.onError(errorHandler);
 
         setUpRoutes(app, AppDataSource);
-        
-        
-        const femaService = new FemaService(AppDataSource);
-        await preloadDisasters(femaService);
-        const cronJob = new FemaFetching(femaService);
-        cronJob.initializeCron();
+
+        const femaService =  await FemaService.initializeFemaService(AppDataSource);
+        femaService.initializeCron();
         
         console.log("Connected to Postgres!");
     } catch (err) {

@@ -6,11 +6,11 @@ export const CreateDisasterDTOInputSchema = z
     .object({
         id: z.string(),
         disasterNumber: z.number(),
-        fipsStateCode: z.coerce.number(),
+        fipsStateCode: z.coerce.number().gte(0).lte(56),
         declarationDate: z.iso.datetime(),
-        incidentBeginDate: z.iso.datetime().optional(),
-        incidentEndDate: z.iso.datetime().optional(),
-        fipsCountyCode: z.coerce.number(),
+        incidentBeginDate: z.iso.datetime().nullable(),
+        incidentEndDate: z.iso.datetime().nullable(),
+        fipsCountyCode: z.coerce.number().gte(0).lte(1000),
         /**
          * 2 character code for emergency declaration: major disaster, fire management, or emergency declaration
          */
@@ -33,7 +33,7 @@ export const CreateDisasterDTOSchema = CreateDisasterDTOInputSchema
             return z.NEVER;
         }
     })
-    .transform(({ designatedIncidentTypes, incidentType, fipsStateCode, fipsCountyCode, ...rest }) => {
+    .transform(({ designatedIncidentTypes, incidentType, ...rest }) => {
         const incidentTypeCode = LABEL_TO_CODE[incidentType];
 
         // designated incident types might be null, so turn it to empty string if null
@@ -45,8 +45,6 @@ export const CreateDisasterDTOSchema = CreateDisasterDTOInputSchema
         return {
             ...rest,
             designatedIncidentTypes : mergedIncidentTypes,
-            fipsCountyCode: fipsCountyCode, //.parse(fipsCountyCode),
-            fipsStateCode: fipsStateCode, //FIPSState.parse(fipsStateCode),
         };
     });
 
