@@ -8,6 +8,7 @@ import {
     CreateDisasterDTOInput,
     GetAllDisastersResponseSchema,
     GetAllDisastersAPIResponse,
+    CreateDisasterResponseSchema,
 } from "../../types/disaster";
 import { randomUUIDv7 } from "bun";
 
@@ -192,7 +193,7 @@ describe("Create disasters", () => {
         expect(responseBody.error).toContain("at designatedIncidentTypes");
     });
 
-    /*
+
     it("should not accept a start date after an end date", async () => {
         const response = await app.request("/disaster", {
             method: "POST",
@@ -208,8 +209,8 @@ describe("Create disasters", () => {
                 designatedArea: "Boston (County)",
                 disasterNumber: 1,
                 fipsCountyCode: 555,
-                startDate: new Date("03/25/2025").toISOString(),
-                endDate: new Date("03/20/2025").toISOString(),
+                incidentBeginDate: new Date("03/25/2025").toISOString(),
+                incidentEndDate: new Date("03/20/2025").toISOString(),
                 incidentType: "Other",
             } satisfies CreateDisasterDTOInput),
         });
@@ -217,9 +218,6 @@ describe("Create disasters", () => {
         const responseBody = await response.json();
         expect(responseBody.error).toContain("Start date must be after or equal to end date");
     });
-});
-
-     */
 });
 
 describe("Get disasters", () => {
@@ -419,5 +417,36 @@ describe("Get disasters", () => {
             for (const key of responseKeys) {
                 expect(responseBody[0][key]).toBe(constructedObject2[key]);
             }
+    });
+
+    it("should merge incidentType and designatedIncidentTypes", async () => {
+        const now = new Date().toISOString();
+        const femaId = randomUUIDv7();
+        const constructedObject1 = {
+            id: femaId,
+            fipsStateCode: 25,
+            declarationDate: now,
+            declarationType: "FM",
+            designatedIncidentTypes: "Z",
+            designatedArea: "Boston (County)",
+            disasterNumber: 1,
+            fipsCountyCode: 487,
+            incidentBeginDate: now,
+            incidentEndDate: now,
+            incidentType: "Fire",
+        } satisfies CreateDisasterDTOInput;
+
+        const response = await app.request("/disaster", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(constructedObject1),
+        });
+
+        expect(response.status).toBe(201);
+        const responseBody = await response.json();
+        const returnObject = CreateDisasterResponseSchema.parse(responseBody);
+        expect(returnObject.designatedIncidentTypes).toBe("Z,R");
     });
 })

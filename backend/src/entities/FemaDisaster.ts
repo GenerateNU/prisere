@@ -15,10 +15,10 @@ export class FemaDisaster {
     declarationDate!: Date;
 
     @Column({ nullable: true, type: "timestamp" })
-    incidentBeginDate?: Date;
+    incidentBeginDate?: Date | null;
 
     @Column({ nullable: true, type: "timestamp" })
-    incidentEndDate?: Date;
+    incidentEndDate?: Date | null;
 
     @Column()
     fipsCountyCode!: number;

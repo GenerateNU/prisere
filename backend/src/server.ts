@@ -5,8 +5,7 @@ import { AppDataSource } from "./typeorm-config";
 import { setUpRoutes } from "./routes";
 import { errorHandler } from "./utilities/error";
 import { logMessageToFile } from "./utilities/logger";
-import { IFemaService, FemaService } from "./modules/clients/fema-client/service";
-import { FemaFetching } from "./utilities/cron_job_handler";
+import { FemaService } from "./modules/clients/fema-client/service";
 
 const app = new Hono();
 
