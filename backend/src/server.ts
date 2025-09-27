@@ -5,8 +5,10 @@ import { AppDataSource } from "./typeorm-config";
 import { setUpRoutes } from "./routes";
 import { errorHandler } from "./utilities/error";
 import { logMessageToFile } from "./utilities/logger";
+import { FemaService } from "./modules/clients/fema-client/service";
 
 const app = new Hono();
+
 
 (async function setUpServer() {
     try {
@@ -22,6 +24,9 @@ const app = new Hono();
 
         setUpRoutes(app, AppDataSource);
 
+        const femaService =  await FemaService.initializeFemaService(AppDataSource);
+        femaService.initializeCron();
+        
         console.log("Connected to Postgres!");
     } catch (err) {
         console.log("Error starting app", err);

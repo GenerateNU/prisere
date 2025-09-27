@@ -39,16 +39,16 @@ const createNewDB = async (): Promise<IMemoryDb> => {
 export const startTestApp = async (): Promise<TestAppData> => {
     const app = new Hono();
     const db = await createNewDB();
-    const TestDataSource: DataSource = await db.adapters.createTypeormDataSource({
+    const dataSource: DataSource = await db.adapters.createTypeormDataSource({
         type: "postgres",
         entities: ["src/entities/*.ts"],
     });
 
-    await TestDataSource.initialize();
-    await TestDataSource.synchronize();
-    await runSeeders(TestDataSource);
+    await dataSource.initialize();
+    await dataSource.synchronize();
+    await runSeeders(dataSource);
     const backup = db.backup();
 
-    setUpRoutes(app, TestDataSource);
-    return { app, backup };
+    setUpRoutes(app, dataSource);
+    return { app, backup, dataSource };
 };
