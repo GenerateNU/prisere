@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryColumn } from "typeorm";
+import { Entity, Column, PrimaryColumn, OneToMany } from "typeorm";
+import { DisasterNotification } from "./DisasterNotification";
 
 @Entity("fema_disaster")
 export class FemaDisaster {
@@ -31,4 +32,7 @@ export class FemaDisaster {
 
     @Column()
     designatedIncidentTypes!: string;
+
+    @OneToMany(() => DisasterNotification, (disasterNotification: { femaDisaster: FemaDisaster; }) => disasterNotification.femaDisaster, { nullable: true })
+    disasterNotifications!: DisasterNotification[];
 }
