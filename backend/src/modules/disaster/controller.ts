@@ -29,7 +29,4 @@ export class DisasterController implements IDisasterController {
         const disaster = await this.disasterService.getAllDisasters();
         return ctx.json(disaster, 200);
     });
-
-
-
 }
