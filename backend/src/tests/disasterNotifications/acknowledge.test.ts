@@ -14,7 +14,7 @@ describe("Test acknowledge disaster notifications", () => {
     let createdDisasterId2: String;
     let disasterNotificationId: String;
     let disasterNotificationId2: String;
-    
+
     const userRequestBody = {
         firstName: "Alice",
         lastName: "Bob",
@@ -31,14 +31,13 @@ describe("Test acknowledge disaster notifications", () => {
         fipsCountyCode: 12345,
         declarationType: "11",
         designatedArea: "County A",
-        designatedIncidentTypes: "1"
-    }
+        designatedIncidentTypes: "1",
+    };
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
-
     });
 
     beforeEach(async () => {
@@ -53,7 +52,7 @@ describe("Test acknowledge disaster notifications", () => {
             body: JSON.stringify(userRequestBody),
         });
         const userBody = await userResponse.json();
-        console.log(userBody)
+        console.log(userBody);
         createdUserId = userBody.id;
         logMessageToFile(`Created ID: ${createdUserId}`);
 
@@ -70,11 +69,11 @@ describe("Test acknowledge disaster notifications", () => {
 
         const disasterRequestBody1 = {
             ...disasterRequestBody,
-            femaId: randomUUID()
+            femaId: randomUUID(),
         };
         const disasterRequestBody2 = {
             ...disasterRequestBody,
-            femaId: randomUUID()
+            femaId: randomUUID(),
         };
         const disasterResponse = await app.request("/disaster", {
             method: "POST",
@@ -84,7 +83,7 @@ describe("Test acknowledge disaster notifications", () => {
             body: JSON.stringify(disasterRequestBody1),
         });
         const disasterBody = await disasterResponse.json();
-        
+
         createdDisasterId = disasterBody.femaId;
         logMessageToFile(`Created ID: ${createdDisasterId}`);
 
@@ -97,89 +96,84 @@ describe("Test acknowledge disaster notifications", () => {
         });
         const disasterBody2 = await disasterResponse2.json();
         createdDisasterId2 = disasterBody2.femaId;
-        
+
         logMessageToFile(`Created ID: ${createdDisasterId2}`);
         const requestBody = [
             {
                 userId: createdUserId,
                 femaDisasterId: createdDisasterId,
-                notificationType: 'web'
+                notificationType: "web",
             },
             {
                 userId: createdUserId2,
                 femaDisasterId: createdDisasterId2,
-                notificationType: 'email'
-            }
-        ]
+                notificationType: "email",
+            },
+        ];
         const response = await app.request(`/disasterNotification/create`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(requestBody)
-        })
+            body: JSON.stringify(requestBody),
+        });
         const body = await response.json();
-        
-        disasterNotificationId = body[0].id
-        disasterNotificationId2 = body[1].id
-        console.log(disasterNotificationId, disasterNotificationId2)
-    })
+
+        disasterNotificationId = body[0].id;
+        disasterNotificationId2 = body[1].id;
+        console.log(disasterNotificationId, disasterNotificationId2);
+    });
 
     test("GET users disaster notifications", async () => {
-        const response = await app.request(`/disasterNotification/${disasterNotificationId}/acknowledge`,
-            {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(disasterNotificationId)
-            })
+        const response = await app.request(`/disasterNotification/${disasterNotificationId}/acknowledge`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(disasterNotificationId),
+        });
         expect(response.status).toBe(200);
-        const body = await response.json()
-        
-        expect(body.notificationStatus).toBe('acknowledged')
-        
+        const body = await response.json();
 
-        const response2 = await app.request(`/disasterNotification/${disasterNotificationId}/acknowledge`,
-            {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(disasterNotificationId)
-            })        
+        expect(body.notificationStatus).toBe("acknowledged");
+
+        const response2 = await app.request(`/disasterNotification/${disasterNotificationId}/acknowledge`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(disasterNotificationId),
+        });
         expect(response2.status).toBe(200);
-        const body2 = await response2.json()
-        console.log('mmmmmmmmmmmmmm')
-        console.log(body2)
-        expect(body2.notificationStatus).toBe('acknowledged')
-    })
+        const body2 = await response2.json();
+        console.log("mmmmmmmmmmmmmm");
+        console.log(body2);
+        expect(body2.notificationStatus).toBe("acknowledged");
+    });
 
     test("GET fake user returns 404 user not found", async () => {
-        const response = await app.request(`/disasterNotification/${randomUUID()}/acknowledge`,
-            {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(disasterNotificationId)
-            })
+        const response = await app.request(`/disasterNotification/${randomUUID()}/acknowledge`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(disasterNotificationId),
+        });
         expect(response.status).toBe(404);
         const body = await response.json();
         expect(body.error).toMatch(/Notification not found/);
-    })
+    });
 
     test("GET user ID with incorrect format returns a 400", async () => {
-        const response = await app.request(`/disasterNotification/${disasterNotificationId}-asdf/acknowledge`,
-            {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(disasterNotificationId)
-            })
+        const response = await app.request(`/disasterNotification/${disasterNotificationId}-asdf/acknowledge`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(disasterNotificationId),
+        });
         expect(response.status).toBe(400);
         const body = await response.json();
         expect(body.error).toMatch(/Invalid notification ID format/);
-    })
-})
+    });
+});

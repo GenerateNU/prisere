@@ -1,27 +1,40 @@
 import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
-import { DisasterNotificationTransaction, IDisasterNotificationTransaction } from "../disasterNotifications/transaction";
+import {
+    DisasterNotificationTransaction,
+    IDisasterNotificationTransaction,
+} from "../disasterNotifications/transaction";
 import { DisasterNotificationService, IDisasterNotificationService } from "../disasterNotifications/service";
 import { DisasterNotificationController, IDisasterNotificationController } from "../disasterNotifications/controller";
-import { BulkCreateNotificationsRequestSchema, BulkCreateNotificationsResponseSchema } from "../../types/DisasterNotification";
+import {
+    BulkCreateNotificationsRequestSchema,
+    BulkCreateNotificationsResponseSchema,
+} from "../../types/DisasterNotification";
 
 // Add more schemas as needed for other routes
 // import { DisasterNotificationResponseSchema, ... } from "../../types/DisasterNotification";
 
 export const addOpenApiDisasterNotificationRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const disasterNotificationTransaction: IDisasterNotificationTransaction = new DisasterNotificationTransaction(db);
-    const disasterNotificationService: IDisasterNotificationService = new DisasterNotificationService(disasterNotificationTransaction);
-    const disasterNotificationController: IDisasterNotificationController = new DisasterNotificationController(disasterNotificationService);
+    const disasterNotificationService: IDisasterNotificationService = new DisasterNotificationService(
+        disasterNotificationTransaction
+    );
+    const disasterNotificationController: IDisasterNotificationController = new DisasterNotificationController(
+        disasterNotificationService
+    );
 
-    openApi.openapi(createDisasterNotificationRoute, (ctx) => disasterNotificationController.bulkCreateNotifications(ctx));
+    openApi.openapi(createDisasterNotificationRoute, (ctx) =>
+        disasterNotificationController.bulkCreateNotifications(ctx)
+    );
 
-    openApi.openapi(getUserDisasterNotificationsRoute, (ctx) => disasterNotificationController.getUserNotifications(ctx));
+    openApi.openapi(getUserDisasterNotificationsRoute, (ctx) =>
+        disasterNotificationController.getUserNotifications(ctx)
+    );
 
     openApi.openapi(markNotificationReadRoute, (ctx) => disasterNotificationController.dismissNotification(ctx));
 
     openApi.openapi(acknowledgeNotificationRoute, (ctx) => disasterNotificationController.acknowledgeNotification(ctx));
     openApi.openapi(deleteNotificationRoute, (ctx) => disasterNotificationController.deleteNotification(ctx));
-
 
     return openApi;
 };
@@ -40,13 +53,14 @@ const createDisasterNotificationRoute = createRoute({
                         {
                             userId: "uuid-of-user",
                             femaDisasterId: "uuid-of-disaster",
-                            notificationType: "web"
-                        }
-                    ]
-                }
+                            notificationType: "web",
+                        },
+                    ],
+                },
             },
-            description: "Array of notification objects to create. Each must include userId, femaDisasterId, and notificationType."
-        }
+            description:
+                "Array of notification objects to create. Each must include userId, femaDisasterId, and notificationType.",
+        },
     },
     responses: {
         201: {
@@ -61,26 +75,26 @@ const createDisasterNotificationRoute = createRoute({
             description: "Bad Request - Invalid input data, such as malformed UUIDs or missing fields",
             content: {
                 "application/json": {
-                    example: { error: "Invalid UUID format for userId" }
-                }
-            }
+                    example: { error: "Invalid UUID format for userId" },
+                },
+            },
         },
         404: {
             description: "Not Found - User or disaster not found for provided IDs",
             content: {
                 "application/json": {
-                    example: { error: "User not found for userId" }
-                }
-            }
+                    example: { error: "User not found for userId" },
+                },
+            },
         },
         500: {
             description: "Internal Server Error - Unexpected error during creation",
             content: {
                 "application/json": {
-                    example: { error: "Failed to insert some notifications." }
-                }
-            }
-        }
+                    example: { error: "Failed to insert some notifications." },
+                },
+            },
+        },
     },
     tags: ["DisasterNotifications"],
 });
@@ -94,16 +108,16 @@ const getUserDisasterNotificationsRoute = createRoute({
         params: {
             userId: {
                 type: "string",
-                description: "UUID of the user"
-            }
-        }
+                description: "UUID of the user",
+            },
+        },
     },
     responses: {
         200: {
             content: {
                 "application/json": {
-                    schema: BulkCreateNotificationsResponseSchema
-                }
+                    schema: BulkCreateNotificationsResponseSchema,
+                },
             },
             description: "List of disaster notifications for the user",
         },
@@ -111,17 +125,17 @@ const getUserDisasterNotificationsRoute = createRoute({
             description: "User not found",
             content: {
                 "application/json": {
-                    example: { error: "User not found" }
-                }
-            }
+                    example: { error: "User not found" },
+                },
+            },
         },
         400: {
             description: "Bad Request - Invalid input data, such as malformed UUIDs or missing fields",
             content: {
                 "application/json": {
-                    example: { error: "Invalid UUID format" }
-                }
-            }
+                    example: { error: "Invalid UUID format" },
+                },
+            },
         },
     },
     tags: ["DisasterNotifications"],
@@ -136,16 +150,16 @@ const markNotificationReadRoute = createRoute({
         params: {
             notificationId: {
                 type: "string",
-                description: "UUID of the notification"
-            }
-        }
+                description: "UUID of the notification",
+            },
+        },
     },
     responses: {
         200: {
             content: {
                 "application/json": {
                     schema: BulkCreateNotificationsResponseSchema,
-                }
+                },
             },
             description: "Notification marked as read",
         },
@@ -153,17 +167,17 @@ const markNotificationReadRoute = createRoute({
             description: "Notification not found",
             content: {
                 "application/json": {
-                    example: { error: "Notification not found" }
-                }
-            }
+                    example: { error: "Notification not found" },
+                },
+            },
         },
         400: {
             description: "Bad Request - Invalid input data, such as malformed UUIDs or missing fields",
             content: {
                 "application/json": {
-                    example: { error: "Invalid UUID format" }
-                }
-            }
+                    example: { error: "Invalid UUID format" },
+                },
+            },
         },
     },
     tags: ["DisasterNotifications"],
@@ -178,16 +192,16 @@ const acknowledgeNotificationRoute = createRoute({
         params: {
             notificationId: {
                 type: "string",
-                description: "UUID of the notification"
-            }
-        }
+                description: "UUID of the notification",
+            },
+        },
     },
     responses: {
         200: {
             content: {
                 "application/json": {
                     schema: BulkCreateNotificationsResponseSchema,
-                }
+                },
             },
             description: "Notification acknowledged",
         },
@@ -195,21 +209,21 @@ const acknowledgeNotificationRoute = createRoute({
             description: "Notification not found",
             content: {
                 "application/json": {
-                    example: { error: "Notification not found" }
-                }
-            }
+                    example: { error: "Notification not found" },
+                },
+            },
         },
         400: {
             description: "Bad Request - Invalid input data, such as malformed UUIDs or missing fields",
             content: {
                 "application/json": {
-                    example: { error: "Invalid UUID format" }
-                }
-            }
+                    example: { error: "Invalid UUID format" },
+                },
+            },
         },
     },
     tags: ["DisasterNotifications"],
-};
+});
 
 const deleteNotificationRoute = createRoute({
     method: "delete",
@@ -220,16 +234,16 @@ const deleteNotificationRoute = createRoute({
         params: {
             notificationId: {
                 type: "string",
-                description: "UUID of the notification"
-            }
-        }
+                description: "UUID of the notification",
+            },
+        },
     },
     responses: {
         200: {
             content: {
                 "application/json": {
                     schema: BulkCreateNotificationsResponseSchema,
-                }
+                },
             },
             description: "Notification deleted",
         },
@@ -237,18 +251,18 @@ const deleteNotificationRoute = createRoute({
             description: "Notification not found",
             content: {
                 "application/json": {
-                    example: { error: "Notification not found" }
-                }
-            }
+                    example: { error: "Notification not found" },
+                },
+            },
         },
         400: {
             description: "Bad Request - Invalid input data, such as malformed UUIDs or missing fields",
             content: {
                 "application/json": {
-                    example: { error: "Invalid UUID format" }
-                }
-            }
+                    example: { error: "Invalid UUID format" },
+                },
+            },
         },
     },
     tags: ["DisasterNotifications"],
-};
+});

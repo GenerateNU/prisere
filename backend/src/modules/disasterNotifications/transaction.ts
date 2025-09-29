@@ -1,4 +1,4 @@
-import { DisasterNotification } from "../../entities/DisasterNotification"
+import { DisasterNotification } from "../../entities/DisasterNotification";
 // import { CreateCompanyDTO, GetCompanyByIdDTO, UpdateQuickBooksImportTimeDTO } from "../../types/Company";
 import { DataSource, InsertResult } from "typeorm";
 import Boom from "@hapi/boom";
@@ -67,9 +67,7 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
         }
 
         try {
-            const existing = await this.db
-                .getRepository(User)
-                .findOne({ where: { id: payload.id } });
+            const existing = await this.db.getRepository(User).findOne({ where: { id: payload.id } });
             if (!existing) {
                 logMessageToFile(`User not found: ${payload.id}`);
                 throw Boom.notFound("user not found");
@@ -114,10 +112,8 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
             const result = await this.db
                 .createQueryBuilder()
                 .update(DisasterNotification)
-                .set({ notificationStatus: 'acknowledged',
-                    acknowledgedAt: new Date()
-                 })
-                .where("id = :id", {id: notificationId })
+                .set({ notificationStatus: "acknowledged", acknowledgedAt: new Date() })
+                .where("id = :id", { id: notificationId })
                 .returning("*")
                 .execute();
 
@@ -153,8 +149,8 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
             const result = await this.db
                 .createQueryBuilder()
                 .update(DisasterNotification)
-                .set({ notificationStatus: 'read' })
-                .where("id = :id", {id: notificationId })
+                .set({ notificationStatus: "read" })
+                .where("id = :id", { id: notificationId })
                 .returning("*")
                 .execute();
 
@@ -200,7 +196,9 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
             }
 
             // Check existence of femaDisasterId
-            const disasterExists = await this.db.getRepository(FemaDisaster).findOne({ where: {femaId: femaDisasterId}});
+            const disasterExists = await this.db
+                .getRepository(FemaDisaster)
+                .findOne({ where: { femaId: femaDisasterId } });
             if (!disasterExists) {
                 logMessageToFile(`FEMA Disaster not found for femaDisasterId: ${femaDisasterId}`);
                 throw Boom.notFound(`FEMA Disaster not found for femaDisasterId: ${femaDisasterId}`);
@@ -216,18 +214,23 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
                     .execute();
                 finalResult.push(result.raw[0]);
                 successfulInsertions.push(notification);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
-                logMessageToFile(`Failed to insert notification: ${JSON.stringify(notification)}, error: ${error?.message}, stack: ${error?.stack}`);
+                logMessageToFile(
+                    `Failed to insert notification: ${JSON.stringify(notification)}, error: ${error?.message}, stack: ${error?.stack}`
+                );
                 failedInsertions.push({
                     notification,
                     error: error?.message,
-                    stack: error?.stack
+                    stack: error?.stack,
                 });
             }
         }
 
         if (failedInsertions.length > 0) {
-            logMessageToFile(`Bulk insert completed with failures. Failed: ${JSON.stringify(failedInsertions)}, Successful: ${JSON.stringify(successfulInsertions)}`);
+            logMessageToFile(
+                `Bulk insert completed with failures. Failed: ${JSON.stringify(failedInsertions)}, Successful: ${JSON.stringify(successfulInsertions)}`
+            );
             throw Boom.internal(`Failed to insert some notifications. Details: ${JSON.stringify(failedInsertions)}`);
         }
         return finalResult;
@@ -238,14 +241,14 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
             logMessageToFile(`Invalid UUID format for notification ID: ${notificationId}`);
             throw Boom.badRequest("Invalid UUID format (for notification ID)");
         }
-        
+
         try {
             const existing = await this.db
                 .getRepository(DisasterNotification)
                 .findOne({ where: { id: notificationId } });
-            console.log("EXISTING: ", existing)
+            console.log("EXISTING: ", existing);
             if (!existing) {
-                throw Boom.notFound("ERROR: Notification ID not found")
+                throw Boom.notFound("ERROR: Notification ID not found");
             }
             await this.db
                 .createQueryBuilder()

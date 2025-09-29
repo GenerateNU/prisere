@@ -33,5 +33,6 @@ export class FemaDisaster {
     designatedIncidentTypes!: string;
 
     @OneToMany("disasterNotification", "fema_disaster", { nullable: true })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     disasterNotifications!: any[];
 }

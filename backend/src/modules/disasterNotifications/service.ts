@@ -39,15 +39,13 @@ export class DisasterNotificationService implements IDisasterNotificationService
         }
     );
 
-    dismissNotification = withServiceErrorHandling(
-        async (notificationId: string): Promise<DisasterNotification> => {
-            const notification = await this.notificationTransaction.dismissNotification(notificationId);
-            if (!notification) {
-                throw Boom.notFound("Notification not found or could not be dismissed");
-            }
-            return notification;
+    dismissNotification = withServiceErrorHandling(async (notificationId: string): Promise<DisasterNotification> => {
+        const notification = await this.notificationTransaction.dismissNotification(notificationId);
+        if (!notification) {
+            throw Boom.notFound("Notification not found or could not be dismissed");
         }
-    );
+        return notification;
+    });
 
     bulkCreateNotifications = withServiceErrorHandling(
         async (notifications: Partial<DisasterNotification>[]): Promise<DisasterNotification[]> => {
@@ -59,13 +57,11 @@ export class DisasterNotificationService implements IDisasterNotificationService
         }
     );
 
-    deleteNotification = withServiceErrorHandling(
-        async (notificationId: string): Promise<boolean> => {
-            const deleted = await this.notificationTransaction.deleteNotification(notificationId);
-            if (!deleted) {
-                throw Boom.notFound("Notification not found or could not be deleted");
-            }
-            return deleted;
+    deleteNotification = withServiceErrorHandling(async (notificationId: string): Promise<boolean> => {
+        const deleted = await this.notificationTransaction.deleteNotification(notificationId);
+        if (!deleted) {
+            throw Boom.notFound("Notification not found or could not be deleted");
         }
-    );
+        return deleted;
+    });
 }

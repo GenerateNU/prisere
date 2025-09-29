@@ -30,14 +30,13 @@ describe("Test deleting disaster notifications", () => {
         fipsCountyCode: 12345,
         declarationType: "11",
         designatedArea: "County A",
-        designatedIncidentTypes: "1"
-    }
+        designatedIncidentTypes: "1",
+    };
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
-
     });
 
     beforeEach(async () => {
@@ -52,7 +51,7 @@ describe("Test deleting disaster notifications", () => {
             body: JSON.stringify(userRequestBody),
         });
         const userBody = await userResponse.json();
-        console.log(userBody)
+        console.log(userBody);
         createdUserId = userBody.id;
         logMessageToFile(`Created ID: ${createdUserId}`);
 
@@ -69,11 +68,11 @@ describe("Test deleting disaster notifications", () => {
 
         const disasterRequestBody1 = {
             ...disasterRequestBody,
-            femaId: randomUUID()
+            femaId: randomUUID(),
         };
         const disasterRequestBody2 = {
             ...disasterRequestBody,
-            femaId: randomUUID()
+            femaId: randomUUID(),
         };
         const disasterResponse = await app.request("/disaster", {
             method: "POST",
@@ -83,7 +82,7 @@ describe("Test deleting disaster notifications", () => {
             body: JSON.stringify(disasterRequestBody1),
         });
         const disasterBody = await disasterResponse.json();
-        
+
         createdDisasterId = disasterBody.femaId;
         logMessageToFile(`Created ID: ${createdDisasterId}`);
 
@@ -96,77 +95,72 @@ describe("Test deleting disaster notifications", () => {
         });
         const disasterBody2 = await disasterResponse2.json();
         createdDisasterId2 = disasterBody2.femaId;
-        
+
         logMessageToFile(`Created ID: ${createdDisasterId2}`);
         const requestBody = [
             {
                 userId: createdUserId,
                 femaDisasterId: createdDisasterId,
-                notificationType: 'web'
+                notificationType: "web",
             },
             {
                 userId: createdUserId2,
                 femaDisasterId: createdDisasterId2,
-                notificationType: 'email'
-            }
-        ]
+                notificationType: "email",
+            },
+        ];
         const response = await app.request(`/disasterNotification/create`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(requestBody)
-        })
+            body: JSON.stringify(requestBody),
+        });
         const body = await response.json();
-        
-        disasterNotificationId = body[0].id
-        disasterNotificationId2 = body[1].id
-        console.log(disasterNotificationId, disasterNotificationId2)
-    })
+
+        disasterNotificationId = body[0].id;
+        disasterNotificationId2 = body[1].id;
+        console.log(disasterNotificationId, disasterNotificationId2);
+    });
 
     test("Delete notification", async () => {
-        const response = await app.request(`/disasterNotification/${disasterNotificationId}`,
-            {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(disasterNotificationId)
-            })
-        expect(response.status).toBe(200)
-        const response2 = await app.request(`/disasterNotification/${disasterNotificationId2}`,
-            {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(disasterNotificationId2)
-            })
-        expect(response2.status).toBe(200)
-    })
+        const response = await app.request(`/disasterNotification/${disasterNotificationId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(disasterNotificationId),
+        });
+        expect(response.status).toBe(200);
+        const response2 = await app.request(`/disasterNotification/${disasterNotificationId2}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(disasterNotificationId2),
+        });
+        expect(response2.status).toBe(200);
+    });
 
     test("Delete notification returns 400 on non-UUID format ID", async () => {
-        const response = await app.request(`/disasterNotification/${disasterNotificationId}-fake`,
-            {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(disasterNotificationId)
-            })
-        expect(response.status).toBe(400)
-    })
+        const response = await app.request(`/disasterNotification/${disasterNotificationId}-fake`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(disasterNotificationId),
+        });
+        expect(response.status).toBe(400);
+    });
 
     test("Delete notification returns 404 on non-existent ID", async () => {
-        const response = await app.request(`/disasterNotification/${randomUUID()}`,
-            {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(disasterNotificationId)
-            })
-        expect(response.status).toBe(404)
-    })
-
-})
+        const response = await app.request(`/disasterNotification/${randomUUID()}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(disasterNotificationId),
+        });
+        expect(response.status).toBe(404);
+    });
+});
