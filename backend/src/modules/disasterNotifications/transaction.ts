@@ -6,6 +6,7 @@ import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
 import { GetUsersDisasterNotificationsDTO } from "../../types/DisasterNotification";
 import { User } from "../../entities/User";
+import { FemaDisaster } from "../../entities/FemaDisaster";
 
 /**
  * Interface for disaster notification transaction operations.
@@ -199,10 +200,7 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
             }
 
             // Check existence of femaDisasterId
-            const disasterExists = await this.db.getRepository(DisasterNotification)
-                .createQueryBuilder("disaster")
-                .where("disaster.femaDisasterId = :femaDisasterId", { femaDisasterId })
-                .getOne();
+            const disasterExists = await this.db.getRepository(FemaDisaster).findOne({ where: {femaId: femaDisasterId}});
             if (!disasterExists) {
                 logMessageToFile(`FEMA Disaster not found for femaDisasterId: ${femaDisasterId}`);
                 throw Boom.notFound(`FEMA Disaster not found for femaDisasterId: ${femaDisasterId}`);
