@@ -1,21 +1,15 @@
 import { Context, TypedResponse } from "hono";
 import { IDisasterNotificationService } from "./service";
 import { withControllerErrorHandling } from "../../utilities/error";
-import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
 import {
     GetUsersDisasterNotificationsResponse,
     GetUsersDisasterNotificationsDTOSchema,
     DisasterNotification,
-    DisasterNotificationType,
     BulkCreateNotificationsRequestSchema,
-    BulkCreateNotificationsRequest,
     BulkCreateNotificationsResponse,
-    DeleteNotificationResponseSchema,
     DeleteNotificationResponse,
-    AcknowledgeNotificationResponseSchema,
     AcknowledgeNotificationResponse,
-    DismissNotificationResponseSchema,
     DismissNotificationResponse,
     GetUsersDisasterNotificationsResponseSchema,
     BulkCreateNotificationsResponseSchema,
@@ -69,7 +63,7 @@ export class DisasterNotificationController implements IDisasterNotificationCont
             }));
 
         // Validate mapped array
-        const validated = GetUsersDisasterNotificationsResponseSchema.parse(mapped);
+        // const validated = GetUsersDisasterNotificationsResponseSchema.parse(mapped);
 
         return ctx.json(mapped, 200);
     }
@@ -107,7 +101,7 @@ export class DisasterNotificationController implements IDisasterNotificationCont
                     : undefined,
             };
 
-            const validated = DisasterNotification.parse(mapped);
+            // const validated = DisasterNotification.parse(mapped);
 
             return ctx.json(mapped, 200);
         }

@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { ErrorResponseSchema } from "../../types/Utils";
-import { DisasterNotification } from "../../entities/DisasterNotification";
 
 /* Zod schemas for OpenAPI docs */
 //POST

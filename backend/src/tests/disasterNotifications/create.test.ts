@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
+import { describe, test, expect, beforeAll, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { logMessageToFile } from "../../utilities/logger";

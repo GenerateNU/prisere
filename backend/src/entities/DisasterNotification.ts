@@ -1,6 +1,4 @@
-import { UUID } from "crypto";
 import { Entity, PrimaryGeneratedColumn, Column , ManyToOne, JoinColumn} from "typeorm";
-import { EnumDeclaration } from "typescript";
 
 export enum NotificationType {
     WEB = 'web',
