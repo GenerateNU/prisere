@@ -247,7 +247,7 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
             if (!existing) {
                 throw Boom.notFound("ERROR: Notification ID not found")
             }
-            const result = await this.db
+            await this.db
                 .createQueryBuilder()
                 .delete()
                 .from(DisasterNotification)

@@ -14,7 +14,7 @@ describe("Test acknowledge disaster notifications", () => {
     let createdDisasterId2: String;
     let disasterNotificationId: String;
     let disasterNotificationId2: String;
-    const hardCodedDisasterId = "a8a1f7e2-4b3d-4c9a-9e7f-123456789abc"
+    
     const userRequestBody = {
         firstName: "Alice",
         lastName: "Bob",

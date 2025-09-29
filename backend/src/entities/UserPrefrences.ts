@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column , OneToOne, JoinColumn, Not} from "typeorm";
+import { Entity, PrimaryColumn, Column , OneToOne, JoinColumn} from "typeorm";
 
 export enum NotificationFrequency {
     DAILY = 'daily',
