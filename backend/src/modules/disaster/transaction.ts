@@ -22,8 +22,20 @@ export class DisasterTransaction implements IDisasterTransaction {
             .into(FemaDisaster)
             .values(disaster)
             .returning("*")
-            .orUpdate(["disasterNumber", "fipsStateCode", "declarationDate", "incidentBeginDate",
-                "incidentEndDate", "fipsCountyCode", "declarationType", "designatedArea", "designatedIncidentTypes"], ["id"])
+            .orUpdate(
+                [
+                    "disasterNumber",
+                    "fipsStateCode",
+                    "declarationDate",
+                    "incidentBeginDate",
+                    "incidentEndDate",
+                    "fipsCountyCode",
+                    "declarationType",
+                    "designatedArea",
+                    "designatedIncidentTypes",
+                ],
+                ["id"]
+            )
             .execute();
 
         return result.raw[0] as FemaDisaster;

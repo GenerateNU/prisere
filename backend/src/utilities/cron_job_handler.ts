@@ -1,15 +1,14 @@
-import { CronJob } from 'cron';
+import { CronJob } from "cron";
 import { FemaService } from "../modules/clients/fema-client/service";
 
 export interface CronJobHander {
     initializeCron(): CronJob;
-
 }
 
 export class FemaFetching implements CronJobHander {
     private femaService: FemaService;
 
-    constructor(femaService: FemaService){
+    constructor(femaService: FemaService) {
         this.femaService = femaService;
     }
 
@@ -18,15 +17,13 @@ export class FemaFetching implements CronJobHander {
         const lastRefreshDate = new Date();
         lastRefreshDate.setDate(lastRefreshDate.getDate() - 1);
         return CronJob.from({
-            cronTime: '0 2 * * *',
-            onTick: async function() {
+            cronTime: "0 2 * * *",
+            onTick: async function () {
                 await femaService.fetchFemaDisasters({ lastRefreshDate: lastRefreshDate });
             },
             start: true,
-            timeZone: 'America/New_York',
-            runOnInit: true
+            timeZone: "America/New_York",
+            runOnInit: true,
         });
-
     }
-
 }

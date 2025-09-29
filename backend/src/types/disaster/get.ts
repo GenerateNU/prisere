@@ -19,5 +19,4 @@ export const GetAllDisastersResponseSchema = z.array(
 
 export const GetAllDisastersAPIResponseSchema = z.union([GetAllDisastersResponseSchema, ErrorResponseSchema]);
 
-
 export type GetAllDisastersAPIResponse = z.infer<typeof GetAllDisastersAPIResponseSchema>;

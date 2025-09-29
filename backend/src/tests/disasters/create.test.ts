@@ -50,7 +50,7 @@ describe("Create disasters", () => {
         });
         expect(response.status).toBe(201);
         const responseBody = await response.json();
-        
+
         const responseKeys = [
             "declarationDate",
             "declarationType",
@@ -65,27 +65,27 @@ describe("Create disasters", () => {
     });
 
     it("should not accept an invalid state number", async () => {
-
         const constructedObject = {
-                id: randomUUIDv7(),
-                fipsStateCode: 100, // over the 56 limit
-                declarationDate: new Date().toISOString(),
-                declarationType: "FM",
-                designatedIncidentTypes: "Z",
-                designatedArea: "Boston (County)",
-                disasterNumber: 1,
-                fipsCountyCode: 555,
-                incidentBeginDate: new Date().toISOString(),
-                incidentEndDate: new Date().toISOString(),
-                incidentType: "Other",
-            } satisfies CreateDisasterDTOInput;
-            
+            id: randomUUIDv7(),
+            fipsStateCode: 100, // over the 56 limit
+            declarationDate: new Date().toISOString(),
+            declarationType: "FM",
+            designatedIncidentTypes: "Z",
+            designatedArea: "Boston (County)",
+            disasterNumber: 1,
+            fipsCountyCode: 555,
+            incidentBeginDate: new Date().toISOString(),
+            incidentEndDate: new Date().toISOString(),
+            incidentType: "Other",
+        } satisfies CreateDisasterDTOInput;
+
         const response = await app.request("/disaster", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(constructedObject)});
+            body: JSON.stringify(constructedObject),
+        });
 
         expect((await response.json()).error).toContain("expected number to be <=56");
     });
@@ -192,7 +192,6 @@ describe("Create disasters", () => {
         expect(responseBody.error).toContain("at designatedIncidentTypes");
     });
 
-
     it("should not accept a start date after an end date", async () => {
         const response = await app.request("/disaster", {
             method: "POST",
@@ -235,7 +234,7 @@ describe("Get disasters", () => {
 
     it("should return empty array when no disasters in db", async () => {
         const response = await app.request("/disaster", {
-            method: "GET"
+            method: "GET",
         });
 
         expect(response.status).toBe(200);
@@ -289,7 +288,7 @@ describe("Get disasters", () => {
         } satisfies CreateDisasterDTOInput;
 
         const inputs = [constructedObject1, constructedObject2, constructedObject3];
-        
+
         await app.request("/disaster", {
             method: "POST",
             headers: {
@@ -315,7 +314,7 @@ describe("Get disasters", () => {
         });
 
         const response = await app.request("/disaster", {
-            method: "GET"
+            method: "GET",
         });
         expect(response.status).toBe(200);
         const responseBody = await response.json();
@@ -333,7 +332,7 @@ describe("Get disasters", () => {
             "disasterNumber",
             "fipsCountyCode",
             "incidentBeginDate",
-            "incidentEndDate" 
+            "incidentEndDate",
         ] as (keyof Exclude<CreateDisasterDTO, { error: string }>)[];
 
         for (let i = 0; i < inputs.length; i++) {
@@ -341,7 +340,6 @@ describe("Get disasters", () => {
                 expect(responseBody[i][key]).toBe(inputs[i][key]);
             }
         }
-        
     });
 
     it("should overwrite the current disaster if there is a duplicate", async () => {
@@ -392,7 +390,7 @@ describe("Get disasters", () => {
         });
 
         const response = await app.request("/disaster", {
-            method: "GET"
+            method: "GET",
         });
         expect(response.status).toBe(200);
         const responseBody = await response.json();
@@ -410,12 +408,12 @@ describe("Get disasters", () => {
             "disasterNumber",
             "fipsCountyCode",
             "incidentBeginDate",
-            "incidentEndDate"
+            "incidentEndDate",
         ] as (keyof Exclude<CreateDisasterDTO, { error: string }>)[];
-        
-            for (const key of responseKeys) {
-                expect(responseBody[0][key]).toBe(constructedObject2[key]);
-            }
+
+        for (const key of responseKeys) {
+            expect(responseBody[0][key]).toBe(constructedObject2[key]);
+        }
     });
 
     it("should merge incidentType and designatedIncidentTypes", async () => {
@@ -448,4 +446,4 @@ describe("Get disasters", () => {
         const returnObject = CreateDisasterResponseSchema.parse(responseBody);
         expect(returnObject.designatedIncidentTypes).toBe("Z,R");
     });
-})
+});

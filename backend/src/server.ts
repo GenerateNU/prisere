@@ -9,7 +9,6 @@ import { FemaService } from "./modules/clients/fema-client/service";
 
 const app = new Hono();
 
-
 (async function setUpServer() {
     try {
         await AppDataSource.initialize();
@@ -24,9 +23,9 @@ const app = new Hono();
 
         setUpRoutes(app, AppDataSource);
 
-        const femaService =  await FemaService.initializeFemaService(AppDataSource);
+        const femaService = await FemaService.initializeFemaService(AppDataSource);
         femaService.initializeCron();
-        
+
         console.log("Connected to Postgres!");
     } catch (err) {
         console.log("Error starting app", err);

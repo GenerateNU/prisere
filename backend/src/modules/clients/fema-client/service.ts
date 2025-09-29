@@ -7,22 +7,24 @@ import { fetch } from "bun";
 const FEMA_API = "https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries";
 
 export interface IFemaService {
-    fetchFemaDisasters({ lastRefreshDate } : { lastRefreshDate: Date }): Promise<void>;
+    fetchFemaDisasters({ lastRefreshDate }: { lastRefreshDate: Date }): Promise<void>;
 }
 
 export class FemaService implements IFemaService {
-
     private db: DataSource;
 
     constructor(db: DataSource) {
         this.db = db;
     }
 
-    fetchFemaDisasters= async ( { lastRefreshDate } : { lastRefreshDate: Date }) => {
+    fetchFemaDisasters = async ({ lastRefreshDate }: { lastRefreshDate: Date }) => {
         const threeMonthsAgo = new Date();
         threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-        
-        const response = await fetch(FEMA_API + `?$filter=declarationDate ge ${threeMonthsAgo.toISOString()} and lastRefresh gt ${lastRefreshDate.toISOString()}`);
+
+        const response = await fetch(
+            FEMA_API +
+                `?$filter=declarationDate ge ${threeMonthsAgo.toISOString()} and lastRefresh gt ${lastRefreshDate.toISOString()}`
+        );
         const { DisasterDeclarationsSummaries } = await response.json();
         const disasterTransaction = new DisasterTransaction(this.db);
         for (const disaster of DisasterDeclarationsSummaries) {
@@ -37,11 +39,9 @@ export class FemaService implements IFemaService {
         return new FemaFetching(femaService);
     }
 
-
-    async preloadDisasters(){
+    async preloadDisasters() {
         const threeMonths = new Date();
         threeMonths.setMonth(threeMonths.getMonth() - 3);
-        await this.fetchFemaDisasters({lastRefreshDate : threeMonths})
+        await this.fetchFemaDisasters({ lastRefreshDate: threeMonths });
     }
 }
-
