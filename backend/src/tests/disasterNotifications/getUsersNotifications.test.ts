@@ -1,17 +1,18 @@
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
+import { describe, test, expect, beforeAll, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { logMessageToFile } from "../../utilities/logger";
 import { randomUUID } from "crypto";
 
-describe("Bulk create disaster notifications", () => {
+describe("Test getting a users disaster notifications", () => {
     let app: Hono;
     let backup: IBackup;
     let createdUserId: String;
     let createdUserId2: String;
     let createdDisasterId: String;
     let createdDisasterId2: String;
+    const hardCodedDisasterId = "a8a1f7e2-4b3d-4c9a-9e7f-123456789abc"
     const userRequestBody = {
         firstName: "Alice",
         lastName: "Bob",
@@ -96,9 +97,6 @@ describe("Bulk create disaster notifications", () => {
         createdDisasterId2 = disasterBody2.femaId;
         
         logMessageToFile(`Created ID: ${createdDisasterId2}`);
-    })
-
-    test("Bulk create", async () => {
         const requestBody = [
             {
                 userId: createdUserId,
@@ -119,101 +117,43 @@ describe("Bulk create disaster notifications", () => {
             body: JSON.stringify(requestBody)
         })
         const body = await response.json();
-        // 
-        // Validate two notifications returned
-        expect(body).toHaveLength(2);
-
-        // Validate unique IDs
-        expect(body[0].id).not.toBe(body[1].id);
-
-        // Validate correct user/disaster IDs
-        expect(body[0].userId).toBe(createdUserId);
-        expect(body[1].userId).toBe(createdUserId2);
-        expect(body[0].femaDisasterId).toBe(createdDisasterId);
-        expect(body[1].femaDisasterId).toBe(createdDisasterId2);
+        
     })
 
+    test("GET users disaster notifications", async () => {
+        const response = await app.request(`/disasterNotification/${createdUserId}`)
+        expect(response.status).toBe(200);
+        const body = await response.json()
+        
+        expect(body.id)
+        expect(body.userId)
+        expect(body.femaDisasterId)
+        expect(body.notificationType)
+        expect(body.notificationStatus)
 
-    test("Bulk create returns 404 for invalid userId", async () => {
-        const invalidUserId = randomUUID(); // Not present in DB
-        const requestBody = [
-            {
-                userId: invalidUserId,
-                femaDisasterId: createdDisasterId,
-                notificationType: 'web'
-            }
-        ];
-        const response = await app.request(`/disasterNotification/create`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(requestBody)
-        });
+        const response2 = await app.request(`/disasterNotification/${createdUserId}`)
+        expect(response2.status).toBe(200);
+        const body2 = await response2.json()
+        console.log('mmmmmmmmmmmmmm')
+        console.log(body2)
+        expect(body2.id)
+        expect(body2.userId)
+        expect(body2.femaDisasterId)
+        expect(body2.notificationType)
+        expect(body2.notificationStatus)
+    })
+
+    test("GET fake user returns 404 user not found", async () => {
+        const response = await app.request(`/disasterNotification/${randomUUID()}`)
         expect(response.status).toBe(404);
         const body = await response.json();
-        expect(body.error).toMatch(/User not found/);
-    });
+        expect(body.error).toMatch(/user not found/);
+    })
 
-    test("Bulk create returns 404 for invalid disasterId", async () => {
-        const invalidDisasterId = randomUUID(); // Not present in DB
-        const requestBody = [
-            {
-                userId: createdUserId,
-                femaDisasterId: invalidDisasterId,
-                notificationType: 'web'
-            }
-        ];
-        const response = await app.request(`/disasterNotification/create`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(requestBody)
-        });
-        expect(response.status).toBe(404);
-        const body = await response.json();
-        expect(body.error).toMatch(/FEMA Disaster not found/);
-    });
-
-    test("Bulk create returns 400 for invalid userId format", async () => {
-        const requestBody = [
-            {
-                userId: "not-a-uuid",
-                femaDisasterId: createdDisasterId,
-                notificationType: 'web'
-            }
-        ];
-        const response = await app.request(`/disasterNotification/create`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(requestBody)
-        });
+    test("GET user ID with incorrect format returns a 400", async () => {
+        const response = await app.request(`/disasterNotification/user-id}`)
         expect(response.status).toBe(400);
         const body = await response.json();
-        expect(body.error).toMatch(/Invalid UUID format for userId/);
-    });
-
-    test("Bulk create returns 400 for invalid disasterId format", async () => {
-        const requestBody = [
-            {
-                userId: createdUserId,
-                femaDisasterId: "not-a-uuid",
-                notificationType: 'web'
-            }
-        ];
-        const response = await app.request(`/disasterNotification/create`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(requestBody)
-        });
-        expect(response.status).toBe(400);
-        const body = await response.json();
-        expect(body.error).toMatch(/Invalid UUID format for femaDisasterId/);
-    });
-
+        expect(body.error).toMatch(/Invalid user ID format/);
+    })
 })

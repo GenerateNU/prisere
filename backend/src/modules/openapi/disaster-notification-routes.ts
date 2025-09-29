@@ -1,8 +1,8 @@
 import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
-import { DisasterNotificationTransaction, IDisasterNotificationTransaction } from "../disasterNotifications.ts/transaction";
-import { DisasterNotificationService, IDisasterNotificationService } from "../disasterNotifications.ts/service";
-import { DisasterNotificationController, IDisasterNotificationController } from "../disasterNotifications.ts/controller";
+import { DisasterNotificationTransaction, IDisasterNotificationTransaction } from "../disasterNotifications/transaction";
+import { DisasterNotificationService, IDisasterNotificationService } from "../disasterNotifications/service";
+import { DisasterNotificationController, IDisasterNotificationController } from "../disasterNotifications/controller";
 import { setUpOpenApiRoutes } from "./all-routes";
 import { BulkCreateNotificationsRequest, BulkCreateNotificationsRequestSchema, BulkCreateNotificationsResponseSchema } from "../../types/DisasterNotification"
 
