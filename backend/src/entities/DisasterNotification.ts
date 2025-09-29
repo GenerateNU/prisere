@@ -1,7 +1,5 @@
 import { UUID } from "crypto";
 import { Entity, PrimaryGeneratedColumn, Column , ManyToOne, JoinColumn} from "typeorm";
-import {User} from './User'
-import { FemaDisaster } from './FemaDisaster'
 import { EnumDeclaration } from "typescript";
 
 export enum NotificationType {
@@ -20,13 +18,19 @@ export class DisasterNotification{
     @PrimaryGeneratedColumn("uuid")
     id!: string
 
-    @ManyToOne(() => User, user => user.disasterNotifications)
-    @JoinColumn({ name: 'userId' }) // Optional field to speficy the column name
-    user!: User;
+    @Column()
+    userId!: string;
 
-    @ManyToOne(() => FemaDisaster, femaDisaster => femaDisaster.disasterNotifications)
-    @JoinColumn({ name: 'disasterId' })
-    femaDisaster!: FemaDisaster
+    @ManyToOne("user", "disasterNotification")
+    @JoinColumn({ name: 'userId' })
+    user!: any; //Can't import User due to circular dependency
+
+    @Column()
+    femaDisasterId!: string;
+
+    @ManyToOne("fema_disaster", "disasterNotifications")
+    @JoinColumn({ name: 'femaDisasterId' })
+    femaDisaster!: any;
 
     @Column({
         type: "enum",
@@ -39,14 +43,14 @@ export class DisasterNotification{
         enum: NotificationStatus,
         default: NotificationStatus.UNREAD
     })
-    notifiactionStatus!: NotificationStatus
+    notificationStatus?: NotificationStatus
 
-    @Column()
-    firstSentAt!: Date
+    @Column({ nullable: true })
+    firstSentAt?: Date
 
-    @Column()
-    lastSentAt!: Date
+    @Column({ nullable: true })
+    lastSentAt?: Date
 
-    @Column()
-    acknowledgedAt!: Date
+    @Column({ nullable: true })
+    acknowledgedAt?: Date
 }

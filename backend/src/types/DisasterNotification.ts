@@ -6,19 +6,19 @@ const notificationStatus = ['unread', 'read', 'acknowledged'] as const;
 export const DisasterNotification = z.object({
     id: z.string(),
     userId: z.string(),
-    disasterId: z.string(),
+    femaDisasterId: z.string(),
     notificationType: z.enum(notificationTypes),
-    notificationStatus: z.enum(notificationStatus),
-    firstSentAt: z.coerce.date(),
-    lastSentAt: z.coerce.date(),
-    acknowledgedAt: z.coerce.date()
+    notificationStatus: z.enum(notificationStatus).optional().nullable(),
+    firstSentAt: z.date().optional().nullable(),
+    lastSentAt: z.date().optional().nullable(),
+    acknowledgedAt: z.date().optional().nullable()
 });
 
 export type DisasterNotificationType = z.infer<typeof DisasterNotification>;
 
 // GET /api/notifications/{user-id}
 export const GetUsersDisasterNotificationsResponseSchema = z.array(DisasterNotification);
-export type GetUsersDisasterNotificationsResponse = DisasterNotificationType[];
+export type GetUsersDisasterNotificationsResponse = DisasterNotificationType[] | {error: string};
 // for GET request payload validation:
 export const GetUsersDisasterNotificationsDTOSchema = z.object({
     id: z.string()
@@ -38,9 +38,9 @@ export type DismissNotificationResponse = DisasterNotificationType;
 export const BulkCreateNotificationsRequestSchema = z.array(
     z.object({
         userId: z.string(),
-        disasterId: z.string(),
+        femaDisasterId: z.string(),
         notificationType: z.enum(notificationTypes),
-        // Optionally add other fields needed for creation
+        // Only created with these 3 attributes set, rest start null
     })
 );
 export type BulkCreateNotificationsRequest = z.infer<typeof BulkCreateNotificationsRequestSchema>;

@@ -1,19 +1,18 @@
 import { Entity, PrimaryColumn, Column , OneToOne, JoinColumn, Not} from "typeorm";
-import { User } from "./User";
 
 export enum NotificationFrequency {
     DAILY = 'daily',
     WEEKLY = 'weekly'
 }
 
-@Entity()
+@Entity("userPreferences")
 export class UserPreferences {
     @PrimaryColumn('uuid')
     userId!: string;
 
-    @OneToOne(() => User, user => user.userPreferences, { onDelete: 'CASCADE' }) // deleted preferences when user is deleted
+    @OneToOne("user", "userPreferences", { onDelete: 'CASCADE' }) // deleted preferences when user is deleted
     @JoinColumn({ name: 'userId' })
-    user!: User;
+    user!: any;
 
     @Column({ default: true })
     webNotifications!: boolean
