@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, OneToOne } from "typeorm";
 import { Company } from "./Company.js";
-import { DisasterNotification } from "./DisasterNotification.js";
 import { UserPreferences } from "./UserPrefrences.js";
 
 @Entity("user")
@@ -24,9 +23,9 @@ export class User {
     @Column({ nullable: true })
     companyId?: string;
 
-    @OneToMany(() => DisasterNotification, (disasterNotification: { user: User; }) => disasterNotification.user, { nullable: true })
-    disasterNotifications!: DisasterNotification[];
+    @OneToMany("disasterNotification", "user", { nullable: true })
+    disasterNotifications!: any[];
 
-    @OneToOne(() => UserPreferences, (userPreferences: { user: User; }) => userPreferences.user, { cascade: true }) // cascase true will automatically save user preferences when saving user
+    @OneToOne("disasterNotification", "user", { cascade: true }) // cascase true will automatically save user preferences when saving user
     userPreferences!: UserPreferences
 }
