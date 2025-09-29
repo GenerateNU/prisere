@@ -7,7 +7,7 @@ export const CreateUserDTOSchema = z.object({
     firstName: z.string().nonempty(),
     lastName: z.string().nonempty(),
     email: z.string().email().optional(),
-    companyId: z.string().nullish()
+    companyId: z.string().nullish(),
 });
 
 export const CreateUserResponseSchema = z.object({

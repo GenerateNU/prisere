@@ -28,14 +28,13 @@ describe("Bulk create disaster notifications", () => {
         fipsCountyCode: 12345,
         declarationType: "11",
         designatedArea: "County A",
-        designatedIncidentTypes: "1"
-    }
+        designatedIncidentTypes: "1",
+    };
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
-
     });
 
     beforeEach(async () => {
@@ -50,7 +49,7 @@ describe("Bulk create disaster notifications", () => {
             body: JSON.stringify(userRequestBody),
         });
         const userBody = await userResponse.json();
-        console.log(userBody)
+        console.log(userBody);
         createdUserId = userBody.id;
         logMessageToFile(`Created ID: ${createdUserId}`);
 
@@ -67,11 +66,11 @@ describe("Bulk create disaster notifications", () => {
 
         const disasterRequestBody1 = {
             ...disasterRequestBody,
-            femaId: randomUUID()
+            femaId: randomUUID(),
         };
         const disasterRequestBody2 = {
             ...disasterRequestBody,
-            femaId: randomUUID()
+            femaId: randomUUID(),
         };
         const disasterResponse = await app.request("/disaster", {
             method: "POST",
@@ -81,7 +80,7 @@ describe("Bulk create disaster notifications", () => {
             body: JSON.stringify(disasterRequestBody1),
         });
         const disasterBody = await disasterResponse.json();
-        
+
         createdDisasterId = disasterBody.femaId;
         logMessageToFile(`Created ID: ${createdDisasterId}`);
 
@@ -94,32 +93,32 @@ describe("Bulk create disaster notifications", () => {
         });
         const disasterBody2 = await disasterResponse2.json();
         createdDisasterId2 = disasterBody2.femaId;
-        
+
         logMessageToFile(`Created ID: ${createdDisasterId2}`);
-    })
+    });
 
     test("Bulk create", async () => {
         const requestBody = [
             {
                 userId: createdUserId,
                 femaDisasterId: createdDisasterId,
-                notificationType: 'web'
+                notificationType: "web",
             },
             {
                 userId: createdUserId2,
                 femaDisasterId: createdDisasterId2,
-                notificationType: 'email'
-            }
-        ]
+                notificationType: "email",
+            },
+        ];
         const response = await app.request(`/disasterNotification/create`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(requestBody)
-        })
+            body: JSON.stringify(requestBody),
+        });
         const body = await response.json();
-        // 
+        //
         // Validate two notifications returned
         expect(body).toHaveLength(2);
 
@@ -131,8 +130,7 @@ describe("Bulk create disaster notifications", () => {
         expect(body[1].userId).toBe(createdUserId2);
         expect(body[0].femaDisasterId).toBe(createdDisasterId);
         expect(body[1].femaDisasterId).toBe(createdDisasterId2);
-    })
-
+    });
 
     test("Bulk create returns 404 for invalid userId", async () => {
         const invalidUserId = randomUUID(); // Not present in DB
@@ -140,15 +138,15 @@ describe("Bulk create disaster notifications", () => {
             {
                 userId: invalidUserId,
                 femaDisasterId: createdDisasterId,
-                notificationType: 'web'
-            }
+                notificationType: "web",
+            },
         ];
         const response = await app.request(`/disasterNotification/create`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(requestBody)
+            body: JSON.stringify(requestBody),
         });
         expect(response.status).toBe(404);
         const body = await response.json();
@@ -161,15 +159,15 @@ describe("Bulk create disaster notifications", () => {
             {
                 userId: createdUserId,
                 femaDisasterId: invalidDisasterId,
-                notificationType: 'web'
-            }
+                notificationType: "web",
+            },
         ];
         const response = await app.request(`/disasterNotification/create`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(requestBody)
+            body: JSON.stringify(requestBody),
         });
         expect(response.status).toBe(404);
         const body = await response.json();
@@ -181,15 +179,15 @@ describe("Bulk create disaster notifications", () => {
             {
                 userId: "not-a-uuid",
                 femaDisasterId: createdDisasterId,
-                notificationType: 'web'
-            }
+                notificationType: "web",
+            },
         ];
         const response = await app.request(`/disasterNotification/create`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(requestBody)
+            body: JSON.stringify(requestBody),
         });
         expect(response.status).toBe(400);
         const body = await response.json();
@@ -201,19 +199,18 @@ describe("Bulk create disaster notifications", () => {
             {
                 userId: createdUserId,
                 femaDisasterId: "not-a-uuid",
-                notificationType: 'web'
-            }
+                notificationType: "web",
+            },
         ];
         const response = await app.request(`/disasterNotification/create`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(requestBody)
+            body: JSON.stringify(requestBody),
         });
         expect(response.status).toBe(400);
         const body = await response.json();
         expect(body.error).toMatch(/Invalid UUID format for femaDisasterId/);
     });
-
-})
+});

@@ -1,10 +1,10 @@
-import { z } from "zod";
+// import { z } from "zod";
 
-const notificationFrequencies = ['daily', 'weekly']
+// const notificationFrequencies = ['daily', 'weekly']
 
-const UserPreferences = z.object({
-    id: z.string(),
-    webNotifications: z.boolean(),
-    emailNotification: z.boolean(),
-    notificationFrequency: z.enum(notificationFrequencies)
-})
+// const UserPreferences = z.object({
+//     id: z.string(),
+//     webNotifications: z.boolean(),
+//     emailNotification: z.boolean(),
+//     notificationFrequency: z.enum(notificationFrequencies)
+// })

@@ -12,7 +12,7 @@ describe("Test getting a users disaster notifications", () => {
     let createdUserId2: String;
     let createdDisasterId: String;
     let createdDisasterId2: String;
-    
+
     const userRequestBody = {
         firstName: "Alice",
         lastName: "Bob",
@@ -29,14 +29,13 @@ describe("Test getting a users disaster notifications", () => {
         fipsCountyCode: 12345,
         declarationType: "11",
         designatedArea: "County A",
-        designatedIncidentTypes: "1"
-    }
+        designatedIncidentTypes: "1",
+    };
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
-
     });
 
     beforeEach(async () => {
@@ -51,7 +50,7 @@ describe("Test getting a users disaster notifications", () => {
             body: JSON.stringify(userRequestBody),
         });
         const userBody = await userResponse.json();
-        console.log(userBody)
+        console.log(userBody);
         createdUserId = userBody.id;
         logMessageToFile(`Created ID: ${createdUserId}`);
 
@@ -68,11 +67,11 @@ describe("Test getting a users disaster notifications", () => {
 
         const disasterRequestBody1 = {
             ...disasterRequestBody,
-            femaId: randomUUID()
+            femaId: randomUUID(),
         };
         const disasterRequestBody2 = {
             ...disasterRequestBody,
-            femaId: randomUUID()
+            femaId: randomUUID(),
         };
         const disasterResponse = await app.request("/disaster", {
             method: "POST",
@@ -82,7 +81,7 @@ describe("Test getting a users disaster notifications", () => {
             body: JSON.stringify(disasterRequestBody1),
         });
         const disasterBody = await disasterResponse.json();
-        
+
         createdDisasterId = disasterBody.femaId;
         logMessageToFile(`Created ID: ${createdDisasterId}`);
 
@@ -95,65 +94,64 @@ describe("Test getting a users disaster notifications", () => {
         });
         const disasterBody2 = await disasterResponse2.json();
         createdDisasterId2 = disasterBody2.femaId;
-        
+
         logMessageToFile(`Created ID: ${createdDisasterId2}`);
         const requestBody = [
             {
                 userId: createdUserId,
                 femaDisasterId: createdDisasterId,
-                notificationType: 'web'
+                notificationType: "web",
             },
             {
                 userId: createdUserId2,
                 femaDisasterId: createdDisasterId2,
-                notificationType: 'email'
-            }
-        ]
+                notificationType: "email",
+            },
+        ];
         const response = await app.request(`/disasterNotification/create`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(requestBody)
-        })
-        console.log(response.json())
-        
-    })
+            body: JSON.stringify(requestBody),
+        });
+        console.log(response.json());
+    });
 
     test("GET users disaster notifications", async () => {
-        const response = await app.request(`/disasterNotification/${createdUserId}`)
+        const response = await app.request(`/disasterNotification/${createdUserId}`);
         expect(response.status).toBe(200);
-        const body = await response.json()
-        
-        expect(body.id)
-        expect(body.userId)
-        expect(body.femaDisasterId)
-        expect(body.notificationType)
-        expect(body.notificationStatus)
+        const body = await response.json();
 
-        const response2 = await app.request(`/disasterNotification/${createdUserId}`)
+        expect(body.id);
+        expect(body.userId);
+        expect(body.femaDisasterId);
+        expect(body.notificationType);
+        expect(body.notificationStatus);
+
+        const response2 = await app.request(`/disasterNotification/${createdUserId}`);
         expect(response2.status).toBe(200);
-        const body2 = await response2.json()
-        console.log('mmmmmmmmmmmmmm')
-        console.log(body2)
-        expect(body2.id)
-        expect(body2.userId)
-        expect(body2.femaDisasterId)
-        expect(body2.notificationType)
-        expect(body2.notificationStatus)
-    })
+        const body2 = await response2.json();
+        console.log("mmmmmmmmmmmmmm");
+        console.log(body2);
+        expect(body2.id);
+        expect(body2.userId);
+        expect(body2.femaDisasterId);
+        expect(body2.notificationType);
+        expect(body2.notificationStatus);
+    });
 
     test("GET fake user returns 404 user not found", async () => {
-        const response = await app.request(`/disasterNotification/${randomUUID()}`)
+        const response = await app.request(`/disasterNotification/${randomUUID()}`);
         expect(response.status).toBe(404);
         const body = await response.json();
         expect(body.error).toMatch(/user not found/);
-    })
+    });
 
     test("GET user ID with incorrect format returns a 400", async () => {
-        const response = await app.request(`/disasterNotification/user-id}`)
+        const response = await app.request(`/disasterNotification/user-id}`);
         expect(response.status).toBe(400);
         const body = await response.json();
         expect(body.error).toMatch(/Invalid user ID format/);
-    })
-})
+    });
+});

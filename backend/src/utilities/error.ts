@@ -5,10 +5,12 @@ import { HTTPException } from "hono/http-exception";
 import { logMessageToFile, logObjectToFile } from "./logger";
 import { z } from "zod";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const withServiceErrorHandling = <T extends any[], R>(handler: (...args: T) => Promise<R>) => {
     return async (...args: T): Promise<R> => {
         try {
             return await handler(...args);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.log(error);
             if (Boom.isBoom(error)) {
@@ -31,6 +33,7 @@ export const withServiceErrorHandling = <T extends any[], R>(handler: (...args: 
     };
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const withControllerErrorHandling = <T extends any[], R>(handler: (ctx: Context, ...args: T) => Promise<R>) => {
     return async (ctx: Context, ...args: T): Promise<R | Response> => {
         try {

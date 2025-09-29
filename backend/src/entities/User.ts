@@ -24,8 +24,9 @@ export class User {
     companyId?: string;
 
     @OneToMany("disasterNotification", "user", { nullable: true })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     disasterNotifications!: any[];
 
     @OneToOne("disasterNotification", "user", { cascade: true }) // cascase true will automatically save user preferences when saving user
-    userPreferences!: UserPreferences
+    userPreferences!: UserPreferences;
 }
