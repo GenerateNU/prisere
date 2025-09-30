@@ -1,7 +1,6 @@
 import { DataSource } from "typeorm";
 import { DisasterTransaction } from "../../disaster/transaction";
 import { CreateDisasterDTOSchema } from "../../../types/disaster";
-import { FemaFetching } from "../../../utilities/cron_job_handler";
 import { fetch } from "bun";
 
 const FEMA_API = "https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries";
