@@ -1,11 +1,11 @@
 import { CronJob } from "cron";
 import { FemaService } from "../modules/clients/fema-client/service";
 
-export interface CronJobHander {
+export interface CronJobHandler {
     initializeCron(): CronJob;
 }
 
-export class FemaFetching implements CronJobHander {
+export class FemaFetching implements CronJobHandler {
     private femaService: FemaService;
 
     constructor(femaService: FemaService) {

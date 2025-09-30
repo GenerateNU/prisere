@@ -33,12 +33,6 @@ export class FemaService implements IFemaService {
         }
     };
 
-    public static async initializeFemaService(dataSource: DataSource): Promise<FemaFetching> {
-        const femaService = new FemaService(dataSource);
-        await femaService.preloadDisasters();
-        return new FemaFetching(femaService);
-    }
-
     async preloadDisasters() {
         const threeMonths = new Date();
         threeMonths.setMonth(threeMonths.getMonth() - 3);

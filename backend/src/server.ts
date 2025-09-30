@@ -6,6 +6,7 @@ import { setUpRoutes } from "./routes";
 import { errorHandler } from "./utilities/error";
 import { logMessageToFile } from "./utilities/logger";
 import { FemaService } from "./modules/clients/fema-client/service";
+import { FemaFetching } from "./utilities/cron_job_handler";
 
 const app = new Hono();
 
@@ -23,8 +24,10 @@ const app = new Hono();
 
         setUpRoutes(app, AppDataSource);
 
-        const femaService = await FemaService.initializeFemaService(AppDataSource);
-        femaService.initializeCron();
+        const femaService = new FemaService(AppDataSource);
+        await femaService.preloadDisasters();
+        const femaDisastersCron = new FemaFetching(femaService);
+        femaDisastersCron.initializeCron();
 
         console.log("Connected to Postgres!");
     } catch (err) {
