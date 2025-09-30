@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, OneToOne } from "typeorm";
-import { Company } from "./Company.js";
-import { UserPreferences } from "./UserPrefrences.js";
+import { Company } from "./Company";
+import { DisasterNotification } from "./DisasterNotification";
 
 @Entity("user")
 export class User {
@@ -23,10 +23,7 @@ export class User {
     @Column({ nullable: true })
     companyId?: string;
 
-    @OneToMany("disasterNotification", "user", { nullable: true })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    disasterNotifications!: any[];
+    @OneToMany(() => DisasterNotification, (disasterNotification) => disasterNotification.user)
+    disasterNotifications!: DisasterNotification[];
 
-    @OneToOne("disasterNotification", "user", { cascade: true }) // cascase true will automatically save user preferences when saving user
-    userPreferences!: UserPreferences;
 }

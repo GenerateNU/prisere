@@ -11,8 +11,6 @@ import {
     BulkCreateNotificationsResponseSchema,
 } from "../../types/DisasterNotification";
 
-// Add more schemas as needed for other routes
-// import { DisasterNotificationResponseSchema, ... } from "../../types/DisasterNotification";
 
 export const addOpenApiDisasterNotificationRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const disasterNotificationTransaction: IDisasterNotificationTransaction = new DisasterNotificationTransaction(db);

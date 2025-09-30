@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryColumn, OneToMany } from "typeorm";
+import { DisasterNotification } from "./DisasterNotification";
 
 @Entity("fema_disaster")
 export class FemaDisaster {
@@ -32,7 +33,6 @@ export class FemaDisaster {
     @Column()
     designatedIncidentTypes!: string;
 
-    @OneToMany("disasterNotification", "fema_disaster", { nullable: true })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    disasterNotifications!: any[];
+    @OneToMany(() => DisasterNotification, (notification) => notification.femaDisaster, { nullable: true })
+    disasterNotifications!: DisasterNotification[];
 }
