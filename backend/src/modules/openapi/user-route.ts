@@ -1,16 +1,17 @@
 import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import {
-    CreateUserAPIResponseSchema,
     CreateUserDTOSchema,
     GetUserAPIResponseSchema,
     GetUserComapnyAPIResponseSchema as GetUserCompanyAPIResponseSchema,
     GetUserComapnyDTOSchema,
     GetUserDTOSchema,
-} from "../user/types";
+    CreateUserResponseSchema,
+} from "../../types/user";
 import { IUserController, UserController } from "../user/controller";
 import { IUserService, UserService } from "../user/service";
 import { IUserTransaction, UserTransaction } from "../user/transaction";
+import { openApiErrorCodes } from "../../utilities/error";
 
 export const addOpenApiUserRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const userTransaction: IUserTransaction = new UserTransaction(db);
@@ -41,7 +42,7 @@ const createUserRoute = createRoute({
         201: {
             content: {
                 "application/json": {
-                    schema: CreateUserResponseSchema,
+                    schema:  CreateUserResponseSchema,
                 },
             },
             description: "Create user response",

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ErrorResponseSchema } from "../../types/Utils";
+import { ErrorResponseSchema } from "./Utils";
 
 /* Zod schemas for OpenAPI docs */
 //POST

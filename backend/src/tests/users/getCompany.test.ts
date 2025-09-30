@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { GetUserCompanyResponseSchema } from "../../modules/user/types";
+import { GetUserCompanyResponseSchema } from "../../types/user";
 import { validate } from "uuid";
 
 describe("GET /users/:id/company", () => {
