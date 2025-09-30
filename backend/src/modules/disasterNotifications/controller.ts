@@ -5,15 +5,14 @@ import { validate } from "uuid";
 import {
     GetUsersDisasterNotificationsResponse,
     GetUsersDisasterNotificationsDTOSchema,
-    DisasterNotification,
     BulkCreateNotificationsRequestSchema,
     BulkCreateNotificationsResponse,
     DeleteNotificationResponse,
     AcknowledgeNotificationResponse,
-    DismissNotificationResponse,
-    BulkCreateNotificationsResponseSchema,
+    DismissNotificationResponse
 } from "../../types/DisasterNotification";
-import { NotificationType } from "../../entities/DisasterNotification";
+import { NotificationType } from "../../types/NotificationEnums";
+
 
 export interface IDisasterNotificationController {
     getUserNotifications(ctx: Context): Promise<TypedResponse<GetUsersDisasterNotificationsResponse> | Response>;
@@ -72,9 +71,6 @@ export class DisasterNotificationController implements IDisasterNotificationCont
                     : undefined,
             }));
 
-            // Validate mapped array
-            // const validated = GetUsersDisasterNotificationsResponseSchema.parse(mapped);
-
             return ctx.json(mapped, 200);
         }
     );
@@ -86,33 +82,7 @@ export class DisasterNotificationController implements IDisasterNotificationCont
         }
         const notification = await this.notificationService.acknowledgeNotification(notificationId);
 
-        // Map to DisasterNotificationType shape if needed
-        const mapped = {
-            id: notification.id,
-            userId: notification.userId,
-            femaDisasterId: notification.femaDisasterId,
-            notificationType: notification.notificationType,
-            notificationStatus: notification.notificationStatus,
-            firstSentAt: notification.firstSentAt
-                ? typeof notification.firstSentAt === "string"
-                    ? new Date(notification.firstSentAt)
-                    : notification.firstSentAt
-                : undefined,
-            lastSentAt: notification.lastSentAt
-                ? typeof notification.lastSentAt === "string"
-                    ? new Date(notification.lastSentAt)
-                    : notification.lastSentAt
-                : undefined,
-            acknowledgedAt: notification.acknowledgedAt
-                ? typeof notification.acknowledgedAt === "string"
-                    ? new Date(notification.acknowledgedAt)
-                    : notification.acknowledgedAt
-                : undefined,
-        };
-
-        // const validated = DisasterNotification.parse(mapped);
-
-        return ctx.json(mapped, 200);
+        return ctx.json(notification, 200);
     });
 
     dismissNotification = withControllerErrorHandling(async (ctx: Context): Promise<Response> => {
@@ -122,21 +92,7 @@ export class DisasterNotificationController implements IDisasterNotificationCont
         }
         const notification = await this.notificationService.dismissNotification(notificationId);
 
-        // Map to DisasterNotificationType shape if needed
-        const mapped = {
-            id: notification.id,
-            userId: notification.userId,
-            femaDisasterId: notification.femaDisasterId,
-            notificationType: notification.notificationType,
-            notificationStatus: notification.notificationStatus,
-            firstSentAt: notification.firstSentAt,
-            lastSentAt: notification.lastSentAt,
-            acknowledgedAt: notification.acknowledgedAt,
-        };
-
-        const validated = DisasterNotification.parse(mapped);
-
-        return ctx.json(validated, 200);
+        return ctx.json(notification, 200);
     });
 
     bulkCreateNotifications = withControllerErrorHandling(async (ctx: Context): Promise<Response> => {
@@ -149,29 +105,7 @@ export class DisasterNotificationController implements IDisasterNotificationCont
 
         const created = await this.notificationService.bulkCreateNotifications(convertedPayload);
 
-        // Map entities to DTOs
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const mapped = created.map((notification: any) => ({
-            id: notification.id,
-            userId:
-                typeof notification.user === "string"
-                    ? notification.user
-                    : (notification.user?.id ?? notification.userId),
-            femaDisasterId:
-                typeof notification.femaDisaster === "string"
-                    ? notification.femaDisaster
-                    : (notification.femaDisaster?.id ?? notification.femaDisasterId),
-            notificationType: notification.notificationType,
-            notificationStatus: notification.notificationStatus,
-            firstSentAt: notification.firstSentAt,
-            lastSentAt: notification.lastSentAt,
-            acknowledgedAt: notification.acknowledgedAt,
-        }));
-
-        // Validate mapped array
-        const validated = BulkCreateNotificationsResponseSchema.parse(mapped);
-
-        return ctx.json(validated, 201);
+        return ctx.json(created, 201);
     });
 
     deleteNotification = withControllerErrorHandling(

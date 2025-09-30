@@ -1,15 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-
-export enum NotificationType {
-    WEB = "web",
-    EMAIL = "email",
-}
-
-export enum NotificationStatus {
-    UNREAD = "unread",
-    READ = "read",
-    ACKNOWLEDGED = "acknowledged",
-}
+import { FemaDisaster } from "./FemaDisaster";
+import { User } from "./User";
+import { NotificationType, NotificationStatus } from "../types/NotificationEnums";
 
 @Entity("disasterNotification")
 export class DisasterNotification {
@@ -19,18 +11,17 @@ export class DisasterNotification {
     @Column()
     userId!: string;
 
-    @ManyToOne("user", "disasterNotification")
+    @ManyToOne(() => User, (user) => user.disasterNotifications)
     @JoinColumn({ name: "userId" })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    user!: any; //Can't import User due to circular dependency
+    user!: User; //Can't import User due to circular dependency
 
     @Column()
     femaDisasterId!: string;
 
-    @ManyToOne("fema_disaster", "disasterNotifications")
+    @ManyToOne(() => FemaDisaster, (femaDisaster) => femaDisaster.disasterNotifications)
     @JoinColumn({ name: "femaDisasterId" })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    femaDisaster!: any;
+    femaDisaster!: FemaDisaster;
 
     @Column({
         type: "enum",
@@ -54,3 +45,4 @@ export class DisasterNotification {
     @Column({ nullable: true })
     acknowledgedAt?: Date;
 }
+
