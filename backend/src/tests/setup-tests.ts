@@ -1,9 +1,9 @@
+import "reflect-metadata";
 import { Hono } from "hono";
 import { DataSource } from "typeorm";
 import { newDb, DataType, IMemoryDb } from "pg-mem";
 import { runSeeders } from "typeorm-extension";
 import { setUpRoutes } from "../routes";
-import { User } from "../entities/User.js";
 import { v4 } from "uuid";
 import { TestAppData } from "../types/Test";
 
@@ -41,7 +41,7 @@ export const startTestApp = async (): Promise<TestAppData> => {
     const db = await createNewDB();
     const TestDataSource: DataSource = await db.adapters.createTypeormDataSource({
         type: "postgres",
-        entities: [User],
+        entities: ["src/entities/*.ts"],
     });
 
     await TestDataSource.initialize();

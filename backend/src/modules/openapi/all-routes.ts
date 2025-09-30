@@ -2,6 +2,9 @@ import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { DataSource } from "typeorm";
 import { addOpenApiUserRoutes } from "./user-route";
+import { addOpenApiDisasterRoutes } from "./disaster-routes";
+import { addOpenApiCompanyRoutes } from "./company-routes";
+import { addOpenApiLocationAddressRoutes } from "./location-address-route";
 
 export const setUpOpenApiRoutes = (db: DataSource) => {
     const openApiApp = openApiRoutes(db);
@@ -12,9 +15,14 @@ export const setUpOpenApiRoutes = (db: DataSource) => {
             version: "1.0.0",
             title: "Prisere API",
         },
+        servers: [
+            {
+                url: "/api"
+            }
+        ]
     });
 
-    openApiApp.get("/docs", swaggerUI({ url: "/openapi/spec.json" }));
+    openApiApp.get("/docs", swaggerUI({ url: "spec.json" }));
     return openApiApp;
 };
 
@@ -22,6 +30,9 @@ const openApiRoutes = (db: DataSource): OpenAPIHono => {
     const openApi = new OpenAPIHono();
 
     addOpenApiUserRoutes(openApi, db);
+    addOpenApiCompanyRoutes(openApi, db);
+    addOpenApiDisasterRoutes(openApi, db);
+    addOpenApiLocationAddressRoutes(openApi, db);
 
     return openApi;
 };

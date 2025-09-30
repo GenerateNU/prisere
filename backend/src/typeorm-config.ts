@@ -13,7 +13,7 @@ const options: DataSourceOptions & SeederOptions = {
     url: databaseUrl,
     synchronize: false,
     logging: false,
-    entities: ["src/entities/*.ts"],
+    entities: ["src/entities/*.{ts,js}"],
     migrations: ["src/migrations/*.ts"],
     seeds: [UserSeeder],
     seedTracking: false,
