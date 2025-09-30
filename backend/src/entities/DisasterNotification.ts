@@ -1,7 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import typeorm, { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { FemaDisaster } from "./FemaDisaster";
-import { User } from "./User";
+import type { Relation } from "typeorm";
+// import { User } from "./User";
 import { NotificationType, NotificationStatus } from "../types/NotificationEnums";
+import { User } from "./User";
 
 @Entity("disasterNotification")
 export class DisasterNotification {
@@ -11,15 +13,14 @@ export class DisasterNotification {
     @Column()
     userId!: string;
 
-    @ManyToOne(() => User, (user) => user.disasterNotifications)
+    @ManyToOne(() => User, {nullable: false})
     @JoinColumn({ name: "userId" })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    user!: User; //Can't import User due to circular dependency
+    user!: typeorm.Relation<User>;
 
     @Column()
     femaDisasterId!: string;
 
-    @ManyToOne(() => FemaDisaster, (femaDisaster) => femaDisaster.disasterNotifications)
+    @ManyToOne(() => FemaDisaster)
     @JoinColumn({ name: "femaDisasterId" })
     femaDisaster!: FemaDisaster;
 
