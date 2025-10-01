@@ -9,7 +9,9 @@ export const withServiceErrorHandling = <T extends any[], R>(handler: (...args: 
         try {
             return await handler(...args);
         } catch (error: any) {
-            console.log(error);
+            if (process.env.NODE_ENV !== "test") {
+                console.error(error);
+            }
             if (Boom.isBoom(error)) {
                 throw error;
             } else if (error?.name === "QueryFailedError") {
@@ -86,15 +88,17 @@ export const errorHandler: ErrorHandler = (err: Error, c: Context) => {
 
 const logErrors = (err: Error, c: Context) => {
     const includeStack = process.env.NODE_ENV === "development";
-    console.error("Error occurred:", {
-        message: err.message,
-        ...(includeStack && {
-            stack: err.stack,
-        }),
-        path: c.req.path,
-        method: c.req.method,
-        timestamp: new Date().toISOString(),
-    });
+    if (process.env.NODE_ENV !== "test") {
+        console.error("Error occurred:", {
+            message: err.message,
+            ...(includeStack && {
+                stack: err.stack,
+            }),
+            path: c.req.path,
+            method: c.req.method,
+            timestamp: new Date().toISOString(),
+        });
+    }
 
     logMessageToFile(
         "Error occurred:",
