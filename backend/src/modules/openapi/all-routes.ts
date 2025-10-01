@@ -19,8 +19,8 @@ export const setUpOpenApiRoutes = (db: DataSource) => {
         servers: [
             {
                 url: openApiServerURL,
-            }
-        ]
+            },
+        ],
     });
 
     openApiApp.get("/docs", swaggerUI({ url: "spec.json" }));
