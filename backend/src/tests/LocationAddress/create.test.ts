@@ -308,7 +308,6 @@ describe("Location Address Controller Tests", () => {
 
             expect(response.status).toBe(404);
             expect(response.ok).toBe(false);
-            console.log(response);
         });
     });
 });
