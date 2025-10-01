@@ -18,7 +18,7 @@ export const setUpOpenApiRoutes = (db: DataSource) => {
         },
         servers: [
             {
-                url: openApiServerURL
+                url: openApiServerURL,
             }
         ]
     });
