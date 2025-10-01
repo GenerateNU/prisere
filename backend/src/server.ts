@@ -22,6 +22,8 @@ const app = new Hono();
 
         setUpRoutes(app, AppDataSource);
 
+        console.log('Registered routes:', app.routes);
+
         console.log("Connected to Postgres!");
     } catch (err) {
         console.log("Error starting app", err);

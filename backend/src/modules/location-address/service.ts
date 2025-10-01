@@ -23,6 +23,14 @@ export interface ILocationAddressService {
      * @param payload The payload used to try find the location address
      */
     getLocationAddress(payload: GetLocationAddressDTO): Promise<GetLocationAddressResponse>;
+
+    /**
+     * Attempts to remove a location address with the given id (in the payload)
+     * @throws If the given id does not map to a location address
+     * @param payload contains the id for the location that must be removed
+     */
+    removeLocationAddressById(payload: GetLocationAddressDTO): Promise<void>;
+
 }
 
 export class LocationAddressService implements ILocationAddressService {
@@ -38,7 +46,7 @@ export class LocationAddressService implements ILocationAddressService {
      * @param payload The payload used to try to create a new location address
      */
     createLocationAddress = withServiceErrorHandling(
-        async (payload: CreateLocationAddressDTO): Promise<LocationAddress> => {
+        async (payload: CreateLocationAddressDTO): Promise<CreateLocationAddressResponse> => {
             const locationAddress = await this.locationAddressTransaction.createLocationAddress(payload);
 
             if (!locationAddress) {
@@ -62,4 +70,10 @@ export class LocationAddressService implements ILocationAddressService {
 
         return locationAddress;
     });
+
+
+    removeLocationAddressById = withServiceErrorHandling(
+        async (payload: GetLocationAddressDTO): Promise<void> => {
+            await this.locationAddressTransaction.removeLocationAddressById(payload);
+        });
 }

@@ -10,4 +10,6 @@ export class Company {
 
     @Column({ type: "timestamptz", nullable: true })
     lastQuickBooksImportTime?: Date;
+
+
 }

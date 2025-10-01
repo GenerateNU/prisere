@@ -1,7 +1,10 @@
 import { Context, TypedResponse } from "hono";
 import { ILocationAddressService } from "./service";
 import { withControllerErrorHandling } from "../../utilities/error";
-import { CreateLocationAddressAPIResponse, CreateLocationAddressSchema, GetLocationAddressAPIResponse } from "./types";
+import {
+    CreateLocationAddressAPIResponse, CreateLocationAddressSchema, GetLocationAddressAPIResponse,
+    GetLocationAddressDTO,
+} from "./types";
 import { validate } from "uuid";
 
 export interface ILocationAddressController {
@@ -18,6 +21,12 @@ export interface ILocationAddressController {
      * @returns The result of the location address fetching or an error
      */
     getLocationAddress(ctx: Context): Promise<Response | TypedResponse<GetLocationAddressAPIResponse>>;
+
+    /**
+     * Will make request to the location address service to remove an existing address
+     * @param ctx the http request
+     */
+    removeLocationAddressById(ctx: Context): Promise<Response>;
 }
 
 // Rename the class to avoid naming conflict
@@ -60,4 +69,17 @@ export class LocationAddressController implements ILocationAddressController {
             return ctx.json(resultingLocationAddress, 201);
         }
     );
+
+    removeLocationAddressById = withControllerErrorHandling(
+        async (ctx: Context): Promise<Response> => {
+            const maybeId = await ctx.req.param("id");
+
+            try {
+                await this.locationAddressService.removeLocationAddressById({id : maybeId})
+            } catch {
+                return ctx.json({ error: "An ID must be provided to get a location address" }, 400);
+            }
+
+            return ctx.body(null, 204);
+        });
 }

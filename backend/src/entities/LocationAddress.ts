@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Company } from "./Company.js";
+
 
 //Represents an address for a location of a company
 @Entity("location_address")
@@ -23,4 +25,11 @@ export class LocationAddress {
 
     @Column({ nullable: true })
     county?: string;
+
+    @Column()
+    companyId!: string;
+
+    @ManyToOne(() => Company)
+    @JoinColumn({ name: "companyId" })
+    company!: Company;
 }

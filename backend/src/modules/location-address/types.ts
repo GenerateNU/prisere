@@ -20,6 +20,8 @@ export const CreateLocationAddressSchema = z.object({
     streetAddress: z.string().nonempty(),
     postalCode: z.number().positive(),
     county: z.string().nonempty().optional(),
+    companyId: z.uuid(),
+
 });
 
 export const CreateLocationAddressResponseSchema = z.object({
@@ -31,6 +33,17 @@ export const GetLocationAddressSchema = z.object({
     id: z.string(),
 });
 
+export const GetAllLocationAddressesSchema = z.array(
+    z.object({
+        country: z.string().nonempty(),
+        stateProvince: z.string().nonempty(),
+        city: z.string().nonempty(),
+        streetAddress: z.string().nonempty(),
+        postalCode: z.number().positive(),
+        county: z.string().nonempty().optional(),
+    })
+);
+
 export const GetLocationAddressResponseSchema = LocationAddressSchema;
 
 export const CreateLocationAddressAPIResponseSchema = z.union([
@@ -39,6 +52,7 @@ export const CreateLocationAddressAPIResponseSchema = z.union([
 ]);
 
 export const GetLocationAddressAPIResponseSchema = z.union([GetLocationAddressResponseSchema, ErrorResponseSchema]);
+export const GetAllLocationAddressesAPIResponseSchema = z.union([GetAllLocationAddressesSchema, ErrorResponseSchema]);
 
 // All types are now inferred from zod schemas
 export type LocationAddress = z.infer<typeof LocationAddressSchema>;
@@ -50,3 +64,4 @@ export type GetLocationAddressResponse = z.infer<typeof GetLocationAddressRespon
 // API Response types
 export type CreateLocationAddressAPIResponse = z.infer<typeof CreateLocationAddressAPIResponseSchema>;
 export type GetLocationAddressAPIResponse = z.infer<typeof GetLocationAddressAPIResponseSchema>;
+export type GetAllLocationAddressesAPIResponse = z.infer<typeof GetAllLocationAddressesAPIResponseSchema>;
