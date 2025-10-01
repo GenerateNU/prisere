@@ -19,8 +19,8 @@ export const addOpenApiUserRoutes = (openApi: OpenAPIHono, db: DataSource): Open
     const userController: IUserController = new UserController(userService);
 
     openApi.openapi(createUserRoute, (ctx) => userController.createUser(ctx));
-    openApi.openapi(_getUserCompanyRoute, (ctx) => userController.getCompany(ctx));
-    openApi.openapi(_getUserRoute, (ctx) => userController.getUser(ctx));
+    //openApi.openapi(_getUserCompanyRoute, (ctx) => userController.getCompany(ctx));
+    //openApi.openapi(_getUserRoute, (ctx) => userController.getUser(ctx));
     return openApi;
 };
 
