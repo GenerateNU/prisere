@@ -1,6 +1,6 @@
 import { Company } from "../../entities/Company";
 import { CreateCompanyDTO, GetCompanyByIdDTO, UpdateQuickBooksImportTimeDTO } from "../../types/Company";
-import { DataSource, InsertResult } from "typeorm";
+import { DataSource } from "typeorm";
 import Boom from "@hapi/boom";
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
@@ -49,7 +49,7 @@ export class CompanyTransaction implements ICompanyTransaction {
         }
 
         try {
-            const result: Company | null = await this.db.getRepository(Company).findOneBy({id: payload.id});
+            const result: Company | null = await this.db.getRepository(Company).findOneBy({ id: payload.id });
 
             // Transform the date field to Date type, if it exists and is a string
             if (result && result.lastQuickBooksImportTime && typeof result.lastQuickBooksImportTime === "string") {

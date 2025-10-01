@@ -17,7 +17,7 @@ export class DisasterTransaction implements IDisasterTransaction {
 
     async createDisaster(payload: CreateDisasterDTO) {
         const disaster = payload;
-        const result:FemaDisaster = await this.db.getRepository(FemaDisaster).save(disaster);
+        const result: FemaDisaster = await this.db.getRepository(FemaDisaster).save(disaster);
         return result;
     }
 

@@ -21,8 +21,8 @@ export class DisasterService implements IDisasterService {
             ...payload,
         });
 
-        if(!disaster){
-            throw Boom.internal("Creating Disaster failed")
+        if (!disaster) {
+            throw Boom.internal("Creating Disaster failed");
         }
 
         return disaster;
