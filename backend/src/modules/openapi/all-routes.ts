@@ -7,6 +7,7 @@ import { addOpenApiCompanyRoutes } from "./company-routes";
 import { addOpenApiLocationAddressRoutes } from "./location-address-route";
 
 export const setUpOpenApiRoutes = (db: DataSource) => {
+    const openApiServerURL = process.env.NODE_ENV === "production" ? "/api" : "";
     const openApiApp = openApiRoutes(db);
 
     openApiApp.doc("/spec.json", {
@@ -17,9 +18,9 @@ export const setUpOpenApiRoutes = (db: DataSource) => {
         },
         servers: [
             {
-                url: "/api"
-            }
-        ]
+                url: openApiServerURL,
+            },
+        ],
     });
 
     openApiApp.get("/docs", swaggerUI({ url: "spec.json" }));
