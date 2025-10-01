@@ -2,7 +2,7 @@ import { afterEach, beforeAll, describe, expect, it } from "bun:test";
 import { Hono } from "hono";
 import { IBackup } from "pg-mem";
 import { startTestApp } from "../setup-tests";
-import { CreateDisasterAPIResponse, CreateDisasterDTO, GetAllDisastersResponseSchema } from "../../types/disaster";
+import { CreateDisasterResponse, CreateDisasterDTO, GetAllDisastersResponseSchema } from "../../types/disaster";
 import { randomUUIDv7 } from "bun";
 
 describe("Create disasters", () => {
@@ -50,7 +50,7 @@ describe("Create disasters", () => {
             "designatedIncidentTypes",
             "femaId",
             "state",
-        ] as (keyof Exclude<CreateDisasterAPIResponse, { error: string }>)[];
+        ] as (keyof Exclude<CreateDisasterResponse, { error: string }>)[];
 
         for (const key of responseKeys) {
             expect(responseBody[key]).toBe(constructedObject[key]);
