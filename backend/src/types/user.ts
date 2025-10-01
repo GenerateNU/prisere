@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { ErrorResponseSchema } from "./Utils";
 
 /* Zod schemas for OpenAPI docs */
 //POST
@@ -40,21 +39,14 @@ export const GetUserCompanyResponseSchema = z.object({
     companyName: z.string(),
 });
 
-export const CreateUserAPIResponseSchema = z.union([CreateUserResponseSchema, ErrorResponseSchema]);
-export const GetUserAPIResponseSchema = z.union([GetUserResponseSchema, ErrorResponseSchema]);
-export const GetUserComapnyAPIResponseSchema = z.union([GetUserCompanyResponseSchema, ErrorResponseSchema]);
-
 /* Zod types for payload validation */
 export type CreateUserDTO = z.infer<typeof CreateUserDTOSchema>;
 export type CreateUserResponse = z.infer<typeof CreateUserResponseSchema>;
-export type CreateUserAPIResponse = z.infer<typeof CreateUserAPIResponseSchema>;
 
 //GET
 export type GetUserDTO = z.infer<typeof GetUserDTOSchema>;
 export type GetUserResponse = z.infer<typeof GetUserResponseSchema>;
-export type GetUserAPIResponse = z.infer<typeof GetUserAPIResponseSchema>;
 
 //GET COMPANY
 export type GetUserCompanyDTO = z.infer<typeof GetUserComapnyDTOSchema>;
 export type GetUserCompanyResponse = z.infer<typeof GetUserCompanyResponseSchema>;
-export type GetUserCompanyAPIResponse = z.infer<typeof GetUserComapnyAPIResponseSchema>;

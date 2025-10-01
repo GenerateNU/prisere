@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { CreateUserResponseSchema } from "../../types/user";
+import { CreateUserResponseSchema } from "../../types/User";
 import { validate } from "uuid";
 
 const resetZahra = () => ({

@@ -2,7 +2,7 @@ import { User } from "../../entities/User";
 import { IUserTransaction } from "./transaction";
 import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
-import { GetUserDTO, CreateUserDTO, GetUserCompanyDTO, GetUserCompanyResponse } from "../../types/user";
+import { GetUserDTO, CreateUserDTO, GetUserCompanyDTO, GetUserCompanyResponse } from "../../types/User";
 
 export interface IUserService {
     createUser(payload: CreateUserDTO): Promise<User>;

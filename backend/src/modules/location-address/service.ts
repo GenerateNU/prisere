@@ -7,7 +7,7 @@ import {
     GetLocationAddressDTO,
     GetLocationAddressResponse,
     LocationAddress,
-} from "./types";
+} from "../../types/Location";
 
 export interface ILocationAddressService {
     /**
