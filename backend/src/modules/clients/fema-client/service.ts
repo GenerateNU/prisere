@@ -7,6 +7,7 @@ const FEMA_API = "https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries
 
 export interface IFemaService {
     fetchFemaDisasters({ lastRefreshDate }: { lastRefreshDate: Date }): Promise<void>;
+    preloadDisasters(): Promise<void>;
 }
 
 export class FemaService implements IFemaService {
