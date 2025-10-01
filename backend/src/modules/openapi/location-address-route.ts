@@ -65,7 +65,10 @@ const getLocationAddressRoute = createRoute({
                     schema: GetLocationAddressResponseSchema,
                 },
             },
-            description: "Finds the associated location address for the given information",
+            description: "The associated location address for the given information",
+        },
+        404: {
+            description: "The given UUID does not have an associated location address in the database",
         },
         ...openApiErrorCodes("Error Getting Location Address"),
     },

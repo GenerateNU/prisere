@@ -46,6 +46,9 @@ const createCompanyRoute = createRoute({
             },
             description: "Company created successfully",
         },
+        404: {
+            description: "Company not found",
+        },
         ...openApiErrorCodes("Create Company Errors"),
     },
     tags: ["Companies"],
@@ -67,6 +70,9 @@ const getCompanyByIdRoute = createRoute({
                 },
             },
             description: "Company fetched successfully",
+        },
+        404: {
+            description: "Company not found",
         },
         ...openApiErrorCodes("Create Company Errors"),
     },

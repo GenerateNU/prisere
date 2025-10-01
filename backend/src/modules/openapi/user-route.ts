@@ -69,6 +69,9 @@ const _getUserRoute = createRoute({
             },
             description: "Successfull fetch of a user from the databse",
         },
+        404: {
+            description: "There does not exist any user in the database such that the given id matches their id",
+        },
         ...openApiErrorCodes("Get User Error"),
     },
 
@@ -91,6 +94,10 @@ const _getUserCompanyRoute = createRoute({
                 },
             },
             description: "Successfull fetch of a user's company from the database",
+        },
+        404: {
+            description:
+                "There does not exist any user in the database such that the given id matches their id OR there is no such user with the given ID that has a non-null company",
         },
         ...openApiErrorCodes("Get Company from User"),
     },
