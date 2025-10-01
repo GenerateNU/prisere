@@ -2,18 +2,19 @@ import { Context, TypedResponse } from "hono";
 import { ICompanyService } from "./service";
 import { withControllerErrorHandling } from "../../utilities/error";
 import {
-    GetCompanyByIdAPIResponse,
-    CreateCompanyAPIResponse,
     CreateCompanyDTOSchema,
     UpdateQuickBooksImportTimeDTOSchema,
+    GetCompanyByIdResponse,
+    CreateCompanyResponse,
 } from "../../types/Company";
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
+import { ControllerResponse } from "../../utilities/response";
 
 export interface ICompanyController {
-    getCompanyById(_ctx: Context): Promise<TypedResponse<GetCompanyByIdAPIResponse> | Response>;
-    createCompany(_ctx: Context): Promise<TypedResponse<CreateCompanyAPIResponse> | Response>;
-    updateQuickbooksImportTime(ctx: Context): Promise<TypedResponse<CreateCompanyAPIResponse> | Response>;
+    getCompanyById(_ctx: Context): ControllerResponse<TypedResponse<GetCompanyByIdResponse, 200>>;
+    createCompany(_ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 201>>;
+    updateQuickbooksImportTime(ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 200>>;
 }
 
 export class CompanyController implements ICompanyController {
@@ -24,7 +25,7 @@ export class CompanyController implements ICompanyController {
     }
 
     getCompanyById = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<GetCompanyByIdAPIResponse>> => {
+        async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyByIdResponse, 200>> => {
             const id = ctx.req.param("id");
             if (!validate(id)) {
                 return ctx.json({ error: "Invalid company ID format" }, 400);
@@ -35,7 +36,7 @@ export class CompanyController implements ICompanyController {
     );
 
     createCompany = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<CreateCompanyAPIResponse>> => {
+        async (ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 201>> => {
             const json = await ctx.req.json();
             const payload = CreateCompanyDTOSchema.parse(json);
             const company = await this.companyService.createCompany(payload);
@@ -44,7 +45,7 @@ export class CompanyController implements ICompanyController {
     );
 
     updateQuickbooksImportTime = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<CreateCompanyAPIResponse>> => {
+        async (ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 200>> => {
             const companyId = ctx.req.param("id");
             const body = await ctx.req.json();
 
@@ -62,12 +63,15 @@ export class CompanyController implements ICompanyController {
                 logMessageToFile("Company not found");
             }
 
-            return ctx.json({
-                ...updated,
-                ...(updated.lastQuickBooksImportTime
-                    ? { lastQuickBooksImportTime: new Date(updated.lastQuickBooksImportTime).toISOString() }
-                    : {}),
-            });
+            return ctx.json(
+                {
+                    ...updated,
+                    ...(updated.lastQuickBooksImportTime
+                        ? { lastQuickBooksImportTime: new Date(updated.lastQuickBooksImportTime).toISOString() }
+                        : {}),
+                },
+                200
+            );
         }
     );
 }

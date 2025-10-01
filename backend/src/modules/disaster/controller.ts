@@ -1,12 +1,12 @@
 import { Context, TypedResponse } from "hono";
 import { withControllerErrorHandling } from "../../utilities/error";
 import { IDisasterService } from "./service";
-import { FemaDisaster } from "../../entities/FemaDisaster";
-import { CreateDisasterAPIResponse, CreateDisasterDTOSchema } from "../../types/disaster";
+import { CreateDisasterDTOSchema, CreateDisasterResponse, GetAllDisastersResponse } from "../../types/disaster";
+import { ControllerResponse } from "../../utilities/response";
 
 export interface IDisasterController {
-    createDisaster(_ctx: Context): Promise<TypedResponse<CreateDisasterAPIResponse> | Response>;
-    getAllDisasters(_ctx: Context): Promise<FemaDisaster[] | Response>;
+    createDisaster(_ctx: Context): ControllerResponse<TypedResponse<CreateDisasterResponse, 201>>;
+    getAllDisasters(_ctx: Context): ControllerResponse<TypedResponse<GetAllDisastersResponse, 200>>;
 }
 
 export class DisasterController implements IDisasterController {
@@ -17,7 +17,7 @@ export class DisasterController implements IDisasterController {
     }
 
     createDisaster = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<CreateDisasterAPIResponse>> => {
+        async (ctx: Context): ControllerResponse<TypedResponse<CreateDisasterResponse, 201>> => {
             const json = await ctx.req.json();
             const payload = CreateDisasterDTOSchema.parse(json);
             const disaster = await this.disasterService.createDisaster(payload);
@@ -25,8 +25,10 @@ export class DisasterController implements IDisasterController {
         }
     );
 
-    getAllDisasters = withControllerErrorHandling(async (ctx) => {
-        const disaster = await this.disasterService.getAllDisasters();
-        return ctx.json(disaster, 200);
-    });
+    getAllDisasters = withControllerErrorHandling(
+        async (ctx): ControllerResponse<TypedResponse<GetAllDisastersResponse, 200>> => {
+            const disaster = await this.disasterService.getAllDisasters();
+            return ctx.json(disaster, 200);
+        }
+    );
 }

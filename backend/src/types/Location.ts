@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { ErrorResponseSchema } from "../../types/Utils";
 
 // Define the LocationAddress schema (assuming the structure based on CreateLocationAddressResponseSchema)
 // If you have different fields in your LocationAddress entity, adjust accordingly
@@ -33,20 +32,9 @@ export const GetLocationAddressSchema = z.object({
 
 export const GetLocationAddressResponseSchema = LocationAddressSchema;
 
-export const CreateLocationAddressAPIResponseSchema = z.union([
-    CreateLocationAddressResponseSchema,
-    ErrorResponseSchema,
-]);
-
-export const GetLocationAddressAPIResponseSchema = z.union([GetLocationAddressResponseSchema, ErrorResponseSchema]);
-
 // All types are now inferred from zod schemas
 export type LocationAddress = z.infer<typeof LocationAddressSchema>;
 export type CreateLocationAddressDTO = z.infer<typeof CreateLocationAddressSchema>;
 export type CreateLocationAddressResponse = z.infer<typeof CreateLocationAddressResponseSchema>;
 export type GetLocationAddressDTO = z.infer<typeof GetLocationAddressSchema>;
 export type GetLocationAddressResponse = z.infer<typeof GetLocationAddressResponseSchema>;
-
-// API Response types
-export type CreateLocationAddressAPIResponse = z.infer<typeof CreateLocationAddressAPIResponseSchema>;
-export type GetLocationAddressAPIResponse = z.infer<typeof GetLocationAddressAPIResponseSchema>;

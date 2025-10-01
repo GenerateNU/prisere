@@ -1,6 +1,5 @@
 import z from "zod";
 import { FIPSCounty, FIPSState, incidentTypeString } from "./common";
-import { ErrorResponseSchema } from "../Utils";
 
 export const CreateDisasterDTOSchema = z
     .object({
@@ -39,8 +38,5 @@ export const CreateDisasterResponseSchema = z.object({
     designatedIncidentTypes: incidentTypeString,
 });
 
-export const CreateDisasterAPIResponseSchema = z.union([CreateDisasterResponseSchema, ErrorResponseSchema]);
-
 export type CreateDisasterDTO = z.infer<typeof CreateDisasterDTOSchema>;
 export type CreateDisasterResponse = z.infer<typeof CreateDisasterResponseSchema>;
-export type CreateDisasterAPIResponse = z.infer<typeof CreateDisasterAPIResponseSchema>;

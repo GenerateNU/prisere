@@ -17,24 +17,12 @@ export class DisasterTransaction implements IDisasterTransaction {
 
     async createDisaster(payload: CreateDisasterDTO) {
         const disaster = payload;
-        const result = await this.db
-            .createQueryBuilder()
-            .insert()
-            .into(FemaDisaster)
-            .values(disaster)
-            .returning("*")
-            .execute();
-
-        return result.raw[0] as FemaDisaster;
+        const result: FemaDisaster = await this.db.getRepository(FemaDisaster).save(disaster);
+        return result;
     }
 
     async getAllDisasters() {
-        const result = await this.db
-            .createQueryBuilder()
-            .select("fema_disaster")
-            .from(FemaDisaster, "fema_disaster")
-            .getMany();
-
+        const result = await this.db.getRepository(FemaDisaster).find();
         return result;
     }
 }

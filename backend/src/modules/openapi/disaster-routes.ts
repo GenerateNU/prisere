@@ -4,10 +4,11 @@ import { DisasterTransaction } from "../disaster/transaction";
 import { DisasterService } from "../disaster/service";
 import { DisasterController } from "../disaster/controller";
 import {
-    CreateDisasterAPIResponseSchema,
     CreateDisasterDTOSchema,
+    CreateDisasterResponseSchema,
     GetAllDisastersResponseSchema,
 } from "../../types/disaster";
+import { openApiErrorCodes } from "../../utilities/error";
 
 export const addOpenApiDisasterRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const disasterTransaction = new DisasterTransaction(db);
@@ -37,11 +38,12 @@ const createDisasterRoute = createRoute({
         201: {
             content: {
                 "application/json": {
-                    schema: CreateDisasterAPIResponseSchema,
+                    schema: CreateDisasterResponseSchema,
                 },
             },
             description: "A disaster was created",
         },
+        ...openApiErrorCodes("Creating Disaster Error"),
     },
     tags: ["Disaster"],
 });
@@ -60,6 +62,7 @@ const getAllDisastersRoute = createRoute({
             },
             description: "Retrieved all disasters",
         },
+        ...openApiErrorCodes("Getting Disaster Error"),
     },
     tags: ["Disaster"],
 });
