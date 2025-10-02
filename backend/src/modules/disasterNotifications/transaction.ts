@@ -138,9 +138,7 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
             }
 
             // Check existence of femaDisasterId
-            const disasterExists = await this.db
-                .getRepository(FemaDisaster)
-                .findOne({ where: { id: femaDisasterId } });
+            const disasterExists = await this.db.getRepository(FemaDisaster).findOne({ where: { id: femaDisasterId } });
             if (!disasterExists) {
                 logMessageToFile(`FEMA Disaster not found for femaDisasterId: ${femaDisasterId}`);
                 throw Boom.notFound(`FEMA Disaster not found for femaDisasterId: ${femaDisasterId}`);
