@@ -5,6 +5,8 @@ import { AppDataSource } from "./typeorm-config";
 import { setUpRoutes } from "./routes";
 import { errorHandler } from "./utilities/error";
 import { logMessageToFile } from "./utilities/logger";
+import { FemaService, IFemaService } from "./modules/clients/fema-client/service";
+import { FemaFetching } from "./utilities/cron_job_handler";
 
 const app = new Hono();
 
@@ -21,6 +23,11 @@ const app = new Hono();
         app.onError(errorHandler);
 
         setUpRoutes(app, AppDataSource);
+
+        const femaService: IFemaService = new FemaService(AppDataSource);
+        await femaService.preloadDisasters();
+        const femaDisastersCron = new FemaFetching(femaService);
+        femaDisastersCron.initializeCron();
 
         console.log("Connected to Postgres!");
     } catch (err) {

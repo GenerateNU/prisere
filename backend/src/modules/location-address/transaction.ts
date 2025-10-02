@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import { LocationAddress } from "../../entities/LocationAddress";
-import { CreateLocationAddressDTO, GetLocationAddressDTO } from "./types";
+import { CreateLocationAddressDTO, GetLocationAddressDTO } from "../../types/Location";
 import { plainToClass } from "class-transformer";
 
 export interface ILocationAddressTransaction {

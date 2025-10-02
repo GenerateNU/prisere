@@ -1,16 +1,17 @@
 import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import {
-    CreateUserAPIResponseSchema,
     CreateUserDTOSchema,
-    GetUserAPIResponseSchema,
-    GetUserComapnyAPIResponseSchema as GetUserCompanyAPIResponseSchema,
     GetUserComapnyDTOSchema,
     GetUserDTOSchema,
-} from "../user/types";
+    CreateUserResponseSchema,
+    GetUserResponseSchema,
+    GetUserCompanyResponseSchema,
+} from "../../types/User";
 import { IUserController, UserController } from "../user/controller";
 import { IUserService, UserService } from "../user/service";
 import { IUserTransaction, UserTransaction } from "../user/transaction";
+import { openApiErrorCodes } from "../../utilities/error";
 
 export const addOpenApiUserRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const userTransaction: IUserTransaction = new UserTransaction(db);
@@ -18,8 +19,8 @@ export const addOpenApiUserRoutes = (openApi: OpenAPIHono, db: DataSource): Open
     const userController: IUserController = new UserController(userService);
 
     openApi.openapi(createUserRoute, (ctx) => userController.createUser(ctx));
-    //openApi.openapi(getUserCompanyRoute, (ctx) => userController.getCompany(ctx));
-    //openApi.openapi(getUserRoute, (ctx) => userController.getUser(ctx));
+    //openApi.openapi(_getUserCompanyRoute, (ctx) => userController.getCompany(ctx));
+    //openApi.openapi(_getUserRoute, (ctx) => userController.getUser(ctx));
     return openApi;
 };
 
@@ -41,11 +42,12 @@ const createUserRoute = createRoute({
         201: {
             content: {
                 "application/json": {
-                    schema: CreateUserAPIResponseSchema,
+                    schema: CreateUserResponseSchema,
                 },
             },
             description: "Create user response",
         },
+        ...openApiErrorCodes("Create user error"),
     },
     tags: ["Users"],
 });
@@ -62,17 +64,15 @@ const _getUserRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: GetUserAPIResponseSchema,
+                    schema: GetUserResponseSchema,
                 },
             },
             description: "Successfull fetch of a user from the databse",
         },
-        400: {
-            description: "The given id is not a well formed UUID",
-        },
         404: {
             description: "There does not exist any user in the database such that the given id matches their id",
         },
+        ...openApiErrorCodes("Get User Error"),
     },
 
     tags: ["Users"],
@@ -90,18 +90,16 @@ const _getUserCompanyRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: GetUserCompanyAPIResponseSchema,
+                    schema: GetUserCompanyResponseSchema,
                 },
             },
             description: "Successfull fetch of a user's company from the database",
-        },
-        400: {
-            description: "The given id is not a well formed UUID",
         },
         404: {
             description:
                 "There does not exist any user in the database such that the given id matches their id OR there is no such user with the given ID that has a non-null company",
         },
+        ...openApiErrorCodes("Get Company from User"),
     },
 
     tags: ["Users"],
