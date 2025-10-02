@@ -10,7 +10,6 @@ import { disasterNotificationRoutes } from "./modules/disasterNotifications/rout
 export const setUpRoutes = (app: Hono, db: DataSource) => {
     app.route("/users", userRoutes(db));
     app.route("/location-address", locationAddressRoute(db));
-    app.route("/users", userRoutes(db));
     app.route("/companies", companyRoutes(db));
     app.route("/openapi", setUpOpenApiRoutes(db));
     app.route("/disaster", disasterRoutes(db));

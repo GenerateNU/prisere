@@ -8,6 +8,7 @@ import { addOpenApiLocationAddressRoutes } from "./location-address-route";
 import { addOpenApiDisasterNotificationRoutes } from "./disaster-notification-routes";
 
 export const setUpOpenApiRoutes = (db: DataSource) => {
+    const openApiServerURL = process.env.NODE_ENV === "production" ? "/api" : "";
     const openApiApp = openApiRoutes(db);
 
     openApiApp.doc("/spec.json", {
