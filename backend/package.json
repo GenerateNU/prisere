@@ -8,6 +8,7 @@
     "start": "NODE_ENV=production bun src/server.ts",
     "build": "bun build src/server.ts --outdir ./dist --target bun",
     "start:built": "NODE_ENV=production bun dist/server.js",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint . --config src/eslint.config.ts && prettier . --check",
     "lint:fix": "eslint . --config src/eslint.config.ts --fix && prettier . --write"
   },
@@ -21,7 +22,9 @@
     "@supabase/supabase-js": "^2.47.10",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "cron": "^4.3.3",
     "hono": "^4.5.10",
+    "node-cron": "^4.2.1",
     "pg": "^8.16.3",
     "pg-mem": "^3.0.5",
     "reflect-metadata": "^0.2.2",

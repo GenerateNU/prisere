@@ -1,15 +1,16 @@
 import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import {
-    CreateLocationAddressAPIResponseSchema,
+    CreateLocationAddressResponseSchema,
     CreateLocationAddressSchema,
-    GetLocationAddressAPIResponseSchema,
+    GetLocationAddressResponseSchema,
     GetLocationAddressSchema,
-} from "../location-address/types";
+} from "../../types/Location";
 import { ILocationAddressTransaction, LocationAddressTransactions } from "../location-address/transaction";
 import { ILocationAddressService, LocationAddressService } from "../location-address/service";
 import { ILocationAddressController, LocationAddressController } from "../location-address/controller";
 import { ErrorResponseSchema } from "../../types/Utils";
+import { openApiErrorCodes } from "../../utilities/error";
 
 export const addOpenApiLocationAddressRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const locationAddressTransaction: ILocationAddressTransaction = new LocationAddressTransactions(db);
@@ -40,19 +41,12 @@ const createLocationAddressRoute = createRoute({
         201: {
             content: {
                 "application/json": {
-                    schema: CreateLocationAddressAPIResponseSchema,
+                    schema: CreateLocationAddressResponseSchema,
                 },
             },
             description: "Create location address response",
         },
-        500: {
-            content: {
-                "application/json": {
-                    schema: CreateLocationAddressAPIResponseSchema,
-                },
-            },
-            description: "Unable to create the location address with the given payload",
-        },
+        ...openApiErrorCodes("Error Creating Location Address"),
     },
     tags: ["Location Address"],
 });
@@ -69,20 +63,15 @@ const getLocationAddressRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: GetLocationAddressAPIResponseSchema,
+                    schema: GetLocationAddressResponseSchema,
                 },
             },
-            description: "Finds the associated location address for the given information",
-        },
-        400: {
-            description: "The given ID was omitted or is not a well formed UUID",
+            description: "The associated location address for the given information",
         },
         404: {
             description: "The given UUID does not have an associated location address in the database",
         },
-        500: {
-            description: "There was an internal issue with finding the location address with the provided id",
-        },
+        ...openApiErrorCodes("Error Getting Location Address"),
     },
     tags: ["Location Address"],
 });

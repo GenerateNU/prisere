@@ -1,13 +1,14 @@
 import { Context, TypedResponse } from "hono";
 import { IUserService } from "./service";
 import { withControllerErrorHandling } from "../../utilities/error";
-import { GetUserAPIResponse, CreateUserAPIResponse, CreateUserDTOSchema, GetUserCompanyAPIResponse } from "./types";
+import { CreateUserDTOSchema, CreateUserResponse, GetUserResponse, GetUserCompanyResponse } from "../../types/User";
 import { validate } from "uuid";
+import { ControllerResponse } from "../../utilities/response";
 
 export interface IUserController {
-    createUser(_ctx: Context): Promise<TypedResponse<CreateUserAPIResponse> | Response>;
-    getUser(_ctx: Context): Promise<TypedResponse<GetUserAPIResponse> | Response>;
-    getCompany(_ctx: Context): Promise<TypedResponse<GetUserCompanyAPIResponse> | Response>;
+    createUser(_ctx: Context): ControllerResponse<TypedResponse<CreateUserResponse, 201>>;
+    getUser(_ctx: Context): ControllerResponse<TypedResponse<GetUserResponse, 200>>;
+    getCompany(_ctx: Context): ControllerResponse<TypedResponse<GetUserCompanyResponse, 200>>;
 }
 
 export class UserController implements IUserController {
@@ -17,26 +18,30 @@ export class UserController implements IUserController {
         this.userService = service;
     }
 
-    createUser = withControllerErrorHandling(async (ctx: Context): Promise<TypedResponse<CreateUserAPIResponse>> => {
-        const json = await ctx.req.json();
-        const payload = CreateUserDTOSchema.parse(json);
-        const user = await this.userService.createUser(payload);
-        return ctx.json(user, 201);
-    });
-
-    getUser = withControllerErrorHandling(async (ctx: Context): Promise<TypedResponse<GetUserAPIResponse>> => {
-        const maybeId = await ctx.req.param("id");
-
-        if (!validate(maybeId)) {
-            return ctx.json({ error: "The given ID must be well formed and present to get a User." }, 400);
+    createUser = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<CreateUserResponse, 201>> => {
+            const json = await ctx.req.json();
+            const payload = CreateUserDTOSchema.parse(json);
+            const user = await this.userService.createUser(payload);
+            return ctx.json(user, 201);
         }
+    );
 
-        const user = await this.userService.getUser({ id: maybeId });
-        return ctx.json(user, 200);
-    });
+    getUser = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<GetUserResponse, 200>> => {
+            const maybeId = await ctx.req.param("id");
+
+            if (!validate(maybeId)) {
+                return ctx.json({ error: "The given ID must be well formed and present to get a User." }, 400);
+            }
+
+            const user = await this.userService.getUser({ id: maybeId });
+            return ctx.json(user, 200);
+        }
+    );
 
     getCompany = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<GetUserCompanyAPIResponse>> => {
+        async (ctx: Context): ControllerResponse<TypedResponse<GetUserCompanyResponse, 200>> => {
             const maybeId = await ctx.req.param("id");
 
             if (!validate(maybeId)) {

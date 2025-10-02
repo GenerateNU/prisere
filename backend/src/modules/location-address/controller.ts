@@ -2,10 +2,12 @@ import { Context, TypedResponse } from "hono";
 import { ILocationAddressService } from "./service";
 import { withControllerErrorHandling } from "../../utilities/error";
 import {
-    CreateLocationAddressAPIResponse, CreateLocationAddressSchema, GetLocationAddressAPIResponse,
-    GetLocationAddressDTO,
-} from "./types";
+    CreateLocationAddressResponse,
+    CreateLocationAddressSchema,
+    GetLocationAddressResponse,
+} from "../../types/Location";
 import { validate } from "uuid";
+import { ControllerResponse } from "../../utilities/response";
 
 export interface ILocationAddressController {
     /**
@@ -13,14 +15,14 @@ export interface ILocationAddressController {
      * @param ctx The Hono Context
      * @returns The result of the location address creation or an error
      */
-    createLocationAddress(ctx: Context): Promise<Response | TypedResponse<CreateLocationAddressAPIResponse>>;
+    createLocationAddress(ctx: Context): ControllerResponse<TypedResponse<CreateLocationAddressResponse, 201>>;
 
     /**
      * Will make request to the location address service to get an existing location address
      * @param ctx The Hono Context
      * @returns The result of the location address fetching or an error
      */
-    getLocationAddress(ctx: Context): Promise<Response | TypedResponse<GetLocationAddressAPIResponse>>;
+    getLocationAddress(ctx: Context): ControllerResponse<TypedResponse<GetLocationAddressResponse, 200>>;
 
     /**
      * Will make request to the location address service to remove an existing address
@@ -43,7 +45,7 @@ export class LocationAddressController implements ILocationAddressController {
      * @returns The result of the location address creation or an error
      */
     getLocationAddress = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<GetLocationAddressAPIResponse>> => {
+        async (ctx: Context): ControllerResponse<TypedResponse<GetLocationAddressResponse, 200>> => {
             const maybeId = await ctx.req.param("id");
 
             if (!validate(maybeId)) {
@@ -62,7 +64,7 @@ export class LocationAddressController implements ILocationAddressController {
      * @returns The result of the location address fetching or an error
      */
     createLocationAddress = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<CreateLocationAddressAPIResponse>> => {
+        async (ctx: Context): ControllerResponse<TypedResponse<CreateLocationAddressResponse, 201>> => {
             const json = await ctx.req.json();
             const payload = CreateLocationAddressSchema.parse(json);
             const resultingLocationAddress = await this.locationAddressService.createLocationAddress(payload);

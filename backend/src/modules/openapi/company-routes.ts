@@ -1,26 +1,26 @@
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
-import { CompanyController } from "../company/controller";
+import { CompanyController, ICompanyController } from "../company/controller";
 import { CompanyService, ICompanyService } from "../company/service";
 import { CompanyTransaction, ICompanyTransaction } from "../company/transaction";
 import { DataSource } from "typeorm";
 import {
-    CreateCompanyAPIResponseSchema,
     CreateCompanyDTOSchema,
-    GetCompanyByIdAPIResponseSchema,
+    CreateCompanyResponseSchema,
     GetCompanyByIdDTOSchema,
+    GetCompanyByIdResponseSchema,
     UpdateQuickBooksImportTimeDTOSchema,
 } from "../../types/Company";
 import { GetAllLocationAddressesAPIResponseSchema } from "../location-address/types";
+import { openApiErrorCodes } from "../../utilities/error";
 
 export const addOpenApiCompanyRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const companyTransaction: ICompanyTransaction = new CompanyTransaction(db);
     const companyService: ICompanyService = new CompanyService(companyTransaction);
-    const companyController: CompanyController = new CompanyController(companyService);
+    const companyController: ICompanyController = new CompanyController(companyService);
 
     openApi.openapi(createCompanyRoute, (ctx) => companyController.createCompany(ctx));
     openApi.openapi(getCompanyByIdRoute, (ctx) => companyController.getCompanyById(ctx));
     openApi.openapi(updateCompanyImportTimeRoute, (ctx) => companyController.updateQuickbooksImportTime(ctx));
-    openApi.openapi(getCompanyLocationsByIdRoute, (ctx) => companyController.getCompanyLocationsById(ctx));
     return openApi;
 };
 
@@ -42,14 +42,15 @@ const createCompanyRoute = createRoute({
         201: {
             content: {
                 "application/json": {
-                    schema: CreateCompanyAPIResponseSchema,
+                    schema: CreateCompanyResponseSchema,
                 },
             },
             description: "Company created successfully",
         },
-        400: {
-            description: "Bad Request - Invalid input data",
+        404: {
+            description: "Company not found",
         },
+        ...openApiErrorCodes("Create Company Errors"),
     },
     tags: ["Companies"],
 });
@@ -66,17 +67,15 @@ const getCompanyByIdRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: GetCompanyByIdAPIResponseSchema,
+                    schema: GetCompanyByIdResponseSchema,
                 },
             },
             description: "Company fetched successfully",
         },
-        400: {
-            description: "Bad Request - Invalid input data",
-        },
         404: {
             description: "Company not found",
         },
+        ...openApiErrorCodes("Create Company Errors"),
     },
     tags: ["Companies"],
 });
@@ -100,17 +99,12 @@ const updateCompanyImportTimeRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: CreateCompanyAPIResponseSchema,
+                    schema: CreateCompanyResponseSchema,
                 },
             },
             description: "Company updated successfully",
         },
-        400: {
-            description: "Bad Request - Invalid input data",
-        },
-        404: {
-            description: "Company not found",
-        },
+        ...openApiErrorCodes("Create Company Errors"),
     },
     tags: ["Companies"],
 });
