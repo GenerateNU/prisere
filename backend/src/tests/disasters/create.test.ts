@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { IBackup } from "pg-mem";
 import { startTestApp } from "../setup-tests";
 import {
-    CreateDisasterAPIResponse,
+    CreateDisasterResponse,
     CreateDisasterDTO,
     CreateDisasterDTOInput,
     GetAllDisastersResponseSchema,
@@ -57,7 +57,7 @@ describe("Create disasters", () => {
             "designatedIncidentTypes",
             "id",
             "fipsStateCode",
-        ] as (keyof Exclude<CreateDisasterAPIResponse, { error: string }>)[];
+        ] as (keyof Exclude<CreateDisasterResponse, { error: string }>)[];
 
         for (const key of responseKeys) {
             expect(responseBody[key]).toBe(constructedObject[key]);

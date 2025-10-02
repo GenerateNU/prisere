@@ -61,4 +61,3 @@ export const CreateDisasterAPIResponseSchema = z.union([CreateDisasterResponseSc
 export type CreateDisasterDTOInput = z.infer<typeof CreateDisasterDTOInputSchema>;
 export type CreateDisasterDTO = z.infer<typeof CreateDisasterDTOSchema>;
 export type CreateDisasterResponse = z.infer<typeof CreateDisasterResponseSchema>;
-export type CreateDisasterAPIResponse = z.infer<typeof CreateDisasterAPIResponseSchema>;
