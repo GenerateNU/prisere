@@ -11,6 +11,7 @@ export const LocationAddressSchema = z.object({
     streetAddress: z.string(),
     postalCode: z.number(),
     county: z.string().optional(),
+    companyId: z.uuid(),
 });
 
 export const CreateLocationAddressSchema = z.object({
