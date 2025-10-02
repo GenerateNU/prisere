@@ -25,7 +25,7 @@ export class DisasterNotifications1759072454465 implements MigrationInterface {
             `ALTER TABLE "disasterNotification" ADD CONSTRAINT "FK_520e2b43d1ce6828e112c82927e" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
         );
         await queryRunner.query(
-            `ALTER TABLE "disasterNotification" ADD CONSTRAINT "FK_4313c838cd09ff0a0f599b986a8" FOREIGN KEY ("femaDisasterId") REFERENCES "fema_disaster"("femaId") ON DELETE NO ACTION ON UPDATE NO ACTION`
+            `ALTER TABLE "disasterNotification" ADD CONSTRAINT "FK_4313c838cd09ff0a0f599b986a8" FOREIGN KEY ("femaDisasterId") REFERENCES "fema_disaster"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
         );
     }
 

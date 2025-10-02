@@ -344,9 +344,9 @@ describe("Get disasters", () => {
 
     it("should overwrite the current disaster if there is a duplicate", async () => {
         const now = new Date().toISOString();
-        const femaId = randomUUIDv7();
+        const id = randomUUIDv7();
         const constructedObject1 = {
-            id: femaId,
+            id: id,
             fipsStateCode: 25,
             declarationDate: now,
             declarationType: "FM",
@@ -360,7 +360,7 @@ describe("Get disasters", () => {
         } satisfies CreateDisasterDTOInput;
 
         const constructedObject2 = {
-            id: femaId,
+            id: id,
             fipsStateCode: 22,
             declarationDate: now,
             declarationType: "FM",
@@ -418,9 +418,9 @@ describe("Get disasters", () => {
 
     it("should merge incidentType and designatedIncidentTypes", async () => {
         const now = new Date().toISOString();
-        const femaId = randomUUIDv7();
+        const id = randomUUIDv7();
         const constructedObject1 = {
-            id: femaId,
+            id: id,
             fipsStateCode: 25,
             declarationDate: now,
             declarationType: "FM",
