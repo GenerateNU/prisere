@@ -71,7 +71,6 @@ describe("Location Address Controller Tests", () => {
 
             expect(response.status).toBe(404);
             expect(response.ok).toBe(false);
-            console.log(response);
         });
 
         test("should handle an invalide UUID", async () => {
@@ -81,7 +80,6 @@ describe("Location Address Controller Tests", () => {
 
             expect(response.status).toBe(400);
             expect(response.ok).toBe(false);
-            console.log(response);
         });
     });
 });
