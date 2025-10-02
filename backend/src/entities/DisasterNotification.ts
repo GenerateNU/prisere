@@ -12,7 +12,7 @@ export class DisasterNotification {
     @Column()
     userId!: string;
 
-    @ManyToOne(() => User, {nullable: false})
+    @ManyToOne(() => User, { nullable: false })
     @JoinColumn({ name: "userId" })
     user!: Relation<User>;
 
@@ -45,4 +45,3 @@ export class DisasterNotification {
     @Column({ nullable: true })
     acknowledgedAt?: Date;
 }
-

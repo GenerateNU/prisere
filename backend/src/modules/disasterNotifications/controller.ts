@@ -9,10 +9,9 @@ import {
     BulkCreateNotificationsResponse,
     DeleteNotificationResponse,
     AcknowledgeNotificationResponse,
-    DismissNotificationResponse
+    DismissNotificationResponse,
 } from "../../types/DisasterNotification";
 import { NotificationType } from "../../types/NotificationEnums";
-
 
 export interface IDisasterNotificationController {
     getUserNotifications(ctx: Context): Promise<TypedResponse<GetUsersDisasterNotificationsResponse> | Response>;
@@ -46,37 +45,44 @@ export class DisasterNotificationController implements IDisasterNotificationCont
         }
     );
 
-    acknowledgeNotification = withControllerErrorHandling(async (ctx: Context): Promise<TypedResponse<AcknowledgeNotificationResponse | { error: string }>> => {
-        const notificationId = ctx.req.param("id");
-        if (!validate(notificationId)) {
-            return ctx.json({ error: "Invalid notification ID format" }, 400);
+    acknowledgeNotification = withControllerErrorHandling(
+        async (ctx: Context): Promise<TypedResponse<AcknowledgeNotificationResponse | { error: string }>> => {
+            const notificationId = ctx.req.param("id");
+            if (!validate(notificationId)) {
+                return ctx.json({ error: "Invalid notification ID format" }, 400);
+            }
+            const notification = await this.notificationService.acknowledgeNotification(notificationId);
+            return ctx.json(notification, 200);
         }
-        const notification = await this.notificationService.acknowledgeNotification(notificationId);
-        return ctx.json(notification, 200);
-    });
+    );
 
-    dismissNotification = withControllerErrorHandling(async (ctx: Context): Promise<TypedResponse<DismissNotificationResponse | { error: string }>> => {
-        const notificationId = ctx.req.param("id");
-        if (!validate(notificationId)) {
-            return ctx.json({ error: "Invalid notification ID format" }, 400);
+    dismissNotification = withControllerErrorHandling(
+        async (ctx: Context): Promise<TypedResponse<DismissNotificationResponse | { error: string }>> => {
+            const notificationId = ctx.req.param("id");
+            if (!validate(notificationId)) {
+                return ctx.json({ error: "Invalid notification ID format" }, 400);
+            }
+            const notification = await this.notificationService.dismissNotification(notificationId);
+
+            return ctx.json(notification, 200);
         }
-        const notification = await this.notificationService.dismissNotification(notificationId);
+    );
 
-        return ctx.json(notification, 200);
-    });
+    bulkCreateNotifications = withControllerErrorHandling(
+        async (ctx: Context): Promise<TypedResponse<BulkCreateNotificationsResponse>> => {
+            const json = await ctx.req.json();
+            const payload = BulkCreateNotificationsRequestSchema.parse(json);
+            const convertedPayload = payload.map((item) => ({
+                ...item,
+                notificationType:
+                    NotificationType[item.notificationType.toUpperCase() as keyof typeof NotificationType],
+            }));
 
-    bulkCreateNotifications = withControllerErrorHandling(async (ctx: Context): Promise<TypedResponse<BulkCreateNotificationsResponse>> => {
-        const json = await ctx.req.json();
-        const payload = BulkCreateNotificationsRequestSchema.parse(json);
-        const convertedPayload = payload.map((item) => ({
-            ...item,
-            notificationType: NotificationType[item.notificationType.toUpperCase() as keyof typeof NotificationType],
-        }));
+            const created = await this.notificationService.bulkCreateNotifications(convertedPayload);
 
-        const created = await this.notificationService.bulkCreateNotifications(convertedPayload);
-
-        return ctx.json(created, 201);
-    });
+            return ctx.json(created, 201);
+        }
+    );
 
     deleteNotification = withControllerErrorHandling(
         async (ctx: Context): Promise<TypedResponse<DeleteNotificationResponse | { error: string }>> => {

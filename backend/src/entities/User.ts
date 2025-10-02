@@ -26,5 +26,4 @@ export class User {
 
     @OneToMany(() => DisasterNotification, (disasterNotification) => disasterNotification.user)
     disasterNotifications!: Relation<DisasterNotification[]>;
-
 }

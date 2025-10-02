@@ -1,63 +1,200 @@
-import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
+import { DataSource } from "typeorm";
+import { DisasterNotificationTransaction } from "../disasterNotifications/transaction";
+import { DisasterNotificationService } from "../disasterNotifications/service";
+import { DisasterNotificationController } from "../disasterNotifications/controller";
 import {
-    DisasterNotificationTransaction,
-    IDisasterNotificationTransaction,
-} from "../disasterNotifications/transaction";
-import { DisasterNotificationService, IDisasterNotificationService } from "../disasterNotifications/service";
-import { DisasterNotificationController, IDisasterNotificationController } from "../disasterNotifications/controller";
-import {
+    GetUsersDisasterNotificationsResponseSchema,
     BulkCreateNotificationsRequestSchema,
     BulkCreateNotificationsResponseSchema,
+    DeleteNotificationResponseSchema,
+    AcknowledgeNotificationResponseSchema,
+    DismissNotificationResponseSchema,
 } from "../../types/DisasterNotification";
-
+import { z } from "zod";
 
 export const addOpenApiDisasterNotificationRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
-    const disasterNotificationTransaction: IDisasterNotificationTransaction = new DisasterNotificationTransaction(db);
-    const disasterNotificationService: IDisasterNotificationService = new DisasterNotificationService(
-        disasterNotificationTransaction
-    );
-    const disasterNotificationController: IDisasterNotificationController = new DisasterNotificationController(
-        disasterNotificationService
-    );
+    const notificationTransaction = new DisasterNotificationTransaction(db);
+    const notificationService = new DisasterNotificationService(notificationTransaction);
+    const notificationController = new DisasterNotificationController(notificationService);
 
-    openApi.openapi(createDisasterNotificationRoute, (ctx) =>
-        disasterNotificationController.bulkCreateNotifications(ctx)
-    );
-
-    openApi.openapi(getUserDisasterNotificationsRoute, (ctx) =>
-        disasterNotificationController.getUserNotifications(ctx)
-    );
-
-    openApi.openapi(markNotificationReadRoute, (ctx) => disasterNotificationController.dismissNotification(ctx));
-
-    openApi.openapi(acknowledgeNotificationRoute, (ctx) => disasterNotificationController.acknowledgeNotification(ctx));
-    openApi.openapi(deleteNotificationRoute, (ctx) => disasterNotificationController.deleteNotification(ctx));
+    openApi.openapi(getUserNotificationsRoute, (ctx) => notificationController.getUserNotifications(ctx) as any);
+    openApi.openapi(acknowledgeNotificationRoute, (ctx) => notificationController.acknowledgeNotification(ctx) as any);
+    openApi.openapi(dismissNotificationRoute, (ctx) => notificationController.dismissNotification(ctx) as any);
+    openApi.openapi(bulkCreateNotificationsRoute, (ctx) => notificationController.bulkCreateNotifications(ctx) as any);
+    openApi.openapi(deleteNotificationRoute, (ctx) => notificationController.deleteNotification(ctx) as any);
 
     return openApi;
 };
 
-const createDisasterNotificationRoute = createRoute({
+const getUserNotificationsRoute = createRoute({
+    method: "get",
+    path: "/notifications/user/{id}",
+    summary: "Get user notifications",
+    description: "Retrieves all disaster notifications for a specific user",
+    request: {
+        params: z.object({
+            id: z
+                .string()
+                .uuid()
+                .openapi({
+                    param: {
+                        name: "id",
+                        in: "path",
+                    },
+                    example: "123e4567-e89b-12d3-a456-426614174000",
+                }),
+        }),
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetUsersDisasterNotificationsResponseSchema,
+                },
+            },
+            description: "Successfully retrieved user notifications",
+        },
+        400: {
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        error: z.string(),
+                    }),
+                },
+            },
+            description: "Invalid user ID format",
+        },
+        404: {
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        error: z.string(),
+                    }),
+                },
+            },
+            description: "User not found or no notifications found",
+        },
+    },
+    tags: ["Disaster Notifications"],
+});
+
+const acknowledgeNotificationRoute = createRoute({
+    method: "patch",
+    path: "/notifications/{id}/acknowledge",
+    summary: "Acknowledge notification",
+    description: "Marks a specific notification as acknowledged",
+    request: {
+        params: z.object({
+            id: z
+                .string()
+                .uuid()
+                .openapi({
+                    param: {
+                        name: "id",
+                        in: "path",
+                    },
+                    example: "123e4567-e89b-12d3-a456-426614174000",
+                }),
+        }),
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: AcknowledgeNotificationResponseSchema,
+                },
+            },
+            description: "Notification successfully acknowledged",
+        },
+        400: {
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        error: z.string(),
+                    }),
+                },
+            },
+            description: "Invalid notification ID format",
+        },
+        404: {
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        error: z.string(),
+                    }),
+                },
+            },
+            description: "Notification not found",
+        },
+    },
+    tags: ["Disaster Notifications"],
+});
+
+const dismissNotificationRoute = createRoute({
+    method: "patch",
+    path: "/notifications/{id}/dismiss",
+    summary: "Dismiss notification",
+    description: "Marks a specific notification as read/dismissed",
+    request: {
+        params: z.object({
+            id: z
+                .string()
+                .uuid()
+                .openapi({
+                    param: {
+                        name: "id",
+                        in: "path",
+                    },
+                    example: "123e4567-e89b-12d3-a456-426614174000",
+                }),
+        }),
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: DismissNotificationResponseSchema,
+                },
+            },
+            description: "Notification successfully dismissed",
+        },
+        400: {
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        error: z.string(),
+                    }),
+                },
+            },
+            description: "Invalid notification ID format",
+        },
+        404: {
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        error: z.string(),
+                    }),
+                },
+            },
+            description: "Notification not found",
+        },
+    },
+    tags: ["Disaster Notifications"],
+});
+
+const bulkCreateNotificationsRoute = createRoute({
     method: "post",
-    path: "/disasterNotifications",
-    summary: "Bulk create disaster notifications",
-    description: "Creates multiple disaster notifications for users based on provided user and disaster IDs.",
+    path: "/notifications/bulk",
+    summary: "Bulk create notifications",
+    description: "Creates multiple disaster notifications at once for impacted users",
     request: {
         body: {
             content: {
                 "application/json": {
                     schema: BulkCreateNotificationsRequestSchema,
-                    examples: [
-                        {
-                            userId: "uuid-of-user",
-                            femaDisasterId: "uuid-of-disaster",
-                            notificationType: "web",
-                        },
-                    ],
                 },
             },
-            description:
-                "Array of notification objects to create. Each must include userId, femaDisasterId, and notificationType.",
         },
     },
     responses: {
@@ -67,200 +204,90 @@ const createDisasterNotificationRoute = createRoute({
                     schema: BulkCreateNotificationsResponseSchema,
                 },
             },
-            description: "Notifications created successfully",
+            description: "Notifications successfully created",
         },
         400: {
-            description: "Bad Request - Invalid input data, such as malformed UUIDs or missing fields",
             content: {
                 "application/json": {
-                    example: { error: "Invalid UUID format for userId" },
+                    schema: z.object({
+                        error: z.string(),
+                    }),
                 },
             },
+            description: "Invalid request payload or UUID format",
         },
         404: {
-            description: "Not Found - User or disaster not found for provided IDs",
             content: {
                 "application/json": {
-                    example: { error: "User not found for userId" },
+                    schema: z.object({
+                        error: z.string(),
+                    }),
                 },
             },
+            description: "User or FEMA Disaster not found",
         },
         500: {
-            description: "Internal Server Error - Unexpected error during creation",
             content: {
                 "application/json": {
-                    example: { error: "Failed to insert some notifications." },
+                    schema: z.object({
+                        error: z.string(),
+                    }),
                 },
             },
+            description: "Failed to insert some notifications",
         },
     },
-    tags: ["DisasterNotifications"],
-});
-
-const getUserDisasterNotificationsRoute = createRoute({
-    method: "get",
-    path: "/disasterNotifications/user/{userId}",
-    summary: "Get all disaster notifications for a user",
-    description: "Retrieves all disaster notifications for the specified user.",
-    request: {
-        params: {
-            userId: {
-                type: "string",
-                description: "UUID of the user",
-            },
-        },
-    },
-    responses: {
-        200: {
-            content: {
-                "application/json": {
-                    schema: BulkCreateNotificationsResponseSchema,
-                },
-            },
-            description: "List of disaster notifications for the user",
-        },
-        404: {
-            description: "User not found",
-            content: {
-                "application/json": {
-                    example: { error: "User not found" },
-                },
-            },
-        },
-        400: {
-            description: "Bad Request - Invalid input data, such as malformed UUIDs or missing fields",
-            content: {
-                "application/json": {
-                    example: { error: "Invalid UUID format" },
-                },
-            },
-        },
-    },
-    tags: ["DisasterNotifications"],
-});
-
-const markNotificationReadRoute = createRoute({
-    method: "patch",
-    path: "/disasterNotifications/{notificationId}/read",
-    summary: "Mark a disaster notification as read",
-    description: "Marks the specified disaster notification as read.",
-    request: {
-        params: {
-            notificationId: {
-                type: "string",
-                description: "UUID of the notification",
-            },
-        },
-    },
-    responses: {
-        200: {
-            content: {
-                "application/json": {
-                    schema: BulkCreateNotificationsResponseSchema,
-                },
-            },
-            description: "Notification marked as read",
-        },
-        404: {
-            description: "Notification not found",
-            content: {
-                "application/json": {
-                    example: { error: "Notification not found" },
-                },
-            },
-        },
-        400: {
-            description: "Bad Request - Invalid input data, such as malformed UUIDs or missing fields",
-            content: {
-                "application/json": {
-                    example: { error: "Invalid UUID format" },
-                },
-            },
-        },
-    },
-    tags: ["DisasterNotifications"],
-});
-
-const acknowledgeNotificationRoute = createRoute({
-    method: "patch",
-    path: "/disasterNotifications/{notificationId}/acknowledge",
-    summary: "Acknowledge a disaster notification",
-    description: "Marks the specified disaster notification as acknowledged.",
-    request: {
-        params: {
-            notificationId: {
-                type: "string",
-                description: "UUID of the notification",
-            },
-        },
-    },
-    responses: {
-        200: {
-            content: {
-                "application/json": {
-                    schema: BulkCreateNotificationsResponseSchema,
-                },
-            },
-            description: "Notification acknowledged",
-        },
-        404: {
-            description: "Notification not found",
-            content: {
-                "application/json": {
-                    example: { error: "Notification not found" },
-                },
-            },
-        },
-        400: {
-            description: "Bad Request - Invalid input data, such as malformed UUIDs or missing fields",
-            content: {
-                "application/json": {
-                    example: { error: "Invalid UUID format" },
-                },
-            },
-        },
-    },
-    tags: ["DisasterNotifications"],
+    tags: ["Disaster Notifications"],
 });
 
 const deleteNotificationRoute = createRoute({
     method: "delete",
-    path: "/disasterNotifications/{notificationId}",
-    summary: "Deleted a disaster notification",
-    description: "Deletes the specified disaster notification.",
+    path: "/notifications/{id}",
+    summary: "Delete notification",
+    description: "Permanently deletes a specific notification",
     request: {
-        params: {
-            notificationId: {
-                type: "string",
-                description: "UUID of the notification",
-            },
-        },
+        params: z.object({
+            id: z
+                .string()
+                .uuid()
+                .openapi({
+                    param: {
+                        name: "id",
+                        in: "path",
+                    },
+                    example: "123e4567-e89b-12d3-a456-426614174000",
+                }),
+        }),
     },
     responses: {
         200: {
             content: {
                 "application/json": {
-                    schema: BulkCreateNotificationsResponseSchema,
+                    schema: DeleteNotificationResponseSchema,
                 },
             },
-            description: "Notification deleted",
-        },
-        404: {
-            description: "Notification not found",
-            content: {
-                "application/json": {
-                    example: { error: "Notification not found" },
-                },
-            },
+            description: "Notification successfully deleted",
         },
         400: {
-            description: "Bad Request - Invalid input data, such as malformed UUIDs or missing fields",
             content: {
                 "application/json": {
-                    example: { error: "Invalid UUID format" },
+                    schema: z.object({
+                        error: z.string(),
+                    }),
                 },
             },
+            description: "Invalid notification ID format",
+        },
+        404: {
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        error: z.string(),
+                    }),
+                },
+            },
+            description: "Notification not found",
         },
     },
-    tags: ["DisasterNotifications"],
+    tags: ["Disaster Notifications"],
 });
