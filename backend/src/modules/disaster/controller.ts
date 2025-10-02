@@ -3,6 +3,7 @@ import { withControllerErrorHandling } from "../../utilities/error";
 import { IDisasterService } from "./service";
 import { CreateDisasterDTOSchema, CreateDisasterResponse, GetAllDisastersResponse } from "../../types/disaster";
 import { ControllerResponse } from "../../utilities/response";
+import { FemaDisaster } from "../../entities/FemaDisaster";
 
 export interface IDisasterController {
     createDisaster(_ctx: Context): ControllerResponse<TypedResponse<CreateDisasterResponse, 201>>;
@@ -27,8 +28,17 @@ export class DisasterController implements IDisasterController {
 
     getAllDisasters = withControllerErrorHandling(
         async (ctx): ControllerResponse<TypedResponse<GetAllDisastersResponse, 200>> => {
-            const disaster = await this.disasterService.getAllDisasters();
-            return ctx.json(disaster, 200);
+            const disasters = await this.disasterService.getAllDisasters();
+            return ctx.json(disasters.map(toDisasterDTO), 200);
         }
     );
+}
+
+function toDisasterDTO(entity: FemaDisaster): GetAllDisastersResponse[number] {
+    return {
+        ...entity,
+        declarationDate: entity.declarationDate.toISOString(),
+        incidentBeginDate: entity.incidentBeginDate?.toISOString() ?? null,
+        incidentEndDate: entity.incidentEndDate?.toISOString() ?? null,
+    };
 }
