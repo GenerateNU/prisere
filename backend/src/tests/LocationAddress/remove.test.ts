@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, afterEach } from "bun:test";
+import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 
@@ -14,6 +14,9 @@ describe("Remove Address Tests", () => {
         app = testAppData.app;
         backup = testAppData.backup;
 
+    });
+
+    beforeEach(async () => {
         const sampleCompany = {
             name: "Cool Company",
         };
@@ -24,23 +27,21 @@ describe("Remove Address Tests", () => {
         });
         const body = await response.json();
         company_id = body.id;
-
     });
 
     afterEach(async () => {
         backup.restore();
     });
 
-    /*
     test("error if id does not match any location", async () => {
 
-        const removeResponse = await app.request("/location-address/d37f99de-b65a-424a-98aa-c4bd84097485");
+        const removeResponse = await app.request(`/location-address/e6b07e08-3435-4a4e-86bc-2e6995788ad9`, {
+            method: 'DELETE'
+        });
 
         expect(removeResponse.status).toBe(400);
 
     });
-
-     */
 
     test("properly removed the location with given id", async () => {
 

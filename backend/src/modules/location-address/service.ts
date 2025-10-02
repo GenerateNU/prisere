@@ -8,6 +8,7 @@ import {
     GetLocationAddressResponse,
     LocationAddress,
 } from "./types";
+import { DeleteResult } from "typeorm";
 
 export interface ILocationAddressService {
     /**
@@ -29,7 +30,7 @@ export interface ILocationAddressService {
      * @throws If the given id does not map to a location address
      * @param payload contains the id for the location that must be removed
      */
-    removeLocationAddressById(payload: GetLocationAddressDTO): Promise<void>;
+    removeLocationAddressById(payload: GetLocationAddressDTO): Promise<DeleteResult>;
 
 }
 
@@ -73,7 +74,8 @@ export class LocationAddressService implements ILocationAddressService {
 
 
     removeLocationAddressById = withServiceErrorHandling(
-        async (payload: GetLocationAddressDTO): Promise<void> => {
-            await this.locationAddressTransaction.removeLocationAddressById(payload);
+        async (payload: GetLocationAddressDTO): Promise<DeleteResult> => {
+            const result = await this.locationAddressTransaction.removeLocationAddressById(payload);
+            return result;
         });
 }
