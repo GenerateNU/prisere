@@ -19,13 +19,14 @@ describe("Bulk create disaster notifications", () => {
         // companyId: "2df402d0-bff3-408e-9ca6-62744bd4f735"
     };
     const disasterRequestBody = {
-        femaId: randomUUID(),
+        id: randomUUID(),
         disasterNumber: 1011,
-        state: 23,
+        fipsStateCode: "23",
         declarationDate: "2025-09-28T00:00:00.000Z",
-        startDate: "2025-09-29T00:00:00.000Z",
-        endDate: "2025-10-05T00:00:00.000Z",
-        fipsCountyCode: 12345,
+        incidentBeginDate: "2025-09-29T00:00:00.000Z",
+        incidentEndDate: "2025-10-05T00:00:00.000Z",
+        incidentType: "bad",
+        fipsCountyCode: "999",
         declarationType: "11",
         designatedArea: "County A",
         designatedIncidentTypes: "1",
@@ -66,11 +67,11 @@ describe("Bulk create disaster notifications", () => {
 
         const disasterRequestBody1 = {
             ...disasterRequestBody,
-            femaId: randomUUID(),
+            id: randomUUID(),
         };
         const disasterRequestBody2 = {
             ...disasterRequestBody,
-            femaId: randomUUID(),
+            id: randomUUID(),
         };
         const disasterResponse = await app.request("/disaster", {
             method: "POST",
@@ -80,8 +81,10 @@ describe("Bulk create disaster notifications", () => {
             body: JSON.stringify(disasterRequestBody1),
         });
         const disasterBody = await disasterResponse.json();
+        console.log("DISASTER BODY");
+        console.log(disasterBody);
 
-        createdDisasterId = disasterBody.femaId;
+        createdDisasterId = disasterBody.id;
         logMessageToFile(`Created ID: ${createdDisasterId}`);
 
         const disasterResponse2 = await app.request("/disaster", {
@@ -92,7 +95,7 @@ describe("Bulk create disaster notifications", () => {
             body: JSON.stringify(disasterRequestBody2),
         });
         const disasterBody2 = await disasterResponse2.json();
-        createdDisasterId2 = disasterBody2.femaId;
+        createdDisasterId2 = disasterBody2.id;
 
         logMessageToFile(`Created ID: ${createdDisasterId2}`);
     });
