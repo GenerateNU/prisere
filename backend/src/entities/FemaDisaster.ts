@@ -1,24 +1,24 @@
 import { Entity, Column, PrimaryColumn } from "typeorm";
 
-@Entity("fema_disaster")
+@Entity()
 export class FemaDisaster {
     @PrimaryColumn()
-    femaId!: string;
+    id!: string;
 
     @Column()
     disasterNumber!: number;
 
     @Column()
-    state!: number;
+    fipsStateCode!: number;
 
     @Column({ type: "timestamp" })
     declarationDate!: Date;
 
     @Column({ nullable: true, type: "timestamp" })
-    startDate?: Date;
+    incidentBeginDate?: Date | null;
 
     @Column({ nullable: true, type: "timestamp" })
-    endDate?: Date;
+    incidentEndDate?: Date | null;
 
     @Column()
     fipsCountyCode!: number;

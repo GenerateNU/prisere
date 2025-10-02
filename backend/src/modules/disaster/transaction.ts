@@ -4,7 +4,6 @@ import { CreateDisasterDTO } from "../../types/disaster";
 
 export interface IDisasterTransaction {
     createDisaster(payload: CreateDisasterDTO): Promise<FemaDisaster>;
-
     getAllDisasters(): Promise<FemaDisaster[]>;
 }
 
