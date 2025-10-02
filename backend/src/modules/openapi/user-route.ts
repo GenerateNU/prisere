@@ -27,7 +27,7 @@ export const addOpenApiUserRoutes = (openApi: OpenAPIHono, db: DataSource): Open
 // specifically from User.ts and specifically this schema
 // I can't figure out any more than that, so I give in.
 
-// If you move the schemas from User.ts to anywhere else it works. 
+// If you move the schemas from User.ts to anywhere else it works.
 // If you use a different schema from Company.ts or something it also works.
 const GetUserDTOSchemaLocal = z.object({
     id: z.string().nonempty(),
