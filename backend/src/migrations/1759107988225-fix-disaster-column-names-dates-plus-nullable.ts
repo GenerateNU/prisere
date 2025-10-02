@@ -4,7 +4,7 @@ export class FixDisasterColumnNamesDatesPlusNullable1759107988225 implements Mig
     name = "FixDisasterColumnNamesDatesPlusNullable1759107988225";
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "fema_disaster" RENAME COLUMN "femaId" TO "id"`);
+        await queryRunner.query(`ALTER TABLE "fema_disaster" RENAME COLUMN "id" TO "id"`);
         await queryRunner.query(`ALTER TABLE "fema_disaster" RENAME COLUMN "state" TO "fipsStateCode"`);
         await queryRunner.query(`ALTER TABLE "fema_disaster" RENAME COLUMN "startDate" TO "incidentBeginDate"`);
         await queryRunner.query(`ALTER TABLE "fema_disaster" RENAME COLUMN "endDate" TO "incidentEndDate"`);
@@ -15,7 +15,7 @@ export class FixDisasterColumnNamesDatesPlusNullable1759107988225 implements Mig
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "fema_disaster" RENAME COLUMN "id" TO "femaId"`);
+        await queryRunner.query(`ALTER TABLE "fema_disaster" RENAME COLUMN "id" TO "id"`);
         await queryRunner.query(`ALTER TABLE "fema_disaster" RENAME COLUMN "fipsStateCode" TO "state"`);
         await queryRunner.query(`ALTER TABLE "fema_disaster" RENAME COLUMN "incidentBeginDate" TO "startDate"`);
         await queryRunner.query(`ALTER TABLE "fema_disaster" RENAME COLUMN "incidentEndDate" TO "endDate"`);
