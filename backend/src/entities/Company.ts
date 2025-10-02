@@ -1,13 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column} from "typeorm"
 
-@Entity("company")
+@Entity()
 export class Company {
     @PrimaryGeneratedColumn("uuid")
-    id!: string;
+      id!: string;
 
     @Column()
-    name!: string;
+      name!: string;
 
-    @Column({ type: "timestamptz", nullable: true })
-    lastQuickBooksImportTime?: Date;
+    @Column({type: 'timestamptz', nullable: true})
+      lastQuickBooksImportTime?: Date;
 }

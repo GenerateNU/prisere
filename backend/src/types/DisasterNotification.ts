@@ -9,9 +9,9 @@ export const DisasterNotification = z.object({
     femaDisasterId: z.string(),
     notificationType: z.enum(notificationTypes),
     notificationStatus: z.enum(notificationStatus).optional().nullable(),
-    firstSentAt: z.date().optional().nullable(),
-    lastSentAt: z.date().optional().nullable(),
-    acknowledgedAt: z.date().optional().nullable(),
+    firstSentAt: z.union([z.date(), z.string()]).optional().nullable(),
+    lastSentAt: z.union([z.date(), z.string()]).optional().nullable(),
+    acknowledgedAt: z.union([z.date(), z.string()]).optional().nullable(),
 });
 
 export type DisasterNotificationType = z.infer<typeof DisasterNotification>;

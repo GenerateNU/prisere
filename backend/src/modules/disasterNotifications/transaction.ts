@@ -1,5 +1,4 @@
 import { DisasterNotification } from "../../entities/DisasterNotification";
-// import { CreateCompanyDTO, GetCompanyByIdDTO, UpdateQuickBooksImportTimeDTO } from "../../types/Company";
 import { DataSource, InsertResult } from "typeorm";
 import Boom from "@hapi/boom";
 import { logMessageToFile } from "../../utilities/logger";
@@ -57,116 +56,59 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
     }
 
     async getUserNotifications(payload: GetUsersDisasterNotificationsDTO): Promise<DisasterNotification[]> {
-        if (typeof payload.id !== "string") {
-            logMessageToFile(`Invalid user ID type: ${typeof payload.id}`);
-            throw Boom.badRequest("User ID must be of type string");
-        }
-        if (!validate(payload.id)) {
-            logMessageToFile(`Invalid UUID format for user ID: ${payload.id}`);
-            throw Boom.badRequest("Invalid UUID format (for user ID)");
+        const existing = await this.db.getRepository(User).findOne({ where: { id: payload.id } });
+        if (!existing) {
+            logMessageToFile(`User not found: ${payload.id}`);
+            throw Boom.notFound("user not found");
         }
 
-        try {
-            const existing = await this.db.getRepository(User).findOne({ where: { id: payload.id } });
-            if (!existing) {
-                logMessageToFile(`User not found: ${payload.id}`);
-                throw Boom.notFound("user not found");
-            }
+        const result: DisasterNotification[] = await this.db
+            .createQueryBuilder()
+            .select("disasterNotification")
+            .from(DisasterNotification, "disasterNotification")
+            .where("disasterNotification.userId = :id", { id: payload.id })
+            .getMany();
 
-            const result: DisasterNotification[] = await this.db
-                .createQueryBuilder()
-                .select("disasterNotification")
-                .from(DisasterNotification, "disasterNotification")
-                .where("disasterNotification.userId = :id", { id: payload.id })
-                .getMany();
-
-            if (!result || result.length === 0) {
-                logMessageToFile(`No notifications found for user ID: ${payload.id}`);
-                throw Boom.notFound("No notifications found for user");
-            }
-
-            return result;
-        } catch (error) {
-            if (Boom.isBoom(error)) {
-                throw error;
-            }
-            logMessageToFile(`Transaction error on getting users disaster notifications: ${error}`);
-            throw Boom.internal("Error retrieving user notifications");
+        if (!result || result.length === 0) {
+            logMessageToFile(`No notifications found for user ID: ${payload.id}`);
+            throw Boom.notFound("No notifications found for user");
         }
+
+        return result;
     }
 
     async acknowledgeNotification(notificationId: string): Promise<DisasterNotification> {
-        if (!validate(notificationId)) {
-            logMessageToFile(`Invalid UUID format for notification ID: ${notificationId}`);
-            throw Boom.badRequest("Invalid UUID format (for notification ID)");
-        }
-        try {
-            const existing = await this.db
-                .getRepository(DisasterNotification)
-                .findOne({ where: { id: notificationId } });
-            if (!existing) {
-                logMessageToFile(`Notification not found: ${notificationId}`);
-                throw Boom.notFound("Notification not found");
-            }
+        const result = await this.db
+            .createQueryBuilder()
+            .update(DisasterNotification)
+            .set({ notificationStatus: "acknowledged", acknowledgedAt: new Date() })
+            .where("id = :id", { id: notificationId })
+            .returning("*")
+            .execute();
 
-            const result = await this.db
-                .createQueryBuilder()
-                .update(DisasterNotification)
-                .set({ notificationStatus: "acknowledged", acknowledgedAt: new Date() })
-                .where("id = :id", { id: notificationId })
-                .returning("*")
-                .execute();
-
-            const updatedNotification = result.raw[0];
-            if (!updatedNotification) {
-                logMessageToFile(`Notification not found or could not update: ${notificationId}`);
-                throw Boom.notFound("Notification not found or could not update status");
-            }
-            return updatedNotification;
-        } catch (error) {
-            if (Boom.isBoom(error)) {
-                throw error;
-            }
-            logMessageToFile(`Error acknowledging notification ${notificationId}: ${error}`);
-            throw Boom.internal("Could not update notification status");
+        const updatedNotification = result.raw[0];
+        if (!updatedNotification) {
+            logMessageToFile(`Notification not found or could not update: ${notificationId}`);
+            throw Boom.notFound("Notification not found or could not update status");
         }
+        return updatedNotification;
     }
 
     async dismissNotification(notificationId: string): Promise<DisasterNotification> {
-        if (!validate(notificationId)) {
-            logMessageToFile(`Invalid UUID format for notification ID: ${notificationId}`);
-            throw Boom.badRequest("Invalid UUID format (for notification ID)");
-        }
-        try {
-            const existing = await this.db
-                .getRepository(DisasterNotification)
-                .findOne({ where: { id: notificationId } });
-            if (!existing) {
-                logMessageToFile(`Notification not found: ${notificationId}`);
-                throw Boom.notFound("Notification not found");
-            }
+        const result = await this.db
+            .createQueryBuilder()
+            .update(DisasterNotification)
+            .set({ notificationStatus: "read" })
+            .where("id = :id", { id: notificationId })
+            .returning("*")
+            .execute();
 
-            const result = await this.db
-                .createQueryBuilder()
-                .update(DisasterNotification)
-                .set({ notificationStatus: "read" })
-                .where("id = :id", { id: notificationId })
-                .returning("*")
-                .execute();
-
-            const updatedNotification = result.raw[0];
-            if (!updatedNotification) {
-                logMessageToFile(`Notification not found or could not update: ${notificationId}`);
-                throw Boom.notFound("Notification not found or could not update status");
-            }
-            return updatedNotification;
-        } catch (error) {
-            if (Boom.isBoom(error)) {
-                throw error;
-            }
-            logMessageToFile(`Error dismissing notification ${notificationId}: ${error}`);
-            throw Boom.internal("Could not update notification status");
+        const updatedNotification = result.raw[0];
+        if (!updatedNotification) {
+            logMessageToFile(`Notification not found or could not update: ${notificationId}`);
+            throw Boom.notFound("Notification not found or could not update status");
         }
+        return updatedNotification;
     }
 
     async bulkCreateNotifications(notifications: Partial<DisasterNotification>[]): Promise<DisasterNotification[]> {
@@ -237,33 +179,20 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
     }
 
     async deleteNotification(notificationId: string): Promise<boolean> {
-        if (!validate(notificationId)) {
-            logMessageToFile(`Invalid UUID format for notification ID: ${notificationId}`);
-            throw Boom.badRequest("Invalid UUID format (for notification ID)");
+        const existing = await this.db
+            .getRepository(DisasterNotification)
+            .findOne({ where: { id: notificationId } });
+        console.log("EXISTING: ", existing);
+        if (!existing) {
+            throw Boom.notFound("ERROR: Notification ID not found");
         }
+        await this.db
+            .createQueryBuilder()
+            .delete()
+            .from(DisasterNotification)
+            .where("id = :id", { id: notificationId })
+            .execute();
 
-        try {
-            const existing = await this.db
-                .getRepository(DisasterNotification)
-                .findOne({ where: { id: notificationId } });
-            console.log("EXISTING: ", existing);
-            if (!existing) {
-                throw Boom.notFound("ERROR: Notification ID not found");
-            }
-            await this.db
-                .createQueryBuilder()
-                .delete()
-                .from(DisasterNotification)
-                .where("id = :id", { id: notificationId })
-                .execute();
-
-            return true;
-        } catch (error) {
-            if (Boom.isBoom(error)) {
-                throw error;
-            }
-            logMessageToFile(`Error deleting notification ${notificationId}: ${error}`);
-            throw Boom.internal("Could not delete notification");
-        }
+        return true;
     }
 }

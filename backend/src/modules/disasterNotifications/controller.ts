@@ -41,51 +41,21 @@ export class DisasterNotificationController implements IDisasterNotificationCont
             }
             const payload = GetUsersDisasterNotificationsDTOSchema.parse({ id: userId });
             const notifications = await this.notificationService.getUserNotifications(payload);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const mapped = notifications.map((notification: any) => ({
-                id: notification.id,
-                userId:
-                    typeof notification.user === "string"
-                        ? notification.user
-                        : (notification.user?.id ?? notification.userId),
-                femaDisasterId:
-                    typeof notification.femaDisaster === "string"
-                        ? notification.femaDisaster
-                        : (notification.femaDisaster?.id ?? notification.femaDisasterId),
-                notificationType: notification.notificationType,
-                notificationStatus: notification.notificationStatus,
-                firstSentAt: notification.firstSentAt
-                    ? typeof notification.firstSentAt === "string"
-                        ? new Date(notification.firstSentAt)
-                        : notification.firstSentAt
-                    : undefined,
-                lastSentAt: notification.lastSentAt
-                    ? typeof notification.lastSentAt === "string"
-                        ? new Date(notification.lastSentAt)
-                        : notification.lastSentAt
-                    : undefined,
-                acknowledgedAt: notification.acknowledgedAt
-                    ? typeof notification.acknowledgedAt === "string"
-                        ? new Date(notification.acknowledgedAt)
-                        : notification.acknowledgedAt
-                    : undefined,
-            }));
 
-            return ctx.json(mapped, 200);
+            return ctx.json(notifications, 200);
         }
     );
 
-    acknowledgeNotification = withControllerErrorHandling(async (ctx: Context): Promise<Response> => {
+    acknowledgeNotification = withControllerErrorHandling(async (ctx: Context): Promise<TypedResponse<AcknowledgeNotificationResponse | { error: string }>> => {
         const notificationId = ctx.req.param("id");
         if (!validate(notificationId)) {
             return ctx.json({ error: "Invalid notification ID format" }, 400);
         }
         const notification = await this.notificationService.acknowledgeNotification(notificationId);
-
         return ctx.json(notification, 200);
     });
 
-    dismissNotification = withControllerErrorHandling(async (ctx: Context): Promise<Response> => {
+    dismissNotification = withControllerErrorHandling(async (ctx: Context): Promise<TypedResponse<DismissNotificationResponse | { error: string }>> => {
         const notificationId = ctx.req.param("id");
         if (!validate(notificationId)) {
             return ctx.json({ error: "Invalid notification ID format" }, 400);
@@ -95,7 +65,7 @@ export class DisasterNotificationController implements IDisasterNotificationCont
         return ctx.json(notification, 200);
     });
 
-    bulkCreateNotifications = withControllerErrorHandling(async (ctx: Context): Promise<Response> => {
+    bulkCreateNotifications = withControllerErrorHandling(async (ctx: Context): Promise<TypedResponse<BulkCreateNotificationsResponse>> => {
         const json = await ctx.req.json();
         const payload = BulkCreateNotificationsRequestSchema.parse(json);
         const convertedPayload = payload.map((item) => ({

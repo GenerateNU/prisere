@@ -1,9 +1,8 @@
-import typeorm, { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { FemaDisaster } from "./FemaDisaster";
-import type { Relation } from "typeorm";
-// import { User } from "./User";
 import { NotificationType, NotificationStatus } from "../types/NotificationEnums";
 import { User } from "./User";
+import type { Relation } from "typeorm";
 
 @Entity("disasterNotification")
 export class DisasterNotification {
@@ -15,7 +14,7 @@ export class DisasterNotification {
 
     @ManyToOne(() => User, {nullable: false})
     @JoinColumn({ name: "userId" })
-    user!: typeorm.Relation<User>;
+    user!: Relation<User>;
 
     @Column()
     femaDisasterId!: string;
