@@ -1,88 +1,51 @@
-import { IQuickBooksPurchaseTransaction } from "./transaction";
+import { IInvoiceTransaction } from "./transaction";
 import { withServiceErrorHandling } from "../../utilities/error";
-import {
-    CreateQuickBooksPurchaseDTO,
-    CreateQuickBooksPurchaseResponse,
-    GetCompanyQuickBooksPurchasesDTO,
-    GetCompanyQuickBooksPurchasesResponse,
-    GetQuickBooksPurchaseAPIResponse,
-    PatchQuickBooksPurchaseDTO,
-    PatchQuickBooksPurchasesResponse,
-} from "./types";
-import { CreateOrUpdateInvoiceDTO } from "../../types/Invoice";
+import { CreateOrUpdateInvoicesDTO, GetCompanyInvoicesDTO } from "../../types/Invoice";
+import { Invoice } from "../../entities/Invoice";
+import Boom from "@hapi/boom";
 
-
-// TODO: fix this interface and figure out what is happening with the types (API/ normal types??)
 export interface IInvoiceService {
-    createOrUpdateInvoice(payload: CreateOrUpdateInvoiceDTO): Promise<CreateOrUpdateInvoiceResponse>;
-    getQuickBooksPurchase(id: string): Promise<GetQuickBooksPurchaseAPIResponse>;
-    getQuickBooksPurchasesForCompany(
-        payload: GetCompanyQuickBooksPurchasesDTO
-    ): Promise<GetCompanyQuickBooksPurchasesResponse>;
+    bulkCreateOrUpdateInvoice(payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]>;
+    getInvoiceById(id: string): Promise<Invoice>;
+    getInvoicesForCompany(
+        payload: GetCompanyInvoicesDTO
+    ): Promise<Invoice[]>;
 }
 
-export class QuickBooksPurchaseService implements IQuickBooksPurchaseService {
-    private quickBooksPurchaseTransaction: IQuickBooksPurchaseTransaction;
+export class InvoiceService implements IInvoiceService {
+    private invoiceTransaction: IInvoiceTransaction;
 
-    constructor(qbTransaction: IQuickBooksPurchaseTransaction) {
-        this.quickBooksPurchaseTransaction = qbTransaction;
+    constructor(qbTransaction: IInvoiceTransaction) {
+        this.invoiceTransaction = qbTransaction;
     }
 
-    updateQuickBooksPurchase = withServiceErrorHandling(
-        async (id: string, payload: PatchQuickBooksPurchaseDTO): Promise<PatchQuickBooksPurchasesResponse> => {
-            const newQBPurchase = await this.quickBooksPurchaseTransaction.updateQuickBooksPurchase(id, payload);
+    bulkCreateOrUpdateInvoice = withServiceErrorHandling(
+        async (payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]> => {
+            const newInvoices = await this.invoiceTransaction.createOrUpdateInvoices(payload);
 
-            return {
-                comapnyId: newQBPurchase.companyId,
-                dateCreated: newQBPurchase.dateCreated,
-                id: newQBPurchase.id,
-                isRefund: newQBPurchase.isRefund,
-                quickBooksID: newQBPurchase.quickbooksId,
-                totalAmountCents: newQBPurchase.totalAmountCents,
-            };
+            if (!newInvoices || newInvoices.length === 0) {
+                throw Boom.internal("Failed to create invoices");
+            }
+
+            return newInvoices;
         }
     );
 
-    createQuickBooksPurchase = withServiceErrorHandling(
-        async (payload: CreateQuickBooksPurchaseDTO): Promise<CreateQuickBooksPurchaseResponse> => {
-            const newQBPurchase = await this.quickBooksPurchaseTransaction.createQuickBooksPurchase(payload);
+    getInvoiceById = withServiceErrorHandling(async (id: string): Promise<Invoice> => {
+        const invoice = await this.invoiceTransaction.getInvoiceById(id);
 
-            return {
-                comapnyId: newQBPurchase.companyId,
-                id: newQBPurchase.id,
-                isRefund: newQBPurchase.isRefund,
-                quickBooksID: newQBPurchase.quickbooksId,
-                totalAmountCents: newQBPurchase.totalAmountCents,
-            };
+        if (!invoice) {
+            throw Boom.notFound("Invoice not found")
         }
-    );
 
-    getQuickBooksPurchase = withServiceErrorHandling(async (id: string): Promise<GetQuickBooksPurchaseAPIResponse> => {
-        const qbPurchase = await this.quickBooksPurchaseTransaction.getQuickBooksPurchase(id);
-
-        return {
-            dateCreated: qbPurchase.dateCreated,
-            lastUpdated: qbPurchase.dateCreated,
-            comapnyId: qbPurchase.companyId,
-            id: qbPurchase.id,
-            isRefund: qbPurchase.isRefund,
-            quickBooksID: qbPurchase.quickbooksId,
-            totalAmountCents: qbPurchase.totalAmountCents,
-        };
+        return invoice;
     });
 
-    getQuickBooksPurchasesForCompany = withServiceErrorHandling(
-        async (payload: GetCompanyQuickBooksPurchasesDTO): Promise<GetCompanyQuickBooksPurchasesResponse> => {
-            const qbPurchases = await this.quickBooksPurchaseTransaction.getQuickBooksPurchasesForCompany(payload);
+    getInvoicesForCompany = withServiceErrorHandling(
+        async (payload: GetCompanyInvoicesDTO): Promise<Invoice[]> => {
+            const invoices = await this.invoiceTransaction.getInvoicesForCompany(payload);
 
-            return qbPurchases.map((qbPurchase) => ({
-                comapnyId: qbPurchase.companyId,
-                dateCreated: qbPurchase.dateCreated,
-                id: qbPurchase.id,
-                isRefund: qbPurchase.isRefund,
-                quickBooksID: qbPurchase.quickbooksId,
-                totalAmountCents: qbPurchase.totalAmountCents,
-            }));
+            return invoices;
         }
     );
 }

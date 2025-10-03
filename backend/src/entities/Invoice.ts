@@ -18,7 +18,7 @@ export class Invoice {
 
     @ManyToOne(() => Company, { nullable: true })
     @JoinColumn({ name: "companyId" })
-    company!: Relation<Company>;
+    company!: Company;
 
     @Column()
     companyId!: string;
@@ -31,6 +31,7 @@ export class Invoice {
     @Column()
     totalAmountCents!: number;
 
+    @Column()
     dateCreated!: Date;
 
     @UpdateDateColumn()

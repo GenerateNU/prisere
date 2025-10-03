@@ -2,10 +2,10 @@ import { DataSource } from "typeorm";
 import Boom from "@hapi/boom";
 import { plainToInstance } from "class-transformer";
 import { Invoice } from "../../entities/Invoice";
-import { CreateOrUpdateInvoiceDTO, GetCompanyInvoicesDTO } from "../../types/Invoice";
+import { CreateOrUpdateInvoicesDTO, GetCompanyInvoicesDTO } from "../../types/Invoice";
 
 export interface IInvoiceTransaction {
-    createOrUpdateInvoice(payload: CreateOrUpdateInvoiceDTO): Promise<Invoice>;
+    createOrUpdateInvoices(payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]>;
     getInvoiceById(id: string): Promise<Invoice>;
     getInvoicesForCompany(payload: GetCompanyInvoicesDTO): Promise<Invoice[]>;
 }
@@ -17,18 +17,18 @@ export class InvoiceTransaction implements IInvoiceTransaction {
         this.db = db;
     }
 
-    async createOrUpdateInvoice(payload: CreateOrUpdateInvoiceDTO): Promise<Invoice> {
-        const newInvoice = plainToInstance(Invoice, payload);
+    async createOrUpdateInvoices(payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]> {
+        const newInvoices = payload.map(invoice => plainToInstance(Invoice, invoice));
         const result = await this.db
             .createQueryBuilder()
             .insert()
             .into(Invoice)
-            .values(newInvoice)
+            .values(newInvoices)
             .orUpdate(['totalAmountCents', 'dateCreated'], ['quickbooksId', 'companyId'])
             .returning('*')
             .execute();
 
-        return result.raw[0];
+        return result.raw;
     }
 
     async getInvoiceById(id: string): Promise<Invoice> {
