@@ -10,13 +10,13 @@ import {
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
 import { ControllerResponse } from "../../utilities/response";
-import { GetAllLocationAddressesAPIResponse, GetLocationAddressAPIResponse } from "../location-address/types";
+import { GetAllLocationAddressesAPIResponse } from "../../types/Location";
 
 export interface ICompanyController {
     getCompanyById(_ctx: Context): ControllerResponse<TypedResponse<GetCompanyByIdResponse, 200>>;
     createCompany(_ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 201>>;
     updateQuickbooksImportTime(ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 200>>;
-    getCompanyLocationsById(ctx: Context): Promise<TypedResponse<GetAllLocationAddressesAPIResponse> | Response>;
+    getCompanyLocationsById(ctx: Context): Promise<TypedResponse<GetAllLocationAddressesAPIResponse>>;
 }
 
 export class CompanyController implements ICompanyController {

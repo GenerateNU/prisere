@@ -89,7 +89,7 @@ const removeLocationAddressRoute = createRoute({
             description: "Location successfully deleted"
         },
         400: {
-            description: "Invalid location ID",
+            description: "Invalid location ID or no Company with that ID",
             content: {
                 "application/json": {
                     schema: ErrorResponseSchema,

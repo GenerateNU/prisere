@@ -2,14 +2,13 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { logMessageToFile } from "../../utilities/logger";
 
 /**
  * Test:
  * - More than one location
  * - No locations
- * - invalid Id -> not NUid
- * - only returns locations for the speficied company
+ * - invalid id -> not uuid
+ * - only returns locations for the specified company
  */
 
 describe("Get all locations for a company", () => {

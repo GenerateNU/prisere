@@ -1,14 +1,9 @@
 import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { ILocationAddressTransaction } from "./transaction";
-import {
-    CreateLocationAddressDTO,
-    CreateLocationAddressResponse,
-    GetLocationAddressDTO,
-    GetLocationAddressResponse,
-    LocationAddress,
-} from "./types";
+
 import { DeleteResult } from "typeorm";
+import { CreateLocationAddressDTO, CreateLocationAddressResponse, GetLocationAddressDTO, GetLocationAddressResponse, LocationAddress } from "../../types/Location";
 
 export interface ILocationAddressService {
     /**

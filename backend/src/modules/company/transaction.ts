@@ -102,9 +102,6 @@ export class CompanyTransaction implements ICompanyTransaction {
     }
 
     async getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]> {
-        if (typeof payload.id !== "string") {
-            throw new Error("ID must be of type string");
-        }
         const locations = await this.db.manager.findBy(LocationAddress, {
             companyId: payload.id,
         });

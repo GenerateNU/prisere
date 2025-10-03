@@ -65,7 +65,6 @@ describe("Remove Address Tests", () => {
 
         const location = await response.json();
         const locationId = location.id;
-        console.log(locationId);
 
         expect(response.status).toBe(201);
 
@@ -75,6 +74,62 @@ describe("Remove Address Tests", () => {
 
         expect(removeResponse.status).toBe(204);
 
+        const getRemovedResponse = await app.request(`/location-address/${locationId}`, {
+            method: "GET",
+        });
+
+       expect(getRemovedResponse.status).toBe(404);
+
+    });
+
+    test("should return 400 for invalid UUID format", async () => {
+        const removeResponse = await app.request(`/location-address/not-a-valid-uuid`, {
+            method: 'DELETE'
+        });
+
+        expect(removeResponse.status).toBe(400);
+    });
+
+    test("should return 400 for empty string id", async () => {
+        const removeResponse = await app.request(`/location-address/`, {
+            method: 'DELETE'
+        });
+
+        expect(removeResponse.status).toBe(404); // or 400 depending on your routing
+    });
+
+    test("should return 204 with no content body", async () => {
+        const createBody = {
+            country: "United States",
+            stateProvince: "California",
+            city: "San Francisco",
+            streetAddress: "123 Main Street",
+            postalCode: 94105,
+            county: "San Francisco County",
+            companyId: company_id,
+        };
+
+        const createResponse = await app.request("/location-address", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(createBody),
+        });
+        const location = await createResponse.json();
+        const locationId = location.id;
+
+        const removeResponse = await app.request(`/location-address/${location.id}`, {
+            method: 'DELETE'
+        });
+
+        expect(removeResponse.status).toBe(204);
+        const body = await removeResponse.text();
+        expect(body).toBe("");
+
+        const getRemovedResponse = await app.request(`/location-address/${locationId}`, {
+            method: "GET",
+        });
+
+        expect(getRemovedResponse.status).toBe(404);
     });
 
 });

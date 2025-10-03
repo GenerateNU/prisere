@@ -10,8 +10,8 @@ import {
     GetCompanyByIdResponseSchema,
     UpdateQuickBooksImportTimeDTOSchema,
 } from "../../types/Company";
-import { GetAllLocationAddressesAPIResponseSchema } from "../location-address/types";
 import { openApiErrorCodes } from "../../utilities/error";
+import { GetAllLocationAddressesAPIResponseSchema } from "../../types/Location";
 
 export const addOpenApiCompanyRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const companyTransaction: ICompanyTransaction = new CompanyTransaction(db);

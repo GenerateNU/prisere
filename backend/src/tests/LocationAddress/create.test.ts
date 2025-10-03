@@ -64,6 +64,7 @@ describe("Location Address Controller Tests", () => {
             expect(data.streetAddress).toBe(requestBody.streetAddress);
             expect(data.postalCode).toBe(requestBody.postalCode);
             expect(data.county).toBe(requestBody.county);
+            expect(data.companyId).toBe(requestBody.companyId);
         });
 
         test("should successfully create a location address without optional county field", async () => {
@@ -287,6 +288,33 @@ describe("Location Address Controller Tests", () => {
             expect(data).not.toHaveProperty("extraField");
             expect(data).not.toHaveProperty("anotherExtra");
         });
+
+        test("should return 400 if companyId not added", async () => {
+
+            const requestBody = {
+                country: "United States",
+                stateProvince: "California",
+                city: "San Francisco",
+                streetAddress: "123 Main Street",
+                postalCode: 94105,
+                extraField: "should not be allowed",
+                anotherExtra: 123,
+            };
+
+            const response = await app.request("/location-address", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            expect(response.status).toBe(400);
+            const data = await response.json();
+            expect(data).toHaveProperty("error");
+        });
+
+
     });
 
     describe("GET /location-address - Get Location Address", () => {
@@ -326,6 +354,7 @@ describe("Location Address Controller Tests", () => {
             expect(data.city).toBe(createBody.city);
             expect(data.streetAddress).toBe(createBody.streetAddress);
             expect(data.postalCode).toBe(createBody.postalCode);
+            expect(data.companyId).toBe(createBody.companyId);
         });
 
         test("should return 404 for non-existent id", async () => {
@@ -346,5 +375,6 @@ describe("Location Address Controller Tests", () => {
             expect(response.status).toBe(404);
             expect(response.ok).toBe(false);
         });
+
     });
 });

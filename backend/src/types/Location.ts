@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ErrorResponseSchema } from "./Utils";
 
 // Define the LocationAddress schema (assuming the structure based on CreateLocationAddressResponseSchema)
 // If you have different fields in your LocationAddress entity, adjust accordingly
