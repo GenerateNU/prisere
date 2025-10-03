@@ -11,7 +11,6 @@ describe("Location Address Controller Tests", () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
-
     });
 
     let company_id: String;
@@ -33,10 +32,8 @@ describe("Location Address Controller Tests", () => {
         backup.restore();
     });
 
-
     describe("POST /location-address - Create Location Address", () => {
         test("should successfully create a location address with all required fields", async () => {
-
             const requestBody = {
                 country: "United States",
                 stateProvince: "California",
@@ -68,7 +65,6 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should successfully create a location address without optional county field", async () => {
-
             const requestBody = {
                 country: "United States",
                 stateProvince: "California",
@@ -93,7 +89,6 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should fail with 400 when country is missing", async () => {
-
             const requestBody = {
                 stateProvince: "California",
                 city: "San Francisco",
@@ -116,7 +111,6 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should fail with 400 when country is empty string", async () => {
-
             const requestBody = {
                 country: "",
                 stateProvince: "California",
@@ -140,7 +134,6 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should fail with 400 when postalCode is not a number", async () => {
-
             const requestBody = {
                 country: "United States",
                 stateProvince: "California",
@@ -164,7 +157,6 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should fail with 400 when postalCode is negative", async () => {
-
             const requestBody = {
                 country: "United States",
                 stateProvince: "California",
@@ -212,7 +204,6 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should handle addresses with special characters", async () => {
-
             const requestBody = {
                 country: "España",
                 stateProvince: "Île-de-France",
@@ -239,7 +230,6 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should handle very long field values", async () => {
-
             const longString = "A".repeat(1000);
             const requestBody = {
                 country: longString,
@@ -263,7 +253,6 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should reject extra fields not in schema", async () => {
-
             const requestBody = {
                 country: "United States",
                 stateProvince: "California",
@@ -290,7 +279,6 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should return 400 if companyId not added", async () => {
-
             const requestBody = {
                 country: "United States",
                 stateProvince: "California",
@@ -313,13 +301,10 @@ describe("Location Address Controller Tests", () => {
             const data = await response.json();
             expect(data).toHaveProperty("error");
         });
-
-
     });
 
     describe("GET /location-address - Get Location Address", () => {
         test("should successfully retrieve an existing location address", async () => {
-
             // First create a location address
             const createBody = {
                 country: "United States",
@@ -375,6 +360,5 @@ describe("Location Address Controller Tests", () => {
             expect(response.status).toBe(404);
             expect(response.ok).toBe(false);
         });
-
     });
 });

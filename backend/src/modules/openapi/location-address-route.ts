@@ -86,16 +86,16 @@ const removeLocationAddressRoute = createRoute({
     },
     responses: {
         204: {
-            description: "Location successfully deleted"
+            description: "Location successfully deleted",
         },
         400: {
             description: "Invalid location ID or no Company with that ID",
             content: {
                 "application/json": {
                     schema: ErrorResponseSchema,
-                }
-            }
-        }
+                },
+            },
+        },
     },
     tags: ["Location Address"],
 });

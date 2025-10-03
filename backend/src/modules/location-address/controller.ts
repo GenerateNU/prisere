@@ -72,20 +72,19 @@ export class LocationAddressController implements ILocationAddressController {
         }
     );
 
-    removeLocationAddressById = withControllerErrorHandling(
-        async (ctx: Context): Promise<Response> => {
-            const maybeId = await ctx.req.param("id");
+    removeLocationAddressById = withControllerErrorHandling(async (ctx: Context): Promise<Response> => {
+        const maybeId = await ctx.req.param("id");
 
-            if (!validate(maybeId)) {
-                return ctx.json({ error: "Invalid Location ID was provided" }, 400);
-            }
+        if (!validate(maybeId)) {
+            return ctx.json({ error: "Invalid Location ID was provided" }, 400);
+        }
 
-            const removal = await this.locationAddressService.removeLocationAddressById({id : maybeId});
-            if (removal.affected == 0) {
-                return ctx.json({ error: "No location with that ID was found" }, 400);
-            } else {
-                ctx.status(204);
-                return ctx.body(null);
-            }
-        });
+        const removal = await this.locationAddressService.removeLocationAddressById({ id: maybeId });
+        if (removal.affected == 0) {
+            return ctx.json({ error: "No location with that ID was found" }, 400);
+        } else {
+            ctx.status(204);
+            return ctx.body(null);
+        }
+    });
 }

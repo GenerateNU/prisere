@@ -27,7 +27,6 @@ export interface ICompanyTransaction {
      */
     updateLastQuickBooksImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company | null>;
 
-
     /**
      * Gets a Company's locations by company ID
      * @param payload ID of the Company to whose locations will be fetched

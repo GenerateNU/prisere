@@ -3,7 +3,13 @@ import { withServiceErrorHandling } from "../../utilities/error";
 import { ILocationAddressTransaction } from "./transaction";
 
 import { DeleteResult } from "typeorm";
-import { CreateLocationAddressDTO, CreateLocationAddressResponse, GetLocationAddressDTO, GetLocationAddressResponse, LocationAddress } from "../../types/Location";
+import {
+    CreateLocationAddressDTO,
+    CreateLocationAddressResponse,
+    GetLocationAddressDTO,
+    GetLocationAddressResponse,
+    LocationAddress,
+} from "../../types/Location";
 
 export interface ILocationAddressService {
     /**
@@ -26,7 +32,6 @@ export interface ILocationAddressService {
      * @param payload contains the id for the location that must be removed
      */
     removeLocationAddressById(payload: GetLocationAddressDTO): Promise<DeleteResult>;
-
 }
 
 export class LocationAddressService implements ILocationAddressService {
@@ -67,10 +72,10 @@ export class LocationAddressService implements ILocationAddressService {
         return locationAddress;
     });
 
-
     removeLocationAddressById = withServiceErrorHandling(
         async (payload: GetLocationAddressDTO): Promise<DeleteResult> => {
             const result = await this.locationAddressTransaction.removeLocationAddressById(payload);
             return result;
-        });
+        }
+    );
 }

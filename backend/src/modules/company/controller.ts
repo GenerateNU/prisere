@@ -16,7 +16,7 @@ export interface ICompanyController {
     getCompanyById(_ctx: Context): ControllerResponse<TypedResponse<GetCompanyByIdResponse, 200>>;
     createCompany(_ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 201>>;
     updateQuickbooksImportTime(ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 200>>;
-    getCompanyLocationsById(ctx: Context): Promise<TypedResponse<GetAllLocationAddressesAPIResponse>>;
+    getCompanyLocationsById(ctx: Context): ControllerResponse<TypedResponse<GetAllLocationAddressesAPIResponse, 200>>;
 }
 
 export class CompanyController implements ICompanyController {
@@ -78,7 +78,7 @@ export class CompanyController implements ICompanyController {
     );
 
     getCompanyLocationsById = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<GetAllLocationAddressesAPIResponse>> => {
+        async (ctx: Context): ControllerResponse<TypedResponse<GetAllLocationAddressesAPIResponse, 200>> => {
             const id = ctx.req.param("id");
             if (!validate(id)) {
                 return ctx.json({ error: "Invalid company ID format" }, 400);
@@ -86,5 +86,5 @@ export class CompanyController implements ICompanyController {
             const locations = await this.companyService.getCompanyLocationsById({ id: id });
             return ctx.json(locations, 200);
         }
-    )
+    );
 }

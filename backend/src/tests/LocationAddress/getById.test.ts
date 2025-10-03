@@ -28,17 +28,14 @@ describe("Location Address Controller Tests", () => {
 
         const company = await companyResponse.json();
         company_id = company.id;
-
     });
 
     afterEach(async () => {
         backup.restore();
     });
 
-
     describe("GET /location-address - Get Location Address", () => {
         test("should successfully retrieve an existing location address", async () => {
-
             // First create a location address
             const createBody = {
                 country: "United States",

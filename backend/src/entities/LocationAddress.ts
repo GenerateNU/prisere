@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { Company } from "./Company.js";
 
-
 //Represents an address for a location of a company
 @Entity("location_address")
 export class LocationAddress {

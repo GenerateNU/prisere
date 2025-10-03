@@ -18,7 +18,6 @@ export interface ILocationAddressTransaction {
      */
     getLocationAddressById(payload: GetLocationAddressDTO): Promise<LocationAddress | null>;
 
-
     /**
      * Removes the location address with the given id
      * @param payload the id of the location that must be removed
@@ -60,10 +59,9 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
         return maybeFoundLocation;
     }
 
-
     async removeLocationAddressById(payload: GetLocationAddressDTO): Promise<DeleteResult> {
         const id = payload.id;
-        const result = await this.db.manager.delete(LocationAddress, { id : id})
+        const result = await this.db.manager.delete(LocationAddress, { id: id });
         return result;
     }
 }

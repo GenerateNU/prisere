@@ -9,7 +9,7 @@ export interface ICompanyService {
     createCompany(payload: CreateCompanyDTO): Promise<Company>;
     getCompanyById(payload: GetCompanyByIdDTO): Promise<Company>;
     updateLastQuickBooksImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company>;
-    getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]>
+    getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]>;
 }
 
 export class CompanyService implements CompanyService {

@@ -13,7 +13,6 @@ describe("Remove Address Tests", () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
-
     });
 
     beforeEach(async () => {
@@ -34,17 +33,14 @@ describe("Remove Address Tests", () => {
     });
 
     test("error if id does not match any location", async () => {
-
         const removeResponse = await app.request(`/location-address/e6b07e08-3435-4a4e-86bc-2e6995788ad9`, {
-            method: 'DELETE'
+            method: "DELETE",
         });
 
         expect(removeResponse.status).toBe(400);
-
     });
 
     test("properly removed the location with given id", async () => {
-
         const requestBody = {
             country: "United States",
             stateProvince: "California",
@@ -69,7 +65,7 @@ describe("Remove Address Tests", () => {
         expect(response.status).toBe(201);
 
         const removeResponse = await app.request(`/location-address/${locationId}`, {
-            method: 'DELETE'
+            method: "DELETE",
         });
 
         expect(removeResponse.status).toBe(204);
@@ -78,13 +74,12 @@ describe("Remove Address Tests", () => {
             method: "GET",
         });
 
-       expect(getRemovedResponse.status).toBe(404);
-
+        expect(getRemovedResponse.status).toBe(404);
     });
 
     test("should return 400 for invalid UUID format", async () => {
         const removeResponse = await app.request(`/location-address/not-a-valid-uuid`, {
-            method: 'DELETE'
+            method: "DELETE",
         });
 
         expect(removeResponse.status).toBe(400);
@@ -92,7 +87,7 @@ describe("Remove Address Tests", () => {
 
     test("should return 400 for empty string id", async () => {
         const removeResponse = await app.request(`/location-address/`, {
-            method: 'DELETE'
+            method: "DELETE",
         });
 
         expect(removeResponse.status).toBe(404); // or 400 depending on your routing
@@ -118,7 +113,7 @@ describe("Remove Address Tests", () => {
         const locationId = location.id;
 
         const removeResponse = await app.request(`/location-address/${location.id}`, {
-            method: 'DELETE'
+            method: "DELETE",
         });
 
         expect(removeResponse.status).toBe(204);
@@ -131,5 +126,4 @@ describe("Remove Address Tests", () => {
 
         expect(getRemovedResponse.status).toBe(404);
     });
-
 });

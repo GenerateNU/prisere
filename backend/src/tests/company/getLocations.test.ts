@@ -72,7 +72,6 @@ describe("Get all locations for a company", () => {
             },
         ];
 
-
         for (const location of locations) {
             await app.request("/location-address", {
                 method: "POST",
@@ -93,9 +92,8 @@ describe("Get all locations for a company", () => {
         });
 
         locations.forEach((expectedLocation) => {
-            const matchingLocation = data.find((loc: any) =>
-                loc.city === expectedLocation.city &&
-                loc.streetAddress === expectedLocation.streetAddress
+            const matchingLocation = data.find(
+                (loc: any) => loc.city === expectedLocation.city && loc.streetAddress === expectedLocation.streetAddress
             );
 
             expect(matchingLocation).toBeDefined();
@@ -107,7 +105,6 @@ describe("Get all locations for a company", () => {
                 expect(matchingLocation.county).toBe(expectedLocation.county);
             }
         });
-
     });
 
     test("should return 400 when company ID is not a valid UUID", async () => {

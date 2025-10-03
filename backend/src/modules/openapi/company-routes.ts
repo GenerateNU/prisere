@@ -11,7 +11,7 @@ import {
     UpdateQuickBooksImportTimeDTOSchema,
 } from "../../types/Company";
 import { openApiErrorCodes } from "../../utilities/error";
-import { GetAllLocationAddressesAPIResponseSchema } from "../../types/Location";
+import { GetAllLocationAddressesSchema } from "../../types/Location";
 
 export const addOpenApiCompanyRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const companyTransaction: ICompanyTransaction = new CompanyTransaction(db);
@@ -21,6 +21,7 @@ export const addOpenApiCompanyRoutes = (openApi: OpenAPIHono, db: DataSource): O
     openApi.openapi(createCompanyRoute, (ctx) => companyController.createCompany(ctx));
     openApi.openapi(getCompanyByIdRoute, (ctx) => companyController.getCompanyById(ctx));
     openApi.openapi(updateCompanyImportTimeRoute, (ctx) => companyController.updateQuickbooksImportTime(ctx));
+    openApi.openapi(getCompanyLocationsByIdRoute, (ctx) => companyController.getCompanyLocationsById(ctx));
     return openApi;
 };
 
@@ -121,14 +122,12 @@ const getCompanyLocationsByIdRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: GetAllLocationAddressesAPIResponseSchema,
+                    schema: GetAllLocationAddressesSchema,
                 },
             },
             description: "Company locations fetched successfully",
         },
-        400: {
-            description: "Bad Request - Invalid input data",
-        },
+        ...openApiErrorCodes("Get Company Locations Errors"),
     },
     tags: ["Companies"],
 });
