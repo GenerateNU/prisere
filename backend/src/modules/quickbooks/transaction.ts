@@ -108,10 +108,11 @@ export class QuickbooksTransaction implements IQuickbooksTransaction {
             })
             .orUpdate(
                 ["accessToken", "refreshToken", "accessExpiryTimestamp", "refreshExpiryTimestamp"],
-                ["companyId"],
-                {
-                    skipUpdateIfNoValuesChanged: true,
-                }
+                ["companyId"]
+                // for now we are omitting this since pg-mem cannot support these types of queries
+                // {
+                //     skipUpdateIfNoValuesChanged: true,
+                // }
             )
             .returning("*")
             .execute();

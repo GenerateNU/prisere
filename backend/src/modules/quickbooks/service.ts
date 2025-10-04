@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { QuickbooksClient } from "../../external/quickbooks/client";
+import { IQuickbooksClient } from "../../external/quickbooks/client";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { IQuickbooksTransaction } from "./transaction";
 import { QuickbooksSession } from "../../entities/QuickbookSession";
@@ -7,7 +7,7 @@ import Boom from "@hapi/boom";
 import { QBQueryResponse } from "../../external/quickbooks/types";
 
 export interface IQuickbooksService {
-    generateAuthUrl(args: { userId: string }): Promise<string>;
+    generateAuthUrl(args: { userId: string }): Promise<{ state: string; url: string }>;
     createQuickbooksSession(args: { code: string; state: string; realmId: string }): Promise<QuickbooksSession>;
     refreshQuickbooksSession(args: { refreshToken: string; companyId: string }): Promise<QuickbooksSession>;
     consumeOAuthState(args: { state: string }): Promise<void>;
@@ -16,7 +16,7 @@ export interface IQuickbooksService {
 export class QuickbooksService implements IQuickbooksService {
     constructor(
         private transaction: IQuickbooksTransaction,
-        private qbClient: QuickbooksClient
+        private qbClient: IQuickbooksClient
     ) {}
 
     generateAuthUrl = withServiceErrorHandling(async ({ userId }: { userId: string }) => {
@@ -24,7 +24,7 @@ export class QuickbooksService implements IQuickbooksService {
 
         await this.transaction.storeOAuth({ stateId: state, initiatorId: userId });
 
-        return url;
+        return { state, url };
     });
 
     private async upsertQBSession({

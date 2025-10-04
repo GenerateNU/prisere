@@ -14,7 +14,7 @@ export class QuickbooksController implements IQuickbooksController {
 
     async redirectToAuthorization(ctx: Context) {
         // TODO: how are we doing auth? we need to get this userId in the Context I think
-        const url = await this.service.generateAuthUrl({ userId: "086c8b52-69bc-411c-8346-30857fd2138d" });
+        const { url } = await this.service.generateAuthUrl({ userId: "086c8b52-69bc-411c-8346-30857fd2138d" });
 
         return ctx.redirect(url);
     }

@@ -11,12 +11,30 @@ import {
 const PROD_BASE_URL = "https://quickbooks.api.intuit.com";
 const SANDBOX_BASE_URL = "https://sandbox-quickbooks.api.intuit.com";
 
-export class QuickbooksClient {
-    private static readonly SCOPES = {
-        accounting: "com.intuit.quickbooks.accounting",
-        payment: "com.intuit.quickbooks.payment",
-    };
+export const QB_SCOPES = {
+    accounting: "com.intuit.quickbooks.accounting",
+    payment: "com.intuit.quickbooks.payment",
+};
 
+export interface IQuickbooksClient {
+    generateUrl(args: { scopes: (keyof typeof QB_SCOPES)[] }): { url: string; state: string };
+    generateToken(args: { code: string }): Promise<QBOAuthTokenResponse>;
+    refreshToken(args: { refreshToken: string }): Promise<QBOAuthTokenResponse>;
+    _exampleQueryData({
+        qbRealm,
+        accessToken,
+    }: {
+        /**
+         * The QuickBooks realm is the externalId of the company's QuickBooks company.
+         *
+         * QuickBooks calls this a "realm", it's just an ID
+         */
+        qbRealm: string;
+        accessToken: string;
+    }): Promise<QBQueryResponse<unknown>>;
+}
+
+export class QuickbooksClient implements IQuickbooksClient {
     // generate authorization for getting token
     private static readonly AUTHORIZATION_ENDPOINT = "https://appcenter.intuit.com/connect/oauth2";
 
@@ -62,8 +80,8 @@ export class QuickbooksClient {
                   "http://localhost:3001/quickbooks/redirect";
     }
 
-    public generateUrl({ scopes }: { scopes: (keyof typeof QuickbooksClient.SCOPES)[] }) {
-        const scopeValues = scopes.map((s) => QuickbooksClient.SCOPES[s]);
+    public generateUrl({ scopes }: { scopes: (keyof typeof QB_SCOPES)[] }) {
+        const scopeValues = scopes.map((s) => QB_SCOPES[s]);
 
         const state = this.state.create(this.state.secretSync());
 
@@ -121,11 +139,6 @@ export class QuickbooksClient {
         qbRealm,
         accessToken,
     }: {
-        /**
-         * The QuickBooks realm is the externalId of the company's QuickBooks company.
-         *
-         * QuickBooks calls this a "realm", it's just an ID
-         */
         qbRealm: string;
         accessToken: string;
     }): Promise<QBQueryResponse<unknown>> {
