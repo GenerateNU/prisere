@@ -1,12 +1,17 @@
-import { Hono } from "hono";
 import { describe, beforeAll, beforeEach } from "bun:test";
 import { startTestApp } from "../../tests/setup-tests";
 import { IBackup } from "pg-mem";
 import { randomUUID } from "crypto";
+import { DataSource } from "typeorm";
+import { User } from "../../entities/User";
+import { FemaDisaster } from "../../entities/FemaDisaster";
+import { DisasterNotification } from "../../entities/DisasterNotification";
+import { NotificationType } from "../../types/NotificationEnums";
 
 describe("Test acknowledge disaster notifications", () => {
-    let app: Hono;
+    // let app: Hono;
     let backup: IBackup;
+    let dataSource: DataSource;
     let seedUserId1: string;
     let seedUserId2: string;
     let seedDisasterId1: string;
@@ -17,68 +22,58 @@ describe("Test acknowledge disaster notifications", () => {
     const seedUsers = [
         {
             id: randomUUID(),
-            firstName: "Alice",
-            lastName: "Bob",
-            email: "alice@prisere.com",
+            firstName: "John",
+            lastName: "Pork",
+            email: "john.doe@example.com",
         },
         {
             id: randomUUID(),
-            firstName: "Bob",
-            lastName: "Alice",
-            email: "bob@prisere.com",
+            firstName: "Jane",
+            lastName: "Porke",
+            email: "jane.smith@example.com",
         },
     ];
 
     const seedDisasters = [
         {
             id: randomUUID(),
-            disasterNumber: 1011,
-            fipsStateCode: "23",
-            declarationDate: "2025-09-28T00:00:00.000Z",
-            incidentBeginDate: "2025-09-29T00:00:00.000Z",
-            incidentEndDate: "2025-10-05T00:00:00.000Z",
-            incidentType: "bad",
-            fipsCountyCode: "999",
-            declarationType: "11",
-            designatedArea: "County A",
-            designatedIncidentTypes: "1",
+            disasterNumber: 12345,
+            fipsStateCode: 6,
+            declarationDate: new Date(),
+            incidentBeginDate: new Date(),
+            incidentEndDate: new Date(),
+            incidentType: "Flood",
+            fipsCountyCode: 1,
+            declarationType: "Major Disaster",
+            designatedArea: "Test Area",
+            designatedIncidentTypes: "Flooding",
         },
         {
             id: randomUUID(),
-            disasterNumber: 1012,
-            fipsStateCode: "24",
-            declarationDate: "2025-09-28T00:00:00.000Z",
-            incidentBeginDate: "2025-09-29T00:00:00.000Z",
-            incidentEndDate: "2025-10-05T00:00:00.000Z",
-            incidentType: "worse",
-            fipsCountyCode: "888",
-            declarationType: "12",
-            designatedArea: "County B",
-            designatedIncidentTypes: "2",
+            disasterNumber: 67890,
+            fipsStateCode: 12,
+            declarationDate: new Date(),
+            incidentBeginDate: new Date(),
+            incidentEndDate: new Date(),
+            incidentType: "Hurricane",
+            fipsCountyCode: 2,
+            declarationType: "Medium",
+            designatedArea: "Test Area 2",
+            designatedIncidentTypes: "Wind",
         },
     ];
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
-        app = testAppData.app;
+        // app = testAppData.app;
         backup = testAppData.backup;
+        dataSource = testAppData.dataSource;
 
-        // Create seed data once
-        for (const user of seedUsers) {
-            await app.request("/users", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(user),
-            });
-        }
+        const userRepository = dataSource.getRepository(User);
+        await userRepository.insert(seedUsers);
 
-        for (const disaster of seedDisasters) {
-            await app.request("/disaster", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(disaster),
-            });
-        }
+        const disasterRepository = dataSource.getRepository(FemaDisaster);
+        await disasterRepository.insert(seedDisasters);
 
         seedUserId1 = seedUsers[0].id;
         seedUserId2 = seedUsers[1].id;
@@ -89,29 +84,31 @@ describe("Test acknowledge disaster notifications", () => {
     beforeEach(async () => {
         backup.restore();
 
-        // Only create notifications in beforeEach
-        const requestBody = [
+        const notificationRepository = dataSource.getRepository(DisasterNotification);
+
+        const notifications = [
             {
+                id: randomUUID(),
                 userId: seedUserId1,
                 femaDisasterId: seedDisasterId1,
-                notificationType: "web",
+                notificationType: NotificationType.WEB,
+                firstSentAt: new Date(),
+                lastSentAt: new Date(),
             },
             {
+                id: randomUUID(),
                 userId: seedUserId2,
                 femaDisasterId: seedDisasterId2,
-                notificationType: "email",
+                notificationType: NotificationType.EMAIL,
+                firstSentAt: new Date(),
+                lastSentAt: new Date(),
             },
         ];
 
-        const response = await app.request(`/disasterNotification/create`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(requestBody),
-        });
+        await notificationRepository.insert(notifications);
 
-        const body = await response.json();
-        disasterNotificationId = body[0].id;
-        disasterNotificationId2 = body[1].id;
+        disasterNotificationId = notifications[0].id;
+        disasterNotificationId2 = notifications[1].id;
         console.log(disasterNotificationId);
         console.log(disasterNotificationId2);
     });
