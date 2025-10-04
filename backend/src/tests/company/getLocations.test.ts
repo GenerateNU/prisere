@@ -50,7 +50,7 @@ describe("Get all locations for a company", () => {
                 stateProvince: "California",
                 city: "San Francisco",
                 streetAddress: "123 Main St",
-                postalCode: 94105,
+                postalCode: "94105",
                 companyId: createdCompanyId,
             },
             {
@@ -58,7 +58,7 @@ describe("Get all locations for a company", () => {
                 stateProvince: "New York",
                 city: "New York",
                 streetAddress: "456 Broadway",
-                postalCode: 10013,
+                postalCode: "10013",
                 companyId: createdCompanyId,
             },
             {
@@ -66,7 +66,7 @@ describe("Get all locations for a company", () => {
                 stateProvince: "Texas",
                 city: "Austin",
                 streetAddress: "789 Queen St",
-                postalCode: 10001,
+                postalCode: "10001",
                 county: "Texas County",
                 companyId: createdCompanyId,
             },
@@ -100,6 +100,7 @@ describe("Get all locations for a company", () => {
             expect(matchingLocation.country).toBe(expectedLocation.country);
             expect(matchingLocation.stateProvince).toBe(expectedLocation.stateProvince);
             expect(matchingLocation.postalCode).toBe(expectedLocation.postalCode);
+            expect(matchingLocation.companyId).toBe(expectedLocation.companyId);
 
             if (expectedLocation.county) {
                 expect(matchingLocation.county).toBe(expectedLocation.county);
@@ -132,7 +133,7 @@ describe("Get all locations for a company", () => {
                 stateProvince: "California",
                 city: "San Francisco",
                 streetAddress: "123 Main St",
-                postalCode: 94105,
+                postalCode: "94105",
                 companyId: createdCompanyId,
             }),
         });
@@ -145,7 +146,7 @@ describe("Get all locations for a company", () => {
                 stateProvince: "Texas",
                 city: "Austin",
                 streetAddress: "789 Congress Ave",
-                postalCode: 78701,
+                postalCode: "78701",
                 companyId: otherCompanyId,
             }),
         });

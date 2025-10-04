@@ -39,7 +39,7 @@ describe("Location Address Controller Tests", () => {
                 stateProvince: "California",
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
-                postalCode: 94105,
+                postalCode: "94105",
                 county: "San Francisco County",
                 companyId: company_id,
             };
@@ -70,7 +70,7 @@ describe("Location Address Controller Tests", () => {
                 stateProvince: "California",
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
-                postalCode: 94105,
+                postalCode: "94105",
                 companyId: company_id,
             };
 
@@ -93,7 +93,7 @@ describe("Location Address Controller Tests", () => {
                 stateProvince: "California",
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
-                postalCode: 94105,
+                postalCode: "94105",
                 companyId: company_id,
             };
 
@@ -116,7 +116,7 @@ describe("Location Address Controller Tests", () => {
                 stateProvince: "California",
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
-                postalCode: 94105,
+                postalCode: "94105",
                 companyId: company_id,
             };
 
@@ -133,13 +133,13 @@ describe("Location Address Controller Tests", () => {
             expect(data).toHaveProperty("error");
         });
 
-        test("should fail with 400 when postalCode is not a number", async () => {
+        test("should fail with 400 when postalCode is not a string", async () => {
             const requestBody = {
                 country: "United States",
                 stateProvince: "California",
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
-                postalCode: "94105", // String instead of number
+                postalCode: 94105, // number instead of string
                 companyId: company_id,
             };
 
@@ -162,7 +162,30 @@ describe("Location Address Controller Tests", () => {
                 stateProvince: "California",
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
-                postalCode: -94105,
+                postalCode: "-94105",
+                companyId: company_id,
+            };
+
+            const response = await app.request("/location-address", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            expect(response.status).toBe(400);
+            const data = await response.json();
+            expect(data).toHaveProperty("error");
+        });
+
+        test("should fail with 400 when postalCode contains non-numeric characters", async () => {
+            const requestBody = {
+                country: "United States",
+                stateProvince: "California",
+                city: "San Francisco",
+                streetAddress: "123 Main Street",
+                postalCode: "z41*5",
                 companyId: company_id,
             };
 
@@ -209,7 +232,7 @@ describe("Location Address Controller Tests", () => {
                 stateProvince: "Île-de-France",
                 city: "São Paulo",
                 streetAddress: "Straße 123, Apt #456 & Suite 7/8",
-                postalCode: 12345,
+                postalCode: "12345",
                 county: "O'Brien County",
                 companyId: company_id,
             };
@@ -236,7 +259,7 @@ describe("Location Address Controller Tests", () => {
                 stateProvince: longString,
                 city: longString,
                 streetAddress: longString,
-                postalCode: 99999,
+                postalCode: "99999",
                 county: longString,
                 companyId: company_id,
             };
@@ -258,7 +281,7 @@ describe("Location Address Controller Tests", () => {
                 stateProvince: "California",
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
-                postalCode: 94105,
+                postalCode: "94105",
                 extraField: "should not be allowed",
                 anotherExtra: 123,
                 companyId: company_id,
@@ -284,7 +307,7 @@ describe("Location Address Controller Tests", () => {
                 stateProvince: "California",
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
-                postalCode: 94105,
+                postalCode: "94105",
                 extraField: "should not be allowed",
                 anotherExtra: 123,
             };
@@ -311,7 +334,7 @@ describe("Location Address Controller Tests", () => {
                 stateProvince: "California",
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
-                postalCode: 94105,
+                postalCode: "94105",
                 companyId: company_id,
             };
 

@@ -20,7 +20,7 @@ export class LocationAddress {
     streetAddress!: string;
 
     @Column()
-    postalCode!: number;
+    postalCode!: string;
 
     @Column({ nullable: true })
     county?: string;

@@ -46,7 +46,7 @@ describe("Remove Address Tests", () => {
             stateProvince: "California",
             city: "San Francisco",
             streetAddress: "123 Main Street",
-            postalCode: 94105,
+            postalCode: "94105",
             county: "San Francisco County",
             companyId: company_id,
         };
@@ -99,7 +99,7 @@ describe("Remove Address Tests", () => {
             stateProvince: "California",
             city: "San Francisco",
             streetAddress: "123 Main Street",
-            postalCode: 94105,
+            postalCode: "94105",
             county: "San Francisco County",
             companyId: company_id,
         };

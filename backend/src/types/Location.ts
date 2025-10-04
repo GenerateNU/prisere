@@ -9,7 +9,9 @@ export const LocationAddressSchema = z.object({
     stateProvince: z.string(),
     city: z.string(),
     streetAddress: z.string(),
-    postalCode: z.number(),
+    postalCode: z.string().nonempty().regex(/^\d+$/, {
+        message: "Must be a non-negative number string",
+    }),
     county: z.string().optional(),
     companyId: z.uuid(),
 });
@@ -19,7 +21,9 @@ export const CreateLocationAddressSchema = z.object({
     stateProvince: z.string().nonempty(),
     city: z.string().nonempty(),
     streetAddress: z.string().nonempty(),
-    postalCode: z.number().positive(),
+    postalCode: z.string().nonempty().regex(/^\d+$/, {
+        message: "Must be a non-negative number string",
+    }),
     county: z.string().nonempty().optional(),
     companyId: z.uuid(),
 });
@@ -39,8 +43,11 @@ export const GetAllLocationAddressesSchema = z.array(
         stateProvince: z.string().nonempty(),
         city: z.string().nonempty(),
         streetAddress: z.string().nonempty(),
-        postalCode: z.number().positive(),
+        postalCode: z.string().nonempty().regex(/^\d+$/, {
+            message: "Must be a non-negative number string",
+        }),
         county: z.string().nonempty().optional(),
+        companyId: z.uuid(),
     })
 );
 

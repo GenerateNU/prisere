@@ -42,7 +42,7 @@ describe("Location Address Controller Tests", () => {
                 stateProvince: "California",
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
-                postalCode: 94105,
+                postalCode: "94105",
                 companyId: company_id,
             };
 
@@ -92,7 +92,7 @@ describe("Location Address Controller Tests", () => {
             expect(response.ok).toBe(false);
         });
 
-        test("should handle an invalide UUID", async () => {
+        test("should handle an invalid UUID", async () => {
             const response = await app.request("/location-address/testing", {
                 method: "GET",
             });
