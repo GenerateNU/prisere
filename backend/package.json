@@ -11,8 +11,8 @@
     "build": "bun build src/server.ts --outdir ./dist --target bun",
     "start:built": "NODE_ENV=production bun dist/server.js",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --config eslint.config.ts && prettier . --check",
-    "lint:fix": "eslint . --config eslint.config.ts --fix && prettier . --write"
+    "lint": "eslint . --config src/eslint.config.ts && prettier . --check",
+    "lint:fix": "eslint . --config src/eslint.config.ts --fix && prettier . --write"
   },
   "type": "module",
   "dependencies": {

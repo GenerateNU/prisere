@@ -12,7 +12,6 @@ export default defineConfig([
             parserOptions: {
                 ecmaVersion: "latest",
                 sourceType: "module",
-                project: "./tsconfig.json",
             },
             globals: {
                 console: "readonly",
