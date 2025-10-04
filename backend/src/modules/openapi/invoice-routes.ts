@@ -5,10 +5,12 @@ import { InvoiceController } from "../invoice/controller";
 import { InvoiceService } from "../invoice/service";
 import { InvoiceTransaction } from "../invoice/transaction";
 import { CreateOrUpdateInvoicesDTOSchema, CreateOrUpdateInvoiceResponseSchema, GetInvoiceDTOSchema, GetInvoiceResponseSchema, GetCompanyInvoicesDTOSchema, GetCompanyInvoicesResponseSchema } from "../../types/Invoice";
+import { CompanyTransaction } from "../company/transaction";
 
 export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const invoiceTransaction = new InvoiceTransaction(db);
-    const invoiceService = new InvoiceService(invoiceTransaction);
+    const companyTransaction = new CompanyTransaction(db);
+    const invoiceService = new InvoiceService(invoiceTransaction, companyTransaction);
     const invoiceController = new InvoiceController(invoiceService);
 
     openApi.openapi(bulkCreateOrUpdateInvoiceRoute, (ctx) => invoiceController.bulkCreateOrUpdateInvoice(ctx));
