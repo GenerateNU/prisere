@@ -9,9 +9,7 @@ import { validate } from "uuid";
 export interface IInvoiceService {
     bulkCreateOrUpdateInvoice(payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]>;
     getInvoiceById(id: string): Promise<Invoice>;
-    getInvoicesForCompany(
-        payload: GetCompanyInvoicesDTO
-    ): Promise<Invoice[]>;
+    getInvoicesForCompany(payload: GetCompanyInvoicesDTO): Promise<Invoice[]>;
 }
 
 export class InvoiceService implements IInvoiceService {
@@ -25,21 +23,20 @@ export class InvoiceService implements IInvoiceService {
 
     bulkCreateOrUpdateInvoice = withServiceErrorHandling(
         async (payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]> => {
-            const uniqueCompanyIds = [...new Set(payload.map(inv => inv.companyId))];
+            const uniqueCompanyIds = [...new Set(payload.map((inv) => inv.companyId))];
 
             // validate all uuids as being properly formatted
-            const badIds = uniqueCompanyIds.filter(id => !validate(id));
+            const badIds = uniqueCompanyIds.filter((id) => !validate(id));
 
             if (badIds.length) {
-                throw Boom.badRequest(`Invalid uuid format: ${badIds.join(', ')}`);
+                throw Boom.badRequest(`Invalid uuid format: ${badIds.join(", ")}`);
             }
-            
 
             // make sure all those companies actually exist in the DB to get a decent error message
             const missingIds = await this.companyTransaction.validateCompaniesExist(uniqueCompanyIds);
-            
+
             if (missingIds.length !== 0) {
-                throw Boom.badRequest(`Companies not found: ${missingIds.join(', ')}`);
+                throw Boom.badRequest(`Companies not found: ${missingIds.join(", ")}`);
             }
 
             const newInvoices = await this.invoiceTransaction.createOrUpdateInvoices(payload);
@@ -56,17 +53,15 @@ export class InvoiceService implements IInvoiceService {
         const invoice = await this.invoiceTransaction.getInvoiceById(id);
 
         if (!invoice) {
-            throw Boom.notFound("Invoice not found")
+            throw Boom.notFound("Invoice not found");
         }
 
         return invoice;
     });
 
-    getInvoicesForCompany = withServiceErrorHandling(
-        async (payload: GetCompanyInvoicesDTO): Promise<Invoice[]> => {
-            const invoices = await this.invoiceTransaction.getInvoicesForCompany(payload);
+    getInvoicesForCompany = withServiceErrorHandling(async (payload: GetCompanyInvoicesDTO): Promise<Invoice[]> => {
+        const invoices = await this.invoiceTransaction.getInvoicesForCompany(payload);
 
-            return invoices;
-        }
-    );
+        return invoices;
+    });
 }

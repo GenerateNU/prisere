@@ -4,7 +4,14 @@ import { openApiErrorCodes } from "../../utilities/error";
 import { InvoiceController } from "../invoice/controller";
 import { InvoiceService } from "../invoice/service";
 import { InvoiceTransaction } from "../invoice/transaction";
-import { CreateOrUpdateInvoicesDTOSchema, CreateOrUpdateInvoiceResponseSchema, GetInvoiceDTOSchema, GetInvoiceResponseSchema, GetCompanyInvoicesDTOSchema, GetCompanyInvoicesResponseSchema } from "../../types/Invoice";
+import {
+    CreateOrUpdateInvoicesDTOSchema,
+    CreateOrUpdateInvoiceResponseSchema,
+    GetInvoiceDTOSchema,
+    GetInvoiceResponseSchema,
+    GetCompanyInvoicesDTOSchema,
+    GetCompanyInvoicesResponseSchema,
+} from "../../types/Invoice";
 import { CompanyTransaction } from "../company/transaction";
 
 export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
@@ -23,7 +30,8 @@ const bulkCreateOrUpdateInvoiceRoute = createRoute({
     method: "post",
     path: "/quickbooks/invoice/bulk",
     summary: "Bulk create or update new invoices",
-    description: "Creates new invoices according to the schema. If there is an invoice in the database with the same quickbooks_id, company_id pairing, then it will overwrite it's attributes",
+    description:
+        "Creates new invoices according to the schema. If there is an invoice in the database with the same quickbooks_id, company_id pairing, then it will overwrite it's attributes",
     request: {
         body: {
             content: {

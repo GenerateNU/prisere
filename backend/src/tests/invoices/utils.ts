@@ -8,7 +8,9 @@ export function CompareRequestToCreated(requestBody: any[], response: any[]) {
         const requestElem = requestBody[b];
         expect(responseElem.companyId).toBe(requestElem.companyId);
         // compare that the days are the same (actual timestamp will be different)
-        expect(new Date(responseElem.lastUpdated).toISOString().split('T')[0]).toBe(new Date().toISOString().split('T')[0]);
+        expect(new Date(responseElem.lastUpdated).toISOString().split("T")[0]).toBe(
+            new Date().toISOString().split("T")[0]
+        );
         expect(responseElem.totalAmountCents).toBe(requestElem.totalAmountCents);
         expect(new Date(responseElem.dateCreated).toISOString()).toBe(new Date(requestElem.dateCreated).toISOString());
 

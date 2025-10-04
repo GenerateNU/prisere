@@ -27,16 +27,14 @@ describe("Invoice get by id", () => {
 
         const invoiceSeeder = new InvoiceSeeder();
         await invoiceSeeder.run(datasource, {} as SeederFactoryManager);
-    })
+    });
 
     afterEach(async () => {
         backup.restore();
     });
 
     test("GET /quickbooks/invoice - valid company id ", async () => {
-        const response = await app.request(
-            `/quickbooks/invoice?companyId=${seededCompanyId}`
-        );
+        const response = await app.request(`/quickbooks/invoice?companyId=${seededCompanyId}`);
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -44,9 +42,7 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice - bad company id ", async () => {
-        const response = await app.request(
-            `/quickbooks/invoice?companyId=8d720d89-9999-4999-a999-1934f914907f`
-        );
+        const response = await app.request(`/quickbooks/invoice?companyId=8d720d89-9999-4999-a999-1934f914907f`);
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -54,9 +50,7 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice - invalid company id ", async () => {
-        const response = await app.request(
-            `/quickbooks/invoice?companyId=hellnah`
-        );
+        const response = await app.request(`/quickbooks/invoice?companyId=hellnah`);
 
         expect(response.status).toBe(400);
         const body = await response.json();

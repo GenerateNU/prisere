@@ -27,7 +27,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
 
         const invoiceSeeder = new InvoiceSeeder();
         await invoiceSeeder.run(datasource, {} as SeederFactoryManager);
-    })
+    });
 
     afterEach(async () => {
         backup.restore();
@@ -40,7 +40,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 quickbooksId: 12,
                 totalAmountCents: 4004,
                 dateCreated: new Date().toISOString(),
-            }
+            },
         ];
         const response = await app.request("/quickbooks/invoice/bulk", {
             method: "POST",
@@ -53,7 +53,6 @@ describe("POST /quickbooks/invoice/bulk", () => {
         expect(response.status).toBe(201);
         const body = await response.json();
         CompareRequestToCreated(requestBody, body);
-        
     });
 
     test("POST /quickbooks/invoice/bulk - All Fields Given, multiple creations", async () => {
@@ -69,7 +68,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 quickbooksId: 14,
                 totalAmountCents: 0,
                 dateCreated: new Date().toISOString(),
-            }
+            },
         ];
         const response = await app.request("/quickbooks/invoice/bulk", {
             method: "POST",
@@ -82,7 +81,6 @@ describe("POST /quickbooks/invoice/bulk", () => {
         expect(response.status).toBe(201);
         const body = await response.json();
         CompareRequestToCreated(requestBody, body);
-        
     });
 
     test("POST /quickbooks/invoice/bulk - MIssing quickbooksId, multiple creations", async () => {
@@ -96,7 +94,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
                 totalAmountCents: 0,
                 dateCreated: new Date().toISOString(),
-            }
+            },
         ];
         const response = await app.request("/quickbooks/invoice/bulk", {
             method: "POST",
@@ -109,7 +107,6 @@ describe("POST /quickbooks/invoice/bulk", () => {
         expect(response.status).toBe(201);
         const body = await response.json();
         CompareRequestToCreated(requestBody, body);
-        
     });
 
     test("POST /quickbooks/invoice/bulk - Missing Fields, multiple creations", async () => {
@@ -124,7 +121,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 quickbooksId: 14,
                 totalAmountCents: 0,
                 dateCreated: new Date().toISOString(),
-            }
+            },
         ];
         const response = await app.request("/quickbooks/invoice/bulk", {
             method: "POST",
@@ -137,7 +134,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
         expect(response.status).toBe(400);
         const body = await response.json();
         expect(body).toHaveProperty("error");
-        expect(body.error).toBe( "✖ Invalid input: expected number, received undefined\n  → at [0].totalAmountCents");
+        expect(body.error).toBe("✖ Invalid input: expected number, received undefined\n  → at [0].totalAmountCents");
     });
 
     test("POST /quickbooks/invoice/bulk - Missing Fields 2, multiple creations", async () => {
@@ -149,8 +146,8 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 dateCreated: new Date().toISOString(),
             },
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838"
-            }
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+            },
         ];
         const response = await app.request("/quickbooks/invoice/bulk", {
             method: "POST",
@@ -163,7 +160,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
         expect(response.status).toBe(400);
         const body = await response.json();
         expect(body).toHaveProperty("error");
-        expect(body.error).toBe( "✖ Invalid input: expected number, received undefined\n  → at [1].totalAmountCents");
+        expect(body.error).toBe("✖ Invalid input: expected number, received undefined\n  → at [1].totalAmountCents");
     });
 
     test("POST /quickbooks/invoice/bulk - Single Bad company ID", async () => {
@@ -316,5 +313,3 @@ describe("POST /quickbooks/invoice/bulk", () => {
         CompareRequestToCreated(requestBody, body);
     });
 });
-
-

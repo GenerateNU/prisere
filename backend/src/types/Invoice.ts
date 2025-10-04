@@ -33,7 +33,7 @@ export const GetInvoiceResponseSchema = z.object({
 });
 
 export const GetCompanyInvoicesDTOSchema = z.object({
-    companyId: z.string(), 
+    companyId: z.string(),
     pageNumber: z.number().optional().default(0),
     resultsPerPage: z.number().optional().default(20),
 });
@@ -44,7 +44,6 @@ export const GetCompanyInvoicesResponseSchema = z.array(GetInvoiceResponseSchema
 export type CreateOrUpdateInvoicesResponse = z.infer<typeof CreateOrUpdateInvoiceResponseSchema>;
 export type GetInvoiceResponse = z.infer<typeof GetInvoiceResponseSchema>;
 export type GetCompanyInvoicesResponse = z.infer<typeof GetCompanyInvoicesResponseSchema>;
-
 
 //Input types
 export type CreateOrUpdateInvoicesDTO = z.infer<typeof CreateOrUpdateInvoicesDTOSchema>;

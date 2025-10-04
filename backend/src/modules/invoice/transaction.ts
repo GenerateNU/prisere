@@ -18,14 +18,14 @@ export class InvoiceTransaction implements IInvoiceTransaction {
     }
 
     async createOrUpdateInvoices(payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]> {
-        const newInvoices = payload.map(invoice => plainToInstance(Invoice, invoice));
+        const newInvoices = payload.map((invoice) => plainToInstance(Invoice, invoice));
         const result = await this.db
             .createQueryBuilder()
             .insert()
             .into(Invoice)
             .values(newInvoices)
-            .orUpdate(['totalAmountCents', 'dateCreated'], ['quickbooksId', 'companyId'])
-            .returning('*')
+            .orUpdate(["totalAmountCents", "dateCreated"], ["quickbooksId", "companyId"])
+            .returning("*")
             .execute();
         return result.raw;
     }
@@ -47,7 +47,7 @@ export class InvoiceTransaction implements IInvoiceTransaction {
             skip: numToSkip,
             take: resultsPerPage,
             order: {
-                dateCreated: 'DESC',
+                dateCreated: "DESC",
             },
         });
 

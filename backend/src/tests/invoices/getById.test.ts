@@ -28,7 +28,7 @@ describe("Invoice get by id", () => {
 
         const invoiceSeeder = new InvoiceSeeder();
         await invoiceSeeder.run(datasource, {} as SeederFactoryManager);
-    })
+    });
 
     afterEach(async () => {
         backup.restore();
@@ -38,7 +38,7 @@ describe("Invoice get by id", () => {
         const response = await app.request(`/quickbooks/invoice/${seededInvoiceId}`);
         expect(response.status).toBe(200);
         const body = await response.json();
-        CompareRequestToCreated([seededInvoice], [body])
+        CompareRequestToCreated([seededInvoice], [body]);
     });
 
     test("GET /quickbooks/invoices/:id - id doesn't exist", async () => {

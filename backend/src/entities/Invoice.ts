@@ -1,15 +1,7 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToOne,
-    JoinColumn,
-    UpdateDateColumn,
-    Unique,
-} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, UpdateDateColumn, Unique } from "typeorm";
 import { Company } from "./Company.js";
 
-@Unique(['quickbooksId', 'companyId'])
+@Unique(["quickbooksId", "companyId"])
 @Entity("invoice")
 export class Invoice {
     @PrimaryGeneratedColumn("uuid")

@@ -10,12 +10,8 @@ export const invoiceRoutes = (db: DataSource): Hono => {
 
     const companyTransaction: ICompanyTransaction = new CompanyTransaction(db);
     const invoiceTransaction: IInvoiceTransaction = new InvoiceTransaction(db);
-    const invoiceService: IInvoiceService = new InvoiceService(
-        invoiceTransaction, companyTransaction
-    );
-    const invoiceController: IInvoiceController = new InvoiceController(
-        invoiceService
-    );
+    const invoiceService: IInvoiceService = new InvoiceService(invoiceTransaction, companyTransaction);
+    const invoiceController: IInvoiceController = new InvoiceController(invoiceService);
 
     invoice.get("/:id", (ctx) => invoiceController.getInvoice(ctx));
     invoice.get("/", (ctx) => invoiceController.getInvoicesForCompany(ctx));

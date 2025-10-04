@@ -2,15 +2,19 @@ import { Context, TypedResponse } from "hono";
 import { IInvoiceService } from "./service";
 import { withControllerErrorHandling } from "../../utilities/error";
 import { validate } from "uuid";
-import { CreateOrUpdateInvoicesResponse, GetInvoiceResponse, GetCompanyInvoicesResponse, CreateOrUpdateInvoicesDTOSchema, GetCompanyInvoicesDTOSchema } from "../../types/Invoice";
+import {
+    CreateOrUpdateInvoicesResponse,
+    GetInvoiceResponse,
+    GetCompanyInvoicesResponse,
+    CreateOrUpdateInvoicesDTOSchema,
+    GetCompanyInvoicesDTOSchema,
+} from "../../types/Invoice";
 import { ControllerResponse } from "../../utilities/response";
 
 export interface IInvoiceController {
     bulkCreateOrUpdateInvoice(_ctx: Context): ControllerResponse<TypedResponse<CreateOrUpdateInvoicesResponse, 201>>;
     getInvoice(ctx: Context): ControllerResponse<TypedResponse<GetInvoiceResponse, 200>>;
-    getInvoicesForCompany(
-        ctx: Context
-    ): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>>;
+    getInvoicesForCompany(ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>>;
 }
 
 export class InvoiceController implements IInvoiceController {
@@ -45,9 +49,9 @@ export class InvoiceController implements IInvoiceController {
     getInvoicesForCompany = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>> => {
             const queryParams = {
-                companyId: ctx.req.query('companyId'),
-                pageNumber: ctx.req.query('pageNumber') ? Number(ctx.req.query('pageNumber')) : undefined,
-                resultsPerPage: ctx.req.query('resultsPerPage') ? Number(ctx.req.query('resultsPerPage')) : undefined,
+                companyId: ctx.req.query("companyId"),
+                pageNumber: ctx.req.query("pageNumber") ? Number(ctx.req.query("pageNumber")) : undefined,
+                resultsPerPage: ctx.req.query("resultsPerPage") ? Number(ctx.req.query("resultsPerPage")) : undefined,
             };
             const payload = GetCompanyInvoicesDTOSchema.parse(queryParams);
 
