@@ -6,7 +6,7 @@ import { beforeEach } from "node:test";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
 import CompanySeeder from "../../database/seeds/company.seed";
-import InvoiceSeeder from "../../database/seeds/invoice.seed";
+import { InvoiceSeeder } from "../../database/seeds/invoice.seed";
 import { CompareRequestToCreated } from "./utils";
 
 describe("POST /quickbooks/invoice/bulk", () => {

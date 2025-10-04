@@ -1,5 +1,6 @@
 import { expect } from "bun:test";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function CompareRequestToCreated(requestBody: any[], response: any[]) {
     expect(response.length).toBe(requestBody.length);
     for (let b = 0; b < response.length; b++) {

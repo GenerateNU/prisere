@@ -12,7 +12,6 @@ describe("Invoice get by id", () => {
     let app: Hono;
     let backup: IBackup;
     let datasource: DataSource;
-    const seededInvoiceIds = seededInvoices.map(i => i.id);
     const seededCompanyId = seededInvoices[0].companyId;
 
     beforeAll(async () => {
