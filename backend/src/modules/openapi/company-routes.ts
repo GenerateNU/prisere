@@ -81,7 +81,7 @@ const getCompanyByIdRoute = createRoute({
 
 const updateCompanyImportTimeRoute = createRoute({
     method: "patch",
-    path: "/companies/{id}/import-time",
+    path: "/companies/{id}/quickbooks-import-time",
     summary: "Update a company's lastQuickBooksImportTime",
     description: "Updates the lastQuickBooksImportTime for a company by ID",
     request: {
