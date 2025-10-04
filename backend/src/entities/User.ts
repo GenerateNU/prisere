@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-import { Company } from "./Company.js";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
+import { Company } from "./Company";
+import { DisasterNotification } from "./DisasterNotification";
+import type { Relation } from "typeorm";
 
 @Entity("user")
 export class User {
@@ -17,8 +19,11 @@ export class User {
 
     @ManyToOne(() => Company, { nullable: true })
     @JoinColumn({ name: "companyId" })
-    company?: Company;
+    company?: Relation<Company>;
 
     @Column({ nullable: true })
     companyId?: string;
+
+    @OneToMany(() => DisasterNotification, (disasterNotification) => disasterNotification.user)
+    disasterNotifications!: Relation<DisasterNotification[]>;
 }
