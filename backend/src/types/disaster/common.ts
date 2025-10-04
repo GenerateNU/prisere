@@ -52,7 +52,7 @@ export const incidentTypeString = z
     .nullable()
     .refine((s) => {
         /**
-         * the format should be: "[code],[code],[code],..."
+         * the format should be: "[code],[code],[code],"
          * or null as it will not be null when merged with incidentType field
          */
         if (s === null) {
