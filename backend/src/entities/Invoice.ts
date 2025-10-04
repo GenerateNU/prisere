@@ -22,8 +22,8 @@ export class Invoice {
     @Column()
     companyId!: string;
 
-    //QuickBooks's internal ID for the purchase that was made
-    @Column()
+    //QuickBooks's internal ID for the invoice that was made
+    @Column({ nullable: true })
     quickbooksId!: number;
 
     //Represented in cents to prevent precision issues

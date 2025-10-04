@@ -27,7 +27,6 @@ export class InvoiceTransaction implements IInvoiceTransaction {
             .orUpdate(['totalAmountCents', 'dateCreated'], ['quickbooksId', 'companyId'])
             .returning('*')
             .execute();
-
         return result.raw;
     }
 

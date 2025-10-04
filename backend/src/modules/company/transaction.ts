@@ -1,6 +1,6 @@
 import { Company } from "../../entities/Company";
 import { CreateCompanyDTO, GetCompanyByIdDTO, UpdateQuickBooksImportTimeDTO } from "../../types/Company";
-import { DataSource } from "typeorm";
+import { DataSource, In } from "typeorm";
 import Boom from "@hapi/boom";
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
@@ -25,6 +25,15 @@ export interface ICompanyTransaction {
      * @param paylaod ID of company import time to update, Last quickbooks import time, Date
      */
     updateLastQuickBooksImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company | null>;
+
+    /**
+     * Validates that all the passed company IDs exist in the database
+     * @param companyIds the company ids to make sure exist in the DB
+     * 
+     * Will return a list of all company ids not present in the DB
+     * So an empty list means all are valid
+     */
+    validateCompaniesExist(companyIds: string[]): Promise<string[]> 
 }
 
 export class CompanyTransaction implements ICompanyTransaction {
@@ -90,5 +99,16 @@ export class CompanyTransaction implements ICompanyTransaction {
         }
 
         return updatedCompany;
+    }
+
+    async validateCompaniesExist(companyIds: string[]): Promise<string[]> {
+        const companies = await this.db.getRepository(Company).findBy({ id: In(companyIds) });
+        if (companies.length !== companyIds.length) {
+            const foundIds = companies.map(c => c.id);
+            const missing = companyIds.filter(id => !foundIds.includes(id));
+            // throw Boom.badRequest(`Companies not found: ${missing.join(', ')}`);
+            return missing;
+        }
+        return [];
     }
 }

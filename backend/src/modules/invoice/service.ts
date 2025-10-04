@@ -3,6 +3,8 @@ import { withServiceErrorHandling } from "../../utilities/error";
 import { CreateOrUpdateInvoicesDTO, GetCompanyInvoicesDTO } from "../../types/Invoice";
 import { Invoice } from "../../entities/Invoice";
 import Boom from "@hapi/boom";
+import { ICompanyTransaction } from "../company/transaction";
+import { validate } from "uuid";
 
 export interface IInvoiceService {
     bulkCreateOrUpdateInvoice(payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]>;
@@ -14,13 +16,32 @@ export interface IInvoiceService {
 
 export class InvoiceService implements IInvoiceService {
     private invoiceTransaction: IInvoiceTransaction;
+    private companyTransaction: ICompanyTransaction;
 
-    constructor(qbTransaction: IInvoiceTransaction) {
-        this.invoiceTransaction = qbTransaction;
+    constructor(invoiceTransaction: IInvoiceTransaction, companyTransaction: ICompanyTransaction) {
+        this.invoiceTransaction = invoiceTransaction;
+        this.companyTransaction = companyTransaction;
     }
 
     bulkCreateOrUpdateInvoice = withServiceErrorHandling(
         async (payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]> => {
+            const uniqueCompanyIds = [...new Set(payload.map(inv => inv.companyId))];
+
+            // validate all uuids as being properly formatted
+            const badIds = uniqueCompanyIds.filter(id => !validate(id));
+
+            if (badIds.length) {
+                throw Boom.badRequest(`Invalid uuid format: ${badIds.join(', ')}`);
+            }
+            
+
+            // make sure all those companies actually exist in the DB to get a decent error message
+            const missingIds = await this.companyTransaction.validateCompaniesExist(uniqueCompanyIds);
+            
+            if (missingIds.length !== 0) {
+                throw Boom.badRequest(`Companies not found: ${missingIds.join(', ')}`);
+            }
+
             const newInvoices = await this.invoiceTransaction.createOrUpdateInvoices(payload);
 
             if (!newInvoices || newInvoices.length === 0) {

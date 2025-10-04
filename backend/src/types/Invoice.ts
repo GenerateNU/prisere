@@ -1,11 +1,10 @@
 import { z } from "zod";
-import { ErrorResponseSchema } from "./Utils";
 
 export const CreateOrUpdateInvoicesDTOSchema = z.array(
     z.object({
         companyId: z.string(),
-        quickbooksId: z.number(),
-        totalAmountCents: z.number(),
+        quickbooksId: z.number().int().positive().optional(),
+        totalAmountCents: z.number().int().nonnegative(),
         dateCreated: z.iso.datetime().default(new Date().toISOString()),
     })
 );
@@ -14,8 +13,8 @@ export const CreateOrUpdateInvoiceResponseSchema = z.array(
     z.object({
         id: z.string(),
         companyId: z.string(),
-        quickbooksId: z.number(),
-        totalAmountCents: z.number(),
+        quickbooksId: z.number().int().positive().optional(),
+        totalAmountCents: z.number().int().nonnegative(),
         dateCreated: z.iso.datetime(),
     })
 );
@@ -27,8 +26,8 @@ export const GetInvoiceDTOSchema = z.object({
 export const GetInvoiceResponseSchema = z.object({
     id: z.string(),
     companyId: z.string(),
-    quickbooksId: z.number(),
-    totalAmountCents: z.number(),
+    quickbooksId: z.number().int().positive().optional(),
+    totalAmountCents: z.number().int().nonnegative(),
     dateCreated: z.string(),
     lastUpdated: z.string(),
 });
