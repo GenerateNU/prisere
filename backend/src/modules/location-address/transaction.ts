@@ -1,4 +1,4 @@
-import { DataSource } from "typeorm";
+import { DataSource, DeleteResult } from "typeorm";
 import { LocationAddress } from "../../entities/LocationAddress";
 import { CreateLocationAddressDTO, GetLocationAddressDTO } from "../../types/Location";
 import { plainToClass } from "class-transformer";
@@ -13,10 +13,17 @@ export interface ILocationAddressTransaction {
 
     /**
      * Finds an existing location address in the database
-     * @param payload The
+     * @param payload The id of the location that must be fetched
      * @returns Promise resolving the LocationAddress associated with the given ID or null if the value does not exist
      */
     getLocationAddressById(payload: GetLocationAddressDTO): Promise<LocationAddress | null>;
+
+    /**
+     * Removes the location address with the given id
+     * @param payload the id of the location that must be removed
+     * @return the location address that was removed
+     */
+    removeLocationAddressById(payload: GetLocationAddressDTO): Promise<DeleteResult>;
 }
 
 /**
@@ -50,5 +57,11 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
         const { id: givenId } = payload;
         const maybeFoundLocation = await this.db.manager.findOne(LocationAddress, { where: { id: givenId } });
         return maybeFoundLocation;
+    }
+
+    async removeLocationAddressById(payload: GetLocationAddressDTO): Promise<DeleteResult> {
+        const id = payload.id;
+        const result = await this.db.manager.delete(LocationAddress, { id: id });
+        return result;
     }
 }

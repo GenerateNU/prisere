@@ -16,6 +16,7 @@ export const locationAddressRoute = (db: DataSource): Hono => {
 
     locationAddress.post("/", (ctx) => locationAddressController.createLocationAddress(ctx));
     locationAddress.get("/:id", (ctx) => locationAddressController.getLocationAddress(ctx));
+    locationAddress.delete("/:id", (ctx) => locationAddressController.removeLocationAddressById(ctx));
 
     return locationAddress;
 };

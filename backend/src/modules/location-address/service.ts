@@ -1,6 +1,8 @@
 import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { ILocationAddressTransaction } from "./transaction";
+
+import { DeleteResult } from "typeorm";
 import {
     CreateLocationAddressDTO,
     CreateLocationAddressResponse,
@@ -23,6 +25,13 @@ export interface ILocationAddressService {
      * @param payload The payload used to try find the location address
      */
     getLocationAddress(payload: GetLocationAddressDTO): Promise<GetLocationAddressResponse>;
+
+    /**
+     * Attempts to remove a location address with the given id (in the payload)
+     * @throws If the given id does not map to a location address
+     * @param payload contains the id for the location that must be removed
+     */
+    removeLocationAddressById(payload: GetLocationAddressDTO): Promise<DeleteResult>;
 }
 
 export class LocationAddressService implements ILocationAddressService {
@@ -38,7 +47,7 @@ export class LocationAddressService implements ILocationAddressService {
      * @param payload The payload used to try to create a new location address
      */
     createLocationAddress = withServiceErrorHandling(
-        async (payload: CreateLocationAddressDTO): Promise<LocationAddress> => {
+        async (payload: CreateLocationAddressDTO): Promise<CreateLocationAddressResponse> => {
             const locationAddress = await this.locationAddressTransaction.createLocationAddress(payload);
 
             if (!locationAddress) {
@@ -57,9 +66,16 @@ export class LocationAddressService implements ILocationAddressService {
         const locationAddress = await this.locationAddressTransaction.getLocationAddressById(payload);
 
         if (!locationAddress) {
-            throw Boom.notFound(`Failed to fetch a location address from the given payload: ${payload}`);
+            throw Boom.notFound("No Location Address found with the given the ID");
         }
 
         return locationAddress;
     });
+
+    removeLocationAddressById = withServiceErrorHandling(
+        async (payload: GetLocationAddressDTO): Promise<DeleteResult> => {
+            const result = await this.locationAddressTransaction.removeLocationAddressById(payload);
+            return result;
+        }
+    );
 }

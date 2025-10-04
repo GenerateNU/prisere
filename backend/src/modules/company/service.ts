@@ -3,11 +3,13 @@ import { Company } from "../../entities/Company";
 import { ICompanyTransaction } from "./transaction";
 import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
+import { LocationAddress } from "../../entities/LocationAddress";
 
 export interface ICompanyService {
     createCompany(payload: CreateCompanyDTO): Promise<Company>;
     getCompanyById(payload: GetCompanyByIdDTO): Promise<Company>;
     updateLastQuickBooksImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company>;
+    getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]>;
 }
 
 export class CompanyService implements CompanyService {
@@ -46,6 +48,16 @@ export class CompanyService implements CompanyService {
                 throw Boom.notFound("Company Not Found");
             }
             return company;
+        }
+    );
+
+    getCompanyLocationsById = withServiceErrorHandling(
+        async (payload: GetCompanyByIdDTO): Promise<LocationAddress[]> => {
+            const locations = await this.companyTransaction.getCompanyLocationsById({
+                ...payload,
+            });
+
+            return locations;
         }
     );
 }

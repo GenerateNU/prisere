@@ -11,6 +11,7 @@ import {
     UpdateQuickBooksImportTimeDTOSchema,
 } from "../../types/Company";
 import { openApiErrorCodes } from "../../utilities/error";
+import { GetAllLocationAddressesSchema } from "../../types/Location";
 
 export const addOpenApiCompanyRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const companyTransaction: ICompanyTransaction = new CompanyTransaction(db);
@@ -20,6 +21,7 @@ export const addOpenApiCompanyRoutes = (openApi: OpenAPIHono, db: DataSource): O
     openApi.openapi(createCompanyRoute, (ctx) => companyController.createCompany(ctx));
     openApi.openapi(getCompanyByIdRoute, (ctx) => companyController.getCompanyById(ctx));
     openApi.openapi(updateCompanyImportTimeRoute, (ctx) => companyController.updateQuickbooksImportTime(ctx));
+    openApi.openapi(getCompanyLocationsByIdRoute, (ctx) => companyController.getCompanyLocationsById(ctx));
     return openApi;
 };
 
@@ -104,6 +106,28 @@ const updateCompanyImportTimeRoute = createRoute({
             description: "Company updated successfully",
         },
         ...openApiErrorCodes("Create Company Errors"),
+    },
+    tags: ["Companies"],
+});
+
+const getCompanyLocationsByIdRoute = createRoute({
+    method: "get",
+    path: "/companies/{id}/location-address",
+    summary: "Gets a company's location from the database",
+    description: "Gets a company's locations using the company ID",
+    request: {
+        params: GetCompanyByIdDTOSchema,
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetAllLocationAddressesSchema,
+                },
+            },
+            description: "Company locations fetched successfully",
+        },
+        ...openApiErrorCodes("Get Company Locations Errors"),
     },
     tags: ["Companies"],
 });
