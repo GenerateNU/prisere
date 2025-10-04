@@ -1,6 +1,6 @@
 import z from "zod";
 
-const RedirectEndpointSuccessParams = z.object({
+export const RedirectEndpointSuccessParams = z.object({
     code: z.string(),
     state: z.string(),
     realmId: z.string(),

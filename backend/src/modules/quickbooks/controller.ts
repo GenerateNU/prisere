@@ -1,12 +1,13 @@
 import { Context, TypedResponse } from "hono";
 import { IQuickbooksService } from "./service";
 import { RedirectEndpointParams } from "../../types/Quickbooks";
+import { ControllerResponse } from "../../utilities/response";
 
 export interface IQuickbooksController {
-    redirectToAuthorization(ctx: Context): Promise<TypedResponse<undefined, 302>>;
+    redirectToAuthorization(ctx: Context): ControllerResponse<TypedResponse<undefined, 302>>;
     generateSession(
         ctx: Context
-    ): Promise<TypedResponse<{ success: true }, 200> | TypedResponse<{ error: string }, 400>>;
+    ): ControllerResponse<TypedResponse<{ success: true }, 200> | TypedResponse<{ error: string }, 400>>;
 }
 
 export class QuickbooksController implements IQuickbooksController {
