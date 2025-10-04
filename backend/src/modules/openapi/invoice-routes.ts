@@ -1,0 +1,90 @@
+import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
+import { DataSource } from "typeorm";
+import { openApiErrorCodes } from "../../utilities/error";
+import { InvoiceController } from "../invoice/controller";
+import { InvoiceService } from "../invoice/service";
+import { InvoiceTransaction } from "../invoice/transaction";
+import { CreateOrUpdateInvoicesDTOSchema, CreateOrUpdateInvoiceResponseSchema, GetInvoiceDTOSchema, GetInvoiceResponseSchema, GetCompanyInvoicesDTOSchema, GetCompanyInvoicesResponseSchema } from "../../types/Invoice";
+
+export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
+    const invoiceTransaction = new InvoiceTransaction(db);
+    const invoiceService = new InvoiceService(invoiceTransaction);
+    const invoiceController = new InvoiceController(invoiceService);
+
+    openApi.openapi(bulkCreateOrUpdateInvoiceRoute, (ctx) => invoiceController.bulkCreateOrUpdateInvoice(ctx));
+    openApi.openapi(getInvoiceByIdRoute, (ctx) => invoiceController.getInvoice(ctx));
+    openApi.openapi(getInvoicesForCompanyRoute, (ctx) => invoiceController.getInvoicesForCompany(ctx));
+    return openApi;
+};
+
+const bulkCreateOrUpdateInvoiceRoute = createRoute({
+    method: "post",
+    path: "/quickbooks/invoice/bulk",
+    summary: "Bulk create or update new invoices",
+    description: "Creates new invoices according to the schema. If there is an invoice in the database with the same quickbooks_id, company_id pairing, then it will overwrite it's attributes",
+    request: {
+        body: {
+            content: {
+                "application/json": {
+                    schema: CreateOrUpdateInvoicesDTOSchema,
+                },
+            },
+        },
+    },
+    responses: {
+        201: {
+            content: {
+                "application/json": {
+                    schema: CreateOrUpdateInvoiceResponseSchema,
+                },
+            },
+            description: "Invoice(s) successfully created",
+        },
+        ...openApiErrorCodes("Creating/Updating Invoice Error"),
+    },
+    tags: ["Invoice"],
+});
+
+const getInvoiceByIdRoute = createRoute({
+    method: "get",
+    path: "/quickbooks/invoice/{id}",
+    summary: "Get invoice by id",
+    description: "Get invoice with matching ID from the database",
+    request: {
+        params: GetInvoiceDTOSchema,
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetInvoiceResponseSchema,
+                },
+            },
+            description: "Retrieved invoice",
+        },
+        ...openApiErrorCodes("Getting Invoice Error"),
+    },
+    tags: ["Invoice"],
+});
+
+const getInvoicesForCompanyRoute = createRoute({
+    method: "get",
+    path: "/quickbooks/invoice",
+    summary: "Get invoices for a company",
+    description: "Get invoices for a company with pagination params. Note page numbes are 0-indexed.",
+    request: {
+        query: GetCompanyInvoicesDTOSchema,
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetCompanyInvoicesResponseSchema,
+                },
+            },
+            description: "Retrieved invoice",
+        },
+        ...openApiErrorCodes("Getting Invoice Error"),
+    },
+    tags: ["Invoice"],
+});

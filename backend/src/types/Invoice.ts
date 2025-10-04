@@ -10,22 +10,27 @@ export const CreateOrUpdateInvoicesDTOSchema = z.array(
     })
 );
 
-export const CreateOrUpdateInvoiceResponseSchema = z.object({
-    id: z.string(),
-    companyId: z.string(),
-    quickbooksId: z.number(),
-    totalAmountCents: z.number(),
-    dateCreated: z.iso.datetime(),
-});
+export const CreateOrUpdateInvoiceResponseSchema = z.array(
+    z.object({
+        id: z.string(),
+        companyId: z.string(),
+        quickbooksId: z.number(),
+        totalAmountCents: z.number(),
+        dateCreated: z.iso.datetime(),
+    })
+);
 
+export const GetInvoiceDTOSchema = z.object({
+    id: z.string().nonempty(),
+});
 
 export const GetInvoiceResponseSchema = z.object({
     id: z.string(),
     companyId: z.string(),
     quickbooksId: z.number(),
     totalAmountCents: z.number(),
-    dateCreated: z.date(),
-    lastUpdated: z.date(),
+    dateCreated: z.string(),
+    lastUpdated: z.string(),
 });
 
 export const GetCompanyInvoicesDTOSchema = z.object({
@@ -41,28 +46,7 @@ export type CreateOrUpdateInvoicesResponse = z.infer<typeof CreateOrUpdateInvoic
 export type GetInvoiceResponse = z.infer<typeof GetInvoiceResponseSchema>;
 export type GetCompanyInvoicesResponse = z.infer<typeof GetCompanyInvoicesResponseSchema>;
 
-//API Response Schemas
-export const CreateInvoiceAPIResponseSchema = z.union([
-    CreateOrUpdateInvoiceResponseSchema,
-    ErrorResponseSchema,
-]);
-
-
-export const GetInvoiceAPIResponseSchema = z.union([
-    GetInvoiceResponseSchema,
-    ErrorResponseSchema,
-]);
-
-export const GetCompanyInvoiceAPIResponseSchema = z.union([
-    GetCompanyInvoicesResponseSchema,
-    ErrorResponseSchema,
-]);
 
 //Input types
 export type CreateOrUpdateInvoicesDTO = z.infer<typeof CreateOrUpdateInvoicesDTOSchema>;
 export type GetCompanyInvoicesDTO = z.infer<typeof GetCompanyInvoicesDTOSchema>;
-
-//Zod types for payload validation
-export type CreateOrUpdateInvoicesAPIResponse = z.infer<typeof CreateOrUpdateInvoicesDTOSchema>;
-export type GetInvoiceAPIResponse = z.infer<typeof GetInvoiceAPIResponseSchema>;
-export type GetCompanyInvoicesAPIResponse = z.infer<typeof GetCompanyInvoiceAPIResponseSchema>;

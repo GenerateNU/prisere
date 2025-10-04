@@ -2,14 +2,15 @@ import { Context, TypedResponse } from "hono";
 import { IInvoiceService } from "./service";
 import { withControllerErrorHandling } from "../../utilities/error";
 import { validate } from "uuid";
-import { CreateOrUpdateInvoicesAPIResponse, GetInvoiceAPIResponse, GetCompanyInvoicesAPIResponse, CreateOrUpdateInvoicesDTOSchema, GetCompanyInvoicesDTOSchema } from "../../types/Invoice";
+import { CreateOrUpdateInvoicesResponse, GetInvoiceResponse, GetCompanyInvoicesResponse, CreateOrUpdateInvoicesDTOSchema, GetCompanyInvoicesDTOSchema } from "../../types/Invoice";
+import { ControllerResponse } from "../../utilities/response";
 
 export interface IInvoiceController {
-    bulkCreateOrUpdateInvoice(_ctx: Context): Promise<TypedResponse<CreateOrUpdateInvoicesAPIResponse> | Response>;
-    getInvoice(ctx: Context): Promise<TypedResponse<GetInvoiceAPIResponse> | Response>;
+    bulkCreateOrUpdateInvoice(_ctx: Context): ControllerResponse<TypedResponse<CreateOrUpdateInvoicesResponse, 201>>;
+    getInvoice(ctx: Context): ControllerResponse<TypedResponse<GetInvoiceResponse, 200>>;
     getInvoicesForCompany(
         ctx: Context
-    ): Promise<TypedResponse<GetCompanyInvoicesAPIResponse> | Response>;
+    ): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>>;
 }
 
 export class InvoiceController implements IInvoiceController {
@@ -20,7 +21,7 @@ export class InvoiceController implements IInvoiceController {
     }
 
     bulkCreateOrUpdateInvoice = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<CreateOrUpdateInvoicesAPIResponse> | Response> => {
+        async (ctx: Context): ControllerResponse<TypedResponse<CreateOrUpdateInvoicesResponse, 201>> => {
             const json = await ctx.req.json();
             const payload = CreateOrUpdateInvoicesDTOSchema.parse(json);
             const createdQuickBooksPurchase = await this.invoiceService.bulkCreateOrUpdateInvoice(payload);
@@ -29,7 +30,7 @@ export class InvoiceController implements IInvoiceController {
     );
 
     getInvoice = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<GetInvoiceAPIResponse, 200> | Response> => {
+        async (ctx: Context): ControllerResponse<TypedResponse<GetInvoiceResponse, 200>> => {
             const id = ctx.req.param("id");
 
             if (!validate(id)) {
@@ -42,7 +43,7 @@ export class InvoiceController implements IInvoiceController {
     );
 
     getInvoicesForCompany = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<GetCompanyInvoicesAPIResponse, 200> | Response> => {
+        async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>> => {
             const queryParams = {
                 companyId: ctx.req.query('companyId'),
                 pageNumber: ctx.req.query('pageNumber') ? Number(ctx.req.query('pageNumber')) : undefined,

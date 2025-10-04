@@ -4,7 +4,6 @@ import {
     Column,
     ManyToOne,
     JoinColumn,
-    Relation,
     UpdateDateColumn,
     Unique,
 } from "typeorm";
