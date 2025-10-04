@@ -9,6 +9,7 @@ import {
 import { ILocationAddressTransaction, LocationAddressTransactions } from "../location-address/transaction";
 import { ILocationAddressService, LocationAddressService } from "../location-address/service";
 import { ILocationAddressController, LocationAddressController } from "../location-address/controller";
+import { ErrorResponseSchema } from "../../types/Utils";
 import { openApiErrorCodes } from "../../utilities/error";
 
 export const addOpenApiLocationAddressRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
@@ -18,7 +19,7 @@ export const addOpenApiLocationAddressRoutes = (openApi: OpenAPIHono, db: DataSo
 
     openApi.openapi(createLocationAddressRoute, (ctx) => locationAddressController.createLocationAddress(ctx));
     openApi.openapi(getLocationAddressRoute, (ctx) => locationAddressController.getLocationAddress(ctx));
-
+    openApi.openapi(removeLocationAddressRoute, (ctx) => locationAddressController.removeLocationAddressById(ctx));
     return openApi;
 };
 
@@ -52,7 +53,7 @@ const createLocationAddressRoute = createRoute({
 
 const getLocationAddressRoute = createRoute({
     method: "get",
-    path: "/location-address",
+    path: "/location-address/{id}",
     summary: "Gets an address for some location of a company",
     description: "Creates a new location address with the provided information",
     request: {
@@ -71,6 +72,30 @@ const getLocationAddressRoute = createRoute({
             description: "The given UUID does not have an associated location address in the database",
         },
         ...openApiErrorCodes("Error Getting Location Address"),
+    },
+    tags: ["Location Address"],
+});
+
+const removeLocationAddressRoute = createRoute({
+    method: "delete",
+    path: "/location-address/{id}",
+    summary: "Removes location of a company",
+    description: "Removes the location address with the provided id",
+    request: {
+        params: GetLocationAddressSchema,
+    },
+    responses: {
+        204: {
+            description: "Location successfully deleted",
+        },
+        400: {
+            description: "Invalid location ID or no Company with that ID",
+            content: {
+                "application/json": {
+                    schema: ErrorResponseSchema,
+                },
+            },
+        },
     },
     tags: ["Location Address"],
 });
