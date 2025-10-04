@@ -10,11 +10,13 @@ import {
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
 import { ControllerResponse } from "../../utilities/response";
+import { GetAllLocationAddressesAPIResponse } from "../../types/Location";
 
 export interface ICompanyController {
     getCompanyById(_ctx: Context): ControllerResponse<TypedResponse<GetCompanyByIdResponse, 200>>;
     createCompany(_ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 201>>;
     updateQuickbooksImportTime(ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 200>>;
+    getCompanyLocationsById(ctx: Context): ControllerResponse<TypedResponse<GetAllLocationAddressesAPIResponse, 200>>;
 }
 
 export class CompanyController implements ICompanyController {
@@ -72,6 +74,17 @@ export class CompanyController implements ICompanyController {
                 },
                 200
             );
+        }
+    );
+
+    getCompanyLocationsById = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<GetAllLocationAddressesAPIResponse, 200>> => {
+            const id = ctx.req.param("id");
+            if (!validate(id)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
+            const locations = await this.companyService.getCompanyLocationsById({ id: id });
+            return ctx.json(locations, 200);
         }
     );
 }

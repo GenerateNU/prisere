@@ -4,6 +4,7 @@ import { DataSource, In } from "typeorm";
 import Boom from "@hapi/boom";
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
+import { LocationAddress } from "../../entities/LocationAddress";
 
 export interface ICompanyTransaction {
     /**
@@ -25,6 +26,13 @@ export interface ICompanyTransaction {
      * @param paylaod ID of company import time to update, Last quickbooks import time, Date
      */
     updateLastQuickBooksImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company | null>;
+
+    /**
+     * Gets a Company's locations by company ID
+     * @param payload ID of the Company to whose locations will be fetched
+     * @returns Promise resolving to fetched Company locations or null if company was not found
+     */
+    getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]>;
 
     /**
      * Validates that all the passed company IDs exist in the database
@@ -99,6 +107,13 @@ export class CompanyTransaction implements ICompanyTransaction {
         }
 
         return updatedCompany;
+    }
+
+    async getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]> {
+        const locations = await this.db.manager.findBy(LocationAddress, {
+            companyId: payload.id,
+        });
+        return locations;
     }
 
     async validateCompaniesExist(companyIds: string[]): Promise<string[]> {

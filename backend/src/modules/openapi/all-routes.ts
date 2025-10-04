@@ -5,6 +5,7 @@ import { addOpenApiUserRoutes } from "./user-route";
 import { addOpenApiDisasterRoutes } from "./disaster-routes";
 import { addOpenApiCompanyRoutes } from "./company-routes";
 import { addOpenApiLocationAddressRoutes } from "./location-address-route";
+import { addOpenApiDisasterNotificationRoutes } from "./disaster-notification-routes";
 import { addOpenApiInvoiceRoutes } from "./invoice-routes";
 
 export const setUpOpenApiRoutes = (db: DataSource) => {
@@ -35,6 +36,7 @@ const openApiRoutes = (db: DataSource): OpenAPIHono => {
     addOpenApiCompanyRoutes(openApi, db);
     addOpenApiDisasterRoutes(openApi, db);
     addOpenApiLocationAddressRoutes(openApi, db);
+    addOpenApiDisasterNotificationRoutes(openApi, db);
     addOpenApiInvoiceRoutes(openApi, db);
 
     return openApi;
