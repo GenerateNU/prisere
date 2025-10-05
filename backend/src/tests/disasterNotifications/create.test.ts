@@ -69,7 +69,6 @@ describe("Bulk create disaster notifications", () => {
     });
 
     test("Single notification creation works", async () => {
-
         const requestBody = [
             {
                 userId: testData.users.user1.id,
