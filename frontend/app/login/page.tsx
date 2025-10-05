@@ -8,32 +8,26 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-sky-200">
       <div className="max-w-md w-full space-y-8">
         <div className = "flex justify-center">
-            <label className = "block text-3xl text-black font-bold"> Login </label>
+            <label className = "block text-3xl text-black font-bold"> Log In </label>
         </div>
         <form className="mt-8 space-y-6 bg-white p-8 rounded-xl">
           <div className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-black">
-                Email
-              </label>
               <Input
                 id="email" 
                 name="email" 
                 type="email" 
+                placeholder="Email"
                 required 
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input 
+              <Input
                 id="password" 
                 name="password" 
                 type="password" 
+                placeholder="Password"
                 required 
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
               />
             </div>
           </div>
@@ -43,7 +37,13 @@ export default function LoginPage() {
               formAction={login}
               className="flex-1 bg-gray-400 text-black py-2 px-4 rounded-md hover:bg-gray-700"
             >
-              Login
+              Log In
+            </button>
+            <button 
+              formAction={login}
+              className="flex-1 bg-gray-400 text-black py-2 px-4 rounded-md hover:bg-gray-700"
+            >
+              Sign Up
             </button>
           </div>
         </form>
