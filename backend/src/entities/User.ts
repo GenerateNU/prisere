@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, OneToMany, OneToOne } from "typeorm";
-import type { Company } from "./Company";
+import { Company } from "./Company.js";
 import { DisasterNotification } from "./DisasterNotification";
 import type { Relation } from "typeorm";
 
