@@ -1,0 +1,101 @@
+import { describe, test, expect, beforeAll, afterEach } from "bun:test";
+import { startTestApp } from "../setup-tests";
+describe("GET /comapnies/:id", () => {
+    let app;
+    let backup;
+    beforeAll(async () => {
+        const testAppData = await startTestApp();
+        app = testAppData.app;
+        backup = testAppData.backup;
+    });
+    afterEach(async () => {
+        backup.restore();
+    });
+    test("POST /companies - All Fields Given - String Date 2", async () => {
+        const requestBody = {
+            name: "Cool Company",
+        };
+        const response = await app.request("/companies", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+        expect(response.status).toBe(201);
+        const body = await response.json();
+        expect(body.name).toBe(requestBody.name);
+        expect(body.lastQuickBooksImportTime).toBe(null);
+    });
+    test("POST /companies - All Fields Given - String Date 1", async () => {
+        const requestBody = {
+            name: "Cool Company",
+        };
+        const response = await app.request("/companies", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+        expect(response.status).toBe(201);
+        const body = await response.json();
+        expect(body.name).toBe(requestBody.name);
+        expect(body.lastQuickBooksImportTime).toBe(null);
+    });
+    test("POST /companies - All Fields Given, Date Object", async () => {
+        const requestBody = {
+            name: "Cool Company",
+        };
+        const response = await app.request("/companies", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+        expect(response.status).toBe(201);
+        const body = await response.json();
+        expect(body.name).toBe(requestBody.name);
+        expect(body.lastQuickBooksImportTime).toBe(null);
+    });
+    test("POST /companies - Name is empty", async () => {
+        const requestBody = {
+            name: "",
+        };
+        const response = await app.request("/companies", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+        expect(response.status).toBe(400);
+    });
+    test("POST /companies - Name not given", async () => {
+        const requestBody = {
+            lastQuickBooksImportTime: new Date(2025, 11, 25, 9, 30, 0, 0),
+        };
+        const response = await app.request("/companies", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+        expect(response.status).toBe(400);
+    });
+    test("POST /companies - Unsupported name type", async () => {
+        const requestBody = {
+            name: 1,
+        };
+        const response = await app.request("/companies", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+        expect(response.status).toBe(400);
+    });
+});

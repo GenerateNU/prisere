@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+//import { ClaimLocation } from "./ClaimLocation";
 
 //Represents an address for a location of a company
 @Entity("location_address")
