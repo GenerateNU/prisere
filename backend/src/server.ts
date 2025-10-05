@@ -23,7 +23,7 @@ const app = new Hono();
         app.onError(errorHandler);
 
         setUpRoutes(app, AppDataSource);
-
+        
         const femaService: IFemaService = new FemaService(AppDataSource);
         await femaService.preloadDisasters();
         const femaDisastersCron = new FemaFetching(femaService);
