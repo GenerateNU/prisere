@@ -27,6 +27,7 @@ const generateAuthRoute = createRoute({
     method: "get",
     path: "/quickbooks",
     summary: "Generates an OAuth URL for the user and redirects them",
+    tags: ["quickbooks"],
     responses: {
         302: {
             description: "Redirected to QuickBooks OAuth url",
@@ -40,6 +41,7 @@ const generateSessionRoute = createRoute({
     summary: "Syncs a QB OAuth session to our DB",
     description:
         "The path where the QuickBooks OAuth server redirects to upon a completed (successful or not) OAuth connection",
+    tags: ["quickbooks"],
     request: {
         params: RedirectEndpointSuccessParams,
     },
