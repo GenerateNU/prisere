@@ -2,12 +2,12 @@
 import { login, signup } from '@/actions/auth'
 
 
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-sky-200">
       <div className="max-w-md w-full space-y-8">
         <div className = "flex justify-center">
-            <label className = "block text-3xl text-black font-bold"> Login </label>
+            <label className = "block text-3xl text-black font-bold"> Sign Up </label>
         </div>
         <form className="mt-8 space-y-6 bg-white p-8 rounded-xl">
           <div className="space-y-4">
