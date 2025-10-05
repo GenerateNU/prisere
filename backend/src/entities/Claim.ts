@@ -22,7 +22,7 @@ export class Claim {
         type: "enum",
         enum: ClaimStatusType,
     })
-    status!: string;
+    status!: ClaimStatusType;
 
     @CreateDateColumn()
     createdAt!: Date;
