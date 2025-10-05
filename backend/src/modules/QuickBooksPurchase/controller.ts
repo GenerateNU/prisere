@@ -3,18 +3,18 @@ import { IPurchaseService } from "./service";
 import { withControllerErrorHandling } from "../../utilities/error";
 import { validate } from "uuid";
 import {
-    CreatePurchaseAPIResponse,
-    CreatePurchaseDTOSchema,
     GetCompanyPurchasesAPIResponse,
     GetPurchaseAPIResponse,
     PatchPurchaseDTOSchema,
-    PatchPurchaseAPIResponse,
     GetCompanyPurchasesDTOSchema,
+    CreateOrPatchPurchaseAPIResponse,
+    CreateOrPatchPurchaseDTO,
+    PatchPurchaseDTO,
+    CreatePurchaseDTO,
 } from "./types";
 
 export interface IPurchaseController {
-    updatePurchase(_ctx: Context): Promise<TypedResponse<PatchPurchaseAPIResponse> | Response>;
-    createPurchase(_ctx: Context): Promise<TypedResponse<CreatePurchaseAPIResponse> | Response>;
+    createOrUpdatePurchase(_ctx: Context): Promise<TypedResponse<CreateOrPatchPurchaseAPIResponse> | Response>;
     getPurchase(ctx: Context): Promise<TypedResponse<GetPurchaseAPIResponse> | Response>;
     getPurchasesForCompany(ctx: Context): Promise<TypedResponse<GetCompanyPurchasesAPIResponse> | Response>;
 }
@@ -26,8 +26,8 @@ export class PurchaseController implements IPurchaseController {
         this.PurchaseService = service;
     }
 
-    updatePurchase = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<PatchPurchaseAPIResponse> | Response> => {
+    createOrUpdatePurchase = withControllerErrorHandling(
+        async (ctx: Context): Promise<TypedResponse<CreateOrPatchPurchaseAPIResponse> | Response> => {
             const id = ctx.req.param("id");
 
             if (!validate(id)) {
@@ -35,18 +35,18 @@ export class PurchaseController implements IPurchaseController {
             }
 
             const json = await ctx.req.json();
-            const payload = PatchPurchaseDTOSchema.parse(json);
-            const updatedPurchase = await this.PurchaseService.updatePurchase(id, payload);
-            return ctx.json(updatedPurchase, 201);
-        }
-    );
+            const payload = CreateOrPatchPurchaseDTO.parse(json);
 
-    createPurchase = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<CreatePurchaseAPIResponse> | Response> => {
-            const json = await ctx.req.json();
-            const payload = CreatePurchaseDTOSchema.parse(json);
-            const createdPurchase = await this.PurchaseService.createPurchase(payload);
-            return ctx.json(createdPurchase, 201);
+            let updatedPurchase;
+            if ("id" in payload) {
+                const typedPayload: PatchPurchaseDTO = payload as PatchPurchaseDTO;
+                updatedPurchase = await this.PurchaseService.updatePurchase(id, typedPayload);
+            } else {
+                const typedPayload: CreatePurchaseDTO = payload as CreatePurchaseDTO;
+                updatedPurchase = await this.PurchaseService.createPurchase(typedPayload);
+            }
+
+            return ctx.json(updatedPurchase, 201);
         }
     );
 

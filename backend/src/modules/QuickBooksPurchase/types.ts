@@ -3,43 +3,34 @@ import { ErrorResponseSchema } from "../../types/Utils";
 
 //Create a new quick books purchase
 export const CreatePurchaseDTOSchema = z.object({
-    comapnyId: z.string(),
+    companyId: z.string(),
     quickBooksID: z.number(),
     totalAmountCents: z.number(),
     isRefund: z.boolean().optional().default(false),
 });
 
-export const CreatePurchaseResponseSchema = z.object({
-    id: z.string(),
-    comapnyId: z.string(),
-    quickBooksID: z.number(),
-    totalAmountCents: z.number(),
-    isRefund: z.boolean(),
-});
-
 //Patch existing quick books purchase
 export const PatchPurchaseDTOSchema = z.object({
+    purchaseID: z.string(),
     quickBooksID: z.number().optional(),
     totalAmountCents: z.number().optional(),
     isRefund: z.boolean().optional(),
 });
 
-export const PatchPurchasesResponseSchema = z.object({
+export const createOrPatchPurchasesResponseSchema = z.object({
     id: z.string(),
-    comapnyId: z.string(),
+    companyId: z.string(),
     quickBooksID: z.number(),
     totalAmountCents: z.number(),
     isRefund: z.boolean(),
     dateCreated: z.date(),
 });
 
-//Get a purchase given its ID
-
-//Empty DTO
+export const CreateOrPatchPurchaseDTO = z.union([CreatePurchaseDTOSchema, PatchPurchaseDTOSchema]);
 
 export const GetPurchasesResponseSchema = z.object({
     id: z.string(),
-    comapnyId: z.string(),
+    companyId: z.string(),
     quickBooksID: z.number(),
     totalAmountCents: z.number(),
     isRefund: z.boolean(),
@@ -57,7 +48,7 @@ export const GetCompanyPurchasesDTOSchema = z.object({
 export const GetCompanyPurchasesResponseSchema = z.array(
     z.object({
         id: z.string(),
-        comapnyId: z.string(),
+        companyId: z.string(),
         quickBooksID: z.number(),
         totalAmountCents: z.number(),
         isRefund: z.boolean(),
@@ -66,15 +57,15 @@ export const GetCompanyPurchasesResponseSchema = z.array(
 );
 
 //Controller Responses
-export type CreatePurchaseResponse = z.infer<typeof CreatePurchaseResponseSchema>;
-export type PatchPurchasesResponse = z.infer<typeof PatchPurchasesResponseSchema>;
+export type CreateOrPatchPurchaseResponse = z.infer<typeof createOrPatchPurchasesResponseSchema>;
 export type GetPurchaseResponse = z.infer<typeof GetPurchasesResponseSchema>;
 export type GetCompanyPurchasesResponse = z.infer<typeof GetCompanyPurchasesResponseSchema>;
 
 //API Response Schemas
-export const CreatePurchaseAPIResponseSchema = z.union([CreatePurchaseResponseSchema, ErrorResponseSchema]);
-
-export const PathPurchaseAPIResponseSchema = z.union([PatchPurchasesResponseSchema, ErrorResponseSchema]);
+export const CreateOrPatchPurchaseAPIResponseSchema = z.union([
+    createOrPatchPurchasesResponseSchema,
+    ErrorResponseSchema,
+]);
 
 export const GetPurchaseAPIResponseSchema = z.union([GetPurchasesResponseSchema, ErrorResponseSchema]);
 
@@ -83,10 +74,11 @@ export const GetCompanyPurchaseAPIResponseSchema = z.union([GetCompanyPurchasesR
 //Input types
 export type CreatePurchaseDTO = z.infer<typeof CreatePurchaseDTOSchema>;
 export type PatchPurchaseDTO = z.infer<typeof PatchPurchaseDTOSchema>;
+
+export type CreateOrPatchPurchaseDTO = z.infer<typeof CreateOrPatchPurchaseDTO>;
 export type GetCompanyPurchasesDTO = z.infer<typeof GetCompanyPurchasesDTOSchema>;
 
 //Zod types for payload validation
-export type CreatePurchaseAPIResponse = z.infer<typeof CreatePurchaseDTOSchema>;
-export type PatchPurchaseAPIResponse = z.infer<typeof PathPurchaseAPIResponseSchema>;
+export type CreateOrPatchPurchaseAPIResponse = z.infer<typeof CreateOrPatchPurchaseAPIResponseSchema>;
 export type GetPurchaseAPIResponse = z.infer<typeof GetPurchaseAPIResponseSchema>;
 export type GetCompanyPurchasesAPIResponse = z.infer<typeof GetCompanyPurchaseAPIResponseSchema>;

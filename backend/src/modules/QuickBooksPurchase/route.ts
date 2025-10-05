@@ -7,14 +7,14 @@ import { IPurchaseTransaction, PurchaseTransaction } from "./transaction";
 export const purchaseRoutes = (db: DataSource): Hono => {
     const PurchaseRoutes = new Hono();
 
-    const PurchaseTransaction: IPurchaseTransaction = new PurchaseTransaction(db);
-    const PurchaseService: IPurchaseService = new PurchaseService(PurchaseTransaction);
-    const PurchaseController: IPurchaseController = new PurchaseController(PurchaseService);
+    const transaction: IPurchaseTransaction = new PurchaseTransaction(db);
+    const service: IPurchaseService = new PurchaseService(transaction);
+    const controller: IPurchaseController = new PurchaseController(service);
 
-    PurchaseRoutes.post("/quickbooks/purchase", (ctx) => PurchaseController.createPurchase(ctx));
-    PurchaseRoutes.patch("/quickbooks/purchase/:id", (ctx) => PurchaseController.updatePurchase(ctx));
-    PurchaseRoutes.get("/quickbooks/purchase/:id", (ctx) => PurchaseController.getPurchase(ctx));
-    PurchaseRoutes.get("/quickbooks/purchases", (ctx) => PurchaseController.getPurchasesForCompany(ctx));
+    PurchaseRoutes.post("/quickbooks/purchase", (ctx) => controller.createOrUpdatePurchase(ctx));
+    PurchaseRoutes.patch("/quickbooks/purchase/:id", (ctx) => controller.createOrUpdatePurchase(ctx));
+    PurchaseRoutes.get("/quickbooks/purchase/:id", (ctx) => controller.getPurchase(ctx));
+    PurchaseRoutes.get("/quickbooks/purchases", (ctx) => controller.getPurchasesForCompany(ctx));
 
     return PurchaseRoutes;
 };

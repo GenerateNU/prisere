@@ -19,9 +19,9 @@ export interface IUserTransaction {
     getUser(payload: GetUserDTO): Promise<User | null>;
 
     /**
-     * Fetches the comapny associated with the given User id
+     * Fetches the company associated with the given User id
      * @param payload The id of the user whose company data will be returned
-     * @returns The found comapny ID and name
+     * @returns The found company ID and name
      */
     getCompany(payload: GetUserCompanyDTO): Promise<GetUserCompanyResponse | null>;
 }

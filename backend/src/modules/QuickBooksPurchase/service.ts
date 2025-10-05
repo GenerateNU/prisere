@@ -1,18 +1,17 @@
 import { IPurchaseTransaction } from "./transaction";
 import { withServiceErrorHandling } from "../../utilities/error";
 import {
+    CreateOrPatchPurchaseResponse,
     CreatePurchaseDTO,
-    CreatePurchaseResponse,
     GetCompanyPurchasesDTO,
     GetCompanyPurchasesResponse,
     GetPurchaseAPIResponse,
     PatchPurchaseDTO,
-    PatchPurchasesResponse,
 } from "./types";
 
 export interface IPurchaseService {
-    updatePurchase(id: string, payload: PatchPurchaseDTO): Promise<PatchPurchasesResponse>;
-    createPurchase(payload: CreatePurchaseDTO): Promise<CreatePurchaseResponse>;
+    updatePurchase(id: string, payload: PatchPurchaseDTO): Promise<CreateOrPatchPurchaseResponse>;
+    createPurchase(payload: CreatePurchaseDTO): Promise<CreateOrPatchPurchaseResponse>;
     getPurchase(id: string): Promise<GetPurchaseAPIResponse>;
     getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<GetCompanyPurchasesResponse>;
 }
@@ -25,11 +24,11 @@ export class PurchaseService implements IPurchaseService {
     }
 
     updatePurchase = withServiceErrorHandling(
-        async (id: string, payload: PatchPurchaseDTO): Promise<PatchPurchasesResponse> => {
+        async (id: string, payload: PatchPurchaseDTO): Promise<CreateOrPatchPurchaseResponse> => {
             const newQBPurchase = await this.PurchaseTransaction.updatePurchase(id, payload);
 
             return {
-                comapnyId: newQBPurchase.companyId,
+                companyId: newQBPurchase.companyId,
                 dateCreated: newQBPurchase.dateCreated,
                 id: newQBPurchase.id,
                 isRefund: newQBPurchase.isRefund,
@@ -39,17 +38,20 @@ export class PurchaseService implements IPurchaseService {
         }
     );
 
-    createPurchase = withServiceErrorHandling(async (payload: CreatePurchaseDTO): Promise<CreatePurchaseResponse> => {
-        const newQBPurchase = await this.PurchaseTransaction.createPurchase(payload);
+    createPurchase = withServiceErrorHandling(
+        async (payload: CreatePurchaseDTO): Promise<CreateOrPatchPurchaseResponse> => {
+            const newPurchase = await this.PurchaseTransaction.createPurchase(payload);
 
-        return {
-            comapnyId: newQBPurchase.companyId,
-            id: newQBPurchase.id,
-            isRefund: newQBPurchase.isRefund,
-            quickBooksID: newQBPurchase.quickbooksId,
-            totalAmountCents: newQBPurchase.totalAmountCents,
-        };
-    });
+            return {
+                companyId: newPurchase.companyId,
+                id: newPurchase.id,
+                isRefund: newPurchase.isRefund,
+                quickBooksID: newPurchase.quickbooksId,
+                totalAmountCents: newPurchase.totalAmountCents,
+                dateCreated: newPurchase.dateCreated,
+            };
+        }
+    );
 
     getPurchase = withServiceErrorHandling(async (id: string): Promise<GetPurchaseAPIResponse> => {
         const qbPurchase = await this.PurchaseTransaction.getPurchase(id);
@@ -57,7 +59,7 @@ export class PurchaseService implements IPurchaseService {
         return {
             dateCreated: qbPurchase.dateCreated,
             lastUpdated: qbPurchase.dateCreated,
-            comapnyId: qbPurchase.companyId,
+            companyId: qbPurchase.companyId,
             id: qbPurchase.id,
             isRefund: qbPurchase.isRefund,
             quickBooksID: qbPurchase.quickbooksId,
@@ -70,7 +72,7 @@ export class PurchaseService implements IPurchaseService {
             const qbPurchases = await this.PurchaseTransaction.getPurchasesForCompany(payload);
 
             return qbPurchases.map((qbPurchase) => ({
-                comapnyId: qbPurchase.companyId,
+                companyId: qbPurchase.companyId,
                 dateCreated: qbPurchase.dateCreated,
                 id: qbPurchase.id,
                 isRefund: qbPurchase.isRefund,
