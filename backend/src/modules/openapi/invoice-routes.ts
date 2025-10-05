@@ -11,6 +11,7 @@ import {
     GetInvoiceResponseSchema,
     GetCompanyInvoicesDTOSchema,
     GetCompanyInvoicesResponseSchema,
+    GetCompanyInvoicesByDateDTOSchema,
 } from "../../types/Invoice";
 import { CompanyTransaction } from "../company/transaction";
 import { z } from "zod";
@@ -24,6 +25,7 @@ export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): O
     openApi.openapi(bulkCreateOrUpdateInvoiceRoute, (ctx) => invoiceController.bulkCreateOrUpdateInvoice(ctx));
     openApi.openapi(getInvoiceByIdRoute, (ctx) => invoiceController.getInvoice(ctx));
     openApi.openapi(getInvoicesForCompanyRoute, (ctx) => invoiceController.getInvoicesForCompany(ctx));
+    openApi.openapi(getInvoicesForCompanyByDate, (ctx) => invoiceController.getInvoicesForCompanyByDate(ctx));
     return openApi;
 };
 
@@ -102,6 +104,36 @@ const getInvoicesForCompanyRoute = createRoute({
                 },
             },
             description: "Retrieved invoice",
+        },
+        404: {
+            content: {
+                "application/json": {
+                    schema: z.object({ error: z.string() }),
+                },
+            },
+            description: "No Invoice with given UUID found",
+        },
+        ...openApiErrorCodes("Getting Invoice Error"),
+    },
+    tags: ["Invoice"],
+});
+
+const getInvoicesForCompanyByDate = createRoute({
+    method: "get",
+    path: "/quickbooks/invoice/bulk/{id}",
+    summary: "Get invoices for a company by date",
+    description: "Get invoices for a company that were made after the start date and before the end date",
+    request: {
+        query: GetCompanyInvoicesByDateDTOSchema,
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetCompanyInvoicesResponseSchema,
+                },
+            },
+            description: "Retrieved invoices",
         },
         404: {
             content: {

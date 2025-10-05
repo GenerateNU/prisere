@@ -1,4 +1,4 @@
-import { DataSource , MoreThanOrEqual, LessThanOrEqual } from "typeorm";
+import { DataSource , Between} from "typeorm";
 import Boom from "@hapi/boom";
 import { plainToInstance } from "class-transformer";
 import { Invoice } from "../../entities/Invoice";
@@ -60,7 +60,7 @@ export class InvoiceTransaction implements IInvoiceTransaction {
         const invoices: Invoice[] = await this.db.getRepository(Invoice).find({
             where: {
                 companyId: companyId,
-                dateCreated: MoreThanOrEqual(new Date(startDate)) && LessThanOrEqual(new Date(endDate)),
+                dateCreated: Between(new Date(startDate), new Date(endDate)),
             },
         });
 

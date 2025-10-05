@@ -77,6 +77,8 @@ export class InvoiceController implements IInvoiceController {
 
             if (!validate(payload.companyId)) {
                 return ctx.json({ error: "Invalid company ID format" }, 400);
+            } else if (new Date(payload.startDate) >= new Date(payload.endDate)) {
+                return ctx.json({ error: "Start date must be before End date" }, 400);
             }
 
             const fetchedInvoices = await this.invoiceService.getInvoicesForCompanyByDate(payload);
