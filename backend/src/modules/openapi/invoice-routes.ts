@@ -13,6 +13,7 @@ import {
     GetCompanyInvoicesResponseSchema,
 } from "../../types/Invoice";
 import { CompanyTransaction } from "../company/transaction";
+import { z } from "zod";
 
 export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const invoiceTransaction = new InvoiceTransaction(db);
@@ -72,6 +73,14 @@ const getInvoiceByIdRoute = createRoute({
             },
             description: "Retrieved invoice",
         },
+        404: {
+            content: {
+                "application/json": {
+                    schema: z.object({ error: z.string() }),
+                },
+            },
+            description: "No Invoice with given UUID found",
+        },
         ...openApiErrorCodes("Getting Invoice Error"),
     },
     tags: ["Invoice"],
@@ -93,6 +102,14 @@ const getInvoicesForCompanyRoute = createRoute({
                 },
             },
             description: "Retrieved invoice",
+        },
+        404: {
+            content: {
+                "application/json": {
+                    schema: z.object({ error: z.string() }),
+                },
+            },
+            description: "No Invoice with given UUID found",
         },
         ...openApiErrorCodes("Getting Invoice Error"),
     },
