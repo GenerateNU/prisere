@@ -7,10 +7,27 @@ describe("Location Address Controller Tests", () => {
     let app: Hono;
     let backup: IBackup;
 
+    let company_id: String;
+
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
+
+        const sampleCompany = {
+            name: "Cool Company",
+        };
+
+        const companyResponse = await app.request("/companies", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(sampleCompany),
+        });
+
+        const company = await companyResponse.json();
+        company_id = company.id;
     });
 
     afterEach(async () => {
@@ -25,7 +42,8 @@ describe("Location Address Controller Tests", () => {
                 stateProvince: "California",
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
-                postalCode: 94105,
+                postalCode: "94105",
+                companyId: company_id,
             };
 
             const createResponse = await app.request("/location-address", {
@@ -52,6 +70,7 @@ describe("Location Address Controller Tests", () => {
             expect(data.city).toBe(createBody.city);
             expect(data.streetAddress).toBe(createBody.streetAddress);
             expect(data.postalCode).toBe(createBody.postalCode);
+            expect(data.companyId).toBe(createBody.companyId);
         });
 
         test("should return 404 for non-existent id", async () => {
@@ -73,7 +92,7 @@ describe("Location Address Controller Tests", () => {
             expect(response.ok).toBe(false);
         });
 
-        test("should handle an invalide UUID", async () => {
+        test("should handle an invalid UUID", async () => {
             const response = await app.request("/location-address/testing", {
                 method: "GET",
             });
