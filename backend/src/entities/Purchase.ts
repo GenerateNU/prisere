@@ -24,7 +24,7 @@ export class Purchase {
 
     //QuickBooks's internal ID for the purchase that was made
     @Column()
-    quickbooksId!: number;
+    quickBooksId!: number;
 
     //Represented in cents to prevent precision issues
     @Column()

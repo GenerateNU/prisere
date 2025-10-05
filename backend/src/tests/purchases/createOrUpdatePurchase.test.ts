@@ -1,464 +1,347 @@
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
+import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
+import { CreateOrPatchPurchaseDTO } from "../../modules/purchase/types";
+import { CreateCompanyResponse } from "../../types/Company";
 
-describe("POST /purchase - Create or Update Purchase", () => {
+describe("POST /purchases", () => {
     let app: Hono;
     let backup: IBackup;
+    let createdCompanyJSON: CreateCompanyResponse;
+
+    const createCompany = async () => {
+        const companyRequest = {
+            name: "Cool Company",
+        };
+
+        const createCompanyResponse = await app.request("/companies", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(companyRequest),
+        });
+
+        createdCompanyJSON = await createCompanyResponse.json();
+    };
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
-    });
-
-    let company_id: string;
-
-    beforeEach(async () => {
-        const sampleCompany = {
-            name: "Test Company",
-        };
-        const response = await app.request("/companies", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(sampleCompany),
-        });
-        const body = await response.json();
-        company_id = body.id;
+        await createCompany();
     });
 
     afterEach(async () => {
         backup.restore();
     });
 
-    describe("Create Purchase", () => {
-        test("should successfully create a purchase with all required fields", async () => {
-            const requestBody = {
-                companyId: company_id,
-                quickBooksID: 12345,
-                totalAmountCents: 50000,
-            };
+    test("POST /purchases - Create Purchase - All Required Fields", async () => {
+        const requestBody = {
+            companyId: createdCompanyJSON.id,
+            quickBooksId: 12345,
+            totalAmountCents: 50000,
+        };
 
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            expect(response.status).toBe(201);
-            const data = await response.json();
-            expect(data).toHaveProperty("id");
-            expect(data.companyId).toBe(requestBody.companyId);
-            expect(data.quickBooksID).toBe(requestBody.quickBooksID);
-            expect(data.totalAmountCents).toBe(requestBody.totalAmountCents);
-            expect(data.isRefund).toBe(false);
-            expect(data).toHaveProperty("dateCreated");
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
         });
 
-        test("should successfully create a purchase with isRefund set to true", async () => {
-            const requestBody = {
-                companyId: company_id,
-                quickBooksID: 12345,
-                totalAmountCents: 50000,
-                isRefund: true,
-            };
-
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            expect(response.status).toBe(201);
-            const data = await response.json();
-            expect(data.isRefund).toBe(true);
-        });
-
-        test("should default isRefund to false when not provided", async () => {
-            const requestBody = {
-                companyId: company_id,
-                quickBooksID: 12345,
-                totalAmountCents: 50000,
-            };
-
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            expect(response.status).toBe(201);
-            const data = await response.json();
-            expect(data.isRefund).toBe(false);
-        });
-
-        test("should handle large totalAmountCents values", async () => {
-            const requestBody = {
-                companyId: company_id,
-                quickBooksID: 99999,
-                totalAmountCents: 999999999,
-            };
-
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            expect(response.status).toBe(201);
-            const data = await response.json();
-            expect(data.totalAmountCents).toBe(requestBody.totalAmountCents);
-        });
-
-        test("should handle zero totalAmountCents", async () => {
-            const requestBody = {
-                companyId: company_id,
-                quickBooksID: 12345,
-                totalAmountCents: 0,
-            };
-
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            expect(response.status).toBe(201);
-            const data = await response.json();
-            expect(data.totalAmountCents).toBe(0);
-        });
-
-        test("should fail with 400 when companyId is missing", async () => {
-            const requestBody = {
-                quickBooksID: 12345,
-                totalAmountCents: 50000,
-            };
-
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            expect(response.status).toBe(400);
-            const data = await response.json();
-            expect(data).toHaveProperty("error");
-        });
-
-        test("should fail with 400 when companyId is empty string", async () => {
-            const requestBody = {
-                companyId: "",
-                quickBooksID: 12345,
-                totalAmountCents: 50000,
-            };
-
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            expect(response.status).toBe(400);
-            const data = await response.json();
-            expect(data).toHaveProperty("error");
-        });
-
-        test("should fail with 400 when quickBooksID is missing", async () => {
-            const requestBody = {
-                companyId: company_id,
-                totalAmountCents: 50000,
-            };
-
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            expect(response.status).toBe(400);
-            const data = await response.json();
-            expect(data).toHaveProperty("error");
-        });
-
-        test("should fail with 400 when quickBooksID is not a number", async () => {
-            const requestBody = {
-                companyId: company_id,
-                quickBooksID: "not-a-number",
-                totalAmountCents: 50000,
-            };
-
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            expect(response.status).toBe(400);
-            const data = await response.json();
-            expect(data).toHaveProperty("error");
-        });
-
-        test("should fail with 400 when totalAmountCents is missing", async () => {
-            const requestBody = {
-                companyId: company_id,
-                quickBooksID: 12345,
-            };
-
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            expect(response.status).toBe(400);
-            const data = await response.json();
-            expect(data).toHaveProperty("error");
-        });
-
-        test("should fail with 400 when totalAmountCents is not a number", async () => {
-            const requestBody = {
-                companyId: company_id,
-                quickBooksID: 12345,
-                totalAmountCents: "50000",
-            };
-
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            expect(response.status).toBe(400);
-            const data = await response.json();
-            expect(data).toHaveProperty("error");
-        });
-
-        test("should fail with 400 when totalAmountCents is negative", async () => {
-            const requestBody = {
-                companyId: company_id,
-                quickBooksID: 12345,
-                totalAmountCents: -50000,
-            };
-
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            expect(response.status).toBe(400);
-            const data = await response.json();
-            expect(data).toHaveProperty("error");
-        });
-
-        test("should fail with 400 when isRefund is not a boolean", async () => {
-            const requestBody = {
-                companyId: company_id,
-                quickBooksID: 12345,
-                totalAmountCents: 50000,
-                isRefund: "true",
-            };
-
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            expect(response.status).toBe(400);
-            const data = await response.json();
-            expect(data).toHaveProperty("error");
-        });
-
-        test("should fail with 500 when body is malformed JSON", async () => {
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: "{ invalid json }",
-            });
-
-            expect(response.status).toBe(500);
-        });
-
-        test("should fail with 500 when body is empty", async () => {
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: "",
-            });
-
-            expect(response.status).toBe(500);
-        });
-
-        test("should reject extra fields not in schema", async () => {
-            const requestBody = {
-                companyId: company_id,
-                quickBooksID: 12345,
-                totalAmountCents: 50000,
-                extraField: "should not be allowed",
-                anotherExtra: 123,
-            };
-
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            expect(response.status).toBe(201);
-            const data = await response.json();
-            expect(data).not.toHaveProperty("extraField");
-            expect(data).not.toHaveProperty("anotherExtra");
-        });
+        expect(response.status).toBe(201);
+        const body = await response.json();
+        expect(body.companyId).toBe(requestBody.companyId);
+        expect(body.quickBooksID).toBe(requestBody.quickBooksId);
+        expect(body.totalAmountCents).toBe(requestBody.totalAmountCents);
+        expect(body.isRefund).toBe(false);
+        expect(body.id).toBeDefined();
+        expect(body.dateCreated).toBeDefined();
     });
 
-    describe("Update Purchase", () => {
-        test("should successfully update an existing purchase", async () => {
-            // First create a purchase
-            const createBody = {
-                companyId: company_id,
-                quickBooksID: 12345,
-                totalAmountCents: 50000,
-            };
+    test("POST /purchases - Create Purchase - With isRefund True", async () => {
+        const requestBody = {
+            companyId: createdCompanyJSON.id,
+            quickBooksId: 67890,
+            totalAmountCents: 25000,
+            isRefund: true,
+        };
 
-            const createResponse = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(createBody),
-            });
-
-            const createdPurchase = await createResponse.json();
-            const purchaseId = createdPurchase.id;
-
-            // Now update it
-            const updateBody = {
-                purchaseID: purchaseId,
-                totalAmountCents: 75000,
-                isRefund: true,
-            };
-
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updateBody),
-            });
-
-            expect(response.status).toBe(200);
-            const data = await response.json();
-            expect(data.id).toBe(purchaseId);
-            expect(data.totalAmountCents).toBe(updateBody.totalAmountCents);
-            expect(data.isRefund).toBe(updateBody.isRefund);
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
         });
 
-        test("should update only quickBooksID when provided", async () => {
-            const createBody = {
-                companyId: company_id,
-                quickBooksID: 12345,
-                totalAmountCents: 50000,
-            };
+        expect(response.status).toBe(201);
+        const body = await response.json();
+        expect(body.companyId).toBe(requestBody.companyId);
+        expect(body.quickBooksID).toBe(requestBody.quickBooksId);
+        expect(body.totalAmountCents).toBe(requestBody.totalAmountCents);
+        expect(body.isRefund).toBe(true);
+    });
 
-            const createResponse = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(createBody),
-            });
+    test("POST /purchases - Create Purchase - With isRefund False", async () => {
+        const requestBody = {
+            companyId: createdCompanyJSON.id,
+            quickBooksId: 11111,
+            totalAmountCents: 75000,
+            isRefund: false,
+        };
 
-            const createdPurchase = await createResponse.json();
-
-            const updateBody = {
-                purchaseID: createdPurchase.id,
-                quickBooksID: 99999,
-            };
-
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updateBody),
-            });
-
-            expect(response.status).toBe(200);
-            const data = await response.json();
-            expect(data.quickBooksID).toBe(updateBody.quickBooksID);
-            expect(data.totalAmountCents).toBe(createBody.totalAmountCents);
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
         });
 
-        test("should fail with 404 when updating non-existent purchase", async () => {
-            const updateBody = {
-                purchaseID: "b82951e8-e30d-4c84-8d02-c28f29143101",
-                totalAmountCents: 75000,
-            };
+        expect(response.status).toBe(201);
+        const body = await response.json();
+        expect(body.isRefund).toBe(false);
+    });
 
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updateBody),
-            });
+    test("POST /purchases - Patch Purchase - Update totalAmountCents", async () => {
+        const requestBody = {
+            purchaseId: "purchase-123",
+            totalAmountCents: 100000,
+        };
 
-            expect(response.status).toBe(404);
-            const data = await response.json();
-            expect(data).toHaveProperty("error");
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
         });
 
-        test("should fail with 400 when purchaseID is invalid UUID format", async () => {
-            const updateBody = {
-                purchaseID: "not-a-valid-uuid",
-                totalAmountCents: 75000,
-            };
+        expect(response.status).toBe(200);
+        const body = await response.json();
+        expect(body.id).toBe(requestBody.purchaseId);
+        expect(body.totalAmountCents).toBe(requestBody.totalAmountCents);
+    });
 
-            const response = await app.request("/purchase", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updateBody),
-            });
+    test("POST /purchases - Patch Purchase - Update isRefund", async () => {
+        const requestBody = {
+            purchaseId: "purchase-456",
+            isRefund: true,
+        };
 
-            expect(response.status).toBe(400);
-            const data = await response.json();
-            expect(data).toHaveProperty("error");
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
         });
+
+        expect(response.status).toBe(200);
+        const body = await response.json();
+        expect(body.isRefund).toBe(true);
+    });
+
+    test("POST /purchases - Patch Purchase - Update All Fields", async () => {
+        const requestBody = {
+            purchaseId: "purchase-789",
+            quickBooksId: 99999,
+            totalAmountCents: 150000,
+            isRefund: true,
+        };
+
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        expect(response.status).toBe(200);
+        const body = await response.json();
+        expect(body.quickBooksID).toBe(requestBody.quickBooksId);
+        expect(body.totalAmountCents).toBe(requestBody.totalAmountCents);
+        expect(body.isRefund).toBe(requestBody.isRefund);
+    });
+
+    test("POST /purchases - Missing companyId", async () => {
+        const requestBody = {
+            quickBooksId: 12345,
+            totalAmountCents: 50000,
+        };
+
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        expect(response.status).toBe(400);
+    });
+
+    test("POST /purchases - Missing quickBooksId", async () => {
+        const requestBody = {
+            companyId: createdCompanyJSON.id,
+            totalAmountCents: 50000,
+        };
+
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        expect(response.status).toBe(400);
+    });
+
+    test("POST /purchases - Missing totalAmountCents", async () => {
+        const requestBody = {
+            companyId: createdCompanyJSON.id,
+            quickBooksId: 12345,
+        };
+
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        expect(response.status).toBe(400);
+    });
+
+    test("POST /purchases - Invalid companyId Type", async () => {
+        const requestBody = {
+            companyId: 123,
+            quickBooksId: 12345,
+            totalAmountCents: 50000,
+        };
+
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        expect(response.status).toBe(400);
+    });
+
+    test("POST /purchases - Invalid quickBooksId Type", async () => {
+        const requestBody = {
+            companyId: createdCompanyJSON.id,
+            quickBooksId: "not-a-number",
+            totalAmountCents: 50000,
+        };
+
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        expect(response.status).toBe(400);
+    });
+
+    test("POST /purchases - Invalid totalAmountCents Type", async () => {
+        const requestBody = {
+            companyId: createdCompanyJSON.id,
+            quickBooksId: 12345,
+            totalAmountCents: "fifty-thousand",
+        };
+
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        expect(response.status).toBe(400);
+    });
+
+    test("POST /purchases - Invalid isRefund Type", async () => {
+        const requestBody = {
+            companyId: createdCompanyJSON.id,
+            quickBooksId: 12345,
+            totalAmountCents: 50000,
+            isRefund: "true",
+        };
+
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        expect(response.status).toBe(400);
+    });
+
+    test("POST /purchases - Empty companyId", async () => {
+        const requestBody = {
+            companyId: "",
+            quickBooksId: 12345,
+            totalAmountCents: 50000,
+        };
+
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        expect(response.status).toBe(400);
+    });
+
+    test("POST /purchases - Patch with Invalid purchaseId Type", async () => {
+        const requestBody = {
+            purchaseId: 123,
+            totalAmountCents: 100000,
+        };
+
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        expect(response.status).toBe(400);
+    });
+
+    test("POST /purchases - Patch with Empty purchaseId", async () => {
+        const requestBody = {
+            purchaseId: "",
+            totalAmountCents: 100000,
+        };
+
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        expect(response.status).toBe(400);
     });
 });

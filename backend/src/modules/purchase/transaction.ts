@@ -1,21 +1,9 @@
-import { Company } from "../../entities/Company";
-import { CreateCompanyDTO, GetCompanyByIdDTO, UpdateQuickBooksImportTimeDTO } from "../../types/Company";
-import { DataSource, InsertResult } from "typeorm";
-import Boom, { paymentRequired } from "@hapi/boom";
-import { logMessageToFile } from "../../utilities/logger";
-import { validate } from "uuid";
-import {
-    CreatePurchaseDTO,
-    CreatePurchaseResponse,
-    GetCompanyPurchasesDTO,
-    GetCompanyPurchasesResponse,
-    GetPurchaseResponse,
-    PatchPurchaseDTO,
-    PatchPurchasesResponse,
-} from "./types";
-import { TypedResponse } from "hono/types";
+import { DataSource } from "typeorm";
+import Boom from "@hapi/boom";
+import { CreatePurchaseDTO, GetCompanyPurchasesDTO, PatchPurchaseDTO } from "./types";
 import { Purchase } from "../../entities/Purchase";
 import { plainToClass } from "class-transformer";
+import { Company } from "../../entities/Company";
 
 export interface IPurchaseTransaction {
     updatePurchase(id: string, payload: PatchPurchaseDTO): Promise<Purchase>;
@@ -45,8 +33,19 @@ export class PurchaseTransaction implements IPurchaseTransaction {
     }
 
     async createPurchase(payload: CreatePurchaseDTO): Promise<Purchase> {
-        const newQBPurchase = plainToClass(Purchase, payload);
-        const purchaseEntity = await this.db.manager.save(Purchase, newQBPurchase);
+        const newPurchase = plainToClass(Purchase, payload);
+
+        const existingCompany = await this.db.manager.findOne(Company, {
+            where: {
+                id: payload.companyId,
+            },
+        });
+
+        if (!existingCompany) {
+            Boom.notFound("Unable to find the given company!");
+        }
+
+        const purchaseEntity = await this.db.manager.save(Purchase, newPurchase);
 
         return purchaseEntity;
     }

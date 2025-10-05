@@ -7,6 +7,7 @@ import { companyRoutes } from "./modules/company/route";
 import { disasterRoutes } from "./modules/disaster/route";
 import { disasterNotificationRoutes } from "./modules/disasterNotifications/route";
 import { invoiceRoutes } from "./modules/invoice/route";
+import { purchaseRoutes } from "./modules/purchase/route";
 
 export const setUpRoutes = (app: Hono, db: DataSource) => {
     app.route("/users", userRoutes(db));
@@ -16,4 +17,5 @@ export const setUpRoutes = (app: Hono, db: DataSource) => {
     app.route("/disaster", disasterRoutes(db));
     app.route("/disasterNotification", disasterNotificationRoutes(db));
     app.route("/quickbooks/invoice", invoiceRoutes(db));
+    app.route("/purchases", purchaseRoutes(db));
 };

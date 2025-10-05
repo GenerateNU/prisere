@@ -32,7 +32,7 @@ export class PurchaseService implements IPurchaseService {
                 dateCreated: newQBPurchase.dateCreated,
                 id: newQBPurchase.id,
                 isRefund: newQBPurchase.isRefund,
-                quickBooksID: newQBPurchase.quickbooksId,
+                quickBooksId: newQBPurchase.quickBooksId,
                 totalAmountCents: newQBPurchase.totalAmountCents,
             };
         }
@@ -40,13 +40,15 @@ export class PurchaseService implements IPurchaseService {
 
     createPurchase = withServiceErrorHandling(
         async (payload: CreatePurchaseDTO): Promise<CreateOrPatchPurchaseResponse> => {
+            console.log(payload, "Payload");
             const newPurchase = await this.PurchaseTransaction.createPurchase(payload);
+            console.log(newPurchase, "newPurchase");
 
             return {
                 companyId: newPurchase.companyId,
                 id: newPurchase.id,
                 isRefund: newPurchase.isRefund,
-                quickBooksID: newPurchase.quickbooksId,
+                quickBooksId: newPurchase.quickBooksId,
                 totalAmountCents: newPurchase.totalAmountCents,
                 dateCreated: newPurchase.dateCreated,
             };
@@ -62,7 +64,7 @@ export class PurchaseService implements IPurchaseService {
             companyId: qbPurchase.companyId,
             id: qbPurchase.id,
             isRefund: qbPurchase.isRefund,
-            quickBooksID: qbPurchase.quickbooksId,
+            quickBooksId: qbPurchase.quickBooksId,
             totalAmountCents: qbPurchase.totalAmountCents,
         };
     });
@@ -76,7 +78,7 @@ export class PurchaseService implements IPurchaseService {
                 dateCreated: qbPurchase.dateCreated,
                 id: qbPurchase.id,
                 isRefund: qbPurchase.isRefund,
-                quickBooksID: qbPurchase.quickbooksId,
+                quickBooksID: qbPurchase.quickBooksId,
                 totalAmountCents: qbPurchase.totalAmountCents,
             }));
         }

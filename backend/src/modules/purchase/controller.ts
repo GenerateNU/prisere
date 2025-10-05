@@ -27,20 +27,23 @@ export class PurchaseController implements IPurchaseController {
 
     createOrUpdatePurchase = withControllerErrorHandling(
         async (ctx: Context): Promise<TypedResponse<CreateOrPatchPurchaseAPIResponse> | Response> => {
-            const id = ctx.req.param("id");
-
-            if (!validate(id)) {
-                return ctx.json({ error: "Invalid company ID format" }, 400);
-            }
-
             const json = await ctx.req.json();
             const payload = CreateOrPatchPurchaseDTO.parse(json);
 
             let updatedPurchase;
             if ("id" in payload) {
+                console.log("UPDATING an exiasting purchase");
+
+                const id = ctx.req.param("id");
+
+                if (!validate(id)) {
+                    return ctx.json({ error: "Invalid company ID format" }, 400);
+                }
+
                 const typedPayload: PatchPurchaseDTO = payload as PatchPurchaseDTO;
                 updatedPurchase = await this.PurchaseService.updatePurchase(id, typedPayload);
             } else {
+                console.log("Creating a new purchase");
                 const typedPayload: CreatePurchaseDTO = payload as CreatePurchaseDTO;
                 updatedPurchase = await this.PurchaseService.createPurchase(typedPayload);
             }

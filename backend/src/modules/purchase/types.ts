@@ -4,7 +4,7 @@ import { ErrorResponseSchema } from "../../types/Utils";
 //Create a new quick books purchase
 export const CreatePurchaseDTOSchema = z.object({
     companyId: z.string(),
-    quickBooksID: z.number(),
+    quickBooksId: z.number(),
     totalAmountCents: z.number(),
     isRefund: z.boolean().optional().default(false),
 });
@@ -12,7 +12,7 @@ export const CreatePurchaseDTOSchema = z.object({
 //Patch existing quick books purchase
 export const PatchPurchaseDTOSchema = z.object({
     purchaseID: z.string(),
-    quickBooksID: z.number().optional(),
+    quickBooksId: z.number().optional(),
     totalAmountCents: z.number().optional(),
     isRefund: z.boolean().optional(),
 });
@@ -20,7 +20,7 @@ export const PatchPurchaseDTOSchema = z.object({
 export const createOrPatchPurchasesResponseSchema = z.object({
     id: z.string(),
     companyId: z.string(),
-    quickBooksID: z.number(),
+    quickBooksId: z.number(),
     totalAmountCents: z.number(),
     isRefund: z.boolean(),
     dateCreated: z.date(),
@@ -31,7 +31,7 @@ export const CreateOrPatchPurchaseDTO = z.union([CreatePurchaseDTOSchema, PatchP
 export const GetPurchasesResponseSchema = z.object({
     id: z.string(),
     companyId: z.string(),
-    quickBooksID: z.number(),
+    quickBooksId: z.number(),
     totalAmountCents: z.number(),
     isRefund: z.boolean(),
     dateCreated: z.date(),

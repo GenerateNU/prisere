@@ -11,9 +11,9 @@ export const purchaseRoutes = (db: DataSource): Hono => {
     const service: IPurchaseService = new PurchaseService(transaction);
     const controller: IPurchaseController = new PurchaseController(service);
 
-    PurchaseRoutes.post("/purchase", (ctx) => controller.createOrUpdatePurchase(ctx));
-    PurchaseRoutes.get("/purchase/:id", (ctx) => controller.getPurchase(ctx));
-    PurchaseRoutes.get("/purchases/mycompany", (ctx) => controller.getPurchasesForCompany(ctx));
+    PurchaseRoutes.post("/", (ctx) => controller.createOrUpdatePurchase(ctx));
+    PurchaseRoutes.get("/:id", (ctx) => controller.getPurchase(ctx));
+    PurchaseRoutes.get("/mycompany", (ctx) => controller.getPurchasesForCompany(ctx));
 
     return PurchaseRoutes;
 };
