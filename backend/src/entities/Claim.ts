@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Unique, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    ManyToOne,
+    JoinColumn,
+    Unique,
+    CreateDateColumn,
+    UpdateDateColumn,
+} from "typeorm";
 import { Company } from "./Company.js";
 import { FemaDisaster } from "./FemaDisaster.js";
 import { ClaimStatusType } from "../types/ClaimStatusType.js";

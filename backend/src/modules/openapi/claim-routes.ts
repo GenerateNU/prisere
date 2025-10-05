@@ -7,9 +7,9 @@ import {
     CreateClaimDTOSchema,
     CreateClaimResponseSchema,
     DeleteClaimDTOSchema,
-    DeleteClaimResponseSchema, /* GetClaimsByCompanyIdDTOSchema, GetClaimsByCompanyIdResponseSchema */
+    DeleteClaimResponseSchema /* GetClaimsByCompanyIdDTOSchema, GetClaimsByCompanyIdResponseSchema */,
     GetClaimsByCompanyIdDTOSchema,
-    GetClaimsByCompanyIdResponseSchema
+    GetClaimsByCompanyIdResponseSchema,
 } from "../../types/Claim";
 import { openApiErrorCodes } from "../../utilities/error";
 

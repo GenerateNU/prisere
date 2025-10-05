@@ -43,7 +43,12 @@ export class ClaimTransaction implements IClaimTransaction {
 
     async createClaim(payload: CreateClaimDTO): Promise<Claim | null> {
         try {
-            const claim: Claim = plainToClass(Claim, { ...payload, status: ClaimStatusType.ACTIVE, createdAt: new Date(), updatedAt: new Date() });
+            const claim: Claim = plainToClass(Claim, {
+                ...payload,
+                status: ClaimStatusType.ACTIVE,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            });
 
             const result: Claim = await this.db.getRepository(Claim).save(claim);
 
@@ -56,17 +61,15 @@ export class ClaimTransaction implements IClaimTransaction {
 
     async getClaimsByCompanyId(payload: GetClaimsByCompanyIdDTO): Promise<GetClaimsByCompanyIdResponse | null> {
         try {
-            const result: Claim[] = await this.db
-                .getRepository(Claim)
-                .find({ where: { companyId: payload.id } });
+            const result: Claim[] = await this.db.getRepository(Claim).find({ where: { companyId: payload.id } });
 
-            return result.map(claim => ({
+            return result.map((claim) => ({
                 id: claim.id,
                 status: claim.status,
                 createdAt: claim.createdAt.toISOString(),
                 updatedAt: claim.updatedAt?.toISOString(),
                 companyId: claim.companyId,
-                disasterId: claim.disasterId
+                disasterId: claim.disasterId,
             }));
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
