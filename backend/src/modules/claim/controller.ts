@@ -30,7 +30,7 @@ export class ClaimController {
                 return ctx.json({ error: "Invalid company ID format" }, 400);
             }
 
-            const claimResponse = await this.claimService.getClaimsByCompanyId({ companyId: id });
+            const claimResponse = await this.claimService.getClaimsByCompanyId({ id: id });
 
             return ctx.json(claimResponse, 200);
         }

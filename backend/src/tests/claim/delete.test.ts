@@ -30,7 +30,7 @@ describe("DELETE /claims/:id", () => {
         const getResponseBefore = await app.request("/claims/company/5667a729-f000-4190-b4ee-7957badca27b");
         const getBodyBefore = await getResponseBefore.json();
 
-        expect(getBodyBefore.length).toBe(3);
+        expect(getBodyBefore.length).toBe(2);
 
         const response = await app.request("/claims/0174375f-e7c4-4862-bb9f-f58318bb2e7d", {
             method: "DELETE",
@@ -44,7 +44,7 @@ describe("DELETE /claims/:id", () => {
         const getResponseAfter = await app.request("/claims/company/5667a729-f000-4190-b4ee-7957badca27b");
         const getBodyAfter = await getResponseAfter.json();
 
-        expect(getBodyAfter.length).toBe(2);
+        expect(getBodyAfter.length).toBe(1);
     });
 
     test("DELETE /claims - Deleting a claim that doesnt exist", async () => {

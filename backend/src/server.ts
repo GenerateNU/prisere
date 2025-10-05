@@ -1,4 +1,6 @@
 import "reflect-metadata";
+import "./dayjs.config";
+
 import { Hono } from "hono";
 import { logger } from "hono/logger";
 import { AppDataSource } from "./typeorm-config";

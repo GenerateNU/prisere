@@ -8,6 +8,8 @@ import {
     CreateClaimResponseSchema,
     DeleteClaimDTOSchema,
     DeleteClaimResponseSchema /* GetClaimsByCompanyIdDTOSchema, GetClaimsByCompanyIdResponseSchema */,
+    GetClaimsByCompanyIdDTOSchema,
+    GetClaimsByCompanyIdResponseSchema,
 } from "../../types/Claim";
 import { openApiErrorCodes } from "../../utilities/error";
 
@@ -17,7 +19,7 @@ export const createOpenAPIClaimRoutes = (openApi: OpenAPIHono, db: DataSource): 
     const claimController: IClaimController = new ClaimController(claimService);
 
     openApi.openapi(createClaimRoute, (ctx) => claimController.createClaim(ctx));
-    //openApi.openapi(getClaimsByCompanyIdRoute, (ctx) => claimController.getClaimByCompanyId(ctx));
+    openApi.openapi(getClaimsByCompanyIdRoute, (ctx) => claimController.getClaimByCompanyId(ctx));
     openApi.openapi(deleteClaimRoute, (ctx) => claimController.deleteClaim(ctx));
     return openApi;
 };
@@ -49,32 +51,32 @@ const createClaimRoute = createRoute({
     },
     tags: ["Claims"],
 });
-/*
-    const getClaimsByCompanyIdRoute = createRoute({
-        method: "get",
-        path: "/claims/company/{id}",
-        summary: "Gets all the claims associated with a company",
-        description: "Gets all the claims for a company using a company ID",
-        request: {
-            params: GetClaimsByCompanyIdDTOSchema,
-        },
-        responses: {
-            200: {
-                content: {
-                    "application/json": {
-                        schema: GetClaimsByCompanyIdResponseSchema,
-                    },
+
+const getClaimsByCompanyIdRoute = createRoute({
+    method: "get",
+    path: "/claims/company/{id}",
+    summary: "Gets all the claims associated with a company",
+    description: "Gets all the claims for a company using a company ID",
+    request: {
+        params: GetClaimsByCompanyIdDTOSchema,
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetClaimsByCompanyIdResponseSchema,
                 },
-                description: "Claims fetched successfully",
             },
-            404: {
-                description: "Claims not found",
-            },
-            ...openApiErrorCodes("Create Claims Errors"),
+            description: "Claims fetched successfully",
         },
-        tags: ["Claims"],
-    });
-*/
+        404: {
+            description: "Claims not found",
+        },
+        ...openApiErrorCodes("Create Claims Errors"),
+    },
+    tags: ["Claims"],
+});
+
 const deleteClaimRoute = createRoute({
     method: "delete",
     path: "/claims/{id}",

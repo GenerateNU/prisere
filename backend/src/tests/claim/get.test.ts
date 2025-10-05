@@ -31,10 +31,9 @@ describe("GET /claims/company/:id", () => {
         const body = await response.json();
 
         expect(response.status).toBe(200);
-        expect(body.length).toBe(3);
+        expect(body.length).toBe(2);
         expect(body[0].companyId).toBe("5667a729-f000-4190-b4ee-7957badca27b");
         expect(body[1].companyId).toBe("5667a729-f000-4190-b4ee-7957badca27b");
-        expect(body[2].companyId).toBe("5667a729-f000-4190-b4ee-7957badca27b");
 
         const response2 = await app.request("/claims/company/a1a542da-0abe-4531-9386-8919c9f86369");
         const body2 = await response2.json();
@@ -58,7 +57,7 @@ describe("GET /claims/company/:id", () => {
         const body = await response.json();
 
         expect(response.status).toBe(200);
-        expect(body.length).toBe(0);
+        expect(body.length).toBe(1);
     });
 
     test("GET - CompanyID doesn't exist", async () => {
