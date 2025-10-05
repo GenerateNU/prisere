@@ -3,11 +3,6 @@ import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { z } from "zod";
 import {
     CreateUserDTOSchema,
-<<<<<<< HEAD
-    GetUsercompanyDTOSchema,
-    GetUserDTOSchema,
-=======
->>>>>>> main
     CreateUserResponseSchema,
     GetUserResponseSchema,
     GetUserCompanyResponseSchema,
