@@ -1,5 +1,6 @@
 'use client'
-import { login, signup } from '@/actions/auth'
+import { login} from '@/actions/auth'
+import { Input } from '@/components/ui/input'
 
 
 export default function LoginPage() {
@@ -15,7 +16,7 @@ export default function LoginPage() {
               <label htmlFor="email" className="block text-sm font-medium text-black">
                 Email
               </label>
-              <input 
+              <Input
                 id="email" 
                 name="email" 
                 type="email" 
@@ -39,10 +40,10 @@ export default function LoginPage() {
           
           <div className="flex gap-4">
             <button 
-              formAction={signup}
+              formAction={login}
               className="flex-1 bg-gray-400 text-black py-2 px-4 rounded-md hover:bg-gray-700"
             >
-              Sign up
+              Login
             </button>
           </div>
         </form>
