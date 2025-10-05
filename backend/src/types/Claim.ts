@@ -1,20 +1,23 @@
 import { z } from "zod";
+import { ClaimStatusType } from "./ClaimStatusType";
 /* Zod schemas for OpenAPI docs */
+
+const claimStatusTypes = Object.keys(ClaimStatusType);
 
 /* Claim Schema */
 
 export const ClaimSchema = z.object({
     id: z.string().nonempty(),
-    status: z.string(),
-    createdAt: z.union([z.iso.datetime(), z.date()]),
-    updatedAt: z.union([z.iso.datetime(), z.date()]).optional(),
+    status: z.enum(claimStatusTypes).default(ClaimStatusType.ACTIVE),
+    createdAt: z.iso.datetime(),
+    updatedAt: z.iso.datetime().optional(),
     companyId: z.string(),
     disasterId: z.string(),
 });
 
 const stringClaimSchema = z.object({
     id: z.string().nonempty(),
-    status: z.string(),
+    status: z.enum(claimStatusTypes).default(ClaimStatusType.ACTIVE),
     createdAt: z.iso.datetime(),
     updatedAt: z.iso.datetime().optional(),
     companyId: z.string(),
@@ -31,7 +34,7 @@ export const CreateClaimResponseSchema = stringClaimSchema;
 
 /* GET */
 export const GetClaimsByCompanyIdDTOSchema = z.object({
-    companyId: z.string().nonempty(),
+    id: z.string(),
 });
 
 export const GetClaimsByCompanyIdResponseSchema = z.array(ClaimSchema);

@@ -1,19 +1,24 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Unique, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Company } from "./Company.js";
 import { FemaDisaster } from "./FemaDisaster.js";
+import { ClaimStatusType } from "../types/ClaimStatusType.js";
 
+@Unique(["companyId", "disasterId"])
 @Entity("claim")
 export class Claim {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
 
-    @Column()
+    @Column({
+        type: "enum",
+        enum: ClaimStatusType,
+    })
     status!: string;
 
-    @Column({ type: "timestamptz" })
+    @CreateDateColumn()
     createdAt!: Date;
 
-    @Column({ type: "timestamptz", nullable: true })
+    @UpdateDateColumn()
     updatedAt?: Date;
 
     @Column()

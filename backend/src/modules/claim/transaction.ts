@@ -9,6 +9,7 @@ import {
 } from "../../types/Claim";
 import { logMessageToFile } from "../../utilities/logger";
 import { plainToClass } from "class-transformer";
+import { ClaimStatusType } from "../../types/ClaimStatusType";
 
 export interface IClaimTransaction {
     /**
@@ -42,7 +43,7 @@ export class ClaimTransaction implements IClaimTransaction {
 
     async createClaim(payload: CreateClaimDTO): Promise<Claim | null> {
         try {
-            const claim: Claim = plainToClass(Claim, { ...payload, status: "CREATED", createdAt: new Date() });
+            const claim: Claim = plainToClass(Claim, { ...payload, status: ClaimStatusType.ACTIVE, createdAt: new Date(), updatedAt: new Date() });
 
             const result: Claim = await this.db.getRepository(Claim).save(claim);
 
@@ -55,11 +56,18 @@ export class ClaimTransaction implements IClaimTransaction {
 
     async getClaimsByCompanyId(payload: GetClaimsByCompanyIdDTO): Promise<GetClaimsByCompanyIdResponse | null> {
         try {
-            const result: GetClaimsByCompanyIdResponse | null = await this.db
+            const result: Claim[] = await this.db
                 .getRepository(Claim)
-                .find({ where: { companyId: payload.companyId } });
+                .find({ where: { companyId: payload.id } });
 
-            return result;
+            return result.map(claim => ({
+                id: claim.id,
+                status: claim.status,
+                createdAt: claim.createdAt.toISOString(),
+                updatedAt: claim.updatedAt?.toISOString(),
+                companyId: claim.companyId,
+                disasterId: claim.disasterId
+            }));
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
             return null;
