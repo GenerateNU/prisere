@@ -13,8 +13,8 @@ export const notificationRoutes = (db: DataSource) => {
     const service = new NotificationService(transaction, userTransaction);
     const controller = new NotificationController(service);
 
-    hono.put("/preferences/:id", (ctx) => controller.getUserPreferences(ctx));
-    hono.get("/preferences/:id", (ctx) => controller.updateUserPreferences(ctx));
+    hono.get("/preferences/:id", (ctx) => controller.getUserPreferences(ctx));
+    hono.put("/preferences/:id", (ctx) => controller.updateUserPreferences(ctx));
 
     return hono;
 };

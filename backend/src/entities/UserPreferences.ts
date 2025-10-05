@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, Relation } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn, type Relation } from "typeorm";
 import { User } from "./User";
 
 export const USER_NOTIFICATION_FREQUENCY = ["daily", "weekly"] as const;
@@ -7,6 +7,7 @@ export type UserNotificationFrequency = (typeof USER_NOTIFICATION_FREQUENCY)[num
 @Entity()
 export class UserPreferences {
     @Column()
+    @PrimaryColumn()
     userId!: string;
 
     @OneToOne(() => User, (user) => user.preferences)

@@ -4,9 +4,9 @@ import { INotificationService } from "./service";
 import {
     GetUserNotificationPreferencesRequestParams,
     GetUserNotificationPreferencesResponse,
+    UpdateUesrNotificationPreferencesDTOSchema,
     UpdateUserNotificationPreferencesRequestParams,
     UpdateUserNotificationPreferencesResponse,
-    UpdateUserNotificationPreferencesSchema,
     UserMissingErrorResponse,
 } from "../../types/Preferences";
 import { withControllerErrorHandling } from "../../utilities/error";
@@ -40,6 +40,7 @@ export class NotificationController implements INotificationController {
             {
                 emailEnabled: preferences.emailEnabled,
                 webNotificationsEnabled: preferences.webNotificationsEnabled,
+                notificationFrequency: preferences.notificationFrequency,
             },
             200
         );
@@ -47,7 +48,7 @@ export class NotificationController implements INotificationController {
 
     updateUserPreferences = withControllerErrorHandling(async (ctx: Context) => {
         const { id: userId } = UpdateUserNotificationPreferencesRequestParams.parse(ctx.req.param());
-        const preferences = UpdateUserNotificationPreferencesSchema.parse(await ctx.req.json());
+        const preferences = UpdateUesrNotificationPreferencesDTOSchema.parse(await ctx.req.json());
 
         const result = await this.notiicationService.updateUserPreferences({ userId, preferences });
 
@@ -57,8 +58,9 @@ export class NotificationController implements INotificationController {
 
         return ctx.json(
             {
-                emailEnabled: preferences.emailEnabled,
-                webNotificationsEnabled: preferences.webNotificationsEnabled,
+                emailEnabled: result.emailEnabled,
+                webNotificationsEnabled: result.webNotificationsEnabled,
+                notificationFrequency: result.notificationFrequency,
             },
             201
         );

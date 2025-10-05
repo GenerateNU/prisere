@@ -12,6 +12,7 @@ export const UpdateUserNotificationPreferencesRequestParams = z.object({
 export const GetUserNotificationPreferencesSchema = z.object({
     emailEnabled: z.boolean(),
     webNotificationsEnabled: z.boolean(),
+    notificationFrequency: z.enum(USER_NOTIFICATION_FREQUENCY),
 });
 
 export type GetUserNotificationPreferencesResponse = z.infer<typeof GetUserNotificationPreferencesSchema>;
@@ -25,7 +26,7 @@ export type UserMissingErrorResponse = z.infer<typeof UserMissingErrorSchema>;
 export const UpdateUesrNotificationPreferencesDTOSchema = z.object({
     emailEnabled: z.boolean().optional(),
     webNotificationsEnabled: z.boolean().optional(),
-    frequency: z.enum(USER_NOTIFICATION_FREQUENCY).optional(),
+    notificationFrequency: z.enum(USER_NOTIFICATION_FREQUENCY).optional(),
 });
 
 export type UpdateUesrNotificationPreferencesDTO = z.infer<typeof UpdateUesrNotificationPreferencesDTOSchema>;
@@ -33,6 +34,7 @@ export type UpdateUesrNotificationPreferencesDTO = z.infer<typeof UpdateUesrNoti
 export const UpdateUserNotificationPreferencesSchema = z.object({
     emailEnabled: z.boolean(),
     webNotificationsEnabled: z.boolean(),
+    notificationFrequency: z.enum(USER_NOTIFICATION_FREQUENCY),
 });
 
 export type UpdateUserNotificationPreferencesResponse = z.infer<typeof UpdateUserNotificationPreferencesSchema>;
