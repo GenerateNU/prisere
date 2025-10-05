@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ControllerResponse } from "../utilities/response";
 
 export const CreateOrUpdateInvoicesDTOSchema = z.array(
     z.object({
@@ -38,7 +39,14 @@ export const GetCompanyInvoicesDTOSchema = z.object({
     resultsPerPage: z.number().optional().default(20),
 });
 
+export const GetCompanyInvoicesByDateDTOSchema = z.object({
+    companyId: z.string(),
+    startDate: z.iso.datetime(),
+    endDate: z.iso.datetime(),
+});
+
 export const GetCompanyInvoicesResponseSchema = z.array(GetInvoiceResponseSchema);
+
 
 //Controller Responses
 export type CreateOrUpdateInvoicesResponse = z.infer<typeof CreateOrUpdateInvoiceResponseSchema>;
@@ -48,3 +56,4 @@ export type GetCompanyInvoicesResponse = z.infer<typeof GetCompanyInvoicesRespon
 //Input types
 export type CreateOrUpdateInvoicesDTO = z.infer<typeof CreateOrUpdateInvoicesDTOSchema>;
 export type GetCompanyInvoicesDTO = z.infer<typeof GetCompanyInvoicesDTOSchema>;
+export type GetCompanyInvoicesByDateDTO = z.infer<typeof GetCompanyInvoicesByDateDTOSchema>;

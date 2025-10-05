@@ -1,13 +1,14 @@
-import { DataSource } from "typeorm";
+import { DataSource , MoreThanOrEqual, LessThanOrEqual } from "typeorm";
 import Boom from "@hapi/boom";
 import { plainToInstance } from "class-transformer";
 import { Invoice } from "../../entities/Invoice";
-import { CreateOrUpdateInvoicesDTO, GetCompanyInvoicesDTO } from "../../types/Invoice";
+import { CreateOrUpdateInvoicesDTO, GetCompanyInvoicesDTO, GetCompanyInvoicesByDateDTO } from "../../types/Invoice";
 
 export interface IInvoiceTransaction {
     createOrUpdateInvoices(payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]>;
     getInvoiceById(id: string): Promise<Invoice>;
     getInvoicesForCompany(payload: GetCompanyInvoicesDTO): Promise<Invoice[]>;
+    getInvoicesForCompanyByDate(payload: GetCompanyInvoicesByDateDTO): Promise<Invoice[]>;
 }
 
 export class InvoiceTransaction implements IInvoiceTransaction {
@@ -48,6 +49,18 @@ export class InvoiceTransaction implements IInvoiceTransaction {
             take: resultsPerPage,
             order: {
                 dateCreated: "DESC",
+            },
+        });
+
+        return invoices;
+    }
+
+    async getInvoicesForCompanyByDate(payload: GetCompanyInvoicesByDateDTO): Promise<Invoice[]> {
+        const { companyId, startDate, endDate } = payload;
+        const invoices: Invoice[] = await this.db.getRepository(Invoice).find({
+            where: {
+                companyId: companyId,
+                dateCreated: MoreThanOrEqual(new Date(startDate)) && LessThanOrEqual(new Date(endDate)),
             },
         });
 

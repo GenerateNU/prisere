@@ -8,6 +8,7 @@ import {
     GetCompanyInvoicesResponse,
     CreateOrUpdateInvoicesDTOSchema,
     GetCompanyInvoicesDTOSchema,
+    GetCompanyInvoicesByDateDTOSchema,
 } from "../../types/Invoice";
 import { ControllerResponse } from "../../utilities/response";
 
@@ -15,6 +16,7 @@ export interface IInvoiceController {
     bulkCreateOrUpdateInvoice(_ctx: Context): ControllerResponse<TypedResponse<CreateOrUpdateInvoicesResponse, 201>>;
     getInvoice(ctx: Context): ControllerResponse<TypedResponse<GetInvoiceResponse, 200>>;
     getInvoicesForCompany(ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>>;
+    getInvoicesForCompanyByDate(ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>>;
 }
 
 export class InvoiceController implements IInvoiceController {
@@ -63,4 +65,22 @@ export class InvoiceController implements IInvoiceController {
             return ctx.json(fetchedQuickBooksPurchases, 200);
         }
     );
+
+    getInvoicesForCompanyByDate = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>> => {
+            const queryParams = {
+                companyId: ctx.req.param("id"),
+                startDate: ctx.req.query("startDate"),
+                endDate: ctx.req.query("endDate"),
+            };
+            const payload = GetCompanyInvoicesByDateDTOSchema.parse(queryParams);
+
+            if (!validate(payload.companyId)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
+
+            const fetchedInvoices = await this.invoiceService.getInvoicesForCompanyByDate(payload);
+            return ctx.json(fetchedInvoices, 200);
+        }
+    )
 }
