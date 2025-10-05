@@ -1,32 +1,20 @@
 import { DataSource } from "typeorm";
 import { Hono } from "hono";
-import { IQuickBooksPurchaseController, QuickBooksPurchaseController } from "./controller";
-import { IQuickBooksPurchaseService, QuickBooksPurchaseService } from "./service";
-import { IQuickBooksPurchaseTransaction, QuickBooksPurchaseTransaction } from "./transaction";
+import { IPurchaseController, PurchaseController } from "./controller";
+import { IPurchaseService, PurchaseService } from "./service";
+import { IPurchaseTransaction, PurchaseTransaction } from "./transaction";
 
 export const purchaseRoutes = (db: DataSource): Hono => {
-    const quickBooksPurchaseRoutes = new Hono();
+    const PurchaseRoutes = new Hono();
 
-    const quickbooksPurchaseTransaction: IQuickBooksPurchaseTransaction = new QuickBooksPurchaseTransaction(db);
-    const quickBooksPurchaseService: IQuickBooksPurchaseService = new QuickBooksPurchaseService(
-        quickbooksPurchaseTransaction
-    );
-    const quickBooksPurchaseController: IQuickBooksPurchaseController = new QuickBooksPurchaseController(
-        quickBooksPurchaseService
-    );
+    const PurchaseTransaction: IPurchaseTransaction = new PurchaseTransaction(db);
+    const PurchaseService: IPurchaseService = new PurchaseService(PurchaseTransaction);
+    const PurchaseController: IPurchaseController = new PurchaseController(PurchaseService);
 
-    quickBooksPurchaseRoutes.post("/quickbooks/purchase", (ctx) =>
-        quickBooksPurchaseController.createQuickBooksPurchase(ctx)
-    );
-    quickBooksPurchaseRoutes.patch("/quickbooks/purchase/:id", (ctx) =>
-        quickBooksPurchaseController.updateQuickBooksPurchase(ctx)
-    );
-    quickBooksPurchaseRoutes.get("/quickbooks/purchase/:id", (ctx) =>
-        quickBooksPurchaseController.getQuickBooksPurchase(ctx)
-    );
-    quickBooksPurchaseRoutes.get("/quickbooks/purchases", (ctx) =>
-        quickBooksPurchaseController.getQuickBooksPurchasesForCompany(ctx)
-    );
+    PurchaseRoutes.post("/quickbooks/purchase", (ctx) => PurchaseController.createPurchase(ctx));
+    PurchaseRoutes.patch("/quickbooks/purchase/:id", (ctx) => PurchaseController.updatePurchase(ctx));
+    PurchaseRoutes.get("/quickbooks/purchase/:id", (ctx) => PurchaseController.getPurchase(ctx));
+    PurchaseRoutes.get("/quickbooks/purchases", (ctx) => PurchaseController.getPurchasesForCompany(ctx));
 
-    return quickBooksPurchaseRoutes;
+    return PurchaseRoutes;
 };

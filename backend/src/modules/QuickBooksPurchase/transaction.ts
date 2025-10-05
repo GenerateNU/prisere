@@ -5,54 +5,54 @@ import Boom, { paymentRequired } from "@hapi/boom";
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
 import {
-    CreateQuickBooksPurchaseDTO,
-    CreateQuickBooksPurchaseResponse,
-    GetCompanyQuickBooksPurchasesDTO,
-    GetCompanyQuickBooksPurchasesResponse,
-    GetQuickBooksPurchaseResponse,
-    PatchQuickBooksPurchaseDTO,
-    PatchQuickBooksPurchasesResponse,
+    CreatePurchaseDTO,
+    CreatePurchaseResponse,
+    GetCompanyPurchasesDTO,
+    GetCompanyPurchasesResponse,
+    GetPurchaseResponse,
+    PatchPurchaseDTO,
+    PatchPurchasesResponse,
 } from "./types";
 import { TypedResponse } from "hono/types";
-import { QuickBooksPurchase } from "../../entities/QuickBooksPurchase";
+import { Purchase } from "../../entities/Purchase";
 import { plainToClass } from "class-transformer";
 
-export interface IQuickBooksPurchaseTransaction {
-    updateQuickBooksPurchase(id: string, payload: PatchQuickBooksPurchaseDTO): Promise<QuickBooksPurchase>;
-    createQuickBooksPurchase(payload: CreateQuickBooksPurchaseDTO): Promise<QuickBooksPurchase>;
-    getQuickBooksPurchase(id: string): Promise<QuickBooksPurchase>;
-    getQuickBooksPurchasesForCompany(payload: GetCompanyQuickBooksPurchasesDTO): Promise<QuickBooksPurchase[]>;
+export interface IPurchaseTransaction {
+    updatePurchase(id: string, payload: PatchPurchaseDTO): Promise<Purchase>;
+    createPurchase(payload: CreatePurchaseDTO): Promise<Purchase>;
+    getPurchase(id: string): Promise<Purchase>;
+    getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<Purchase[]>;
 }
 
-export class QuickBooksPurchaseTransaction implements IQuickBooksPurchaseTransaction {
+export class PurchaseTransaction implements IPurchaseTransaction {
     private db: DataSource;
 
     constructor(db: DataSource) {
         this.db = db;
     }
 
-    async updateQuickBooksPurchase(id: string, payload: PatchQuickBooksPurchaseDTO): Promise<QuickBooksPurchase> {
-        const existingQBPurchase = await this.getQuickBooksPurchase(id);
+    async updatePurchase(id: string, payload: PatchPurchaseDTO): Promise<Purchase> {
+        const existingQBPurchase = await this.getPurchase(id);
 
         const newQBPurchase = {
             ...existingQBPurchase,
             ...payload,
         };
 
-        const dbEntry: QuickBooksPurchase = await this.db.manager.save(QuickBooksPurchase, newQBPurchase);
+        const dbEntry: Purchase = await this.db.manager.save(Purchase, newQBPurchase);
 
         return dbEntry;
     }
 
-    async createQuickBooksPurchase(payload: CreateQuickBooksPurchaseDTO): Promise<QuickBooksPurchase> {
-        const newQBPurchase = plainToClass(QuickBooksPurchase, payload);
-        const purchaseEntity = await this.db.manager.save(QuickBooksPurchase, newQBPurchase);
+    async createPurchase(payload: CreatePurchaseDTO): Promise<Purchase> {
+        const newQBPurchase = plainToClass(Purchase, payload);
+        const purchaseEntity = await this.db.manager.save(Purchase, newQBPurchase);
 
         return purchaseEntity;
     }
 
-    async getQuickBooksPurchase(id: string): Promise<QuickBooksPurchase> {
-        const existingQBPurchase = await this.db.manager.findOne(QuickBooksPurchase, {
+    async getPurchase(id: string): Promise<Purchase> {
+        const existingQBPurchase = await this.db.manager.findOne(Purchase, {
             where: {
                 id: id,
             },
@@ -64,10 +64,10 @@ export class QuickBooksPurchaseTransaction implements IQuickBooksPurchaseTransac
 
         return existingQBPurchase;
     }
-    async getQuickBooksPurchasesForCompany(payload: GetCompanyQuickBooksPurchasesDTO): Promise<QuickBooksPurchase[]> {
+    async getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<Purchase[]> {
         const { pageNumber, resultsPerPage } = payload;
         const numToSkip = resultsPerPage * pageNumber;
-        return await this.db.manager.find(QuickBooksPurchase, {
+        return await this.db.manager.find(Purchase, {
             skip: numToSkip,
             take: resultsPerPage,
         });

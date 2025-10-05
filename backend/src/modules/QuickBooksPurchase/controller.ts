@@ -1,35 +1,33 @@
 import { Context, TypedResponse } from "hono";
-import { IQuickBooksPurchaseService } from "./service";
+import { IPurchaseService } from "./service";
 import { withControllerErrorHandling } from "../../utilities/error";
 import { validate } from "uuid";
 import {
-    CreateQuickBooksPurchaseAPIResponse,
-    CreateQuickBooksPurchaseDTOSchema,
-    GetCompanyQuickBooksPurchasesAPIResponse,
-    GetQuickBooksPurchaseAPIResponse,
-    PatchQuickBooksPurchaseDTOSchema,
-    PatchQuickBooksPurchaseAPIResponse,
-    GetCompanyQuickBooksPurchasesDTOSchema,
+    CreatePurchaseAPIResponse,
+    CreatePurchaseDTOSchema,
+    GetCompanyPurchasesAPIResponse,
+    GetPurchaseAPIResponse,
+    PatchPurchaseDTOSchema,
+    PatchPurchaseAPIResponse,
+    GetCompanyPurchasesDTOSchema,
 } from "./types";
 
-export interface IQuickBooksPurchaseController {
-    updateQuickBooksPurchase(_ctx: Context): Promise<TypedResponse<PatchQuickBooksPurchaseAPIResponse> | Response>;
-    createQuickBooksPurchase(_ctx: Context): Promise<TypedResponse<CreateQuickBooksPurchaseAPIResponse> | Response>;
-    getQuickBooksPurchase(ctx: Context): Promise<TypedResponse<GetQuickBooksPurchaseAPIResponse> | Response>;
-    getQuickBooksPurchasesForCompany(
-        ctx: Context
-    ): Promise<TypedResponse<GetCompanyQuickBooksPurchasesAPIResponse> | Response>;
+export interface IPurchaseController {
+    updatePurchase(_ctx: Context): Promise<TypedResponse<PatchPurchaseAPIResponse> | Response>;
+    createPurchase(_ctx: Context): Promise<TypedResponse<CreatePurchaseAPIResponse> | Response>;
+    getPurchase(ctx: Context): Promise<TypedResponse<GetPurchaseAPIResponse> | Response>;
+    getPurchasesForCompany(ctx: Context): Promise<TypedResponse<GetCompanyPurchasesAPIResponse> | Response>;
 }
 
-export class QuickBooksPurchaseController implements IQuickBooksPurchaseController {
-    private quickBooksPurchaseService: IQuickBooksPurchaseService;
+export class PurchaseController implements IPurchaseController {
+    private PurchaseService: IPurchaseService;
 
-    constructor(service: IQuickBooksPurchaseService) {
-        this.quickBooksPurchaseService = service;
+    constructor(service: IPurchaseService) {
+        this.PurchaseService = service;
     }
 
-    updateQuickBooksPurchase = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<PatchQuickBooksPurchaseAPIResponse> | Response> => {
+    updatePurchase = withControllerErrorHandling(
+        async (ctx: Context): Promise<TypedResponse<PatchPurchaseAPIResponse> | Response> => {
             const id = ctx.req.param("id");
 
             if (!validate(id)) {
@@ -37,45 +35,41 @@ export class QuickBooksPurchaseController implements IQuickBooksPurchaseControll
             }
 
             const json = await ctx.req.json();
-            const payload = PatchQuickBooksPurchaseDTOSchema.parse(json);
-            const updatedQuickBooksPurchase = await this.quickBooksPurchaseService.updateQuickBooksPurchase(
-                id,
-                payload
-            );
-            return ctx.json(updatedQuickBooksPurchase, 201);
+            const payload = PatchPurchaseDTOSchema.parse(json);
+            const updatedPurchase = await this.PurchaseService.updatePurchase(id, payload);
+            return ctx.json(updatedPurchase, 201);
         }
     );
 
-    createQuickBooksPurchase = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<CreateQuickBooksPurchaseAPIResponse> | Response> => {
+    createPurchase = withControllerErrorHandling(
+        async (ctx: Context): Promise<TypedResponse<CreatePurchaseAPIResponse> | Response> => {
             const json = await ctx.req.json();
-            const payload = CreateQuickBooksPurchaseDTOSchema.parse(json);
-            const createdQuickBooksPurchase = await this.quickBooksPurchaseService.createQuickBooksPurchase(payload);
-            return ctx.json(createdQuickBooksPurchase, 201);
+            const payload = CreatePurchaseDTOSchema.parse(json);
+            const createdPurchase = await this.PurchaseService.createPurchase(payload);
+            return ctx.json(createdPurchase, 201);
         }
     );
 
-    getQuickBooksPurchase = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<GetQuickBooksPurchaseAPIResponse> | Response> => {
+    getPurchase = withControllerErrorHandling(
+        async (ctx: Context): Promise<TypedResponse<GetPurchaseAPIResponse> | Response> => {
             const id = ctx.req.param("id");
 
             if (!validate(id)) {
                 return ctx.json({ error: "Invalid company ID format" }, 400);
             }
 
-            const fetchedQuickBooksPurchase = await this.quickBooksPurchaseService.getQuickBooksPurchase(id);
-            return ctx.json(fetchedQuickBooksPurchase, 201);
+            const fetchedPurchase = await this.PurchaseService.getPurchase(id);
+            return ctx.json(fetchedPurchase, 201);
         }
     );
 
-    getQuickBooksPurchasesForCompany = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<GetCompanyQuickBooksPurchasesAPIResponse> | Response> => {
+    getPurchasesForCompany = withControllerErrorHandling(
+        async (ctx: Context): Promise<TypedResponse<GetCompanyPurchasesAPIResponse> | Response> => {
             //TODO: We need some way of passing the user's compmany ID with the session that is safe
             const json = await ctx.req.json();
-            const payload = GetCompanyQuickBooksPurchasesDTOSchema.parse(json);
-            const fetchedQuickBooksPurchases =
-                await this.quickBooksPurchaseService.getQuickBooksPurchasesForCompany(payload);
-            return ctx.json(fetchedQuickBooksPurchases, 201);
+            const payload = GetCompanyPurchasesDTOSchema.parse(json);
+            const fetchedPurchases = await this.PurchaseService.getPurchasesForCompany(payload);
+            return ctx.json(fetchedPurchases, 201);
         }
     );
 }

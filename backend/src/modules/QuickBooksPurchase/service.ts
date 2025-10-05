@@ -1,37 +1,32 @@
-import { IQuickBooksPurchaseTransaction } from "./transaction";
+import { IPurchaseTransaction } from "./transaction";
 import { withServiceErrorHandling } from "../../utilities/error";
 import {
-    CreateQuickBooksPurchaseDTO,
-    CreateQuickBooksPurchaseResponse,
-    GetCompanyQuickBooksPurchasesDTO,
-    GetCompanyQuickBooksPurchasesResponse,
-    GetQuickBooksPurchaseAPIResponse,
-    PatchQuickBooksPurchaseDTO,
-    PatchQuickBooksPurchasesResponse,
+    CreatePurchaseDTO,
+    CreatePurchaseResponse,
+    GetCompanyPurchasesDTO,
+    GetCompanyPurchasesResponse,
+    GetPurchaseAPIResponse,
+    PatchPurchaseDTO,
+    PatchPurchasesResponse,
 } from "./types";
 
-export interface IQuickBooksPurchaseService {
-    updateQuickBooksPurchase(
-        id: string,
-        payload: PatchQuickBooksPurchaseDTO
-    ): Promise<PatchQuickBooksPurchasesResponse>;
-    createQuickBooksPurchase(payload: CreateQuickBooksPurchaseDTO): Promise<CreateQuickBooksPurchaseResponse>;
-    getQuickBooksPurchase(id: string): Promise<GetQuickBooksPurchaseAPIResponse>;
-    getQuickBooksPurchasesForCompany(
-        payload: GetCompanyQuickBooksPurchasesDTO
-    ): Promise<GetCompanyQuickBooksPurchasesResponse>;
+export interface IPurchaseService {
+    updatePurchase(id: string, payload: PatchPurchaseDTO): Promise<PatchPurchasesResponse>;
+    createPurchase(payload: CreatePurchaseDTO): Promise<CreatePurchaseResponse>;
+    getPurchase(id: string): Promise<GetPurchaseAPIResponse>;
+    getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<GetCompanyPurchasesResponse>;
 }
 
-export class QuickBooksPurchaseService implements IQuickBooksPurchaseService {
-    private quickBooksPurchaseTransaction: IQuickBooksPurchaseTransaction;
+export class PurchaseService implements IPurchaseService {
+    private PurchaseTransaction: IPurchaseTransaction;
 
-    constructor(qbTransaction: IQuickBooksPurchaseTransaction) {
-        this.quickBooksPurchaseTransaction = qbTransaction;
+    constructor(qbTransaction: IPurchaseTransaction) {
+        this.PurchaseTransaction = qbTransaction;
     }
 
-    updateQuickBooksPurchase = withServiceErrorHandling(
-        async (id: string, payload: PatchQuickBooksPurchaseDTO): Promise<PatchQuickBooksPurchasesResponse> => {
-            const newQBPurchase = await this.quickBooksPurchaseTransaction.updateQuickBooksPurchase(id, payload);
+    updatePurchase = withServiceErrorHandling(
+        async (id: string, payload: PatchPurchaseDTO): Promise<PatchPurchasesResponse> => {
+            const newQBPurchase = await this.PurchaseTransaction.updatePurchase(id, payload);
 
             return {
                 comapnyId: newQBPurchase.companyId,
@@ -44,22 +39,20 @@ export class QuickBooksPurchaseService implements IQuickBooksPurchaseService {
         }
     );
 
-    createQuickBooksPurchase = withServiceErrorHandling(
-        async (payload: CreateQuickBooksPurchaseDTO): Promise<CreateQuickBooksPurchaseResponse> => {
-            const newQBPurchase = await this.quickBooksPurchaseTransaction.createQuickBooksPurchase(payload);
+    createPurchase = withServiceErrorHandling(async (payload: CreatePurchaseDTO): Promise<CreatePurchaseResponse> => {
+        const newQBPurchase = await this.PurchaseTransaction.createPurchase(payload);
 
-            return {
-                comapnyId: newQBPurchase.companyId,
-                id: newQBPurchase.id,
-                isRefund: newQBPurchase.isRefund,
-                quickBooksID: newQBPurchase.quickbooksId,
-                totalAmountCents: newQBPurchase.totalAmountCents,
-            };
-        }
-    );
+        return {
+            comapnyId: newQBPurchase.companyId,
+            id: newQBPurchase.id,
+            isRefund: newQBPurchase.isRefund,
+            quickBooksID: newQBPurchase.quickbooksId,
+            totalAmountCents: newQBPurchase.totalAmountCents,
+        };
+    });
 
-    getQuickBooksPurchase = withServiceErrorHandling(async (id: string): Promise<GetQuickBooksPurchaseAPIResponse> => {
-        const qbPurchase = await this.quickBooksPurchaseTransaction.getQuickBooksPurchase(id);
+    getPurchase = withServiceErrorHandling(async (id: string): Promise<GetPurchaseAPIResponse> => {
+        const qbPurchase = await this.PurchaseTransaction.getPurchase(id);
 
         return {
             dateCreated: qbPurchase.dateCreated,
@@ -72,9 +65,9 @@ export class QuickBooksPurchaseService implements IQuickBooksPurchaseService {
         };
     });
 
-    getQuickBooksPurchasesForCompany = withServiceErrorHandling(
-        async (payload: GetCompanyQuickBooksPurchasesDTO): Promise<GetCompanyQuickBooksPurchasesResponse> => {
-            const qbPurchases = await this.quickBooksPurchaseTransaction.getQuickBooksPurchasesForCompany(payload);
+    getPurchasesForCompany = withServiceErrorHandling(
+        async (payload: GetCompanyPurchasesDTO): Promise<GetCompanyPurchasesResponse> => {
+            const qbPurchases = await this.PurchaseTransaction.getPurchasesForCompany(payload);
 
             return qbPurchases.map((qbPurchase) => ({
                 comapnyId: qbPurchase.companyId,

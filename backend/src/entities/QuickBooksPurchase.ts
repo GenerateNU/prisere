@@ -11,7 +11,7 @@ import {
 import { Company } from "./Company.js";
 
 @Entity("quick_books_purchase")
-export class QuickBooksPurchase {
+export class Purchase {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
 
