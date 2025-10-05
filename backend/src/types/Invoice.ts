@@ -1,0 +1,50 @@
+import { z } from "zod";
+
+export const CreateOrUpdateInvoicesDTOSchema = z.array(
+    z.object({
+        companyId: z.string(),
+        quickbooksId: z.number().int().positive().optional(),
+        totalAmountCents: z.number().int().nonnegative(),
+        dateCreated: z.iso.datetime().default(new Date().toISOString()),
+    })
+);
+
+export const CreateOrUpdateInvoiceResponseSchema = z.array(
+    z.object({
+        id: z.string(),
+        companyId: z.string(),
+        quickbooksId: z.number().int().positive().optional(),
+        totalAmountCents: z.number().int().nonnegative(),
+        dateCreated: z.iso.datetime(),
+    })
+);
+
+export const GetInvoiceDTOSchema = z.object({
+    id: z.string().nonempty(),
+});
+
+export const GetInvoiceResponseSchema = z.object({
+    id: z.string(),
+    companyId: z.string(),
+    quickbooksId: z.number().int().positive().optional(),
+    totalAmountCents: z.number().int().nonnegative(),
+    dateCreated: z.string(),
+    lastUpdated: z.string(),
+});
+
+export const GetCompanyInvoicesDTOSchema = z.object({
+    companyId: z.string(),
+    pageNumber: z.number().optional().default(0),
+    resultsPerPage: z.number().optional().default(20),
+});
+
+export const GetCompanyInvoicesResponseSchema = z.array(GetInvoiceResponseSchema);
+
+//Controller Responses
+export type CreateOrUpdateInvoicesResponse = z.infer<typeof CreateOrUpdateInvoiceResponseSchema>;
+export type GetInvoiceResponse = z.infer<typeof GetInvoiceResponseSchema>;
+export type GetCompanyInvoicesResponse = z.infer<typeof GetCompanyInvoicesResponseSchema>;
+
+//Input types
+export type CreateOrUpdateInvoicesDTO = z.infer<typeof CreateOrUpdateInvoicesDTOSchema>;
+export type GetCompanyInvoicesDTO = z.infer<typeof GetCompanyInvoicesDTOSchema>;
