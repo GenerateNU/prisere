@@ -16,7 +16,7 @@ export const config = {
 async function checkAuthenticated(request: NextRequest){
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser()
-  if ((error || !data?.user) && request.nextUrl.pathname !== '/login') {
+  if ((error || !data?.user) && (request.nextUrl.pathname !== '(/login' || '/register')) {
     const loginUrl = new URL('/login', request.url);
     return NextResponse.redirect(loginUrl);
   }
