@@ -1,5 +1,6 @@
 'use client'
 import { login, signup } from '@/actions/auth'
+import { Input } from '@/components/ui/input'
 
 
 export default function RegisterPage() {
@@ -15,7 +16,7 @@ export default function RegisterPage() {
               <label htmlFor="email" className="block text-sm font-medium text-black">
                 Email
               </label>
-              <input 
+              <Input
                 id="email" 
                 name="email" 
                 type="email" 
@@ -27,7 +28,7 @@ export default function RegisterPage() {
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
-              <input 
+              <Input
                 id="password" 
                 name="password" 
                 type="password" 

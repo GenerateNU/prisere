@@ -41,6 +41,11 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --height-xs: 2vh;
+  --height-sm: 5vh;
+  --height-md: 10vh;
+  --height-lg: 15vh;
+  --height-xl: 20vh;
 }
 
 :root {
