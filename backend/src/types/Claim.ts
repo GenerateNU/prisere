@@ -10,7 +10,7 @@ export const ClaimSchema = z.object({
     updatedAt: z.union([z.iso.datetime(), z.date()]).optional(),
     companyId: z.string(),
     disasterId: z.string(),
-})
+});
 
 const stringClaimSchema = z.object({
     id: z.string().nonempty(),
@@ -27,23 +27,23 @@ export const CreateClaimDTOSchema = z.object({
     disasterId: z.string(),
 });
 
-export const CreateClaimResponseSchema = stringClaimSchema
+export const CreateClaimResponseSchema = stringClaimSchema;
 
 /* GET */
 export const GetClaimsByCompanyIdDTOSchema = z.object({
     companyId: z.string().nonempty(),
-})
+});
 
 export const GetClaimsByCompanyIdResponseSchema = z.array(ClaimSchema);
 
 /* DELETE */
 export const DeleteClaimDTOSchema = z.object({
     id: z.string().nonempty(),
-})
+});
 
 export const DeleteClaimResponseSchema = z.object({
     id: z.string().nonempty(),
-})
+});
 
 /* Zod types for payload validation */
 export type Claim = z.infer<typeof ClaimSchema>;

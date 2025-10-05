@@ -16,4 +16,4 @@ export const claimRoutes = (db: DataSource): Hono => {
     claim.delete("/:id", (ctx) => claimController.deleteClaim(ctx));
 
     return claim;
-}
+};

@@ -1,9 +1,14 @@
 import { DataSource } from "typeorm";
 import { Claim } from "../../entities/Claim";
-import { CreateClaimDTO, DeleteClaimDTO, GetClaimsByCompanyIdDTO as GetClaimsByCompanyIdDTO, DeleteClaimResponse, GetClaimsByCompanyIdResponse } from "../../types/Claim";
+import {
+    CreateClaimDTO,
+    DeleteClaimDTO,
+    GetClaimsByCompanyIdDTO as GetClaimsByCompanyIdDTO,
+    DeleteClaimResponse,
+    GetClaimsByCompanyIdResponse,
+} from "../../types/Claim";
 import { logMessageToFile } from "../../utilities/logger";
 import { plainToClass } from "class-transformer";
-
 
 export interface IClaimTransaction {
     /**
@@ -50,7 +55,9 @@ export class ClaimTransaction implements IClaimTransaction {
 
     async getClaimsByCompanyId(payload: GetClaimsByCompanyIdDTO): Promise<GetClaimsByCompanyIdResponse | null> {
         try {
-            const result: GetClaimsByCompanyIdResponse | null = await this.db.getRepository(Claim).find({ where: { companyId: payload.companyId } });
+            const result: GetClaimsByCompanyIdResponse | null = await this.db
+                .getRepository(Claim)
+                .find({ where: { companyId: payload.companyId } });
 
             return result;
         } catch (error) {
@@ -62,8 +69,8 @@ export class ClaimTransaction implements IClaimTransaction {
     async deleteClaim(payload: DeleteClaimDTO): Promise<DeleteClaimResponse | null> {
         try {
             const result = await this.db.getRepository(Claim).delete({ id: payload.id });
-            if (result.affected == 1) {
-                return { id: payload.id }
+            if (result.affected === 1) {
+                return { id: payload.id };
             } else {
                 // TypeORM does not throw an error if the enity to be deleted is not found
                 logMessageToFile(`Transaction error: claim not found`);
@@ -74,5 +81,4 @@ export class ClaimTransaction implements IClaimTransaction {
             return null;
         }
     }
-
 }

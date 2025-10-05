@@ -3,7 +3,12 @@ import { DataSource } from "typeorm";
 import { ClaimTransaction, IClaimTransaction } from "../claim/transaction";
 import { ClaimService, IClaimService } from "../claim/service";
 import { ClaimController, IClaimController } from "../claim/controller";
-import { CreateClaimDTOSchema, CreateClaimResponseSchema, DeleteClaimDTOSchema, DeleteClaimResponseSchema, GetClaimsByCompanyIdDTOSchema, GetClaimsByCompanyIdResponseSchema } from "../../types/Claim";
+import {
+    CreateClaimDTOSchema,
+    CreateClaimResponseSchema,
+    DeleteClaimDTOSchema,
+    DeleteClaimResponseSchema /* GetClaimsByCompanyIdDTOSchema, GetClaimsByCompanyIdResponseSchema */,
+} from "../../types/Claim";
 import { openApiErrorCodes } from "../../utilities/error";
 
 export const createOpenAPIClaimRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
@@ -15,7 +20,7 @@ export const createOpenAPIClaimRoutes = (openApi: OpenAPIHono, db: DataSource): 
     //openApi.openapi(getClaimsByCompanyIdRoute, (ctx) => claimController.getClaimByCompanyId(ctx));
     openApi.openapi(deleteClaimRoute, (ctx) => claimController.deleteClaim(ctx));
     return openApi;
-}
+};
 
 const createClaimRoute = createRoute({
     method: "post",
@@ -44,7 +49,6 @@ const createClaimRoute = createRoute({
     },
     tags: ["Claims"],
 });
-
 /*
     const getClaimsByCompanyIdRoute = createRoute({
         method: "get",

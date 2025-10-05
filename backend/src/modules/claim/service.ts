@@ -1,5 +1,11 @@
 import { Claim } from "../../entities/Claim";
-import { CreateClaimDTO, DeleteClaimDTO, DeleteClaimResponse, GetClaimsByCompanyIdDTO, GetClaimsByCompanyIdResponse } from "../../types/Claim";
+import {
+    CreateClaimDTO,
+    DeleteClaimDTO,
+    DeleteClaimResponse,
+    GetClaimsByCompanyIdDTO,
+    GetClaimsByCompanyIdResponse,
+} from "../../types/Claim";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { IClaimTransaction } from "./transaction";
 
@@ -24,26 +30,27 @@ export class ClaimService implements IClaimService {
             throw new Error("Failed to create claim");
         }
         return claim;
-    })
+    });
 
-    getClaimsByCompanyId = withServiceErrorHandling(async (payload: GetClaimsByCompanyIdDTO): Promise<GetClaimsByCompanyIdResponse> => {
-        const claim = await this.claimTransaction.getClaimsByCompanyId({
-            ...payload,
-        })
-        if (!claim) {
-            throw new Error("Claim not found");
+    getClaimsByCompanyId = withServiceErrorHandling(
+        async (payload: GetClaimsByCompanyIdDTO): Promise<GetClaimsByCompanyIdResponse> => {
+            const claim = await this.claimTransaction.getClaimsByCompanyId({
+                ...payload,
+            });
+            if (!claim) {
+                throw new Error("Claim not found");
+            }
+            return claim;
         }
-        return claim;
-    })
+    );
 
     deleteClaim = withServiceErrorHandling(async (payload: DeleteClaimDTO): Promise<DeleteClaimResponse> => {
         const claim = await this.claimTransaction.deleteClaim({
             ...payload,
-        })
+        });
         if (!claim) {
             throw new Error("Failed to delete claim");
         }
         return claim;
-    })
+    });
 }
-

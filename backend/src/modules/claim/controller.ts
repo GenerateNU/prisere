@@ -1,6 +1,11 @@
 import { Context, TypedResponse } from "hono";
 import { ControllerResponse } from "../../utilities/response";
-import { GetClaimsByCompanyIdResponse, CreateClaimResponse, CreateClaimDTOSchema, DeleteClaimResponse } from "../../types/Claim";
+import {
+    GetClaimsByCompanyIdResponse,
+    CreateClaimResponse,
+    CreateClaimDTOSchema,
+    DeleteClaimResponse,
+} from "../../types/Claim";
 import { withControllerErrorHandling } from "../../utilities/error";
 import { validate } from "uuid";
 import { IClaimService } from "./service";
