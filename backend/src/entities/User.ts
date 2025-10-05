@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, OneToMany, OneToOne } from "typeorm";
 import { Company } from "./Company.js";
-import { DisasterNotification } from "./DisasterNotification.js";
+import { DisasterNotification } from "./DisasterNotification";
 import type { Relation } from "typeorm";
 
 @Entity("user")
@@ -17,7 +17,7 @@ export class User {
     @Column({ nullable: true })
     email?: string;
 
-    @ManyToOne(() => Company, { nullable: true })
+    @OneToOne("Company", (company: Company) => company.user, { nullable: true })
     @JoinColumn({ name: "companyId" })
     company?: Relation<Company>;
 

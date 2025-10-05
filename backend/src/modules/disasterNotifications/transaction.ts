@@ -178,7 +178,6 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
 
     async deleteNotification(notificationId: string): Promise<boolean> {
         const existing = await this.db.getRepository(DisasterNotification).findOne({ where: { id: notificationId } });
-        console.log("EXISTING: ", existing);
         if (!existing) {
             throw Boom.notFound("ERROR: Notification ID not found");
         }
