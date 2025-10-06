@@ -25,15 +25,15 @@ export class PurchaseService implements IPurchaseService {
 
     updatePurchase = withServiceErrorHandling(
         async (payload: PatchPurchaseDTO): Promise<CreateOrPatchPurchaseResponse> => {
-            const newQBPurchase = await this.PurchaseTransaction.updatePurchase(payload.purchaseId, payload);
+            const newPurchase = await this.PurchaseTransaction.updatePurchase(payload.purchaseId, payload);
 
             return {
-                companyId: newQBPurchase.companyId,
-                dateCreated: newQBPurchase.dateCreated,
-                id: newQBPurchase.id,
-                isRefund: newQBPurchase.isRefund,
-                quickBooksId: newQBPurchase.quickBooksId,
-                totalAmountCents: newQBPurchase.totalAmountCents,
+                companyId: newPurchase.companyId,
+                dateCreated: newPurchase.dateCreated.toUTCString(),
+                id: newPurchase.id,
+                isRefund: newPurchase.isRefund,
+                quickBooksId: newPurchase.quickBooksId,
+                totalAmountCents: newPurchase.totalAmountCents,
             };
         }
     );
@@ -48,7 +48,7 @@ export class PurchaseService implements IPurchaseService {
                 isRefund: newPurchase.isRefund,
                 quickBooksId: newPurchase.quickBooksId,
                 totalAmountCents: newPurchase.totalAmountCents,
-                dateCreated: newPurchase.dateCreated,
+                dateCreated: newPurchase.dateCreated.toUTCString(),
             };
         }
     );
@@ -57,8 +57,8 @@ export class PurchaseService implements IPurchaseService {
         const qbPurchase = await this.PurchaseTransaction.getPurchase(id);
 
         return {
-            dateCreated: qbPurchase.dateCreated,
-            lastUpdated: qbPurchase.dateCreated,
+            dateCreated: qbPurchase.dateCreated.toUTCString(),
+            lastUpdated: qbPurchase.dateCreated.toUTCString(),
             companyId: qbPurchase.companyId,
             id: qbPurchase.id,
             isRefund: qbPurchase.isRefund,
@@ -73,7 +73,7 @@ export class PurchaseService implements IPurchaseService {
 
             return qbPurchases.map((qbPurchase) => ({
                 companyId: qbPurchase.companyId,
-                dateCreated: qbPurchase.dateCreated,
+                dateCreated: qbPurchase.dateCreated.toUTCString(),
                 id: qbPurchase.id,
                 isRefund: qbPurchase.isRefund,
                 quickBooksID: qbPurchase.quickBooksId,

@@ -17,13 +17,13 @@ export const PatchPurchaseDTOSchema = z.object({
     isRefund: z.boolean().optional(),
 });
 
-export const createOrPatchPurchasesResponseSchema = z.object({
+export const CreateOrPatchPurchasesResponseSchema = z.object({
     id: z.string().nonempty(),
     companyId: z.string().nonempty(),
     quickBooksId: z.number(),
     totalAmountCents: z.number(),
     isRefund: z.boolean(),
-    dateCreated: z.date(),
+    dateCreated: z.string(),
 });
 
 export const CreateOrPatchPurchaseDTOUnionSchema = z.union([CreatePurchaseDTOSchema, PatchPurchaseDTOSchema]);
@@ -34,8 +34,8 @@ export const GetPurchasesResponseSchema = z.object({
     quickBooksId: z.number(),
     totalAmountCents: z.number(),
     isRefund: z.boolean(),
-    dateCreated: z.date(),
-    lastUpdated: z.date(),
+    dateCreated: z.string(),
+    lastUpdated: z.string(),
 });
 
 //Get a list of purchases given the company ID
@@ -52,18 +52,18 @@ export const GetCompanyPurchasesResponseSchema = z.array(
         quickBooksID: z.number().optional(),
         totalAmountCents: z.number(),
         isRefund: z.boolean(),
-        dateCreated: z.date(),
+        dateCreated: z.string(),
     })
 );
 
 //Controller Responses
-export type CreateOrPatchPurchaseResponse = z.infer<typeof createOrPatchPurchasesResponseSchema>;
+export type CreateOrPatchPurchaseResponse = z.infer<typeof CreateOrPatchPurchasesResponseSchema>;
 export type GetPurchaseResponse = z.infer<typeof GetPurchasesResponseSchema>;
 export type GetCompanyPurchasesResponse = z.infer<typeof GetCompanyPurchasesResponseSchema>;
 
 //API Response Schemas
 export const CreateOrPatchPurchaseAPIResponseSchema = z.union([
-    createOrPatchPurchasesResponseSchema,
+    CreateOrPatchPurchasesResponseSchema,
     ErrorResponseSchema,
 ]);
 

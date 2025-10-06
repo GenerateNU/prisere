@@ -4,9 +4,9 @@ import { z } from "zod";
 import {
     CreateOrPatchPurchaseDTOUnionSchema,
     GetCompanyPurchasesDTOSchema,
-    CreateOrPatchPurchaseAPIResponseSchema,
-    GetCompanyPurchaseAPIResponseSchema,
-    GetPurchaseAPIResponseSchema,
+    CreateOrPatchPurchasesResponseSchema,
+    GetPurchasesResponseSchema,
+    GetCompanyPurchasesResponseSchema,
 } from "../../modules/purchase/types";
 import { IPurchaseController, PurchaseController } from "../purchase/controller";
 import { IPurchaseService, PurchaseService } from "../purchase/service";
@@ -47,7 +47,7 @@ const createOrUpdatePurchaseRoute = createRoute({
         201: {
             content: {
                 "application/json": {
-                    schema: CreateOrPatchPurchaseAPIResponseSchema,
+                    schema: CreateOrPatchPurchasesResponseSchema,
                 },
             },
             description: "Purchase created successfully",
@@ -55,7 +55,7 @@ const createOrUpdatePurchaseRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: CreateOrPatchPurchaseAPIResponseSchema,
+                    schema: CreateOrPatchPurchasesResponseSchema,
                 },
             },
             description: "Purchase updated successfully",
@@ -80,7 +80,7 @@ const getPurchaseRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: GetPurchaseAPIResponseSchema,
+                    schema: GetPurchasesResponseSchema,
                 },
             },
             description: "Successful fetch of a purchase from the database",
@@ -105,7 +105,7 @@ const getPurchasesForCompanyRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: GetCompanyPurchaseAPIResponseSchema,
+                    schema: GetCompanyPurchasesResponseSchema,
                 },
             },
             description: "Successful fetch of company purchases from the database",

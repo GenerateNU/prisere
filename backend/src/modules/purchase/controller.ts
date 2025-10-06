@@ -11,11 +11,16 @@ import {
     PatchPurchaseDTO,
     CreatePurchaseDTO,
 } from "./types";
+import { ControllerResponse } from "../../utilities/response";
 
 export interface IPurchaseController {
-    createOrUpdatePurchase(_ctx: Context): Promise<TypedResponse<CreateOrPatchPurchaseAPIResponse> | Response>;
-    getPurchase(ctx: Context): Promise<TypedResponse<GetPurchaseAPIResponse> | Response>;
-    getPurchasesForCompany(ctx: Context): Promise<TypedResponse<GetCompanyPurchasesAPIResponse> | Response>;
+    createOrUpdatePurchase(_ctx: Context): ControllerResponse<TypedResponse<CreateOrPatchPurchaseAPIResponse>>;
+    getPurchase(ctx: Context): ControllerResponse<TypedResponse<GetPurchaseAPIResponse>>;
+    getPurchasesForCompany(
+        ctx: Context
+    ): ControllerResponse<
+        TypedResponse<GetCompanyPurchasesAPIResponse, 200> | TypedResponse<GetCompanyPurchasesAPIResponse, 201>
+    >;
 }
 
 export class PurchaseController implements IPurchaseController {
@@ -26,7 +31,11 @@ export class PurchaseController implements IPurchaseController {
     }
 
     createOrUpdatePurchase = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<CreateOrPatchPurchaseAPIResponse> | Response> => {
+        async (
+            ctx: Context
+        ): ControllerResponse<
+            TypedResponse<CreateOrPatchPurchaseAPIResponse, 201> | TypedResponse<CreateOrPatchPurchaseAPIResponse, 200>
+        > => {
             const json = await ctx.req.json();
             const payload = CreateOrPatchPurchaseDTOUnionSchema.parse(json);
 
@@ -47,7 +56,7 @@ export class PurchaseController implements IPurchaseController {
     );
 
     getPurchase = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<GetPurchaseAPIResponse> | Response> => {
+        async (ctx: Context): ControllerResponse<TypedResponse<GetPurchaseAPIResponse, 200>> => {
             const id = ctx.req.param("id");
 
             if (!validate(id)) {
@@ -60,7 +69,7 @@ export class PurchaseController implements IPurchaseController {
     );
 
     getPurchasesForCompany = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<GetCompanyPurchasesAPIResponse> | Response> => {
+        async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyPurchasesAPIResponse, 200>> => {
             const queryParams = {
                 companyId: ctx.req.query("companyId"),
                 pageNumber: ctx.req.query("pageNumber") ? Number(ctx.req.query("pageNumber")) : undefined,
