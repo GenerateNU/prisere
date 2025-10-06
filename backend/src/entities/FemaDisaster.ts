@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryColumn, OneToMany } from "typeorm";
-import { DisasterNotification } from "./DisasterNotification.js";
+import { DisasterNotification } from "./DisasterNotification";
 
 @Entity()
 export class FemaDisaster {

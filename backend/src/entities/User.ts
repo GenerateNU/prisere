@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
-import { Company } from "./Company.js";
-import { DisasterNotification } from "./DisasterNotification.js";
+import { Company } from "./Company";
+import { DisasterNotification } from "./DisasterNotification";
 import type { Relation } from "typeorm";
 
 @Entity("user")
