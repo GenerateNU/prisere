@@ -2,7 +2,7 @@ import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { z } from "zod";
 import {
-    CreateOrPatchPurchaseDTO,
+    CreateOrPatchPurchaseDTOUnionSchema,
     createOrPatchPurchasesResponseSchema,
     GetPurchasesResponseSchema,
     GetCompanyPurchasesDTOSchema,
@@ -38,7 +38,7 @@ const createOrUpdatePurchaseRoute = createRoute({
         body: {
             content: {
                 "application/json": {
-                    schema: CreateOrPatchPurchaseDTO,
+                    schema: CreateOrPatchPurchaseDTOUnionSchema,
                 },
             },
         },

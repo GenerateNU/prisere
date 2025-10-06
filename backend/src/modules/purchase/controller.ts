@@ -7,7 +7,7 @@ import {
     GetPurchaseAPIResponse,
     GetCompanyPurchasesDTOSchema,
     CreateOrPatchPurchaseAPIResponse,
-    CreateOrPatchPurchaseDTO,
+    CreateOrPatchPurchaseDTOUnionSchema,
     PatchPurchaseDTO,
     CreatePurchaseDTO,
 } from "./types";
@@ -28,7 +28,7 @@ export class PurchaseController implements IPurchaseController {
     createOrUpdatePurchase = withControllerErrorHandling(
         async (ctx: Context): Promise<TypedResponse<CreateOrPatchPurchaseAPIResponse> | Response> => {
             const json = await ctx.req.json();
-            const payload = CreateOrPatchPurchaseDTO.parse(json);
+            const payload = CreateOrPatchPurchaseDTOUnionSchema.parse(json);
 
             if ("purchaseId" in payload) {
                 if (!validate(payload.purchaseId)) {
