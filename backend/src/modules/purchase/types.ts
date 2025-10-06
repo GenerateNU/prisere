@@ -26,7 +26,7 @@ export const createOrPatchPurchasesResponseSchema = z.object({
     dateCreated: z.date(),
 });
 
-export const CreateOrPatchPurchaseDTO = z.union([CreatePurchaseDTOSchema, PatchPurchaseDTOSchema]);
+export const CreateOrPatchPurchaseDTOUnionSchema = z.union([CreatePurchaseDTOSchema, PatchPurchaseDTOSchema]);
 
 export const GetPurchasesResponseSchema = z.object({
     id: z.string().nonempty(),
@@ -75,7 +75,7 @@ export const GetCompanyPurchaseAPIResponseSchema = z.union([GetCompanyPurchasesR
 export type CreatePurchaseDTO = z.infer<typeof CreatePurchaseDTOSchema>;
 export type PatchPurchaseDTO = z.infer<typeof PatchPurchaseDTOSchema>;
 
-export type CreateOrPatchPurchaseDTO = z.infer<typeof CreateOrPatchPurchaseDTO>;
+export type CreateOrPatchPurchaseDTO = z.infer<typeof CreateOrPatchPurchaseDTOUnionSchema>;
 export type GetCompanyPurchasesDTO = z.infer<typeof GetCompanyPurchasesDTOSchema>;
 
 //Zod types for payload validation

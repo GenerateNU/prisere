@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { CreatePurchaseDTO, GetCompanyPurchasesDTO, GetCompanyPurchasesResponse } from "../../modules/purchase/types";
+import { CreatePurchaseDTO, GetCompanyPurchasesResponse } from "../../modules/purchase/types";
 
 describe("GET /purchases", () => {
     let app: Hono;
