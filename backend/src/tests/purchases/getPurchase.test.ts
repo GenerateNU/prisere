@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
+import { CreatePurchaseDTO } from "../../modules/purchase/types";
 
 describe("GET /purchases/:id", () => {
     let app: Hono;
@@ -17,24 +18,51 @@ describe("GET /purchases/:id", () => {
         backup.restore();
     });
 
-    test("GET /purchases/:id - Valid Purchase ID", async () => {
-        // First create a purchase to retrieve
-        const createBody = {
-            companyId: "company-123",
-            quickBooksID: 12345,
-            totalAmountCents: 50000,
-            isRefund: false,
+    const createCompany = async () => {
+        const companyRequest = {
+            name: "Cool Company",
         };
 
-        const createResponse = await app.request("/purchases", {
+        const createCompanyResponse = await app.request("/companies", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(createBody),
+            body: JSON.stringify(companyRequest),
         });
 
-        const createdPurchase = await createResponse.json();
+        return await createCompanyResponse.json();
+    };
+
+    const createPurchase = async (payload?: Partial<CreatePurchaseDTO>) => {
+        const createdCompany = await createCompany();
+        const requestBody = {
+            companyId: createdCompany.id,
+            quickBooksId: 12345,
+            totalAmountCents: 50000,
+            ...payload,
+        };
+
+        const response = await app.request("/purchases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        return await response.json();
+    };
+
+    test("GET /purchases/:id - Valid Purchase ID", async () => {
+        // First create a purchase to retrieve
+        const createBody = {
+            quickBooksId: 12345,
+            totalAmountCents: 50000,
+            isRefund: false,
+        };
+
+        const createdPurchase = await createPurchase(createBody);
 
         // Now retrieve the purchase
         const response = await app.request(`/purchases/${createdPurchase.id}`, {
@@ -44,8 +72,7 @@ describe("GET /purchases/:id", () => {
         expect(response.status).toBe(200);
         const body = await response.json();
         expect(body.id).toBe(createdPurchase.id);
-        expect(body.companyId).toBe(createBody.companyId);
-        expect(body.quickBooksID).toBe(createBody.quickBooksID);
+        expect(body.quickBooksId).toBe(createBody.quickBooksId);
         expect(body.totalAmountCents).toBe(createBody.totalAmountCents);
         expect(body.isRefund).toBe(createBody.isRefund);
         expect(body.dateCreated).toBeDefined();
@@ -55,21 +82,12 @@ describe("GET /purchases/:id", () => {
     test("GET /purchases/:id - Valid Purchase ID with Refund", async () => {
         // Create a refund purchase
         const createBody = {
-            companyId: "company-456",
             quickBooksID: 67890,
             totalAmountCents: 25000,
             isRefund: true,
         };
 
-        const createResponse = await app.request("/purchases", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(createBody),
-        });
-
-        const createdPurchase = await createResponse.json();
+        const createdPurchase = await createPurchase(createBody);
 
         // Retrieve the purchase
         const response = await app.request(`/purchases/${createdPurchase.id}`, {
@@ -82,7 +100,7 @@ describe("GET /purchases/:id", () => {
     });
 
     test("GET /purchases/:id - Non-Existent Purchase ID", async () => {
-        const response = await app.request("/purchases/non-existent-id-12345", {
+        const response = await app.request("/purchases/111e99a6-d082-4327-9843-97fd228d4d37", {
             method: "GET",
         });
 
@@ -94,7 +112,6 @@ describe("GET /purchases/:id", () => {
             method: "GET",
         });
 
-        // This might return 404 or 405 depending on routing
         expect([404, 405]).toContain(response.status);
     });
 

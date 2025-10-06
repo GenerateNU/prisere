@@ -30,25 +30,19 @@ export class PurchaseController implements IPurchaseController {
             const json = await ctx.req.json();
             const payload = CreateOrPatchPurchaseDTO.parse(json);
 
-            let updatedPurchase;
-            if ("id" in payload) {
-                console.log("UPDATING an exiasting purchase");
-
-                const id = ctx.req.param("id");
-
-                if (!validate(id)) {
+            if ("purchaseId" in payload) {
+                if (!validate(payload.purchaseId)) {
                     return ctx.json({ error: "Invalid company ID format" }, 400);
                 }
 
                 const typedPayload: PatchPurchaseDTO = payload as PatchPurchaseDTO;
-                updatedPurchase = await this.PurchaseService.updatePurchase(id, typedPayload);
+                const updatedPurchase = await this.PurchaseService.updatePurchase(typedPayload);
+                return ctx.json(updatedPurchase, 200);
             } else {
-                console.log("Creating a new purchase");
                 const typedPayload: CreatePurchaseDTO = payload as CreatePurchaseDTO;
-                updatedPurchase = await this.PurchaseService.createPurchase(typedPayload);
+                const newPurchase = await this.PurchaseService.createPurchase(typedPayload);
+                return ctx.json(newPurchase, 201);
             }
-
-            return ctx.json(updatedPurchase, 201);
         }
     );
 
@@ -61,17 +55,25 @@ export class PurchaseController implements IPurchaseController {
             }
 
             const fetchedPurchase = await this.PurchaseService.getPurchase(id);
-            return ctx.json(fetchedPurchase, 201);
+            return ctx.json(fetchedPurchase, 200);
         }
     );
 
     getPurchasesForCompany = withControllerErrorHandling(
         async (ctx: Context): Promise<TypedResponse<GetCompanyPurchasesAPIResponse> | Response> => {
-            //TODO: We need some way of passing the user's compmany ID with the session that is safe
-            const json = await ctx.req.json();
-            const payload = GetCompanyPurchasesDTOSchema.parse(json);
+            const queryParams = {
+                companyId: ctx.req.query("companyId"),
+                pageNumber: ctx.req.query("pageNumber") ? Number(ctx.req.query("pageNumber")) : undefined,
+                resultsPerPage: ctx.req.query("resultsPerPage") ? Number(ctx.req.query("resultsPerPage")) : undefined,
+            };
+
+            if (!validate(queryParams.companyId)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
+
+            const payload = GetCompanyPurchasesDTOSchema.parse(queryParams);
             const fetchedPurchases = await this.PurchaseService.getPurchasesForCompany(payload);
-            return ctx.json(fetchedPurchases, 201);
+            return ctx.json(fetchedPurchases, 200);
         }
     );
 }

@@ -95,7 +95,7 @@ const getPurchaseRoute = createRoute({
 
 const getPurchasesForCompanyRoute = createRoute({
     method: "get",
-    path: "/purchases/mycompany",
+    path: "/purchases/",
     summary: "Fetches all purchases for a company",
     description: "Retrieves a paginated list of purchases for the specified company",
     request: {

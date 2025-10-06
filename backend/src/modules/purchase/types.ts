@@ -3,7 +3,7 @@ import { ErrorResponseSchema } from "../../types/Utils";
 
 //Create a new quick books purchase
 export const CreatePurchaseDTOSchema = z.object({
-    companyId: z.string(),
+    companyId: z.string().nonempty(),
     quickBooksId: z.number(),
     totalAmountCents: z.number(),
     isRefund: z.boolean().optional().default(false),
@@ -11,15 +11,15 @@ export const CreatePurchaseDTOSchema = z.object({
 
 //Patch existing quick books purchase
 export const PatchPurchaseDTOSchema = z.object({
-    purchaseID: z.string(),
+    purchaseId: z.string().nonempty(),
     quickBooksId: z.number().optional(),
     totalAmountCents: z.number().optional(),
     isRefund: z.boolean().optional(),
 });
 
 export const createOrPatchPurchasesResponseSchema = z.object({
-    id: z.string(),
-    companyId: z.string(),
+    id: z.string().nonempty(),
+    companyId: z.string().nonempty(),
     quickBooksId: z.number(),
     totalAmountCents: z.number(),
     isRefund: z.boolean(),
@@ -29,8 +29,8 @@ export const createOrPatchPurchasesResponseSchema = z.object({
 export const CreateOrPatchPurchaseDTO = z.union([CreatePurchaseDTOSchema, PatchPurchaseDTOSchema]);
 
 export const GetPurchasesResponseSchema = z.object({
-    id: z.string(),
-    companyId: z.string(),
+    id: z.string().nonempty(),
+    companyId: z.string().nonempty(),
     quickBooksId: z.number(),
     totalAmountCents: z.number(),
     isRefund: z.boolean(),
@@ -40,16 +40,16 @@ export const GetPurchasesResponseSchema = z.object({
 
 //Get a list of purchases given the company ID
 export const GetCompanyPurchasesDTOSchema = z.object({
-    companyId: z.number(), //This is bad
-    pageNumber: z.number().optional().default(0),
-    resultsPerPage: z.number().optional().default(20),
+    companyId: z.string().nonempty(), //This is bad
+    pageNumber: z.number().gte(0).optional().default(0),
+    resultsPerPage: z.number().gt(0).optional().default(20),
 });
 
 export const GetCompanyPurchasesResponseSchema = z.array(
     z.object({
-        id: z.string(),
-        companyId: z.string(),
-        quickBooksID: z.number(),
+        id: z.string().nonempty(),
+        companyId: z.string().nonempty(),
+        quickBooksID: z.number().optional(),
         totalAmountCents: z.number(),
         isRefund: z.boolean(),
         dateCreated: z.date(),

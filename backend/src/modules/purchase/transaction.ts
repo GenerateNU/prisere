@@ -20,14 +20,18 @@ export class PurchaseTransaction implements IPurchaseTransaction {
     }
 
     async updatePurchase(id: string, payload: PatchPurchaseDTO): Promise<Purchase> {
-        const existingQBPurchase = await this.getPurchase(id);
+        const existingPurchase = await this.getPurchase(id);
 
-        const newQBPurchase = {
-            ...existingQBPurchase,
+        if (existingPurchase === null) {
+            throw Boom.notFound("Unable to find the the given purchase.");
+        }
+
+        const newPurchase = {
+            ...existingPurchase,
             ...payload,
         };
 
-        const dbEntry: Purchase = await this.db.manager.save(Purchase, newQBPurchase);
+        const dbEntry: Purchase = await this.db.manager.save(Purchase, newPurchase);
 
         return dbEntry;
     }
@@ -41,8 +45,8 @@ export class PurchaseTransaction implements IPurchaseTransaction {
             },
         });
 
-        if (!existingCompany) {
-            Boom.notFound("Unable to find the given company!");
+        if (existingCompany === null) {
+            throw Boom.notFound("Unable to find the given company!");
         }
 
         const purchaseEntity = await this.db.manager.save(Purchase, newPurchase);
@@ -63,12 +67,17 @@ export class PurchaseTransaction implements IPurchaseTransaction {
 
         return existingQBPurchase;
     }
+
     async getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<Purchase[]> {
-        const { pageNumber, resultsPerPage } = payload;
+        const { companyId, pageNumber, resultsPerPage } = payload;
+
         const numToSkip = resultsPerPage * pageNumber;
-        return await this.db.manager.find(Purchase, {
-            skip: numToSkip,
-            take: resultsPerPage,
-        });
+        return (
+            (await this.db.manager.find(Purchase, {
+                where: { companyId: companyId },
+                skip: numToSkip,
+                take: resultsPerPage,
+            })) || []
+        );
     }
 }

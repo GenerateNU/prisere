@@ -10,7 +10,7 @@ import {
 } from "./types";
 
 export interface IPurchaseService {
-    updatePurchase(id: string, payload: PatchPurchaseDTO): Promise<CreateOrPatchPurchaseResponse>;
+    updatePurchase(payload: PatchPurchaseDTO): Promise<CreateOrPatchPurchaseResponse>;
     createPurchase(payload: CreatePurchaseDTO): Promise<CreateOrPatchPurchaseResponse>;
     getPurchase(id: string): Promise<GetPurchaseAPIResponse>;
     getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<GetCompanyPurchasesResponse>;
@@ -24,8 +24,8 @@ export class PurchaseService implements IPurchaseService {
     }
 
     updatePurchase = withServiceErrorHandling(
-        async (id: string, payload: PatchPurchaseDTO): Promise<CreateOrPatchPurchaseResponse> => {
-            const newQBPurchase = await this.PurchaseTransaction.updatePurchase(id, payload);
+        async (payload: PatchPurchaseDTO): Promise<CreateOrPatchPurchaseResponse> => {
+            const newQBPurchase = await this.PurchaseTransaction.updatePurchase(payload.purchaseId, payload);
 
             return {
                 companyId: newQBPurchase.companyId,
@@ -40,9 +40,7 @@ export class PurchaseService implements IPurchaseService {
 
     createPurchase = withServiceErrorHandling(
         async (payload: CreatePurchaseDTO): Promise<CreateOrPatchPurchaseResponse> => {
-            console.log(payload, "Payload");
             const newPurchase = await this.PurchaseTransaction.createPurchase(payload);
-            console.log(newPurchase, "newPurchase");
 
             return {
                 companyId: newPurchase.companyId,

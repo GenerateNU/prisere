@@ -13,7 +13,7 @@ export const purchaseRoutes = (db: DataSource): Hono => {
 
     PurchaseRoutes.post("/", (ctx) => controller.createOrUpdatePurchase(ctx));
     PurchaseRoutes.get("/:id", (ctx) => controller.getPurchase(ctx));
-    PurchaseRoutes.get("/mycompany", (ctx) => controller.getPurchasesForCompany(ctx));
+    PurchaseRoutes.get("/", (ctx) => controller.getPurchasesForCompany(ctx));
 
     return PurchaseRoutes;
 };
