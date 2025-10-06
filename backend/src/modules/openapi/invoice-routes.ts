@@ -124,7 +124,8 @@ const getInvoicesForCompanyByDate = createRoute({
     summary: "Get invoices for a company by date",
     description: "Get invoices for a company that were made after the start date and before the end date",
     request: {
-        query: GetCompanyInvoicesByDateDTOSchema,
+        params: GetInvoiceDTOSchema,
+        query: z.object({startDate: z.iso.datetime(), endDate: z.iso.datetime()}),
     },
     responses: {
         200: {
