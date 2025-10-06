@@ -6,8 +6,10 @@ import { addOpenApiDisasterRoutes } from "./disaster-routes";
 import { addOpenApiCompanyRoutes } from "./company-routes";
 import { addOpenApiLocationAddressRoutes } from "./location-address-route";
 import { addOpenApiDisasterNotificationRoutes } from "./disaster-notification-routes";
+import { addOpenApiQBRoutes } from "./quickbooks-routes";
 import { addOpenApiInvoiceRoutes } from "./invoice-routes";
 import { addOpenApiPurchaseRoutes } from "./purchase-routes";
+import { createOpenAPIClaimRoutes } from "./claim-routes";
 
 export const setUpOpenApiRoutes = (db: DataSource) => {
     const openApiServerURL = process.env.NODE_ENV === "production" ? "/api" : "";
@@ -38,8 +40,10 @@ const openApiRoutes = (db: DataSource): OpenAPIHono => {
     addOpenApiDisasterRoutes(openApi, db);
     addOpenApiLocationAddressRoutes(openApi, db);
     addOpenApiDisasterNotificationRoutes(openApi, db);
+    addOpenApiQBRoutes(openApi, db);
     addOpenApiInvoiceRoutes(openApi, db);
     addOpenApiPurchaseRoutes(openApi, db);
+    createOpenAPIClaimRoutes(openApi, db);
 
     return openApi;
 };
