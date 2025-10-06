@@ -3,10 +3,10 @@ import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { z } from "zod";
 import {
     CreateOrPatchPurchaseDTOUnionSchema,
-    createOrPatchPurchasesResponseSchema,
-    GetPurchasesResponseSchema,
     GetCompanyPurchasesDTOSchema,
-    GetCompanyPurchasesResponseSchema,
+    CreateOrPatchPurchaseAPIResponseSchema,
+    GetCompanyPurchaseAPIResponseSchema,
+    GetPurchaseAPIResponseSchema,
 } from "../../modules/purchase/types";
 import { IPurchaseController, PurchaseController } from "../purchase/controller";
 import { IPurchaseService, PurchaseService } from "../purchase/service";
@@ -47,7 +47,7 @@ const createOrUpdatePurchaseRoute = createRoute({
         201: {
             content: {
                 "application/json": {
-                    schema: createOrPatchPurchasesResponseSchema,
+                    schema: CreateOrPatchPurchaseAPIResponseSchema,
                 },
             },
             description: "Purchase created successfully",
@@ -55,7 +55,7 @@ const createOrUpdatePurchaseRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: createOrPatchPurchasesResponseSchema,
+                    schema: CreateOrPatchPurchaseAPIResponseSchema,
                 },
             },
             description: "Purchase updated successfully",
@@ -80,7 +80,7 @@ const getPurchaseRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: GetPurchasesResponseSchema,
+                    schema: GetPurchaseAPIResponseSchema,
                 },
             },
             description: "Successful fetch of a purchase from the database",
@@ -105,7 +105,7 @@ const getPurchasesForCompanyRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: GetCompanyPurchasesResponseSchema,
+                    schema: GetCompanyPurchaseAPIResponseSchema,
                 },
             },
             description: "Successful fetch of company purchases from the database",
