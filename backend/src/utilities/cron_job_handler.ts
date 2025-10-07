@@ -6,6 +6,7 @@ import {
     DisasterNotificationTransaction,
     IDisasterNotificationTransaction,
 } from "../modules/disasterNotifications/transaction";
+import { logMessageToFile } from "./logger";
 
 export interface CronJobHandler {
     initializeCron(): CronJob;
@@ -29,6 +30,7 @@ export class FemaFetching implements CronJobHandler {
             cronTime: "0 2 * * *",
             onTick: async () => {
                 const newDisasters = await this.femaService.fetchFemaDisasters({ lastRefreshDate: lastRefreshDate });
+                logMessageToFile(`Going to process ${newDisasters.length} new FEMA Disasters.`);
                 await this.disasterNotificationService.processNewDisasters(newDisasters);
             },
             start: true,

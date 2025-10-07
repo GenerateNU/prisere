@@ -28,7 +28,7 @@ const app = new Hono();
 
         const femaService: IFemaService = new FemaService(AppDataSource);
         await femaService.preloadDisasters();
-        const femaDisastersCron = new FemaFetching(femaService);
+        const femaDisastersCron = new FemaFetching(femaService, AppDataSource);
         femaDisastersCron.initializeCron();
 
         console.log("Connected to Postgres!");
