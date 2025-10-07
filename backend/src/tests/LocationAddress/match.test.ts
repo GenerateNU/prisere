@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach, mock } from "bun:test";
+import { describe, it, expect, beforeAll, afterAll, mock } from "bun:test";
 import { randomUUID } from "crypto";
-import { FEMALocationMatcher, LocationFips, CensusGeocodeResponse } from "../../utilities/fema_location_lookup";
+import { FEMALocationMatcher, CensusGeocodeResponse } from "../../utilities/fema_location_lookup";
 import { LocationAddress } from "../../entities/LocationAddress";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { Company } from "../../entities/Company";
@@ -18,19 +18,19 @@ describe("FEMALocationMatcher", () => {
         postalCode: "94105",
         county: "San Francisco County",
         companyId: randomUUID(),
-        company: {} as Company
+        company: {} as Company,
     };
 
     const mockLocationChicago: LocationAddress = {
         id: randomUUID(),
         country: "United States",
-        stateProvince: "Illinois", 
+        stateProvince: "Illinois",
         city: "Chicago",
         streetAddress: "456 Second Street",
         postalCode: "60601",
         county: "Cook County",
         companyId: randomUUID(),
-        company: {} as Company
+        company: {} as Company,
     };
 
     const mockDisasterCA: FemaDisaster = {
@@ -44,22 +44,22 @@ describe("FEMALocationMatcher", () => {
         disasterNumber: 12345,
         incidentBeginDate: new Date(),
         incidentEndDate: new Date(),
-        disasterNotifications: []
+        disasterNotifications: [],
     };
 
-    const mockDisasterIL: FemaDisaster = {
-        id: randomUUID(),
-        fipsStateCode: 17, // Illinois
-        fipsCountyCode: 31, // Cook County
-        declarationDate: new Date(),
-        declarationType: "DR",
-        designatedIncidentTypes: "Hurricane",
-        designatedArea: "Cook County",
-        disasterNumber: 67890,
-        incidentBeginDate: new Date(),
-        incidentEndDate: new Date(),
-        disasterNotifications: []
-    };
+    // const mockDisasterIL: FemaDisaster = {
+    //     id: randomUUID(),
+    //     fipsStateCode: 17, // Illinois
+    //     fipsCountyCode: 31, // Cook County
+    //     declarationDate: new Date(),
+    //     declarationType: "DR",
+    //     designatedIncidentTypes: "Hurricane",
+    //     designatedArea: "Cook County",
+    //     disasterNumber: 67890,
+    //     incidentBeginDate: new Date(),
+    //     incidentEndDate: new Date(),
+    //     disasterNotifications: []
+    // };
 
     beforeAll(() => {
         originalFetch = global.fetch;
@@ -73,50 +73,52 @@ describe("FEMALocationMatcher", () => {
     describe("getLocationFips", () => {
         it("should return FIPS codes for a valid address", async () => {
             const mockCensusResponse: CensusGeocodeResponse = {
-            result: {
-                addressMatches: [
-                    {
-                        coordinates: {
-                            x: -122.4194,
-                            y: 37.7749
+                result: {
+                    addressMatches: [
+                        {
+                            coordinates: {
+                                x: -122.4194,
+                                y: 37.7749,
+                            },
+                            geographies: {
+                                "Census Blocks": [
+                                    {
+                                        STATE: "06",
+                                        COUNTY: "075",
+                                    },
+                                ],
+                            },
                         },
-                        geographies: {
-                            'Census Blocks': [{
-                                STATE: '06',
-                                COUNTY: '075'
-                            }]
-                        }
-                    }
-                ]
-            }
-        };
+                    ],
+                },
+            };
 
-        const mockFetch = mock(() => 
-            Promise.resolve({
-                json: () => Promise.resolve(mockCensusResponse)
-            })
-        );
-        global.fetch = mockFetch as unknown as typeof fetch;
+            const mockFetch = mock(() =>
+                Promise.resolve({
+                    json: () => Promise.resolve(mockCensusResponse),
+                })
+            );
+            global.fetch = mockFetch as unknown as typeof fetch;
 
-        const result = await matcher.getLocationFips(mockLocationSF);
+            const result = await matcher.getLocationFips(mockLocationSF);
 
-        expect(result).toEqual({
-            stateFips: '06',
-            countyFips: '075'
+            expect(result).toEqual({
+                stateFips: "06",
+                countyFips: "075",
+            });
+            expect(mockFetch).toHaveBeenCalledTimes(1);
         });
-        expect(mockFetch).toHaveBeenCalledTimes(1);
-    });
 
         it("should return null for address with no matches", async () => {
             const mockCensusResponse: CensusGeocodeResponse = {
                 result: {
-                    addressMatches: []
-                }
+                    addressMatches: [],
+                },
             };
 
-            const mockFetch = mock(() => 
+            const mockFetch = mock(() =>
                 Promise.resolve({
-                    json: () => Promise.resolve(mockCensusResponse)
+                    json: () => Promise.resolve(mockCensusResponse),
                 })
             );
             global.fetch = mockFetch as unknown as typeof fetch;
@@ -127,9 +129,7 @@ describe("FEMALocationMatcher", () => {
         });
 
         it("should return null when Census API fails", async () => {
-            const mockFetch = mock(() => 
-                Promise.reject(new Error("Network error"))
-            );
+            const mockFetch = mock(() => Promise.reject(new Error("Network error")));
             global.fetch = mockFetch as unknown as typeof fetch;
 
             const result = await matcher.getLocationFips(mockLocationSF);
@@ -138,9 +138,9 @@ describe("FEMALocationMatcher", () => {
         });
 
         it("should build address string correctly from location components", async () => {
-            const mockFetch = mock(() => 
+            const mockFetch = mock(() =>
                 Promise.resolve({
-                    json: () => Promise.resolve({ result: { addressMatches: [] } })
+                    json: () => Promise.resolve({ result: { addressMatches: [] } }),
                 })
             );
             global.fetch = mockFetch as unknown as typeof fetch;
@@ -162,12 +162,12 @@ describe("FEMALocationMatcher", () => {
                 postalCode: "94105",
                 county: "San Francisco County",
                 companyId: randomUUID(),
-                company: {} as Company
+                company: {} as Company,
             };
 
-            const mockFetch = mock(() => 
+            const mockFetch = mock(() =>
                 Promise.resolve({
-                    json: () => Promise.resolve({ result: { addressMatches: [] } })
+                    json: () => Promise.resolve({ result: { addressMatches: [] } }),
                 })
             );
             global.fetch = mockFetch as unknown as typeof fetch;
@@ -182,21 +182,26 @@ describe("FEMALocationMatcher", () => {
 
     describe("isLocationAffected", () => {
         it("should return true when location is in disaster area", async () => {
-            const mockFetch = mock(() => 
+            const mockFetch = mock(() =>
                 Promise.resolve({
-                    json: () => Promise.resolve({
-                        result: {
-                            addressMatches: [{
-                                coordinates: { x: -122.4194, y: 37.7749 },
-                                geographies: {
-                                    'Census Blocks': [{
-                                        STATE: '06', // California
-                                        COUNTY: '075' // San Francisco County
-                                    }]
-                                }
-                            }]
-                        }
-                    })
+                    json: () =>
+                        Promise.resolve({
+                            result: {
+                                addressMatches: [
+                                    {
+                                        coordinates: { x: -122.4194, y: 37.7749 },
+                                        geographies: {
+                                            "Census Blocks": [
+                                                {
+                                                    STATE: "06", // California
+                                                    COUNTY: "075", // San Francisco County
+                                                },
+                                            ],
+                                        },
+                                    },
+                                ],
+                            },
+                        }),
                 })
             );
             global.fetch = mockFetch as unknown as typeof fetch;
@@ -207,21 +212,26 @@ describe("FEMALocationMatcher", () => {
         });
 
         it("should return false when state doesn't match", async () => {
-            const mockFetch = mock(() => 
+            const mockFetch = mock(() =>
                 Promise.resolve({
-                    json: () => Promise.resolve({
-                        result: {
-                            addressMatches: [{
-                                coordinates: { x: -87.6298, y: 41.8781 },
-                                geographies: {
-                                    'Census Blocks': [{
-                                        STATE: '17', // Illinois (different state)
-                                        COUNTY: '031' // Cook County
-                                    }]
-                                }
-                            }]
-                        }
-                    })
+                    json: () =>
+                        Promise.resolve({
+                            result: {
+                                addressMatches: [
+                                    {
+                                        coordinates: { x: -87.6298, y: 41.8781 },
+                                        geographies: {
+                                            "Census Blocks": [
+                                                {
+                                                    STATE: "17", // Illinois (different state)
+                                                    COUNTY: "031", // Cook County
+                                                },
+                                            ],
+                                        },
+                                    },
+                                ],
+                            },
+                        }),
                 })
             );
             global.fetch = mockFetch as unknown as typeof fetch;
@@ -232,21 +242,26 @@ describe("FEMALocationMatcher", () => {
         });
 
         it("should return false when county doesn't match", async () => {
-            const mockFetch = mock(() => 
+            const mockFetch = mock(() =>
                 Promise.resolve({
-                    json: () => Promise.resolve({
-                        result: {
-                            addressMatches: [{
-                                coordinates: { x: -122.4194, y: 37.7749 },
-                                geographies: {
-                                    'Census Blocks': [{
-                                        STATE: '06', // California (same state)
-                                        COUNTY: '001' // Different county
-                                    }]
-                                }
-                            }]
-                        }
-                    })
+                    json: () =>
+                        Promise.resolve({
+                            result: {
+                                addressMatches: [
+                                    {
+                                        coordinates: { x: -122.4194, y: 37.7749 },
+                                        geographies: {
+                                            "Census Blocks": [
+                                                {
+                                                    STATE: "06", // California (same state)
+                                                    COUNTY: "001", // Different county
+                                                },
+                                            ],
+                                        },
+                                    },
+                                ],
+                            },
+                        }),
                 })
             );
             global.fetch = mockFetch as unknown as typeof fetch;
@@ -257,11 +272,12 @@ describe("FEMALocationMatcher", () => {
         });
 
         it("should return false when location FIPS cannot be determined", async () => {
-            const mockFetch = mock(() => 
+            const mockFetch = mock(() =>
                 Promise.resolve({
-                    json: () => Promise.resolve({
-                        result: { addressMatches: [] }
-                    })
+                    json: () =>
+                        Promise.resolve({
+                            result: { addressMatches: [] },
+                        }),
                 })
             );
             global.fetch = mockFetch as unknown as typeof fetch;
@@ -270,8 +286,6 @@ describe("FEMALocationMatcher", () => {
 
             expect(result).toBe(false);
         });
-
-        
     });
 
     describe("getAffectedLocations", () => {
@@ -284,36 +298,46 @@ describe("FEMALocationMatcher", () => {
                 // First call (SF) - affected by CA disaster
                 if (callCount === 1) {
                     return Promise.resolve({
-                        json: () => Promise.resolve({
-                            result: {
-                                addressMatches: [{
-                                    coordinates: { x: -122.4194, y: 37.7749 },
-                                    geographies: {
-                                        'Census Blocks': [{
-                                            STATE: '06', // California
-                                            COUNTY: '075' // San Francisco County
-                                        }]
-                                    }
-                                }]
-                            }
-                        })
+                        json: () =>
+                            Promise.resolve({
+                                result: {
+                                    addressMatches: [
+                                        {
+                                            coordinates: { x: -122.4194, y: 37.7749 },
+                                            geographies: {
+                                                "Census Blocks": [
+                                                    {
+                                                        STATE: "06", // California
+                                                        COUNTY: "075", // San Francisco County
+                                                    },
+                                                ],
+                                            },
+                                        },
+                                    ],
+                                },
+                            }),
                     });
                 }
                 // Second call (Chicago) - not affected by CA disaster
                 return Promise.resolve({
-                    json: () => Promise.resolve({
-                        result: {
-                            addressMatches: [{
-                                coordinates: { x: -87.6298, y: 41.8781 },
-                                geographies: {
-                                    'Census Blocks': [{
-                                        STATE: '17', // Illinois
-                                        COUNTY: '031' // Cook County
-                                    }]
-                                }
-                            }]
-                        }
-                    })
+                    json: () =>
+                        Promise.resolve({
+                            result: {
+                                addressMatches: [
+                                    {
+                                        coordinates: { x: -87.6298, y: 41.8781 },
+                                        geographies: {
+                                            "Census Blocks": [
+                                                {
+                                                    STATE: "17", // Illinois
+                                                    COUNTY: "031", // Cook County
+                                                },
+                                            ],
+                                        },
+                                    },
+                                ],
+                            },
+                        }),
                 });
             });
             global.fetch = mockFetch as unknown as typeof fetch;
@@ -323,11 +347,11 @@ describe("FEMALocationMatcher", () => {
             expect(result).toHaveLength(2);
             expect(result[0]).toEqual({
                 id: mockLocationSF.id,
-                affected: true
+                affected: true,
             });
             expect(result[1]).toEqual({
                 id: mockLocationChicago.id,
-                affected: false
+                affected: false,
             });
         });
 
@@ -340,17 +364,17 @@ describe("FEMALocationMatcher", () => {
         it("should handle geocoding failures gracefully", async () => {
             const locations = [mockLocationSF];
 
-            const mockFetch = mock(() => 
-                Promise.reject(new Error("Geocoding failed"))
-            );
+            const mockFetch = mock(() => Promise.reject(new Error("Geocoding failed")));
             global.fetch = mockFetch as unknown as typeof fetch;
 
             const result = await matcher.getAffectedLocations(locations, mockDisasterCA);
 
-            expect(result).toEqual([{
-                id: mockLocationSF.id,
-                affected: false
-            }]);
+            expect(result).toEqual([
+                {
+                    id: mockLocationSF.id,
+                    affected: false,
+                },
+            ]);
         });
     });
 });

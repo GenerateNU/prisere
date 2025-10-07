@@ -28,12 +28,12 @@ export class DisasterTransaction implements IDisasterTransaction {
 
     async upsertDisaster(payload: CreateDisasterDTO): Promise<{ disaster: FemaDisaster; isNew: boolean }> {
         const repository = this.db.getRepository(FemaDisaster);
-        
+
         // Check if disaster exists, update if so, create if not
         const existing = await repository.findOne({
-            where: { disasterNumber: payload.disasterNumber }
+            where: { disasterNumber: payload.disasterNumber },
         });
-        
+
         if (existing) {
             await repository.update({ id: existing.id }, payload);
             const updated = await repository.findOne({ where: { id: existing.id } });

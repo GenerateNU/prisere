@@ -47,7 +47,7 @@
 //     beforeAll(async () => {
 //         // Store original fetch
 //         originalFetch = global.fetch;
-        
+
 //         const testAppData = await startTestApp();
 //         backup = testAppData.backup;
 //         dataSource = testAppData.dataSource;
@@ -57,7 +57,7 @@
 
 //     beforeEach(() => {
 //         backup.restore();
-        
+
 //         // Reset mock before each test
 //         global.fetch = mock(() =>
 //             Promise.resolve({
@@ -138,7 +138,7 @@
 
 //         expect(mockFetchSpy).toHaveBeenCalledTimes(1);
 //         const calledUrl = mockFetchSpy.mock.calls[0][0];
-        
+
 //         expect(calledUrl).toContain("https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries");
 //         expect(calledUrl).toContain("declarationDate ge");
 //         expect(calledUrl).toContain("lastRefresh gt 2024-01-01T00:00:00.000Z");

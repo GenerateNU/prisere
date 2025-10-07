@@ -4,7 +4,6 @@ import { randomUUID } from "crypto";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { DisasterTransaction } from "../../modules/disaster/transaction";
-import { FemaDisaster } from "../../entities/FemaDisaster";
 import { CreateDisasterDTO } from "../../types/disaster";
 
 describe("DisasterTransaction - upsertDisaster", () => {
@@ -72,7 +71,7 @@ describe("DisasterTransaction - upsertDisaster", () => {
     it("should return the same disaster number for both create and update", async () => {
         // Create
         const createResult = await disasterTransaction.upsertDisaster(mockDisasterData);
-        
+
         // Update
         const updateResult = await disasterTransaction.upsertDisaster({
             ...mockDisasterData,
