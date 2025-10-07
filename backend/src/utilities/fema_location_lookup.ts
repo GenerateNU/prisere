@@ -6,7 +6,6 @@ import { LocationAddress } from "../entities/LocationAddress";
 export interface LocationFips {
   stateFips: string;
   countyFips: string;
-  fullFips: string;
 }
 
 export interface CensusGeocodeResponse {
@@ -55,7 +54,6 @@ export class FEMALocationMatcher {
     if (Number(locationFips.countyFips) !== femaDisaster.fipsCountyCode) {
       return false;
     }
-
     // State and county match
     return true;
   }
@@ -92,10 +90,11 @@ export class FEMALocationMatcher {
         const match = data.result.addressMatches[0];
         const geo = match.geographies['Census Blocks'][0];
 
+        console.log(`Converted business location to fips state cose ${geo.STATE}, county ${geo.COUNTY}`)
+
         return {
           stateFips: geo.STATE,
-          countyFips: geo.COUNTY,
-          fullFips: geo.STATE + geo.COUNTY
+          countyFips: geo.COUNTY
         };
       }
     } catch (error) {
@@ -107,7 +106,7 @@ export class FEMALocationMatcher {
 
   /**
    * Check multiple locations against a disaster
-   * @param locations - Array of location locations
+   * @param locations - Array of LocationAddress objects
    * @param femaDisaster - Disaster area with FIPS codes
    * @returns Array of affected locations
    */

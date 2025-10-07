@@ -102,8 +102,7 @@ describe("FEMALocationMatcher", () => {
 
         expect(result).toEqual({
             stateFips: '06',
-            countyFips: '075',
-            fullFips: '06075'
+            countyFips: '075'
         });
         expect(mockFetch).toHaveBeenCalledTimes(1);
     });
