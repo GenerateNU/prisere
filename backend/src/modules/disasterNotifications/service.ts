@@ -77,10 +77,12 @@ export class DisasterNotificationService implements IDisasterNotificationService
     });
 
     createNotificationMessage(disaster: FemaDisaster, location: LocationAddress) {
-        return `A disaster has been declared in your area: ${disaster}. ` +
-           `Location: ${location.city}, ${location.stateProvince}. ` +
-           `Declaration Date: ${disaster.declarationDate?.toLocaleDateString()}`;
-    } 
+        return (
+            `A disaster has been declared in your area: ${disaster}. ` +
+            `Location: ${location.city}, ${location.stateProvince}. ` +
+            `Declaration Date: ${disaster.declarationDate?.toLocaleDateString()}`
+        );
+    }
 
     processNewDisasters = withServiceErrorHandling(async (newDisasters: FemaDisaster[]): Promise<boolean> => {
         try {
@@ -90,51 +92,53 @@ export class DisasterNotificationService implements IDisasterNotificationService
 
             for (const disaster of newDisasters) {
                 console.log(`Processing disaster: ${disaster}`);
-                
+
                 // Get affected locations for this disaster
                 const locationsResult = await this.locationMatcher.getAffectedLocations(locations, disaster);
-                
+
                 // Filter to only affected locations
-                const affectedLocations = locationsResult.filter(result => result.affected);
-                console.log(`Found ${affectedLocations.length} affected locations for disaster ${disaster.disasterNumber}`);
+                const affectedLocations = locationsResult.filter((result) => result.affected);
+                console.log(
+                    `Found ${affectedLocations.length} affected locations for disaster ${disaster.disasterNumber}`
+                );
 
                 // Create notifications for affected locations
                 for (const affectedLocation of affectedLocations) {
                     // Find the full location object to get company/user info
-                    const location = locations.find(loc => loc.id === affectedLocation.id);
-                    
+                    const location = locations.find((loc) => loc.id === affectedLocation.id);
+
                     if (location?.company?.user) {
                         const { company } = location;
                         const { user } = company;
 
                         // Check web notification preferences
                         // if (user.webNotificationPreference || user.webNotificationPreference === undefined) {
-                            notificationsToCreate.push({
-                                userId: user.id,
-                                femaDisasterId: disaster.id,
-                                // companyId: company.id,
-                                // locationId: location.id,
-                                notificationType: NotificationType.WEB,
-                                // message: this.createNotificationMessage(disaster, location),
-                                notificationStatus: NotificationStatus.UNREAD,
-                                user: user,
-                                femaDisaster: new FemaDisaster
-                            });
+                        notificationsToCreate.push({
+                            userId: user.id,
+                            femaDisasterId: disaster.id,
+                            // companyId: company.id,
+                            // locationId: location.id,
+                            notificationType: NotificationType.WEB,
+                            // message: this.createNotificationMessage(disaster, location),
+                            notificationStatus: NotificationStatus.UNREAD,
+                            user: user,
+                            femaDisaster: new FemaDisaster(),
+                        });
                         // }
 
-                        // Check email notification preferences  
+                        // Check email notification preferences
                         // if (user.emailNotificationPreference || user.emailNotificationPreference === undefined) {
-                            notificationsToCreate.push({
-                                userId: user.id,
-                                femaDisasterId: disaster.id,
-                                // companyId: company.id,
-                                // locationId: location.id,
-                                notificationType: NotificationType.EMAIL,
-                                // message: this.createNotificationMessage(disaster, location),
-                                notificationStatus: NotificationStatus.UNREAD,
-                                user: user,
-                                femaDisaster: new FemaDisaster
-                            });
+                        notificationsToCreate.push({
+                            userId: user.id,
+                            femaDisasterId: disaster.id,
+                            // companyId: company.id,
+                            // locationId: location.id,
+                            notificationType: NotificationType.EMAIL,
+                            // message: this.createNotificationMessage(disaster, location),
+                            notificationStatus: NotificationStatus.UNREAD,
+                            user: user,
+                            femaDisaster: new FemaDisaster(),
+                        });
                         // }
                     }
                 }
@@ -144,16 +148,15 @@ export class DisasterNotificationService implements IDisasterNotificationService
             if (notificationsToCreate.length > 0) {
                 console.log(`Creating ${notificationsToCreate.length} notifications`);
                 await this.bulkCreateNotifications(notificationsToCreate);
-                console.log('Successfully created all notifications');
+                console.log("Successfully created all notifications");
             } else {
-                console.log('No locations affected by new disasters');
+                console.log("No locations affected by new disasters");
             }
 
             return true;
         } catch (error) {
-            console.error('Error processing new disasters:', error);
+            console.error("Error processing new disasters:", error);
             return false;
         }
     });
-
 }

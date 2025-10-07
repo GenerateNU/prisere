@@ -73,7 +73,7 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
 
     async getAllLocations(): Promise<LocationAddress[]> {
         const result = await this.db.getRepository(LocationAddress).find();
-        console.log(`Get all locations response: \n${result}`)
+        console.log(`Get all locations response: \n${result}`);
         return result;
     }
 }

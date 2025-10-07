@@ -10,4 +10,3 @@
 // import { User } from "../../entities/User";
 // import { DisasterNotification } from "../../entities/DisasterNotification";
 // import { NotificationStatus, NotificationType } from "../../types/NotificationEnums";
-

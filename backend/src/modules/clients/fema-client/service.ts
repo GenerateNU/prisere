@@ -34,12 +34,12 @@ export class FemaService implements IFemaService {
         for (const disaster of DisasterDeclarationsSummaries) {
             const parsedDisaster = CreateDisasterDTOSchema.parse(disaster);
             const { disaster: savedDisaster, isNew } = await disasterTransaction.upsertDisaster(parsedDisaster);
-            
+
             if (isNew) {
                 newDisasters.push(savedDisaster);
             }
         }
-        
+
         console.log(`Processed ${DisasterDeclarationsSummaries.length} disasters, ${newDisasters.length} were new`);
         return newDisasters;
     };
