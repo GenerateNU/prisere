@@ -9,16 +9,16 @@ import {
     UserMissingErrorSchema,
 } from "../../types/Preferences";
 import { openApiErrorCodes } from "../../utilities/error";
-import { NotificationTransaction } from "../notifications/transaction";
+import { PreferenceTransaction } from "../preferences/transaction";
 import { UserTransaction } from "../user/transaction";
-import { NotificationService } from "../notifications/service";
-import { NotificationController } from "../notifications/controller";
+import { PreferenceService } from "../preferences/service";
+import { PreferencesController } from "../preferences/controller";
 
-export const addOpenApiNotificationRoutes = (openApi: OpenAPIHono, db: DataSource) => {
-    const transaction = new NotificationTransaction(db);
+export const addOpenApiPreferenceRoutes = (openApi: OpenAPIHono, db: DataSource) => {
+    const transaction = new PreferenceTransaction(db);
     const userTransaction = new UserTransaction(db);
-    const service = new NotificationService(transaction, userTransaction);
-    const controller = new NotificationController(service);
+    const service = new PreferenceService(transaction, userTransaction);
+    const controller = new PreferencesController(service);
 
     openApi.openapi(getUserNotificationPreferencesRoute, (ctx) => controller.getUserPreferences(ctx));
     openApi.openapi(updateUserNotificationPreferencesRoute, (ctx) => controller.updateUserPreferences(ctx));
@@ -52,7 +52,7 @@ const getUserNotificationPreferencesRoute = createRoute({
         },
         ...openApiErrorCodes("Get user notification preferences errors"),
     },
-    tags: ["Notifications"],
+    tags: ["Preferences"],
 });
 
 const updateUserNotificationPreferencesRoute = createRoute({
@@ -88,5 +88,5 @@ const updateUserNotificationPreferencesRoute = createRoute({
         },
         ...openApiErrorCodes("Update user notification preferences errors"),
     },
-    tags: ["Notifications"],
+    tags: ["Preferences"],
 });

@@ -1,6 +1,6 @@
 import { Context, TypedResponse } from "hono";
 import { ControllerResponse } from "../../utilities/response";
-import { INotificationService } from "./service";
+import { IPreferenceService } from "./service";
 import {
     GetUserNotificationPreferencesRequestParams,
     GetUserNotificationPreferencesResponse,
@@ -11,7 +11,7 @@ import {
 } from "../../types/Preferences";
 import { withControllerErrorHandling } from "../../utilities/error";
 
-export interface INotificationController {
+export interface IPreferencesController {
     getUserPreferences(
         ctx: Context
     ): ControllerResponse<
@@ -24,13 +24,13 @@ export interface INotificationController {
     >;
 }
 
-export class NotificationController implements INotificationController {
-    constructor(private notiicationService: INotificationService) {}
+export class PreferencesController implements IPreferencesController {
+    constructor(private preferenceService: IPreferenceService) {}
 
     getUserPreferences = withControllerErrorHandling(async (ctx: Context) => {
         const { id: userId } = GetUserNotificationPreferencesRequestParams.parse(ctx.req.param());
 
-        const preferences = await this.notiicationService.getUserPreferences(userId);
+        const preferences = await this.preferenceService.getUserPreferences(userId);
 
         if (!preferences) {
             return ctx.json({ error: "Unknown user" }, 404);
@@ -50,7 +50,7 @@ export class NotificationController implements INotificationController {
         const { id: userId } = UpdateUserNotificationPreferencesRequestParams.parse(ctx.req.param());
         const preferences = UpdateUesrNotificationPreferencesDTOSchema.parse(await ctx.req.json());
 
-        const result = await this.notiicationService.updateUserPreferences({ userId, preferences });
+        const result = await this.preferenceService.updateUserPreferences({ userId, preferences });
 
         if (!result) {
             return ctx.json({ error: "Unknown user" }, 404);

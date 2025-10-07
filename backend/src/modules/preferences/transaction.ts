@@ -2,15 +2,15 @@ import { DataSource } from "typeorm";
 import { UserPreferences } from "../../entities/UserPreferences";
 import { UpdateUesrNotificationPreferencesDTO } from "../../types/Preferences";
 
-export interface INotificationTransaction {
-    getOrCreateUserPreferences(userId: string): Promise<UserPreferences>;
+export interface IPreferenceTransaction {
+    getOrCreateUserPreferences(userId: string): Promise<UserPreferences | null>;
     updateUserPreferences(args: {
         userId: string;
         preferences: UpdateUesrNotificationPreferencesDTO;
     }): Promise<UserPreferences | null>;
 }
 
-export class NotificationTransaction implements INotificationTransaction {
+export class PreferenceTransaction implements IPreferenceTransaction {
     constructor(private db: DataSource) {}
 
     async getOrCreateUserPreferences(userId: string) {

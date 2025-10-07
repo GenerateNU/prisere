@@ -2,9 +2,10 @@ import { UserPreferences } from "../../entities/UserPreferences";
 import { UpdateUesrNotificationPreferencesDTO } from "../../types/Preferences";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { IUserTransaction } from "../user/transaction";
-import { INotificationTransaction } from "./transaction";
+import { IPreferenceTransaction } from "./transaction";
+import Boom from "@hapi/boom";
 
-export interface INotificationService {
+export interface IPreferenceService {
     getUserPreferences(userId: string): Promise<UserPreferences | null>;
     updateUserPreferences(args: {
         userId: string;
@@ -12,9 +13,9 @@ export interface INotificationService {
     }): Promise<UserPreferences | null>;
 }
 
-export class NotificationService implements INotificationService {
+export class PreferenceService implements IPreferenceService {
     constructor(
-        private transaction: INotificationTransaction,
+        private transaction: IPreferenceTransaction,
         private userTransaction: IUserTransaction
     ) {}
 
@@ -30,6 +31,10 @@ export class NotificationService implements INotificationService {
 
     updateUserPreferences = withServiceErrorHandling(
         async (args: { userId: string; preferences: UpdateUesrNotificationPreferencesDTO }) => {
+            if (Object.keys(args.preferences).length === 0) {
+                throw Boom.badRequest("Must contain values to update");
+            }
+
             const user = await this.userTransaction.getUser({ id: args.userId });
 
             if (!user) {
