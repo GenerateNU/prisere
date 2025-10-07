@@ -2,11 +2,12 @@ import { DataSource } from "typeorm";
 import { DisasterTransaction } from "../../disaster/transaction";
 import { CreateDisasterDTOSchema } from "../../../types/disaster";
 import { fetch } from "bun";
+import { FemaDisaster } from "../../../entities/FemaDisaster";
 
 const FEMA_API = "https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries";
 
 export interface IFemaService {
-    fetchFemaDisasters({ lastRefreshDate }: { lastRefreshDate: Date }): Promise<void>;
+    fetchFemaDisasters({ lastRefreshDate }: { lastRefreshDate: Date }): Promise<FemaDisaster[]>;
     preloadDisasters(): Promise<void>;
 }
 
@@ -27,10 +28,20 @@ export class FemaService implements IFemaService {
         );
         const { DisasterDeclarationsSummaries } = await response.json();
         const disasterTransaction = new DisasterTransaction(this.db);
+        const newDisasters: FemaDisaster[] = [];
+
+        // Return only newly created disasters (not updated ones)
         for (const disaster of DisasterDeclarationsSummaries) {
             const parsedDisaster = CreateDisasterDTOSchema.parse(disaster);
-            await disasterTransaction.createDisaster(parsedDisaster);
+            const { disaster: savedDisaster, isNew } = await disasterTransaction.upsertDisaster(parsedDisaster);
+            
+            if (isNew) {
+                newDisasters.push(savedDisaster);
+            }
         }
+        
+        console.log(`Processed ${DisasterDeclarationsSummaries.length} disasters, ${newDisasters.length} were new`);
+        return newDisasters;
     };
 
     async preloadDisasters() {

@@ -24,6 +24,12 @@ export interface ILocationAddressTransaction {
      * @return the location address that was removed
      */
     removeLocationAddressById(payload: GetLocationAddressDTO): Promise<DeleteResult>;
+
+    /**
+     * Gets all locations
+     * @return an array of all locations
+     */
+    getAllLocations(): Promise<LocationAddress[]>;
 }
 
 /**
@@ -62,6 +68,12 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
     async removeLocationAddressById(payload: GetLocationAddressDTO): Promise<DeleteResult> {
         const id = payload.id;
         const result = await this.db.manager.delete(LocationAddress, { id: id });
+        return result;
+    }
+
+    async getAllLocations(): Promise<LocationAddress[]> {
+        const result = await this.db.getRepository(LocationAddress).find();
+        console.log(`Get all locations response: \n${result}`)
         return result;
     }
 }
