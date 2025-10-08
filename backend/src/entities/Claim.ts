@@ -7,7 +7,7 @@ import {
     Unique,
     CreateDateColumn,
     UpdateDateColumn,
-    OneToMany
+    OneToMany,
 } from "typeorm";
 import { Company } from "./Company.js";
 import { FemaDisaster } from "./FemaDisaster.js";
@@ -40,13 +40,12 @@ export class Claim {
 
     @ManyToOne(() => Company, (company) => company.id)
     @JoinColumn({ name: "companyId" })
-    company!: Company;
+    company?: Company;
 
     @ManyToOne(() => FemaDisaster, (disaster) => disaster.id)
     @JoinColumn({ name: "disasterId" })
-    disaster!: FemaDisaster;
+    disaster?: FemaDisaster;
 
-    @OneToMany(() => ClaimLocation, claimLocation => claimLocation.claim)
+    @OneToMany(() => ClaimLocation, (claimLocation) => claimLocation.claim)
     claimLocations?: ClaimLocation[];
-
 }

@@ -1,10 +1,14 @@
-import { Column, Entity, ManyToOne, Unique } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
 import { Claim } from "./Claim.js";
 import { LocationAddress } from "./LocationAddress.js";
+import type { Relation } from "typeorm";
 
-@Unique(["claim", "location"])
+@Unique(["claimId", "locationAddressId"])
 @Entity("claim_location")
 export class ClaimLocation {
+    // TypeORM requires a primary column
+    @PrimaryGeneratedColumn()
+    id!: string;
 
     @Column()
     claimId!: string;
@@ -12,15 +16,17 @@ export class ClaimLocation {
     @Column()
     locationAddressId!: string;
 
-    @ManyToOne(() => Claim, claim => claim.claimLocations, {
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
+    @ManyToOne(() => Claim, (claim) => claim.claimLocations, {
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
     })
-    claim!: Claim;
+    @JoinColumn({ name: "claimId" })
+    claim?: Relation<Claim>;
 
-    @ManyToOne(() => LocationAddress, location => location.claimLocations, {
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
+    @ManyToOne(() => LocationAddress, (location) => location.claimLocations, {
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
     })
-    locationAddress!: LocationAddress;
+    @JoinColumn({ name: "locationAddressId" })
+    locationAddress?: Relation<LocationAddress>;
 }

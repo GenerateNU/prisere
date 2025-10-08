@@ -31,8 +31,8 @@ export class LocationAddress {
 
     @ManyToOne(() => Company)
     @JoinColumn({ name: "companyId" })
-    company!: Company;
+    company?: Company;
 
-    @OneToMany(() => ClaimLocation, claimLocation => claimLocation.locationAddress)
+    @OneToMany(() => ClaimLocation, (claimLocation) => claimLocation.locationAddress)
     claimLocations?: ClaimLocation[];
 }

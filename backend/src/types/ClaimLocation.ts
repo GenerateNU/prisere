@@ -1,46 +1,50 @@
 import { z } from "zod";
 import { LocationAddressSchema } from "./Location";
-import { ClaimSchema } from "./Claim";
 
 export const ClaimLocationSchema = z.object({
     id: z.string().nonempty(),
-})
-
-export const ClaimLocationWithRelationsSchema = ClaimLocationSchema.extend({
-    location: LocationAddressSchema,
-    claim: ClaimSchema,
-})
-
+    claimId: z.string().nonempty(),
+    locationAddressId: z.string().nonempty(),
+});
 
 /* POST */
-export const CreateClaimLocationDTOSchema = ClaimLocationSchema;
+export const CreateClaimLocationDTOSchema = z.object({
+    claimId: z.string().nonempty(),
+    locationAddressId: z.string().nonempty(),
+});
+
 export const CreateClaimLocationResponseSchema = ClaimLocationSchema;
 
 /* GET */
-export const GetClaimLocationsByCompanyIdDTOSchema = z.object({
+export const GetLocationsByCompanyIdDTOSchema = z.object({
     companyId: z.string().nonempty(),
-})
+});
 
-export const GetClaimLocationsByCompanyIdResponseSchema = z.array(ClaimLocationSchema);
+export const GetLocationsByCompanyIdResponseSchema = z.array(LocationAddressSchema);
 
 /* DELETE */
 export const DeleteClaimLocationDTOSchema = z.object({
-    id: z.string().nonempty(),
-})
+    claimId: z.string().nonempty(),
+    locationId: z.string().nonempty(),
+});
+
+export const DeleteClaimLocationDTOSchemaOpenAPI = z.object({
+    cid: z.string().nonempty(),
+    lid: z.string().nonempty(),
+});
 
 export const DeleteClaimLocationResponseSchema = z.object({
-    id: z.string().nonempty(),
+    success: z.boolean(),
 });
 
 /* Zod types for payload validation */
 export type ClaimLocation = z.infer<typeof ClaimLocationSchema>;
-export type ClaimLocationWithRelations = z.infer<typeof ClaimLocationWithRelationsSchema>;
 
 export type CreateClaimLocationDTO = z.infer<typeof CreateClaimLocationDTOSchema>;
 export type CreateClaimLocationResponse = z.infer<typeof CreateClaimLocationResponseSchema>;
 
-export type getClaimLocationsByCompanyIdDTO = z.infer<typeof GetClaimLocationsByCompanyIdDTOSchema>;
-export type getClaimLocationsByCompanyIdResponse = z.infer<typeof GetClaimLocationsByCompanyIdResponseSchema>;
+export type GetLocationsByCompanyIdDTO = z.infer<typeof GetLocationsByCompanyIdDTOSchema>;
+export type GetLocationsByCompanyIdResponse = z.infer<typeof GetLocationsByCompanyIdResponseSchema>;
 
-export type deleteClaimLocationDTO = z.infer<typeof DeleteClaimLocationDTOSchema>;
-export type deleteClaimLocationResponse = z.infer<typeof DeleteClaimLocationResponseSchema>;
+export type DeleteClaimLocationDTO = z.infer<typeof DeleteClaimLocationDTOSchema>;
+export type DeleteClaimLocationResponse = z.infer<typeof DeleteClaimLocationResponseSchema>;
