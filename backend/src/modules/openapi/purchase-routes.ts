@@ -2,9 +2,8 @@ import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { z } from "zod";
 import {
-    CreateOrPatchPurchaseDTOUnionSchema,
     GetCompanyPurchasesDTOSchema,
-    CreateOrPatchPurchasesResponseSchema,
+    CreateOrChangePurchasesResponseSchema,
     GetPurchasesResponseSchema,
     GetCompanyPurchasesResponseSchema,
 } from "../../modules/purchase/types";
@@ -38,7 +37,7 @@ const createOrUpdatePurchaseRoute = createRoute({
         body: {
             content: {
                 "application/json": {
-                    schema: CreateOrPatchPurchaseDTOUnionSchema,
+                    schema: CreateOrChangePurchasesResponseSchema,
                 },
             },
         },
@@ -47,7 +46,7 @@ const createOrUpdatePurchaseRoute = createRoute({
         201: {
             content: {
                 "application/json": {
-                    schema: CreateOrPatchPurchasesResponseSchema,
+                    schema: CreateOrChangePurchasesResponseSchema,
                 },
             },
             description: "Purchase created successfully",
@@ -55,7 +54,7 @@ const createOrUpdatePurchaseRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: CreateOrPatchPurchasesResponseSchema,
+                    schema: CreateOrChangePurchasesResponseSchema,
                 },
             },
             description: "Purchase updated successfully",

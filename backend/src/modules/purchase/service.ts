@@ -1,17 +1,16 @@
 import { IPurchaseTransaction } from "./transaction";
 import { withServiceErrorHandling } from "../../utilities/error";
 import {
-    CreateOrPatchPurchaseResponse,
-    CreatePurchaseDTO,
+    CreateOrChangePurchaseDTO,
+    CreateOrChangePurchaseResponse,
     GetCompanyPurchasesDTO,
     GetCompanyPurchasesResponse,
     GetPurchaseAPIResponse,
-    PatchPurchaseDTO,
 } from "./types";
+import { Purchase } from "../../entities/Purchase";
 
 export interface IPurchaseService {
-    updatePurchase(payload: PatchPurchaseDTO): Promise<CreateOrPatchPurchaseResponse>;
-    createPurchase(payload: CreatePurchaseDTO): Promise<CreateOrPatchPurchaseResponse>;
+    createOrUpdatePurchase(payload: CreateOrChangePurchaseDTO): Promise<CreateOrChangePurchaseResponse>;
     getPurchase(id: string): Promise<GetPurchaseAPIResponse>;
     getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<GetCompanyPurchasesResponse>;
 }
@@ -23,33 +22,21 @@ export class PurchaseService implements IPurchaseService {
         this.PurchaseTransaction = qbTransaction;
     }
 
-    updatePurchase = withServiceErrorHandling(
-        async (payload: PatchPurchaseDTO): Promise<CreateOrPatchPurchaseResponse> => {
-            const newPurchase = await this.PurchaseTransaction.updatePurchase(payload.purchaseId, payload);
+    createOrUpdatePurchase = withServiceErrorHandling(
+        async (payload: CreateOrChangePurchaseDTO): Promise<CreateOrChangePurchaseResponse> => {
+            let newPurchases: Purchase[];
+            try {
+                newPurchases = await this.PurchaseTransaction.createOrUpdatePurchase(payload);
+            } catch (err: unknown) {
+                console.log(err);
+                throw err;
+            }
 
-            return {
-                companyId: newPurchase.companyId,
+            console.log(newPurchases.slice(0, 3), "...");
+            return newPurchases.map((newPurchase) => ({
+                ...newPurchase,
                 dateCreated: newPurchase.dateCreated.toUTCString(),
-                id: newPurchase.id,
-                isRefund: newPurchase.isRefund,
-                quickBooksId: newPurchase.quickBooksId,
-                totalAmountCents: newPurchase.totalAmountCents,
-            };
-        }
-    );
-
-    createPurchase = withServiceErrorHandling(
-        async (payload: CreatePurchaseDTO): Promise<CreateOrPatchPurchaseResponse> => {
-            const newPurchase = await this.PurchaseTransaction.createPurchase(payload);
-
-            return {
-                companyId: newPurchase.companyId,
-                id: newPurchase.id,
-                isRefund: newPurchase.isRefund,
-                quickBooksId: newPurchase.quickBooksId,
-                totalAmountCents: newPurchase.totalAmountCents,
-                dateCreated: newPurchase.dateCreated.toUTCString(),
-            };
+            }));
         }
     );
 

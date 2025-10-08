@@ -6,15 +6,13 @@ import {
     GetCompanyPurchasesAPIResponse,
     GetPurchaseAPIResponse,
     GetCompanyPurchasesDTOSchema,
-    CreateOrPatchPurchaseAPIResponse,
-    CreateOrPatchPurchaseDTOUnionSchema,
-    PatchPurchaseDTO,
-    CreatePurchaseDTO,
+    CreateOrChangePurchaseAPIResponse,
+    CreateOrChangePurchaseDTOSchema,
 } from "./types";
 import { ControllerResponse } from "../../utilities/response";
 
 export interface IPurchaseController {
-    createOrUpdatePurchase(_ctx: Context): ControllerResponse<TypedResponse<CreateOrPatchPurchaseAPIResponse>>;
+    createOrUpdatePurchase(_ctx: Context): ControllerResponse<TypedResponse<CreateOrChangePurchaseAPIResponse>>;
     getPurchase(ctx: Context): ControllerResponse<TypedResponse<GetPurchaseAPIResponse>>;
     getPurchasesForCompany(
         ctx: Context
@@ -34,24 +32,14 @@ export class PurchaseController implements IPurchaseController {
         async (
             ctx: Context
         ): ControllerResponse<
-            TypedResponse<CreateOrPatchPurchaseAPIResponse, 201> | TypedResponse<CreateOrPatchPurchaseAPIResponse, 200>
+            | TypedResponse<CreateOrChangePurchaseAPIResponse, 201>
+            | TypedResponse<CreateOrChangePurchaseAPIResponse, 200>
         > => {
             const json = await ctx.req.json();
-            const payload = CreateOrPatchPurchaseDTOUnionSchema.parse(json);
-
-            if ("purchaseId" in payload) {
-                if (!validate(payload.purchaseId)) {
-                    return ctx.json({ error: "Invalid company ID format" }, 400);
-                }
-
-                const typedPayload: PatchPurchaseDTO = payload as PatchPurchaseDTO;
-                const updatedPurchase = await this.PurchaseService.updatePurchase(typedPayload);
-                return ctx.json(updatedPurchase, 200);
-            } else {
-                const typedPayload: CreatePurchaseDTO = payload as CreatePurchaseDTO;
-                const newPurchase = await this.PurchaseService.createPurchase(typedPayload);
-                return ctx.json(newPurchase, 201);
-            }
+            const payload = CreateOrChangePurchaseDTOSchema.parse(json);
+            const updatedPurchase = await this.PurchaseService.createOrUpdatePurchase(payload);
+            console.log(updatedPurchase.slice(0, 3), "... updated purchase");
+            return ctx.json(updatedPurchase, 200);
         }
     );
 

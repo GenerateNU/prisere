@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { CreatePurchaseDTO, GetCompanyPurchasesResponse } from "../../modules/purchase/types";
+import { CreateOrChangePurchaseDTO, GetCompanyPurchasesResponse } from "../../modules/purchase/types";
 
 describe("GET /purchases", () => {
     let app: Hono;
@@ -34,21 +34,15 @@ describe("GET /purchases", () => {
         return await createCompanyResponse.json();
     };
 
-    const createPurchase = async (payload?: Partial<CreatePurchaseDTO>) => {
+    const createPurchase = async (payload?: Partial<CreateOrChangePurchaseDTO>) => {
         const createdCompany = await createCompany();
-        const requestBody = {
-            companyId: createdCompany.id,
-            quickBooksId: 12345,
-            totalAmountCents: 50000,
-            ...payload,
-        };
 
         const response = await app.request("/purchases", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(requestBody),
+            body: JSON.stringify(payload),
         });
 
         return await response.json();
@@ -59,12 +53,14 @@ describe("GET /purchases", () => {
         const companyId = company.id;
 
         for (let i = 0; i < 5; i++) {
-            await createPurchase({
-                companyId: companyId,
-                quickBooksId: 10000 + i,
-                totalAmountCents: 50000 + i * 1000,
-                isRefund: false,
-            });
+            await createPurchase([
+                {
+                    companyId: companyId,
+                    quickBooksId: 10000 + i,
+                    totalAmountCents: 50000 + i * 1000,
+                    isRefund: false,
+                },
+            ]);
         }
 
         const response = await app.request(`/purchases?companyId=${companyId}`, {
@@ -91,11 +87,14 @@ describe("GET /purchases", () => {
 
         // Create some purchases
         for (let i = 0; i < 3; i++) {
-            await createPurchase({
-                companyId: companyId,
-                quickBooksId: 10000 + i,
-                totalAmountCents: 50000 + i * 1000,
-            });
+            await createPurchase([
+                {
+                    companyId: companyId,
+                    quickBooksId: 10000 + i,
+                    totalAmountCents: 50000 + i * 1000,
+                    isRefund: false,
+                },
+            ]);
         }
 
         const response = await app.request(`/purchases?companyId=${companyId}&pageNumber=1`, {
@@ -113,11 +112,14 @@ describe("GET /purchases", () => {
 
         // Create 15 purchases
         for (let i = 0; i < 15; i++) {
-            await createPurchase({
-                companyId: companyId,
-                quickBooksId: 10000 + i,
-                totalAmountCents: 50000 + i * 1000,
-            });
+            await createPurchase([
+                {
+                    companyId: companyId,
+                    quickBooksId: 10000 + i,
+                    totalAmountCents: 50000 + i * 1000,
+                    isRefund: false,
+                },
+            ]);
         }
 
         const response = await app.request(`/purchases?companyId=${companyId}&resultsPerPage=10`, {
@@ -136,11 +138,14 @@ describe("GET /purchases", () => {
 
         // Create 10 purchases
         for (let i = 0; i < 10; i++) {
-            await createPurchase({
-                companyId: companyId,
-                quickBooksId: 10000 + i,
-                totalAmountCents: 50000 + i * 1000,
-            });
+            await createPurchase([
+                {
+                    companyId: companyId,
+                    quickBooksId: 10000 + i,
+                    totalAmountCents: 50000 + i * 1000,
+                    isRefund: false,
+                },
+            ]);
         }
 
         const response = await app.request(`/purchases?companyId=${companyId}&pageNumber=0&resultsPerPage=5`, {
@@ -159,11 +164,14 @@ describe("GET /purchases", () => {
 
         // Create 25 purchases to test default page size
         for (let i = 0; i < 25; i++) {
-            await createPurchase({
-                companyId: companyId,
-                quickBooksId: 10000 + i,
-                totalAmountCents: 50000 + i * 1000,
-            });
+            await createPurchase([
+                {
+                    isRefund: false,
+                    companyId: companyId,
+                    quickBooksId: 10000 + i,
+                    totalAmountCents: 50000 + i * 1000,
+                },
+            ]);
         }
 
         // Should use default pageNumber=0 and resultsPerPage=20
@@ -255,11 +263,14 @@ describe("GET /purchases", () => {
 
         // Create a few purchases
         for (let i = 0; i < 5; i++) {
-            await createPurchase({
-                companyId: companyId,
-                quickBooksId: 10000 + i,
-                totalAmountCents: 50000,
-            });
+            await createPurchase([
+                {
+                    isRefund: false,
+                    companyId: companyId,
+                    quickBooksId: 10000 + i,
+                    totalAmountCents: 50000,
+                },
+            ]);
         }
 
         const response = await app.request(`/purchases?companyId=${companyId}&pageNumber=10000`, {
@@ -278,11 +289,14 @@ describe("GET /purchases", () => {
 
         // Create a few purchases
         for (let i = 0; i < 5; i++) {
-            await createPurchase({
-                companyId: companyId,
-                quickBooksId: 10000 + i,
-                totalAmountCents: 50000,
-            });
+            await createPurchase([
+                {
+                    isRefund: false,
+                    companyId: companyId,
+                    quickBooksId: 10000 + i,
+                    totalAmountCents: 50000,
+                },
+            ]);
         }
 
         const response = await app.request(`/purchases?companyId=${companyId}&resultsPerPage=1000`, {
@@ -301,12 +315,14 @@ describe("GET /purchases", () => {
 
         // Create multiple purchases for the same company
         for (let i = 0; i < purchaseCount; i++) {
-            await createPurchase({
-                companyId: companyId,
-                quickBooksId: 20000 + i,
-                totalAmountCents: 100000 + i * 5000,
-                isRefund: i % 2 === 0,
-            });
+            await createPurchase([
+                {
+                    companyId: companyId,
+                    quickBooksId: 20000 + i,
+                    totalAmountCents: 100000 + i * 5000,
+                    isRefund: i % 2 === 0,
+                },
+            ]);
         }
 
         const response = await app.request(`/purchases?companyId=${companyId}&resultsPerPage=10`, {

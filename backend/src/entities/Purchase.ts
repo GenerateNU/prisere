@@ -23,14 +23,14 @@ export class Purchase {
     companyId!: string;
 
     //QuickBooks's internal ID for the purchase that was made
-    @Column()
-    quickBooksId!: number;
+    @Column({ nullable: true })
+    quickBooksId?: number;
 
     //Represented in cents to prevent precision issues
     @Column()
     totalAmountCents!: number;
 
-    @Column({ default: false })
+    @Column()
     isRefund!: boolean;
 
     @CreateDateColumn()

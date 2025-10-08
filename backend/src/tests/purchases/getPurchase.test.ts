@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { CreatePurchaseDTO } from "../../modules/purchase/types";
+import { CreateOrChangePurchaseDTO } from "../../modules/purchase/types";
 
 describe("GET /purchases/:id", () => {
     let app: Hono;
@@ -34,35 +34,31 @@ describe("GET /purchases/:id", () => {
         return await createCompanyResponse.json();
     };
 
-    const createPurchase = async (payload?: Partial<CreatePurchaseDTO>) => {
+    const createPurchase = async (payload: Partial<CreateOrChangePurchaseDTO>) => {
         const createdCompany = await createCompany();
-        const requestBody = {
-            companyId: createdCompany.id,
-            quickBooksId: 12345,
-            totalAmountCents: 50000,
-            ...payload,
-        };
 
         const response = await app.request("/purchases", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(requestBody),
+            body: JSON.stringify(payload),
         });
 
-        return await response.json();
+        return (await response.json())[0];
     };
 
     test("GET /purchases/:id - Valid Purchase ID", async () => {
+        const company = await createCompany();
         // First create a purchase to retrieve
         const createBody = {
             quickBooksId: 12345,
             totalAmountCents: 50000,
             isRefund: false,
+            companyId: company.id,
         };
 
-        const createdPurchase = await createPurchase(createBody);
+        const createdPurchase = await createPurchase([createBody]);
 
         // Now retrieve the purchase
         const response = await app.request(`/purchases/${createdPurchase.id}`, {
@@ -80,14 +76,17 @@ describe("GET /purchases/:id", () => {
     });
 
     test("GET /purchases/:id - Valid Purchase ID with Refund", async () => {
+        const company = await createCompany();
+
         // Create a refund purchase
         const createBody = {
             quickBooksID: 67890,
             totalAmountCents: 25000,
             isRefund: true,
+            companyId: company.id,
         };
 
-        const createdPurchase = await createPurchase(createBody);
+        const createdPurchase = await createPurchase([createBody]);
 
         // Retrieve the purchase
         const response = await app.request(`/purchases/${createdPurchase.id}`, {

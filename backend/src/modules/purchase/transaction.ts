@@ -1,13 +1,10 @@
-import { DataSource } from "typeorm";
+import { DataSource, DeepPartial, In, InsertResult } from "typeorm";
 import Boom from "@hapi/boom";
-import { CreatePurchaseDTO, GetCompanyPurchasesDTO, PatchPurchaseDTO } from "./types";
+import { CreateOrChangePurchaseDTO, GetCompanyPurchasesDTO } from "./types";
 import { Purchase } from "../../entities/Purchase";
-import { plainToClass } from "class-transformer";
-import { Company } from "../../entities/Company";
 
 export interface IPurchaseTransaction {
-    updatePurchase(id: string, payload: PatchPurchaseDTO): Promise<Purchase>;
-    createPurchase(payload: CreatePurchaseDTO): Promise<Purchase>;
+    createOrUpdatePurchase(payload: CreateOrChangePurchaseDTO): Promise<Purchase[]>;
     getPurchase(id: string): Promise<Purchase>;
     getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<Purchase[]>;
 }
@@ -19,39 +16,20 @@ export class PurchaseTransaction implements IPurchaseTransaction {
         this.db = db;
     }
 
-    async updatePurchase(id: string, payload: PatchPurchaseDTO): Promise<Purchase> {
-        const existingPurchase = await this.getPurchase(id);
+    async createOrUpdatePurchase(payload: CreateOrChangePurchaseDTO): Promise<Purchase[]> {
+        const normalizePayload = payload.map((element) => ({
+            ...element,
+            id: element.purchaseId,
+        }));
 
-        if (existingPurchase === null) {
-            throw Boom.notFound("Unable to find the the given purchase.");
-        }
+        const dbEntries = await this.db.manager.save(Purchase, normalizePayload);
 
-        const newPurchase = {
-            ...existingPurchase,
-            ...payload,
-        };
-
-        const dbEntry: Purchase = await this.db.manager.save(Purchase, newPurchase);
-
-        return dbEntry;
-    }
-
-    async createPurchase(payload: CreatePurchaseDTO): Promise<Purchase> {
-        const newPurchase = plainToClass(Purchase, payload);
-
-        const existingCompany = await this.db.manager.findOne(Company, {
+        const newPurchaseIds = dbEntries.map((entry) => entry.id);
+        return await this.db.manager.find(Purchase, {
             where: {
-                id: payload.companyId,
+                id: In(newPurchaseIds),
             },
         });
-
-        if (existingCompany === null) {
-            throw Boom.notFound("Unable to find the given company!");
-        }
-
-        const purchaseEntity = await this.db.manager.save(Purchase, newPurchase);
-
-        return purchaseEntity;
     }
 
     async getPurchase(id: string): Promise<Purchase> {
@@ -72,12 +50,10 @@ export class PurchaseTransaction implements IPurchaseTransaction {
         const { companyId, pageNumber, resultsPerPage } = payload;
 
         const numToSkip = resultsPerPage * pageNumber;
-        return (
-            (await this.db.manager.find(Purchase, {
-                where: { companyId: companyId },
-                skip: numToSkip,
-                take: resultsPerPage,
-            })) || []
-        );
+        return await this.db.manager.find(Purchase, {
+            where: { companyId: companyId },
+            skip: numToSkip,
+            take: resultsPerPage,
+        });
     }
 }
