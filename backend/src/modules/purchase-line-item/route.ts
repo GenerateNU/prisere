@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import { Hono } from "hono";
-import { IPurchaseController, PurchaseLineItemController } from "./controller";
+import { IPurchaseLineItemController, PurchaseLineItemController } from "./controller";
 import { IPurchaseLineItemService, PurchaseLineItemService } from "./service";
 import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "./transaction";
 
@@ -13,7 +13,7 @@ import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "./tra
 export const purchaseLineItemsRoutes = (db: DataSource, PurchaseRoutes: Hono): Hono => {
     const transaction: IPurchaseLineItemTransaction = new PurchaseLineItemTransaction(db);
     const service: IPurchaseLineItemService = new PurchaseLineItemService(transaction);
-    const controller: IPurchaseController = new PurchaseLineItemController(service);
+    const controller: IPurchaseLineItemController = new PurchaseLineItemController(service);
 
     PurchaseRoutes.get("/:id/lines", (ctx) => controller.getPurchaseLineItemsForPurchase(ctx));
     PurchaseRoutes.post("/line", (ctx) => controller.createOrUpdatePurchaseLineItems(ctx));

@@ -10,7 +10,7 @@ import {
 } from "./types";
 import { ControllerResponse } from "../../utilities/response";
 
-export interface IPurchaseController {
+export interface IPurchaseLineItemController {
     createOrUpdatePurchaseLineItems(
         _ctx: Context
     ): ControllerResponse<TypedResponse<CreateOrChangePurchaseLineItemsResponse, 200>>;
@@ -20,7 +20,7 @@ export interface IPurchaseController {
     ): ControllerResponse<TypedResponse<GetPurchaseLineItemsFromParentResponse, 200>>;
 }
 
-export class PurchaseLineItemController implements IPurchaseController {
+export class PurchaseLineItemController implements IPurchaseLineItemController {
     private purchaseLineItemService: IPurchaseLineItemService;
 
     constructor(service: IPurchaseLineItemService) {

@@ -7,7 +7,6 @@ import {
     GetCompanyPurchasesResponse,
     GetPurchaseResponse,
 } from "./types";
-import { Purchase } from "../../entities/Purchase";
 
 export interface IPurchaseService {
     createOrUpdatePurchase(payload: CreateOrChangePurchaseDTO): Promise<CreateOrChangePurchaseResponse>;
