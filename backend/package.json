@@ -10,7 +10,8 @@
     "start:built": "NODE_ENV=production bun dist/server.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --config src/eslint.config.ts && prettier . --check",
-    "lint:fix": "eslint . --config src/eslint.config.ts --fix && prettier . --write"
+    "lint:fix": "eslint . --config src/eslint.config.ts --fix && prettier . --write",
+    "generate:openapi": "bun run src/utilities/spec_gen.ts"
   },
   "type": "module",
   "dependencies": {

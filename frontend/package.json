@@ -5,22 +5,30 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
-    "start": "next start"
+    "start": "next start",
+    "generate-types": "bun run openapi-typescript ../spec.json -o ./schema.d.ts"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.57.4",
+    "@tanstack/react-query": "^5.90.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
+    "hono": "^4.9.10",
     "lucide-react": "^0.544.0",
     "next": "15.5.3",
+    "openapi-fetch": "^0.14.1",
+    "openapi-typescript": "^7.9.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@tanstack/eslint-plugin-query": "^5.91.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
