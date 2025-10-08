@@ -7,7 +7,6 @@ import {
     GetCompanyPurchasesResponse,
     GetPurchaseResponse,
 } from "./types";
-import { Purchase } from "../../entities/Purchase";
 
 export interface IPurchaseService {
     createOrUpdatePurchase(payload: CreateOrChangePurchaseDTO): Promise<CreateOrChangePurchaseResponse>;
@@ -24,7 +23,7 @@ export class PurchaseService implements IPurchaseService {
 
     createOrUpdatePurchase = withServiceErrorHandling(
         async (payload: CreateOrChangePurchaseDTO): Promise<CreateOrChangePurchaseResponse> => {
-            let newPurchases = await this.PurchaseTransaction.createOrUpdatePurchase(payload);
+            const newPurchases = await this.PurchaseTransaction.createOrUpdatePurchase(payload);
 
             return newPurchases.map((newPurchase) => ({
                 ...newPurchase,
