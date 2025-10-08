@@ -24,7 +24,7 @@ export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): O
     openApi.openapi(bulkCreateOrUpdateInvoiceRoute, (ctx) => invoiceController.bulkCreateOrUpdateInvoice(ctx));
     openApi.openapi(getInvoiceByIdRoute, (ctx) => invoiceController.getInvoice(ctx));
     openApi.openapi(getInvoicesForCompanyRoute, (ctx) => invoiceController.getInvoicesForCompany(ctx));
-    openApi.openapi(getInvoicesForCompanyByDate, (ctx) => invoiceController.getInvoicesForCompanyByDate(ctx));
+    openApi.openapi(sumInvoicesByCompanyAndDateRange, (ctx) => invoiceController.sumInvoicesByCompanyAndDateRange(ctx));
     return openApi;
 };
 
@@ -117,11 +117,12 @@ const getInvoicesForCompanyRoute = createRoute({
     tags: ["Invoice"],
 });
 
-const getInvoicesForCompanyByDate = createRoute({
+const sumInvoicesByCompanyAndDateRange = createRoute({
     method: "get",
-    path: "/quickbooks/invoice/bulk/{id}",
-    summary: "Get invoices for a company by date",
-    description: "Get invoices for a company that were made after the start date and before the end date",
+    path: "/quickbooks/invoice/bulk/{id}/totalIncome",
+    summary: "Get the summation of invoices for a company in a date range",
+    description:
+        "Get the summation of invoices for a company that were made after the start date and before the end date",
     request: {
         params: GetInvoiceDTOSchema,
         query: z.object({ startDate: z.iso.datetime(), endDate: z.iso.datetime() }),
@@ -130,10 +131,10 @@ const getInvoicesForCompanyByDate = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: GetCompanyInvoicesResponseSchema,
+                    schema: z.number(),
                 },
             },
-            description: "Retrieved invoices",
+            description: "Found summation successfully",
         },
         404: {
             content: {
