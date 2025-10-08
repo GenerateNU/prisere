@@ -11,7 +11,6 @@ import {
     GetInvoiceResponseSchema,
     GetCompanyInvoicesDTOSchema,
     GetCompanyInvoicesResponseSchema,
-    GetCompanyInvoicesByDateDTOSchema,
 } from "../../types/Invoice";
 import { CompanyTransaction } from "../company/transaction";
 import { z } from "zod";

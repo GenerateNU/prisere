@@ -1,25 +1,18 @@
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, beforeEach, afterEach } from "bun:test";
+import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { SeederFactoryManager } from "typeorm-extension";
-import CompanySeeder from "../../database/seeds/company.seed";
-import { InvoiceSeeder, seededInvoices } from "../../database/seeds/invoice.seed";
-import { DataSource } from "typeorm";
 import { CompareRequestToCreated } from "./utils";
-import { validate } from "uuid";
 
 describe("Invoice get by id", () => {
     let app: Hono;
     let backup: IBackup;
-    let datasource: DataSource;
     let createdCompanyId: string;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
-        datasource = testAppData.dataSource;
 
         const response = await app.request("/companies", {
             method: "POST",
