@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { ErrorResponseSchema } from "../../types/Utils";
 
 //Patch existing quick books purchase
 export const CreateOrChangePurchaseDTOSchema = z
@@ -58,21 +57,6 @@ export type CreateOrChangePurchaseResponse = z.infer<typeof CreateOrChangePurcha
 export type GetPurchaseResponse = z.infer<typeof GetPurchasesResponseSchema>;
 export type GetCompanyPurchasesResponse = z.infer<typeof GetCompanyPurchasesResponseSchema>;
 
-//API Response Schemas
-export const CreateOrChangePurchaseAPIResponseSchema = z.union([
-    CreateOrChangePurchasesResponseSchema,
-    ErrorResponseSchema,
-]);
-
-export const GetPurchaseAPIResponseSchema = z.union([GetPurchasesResponseSchema, ErrorResponseSchema]);
-
-export const GetCompanyPurchaseAPIResponseSchema = z.union([GetCompanyPurchasesResponseSchema, ErrorResponseSchema]);
-
 //Input types
 export type CreateOrChangePurchaseDTO = z.infer<typeof CreateOrChangePurchaseDTOSchema>;
 export type GetCompanyPurchasesDTO = z.infer<typeof GetCompanyPurchasesDTOSchema>;
-
-//Zod types for payload validation
-export type CreateOrChangePurchaseAPIResponse = z.infer<typeof CreateOrChangePurchaseAPIResponseSchema>;
-export type GetPurchaseAPIResponse = z.infer<typeof GetPurchaseAPIResponseSchema>;
-export type GetCompanyPurchasesAPIResponse = z.infer<typeof GetCompanyPurchaseAPIResponseSchema>;

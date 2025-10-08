@@ -3,7 +3,7 @@ import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import {
     CreateLocationAddressResponseSchema,
     CreateLocationAddressSchema,
-    GetLocationAddressResponseSchema,
+    LocationAddressSchema,
     GetLocationAddressSchema,
 } from "../../types/Location";
 import { ILocationAddressTransaction, LocationAddressTransactions } from "../location-address/transaction";
@@ -63,7 +63,7 @@ const getLocationAddressRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: GetLocationAddressResponseSchema,
+                    schema: LocationAddressSchema,
                 },
             },
             description: "The associated location address for the given information",

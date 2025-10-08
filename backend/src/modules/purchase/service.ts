@@ -5,13 +5,13 @@ import {
     CreateOrChangePurchaseResponse,
     GetCompanyPurchasesDTO,
     GetCompanyPurchasesResponse,
-    GetPurchaseAPIResponse,
+    GetPurchaseResponse,
 } from "./types";
 import { Purchase } from "../../entities/Purchase";
 
 export interface IPurchaseService {
     createOrUpdatePurchase(payload: CreateOrChangePurchaseDTO): Promise<CreateOrChangePurchaseResponse>;
-    getPurchase(id: string): Promise<GetPurchaseAPIResponse>;
+    getPurchase(id: string): Promise<GetPurchaseResponse>;
     getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<GetCompanyPurchasesResponse>;
 }
 
@@ -40,7 +40,7 @@ export class PurchaseService implements IPurchaseService {
         }
     );
 
-    getPurchase = withServiceErrorHandling(async (id: string): Promise<GetPurchaseAPIResponse> => {
+    getPurchase = withServiceErrorHandling(async (id: string): Promise<GetPurchaseResponse> => {
         const qbPurchase = await this.PurchaseTransaction.getPurchase(id);
 
         return {
