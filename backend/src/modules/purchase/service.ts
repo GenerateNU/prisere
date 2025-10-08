@@ -24,8 +24,7 @@ export class PurchaseService implements IPurchaseService {
 
     createOrUpdatePurchase = withServiceErrorHandling(
         async (payload: CreateOrChangePurchaseDTO): Promise<CreateOrChangePurchaseResponse> => {
-            let newPurchases: Purchase[];
-            newPurchases = await this.PurchaseTransaction.createOrUpdatePurchase(payload);
+            let newPurchases = await this.PurchaseTransaction.createOrUpdatePurchase(payload);
 
             return newPurchases.map((newPurchase) => ({
                 ...newPurchase,
