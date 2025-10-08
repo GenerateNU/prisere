@@ -16,7 +16,7 @@ export interface IInvoiceController {
     bulkCreateOrUpdateInvoice(_ctx: Context): ControllerResponse<TypedResponse<CreateOrUpdateInvoicesResponse, 201>>;
     getInvoice(ctx: Context): ControllerResponse<TypedResponse<GetInvoiceResponse, 200>>;
     getInvoicesForCompany(ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>>;
-    getInvoicesForCompanyByDate(ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>>;
+    sumInvoicesByCompanyAndDateRange(ctx: Context): ControllerResponse<TypedResponse<number, 200>>;
 }
 
 export class InvoiceController implements IInvoiceController {
@@ -66,8 +66,8 @@ export class InvoiceController implements IInvoiceController {
         }
     );
 
-    getInvoicesForCompanyByDate = withControllerErrorHandling(
-        async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>> => {
+    sumInvoicesByCompanyAndDateRange = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<number, 200>> => {
             const queryParams = {
                 companyId: ctx.req.param("id"),
                 startDate: ctx.req.query("startDate"),
@@ -81,8 +81,8 @@ export class InvoiceController implements IInvoiceController {
                 return ctx.json({ error: "Start date must be before End date" }, 400);
             }
 
-            const fetchedInvoices = await this.invoiceService.getInvoicesForCompanyByDate(payload);
-            return ctx.json(fetchedInvoices, 200);
+            const invoiceSummationAmount = await this.invoiceService.sumInvoicesByCompanyAndDateRange(payload);
+            return ctx.json(invoiceSummationAmount, 200);
         }
     );
 }

@@ -1,4 +1,4 @@
-import { DataSource, Between } from "typeorm";
+import { DataSource } from "typeorm";
 import Boom from "@hapi/boom";
 import { plainToInstance } from "class-transformer";
 import { Invoice } from "../../entities/Invoice";
@@ -8,7 +8,7 @@ export interface IInvoiceTransaction {
     createOrUpdateInvoices(payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]>;
     getInvoiceById(id: string): Promise<Invoice>;
     getInvoicesForCompany(payload: GetCompanyInvoicesDTO): Promise<Invoice[]>;
-    getInvoicesForCompanyByDate(payload: GetCompanyInvoicesByDateDTO): Promise<Invoice[]>;
+    sumInvoicesByCompanyAndDateRange(payload: GetCompanyInvoicesByDateDTO): Promise<number>;
 }
 
 export class InvoiceTransaction implements IInvoiceTransaction {
@@ -55,15 +55,21 @@ export class InvoiceTransaction implements IInvoiceTransaction {
         return invoices;
     }
 
-    async getInvoicesForCompanyByDate(payload: GetCompanyInvoicesByDateDTO): Promise<Invoice[]> {
+    async sumInvoicesByCompanyAndDateRange(payload: GetCompanyInvoicesByDateDTO): Promise<number> {
         const { companyId, startDate, endDate } = payload;
-        const invoices: Invoice[] = await this.db.getRepository(Invoice).find({
-            where: {
-                companyId: companyId,
-                dateCreated: Between(new Date(startDate), new Date(endDate)),
-            },
-        });
 
-        return invoices;
+        const summation = await this.db
+            .createQueryBuilder(Invoice, "invoice")
+            .select("SUM(invoice.totalAmountCents)", "total")
+            .where("invoice.companyId = :companyId", { companyId })
+            .andWhere("invoice.dateCreated BETWEEN :startDate AND :endDate", {
+                startDate: new Date(startDate),
+                endDate: new Date(endDate),
+            })
+            .getRawOne();
+
+        const totalCents: number = summation?.total || 0;
+
+        return totalCents;
     }
 }

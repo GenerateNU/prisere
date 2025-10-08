@@ -10,7 +10,7 @@ export interface IInvoiceService {
     bulkCreateOrUpdateInvoice(payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]>;
     getInvoiceById(id: string): Promise<Invoice>;
     getInvoicesForCompany(payload: GetCompanyInvoicesDTO): Promise<Invoice[]>;
-    getInvoicesForCompanyByDate(payload: GetCompanyInvoicesByDateDTO): Promise<Invoice[]>;
+    sumInvoicesByCompanyAndDateRange(payload: GetCompanyInvoicesByDateDTO): Promise<number>;
 }
 
 export class InvoiceService implements IInvoiceService {
@@ -66,9 +66,9 @@ export class InvoiceService implements IInvoiceService {
         return invoices;
     });
 
-    getInvoicesForCompanyByDate = withServiceErrorHandling(
-        async (payload: GetCompanyInvoicesByDateDTO): Promise<Invoice[]> => {
-            const invoices = await this.invoiceTransaction.getInvoicesForCompanyByDate(payload);
+    sumInvoicesByCompanyAndDateRange = withServiceErrorHandling(
+        async (payload: GetCompanyInvoicesByDateDTO): Promise<number> => {
+            const invoices = await this.invoiceTransaction.sumInvoicesByCompanyAndDateRange(payload);
 
             return invoices;
         }

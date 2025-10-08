@@ -2,7 +2,6 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { CompareRequestToCreated } from "./utils";
 
 describe("Invoice get by id", () => {
     let app: Hono;
@@ -27,7 +26,7 @@ describe("Invoice get by id", () => {
         backup.restore();
     });
 
-    test("should get the invoices in the valid date range", async () => {
+    test("should return the sum of invoices in the valid date range", async () => {
         const tenDaysAgo = new Date();
         tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
 
@@ -50,7 +49,7 @@ describe("Invoice get by id", () => {
             },
             {
                 companyId: createdCompanyId,
-                totalAmountCents: 50,
+                totalAmountCents: 80,
                 dateCreated: threeDaysAgo,
             },
         ];
@@ -62,14 +61,14 @@ describe("Invoice get by id", () => {
         });
 
         const response = await app.request(
-            `/quickbooks/invoice/bulk/${createdCompanyId}?startDate=${tenDaysAgo.toISOString()}&endDate=${fiveDaysAgo.toISOString()}`
+            `/quickbooks/invoice/bulk/${createdCompanyId}/totalIncome?startDate=${tenDaysAgo.toISOString()}&endDate=${fiveDaysAgo.toISOString()}`
         );
         const body = await response.json();
         expect(response.status).toBe(200);
-        CompareRequestToCreated([invoices[0], invoices[1]], body);
+        expect(body).toBe(95);
     });
 
-    test("should get empty array of invoices if no invoices in the valid date range", async () => {
+    test("should return 0 if no invoices in the valid date range", async () => {
         const tenDaysAgo = new Date();
         tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
 
@@ -107,16 +106,16 @@ describe("Invoice get by id", () => {
         });
 
         const response = await app.request(
-            `/quickbooks/invoice/bulk/${createdCompanyId}?startDate=${twoDaysAgo.toISOString()}&endDate=${new Date().toISOString()}`
+            `/quickbooks/invoice/bulk/${createdCompanyId}/totalIncome?startDate=${twoDaysAgo.toISOString()}&endDate=${new Date().toISOString()}`
         );
         const body = await response.json();
         expect(response.status).toBe(200);
-        CompareRequestToCreated([], body);
+        expect(body).toBe(0);
     });
 
     test("should return 400 if invalid dates", async () => {
         const response = await app.request(
-            `/quickbooks/invoice/bulk/${createdCompanyId}?startDate=${new Date().toISOString()}&endDate=${new Date().toISOString()}`
+            `/quickbooks/invoice/bulk/${createdCompanyId}/totalIncome?startDate=${new Date().toISOString()}&endDate=${new Date().toISOString()}`
         );
         const body = await response.json();
         expect(response.status).toBe(400);
@@ -126,7 +125,7 @@ describe("Invoice get by id", () => {
 
     test("should return 400 if invalid companyID", async () => {
         const response = await app.request(
-            `/quickbooks/invoice/bulk/bla?startDate=${new Date().toISOString()}&endDate=${new Date().toISOString()}`
+            `/quickbooks/invoice/bulk/bla/totalIncome?startDate=${new Date().toISOString()}&endDate=${new Date().toISOString()}`
         );
         const body = await response.json();
         expect(response.status).toBe(400);
