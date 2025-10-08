@@ -5,8 +5,7 @@ import { User } from "../../entities/User.js";
 export default class UserSeeder implements Seeder {
     track = false;
     public async run(dataSource: DataSource, _factoryManager: SeederFactoryManager): Promise<void> {
-        const repository = dataSource.getRepository(User);
-        await repository.insert([
+        await dataSource.manager.insert(User, [
             {
                 firstName: "Zainab",
                 lastName: "Imadulla",

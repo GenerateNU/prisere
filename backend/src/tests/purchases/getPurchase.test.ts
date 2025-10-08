@@ -35,8 +35,6 @@ describe("GET /purchases/:id", () => {
     };
 
     const createPurchase = async (payload: Partial<CreateOrChangePurchaseDTO>) => {
-        const createdCompany = await createCompany();
-
         const response = await app.request("/purchases", {
             method: "POST",
             headers: {

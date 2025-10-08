@@ -1,4 +1,4 @@
-import { DataSource, DeepPartial, In, InsertResult } from "typeorm";
+import { DataSource, In } from "typeorm";
 import Boom from "@hapi/boom";
 import { CreateOrChangePurchaseDTO, GetCompanyPurchasesDTO } from "./types";
 import { Purchase } from "../../entities/Purchase";
