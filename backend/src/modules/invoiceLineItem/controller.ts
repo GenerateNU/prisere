@@ -45,7 +45,7 @@ export class InvoiceLineItemController implements IInvoiceLineItemController {
             const id = ctx.req.param("id");
 
             if (!validate(id)) {
-                return ctx.json({ error: "Invalid invoice line item ID format" }, 400);
+                return ctx.json({ error: "Invalid Invoice ID format" }, 400);
             }
 
             const fetchedQuickBooksInvoiceLineItems = await this.invoiceLineItemService.getInvoiceLineItemsForInvoice(id);

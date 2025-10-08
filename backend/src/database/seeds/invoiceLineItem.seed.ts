@@ -23,7 +23,7 @@ export const seededInvoiceLineItems = [
         category: "CAT_2"
     },
     {
-        id: "3a8f91bb-c3d5-4eb5-a3af-c35451fefaa6",
+        id: "553fc0eb-4ac7-439b-92c1-4cfaf3b3f42f",
         description: "inv2: line item 1",
         invoiceId: seededInvoices[1].id,
         quickbooksId: 5,
@@ -32,7 +32,7 @@ export const seededInvoiceLineItems = [
         category: "CAT_1"
     },
     {
-        id: "944d3db6-1b6f-49fd-88d5-ebb3e7a42ab5",
+        id: "e5727aff-5fe0-4b5d-bc49-c874427d4990",
         description: "inv2: line item 2",
         invoiceId: seededInvoices[1].id,
         quickbooksId: 6,
