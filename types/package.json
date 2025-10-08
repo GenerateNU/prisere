@@ -1,0 +1,14 @@
+{
+  "name": "@prisere/types",
+  "version": "1.0.0",
+  "type": "module",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "@hono/zod-openapi": "^1.1.3",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

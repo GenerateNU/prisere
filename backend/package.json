@@ -12,6 +12,9 @@
     "lint": "eslint . --config src/eslint.config.ts && prettier . --check",
     "lint:fix": "eslint . --config src/eslint.config.ts --fix && prettier . --write"
   },
+  "paths": {
+    "@types/*": ["types/*"]
+  },
   "type": "module",
   "dependencies": {
     "@hapi/boom": "^10.0.1",
