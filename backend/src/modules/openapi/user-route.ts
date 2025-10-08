@@ -44,6 +44,7 @@ const createUserRoute = createRoute({
     description: "Creates a new user with the provided information",
     request: {
         body: {
+            required: true,
             content: {
                 "application/json": {
                     schema: CreateUserDTOSchema,

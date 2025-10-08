@@ -53,3 +53,4 @@ export type GetUserResponse = z.infer<typeof GetUserResponseSchema>;
 //GET COMPANY
 export type GetUserCompanyDTO = z.infer<typeof GetUserComapnyDTOSchema>;
 export type GetUserCompanyResponse = z.infer<typeof GetUserCompanyResponseSchema>;
+
