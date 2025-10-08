@@ -6,9 +6,11 @@ import {
     JoinColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    OneToMany,
 } from "typeorm";
 import type { Relation } from "typeorm";
 import { Company } from "./Company.js";
+import { PurchaseLineItem } from "./PurchaseLineItem.js";
 
 @Entity("purchase")
 export class Purchase {
@@ -32,6 +34,9 @@ export class Purchase {
 
     @Column()
     isRefund!: boolean;
+
+    @OneToMany(() => PurchaseLineItem, (purchaseLineItem) => purchaseLineItem.purchase)
+    lineItems!: Relation<PurchaseLineItem[]>;
 
     @CreateDateColumn()
     dateCreated!: Date;
