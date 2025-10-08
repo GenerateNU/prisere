@@ -25,14 +25,8 @@ export class PurchaseService implements IPurchaseService {
     createOrUpdatePurchase = withServiceErrorHandling(
         async (payload: CreateOrChangePurchaseDTO): Promise<CreateOrChangePurchaseResponse> => {
             let newPurchases: Purchase[];
-            try {
-                newPurchases = await this.PurchaseTransaction.createOrUpdatePurchase(payload);
-            } catch (err: unknown) {
-                console.log(err);
-                throw err;
-            }
+            newPurchases = await this.PurchaseTransaction.createOrUpdatePurchase(payload);
 
-            console.log(newPurchases.slice(0, 3), "...");
             return newPurchases.map((newPurchase) => ({
                 ...newPurchase,
                 dateCreated: newPurchase.dateCreated.toUTCString(),
