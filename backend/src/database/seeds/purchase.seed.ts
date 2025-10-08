@@ -4,17 +4,19 @@ import { Purchase } from "../../entities/Purchase";
 
 export const seededPurchases = [
     {
-        id: "1b53822d-eae9-4948-aaaf-c71c4adcdb5a",
+        id: "89cac778-b8d8-48c2-a2da-77019c57944e",
         companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
-        quickBooksId: 1,
-        totalAmountCents: 234,
+        quickBooksId: 108347,
+        totalAmountCents: 1234,
+        isRefund: true,
         dateCreated: new Date("2025-02-05T12:00:00Z"),
     },
     {
-        id: "840b4c83-f46b-4774-96c1-2f11959d45eb",
+        id: "1ffac23a-aefa-45ef-b0bd-b2b72ceae12e",
         companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
-        quickBooksId: 2,
-        totalAmountCents: 456,
+        quickBooksId: 2108347,
+        totalAmountCents: 5678,
+        isRefund: false,
         dateCreated: new Date("2025-01-11T12:00:00Z"),
     },
 ];
