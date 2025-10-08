@@ -1,18 +1,19 @@
 'use client'
-import { login } from '@/actions/auth'
+import { signup } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { redirect } from 'next/navigation'
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 
+
 const initialState = {
   success: false,
   message: ''
 }
 
-export default function LoginPage() {
-  const [state, loginAction] = useActionState(login, initialState)
+export default function SignUpPage() {
+  const [state, signupAction] = useActionState(signup, initialState)
   const status = useFormStatus();
 
 
@@ -20,7 +21,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-stone">
       <div className="max-w-lg w-full space-y-8">
         <div className = "flex justify-center">
-            <label className = "block text-4xl text-black font-bold"> Log In </label>
+            <label className = "block text-4xl text-black font-bold"> Sign Up </label>
         </div>
         <form className="mt-8 space-y-6 bg-white p-8">
           <div className="w-full flex flex-col items-center space-y-4">
@@ -42,11 +43,11 @@ export default function LoginPage() {
           </div>
           
           <div className="w-full flex flex-col gap-2 items-center">
-            <Button formAction={loginAction}  variant="secondary" disabled={status.pending}>
-              LOG IN
+            <Button formAction={signupAction}  variant="secondary" disabled={status.pending}>
+              SIGN UP
             </Button>
-            <Button type="button" variant = "default" onClick={() => redirect("/signup")} disabled={status.pending}>
-              Sign Up
+            <Button type="button" variant = "default" onClick={() => redirect("/login")} disabled={status.pending}>
+              Log In
             </Button>
             <p> Forgot Password?</p>
           </div>
