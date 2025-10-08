@@ -1,4 +1,4 @@
-import { DataSource , Between} from "typeorm";
+import { DataSource, Between } from "typeorm";
 import Boom from "@hapi/boom";
 import { plainToInstance } from "class-transformer";
 import { Invoice } from "../../entities/Invoice";

@@ -47,7 +47,6 @@ export const GetCompanyInvoicesByDateDTOSchema = z.object({
 
 export const GetCompanyInvoicesResponseSchema = z.array(GetInvoiceResponseSchema);
 
-
 //Controller Responses
 export type CreateOrUpdateInvoicesResponse = z.infer<typeof CreateOrUpdateInvoiceResponseSchema>;
 export type GetInvoiceResponse = z.infer<typeof GetInvoiceResponseSchema>;

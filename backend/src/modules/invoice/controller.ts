@@ -84,5 +84,5 @@ export class InvoiceController implements IInvoiceController {
             const fetchedInvoices = await this.invoiceService.getInvoicesForCompanyByDate(payload);
             return ctx.json(fetchedInvoices, 200);
         }
-    )
+    );
 }

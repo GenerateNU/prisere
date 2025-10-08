@@ -15,7 +15,6 @@ describe("Invoice get by id", () => {
     let datasource: DataSource;
     let createdCompanyId: string;
 
-
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
@@ -36,7 +35,6 @@ describe("Invoice get by id", () => {
     });
 
     test("should get the invoices in the valid date range", async () => {
-
         const tenDaysAgo = new Date();
         tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
 
@@ -46,19 +44,23 @@ describe("Invoice get by id", () => {
         const threeDaysAgo = new Date();
         threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
-        const invoices: any[] = [{
-            companyId: createdCompanyId,
-            totalAmountCents: 45,
-            dateCreated: tenDaysAgo,
-        }, {
-            companyId: createdCompanyId,
-            totalAmountCents: 50,
-            dateCreated: fiveDaysAgo,
-        }, {
-            companyId: createdCompanyId,
-            totalAmountCents: 50,
-            dateCreated: threeDaysAgo,
-        }]
+        const invoices: any[] = [
+            {
+                companyId: createdCompanyId,
+                totalAmountCents: 45,
+                dateCreated: tenDaysAgo,
+            },
+            {
+                companyId: createdCompanyId,
+                totalAmountCents: 50,
+                dateCreated: fiveDaysAgo,
+            },
+            {
+                companyId: createdCompanyId,
+                totalAmountCents: 50,
+                dateCreated: threeDaysAgo,
+            },
+        ];
 
         await app.request("/quickbooks/invoice/bulk", {
             method: "POST",
@@ -66,14 +68,15 @@ describe("Invoice get by id", () => {
             body: JSON.stringify(invoices),
         });
 
-        const response = await app.request(`/quickbooks/invoice/bulk/${createdCompanyId}?startDate=${tenDaysAgo.toISOString()}&endDate=${fiveDaysAgo.toISOString()}`);
+        const response = await app.request(
+            `/quickbooks/invoice/bulk/${createdCompanyId}?startDate=${tenDaysAgo.toISOString()}&endDate=${fiveDaysAgo.toISOString()}`
+        );
         const body = await response.json();
         expect(response.status).toBe(200);
         CompareRequestToCreated([invoices[0], invoices[1]], body);
     });
 
     test("should get empty array of invoices if no invoices in the valid date range", async () => {
-
         const tenDaysAgo = new Date();
         tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
 
@@ -86,19 +89,23 @@ describe("Invoice get by id", () => {
         const twoDaysAgo = new Date();
         twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
 
-        const invoices: any[] = [{
-            companyId: createdCompanyId,
-            totalAmountCents: 45,
-            dateCreated: tenDaysAgo,
-        }, {
-            companyId: createdCompanyId,
-            totalAmountCents: 50,
-            dateCreated: fiveDaysAgo,
-        }, {
-            companyId: createdCompanyId,
-            totalAmountCents: 50,
-            dateCreated: threeDaysAgo,
-        }]
+        const invoices: any[] = [
+            {
+                companyId: createdCompanyId,
+                totalAmountCents: 45,
+                dateCreated: tenDaysAgo,
+            },
+            {
+                companyId: createdCompanyId,
+                totalAmountCents: 50,
+                dateCreated: fiveDaysAgo,
+            },
+            {
+                companyId: createdCompanyId,
+                totalAmountCents: 50,
+                dateCreated: threeDaysAgo,
+            },
+        ];
 
         await app.request("/quickbooks/invoice/bulk", {
             method: "POST",
@@ -106,15 +113,18 @@ describe("Invoice get by id", () => {
             body: JSON.stringify(invoices),
         });
 
-        const response = await app.request(`/quickbooks/invoice/bulk/${createdCompanyId}?startDate=${twoDaysAgo.toISOString()}&endDate=${new Date().toISOString()}`);
+        const response = await app.request(
+            `/quickbooks/invoice/bulk/${createdCompanyId}?startDate=${twoDaysAgo.toISOString()}&endDate=${new Date().toISOString()}`
+        );
         const body = await response.json();
         expect(response.status).toBe(200);
         CompareRequestToCreated([], body);
     });
 
     test("should return 400 if invalid dates", async () => {
-
-        const response = await app.request(`/quickbooks/invoice/bulk/${createdCompanyId}?startDate=${new Date().toISOString()}&endDate=${new Date().toISOString()}`);
+        const response = await app.request(
+            `/quickbooks/invoice/bulk/${createdCompanyId}?startDate=${new Date().toISOString()}&endDate=${new Date().toISOString()}`
+        );
         const body = await response.json();
         expect(response.status).toBe(400);
         expect(body).toHaveProperty("error");
@@ -122,12 +132,12 @@ describe("Invoice get by id", () => {
     });
 
     test("should return 400 if invalid companyID", async () => {
-
-        const response = await app.request(`/quickbooks/invoice/bulk/bla?startDate=${new Date().toISOString()}&endDate=${new Date().toISOString()}`);
+        const response = await app.request(
+            `/quickbooks/invoice/bulk/bla?startDate=${new Date().toISOString()}&endDate=${new Date().toISOString()}`
+        );
         const body = await response.json();
         expect(response.status).toBe(400);
         expect(body).toHaveProperty("error");
         expect(body.error).toBe("Invalid company ID format");
     });
-
 });

@@ -66,9 +66,11 @@ export class InvoiceService implements IInvoiceService {
         return invoices;
     });
 
-    getInvoicesForCompanyByDate = withServiceErrorHandling(async (payload: GetCompanyInvoicesByDateDTO): Promise<Invoice[]> => {
-        const invoices = await this.invoiceTransaction.getInvoicesForCompanyByDate(payload);
+    getInvoicesForCompanyByDate = withServiceErrorHandling(
+        async (payload: GetCompanyInvoicesByDateDTO): Promise<Invoice[]> => {
+            const invoices = await this.invoiceTransaction.getInvoicesForCompanyByDate(payload);
 
-        return invoices;
-    });
+            return invoices;
+        }
+    );
 }
