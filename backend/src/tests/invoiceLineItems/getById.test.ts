@@ -7,7 +7,7 @@ import CompanySeeder from "../../database/seeds/company.seed";
 import { DataSource } from "typeorm";
 import { CompareRequestToCreated } from "./utils";
 import { InvoiceLineItemSeeder, seededInvoiceLineItems } from "../../database/seeds/invoiceLineItem.seed";
-import { seededInvoices, InvoiceSeeder } from "../../database/seeds/invoice.seed";
+import { InvoiceSeeder } from "../../database/seeds/invoice.seed";
 
 describe("Invoice get by id", () => {
     let app: Hono;
