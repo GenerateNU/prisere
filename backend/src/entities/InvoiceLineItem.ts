@@ -10,7 +10,7 @@ export class InvoiceLineItem {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
 
-    @Column({nullable: true, length: INVOICE_LINE_ITEM_DESCRIPTION_CHARS})
+    @Column({ nullable: true, length: INVOICE_LINE_ITEM_DESCRIPTION_CHARS })
     description?: string;
 
     @ManyToOne(() => Invoice, { nullable: true })
@@ -28,7 +28,7 @@ export class InvoiceLineItem {
     @Column()
     amountCents!: number;
 
-    @Column({nullable: true, length: INVOICE_LINE_ITEM_CATEGORY_CHARS})
+    @Column({ nullable: true, length: INVOICE_LINE_ITEM_CATEGORY_CHARS })
     category?: string;
 
     @Column()

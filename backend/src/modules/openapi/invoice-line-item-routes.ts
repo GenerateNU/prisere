@@ -6,15 +6,25 @@ import { z } from "zod";
 import { IInvoiceLineItemTransaction, InvoiceLineItemTransaction } from "../invoiceLineItem/transaction";
 import { IInvoiceLineItemController, InvoiceLineItemController } from "../invoiceLineItem/controller";
 import { IInvoiceLineItemService, InvoiceLineItemService } from "../invoiceLineItem/service";
-import { CreateOrUpdateInvoiceLineItemsDTOSchema, CreateOrUpdateInvoiceLineItemsResponseSchema, GetInvoiceLineItemDTOSchema, GetInvoiceLineItemResponseSchema } from "../../types/InvoiceLineItem";
+import {
+    CreateOrUpdateInvoiceLineItemsDTOSchema,
+    CreateOrUpdateInvoiceLineItemsResponseSchema,
+    GetInvoiceLineItemDTOSchema,
+    GetInvoiceLineItemResponseSchema,
+} from "../../types/InvoiceLineItem";
 
 export const addOpenApiInvoiceLineItemRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const invoiceTransaction: IInvoiceTransaction = new InvoiceTransaction(db);
     const invoiceLineItemTransaction: IInvoiceLineItemTransaction = new InvoiceLineItemTransaction(db);
-    const invoiceLineItemService: IInvoiceLineItemService = new InvoiceLineItemService(invoiceLineItemTransaction, invoiceTransaction);
+    const invoiceLineItemService: IInvoiceLineItemService = new InvoiceLineItemService(
+        invoiceLineItemTransaction,
+        invoiceTransaction
+    );
     const invoiceLineItemController: IInvoiceLineItemController = new InvoiceLineItemController(invoiceLineItemService);
 
-    openApi.openapi(bulkCreateOrUpdateInvoiceLineItemRoute, (ctx) => invoiceLineItemController.bulkCreateOrUpdateInvoiceLineItems(ctx));
+    openApi.openapi(bulkCreateOrUpdateInvoiceLineItemRoute, (ctx) =>
+        invoiceLineItemController.bulkCreateOrUpdateInvoiceLineItems(ctx)
+    );
     openApi.openapi(getInvoiceLineItemByIdRoute, (ctx) => invoiceLineItemController.getInvoiceLineItemById(ctx));
     return openApi;
 };

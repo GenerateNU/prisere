@@ -17,7 +17,10 @@ import { z } from "zod";
 import { IInvoiceLineItemController, InvoiceLineItemController } from "../invoiceLineItem/controller";
 import { IInvoiceLineItemService, InvoiceLineItemService } from "../invoiceLineItem/service";
 import { IInvoiceLineItemTransaction, InvoiceLineItemTransaction } from "../invoiceLineItem/transaction";
-import { GetInvoiceLineItemsByInvoiceDTOSchema, GetInvoiceLineItemsByInvoiceResponseSchema } from "../../types/InvoiceLineItem";
+import {
+    GetInvoiceLineItemsByInvoiceDTOSchema,
+    GetInvoiceLineItemsByInvoiceResponseSchema,
+} from "../../types/InvoiceLineItem";
 
 export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const invoiceTransaction = new InvoiceTransaction(db);
@@ -26,13 +29,18 @@ export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): O
     const invoiceController = new InvoiceController(invoiceService);
 
     const invoiceLineItemTransaction: IInvoiceLineItemTransaction = new InvoiceLineItemTransaction(db);
-    const invoiceLineItemService: IInvoiceLineItemService = new InvoiceLineItemService(invoiceLineItemTransaction, invoiceTransaction);
+    const invoiceLineItemService: IInvoiceLineItemService = new InvoiceLineItemService(
+        invoiceLineItemTransaction,
+        invoiceTransaction
+    );
     const invoiceLineItemController: IInvoiceLineItemController = new InvoiceLineItemController(invoiceLineItemService);
 
     openApi.openapi(bulkCreateOrUpdateInvoiceRoute, (ctx) => invoiceController.bulkCreateOrUpdateInvoice(ctx));
     openApi.openapi(getInvoiceByIdRoute, (ctx) => invoiceController.getInvoice(ctx));
     openApi.openapi(getInvoicesForCompanyRoute, (ctx) => invoiceController.getInvoicesForCompany(ctx));
-    openApi.openapi(getInvoiceLineItemsForInvoiceRoute, (ctx) => invoiceLineItemController.getInvoiceLineItemsForInvoice(ctx));
+    openApi.openapi(getInvoiceLineItemsForInvoiceRoute, (ctx) =>
+        invoiceLineItemController.getInvoiceLineItemsForInvoice(ctx)
+    );
     return openApi;
 };
 

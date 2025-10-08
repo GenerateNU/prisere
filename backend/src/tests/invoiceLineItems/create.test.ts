@@ -67,7 +67,7 @@ describe("POST /quickbooks/invoice/line/bulk", () => {
                 amountCents: 4004,
                 dateCreated: new Date().toISOString(),
                 description: "description",
-                category: "CAT1"
+                category: "CAT1",
             },
             {
                 invoiceId: seededInvoices[1].id,

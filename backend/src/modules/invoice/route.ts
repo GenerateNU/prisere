@@ -17,7 +17,10 @@ export const invoiceRoutes = (db: DataSource): Hono => {
     const invoiceController: IInvoiceController = new InvoiceController(invoiceService);
 
     const invoiceLineItemTransaction: IInvoiceLineItemTransaction = new InvoiceLineItemTransaction(db);
-    const invoiceLineItemService: IInvoiceLineItemService = new InvoiceLineItemService(invoiceLineItemTransaction, invoiceTransaction);
+    const invoiceLineItemService: IInvoiceLineItemService = new InvoiceLineItemService(
+        invoiceLineItemTransaction,
+        invoiceTransaction
+    );
     const invoiceLineItemController: IInvoiceLineItemController = new InvoiceLineItemController(invoiceLineItemService);
 
     invoice.get("/:id", (ctx) => invoiceController.getInvoice(ctx));
