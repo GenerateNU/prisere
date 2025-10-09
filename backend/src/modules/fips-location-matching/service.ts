@@ -55,14 +55,12 @@ export class FEMALocationMatcher implements IFEMALocationMatcher {
         console.log("No address components provided, returning null");
         return null;
     }
-
-    // Changed from 'locations' to 'geographies' endpoint
     const censusUrl = "https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress";
     const params = new URLSearchParams({
         address,
         benchmark: "Public_AR_Current",
         vintage: "Current_Current", // Required for geographies endpoint
-        layers: "Census Blocks", // Specify the layer we want
+        layers: "Census Blocks", // We want 2020 Census Blocks, in this specific field
         format: "json",
     });
 
