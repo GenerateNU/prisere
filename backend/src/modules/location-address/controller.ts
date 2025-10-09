@@ -46,7 +46,7 @@ export class LocationAddressController implements ILocationAddressController {
      */
     getLocationAddress = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetLocationAddressResponse, 200>> => {
-            const maybeId = await ctx.req.param("id");
+            const maybeId = ctx.req.param("id");
 
             if (!validate(maybeId)) {
                 return ctx.json({ error: "An ID must be provided to get a location address" }, 400);
@@ -73,7 +73,7 @@ export class LocationAddressController implements ILocationAddressController {
     );
 
     removeLocationAddressById = withControllerErrorHandling(async (ctx: Context): Promise<Response> => {
-        const maybeId = await ctx.req.param("id");
+        const maybeId = ctx.req.param("id");
 
         if (!validate(maybeId)) {
             return ctx.json({ error: "Invalid Location ID was provided" }, 400);
