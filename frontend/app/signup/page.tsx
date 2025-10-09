@@ -15,8 +15,6 @@ const initialState = {
 export default function SignUpPage() {
   const [state, signupAction] = useActionState(signup, initialState)
   const status = useFormStatus();
-
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-stone">
       <div className="max-w-lg w-full space-y-8">
