@@ -4,7 +4,7 @@ import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { CreateOrChangePurchaseDTO } from "../../modules/purchase/types";
 
-describe("GET /purchases/:id", () => {
+describe("GET /purchase/:id", () => {
     let app: Hono;
     let backup: IBackup;
 
@@ -35,7 +35,7 @@ describe("GET /purchases/:id", () => {
     };
 
     const createPurchase = async (payload: Partial<CreateOrChangePurchaseDTO>) => {
-        const response = await app.request("/purchases", {
+        const response = await app.request("/purchase/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -46,7 +46,7 @@ describe("GET /purchases/:id", () => {
         return (await response.json())[0];
     };
 
-    test("GET /purchases/:id - Valid Purchase ID", async () => {
+    test("GET /purchase/:id - Valid Purchase ID", async () => {
         const company = await createCompany();
         // First create a purchase to retrieve
         const createBody = {
@@ -59,7 +59,7 @@ describe("GET /purchases/:id", () => {
         const createdPurchase = await createPurchase([createBody]);
 
         // Now retrieve the purchase
-        const response = await app.request(`/purchases/${createdPurchase.id}`, {
+        const response = await app.request(`/purchase/${createdPurchase.id}`, {
             method: "GET",
         });
 
@@ -73,12 +73,11 @@ describe("GET /purchases/:id", () => {
         expect(body.lastUpdated).toBeDefined();
     });
 
-    test("GET /purchases/:id - Valid Purchase ID with Refund", async () => {
+    test("GET /purchase/:id - Valid Purchase ID with Refund", async () => {
         const company = await createCompany();
 
         // Create a refund purchase
         const createBody = {
-            quickBooksID: 67890,
             totalAmountCents: 25000,
             isRefund: true,
             companyId: company.id,
@@ -87,7 +86,7 @@ describe("GET /purchases/:id", () => {
         const createdPurchase = await createPurchase([createBody]);
 
         // Retrieve the purchase
-        const response = await app.request(`/purchases/${createdPurchase.id}`, {
+        const response = await app.request(`/purchase/${createdPurchase.id}`, {
             method: "GET",
         });
 
@@ -96,49 +95,49 @@ describe("GET /purchases/:id", () => {
         expect(body.isRefund).toBe(true);
     });
 
-    test("GET /purchases/:id - Non-Existent Purchase ID", async () => {
-        const response = await app.request("/purchases/111e99a6-d082-4327-9843-97fd228d4d37", {
+    test("GET /purchase/:id - Non-Existent Purchase ID", async () => {
+        const response = await app.request("/purchase/111e99a6-d082-4327-9843-97fd228d4d37", {
             method: "GET",
         });
 
         expect(response.status).toBe(404);
     });
 
-    test("GET /purchases/:id - Empty Purchase ID", async () => {
-        const response = await app.request("/purchases/", {
+    test("GET /purchase/:id - Empty Purchase ID", async () => {
+        const response = await app.request("/purchase/", {
             method: "GET",
         });
 
         expect([404, 405]).toContain(response.status);
     });
 
-    test("GET /purchases/:id - Invalid UUID Format", async () => {
-        const response = await app.request("/purchases/invalid-uuid-format", {
+    test("GET /purchase/:id - Invalid UUID Format", async () => {
+        const response = await app.request("/purchase/invalid-uuid-format", {
             method: "GET",
         });
 
         expect([400, 404]).toContain(response.status);
     });
 
-    test("GET /purchases/:id - Special Characters in ID", async () => {
-        const response = await app.request("/purchases/@#$%^&*()", {
+    test("GET /purchase/:id - Special Characters in ID", async () => {
+        const response = await app.request("/purchase/@#$%^&*()", {
             method: "GET",
         });
 
         expect([400, 404]).toContain(response.status);
     });
 
-    test("GET /purchases/:id - Numeric ID", async () => {
-        const response = await app.request("/purchases/12345", {
+    test("GET /purchase/:id - Numeric ID", async () => {
+        const response = await app.request("/purchase/12345", {
             method: "GET",
         });
 
         expect([400, 404]).toContain(response.status);
     });
 
-    test("GET /purchases/:id - Very Long ID String", async () => {
+    test("GET /purchase/:id - Very Long ID String", async () => {
         const longId = "a".repeat(500);
-        const response = await app.request(`/purchases/${longId}`, {
+        const response = await app.request(`"/purchase/${longId}`, {
             method: "GET",
         });
 

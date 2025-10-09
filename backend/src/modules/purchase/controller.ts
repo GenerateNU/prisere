@@ -24,37 +24,43 @@ export class PurchaseController implements IPurchaseController {
         this.PurchaseService = service;
     }
 
-    createOrUpdatePurchase = withControllerErrorHandling(async (ctx: Context) => {
-        const json = await ctx.req.json();
-        const payload = CreateOrChangePurchaseDTOSchema.parse(json);
-        const updatedPurchase = await this.PurchaseService.createOrUpdatePurchase(payload);
-        return ctx.json(updatedPurchase, 200);
-    });
-
-    getPurchase = withControllerErrorHandling(async (ctx: Context) => {
-        const id = ctx.req.param("id");
-
-        if (!validate(id)) {
-            return ctx.json({ error: "Invalid company ID format" }, 400);
+    createOrUpdatePurchase = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<CreateOrChangePurchaseResponse, 200>> => {
+            const json = await ctx.req.json();
+            const payload = CreateOrChangePurchaseDTOSchema.parse(json);
+            const updatedPurchase = await this.PurchaseService.createOrUpdatePurchase(payload);
+            return ctx.json(updatedPurchase, 200);
         }
+    );
 
-        const fetchedPurchase = await this.PurchaseService.getPurchase(id);
-        return ctx.json(fetchedPurchase, 200);
-    });
+    getPurchase = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<GetPurchaseResponse, 200>> => {
+            const id = ctx.req.param("id");
 
-    getPurchasesForCompany = withControllerErrorHandling(async (ctx: Context) => {
-        const queryParams = {
-            companyId: ctx.req.query("companyId"),
-            pageNumber: ctx.req.query("pageNumber") ? Number(ctx.req.query("pageNumber")) : undefined,
-            resultsPerPage: ctx.req.query("resultsPerPage") ? Number(ctx.req.query("resultsPerPage")) : undefined,
-        };
+            if (!validate(id)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
 
-        if (!validate(queryParams.companyId)) {
-            return ctx.json({ error: "Invalid company ID format" }, 400);
+            const fetchedPurchase = await this.PurchaseService.getPurchase(id);
+            return ctx.json(fetchedPurchase, 200);
         }
+    );
 
-        const payload = GetCompanyPurchasesDTOSchema.parse(queryParams);
-        const fetchedPurchases = await this.PurchaseService.getPurchasesForCompany(payload);
-        return ctx.json(fetchedPurchases, 200);
-    });
+    getPurchasesForCompany = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyPurchasesResponse, 200>> => {
+            const queryParams = {
+                companyId: ctx.req.query("companyId"),
+                pageNumber: ctx.req.query("pageNumber") ? Number(ctx.req.query("pageNumber")) : undefined,
+                resultsPerPage: ctx.req.query("resultsPerPage") ? Number(ctx.req.query("resultsPerPage")) : undefined,
+            };
+
+            if (!validate(queryParams.companyId)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
+
+            const payload = GetCompanyPurchasesDTOSchema.parse(queryParams);
+            const fetchedPurchases = await this.PurchaseService.getPurchasesForCompany(payload);
+            return ctx.json(fetchedPurchases, 200);
+        }
+    );
 }

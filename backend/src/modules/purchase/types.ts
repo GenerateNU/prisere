@@ -4,11 +4,11 @@ import { z } from "zod";
 export const CreateOrChangePurchaseDTOSchema = z
     .array(
         z.object({
-            purchaseId: z.string().nonempty().optional(),
             quickBooksId: z.number().optional(),
-            totalAmountCents: z.number(),
+            totalAmountCents: z.number().min(0),
             isRefund: z.boolean(),
             companyId: z.string().nonempty(),
+            quickbooksDateCreated: z.date().optional(),
         })
     )
     .nonempty();
@@ -18,7 +18,8 @@ export const CreateOrChangePurchasesResponseSchema = z.array(
         id: z.string().nonempty(),
         companyId: z.string().nonempty(),
         quickBooksId: z.number().optional(),
-        totalAmountCents: z.number(),
+        totalAmountCents: z.number().min(0),
+        quickbooksDateCreated: z.string().optional(),
         isRefund: z.boolean(),
         dateCreated: z.string(),
     })
@@ -28,7 +29,8 @@ export const GetPurchasesResponseSchema = z.object({
     id: z.string().nonempty(),
     companyId: z.string().nonempty(),
     quickBooksId: z.number().optional(),
-    totalAmountCents: z.number(),
+    totalAmountCents: z.number().min(0),
+    quickbooksDateCreated: z.string().optional(),
     isRefund: z.boolean(),
     dateCreated: z.string(),
     lastUpdated: z.string(),
@@ -46,7 +48,8 @@ export const GetCompanyPurchasesResponseSchema = z.array(
         id: z.string().nonempty(),
         companyId: z.string().nonempty(),
         quickBooksID: z.number().optional(),
-        totalAmountCents: z.number(),
+        totalAmountCents: z.number().min(0),
+        quickbooksDateCreated: z.string().optional(),
         isRefund: z.boolean(),
         dateCreated: z.string(),
     })

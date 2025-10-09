@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import { Purchase } from "./Purchase";
 import type { Relation } from "typeorm";
+import { LINE_ITEM_DESCRIPTION_CHARS } from "../utilities/constants";
 
 export enum PurchaseLineItemType {
     EXTRANEOUS = "extraneous",
@@ -20,8 +21,8 @@ export class PurchaseLineItem {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
 
-    @Column()
-    description!: string;
+    @Column({ nullable: true, length: LINE_ITEM_DESCRIPTION_CHARS })
+    description?: string;
 
     //Required because PurchaseLineItems only occur for ingested Purchases
     @Column()

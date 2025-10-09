@@ -43,7 +43,7 @@ describe("POST /purchase/line", () => {
             companyId: companyId,
         };
 
-        const response = await app.request("/purchases", {
+        const response = await app.request("/purchase", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -56,7 +56,7 @@ describe("POST /purchase/line", () => {
     };
 
     const createPurchaseLineItems = async (payload: CreateOrChangePurchaseLineItemsDTO) => {
-        const response = await app.request("/purchases/line", {
+        const response = await app.request("/purchase/line", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

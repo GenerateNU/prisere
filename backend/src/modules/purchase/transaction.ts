@@ -1,7 +1,8 @@
-import { DataSource, In } from "typeorm";
+import { DataSource } from "typeorm";
 import Boom from "@hapi/boom";
 import { CreateOrChangePurchaseDTO, GetCompanyPurchasesDTO } from "./types";
 import { Purchase } from "../../entities/Purchase";
+import { plainToInstance } from "class-transformer";
 
 export interface IPurchaseTransaction {
     createOrUpdatePurchase(payload: CreateOrChangePurchaseDTO): Promise<Purchase[]>;
@@ -17,19 +18,18 @@ export class PurchaseTransaction implements IPurchaseTransaction {
     }
 
     async createOrUpdatePurchase(payload: CreateOrChangePurchaseDTO): Promise<Purchase[]> {
-        const normalizePayload = payload.map((element) => ({
-            ...element,
-            id: element.purchaseId,
-        }));
+        const normalizedPayload = payload.map((element) => plainToInstance(Purchase, element));
 
-        const dbEntries = await this.db.manager.save(Purchase, normalizePayload);
-
-        const newPurchaseIds = dbEntries.map((entry) => entry.id);
-        return await this.db.manager.find(Purchase, {
-            where: {
-                id: In(newPurchaseIds),
-            },
-        });
+        return (
+            await this.db
+                .createQueryBuilder()
+                .insert()
+                .into(Purchase)
+                .values(normalizedPayload)
+                .orUpdate(["totalAmountCents", "isRefund", "quickbooksDateCreated"], ["quickBooksId", "companyId"])
+                .returning("*")
+                .execute()
+        ).raw;
     }
 
     async getPurchase(id: string): Promise<Purchase> {

@@ -28,6 +28,8 @@ export class PurchaseService implements IPurchaseService {
             return newPurchases.map((newPurchase) => ({
                 ...newPurchase,
                 dateCreated: newPurchase.dateCreated.toUTCString(),
+                lastUpdated: newPurchase.lastUpdated.toUTCString(),
+                quickbooksDateCreated: newPurchase.quickbooksDateCreated?.toUTCString(),
             }));
         }
     );

@@ -15,7 +15,7 @@ export const purchaseRoutes = (db: DataSource): Hono => {
     //Add the line item routes
     purchaseLineItemsRoutes(db, PurchaseRoutes);
 
-    PurchaseRoutes.post("/", (ctx) => controller.createOrUpdatePurchase(ctx));
+    PurchaseRoutes.post("/bulk", (ctx) => controller.createOrUpdatePurchase(ctx));
     PurchaseRoutes.get("/:id", (ctx) => controller.getPurchase(ctx));
     PurchaseRoutes.get("/", (ctx) => controller.getPurchasesForCompany(ctx));
 

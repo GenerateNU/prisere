@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
 
-//Patch existing quick books purchase
 export const CreateOrChangePurchaseLineItemsDTOSchema = z
     .array(
         z.object({

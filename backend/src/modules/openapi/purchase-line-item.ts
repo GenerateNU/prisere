@@ -34,7 +34,7 @@ const GetPurchaseLineItemsFromParentDTOSchema = z.object({
 
 const createOrUpdatePurchaseLineItemsRoute = createRoute({
     method: "post",
-    path: "/purchases/line",
+    path: "/purchase/line",
     summary: "Create or update purchase line items",
     description:
         "Creates new purchase line items or updates existing ones. If an id is provided in the payload, the line item will be updated; otherwise, a new line item will be created. Multiple line items can be created or updated in a single request.",
@@ -66,7 +66,7 @@ const createOrUpdatePurchaseLineItemsRoute = createRoute({
 
 const getPurchaseLineItemRoute = createRoute({
     method: "get",
-    path: "/purchases/line/{id}",
+    path: "/purchase/line/{id}",
     summary: "Fetches a purchase line item by the given ID",
     description: "Finds the purchase line item with the given ID in the database",
     request: {
@@ -91,7 +91,7 @@ const getPurchaseLineItemRoute = createRoute({
 
 const getPurchaseLineItemsForPurchaseRoute = createRoute({
     method: "get",
-    path: "/purchases/{id}/lines",
+    path: "/purchase/{id}/lines",
     summary: "Fetches all line items for a purchase by the given purchase ID",
     description:
         "Finds all purchase line items associated with the given purchase ID in the database. Returns an empty array if the purchase exists but has no line items.",

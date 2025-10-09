@@ -41,7 +41,7 @@ describe("GET /purchases/line/:id", () => {
             companyId: companyId,
         };
 
-        const response = await app.request("/purchases", {
+        const response = await app.request("/purchase", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -65,7 +65,7 @@ describe("GET /purchases/line/:id", () => {
             },
         ];
 
-        const response = await app.request("/purchases/line", {
+        const response = await app.request("/purchase/line", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -82,7 +82,7 @@ describe("GET /purchases/line/:id", () => {
         const purchase = await createPurchase(company.id);
         const lineItem = await createPurchaseLineItem(purchase.id);
 
-        const response = await app.request(`/purchases/line/${lineItem.id}`, {
+        const response = await app.request(`/purchase/line/${lineItem.id}`, {
             method: "GET",
         });
 
@@ -114,7 +114,7 @@ describe("GET /purchases/line/:id", () => {
             },
         ];
 
-        const createResponse = await app.request("/purchases/line", {
+        const createResponse = await app.request("/purchase/line", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -124,7 +124,7 @@ describe("GET /purchases/line/:id", () => {
 
         const createdLineItem = (await createResponse.json())[0];
 
-        const response = await app.request(`/purchases/line/${createdLineItem.id}`, {
+        const response = await app.request(`/purchase/line/${createdLineItem.id}`, {
             method: "GET",
         });
 
@@ -148,7 +148,7 @@ describe("GET /purchases/line/:id", () => {
             },
         ];
 
-        const createResponse = await app.request("/purchases/line", {
+        const createResponse = await app.request("/purchase/line", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -158,7 +158,7 @@ describe("GET /purchases/line/:id", () => {
 
         const createdLineItem = (await createResponse.json())[0];
 
-        const response = await app.request(`/purchases/line/${createdLineItem.id}`, {
+        const response = await app.request(`/purchase/line/${createdLineItem.id}`, {
             method: "GET",
         });
 
@@ -182,7 +182,7 @@ describe("GET /purchases/line/:id", () => {
             },
         ];
 
-        const createResponse = await app.request("/purchases/line", {
+        const createResponse = await app.request("/purchase/line", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -192,7 +192,7 @@ describe("GET /purchases/line/:id", () => {
 
         const createdLineItem = (await createResponse.json())[0];
 
-        const response = await app.request(`/purchases/line/${createdLineItem.id}`, {
+        const response = await app.request(`/purchase/line/${createdLineItem.id}`, {
             method: "GET",
         });
 
@@ -202,7 +202,7 @@ describe("GET /purchases/line/:id", () => {
     });
 
     test("GET /purchases/line/:id - Non-Existent Line Item ID", async () => {
-        const response = await app.request("/purchases/line/111e99a6-d082-4327-9843-97fd228d4d37", {
+        const response = await app.request("/purchase/line/111e99a6-d082-4327-9843-97fd228d4d37", {
             method: "GET",
         });
 
@@ -210,7 +210,7 @@ describe("GET /purchases/line/:id", () => {
     });
 
     test("GET /purchases/line/:id - Empty Line Item ID", async () => {
-        const response = await app.request("/purchases/line/", {
+        const response = await app.request("/purchase/line/", {
             method: "GET",
         });
 
@@ -218,7 +218,7 @@ describe("GET /purchases/line/:id", () => {
     });
 
     test("GET /purchases/line/:id - Invalid UUID Format", async () => {
-        const response = await app.request("/purchases/line/invalid-uuid-format", {
+        const response = await app.request("/purchase/line/invalid-uuid-format", {
             method: "GET",
         });
 
@@ -226,7 +226,7 @@ describe("GET /purchases/line/:id", () => {
     });
 
     test("GET /purchases/line/:id - Special Characters in ID", async () => {
-        const response = await app.request("/purchases/line/@#$%^&*()", {
+        const response = await app.request("/purchase/line/@#$%^&*()", {
             method: "GET",
         });
 
@@ -234,7 +234,7 @@ describe("GET /purchases/line/:id", () => {
     });
 
     test("GET /purchases/line/:id - Numeric ID", async () => {
-        const response = await app.request("/purchases/line/12345", {
+        const response = await app.request("/purchase/line/12345", {
             method: "GET",
         });
 
@@ -243,7 +243,7 @@ describe("GET /purchases/line/:id", () => {
 
     test("GET /purchases/line/:id - Very Long ID String", async () => {
         const longId = "a".repeat(500);
-        const response = await app.request(`/purchases/line/${longId}`, {
+        const response = await app.request(`/purchase/line/${longId}`, {
             method: "GET",
         });
 
@@ -251,7 +251,7 @@ describe("GET /purchases/line/:id", () => {
     });
 
     test("GET /purchases/line/:id - ID with Spaces", async () => {
-        const response = await app.request("/purchases/line/123 456 789", {
+        const response = await app.request("/purchase/line/123 456 789", {
             method: "GET",
         });
 
@@ -259,7 +259,7 @@ describe("GET /purchases/line/:id", () => {
     });
 
     test("GET /purchases/line/:id - Malformed UUID (Missing Segment)", async () => {
-        const response = await app.request("/purchases/line/123e4567-e89b-12d3-a456", {
+        const response = await app.request("/purchase/line/123e4567-e89b-12d3-a456", {
             method: "GET",
         });
 
@@ -267,7 +267,7 @@ describe("GET /purchases/line/:id", () => {
     });
 
     test("GET /purchases/line/:id - Malformed UUID (Extra Segment)", async () => {
-        const response = await app.request("/purchases/line/123e4567-e89b-12d3-a456-426614174000-extra", {
+        const response = await app.request("/purchase/line/123e4567-e89b-12d3-a456-426614174000-extra", {
             method: "GET",
         });
 
@@ -275,7 +275,7 @@ describe("GET /purchases/line/:id", () => {
     });
 
     test("GET /purchases/line/:id - SQL Injection Attempt", async () => {
-        const response = await app.request("/purchases/line/'; DROP TABLE purchase_line_items; --", {
+        const response = await app.request("/purchase/line/'; DROP TABLE purchase_line_items; --", {
             method: "GET",
         });
 
@@ -292,7 +292,7 @@ describe("GET /purchases/line/:id", () => {
             .map((char: string, i: number) => (i % 2 === 0 ? char.toUpperCase() : char.toLowerCase()))
             .join("");
 
-        const response = await app.request(`/purchases/line/${mixedCaseId}`, {
+        const response = await app.request(`/purchase/line/${mixedCaseId}`, {
             method: "GET",
         });
 
@@ -305,7 +305,7 @@ describe("GET /purchases/line/:id", () => {
         const lineItem = await createPurchaseLineItem(purchase.id);
 
         const encodedId = encodeURIComponent(lineItem.id);
-        const response = await app.request(`/purchases/line/${encodedId}`, {
+        const response = await app.request(`/purchase/line/${encodedId}`, {
             method: "GET",
         });
 
@@ -330,7 +330,7 @@ describe("GET /purchases/line/:id", () => {
             },
         ];
 
-        await app.request("/purchases/line", {
+        await app.request("/purchase/line", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -339,7 +339,7 @@ describe("GET /purchases/line/:id", () => {
         });
 
         // Retrieve the updated line item
-        const response = await app.request(`/purchases/line/${lineItem.id}`, {
+        const response = await app.request(`/purchase/line/${lineItem.id}`, {
             method: "GET",
         });
 
