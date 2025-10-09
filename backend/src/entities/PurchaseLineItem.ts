@@ -6,10 +6,11 @@ import {
     UpdateDateColumn,
     ManyToOne,
     JoinColumn,
+    Unique,
 } from "typeorm";
 import { Purchase } from "./Purchase";
 import type { Relation } from "typeorm";
-import { LINE_ITEM_DESCRIPTION_CHARS } from "../utilities/constants";
+import { LINE_ITEM_CATEGORY_CHARS, LINE_ITEM_DESCRIPTION_CHARS } from "../utilities/constants";
 
 export enum PurchaseLineItemType {
     EXTRANEOUS = "extraneous",
@@ -17,6 +18,7 @@ export enum PurchaseLineItemType {
 }
 
 @Entity("purchase_line_item")
+@Unique(["purchaseId", "quickBooksId"])
 export class PurchaseLineItem {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
@@ -24,9 +26,8 @@ export class PurchaseLineItem {
     @Column({ nullable: true, length: LINE_ITEM_DESCRIPTION_CHARS })
     description?: string;
 
-    //Required because PurchaseLineItems only occur for ingested Purchases
     @Column()
-    quickBooksId!: number;
+    quickBooksId?: number;
 
     @ManyToOne(() => Purchase, (purchase) => purchase.lineItems)
     @JoinColumn({ name: "purchaseId" })
@@ -38,8 +39,8 @@ export class PurchaseLineItem {
     @Column()
     amountCents!: number;
 
-    @Column()
-    category!: string;
+    @Column({ nullable: true, length: LINE_ITEM_CATEGORY_CHARS })
+    category?: string;
 
     @Column({ type: "enum", enum: PurchaseLineItemType })
     type!: PurchaseLineItemType;
@@ -49,4 +50,7 @@ export class PurchaseLineItem {
 
     @UpdateDateColumn()
     lastUpdated!: Date;
+
+    @Column({ type: "timestamptz", nullable: true })
+    quickbooksDateCreated?: Date;
 }

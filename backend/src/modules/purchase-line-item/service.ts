@@ -52,6 +52,7 @@ export class PurchaseLineItemService implements IPurchaseLineItemService {
             ...item,
             dateCreated: item.dateCreated.toUTCString(),
             lastUpdated: item.dateCreated.toUTCString(),
+            quickbooksDateCreated: item.quickbooksDateCreated?.toUTCString(),
         };
     };
 }

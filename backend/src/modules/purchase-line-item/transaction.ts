@@ -3,6 +3,7 @@ import Boom from "@hapi/boom";
 import { CreateOrChangePurchaseLineItemsDTO } from "./types";
 import { Purchase } from "../../entities/Purchase";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
+import { plainToInstance } from "class-transformer";
 
 export interface IPurchaseLineItemTransaction {
     createOrUpdatePurchaseLineItems(payload: CreateOrChangePurchaseLineItemsDTO): Promise<PurchaseLineItem[]>;
@@ -18,9 +19,21 @@ export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction
     }
 
     async createOrUpdatePurchaseLineItems(payload: CreateOrChangePurchaseLineItemsDTO): Promise<PurchaseLineItem[]> {
-        const savedEntites = await this.db.manager.save(PurchaseLineItem, payload);
-        const savedEntityIds = savedEntites.map((entity) => entity.id);
-        return await this.db.manager.find(PurchaseLineItem, { where: { id: In(savedEntityIds) } });
+        const normalizedPayload = payload.map((element) => plainToInstance(PurchaseLineItem, element));
+
+        return (
+            await this.db
+                .createQueryBuilder()
+                .insert()
+                .into(PurchaseLineItem)
+                .values(normalizedPayload)
+                .orUpdate(
+                    ["amountCents", "description", "quickbooksDateCreated", "category", "type"],
+                    ["quickBooksId", "purchaseId"]
+                )
+                .returning("*")
+                .execute()
+        ).raw;
     }
 
     async getPurchaseLineItem(id: string): Promise<PurchaseLineItem | null> {
