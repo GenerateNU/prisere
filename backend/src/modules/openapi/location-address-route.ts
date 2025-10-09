@@ -11,7 +11,7 @@ import { ILocationAddressService, LocationAddressService } from "../location-add
 import { ILocationAddressController, LocationAddressController } from "../location-address/controller";
 import { ErrorResponseSchema } from "../../types/Utils";
 import { openApiErrorCodes } from "../../utilities/error";
-import { FEMALocationMatcher, IFEMALocationMatcher } from "../fips-location-matching/service";
+import { FEMALocationMatcher, IFEMALocationMatcher } from "../clients/fips-location-matching/service";
 
 export const addOpenApiLocationAddressRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const locationAddressTransaction: ILocationAddressTransaction = new LocationAddressTransactions(db);

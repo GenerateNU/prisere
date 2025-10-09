@@ -30,19 +30,28 @@ export class FemaService implements IFemaService {
         const { DisasterDeclarationsSummaries } = await response.json();
         const disasterTransaction = new DisasterTransaction(this.db);
         const newDisasters: FemaDisaster[] = [];
+        let errorCount = 0;
 
         // Return only newly created disasters (not updated ones)
         for (const disaster of DisasterDeclarationsSummaries) {
-            const parsedDisaster = CreateDisasterDTOSchema.parse(disaster);
-            const { disaster: savedDisaster, isNew } = await disasterTransaction.upsertDisaster(parsedDisaster);
+            try {
+                const parsedDisaster = CreateDisasterDTOSchema.parse(disaster);
+                const { disaster: savedDisaster, isNew } = await disasterTransaction.upsertDisaster(parsedDisaster);
 
-            if (isNew) {
-                newDisasters.push(savedDisaster);
+                if (isNew) {
+                    newDisasters.push(savedDisaster);
+                }
+            } catch (error) {
+                errorCount++;
+                logMessageToFile(
+                    `Failed to process disaster ${disaster.id || "unknown"}: ${error instanceof Error ? error.message : "Unknown error"}`
+                );
+                continue; // gracefully move on
             }
         }
 
         logMessageToFile(
-            `Processed ${DisasterDeclarationsSummaries.length} disasters, ${newDisasters.length} were new`
+            `Processed ${DisasterDeclarationsSummaries.length} disasters, ${newDisasters.length} were new, ${errorCount} failed to process.`
         );
         return newDisasters;
     };

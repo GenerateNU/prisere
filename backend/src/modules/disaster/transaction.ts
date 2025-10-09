@@ -29,18 +29,32 @@ export class DisasterTransaction implements IDisasterTransaction {
     async upsertDisaster(payload: CreateDisasterDTO): Promise<{ disaster: FemaDisaster; isNew: boolean }> {
         const repository = this.db.getRepository(FemaDisaster);
 
-        // Check if disaster exists, update if so, create if not
-        const existing = await repository.findOne({
-            where: { disasterNumber: payload.disasterNumber },
-        });
+        const existingRecord = await repository.findOne({ where: { id: payload.id } });
+        const isNew = !existingRecord;
 
-        if (existing) {
-            await repository.update({ id: existing.id }, payload);
-            const updated = await repository.findOne({ where: { id: existing.id } });
-            return { disaster: updated!, isNew: false };
-        } else {
-            const created = await repository.save(payload);
-            return { disaster: created, isNew: true };
-        }
+        const result = await repository
+            .createQueryBuilder()
+            .insert()
+            .into(FemaDisaster)
+            .values(payload)
+            .orUpdate(
+                [
+                    "disasterNumber",
+                    "fipsStateCode",
+                    "declarationDate",
+                    "incidentBeginDate",
+                    "incidentEndDate",
+                    "fipsCountyCode",
+                    "declarationType",
+                    "designatedArea",
+                    "designatedIncidentTypes",
+                ],
+                ["id"]
+            )
+            .returning("*")
+            .execute();
+
+        const disaster = result.generatedMaps[0] as FemaDisaster;
+        return { disaster, isNew };
     }
 }
