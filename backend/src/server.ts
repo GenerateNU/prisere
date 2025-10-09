@@ -32,8 +32,8 @@ const app = new Hono();
             maxAge: 3600,
         }))
 
-        app.use("/*", isAuthorized())
-        
+        app.use("/api/prisere/*", isAuthorized())
+
         setUpRoutes(app, AppDataSource);
         
         const femaService: IFemaService = new FemaService(AppDataSource);
