@@ -10,6 +10,8 @@ import { addOpenApiQBRoutes } from "./quickbooks-routes";
 import { addOpenApiInvoiceRoutes } from "./invoice-routes";
 import { addOpenApiPurchaseRoutes } from "./purchase-routes";
 import { createOpenAPIClaimRoutes } from "./claim-routes";
+import { addOpenApiPreferenceRoutes } from "./preference-routes";
+import { addOpenApiInvoiceLineItemRoutes } from "./invoice-line-item-routes";
 
 export const setUpOpenApiRoutes = (db: DataSource) => {
     const openApiServerURL = process.env.NODE_ENV === "production" ? "/api" : "";
@@ -44,6 +46,8 @@ const openApiRoutes = (db: DataSource): OpenAPIHono => {
     addOpenApiInvoiceRoutes(openApi, db);
     addOpenApiPurchaseRoutes(openApi, db);
     createOpenAPIClaimRoutes(openApi, db);
+    addOpenApiPreferenceRoutes(openApi, db);
+    addOpenApiInvoiceLineItemRoutes(openApi, db);
 
     return openApi;
 };
