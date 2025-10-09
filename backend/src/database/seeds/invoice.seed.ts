@@ -8,7 +8,7 @@ export const seededInvoices = [
         companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
         quickbooksId: 3,
         totalAmountCents: 45,
-        dateCreated: new Date("2025-04-11T12:00:00Z"),
+        quickbooksDateCreated: new Date("2025-04-11T12:00:00Z"),
     },
     {
         id: "1b53822d-eae9-4948-aaaf-c71c4adcdb5a",
@@ -29,7 +29,7 @@ export const seededInvoices = [
         companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
         quickbooksId: 4,
         totalAmountCents: 50,
-        dateCreated: new Date("2024-04-11T12:00:00Z"),
+        quickbooksDateCreated: new Date("2024-04-11T12:00:00Z"),
     },
 ];
 

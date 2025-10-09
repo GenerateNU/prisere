@@ -81,7 +81,7 @@ export class InvoiceTransaction implements IInvoiceTransaction {
             .createQueryBuilder(Invoice, "invoice")
             .select("SUM(invoice.totalAmountCents)", "total")
             .where("invoice.companyId = :companyId", { companyId })
-            .andWhere("invoice.dateCreated BETWEEN :startDate AND :endDate", {
+            .andWhere("invoice.quickbooksDateCreated BETWEEN :startDate AND :endDate", {
                 startDate: new Date(startDate),
                 endDate: new Date(endDate),
             })
