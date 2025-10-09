@@ -29,7 +29,7 @@ export const setUpRoutes = (app: Hono, db: DataSource) => {
     routes.route("/invoice/line", invoiceLineItemsRoutes(db));
 
     app.route("/api/prisere", routes)
-    app.route("/api", setUpOpenApiRoutes(db))
+    app.route("/api/openapi", setUpOpenApiRoutes(db))
 };
 
 const healthRoutes = (): Hono => {
