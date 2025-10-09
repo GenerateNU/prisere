@@ -52,11 +52,15 @@ export class LocationAddressService implements ILocationAddressService {
         async (payload: CreateLocationAddressDTO): Promise<CreateLocationAddressResponse> => {
             const fipsLocation = await this.locationMatcher.getLocationFips(payload);
 
+            if (fipsLocation === null) {
+                throw Boom.badRequest("Fips state and county code cannot be null");
+            }
+
             // Add FIPS codes into payload to send to transaction layer
             const completePayload = {
                 ...payload,
-                fipsStateCode: fipsLocation ? Number(fipsLocation.fipsStateCode) : null,
-                fipsCountyCode: fipsLocation ? Number(fipsLocation.fipsCountyCode) : null,
+                fipsStateCode: Number(fipsLocation.fipsStateCode),
+                fipsCountyCode: Number(fipsLocation.fipsCountyCode),
             };
             // Pass complete data with fips codes to transaction layer
             const locationAddress = await this.locationAddressTransaction.createLocationAddress(completePayload);
