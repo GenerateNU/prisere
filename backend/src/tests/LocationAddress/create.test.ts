@@ -2,7 +2,6 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { seededLocationAddresses } from "../../database/seeds/location.seed";
 import CompanySeeder from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
@@ -29,7 +28,6 @@ describe("Location Address Controller Tests", () => {
         await companySeeder.run(dataSource, {} as SeederFactoryManager);
         const companies = await dataSource.getRepository(Company).find();
         company_id = companies[0].id;
-        console.log("Companies after seeding:", companies.map(c => ({ id: c.id, name: c.name })));
     });
 
     afterEach(async () => {

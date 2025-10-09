@@ -1,29 +1,32 @@
-import { IFEMALocationMatcher, LocationFips, CensusGeocodeResponse } from "../../modules/fips-location-matching/service";
+import {
+    IFEMALocationMatcher,
+    LocationFips,
+    CensusGeocodeResponse,
+} from "../../modules/fips-location-matching/service";
 import { LocationAddress } from "../../entities/LocationAddress";
-import { mock } from "bun:test";
 
 export class MockFEMALocationMatcher implements IFEMALocationMatcher {
     static readonly mockFipsData: Record<string, LocationFips> = {
         "123 Ocean Drive, Miami, Florida, 33139": {
             fipsStateCode: "12",
-            fipsCountyCode: "086"
+            fipsCountyCode: "086",
         },
         "456 Main Street, Houston, Texas, 77002": {
-            fipsStateCode: "48", 
-            fipsCountyCode: "201"
+            fipsStateCode: "48",
+            fipsCountyCode: "201",
         },
         "789 Sunset Blvd, Los Angeles, California, 90028": {
             fipsStateCode: "06",
-            fipsCountyCode: "037"
+            fipsCountyCode: "037",
         },
         "321 Broadway, New York, New York, 10007": {
             fipsStateCode: "36",
-            fipsCountyCode: "061"
+            fipsCountyCode: "061",
         },
         "123 Main Street, San Francisco, California, 94105": {
             fipsStateCode: "06",
-            fipsCountyCode: "075"
-        }
+            fipsCountyCode: "075",
+        },
     };
 
     private shouldFail: boolean = false;
@@ -63,7 +66,6 @@ export class MockFEMALocationMatcher implements IFEMALocationMatcher {
         return null;
     }
 
-
     reset() {
         this.shouldFail = false;
         this.shouldReturnNull = false;
@@ -73,25 +75,29 @@ export class MockFEMALocationMatcher implements IFEMALocationMatcher {
 // Mock the global fetch for when testing the real service with mocked HTTP calls
 export function mockCensusAPI() {
     const originalFetch = global.fetch;
-    
+
     const mockSuccessResponse: CensusGeocodeResponse = {
         result: {
-            addressMatches: [{
-                coordinates: { x: -122.4194, y: 37.7749 },
-                geographies: {
-                    "Census Blocks": [{
-                        STATE: "06",
-                        COUNTY: "075"
-                    }]
-                }
-            }]
-        }
+            addressMatches: [
+                {
+                    coordinates: { x: -122.4194, y: 37.7749 },
+                    geographies: {
+                        "Census Blocks": [
+                            {
+                                STATE: "06",
+                                COUNTY: "075",
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
     };
 
     const mockFailureResponse: CensusGeocodeResponse = {
         result: {
-            addressMatches: []
-        }
+            addressMatches: [],
+        },
     };
     const createMockResponse = (data: any, ok: boolean = true, status: number = 200): Response => {
         return {
@@ -109,13 +115,13 @@ export function mockCensusAPI() {
             url: "",
             body: null,
             bodyUsed: false,
-            clone: () => createMockResponse(data, ok, status)
+            clone: () => createMockResponse(data, ok, status),
         } as Response;
     };
 
-    const mockFetch = async (url: string | URL | Request, init?: RequestInit): Promise<Response> => {
+    const mockFetch = async (url: string | URL | Request): Promise<Response> => {
         const urlString = url.toString();
-        
+
         if (urlString.includes("")) {
             return createMockResponse(mockSuccessResponse, true, 200);
         } else if (urlString.includes("Invalid Address")) {
@@ -130,6 +136,6 @@ export function mockCensusAPI() {
     return {
         restore: () => {
             global.fetch = originalFetch;
-        }
+        },
     };
 }

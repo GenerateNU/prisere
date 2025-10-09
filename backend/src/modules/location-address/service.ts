@@ -1,7 +1,6 @@
 import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { ILocationAddressTransaction } from "./transaction";
-import { logMessageToFile } from "../../utilities/logger";
 import { DeleteResult } from "typeorm";
 import {
     CreateLocationAddressDTO,
@@ -51,26 +50,21 @@ export class LocationAddressService implements ILocationAddressService {
      */
     createLocationAddress = withServiceErrorHandling(
         async (payload: CreateLocationAddressDTO): Promise<CreateLocationAddressResponse> => {
-            console.log("CREATING")
             const fipsLocation = await this.locationMatcher.getLocationFips(payload);
-            console.log("FIPS Location: ", fipsLocation)
-            
+
             // Add FIPS codes into payload to send to transaction layer
             const completePayload = {
                 ...payload,
                 fipsStateCode: fipsLocation ? Number(fipsLocation.fipsStateCode) : null,
                 fipsCountyCode: fipsLocation ? Number(fipsLocation.fipsCountyCode) : null,
             };
-
-            console.log("Complete paylaod: ", completePayload)
-            
-            // Pass enriched data to transaction layer
+            // Pass complete data with fips codes to transaction layer
             const locationAddress = await this.locationAddressTransaction.createLocationAddress(completePayload);
-            
+
             if (!locationAddress) {
                 throw new Error("Failed to create location address");
             }
-            
+
             return locationAddress;
         }
     );

@@ -3,6 +3,7 @@ import { DisasterTransaction } from "../../disaster/transaction";
 import { CreateDisasterDTOSchema } from "../../../types/disaster";
 import { fetch } from "bun";
 import { FemaDisaster } from "../../../entities/FemaDisaster";
+import { logMessageToFile } from "../../../utilities/logger";
 
 const FEMA_API = "https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries";
 
@@ -40,7 +41,9 @@ export class FemaService implements IFemaService {
             }
         }
 
-        console.log(`Processed ${DisasterDeclarationsSummaries.length} disasters, ${newDisasters.length} were new`);
+        logMessageToFile(
+            `Processed ${DisasterDeclarationsSummaries.length} disasters, ${newDisasters.length} were new`
+        );
         return newDisasters;
     };
 

@@ -32,10 +32,9 @@ export class LocationAddress {
     @JoinColumn({ name: "companyId" })
     company!: Company;
 
-    // Only adding as nullable in case of a (FEMA API) error in loction translating
-    @Column({nullable: true})
+    @Column()
     fipsStateCode!: number;
 
-    @Column({nullable: true})
+    @Column()
     fipsCountyCode!: number;
 }

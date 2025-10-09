@@ -8,6 +8,7 @@ import { ILocationAddressTransaction } from "../location-address/transaction";
 import { NotificationStatus, NotificationType } from "../../types/NotificationEnums";
 import { LocationAddress } from "../../entities/LocationAddress";
 import { logMessageToFile } from "../../utilities/logger";
+import { IPreferenceTransaction } from "../preferences/transaction";
 
 export interface IDisasterNotificationService {
     getUserNotifications(payload: GetUsersDisasterNotificationsDTO): Promise<DisasterNotification[]>;
@@ -21,10 +22,16 @@ export interface IDisasterNotificationService {
 export class DisasterNotificationService implements IDisasterNotificationService {
     private notificationTransaction: IDisasterNotificationTransaction;
     private locationTransaction: ILocationAddressTransaction;
+    private userPreferences: IPreferenceTransaction;
 
-    constructor(notificationTransaction: IDisasterNotificationTransaction, locationTransaction: ILocationAddressTransaction) {
+    constructor(
+        notificationTransaction: IDisasterNotificationTransaction,
+        locationTransaction: ILocationAddressTransaction,
+        userPreferences: IPreferenceTransaction
+    ) {
         this.notificationTransaction = notificationTransaction;
         this.locationTransaction = locationTransaction;
+        this.userPreferences = userPreferences;
     }
 
     getUserNotifications = withServiceErrorHandling(
@@ -87,12 +94,15 @@ export class DisasterNotificationService implements IDisasterNotificationService
 
             // Get user-disaster pairs directly
             const userDisasterPairs = await this.locationTransaction.getUsersAffectedByDisasters(newDisasters);
-            
-            logMessageToFile(`Found ${userDisasterPairs.length} user-disaster combinations to create notifications for`);
+
+            logMessageToFile(
+                `Found ${userDisasterPairs.length} user-disaster combinations to create notifications for`
+            );
 
             for (const { user, disaster } of userDisasterPairs) {
+                const preferences = await this.userPreferences.getOrCreateUserPreferences(user.id);
                 // Check web notification preferences
-                // if (user.webNotificationPreference || user.webNotificationPreference === undefined) {
+                if (preferences?.webNotificationsEnabled) {
                     notificationsToCreate.push({
                         userId: user.id,
                         femaDisasterId: disaster.id,
@@ -101,10 +111,10 @@ export class DisasterNotificationService implements IDisasterNotificationService
                         user: user,
                         femaDisaster: disaster,
                     });
-                // }
+                }
 
                 // Check email notification preferences
-                // if (user.emailNotificationPreference || user.emailNotificationPreference === undefined) {
+                if (preferences?.emailEnabled) {
                     notificationsToCreate.push({
                         userId: user.id,
                         femaDisasterId: disaster.id,
@@ -113,7 +123,7 @@ export class DisasterNotificationService implements IDisasterNotificationService
                         user: user,
                         femaDisaster: disaster,
                     });
-                // }
+                }
             }
 
             // Bulk create all notifications
