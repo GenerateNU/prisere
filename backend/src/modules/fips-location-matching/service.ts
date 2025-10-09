@@ -34,6 +34,7 @@ export interface IFEMALocationMatcher {
 }
 
 export class FEMALocationMatcher implements IFEMALocationMatcher {
+    private readonly censusUrl: string = "https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress";
     /**
      * Get FIPS codes from a location location
      * @param location - User's location details
@@ -54,7 +55,6 @@ export class FEMALocationMatcher implements IFEMALocationMatcher {
             logMessageToFile("No address components provided, returning null");
             return null;
         }
-        const censusUrl = "https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress";
         const params = new URLSearchParams({
             address,
             benchmark: "Public_AR_Current",
@@ -63,7 +63,7 @@ export class FEMALocationMatcher implements IFEMALocationMatcher {
             format: "json",
         });
         try {
-            const response = await fetch(`${censusUrl}?${params}`);
+            const response = await fetch(`${this.censusUrl}?${params}`);
             const data: CensusGeocodeResponse = await response.json();
 
             if (data.result?.addressMatches && data.result.addressMatches.length > 0) {
