@@ -8,7 +8,6 @@ import { DataSource } from "typeorm";
 import CompanySeeder from "../../database/seeds/company.seed";
 import { InvoiceSeeder } from "../../database/seeds/invoice.seed";
 import { CompareRequestToCreated } from "./utils";
-import { request } from "http";
 
 describe("POST /quickbooks/invoice/bulk", () => {
     let app: Hono;
