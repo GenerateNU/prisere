@@ -63,7 +63,6 @@ describe("Test deleting disaster notifications", () => {
         });
         expect(response.status).toBe(404);
         const body = await response.json();
-        console.log("BODY: ", body);
         expect(body.error).toMatch(/ERROR: Notification ID not found/);
     });
 });
