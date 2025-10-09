@@ -185,8 +185,6 @@ describe("POST /purchase", () => {
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        console.log(body[0]);
-        console.log(purchase[0]);
         expect(body[0].id).toBe(purchase[0].id);
         expect(body[0].totalAmountCents).toBe(requestBodies[0].totalAmountCents);
     });

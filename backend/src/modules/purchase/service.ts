@@ -44,6 +44,7 @@ export class PurchaseService implements IPurchaseService {
             id: qbPurchase.id,
             isRefund: qbPurchase.isRefund,
             quickBooksId: qbPurchase.quickBooksId,
+            quickbooksDateCreated: qbPurchase.quickbooksDateCreated?.toUTCString(),
             totalAmountCents: qbPurchase.totalAmountCents,
         };
     });
@@ -59,6 +60,7 @@ export class PurchaseService implements IPurchaseService {
                 isRefund: qbPurchase.isRefund,
                 quickBooksID: qbPurchase.quickBooksId,
                 totalAmountCents: qbPurchase.totalAmountCents,
+                quickbooksDateCreated: qbPurchase.quickbooksDateCreated?.toUTCString(),
             }));
         }
     );

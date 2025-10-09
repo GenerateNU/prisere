@@ -3,9 +3,10 @@ import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { z } from "zod";
 import {
     GetCompanyPurchasesDTOSchema,
-    CreateOrChangePurchasesResponseSchema,
     GetPurchasesResponseSchema,
     GetCompanyPurchasesResponseSchema,
+    CreateOrChangePurchaseDTOSchema,
+    CreateOrChangePurchasesResponseSchema,
 } from "../../modules/purchase/types";
 import { IPurchaseController, PurchaseController } from "../purchase/controller";
 import { IPurchaseService, PurchaseService } from "../purchase/service";
@@ -37,7 +38,7 @@ const createOrUpdatePurchaseRoute = createRoute({
         body: {
             content: {
                 "application/json": {
-                    schema: CreateOrChangePurchasesResponseSchema,
+                    schema: CreateOrChangePurchaseDTOSchema,
                 },
             },
         },
