@@ -16,7 +16,6 @@ const jwk = JSON.parse(process.env.SUPABASE_PUBLIC_AUTH_KEY!);
 export const isAuthorized = () => {
   return async (ctx: Context, next: Next) => {
     const header = ctx.req.header("Authorization");
-    console.log("Header", header)
     if(!header) {
         return ctx.json({error: "User is not authenticated"}, 401)
     }
@@ -32,8 +31,7 @@ export const isAuthorized = () => {
       }
       ctx.set("userId", decrypted.sub);
       await next()
-    } catch(error) {
-      console.log(error)
+    } catch {
       return ctx.json({ error: "Unauthorized" }, 401);
     }
   };

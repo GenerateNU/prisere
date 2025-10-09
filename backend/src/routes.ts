@@ -9,13 +9,13 @@ import { disasterNotificationRoutes } from "./modules/disasterNotifications/rout
 import { StatusCode } from "hono/utils/http-status";
 
 export const setUpRoutes = (app: Hono, db: DataSource) => {
-    app.route("/", healthRoutes())
-    app.route("/users", userRoutes(db));
-    app.route("/location-address", locationAddressRoute(db));
-    app.route("/companies", companyRoutes(db));
-    app.route("/openapi", setUpOpenApiRoutes(db));
-    app.route("/disaster", disasterRoutes(db));
-    app.route("/disasterNotification", disasterNotificationRoutes(db));
+    app.route("/api/prisere/", healthRoutes())
+    app.route("/api/prisere/users", userRoutes(db));
+    app.route("/api/prisere/location-address", locationAddressRoute(db));
+    app.route("/api/prisere/companies", companyRoutes(db));
+    app.route("/api/openapi", setUpOpenApiRoutes(db));
+    app.route("/api/prisere/disaster", disasterRoutes(db));
+    app.route("/api/perisre/disasterNotification", disasterNotificationRoutes(db));
 };
 
 
