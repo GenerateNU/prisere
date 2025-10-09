@@ -3,7 +3,7 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "gen": "bun run ./backend/src/utilities/spec_gen.ts && bun run openapi-typescript ./spec.json -o ./frontend/schema.d.ts "
+    "gen-types": "bun run ./backend/src/utilities/spec_gen.ts && bun run openapi-typescript ./spec.json -o ./frontend/schema.d.ts "
   },
   "private": true,
   "devDependencies": {

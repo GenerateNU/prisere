@@ -1,0 +1,40 @@
+import jwt from 'jsonwebtoken'
+import { Context, Next } from "hono";
+import { config } from "dotenv";
+import { validate } from 'uuid';
+import crypto from 'crypto';
+config({ path: ".env" });
+
+const jwk = JSON.parse(process.env.SUPABASE_PUBLIC_AUTH_KEY!);
+
+/**
+ * 
+ * @param jwtSecretKey 
+ * @returns 
+ * CREDIT: Inspiration taken from https://github.com/GenerateNU/dearly/blob/main/backend/src/middlewares/auth.ts#L16
+ */
+export const isAuthorized = () => {
+  return async (ctx: Context, next: Next) => {
+    const header = ctx.req.header("Authorization");
+    console.log("Header", header)
+    if(!header) {
+        return ctx.json({error: "User is not authenticated"}, 401)
+    }
+    const token = header.split(" ")[1];
+    try {
+      const publicKey = crypto.createPublicKey({
+        key: jwk,
+        format: 'jwk'
+      });
+      const decrypted = jwt.verify(token, publicKey, { algorithms: ['ES256'] })
+      if(!decrypted.sub || !validate(decrypted.sub)){
+        return ctx.json({error: "User is not authenticated"}, 401)
+      }
+      ctx.set("userId", decrypted.sub);
+      await next()
+    } catch(error) {
+      console.log(error)
+      return ctx.json({ error: "Unauthorized" }, 401);
+    }
+  };
+};

@@ -35,8 +35,7 @@ export async function signup(prevState: any, formData: FormData) {
             message: error.message || 'Login failed' 
             }
     } 
-    revalidatePath("/", "layout");
-    redirect("/");
+    return { success: true, message: 'Form submitted successfully!', email: payload.email}
 }
 
 
