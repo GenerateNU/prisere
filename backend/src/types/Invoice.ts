@@ -5,7 +5,7 @@ export const CreateOrUpdateInvoicesDTOSchema = z.array(
         companyId: z.string(),
         quickbooksId: z.number().int().positive().optional(),
         totalAmountCents: z.number().int().nonnegative(),
-        dateCreated: z.iso.datetime().default(new Date().toISOString()),
+        quickbooksDateCreated: z.iso.datetime().optional(),
     })
 );
 
@@ -16,6 +16,8 @@ export const CreateOrUpdateInvoiceResponseSchema = z.array(
         quickbooksId: z.number().int().positive().optional(),
         totalAmountCents: z.number().int().nonnegative(),
         dateCreated: z.iso.datetime(),
+        lastUpdated: z.iso.datetime(),
+        quickbooksDateCreated: z.iso.datetime().optional(),
     })
 );
 
@@ -28,8 +30,9 @@ export const GetInvoiceResponseSchema = z.object({
     companyId: z.string(),
     quickbooksId: z.number().int().positive().optional(),
     totalAmountCents: z.number().int().nonnegative(),
-    dateCreated: z.string(),
-    lastUpdated: z.string(),
+    dateCreated: z.iso.datetime(),
+    lastUpdated: z.iso.datetime(),
+    quickbooksDateCreated: z.iso.datetime().optional(),
 });
 
 export const GetCompanyInvoicesDTOSchema = z.object({
