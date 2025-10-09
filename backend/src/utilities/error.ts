@@ -9,7 +9,7 @@ export const withServiceErrorHandling = <T extends any[], R>(handler: (...args: 
         try {
             return await handler(...args);
         } catch (error: any) {
-            console.log(error)
+            console.log(error);
             if (process.env.NODE_ENV !== "test") {
                 console.error(error);
             }
@@ -38,7 +38,7 @@ export const withControllerErrorHandling = <T extends any[], R>(handler: (ctx: C
         try {
             return await handler(ctx, ...args);
         } catch (error) {
-            console.log(error)
+            console.log(error);
             if (Boom.isBoom(error)) {
                 return ctx.json(
                     { error: error.output.payload.message },
