@@ -9,8 +9,17 @@ export default class CompanySeeder implements Seeder {
         await repository.insert([
             {
                 id: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
-                name: "Northeastern Inc.",
-                lastQuickBooksImportTime: new Date("2023-01-01T12:00:00Z"),
+                name: "Test Company ABC",
+                lastQuickBooksImportTime: new Date("2025-01-15T10:30:00Z"),
+            },
+            {
+                id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                name: "Test Company DEF",
+            },
+            {
+                id: "12345678-9abc-1234-5678-56789abcdef0",
+                name: "Test Company EFG",
+                lastQuickBooksImportTime: new Date("2025-02-01T14:45:00Z"),
             },
         ]);
     }
