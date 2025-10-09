@@ -38,7 +38,7 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice/{id}/line - valid invoice id ", async () => {
-        const response = await app.request(`/quickbooks/invoice/${seededInvoiceId}/lines`);
+        const response = await app.request(`/invoice/${seededInvoiceId}/lines`);
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -46,7 +46,7 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice/{id}/line - bad invoice id ", async () => {
-        const response = await app.request(`/quickbooks/invoice/8d720d89-9999-4999-a999-1934f914907f/lines`);
+        const response = await app.request(`/invoice/8d720d89-9999-4999-a999-1934f914907f/lines`);
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -54,7 +54,7 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice/{id}/line - invalid invoice id ", async () => {
-        const response = await app.request(`/quickbooks/invoice/hellnah/lines`);
+        const response = await app.request(`/invoice/hellnah/lines`);
 
         expect(response.status).toBe(400);
         const body = await response.json();
