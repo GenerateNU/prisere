@@ -4,11 +4,10 @@ import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { GetUsersDisasterNotificationsDTO } from "../../types/DisasterNotification";
 import { FemaDisaster } from "../../entities/FemaDisaster";
-import { DataSource } from "typeorm";
-import { ILocationAddressTransaction, LocationAddressTransactions } from "../location-address/transaction";
-import { FEMALocationMatcher } from "../../utilities/fema_location_lookup";
-import { LocationAddress } from "../../entities/LocationAddress";
+import { ILocationAddressTransaction } from "../location-address/transaction";
 import { NotificationStatus, NotificationType } from "../../types/NotificationEnums";
+import { LocationAddress } from "../../entities/LocationAddress";
+import { logMessageToFile } from "../../utilities/logger";
 
 export interface IDisasterNotificationService {
     getUserNotifications(payload: GetUsersDisasterNotificationsDTO): Promise<DisasterNotification[]>;
@@ -22,12 +21,10 @@ export interface IDisasterNotificationService {
 export class DisasterNotificationService implements IDisasterNotificationService {
     private notificationTransaction: IDisasterNotificationTransaction;
     private locationTransaction: ILocationAddressTransaction;
-    private locationMatcher: FEMALocationMatcher;
 
-    constructor(notificationTransaction: IDisasterNotificationTransaction, db: DataSource) {
+    constructor(notificationTransaction: IDisasterNotificationTransaction, locationTransaction: ILocationAddressTransaction) {
         this.notificationTransaction = notificationTransaction;
-        this.locationTransaction = new LocationAddressTransactions(db);
-        this.locationMatcher = new FEMALocationMatcher();
+        this.locationTransaction = locationTransaction;
     }
 
     getUserNotifications = withServiceErrorHandling(
@@ -86,76 +83,51 @@ export class DisasterNotificationService implements IDisasterNotificationService
 
     processNewDisasters = withServiceErrorHandling(async (newDisasters: FemaDisaster[]): Promise<boolean> => {
         try {
-            // Get all locations with company and user data
-            const locations = await this.locationTransaction.getAllLocations();
             const notificationsToCreate: Partial<DisasterNotification>[] = [];
 
-            for (const disaster of newDisasters) {
-                console.log(`Processing disaster: ${disaster}`);
+            // Get user-disaster pairs directly
+            const userDisasterPairs = await this.locationTransaction.getUsersAffectedByDisasters(newDisasters);
+            
+            logMessageToFile(`Found ${userDisasterPairs.length} user-disaster combinations to create notifications for`);
 
-                // Get affected locations for this disaster
-                const locationsResult = await this.locationMatcher.getAffectedLocations(locations, disaster);
+            for (const { user, disaster } of userDisasterPairs) {
+                // Check web notification preferences
+                // if (user.webNotificationPreference || user.webNotificationPreference === undefined) {
+                    notificationsToCreate.push({
+                        userId: user.id,
+                        femaDisasterId: disaster.id,
+                        notificationType: NotificationType.WEB,
+                        notificationStatus: NotificationStatus.UNREAD,
+                        user: user,
+                        femaDisaster: disaster,
+                    });
+                // }
 
-                // Filter to only affected locations
-                const affectedLocations = locationsResult.filter((result) => result.affected);
-                console.log(
-                    `Found ${affectedLocations.length} affected locations for disaster ${disaster.disasterNumber}`
-                );
-
-                // Create notifications for affected locations
-                for (const affectedLocation of affectedLocations) {
-                    // Find the full location object to get company/user info
-                    const location = locations.find((loc) => loc.id === affectedLocation.id);
-
-                    if (location?.company?.user) {
-                        const { company } = location;
-                        const { user } = company;
-
-                        // Check web notification preferences
-                        // if (user.webNotificationPreference || user.webNotificationPreference === undefined) {
-                        notificationsToCreate.push({
-                            userId: user.id,
-                            femaDisasterId: disaster.id,
-                            // companyId: company.id,
-                            // locationId: location.id,
-                            notificationType: NotificationType.WEB,
-                            // message: this.createNotificationMessage(disaster, location),
-                            notificationStatus: NotificationStatus.UNREAD,
-                            user: user,
-                            femaDisaster: new FemaDisaster(),
-                        });
-                        // }
-
-                        // Check email notification preferences
-                        // if (user.emailNotificationPreference || user.emailNotificationPreference === undefined) {
-                        notificationsToCreate.push({
-                            userId: user.id,
-                            femaDisasterId: disaster.id,
-                            // companyId: company.id,
-                            // locationId: location.id,
-                            notificationType: NotificationType.EMAIL,
-                            // message: this.createNotificationMessage(disaster, location),
-                            notificationStatus: NotificationStatus.UNREAD,
-                            user: user,
-                            femaDisaster: new FemaDisaster(),
-                        });
-                        // }
-                    }
-                }
+                // Check email notification preferences
+                // if (user.emailNotificationPreference || user.emailNotificationPreference === undefined) {
+                    notificationsToCreate.push({
+                        userId: user.id,
+                        femaDisasterId: disaster.id,
+                        notificationType: NotificationType.EMAIL,
+                        notificationStatus: NotificationStatus.UNREAD,
+                        user: user,
+                        femaDisaster: disaster,
+                    });
+                // }
             }
 
-            // Bulk create all notifications after processing all disasters
+            // Bulk create all notifications
             if (notificationsToCreate.length > 0) {
-                console.log(`Creating ${notificationsToCreate.length} notifications`);
+                logMessageToFile(`Creating ${notificationsToCreate.length} notifications`);
                 await this.bulkCreateNotifications(notificationsToCreate);
-                console.log("Successfully created all notifications");
+                logMessageToFile("Successfully created all notifications");
             } else {
-                console.log("No locations affected by new disasters");
+                logMessageToFile("No users affected by new disasters");
             }
 
             return true;
         } catch (error) {
-            console.error("Error processing new disasters:", error);
+            logMessageToFile(`Error processing new disasters: ${error}`);
             return false;
         }
     });

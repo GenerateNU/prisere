@@ -1,7 +1,12 @@
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, beforeEach } from "bun:test";
+import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
+import { SeederFactoryManager } from "typeorm-extension";
+import { DataSource } from "typeorm";
+import CompanySeeder from "../../database/seeds/company.seed";
+import { LocationAddressSeeder } from "../../database/seeds/location.seed";
+import { Company } from "../../entities/Company";
 
 /**
  * Test:
@@ -14,98 +19,82 @@ import { IBackup } from "pg-mem";
 describe("Get all locations for a company", () => {
     let app: Hono;
     let backup: IBackup;
-    let createdCompanyId: string;
+    let datasource: DataSource;
+
+    // Seeded company IDs from company.seed.ts
+    const companyWithMultipleLocations = "ffc8243b-876e-4b6d-8b80-ffc73522a838"; // 3 locations
+    const companyWithOneLocation = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"; // 1 location
+    const companyWithNoLocations = "11b2c3d4-e5f6-7890-abcd-ef1234567890"; // 0 locations
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
+        datasource = testAppData.dataSource;
     });
 
     beforeEach(async () => {
         backup.restore();
+        const companySeeder = new CompanySeeder();
+        await companySeeder.run(datasource, {} as SeederFactoryManager);
+        const locationSeeder = new LocationAddressSeeder();
+        await locationSeeder.run(datasource, {} as SeederFactoryManager);
+    });
 
-        const response = await app.request("/companies", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: "Test Company" }),
-        });
-        const body = await response.json();
-        createdCompanyId = body.id;
+    afterEach(async () => {
+        backup.restore();
     });
 
     test("should return empty array when company has no locations", async () => {
-        const response = await app.request(`/companies/${createdCompanyId}/location-address`);
-
-        expect(response.status).toBe(200);
+        const response = await app.request(`/companies/${companyWithNoLocations}/location-address`);
         const data = await response.json();
+
         expect(Array.isArray(data)).toBe(true);
         expect(data.length).toBe(0);
     });
 
     test("should return all locations when company has more than one location", async () => {
-        const locations = [
-            {
-                country: "United States",
-                stateProvince: "California",
-                city: "San Francisco",
-                streetAddress: "123 Main St",
-                postalCode: "94105",
-                companyId: createdCompanyId,
-            },
-            {
-                country: "United States",
-                stateProvince: "New York",
-                city: "New York",
-                streetAddress: "456 Broadway",
-                postalCode: "10013",
-                companyId: createdCompanyId,
-            },
-            {
-                country: "United States",
-                stateProvince: "Texas",
-                city: "Austin",
-                streetAddress: "789 Queen St",
-                postalCode: "10001",
-                county: "Texas County",
-                companyId: createdCompanyId,
-            },
-        ];
-
-        for (const location of locations) {
-            await app.request("/location-address", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(location),
-            });
-        }
-
-        const response = await app.request(`/companies/${createdCompanyId}/location-address`);
+        const response = await app.request(`/companies/${companyWithMultipleLocations}/location-address`);
 
         expect(response.status).toBe(200);
         const data = await response.json();
         expect(Array.isArray(data)).toBe(true);
         expect(data.length).toBe(3);
 
+        // Verify all locations belong to the correct company
         data.forEach((location: any) => {
-            expect(location.companyId).toBe(createdCompanyId);
+            expect(location.companyId).toBe(companyWithMultipleLocations);
         });
 
-        locations.forEach((expectedLocation) => {
-            const matchingLocation = data.find(
-                (loc: any) => loc.city === expectedLocation.city && loc.streetAddress === expectedLocation.streetAddress
-            );
+        // Verify specific seeded locations are present
+        const cities = data.map((loc: any) => loc.city);
+        expect(cities).toContain("Miami");
+        expect(cities).toContain("Houston");
+        expect(cities).toContain("Los Angeles");
 
-            expect(matchingLocation).toBeDefined();
-            expect(matchingLocation.country).toBe(expectedLocation.country);
-            expect(matchingLocation.stateProvince).toBe(expectedLocation.stateProvince);
-            expect(matchingLocation.postalCode).toBe(expectedLocation.postalCode);
-            expect(matchingLocation.companyId).toBe(expectedLocation.companyId);
-
-            if (expectedLocation.county) {
-                expect(matchingLocation.county).toBe(expectedLocation.county);
-            }
+        // Verify FIPS codes are present
+        data.forEach((location: any) => {
+            expect(location.fipsStateCode).toBeDefined();
+            expect(location.fipsCountyCode).toBeDefined();
+            expect(typeof location.fipsStateCode).toBe("number");
+            expect(typeof location.fipsCountyCode).toBe("number");
         });
+    });
+
+    test("should return single location when company has one location", async () => {
+        const response = await app.request(`/companies/${companyWithOneLocation}/location-address`);
+
+        expect(response.status).toBe(200);
+        const data = await response.json();
+        expect(Array.isArray(data)).toBe(true);
+        expect(data.length).toBe(1);
+
+        const location = data[0];
+        expect(location.companyId).toBe(companyWithOneLocation);
+        expect(location.city).toBe("New York");
+        expect(location.stateProvince).toBe("New York");
+        expect(location.fipsStateCode).toBe(36);
+        expect(location.fipsCountyCode).toBe(61);
     });
 
     test("should return 400 when company ID is not a valid UUID", async () => {
@@ -117,46 +106,67 @@ describe("Get all locations for a company", () => {
     });
 
     test("should only return locations for the specified company", async () => {
-        const otherCompanyResponse = await app.request("/companies", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: "Other Company" }),
-        });
-        const otherCompany = await otherCompanyResponse.json();
-        const otherCompanyId = otherCompany.id;
+        // Test that company A's locations don't include company B's locations
+        const companyAResponse = await app.request(`/companies/${companyWithMultipleLocations}/location-address`);
+        const companyBResponse = await app.request(`/companies/${companyWithOneLocation}/location-address`);
 
-        await app.request("/location-address", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                country: "United States",
-                stateProvince: "California",
-                city: "San Francisco",
-                streetAddress: "123 Main St",
-                postalCode: "94105",
-                companyId: createdCompanyId,
-            }),
+        expect(companyAResponse.status).toBe(200);
+        expect(companyBResponse.status).toBe(200);
+
+        const companyAData = await companyAResponse.json();
+        const companyBData = await companyBResponse.json();
+
+        // Company A should have 3 locations 
+        expect(companyAData.length).toBe(3);
+        companyAData.forEach((location: any) => {
+            expect(location.companyId).toBe(companyWithMultipleLocations);
         });
 
-        await app.request("/location-address", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                country: "United States",
-                stateProvince: "Texas",
-                city: "Austin",
-                streetAddress: "789 Congress Ave",
-                postalCode: "78701",
-                companyId: otherCompanyId,
-            }),
+        // Company B should have 1 location
+        expect(companyBData.length).toBe(1);
+        expect(companyBData[0].companyId).toBe(companyWithOneLocation);
+
+        // Verify no overlap in location IDs
+        const companyALocationIds = companyAData.map((loc: any) => loc.id);
+        const companyBLocationIds = companyBData.map((loc: any) => loc.id);
+        
+        companyALocationIds.forEach((id: string) => {
+            expect(companyBLocationIds).not.toContain(id);
         });
+    });
 
-        const response = await app.request(`/companies/${createdCompanyId}/location-address`);
+    test("should return 404 for non-existent", async () => {
+        const nonExistentCompanyId = "99999999-9999-9999-9999-999999999999";
+        const response = await app.request(`/companies/${nonExistentCompanyId}/location-address`);
 
+        expect(response.status).toBe(400);
+    });
+
+    test("should verify location data integrity", async () => {
+        const response = await app.request(`/companies/${companyWithMultipleLocations}/location-address`);
+        
         expect(response.status).toBe(200);
         const data = await response.json();
-        expect(data.length).toBe(1);
-        expect(data[0].companyId).toBe(createdCompanyId);
-        expect(data[0].city).toBe("San Francisco");
+
+        data.forEach((location: any) => {
+            // Verify required fields are present
+            expect(location.id).toBeDefined();
+            expect(location.country).toBeDefined();
+            expect(location.stateProvince).toBeDefined();
+            expect(location.city).toBeDefined();
+            expect(location.streetAddress).toBeDefined();
+            expect(location.postalCode).toBeDefined();
+            expect(location.companyId).toBe(companyWithMultipleLocations);
+
+            // Verify FIPS codes are valid numbers
+            expect(typeof location.fipsStateCode).toBe("number");
+            expect(typeof location.fipsCountyCode).toBe("number");
+            expect(location.fipsStateCode).toBeGreaterThan(0);
+            expect(location.fipsCountyCode).toBeGreaterThan(0);
+
+            // Verify postal codes are strings
+            expect(typeof location.postalCode).toBe("string");
+            expect(location.postalCode.length).toBeGreaterThan(0);
+        });
     });
 });

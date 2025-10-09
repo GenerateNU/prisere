@@ -1,7 +1,7 @@
 import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { ILocationAddressTransaction } from "./transaction";
-
+import { logMessageToFile } from "../../utilities/logger";
 import { DeleteResult } from "typeorm";
 import {
     CreateLocationAddressDTO,
@@ -10,6 +10,7 @@ import {
     GetLocationAddressResponse,
     LocationAddress,
 } from "../../types/Location";
+import { IFEMALocationMatcher } from "../fips-location-matching/service";
 
 export interface ILocationAddressService {
     /**
@@ -36,9 +37,11 @@ export interface ILocationAddressService {
 
 export class LocationAddressService implements ILocationAddressService {
     private locationAddressTransaction: ILocationAddressTransaction;
+    private locationMatcher: IFEMALocationMatcher;
 
-    constructor(locationAddressTransaction: ILocationAddressTransaction) {
+    constructor(locationAddressTransaction: ILocationAddressTransaction, locationMatcher: IFEMALocationMatcher) {
         this.locationAddressTransaction = locationAddressTransaction;
+        this.locationMatcher = locationMatcher;
     }
 
     /**
@@ -48,11 +51,26 @@ export class LocationAddressService implements ILocationAddressService {
      */
     createLocationAddress = withServiceErrorHandling(
         async (payload: CreateLocationAddressDTO): Promise<CreateLocationAddressResponse> => {
-            const locationAddress = await this.locationAddressTransaction.createLocationAddress(payload);
+            console.log("CREATING")
+            const fipsLocation = await this.locationMatcher.getLocationFips(payload);
+            console.log("FIPS Location: ", fipsLocation)
+            
+            // Add FIPS codes into payload to send to transaction layer
+            const completePayload = {
+                ...payload,
+                fipsStateCode: fipsLocation ? Number(fipsLocation.fipsStateCode) : null,
+                fipsCountyCode: fipsLocation ? Number(fipsLocation.fipsCountyCode) : null,
+            };
 
+            console.log("Complete paylaod: ", completePayload)
+            
+            // Pass enriched data to transaction layer
+            const locationAddress = await this.locationAddressTransaction.createLocationAddress(completePayload);
+            
             if (!locationAddress) {
-                throw Boom.internal(`Failed to create a location address from the given payload: ${payload}`);
+                throw new Error("Failed to create location address");
             }
+            
             return locationAddress;
         }
     );

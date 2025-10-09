@@ -2,30 +2,33 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
+import CompanySeeder from "../../database/seeds/company.seed";
+import { SeederFactoryManager } from "typeorm-extension";
+import { DataSource } from "typeorm";
+import { Company } from "../../entities/Company";
+
 
 describe("Remove Address Tests", () => {
     let app: Hono;
     let backup: IBackup;
-
-    let company_id: String;
+    let dataSource: DataSource;
+    let companyId: String;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
+        dataSource = testAppData.dataSource;
     });
 
     beforeEach(async () => {
-        const sampleCompany = {
-            name: "Cool Company",
-        };
-        const response = await app.request("/companies", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(sampleCompany),
-        });
-        const body = await response.json();
-        company_id = body.id;
+        backup.restore();
+        const companySeeder = new CompanySeeder();
+        await companySeeder.run(dataSource, {} as SeederFactoryManager);
+        const companies = await dataSource.getRepository(Company).find();
+        companyId = companies[0].id;
+        console.log("Companies after seeding:", companies.map(c => ({ id: c.id, name: c.name })));
+
     });
 
     afterEach(async () => {
@@ -42,25 +45,40 @@ describe("Remove Address Tests", () => {
 
     test("properly removed the location with given id", async () => {
         const requestBody = {
-            country: "United States",
-            stateProvince: "California",
-            city: "San Francisco",
-            streetAddress: "123 Main Street",
-            postalCode: "94105",
-            county: "San Francisco County",
-            companyId: company_id,
-        };
+        country: "United States",
+        stateProvince: "California",
+        city: "San Francisco",
+        streetAddress: "123 Main Street",
+        postalCode: "94105",
+        county: "San Francisco County",
+        companyId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    };
+    
 
-        const response = await app.request("/location-address", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestBody),
-        });
+    const response = await app.request("/location-address", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+    });
+    
+    if (response.status === 500) {
+        try {
+            const errorData = await response.json();
+            console.log("500 Error details:", errorData);
+        } catch (e) {
+            const errorText = await response.text();
+            console.log("500 Error text:", errorText);
+        }
+        throw new Error(`Location creation failed with 500 error`);
+    }
 
-        const location = await response.json();
-        const locationId = location.id;
+
+    expect(response.status).toBe(201);
+    const location = await response.json();
+    const locationId = location.id;
+    console.log("------------")
 
         expect(response.status).toBe(201);
 
@@ -74,6 +92,7 @@ describe("Remove Address Tests", () => {
             method: "GET",
         });
 
+        console.log("------------")
         expect(getRemovedResponse.status).toBe(404);
     });
 
@@ -90,40 +109,43 @@ describe("Remove Address Tests", () => {
             method: "DELETE",
         });
 
-        expect(removeResponse.status).toBe(404); // or 400 depending on your routing
+        expect(removeResponse.status).toBe(404);
     });
 
     test("should return 204 with no content body", async () => {
-        const createBody = {
-            country: "United States",
-            stateProvince: "California",
-            city: "San Francisco",
-            streetAddress: "123 Main Street",
-            postalCode: "94105",
-            county: "San Francisco County",
-            companyId: company_id,
-        };
+    const createBody = {
+        country: "United States",
+        stateProvince: "California",
+        city: "San Francisco",
+        streetAddress: "123 Main Street",
+        postalCode: "94105",
+        county: "San Francisco County",
+        companyId: companyId,
+    };
 
-        const createResponse = await app.request("/location-address", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(createBody),
-        });
-        const location = await createResponse.json();
-        const locationId = location.id;
-
-        const removeResponse = await app.request(`/location-address/${location.id}`, {
-            method: "DELETE",
-        });
-
-        expect(removeResponse.status).toBe(204);
-        const body = await removeResponse.text();
-        expect(body).toBe("");
-
-        const getRemovedResponse = await app.request(`/location-address/${locationId}`, {
-            method: "GET",
-        });
-
-        expect(getRemovedResponse.status).toBe(404);
+    const createResponse = await app.request("/location-address", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(createBody),
     });
+
+
+    expect(createResponse.status).toBe(201);
+    const location = await createResponse.json();
+    const locationId = location.id;
+
+    const removeResponse = await app.request(`/location-address/${locationId}`, {
+        method: "DELETE",
+    });
+
+    expect(removeResponse.status).toBe(204);
+    const body = await removeResponse.text();
+    expect(body).toBe("");
+
+    const getRemovedResponse = await app.request(`/location-address/${locationId}`, {
+        method: "GET",
+    });
+
+    expect(getRemovedResponse.status).toBe(404);
+});
 });
