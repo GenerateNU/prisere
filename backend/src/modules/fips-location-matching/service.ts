@@ -71,6 +71,7 @@ export class FEMALocationMatcher implements IFEMALocationMatcher {
 
                 // Try "2020 Census Blocks" first (current format), fallback to "Census Blocks"
                 // Note "2020 Census Blocks" will show some 'not exist' error but this is the correct field
+                // @ts-ignore
                 const censusBlocks = match.geographies?.["2020 Census Blocks"] || match.geographies?.["Census Blocks"];
 
                 if (censusBlocks && censusBlocks.length > 0) {
