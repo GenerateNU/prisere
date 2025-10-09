@@ -38,7 +38,7 @@ export default function LoginPage() {
                 placeholder="Password"
                 required 
               />
-            {state?.message && (<p className = "text-red-500 text-sm"> {state.message}</p>)}
+            {state?.success && (<p className = "text-red-500 text-sm"> {state.message}</p>)}
           </div>
           
           <div className="w-full flex flex-col gap-2 items-center">

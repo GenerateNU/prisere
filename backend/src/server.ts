@@ -7,6 +7,8 @@ import { errorHandler } from "./utilities/error";
 import { logMessageToFile } from "./utilities/logger";
 import { FemaService, IFemaService } from "./modules/clients/fema-client/service";
 import { FemaFetching } from "./utilities/cron_job_handler";
+import { isAuthorized } from "./utilities/auth-middleware";
+import { cors } from 'hono/cors';
 
 const app = new Hono();
 
@@ -21,7 +23,17 @@ const app = new Hono();
         app.use("*", logger(logMessageToFile));
 
         app.onError(errorHandler);
+        
+        app.use("*", cors({
+            origin: ['http://localhost:3000', 'https://walrus-app-kwuoe.ondigitalocean.app'],
+            allowHeaders: ['Origin', 'Content-Type', 'Authorization'],
+            allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            credentials: true,
+            maxAge: 3600,
+        }))
 
+        app.use("/*", isAuthorized())
+        
         setUpRoutes(app, AppDataSource);
         
         const femaService: IFemaService = new FemaService(AppDataSource);
