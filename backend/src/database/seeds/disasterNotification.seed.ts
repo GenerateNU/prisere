@@ -16,8 +16,6 @@ describe("Test acknowledge disaster notifications", () => {
     let seedUserId2: string;
     let seedDisasterId1: string;
     let seedDisasterId2: string;
-    let disasterNotificationId: string;
-    let disasterNotificationId2: string;
 
     const seedUsers = [
         {
@@ -106,10 +104,5 @@ describe("Test acknowledge disaster notifications", () => {
         ];
 
         await notificationRepository.insert(notifications);
-
-        disasterNotificationId = notifications[0].id;
-        disasterNotificationId2 = notifications[1].id;
-        console.log(disasterNotificationId);
-        console.log(disasterNotificationId2);
     });
 });

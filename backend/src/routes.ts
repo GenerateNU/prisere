@@ -5,9 +5,14 @@ import { setUpOpenApiRoutes } from "./modules/openapi/all-routes";
 import { locationAddressRoute } from "./modules/location-address/route";
 import { companyRoutes } from "./modules/company/route";
 import { disasterRoutes } from "./modules/disaster/route";
+import { claimRoutes } from "./modules/claim/route";
 import { disasterNotificationRoutes } from "./modules/disasterNotifications/route";
 import { StatusCode } from "hono/utils/http-status";
 
+import { quickbooksRoutes } from "./modules/quickbooks/routes";
+import { invoiceRoutes } from "./modules/invoice/route";
+import { preferenceRoutes } from "./modules/preferences/route";
+import { invoiceLineItemsRoutes } from "./modules/invoiceLineItem/route";
 
 export const setUpRoutes = (app: Hono, db: DataSource) => {
     const routes = new Hono();
@@ -17,6 +22,11 @@ export const setUpRoutes = (app: Hono, db: DataSource) => {
     routes.route("/companies", companyRoutes(db));
     routes.route("disaster", disasterRoutes(db));
     routes.route("/disasterNotification", disasterNotificationRoutes(db));
+    routes.route("/claims", claimRoutes(db));
+    routes.route("/quickbooks", quickbooksRoutes(db));
+    routes.route("/invoice", invoiceRoutes(db));
+    routes.route("/notifications", preferenceRoutes(db));
+    routes.route("/invoice/line", invoiceLineItemsRoutes(db));
 
     app.route("/api/prisere", routes)
     app.route("/api", setUpOpenApiRoutes(db))

@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class FixDisasterColumnNamesDatesPlusNullable1759107988225 implements MigrationInterface {
-    name = "FixDisasterColumnNamesDatesPlusNullable1759107988225";
+export class FixDisasterColumnNamesDatesPlusNullable1759072454464 implements MigrationInterface {
+    name = "FixDisasterColumnNamesDatesPlusNullable1759072454464";
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "fema_disaster" RENAME COLUMN "femaId" TO "id"`);

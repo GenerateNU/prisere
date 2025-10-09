@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
-import { FemaDisaster } from "./FemaDisaster";
-import { NotificationType, NotificationStatus } from "../types/NotificationEnums";
-import { User } from "./User";
+import { FemaDisaster } from "./FemaDisaster.js";
+import { NotificationType, NotificationStatus } from "../types/NotificationEnums.js";
+import { User } from "./User.js";
 import type { Relation } from "typeorm";
 
 @Entity("disasterNotification")
