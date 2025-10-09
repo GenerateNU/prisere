@@ -13,7 +13,10 @@ export const locationAddressRoute = (db: DataSource): Hono => {
 
     const locationAddressTransaction: ILocationAddressTransaction = new LocationAddressTransactions(db);
     const locationMatcher: IFEMALocationMatcher = new FEMALocationMatcher();
-    const locationAddressService: ILocationAddressService = new LocationAddressService(locationAddressTransaction, locationMatcher);
+    const locationAddressService: ILocationAddressService = new LocationAddressService(
+        locationAddressTransaction,
+        locationMatcher
+    );
     const locationAddressController: ILocationAddressController = new LocationAddressController(locationAddressService);
 
     locationAddress.post("/", (ctx) => locationAddressController.createLocationAddress(ctx));

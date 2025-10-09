@@ -49,7 +49,7 @@ export const seededLocationAddresses = [
         streetAddress: "321 Broadway",
         postalCode: "10007",
         county: "New York",
-        companyId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890", 
+        companyId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
         fipsStateCode: 36,
         fipsCountyCode: 61,
     },
@@ -57,21 +57,21 @@ export const seededLocationAddresses = [
 
 export class LocationAddressSeeder implements Seeder {
     track = false;
-    
+
     public async run(dataSource: DataSource, _factoryManager: SeederFactoryManager): Promise<void> {
         const locationRepository = dataSource.getRepository(LocationAddress);
         const companyRepository = dataSource.getRepository(Company);
-        
+
         // Check company exists first
         for (const locationData of seededLocationAddresses) {
-            const company = await companyRepository.findOne({ 
-                where: { id: locationData.companyId } 
+            const company = await companyRepository.findOne({
+                where: { id: locationData.companyId },
             });
-            
+
             if (!company) {
                 throw new Error(`Company with ID ${locationData.companyId} not found. Cannot create location.`);
             }
-            
+
             await locationRepository.save(locationData);
         }
     }

@@ -15,7 +15,7 @@ export const LocationAddressSchema = z.object({
     county: z.string().optional(),
     companyId: z.uuid(),
     fipsStateCode: z.number(),
-    fipsCountyCode: z.number()
+    fipsCountyCode: z.number(),
 });
 
 export const CreateLocationAddressSchema = z.object({

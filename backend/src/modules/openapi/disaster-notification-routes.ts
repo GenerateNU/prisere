@@ -13,11 +13,17 @@ import {
 } from "../../types/DisasterNotification";
 import { z } from "zod";
 import { ILocationAddressTransaction, LocationAddressTransactions } from "../location-address/transaction";
+import { IPreferenceTransaction, PreferenceTransaction } from "../preferences/transaction";
 
 export const addOpenApiDisasterNotificationRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const notificationTransaction = new DisasterNotificationTransaction(db);
     const locationTransaction: ILocationAddressTransaction = new LocationAddressTransactions(db);
-    const notificationService = new DisasterNotificationService(notificationTransaction, locationTransaction);
+    const userPreferencesTransaction: IPreferenceTransaction = new PreferenceTransaction(db);
+    const notificationService = new DisasterNotificationService(
+        notificationTransaction,
+        locationTransaction,
+        userPreferencesTransaction
+    );
     const notificationController = new DisasterNotificationController(notificationService);
 
     openApi.openapi(getUserNotificationsRoute, (ctx) => notificationController.getUserNotifications(ctx) as any);

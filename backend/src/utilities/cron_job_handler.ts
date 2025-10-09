@@ -8,6 +8,7 @@ import {
 } from "../modules/disasterNotifications/transaction";
 import { logMessageToFile } from "./logger";
 import { ILocationAddressTransaction, LocationAddressTransactions } from "../modules/location-address/transaction";
+import { IPreferenceTransaction, PreferenceTransaction } from "../modules/preferences/transaction";
 
 export interface CronJobHandler {
     initializeCron(): CronJob;
@@ -18,12 +19,18 @@ export class FemaFetching implements CronJobHandler {
     private disasterNotificationTransaction: IDisasterNotificationTransaction;
     private disasterNotificationService: IDisasterNotificationService;
     private locationTransaction: ILocationAddressTransaction;
+    private userPreferencesTransaction: IPreferenceTransaction;
 
     constructor(femaService: IFemaService, db: DataSource) {
         this.femaService = femaService;
         this.disasterNotificationTransaction = new DisasterNotificationTransaction(db);
         this.locationTransaction = new LocationAddressTransactions(db);
-        this.disasterNotificationService = new DisasterNotificationService(this.disasterNotificationTransaction, this.locationTransaction);
+        this.userPreferencesTransaction = new PreferenceTransaction(db);
+        this.disasterNotificationService = new DisasterNotificationService(
+            this.disasterNotificationTransaction,
+            this.locationTransaction,
+            this.userPreferencesTransaction
+        );
     }
 
     initializeCron(): CronJob {

@@ -6,7 +6,6 @@ import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
 import CompanySeeder from "../../database/seeds/company.seed";
 import { LocationAddressSeeder } from "../../database/seeds/location.seed";
-import { Company } from "../../entities/Company";
 
 /**
  * Test:
@@ -116,7 +115,7 @@ describe("Get all locations for a company", () => {
         const companyAData = await companyAResponse.json();
         const companyBData = await companyBResponse.json();
 
-        // Company A should have 3 locations 
+        // Company A should have 3 locations
         expect(companyAData.length).toBe(3);
         companyAData.forEach((location: any) => {
             expect(location.companyId).toBe(companyWithMultipleLocations);
@@ -129,7 +128,7 @@ describe("Get all locations for a company", () => {
         // Verify no overlap in location IDs
         const companyALocationIds = companyAData.map((loc: any) => loc.id);
         const companyBLocationIds = companyBData.map((loc: any) => loc.id);
-        
+
         companyALocationIds.forEach((id: string) => {
             expect(companyBLocationIds).not.toContain(id);
         });
@@ -144,7 +143,7 @@ describe("Get all locations for a company", () => {
 
     test("should verify location data integrity", async () => {
         const response = await app.request(`/companies/${companyWithMultipleLocations}/location-address`);
-        
+
         expect(response.status).toBe(200);
         const data = await response.json();
 

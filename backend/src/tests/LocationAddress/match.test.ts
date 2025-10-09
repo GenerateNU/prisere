@@ -25,7 +25,7 @@ describe("FEMA Location Matcher - getLocationFips", () => {
                 streetAddress: "123 Ocean Drive",
                 city: "Miami",
                 stateProvince: "Florida",
-                postalCode: "33139"
+                postalCode: "33139",
             };
             // Miami-Dade County is 12086
 
@@ -33,7 +33,7 @@ describe("FEMA Location Matcher - getLocationFips", () => {
 
             expect(result).toEqual({
                 fipsStateCode: "12",
-                fipsCountyCode: "086"
+                fipsCountyCode: "086",
             });
         });
 
@@ -42,15 +42,15 @@ describe("FEMA Location Matcher - getLocationFips", () => {
                 streetAddress: "456 Main Street",
                 city: "Houston",
                 stateProvince: "Texas",
-                postalCode: "77002"
-            }
+                postalCode: "77002",
+            };
             // Harris County is 48201
 
             const result = await mockClient.getLocationFips(location);
 
             expect(result).toEqual({
                 fipsStateCode: "48",
-                fipsCountyCode: "201"
+                fipsCountyCode: "201",
             });
         });
     });
@@ -61,14 +61,14 @@ describe("FEMA Location Matcher - getLocationFips", () => {
                 streetAddress: "123 Main Street",
                 city: "San Francisco",
                 stateProvince: "California",
-                postalCode: "94105"
+                postalCode: "94105",
             };
 
             const result = await realService.getLocationFips(location);
 
             expect(result).toEqual({
                 fipsStateCode: "06",
-                fipsCountyCode: "075"
+                fipsCountyCode: "075",
             });
         });
 
@@ -85,10 +85,10 @@ describe("FEMA Location Matcher - getLocationFips", () => {
                 streetAddress: "123 O'Connor St.",
                 city: "San Francisco",
                 stateProvince: "California",
-                postalCode: "94105" // This should be filtered out of address string
+                postalCode: "94105", // This should be filtered out of address string
             };
 
-            const result = await realService.getLocationFips(location);
+            await realService.getLocationFips(location);
 
             // The fetch mock should receive a properly formatted address
             // expect(global.fetch).toHaveBeenCalledWith(
@@ -101,7 +101,7 @@ describe("FEMA Location Matcher - getLocationFips", () => {
         test("should handle location with only some fields", async () => {
             const location: Partial<LocationAddress> = {
                 city: "San Francisco",
-                stateProvince: "California"
+                stateProvince: "California",
             };
 
             const result = await realService.getLocationFips(location);
@@ -114,7 +114,7 @@ describe("FEMA Location Matcher - getLocationFips", () => {
                 streetAddress: "",
                 city: "San Francisco",
                 stateProvince: "",
-                postalCode: "94105"
+                postalCode: "94105",
             };
 
             const result = await realService.getLocationFips(location);
@@ -127,7 +127,7 @@ describe("FEMA Location Matcher - getLocationFips", () => {
                 streetAddress: "123 O'Connor St.",
                 city: "San Francisco",
                 stateProvince: "California",
-                postalCode: "94105"
+                postalCode: "94105",
             };
 
             const result = await realService.getLocationFips(location);

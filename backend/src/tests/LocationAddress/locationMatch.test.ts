@@ -14,7 +14,7 @@ describe("FEMA Location Matcher - Real API Integration Tests", () => {
             streetAddress: "1 Market Street",
             city: "San Francisco",
             stateProvince: "California",
-            postalCode: "94105"
+            postalCode: "94105",
         };
 
         const result = await realService.getLocationFips(location);
@@ -28,8 +28,8 @@ describe("FEMA Location Matcher - Real API Integration Tests", () => {
         const location: Partial<LocationAddress> = {
             streetAddress: "350 5th Avenue",
             city: "New York",
-            stateProvince: "New York", 
-            postalCode: "10118"
+            stateProvince: "New York",
+            postalCode: "10118",
         };
 
         const result = await realService.getLocationFips(location);
@@ -44,7 +44,7 @@ describe("FEMA Location Matcher - Real API Integration Tests", () => {
             streetAddress: "999999 Nonexistent Street",
             city: "Faketown",
             stateProvince: "Nowhere",
-            postalCode: "00000"
+            postalCode: "00000",
         };
 
         const result = await realService.getLocationFips(location);
@@ -63,13 +63,13 @@ describe("FEMA Location Matcher - Real API Integration Tests", () => {
     test("should handle partial address data", async () => {
         const location: Partial<LocationAddress> = {
             city: "Los Angeles",
-            stateProvince: "California"
+            stateProvince: "California",
         };
 
         const result = await realService.getLocationFips(location);
 
-            expect(result).toBeNull();
+        expect(result).toBeNull();
     });
-}); 
+});
 
 // Add in timeout for real API calls
