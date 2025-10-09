@@ -11,7 +11,7 @@ import {
     GetInvoiceResponseSchema,
     GetCompanyInvoicesDTOSchema,
     GetCompanyInvoicesResponseSchema,
-    GetCompanyInvoicesSummationSchema,
+    GetCompanyInvoicesSummationResponseSchema,
 } from "../../types/Invoice";
 import { CompanyTransaction } from "../company/transaction";
 import { z } from "zod";
@@ -179,7 +179,7 @@ const sumInvoicesByCompanyAndDateRange = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: GetCompanyInvoicesSummationSchema,
+                    schema: GetCompanyInvoicesSummationResponseSchema,
                 },
             },
             description: "Found summation successfully",

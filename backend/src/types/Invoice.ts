@@ -47,7 +47,7 @@ export const GetCompanyInvoicesByDateDTOSchema = z.object({
     endDate: z.iso.datetime(),
 });
 
-export const GetCompanyInvoicesSummationSchema = z.object({
+export const GetCompanyInvoicesSummationResponseSchema = z.object({
     total: z.number().nonnegative(),
 });
 
@@ -57,7 +57,7 @@ export const GetCompanyInvoicesResponseSchema = z.array(GetInvoiceResponseSchema
 export type CreateOrUpdateInvoicesResponse = z.infer<typeof CreateOrUpdateInvoiceResponseSchema>;
 export type GetInvoiceResponse = z.infer<typeof GetInvoiceResponseSchema>;
 export type GetCompanyInvoicesResponse = z.infer<typeof GetCompanyInvoicesResponseSchema>;
-export type GetCompanyInvoicesSummation = z.infer<typeof GetCompanyInvoicesSummationSchema>;
+export type GetCompanyInvoicesSummationResponse = z.infer<typeof GetCompanyInvoicesSummationResponseSchema>;
 
 //Input types
 export type CreateOrUpdateInvoicesDTO = z.infer<typeof CreateOrUpdateInvoicesDTOSchema>;

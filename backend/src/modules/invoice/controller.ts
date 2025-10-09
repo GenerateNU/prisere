@@ -9,7 +9,7 @@ import {
     CreateOrUpdateInvoicesDTOSchema,
     GetCompanyInvoicesDTOSchema,
     GetCompanyInvoicesByDateDTOSchema,
-    GetCompanyInvoicesSummation,
+    GetCompanyInvoicesSummationResponse,
 } from "../../types/Invoice";
 import { ControllerResponse } from "../../utilities/response";
 
@@ -17,7 +17,7 @@ export interface IInvoiceController {
     bulkCreateOrUpdateInvoice(_ctx: Context): ControllerResponse<TypedResponse<CreateOrUpdateInvoicesResponse, 201>>;
     getInvoice(ctx: Context): ControllerResponse<TypedResponse<GetInvoiceResponse, 200>>;
     getInvoicesForCompany(ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>>;
-    sumInvoicesByCompanyAndDateRange(ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesSummation, 200>>;
+    sumInvoicesByCompanyAndDateRange(ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesSummationResponse, 200>>;
 }
 
 export class InvoiceController implements IInvoiceController {
@@ -68,7 +68,7 @@ export class InvoiceController implements IInvoiceController {
     );
 
     sumInvoicesByCompanyAndDateRange = withControllerErrorHandling(
-        async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesSummation, 200>> => {
+        async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesSummationResponse, 200>> => {
             const queryParams = {
                 companyId: ctx.req.param("id"),
                 startDate: ctx.req.query("startDate"),
