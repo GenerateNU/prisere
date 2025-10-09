@@ -9,7 +9,7 @@ import { disasterNotificationRoutes } from "./modules/disasterNotifications/rout
 import { StatusCode } from "hono/utils/http-status";
 
 export const setUpRoutes = (app: Hono, db: DataSource) => {
-    app.route("/api/prisere/", healthRoutes())
+    app.route("/api/prisere/", healthRoutes());
     app.route("/api/prisere/users", userRoutes(db));
     app.route("/api/prisere/location-address", locationAddressRoute(db));
     app.route("/api/prisere/companies", companyRoutes(db));
@@ -18,14 +18,13 @@ export const setUpRoutes = (app: Hono, db: DataSource) => {
     app.route("/api/perisre/disasterNotification", disasterNotificationRoutes(db));
 };
 
-
 const healthRoutes = (): Hono => {
     const app = new Hono();
-    app.get("/", (ctx: Context): TypedResponse<{message:string}, StatusCode> => {
+    app.get("/", (ctx: Context): TypedResponse<{ message: string }, StatusCode> => {
         return ctx.json({ message: "Welcome to Prisere" }, 200);
-    } )
-    app.get("/healthcheck", (ctx: Context): TypedResponse<{message:string}, StatusCode>=> {
+    });
+    app.get("/healthcheck", (ctx: Context): TypedResponse<{ message: string }, StatusCode> => {
         return ctx.json({ message: "OK" }, 200);
-      });
-    return app
-}
+    });
+    return app;
+};

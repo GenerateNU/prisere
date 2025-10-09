@@ -35,7 +35,7 @@ const createCompanyRoute = createRoute({
             content: {
                 "application/json": {
                     schema: CreateCompanyDTOSchema,
-                    required: true
+                    required: true,
                 },
             },
         },
