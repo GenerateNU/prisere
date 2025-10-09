@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, OneToMany, OneToOne
 import { Company } from "./Company.js";
 import { DisasterNotification } from "./DisasterNotification";
 import type { Relation } from "typeorm";
+import { UserPreferences } from "./UserPreferences";
 
 @Entity("user")
 export class User {
@@ -26,4 +27,7 @@ export class User {
 
     @OneToMany(() => DisasterNotification, (disasterNotification) => disasterNotification.user)
     disasterNotifications!: Relation<DisasterNotification[]>;
+
+    @OneToOne(() => UserPreferences, (pref) => pref.user)
+    preferences!: Relation<UserPreferences>;
 }

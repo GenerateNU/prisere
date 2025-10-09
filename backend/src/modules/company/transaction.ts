@@ -121,7 +121,6 @@ export class CompanyTransaction implements ICompanyTransaction {
         if (companies.length !== companyIds.length) {
             const foundIds = companies.map((c) => c.id);
             const missing = companyIds.filter((id) => !foundIds.includes(id));
-            // throw Boom.badRequest(`Companies not found: ${missing.join(', ')}`);
             return missing;
         }
         return [];

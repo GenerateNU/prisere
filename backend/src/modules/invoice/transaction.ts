@@ -1,4 +1,4 @@
-import { DataSource } from "typeorm";
+import { DataSource, In } from "typeorm";
 import Boom from "@hapi/boom";
 import { plainToInstance } from "class-transformer";
 import { Invoice } from "../../entities/Invoice";
@@ -8,6 +8,15 @@ export interface IInvoiceTransaction {
     createOrUpdateInvoices(payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]>;
     getInvoiceById(id: string): Promise<Invoice>;
     getInvoicesForCompany(payload: GetCompanyInvoicesDTO): Promise<Invoice[]>;
+
+    /**
+     * Validates that all the passed invoice IDs exist in the database
+     * @param invoiceIds the invoice ids to make sure exist in the DB
+     *
+     * Will return a list of all invoice ids not present in the DB
+     * So an empty list means all are valid
+     */
+    validateInvoicesExist(invoiceIds: string[]): Promise<string[]>;
 }
 
 export class InvoiceTransaction implements IInvoiceTransaction {
@@ -24,7 +33,7 @@ export class InvoiceTransaction implements IInvoiceTransaction {
             .insert()
             .into(Invoice)
             .values(newInvoices)
-            .orUpdate(["totalAmountCents", "dateCreated"], ["quickbooksId", "companyId"])
+            .orUpdate(["totalAmountCents", "quickbooksDateCreated"], ["quickbooksId", "companyId"])
             .returning("*")
             .execute();
         return result.raw;
@@ -47,10 +56,20 @@ export class InvoiceTransaction implements IInvoiceTransaction {
             skip: numToSkip,
             take: resultsPerPage,
             order: {
-                dateCreated: "DESC",
+                quickbooksDateCreated: "DESC",
             },
         });
 
         return invoices;
+    }
+
+    async validateInvoicesExist(invoiceIds: string[]): Promise<string[]> {
+        const invoices = await this.db.getRepository(Invoice).findBy({ id: In(invoiceIds) });
+        if (invoices.length !== invoiceIds.length) {
+            const foundIds = invoices.map((c) => c.id);
+            const missing = invoiceIds.filter((id) => !foundIds.includes(id));
+            return missing;
+        }
+        return [];
     }
 }
