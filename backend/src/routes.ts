@@ -8,14 +8,18 @@ import { disasterRoutes } from "./modules/disaster/route";
 import { disasterNotificationRoutes } from "./modules/disasterNotifications/route";
 import { StatusCode } from "hono/utils/http-status";
 
+
 export const setUpRoutes = (app: Hono, db: DataSource) => {
-    app.route("/api/prisere/", healthRoutes());
-    app.route("/api/prisere/users", userRoutes(db));
-    app.route("/api/prisere/location-address", locationAddressRoute(db));
-    app.route("/api/prisere/companies", companyRoutes(db));
-    app.route("/api/openapi", setUpOpenApiRoutes(db));
-    app.route("/api/prisere/disaster", disasterRoutes(db));
-    app.route("/api/perisre/disasterNotification", disasterNotificationRoutes(db));
+    const routes = new Hono();
+    routes.route("/", healthRoutes());
+    routes.route("/users", userRoutes(db));
+    routes.route("/location-address", locationAddressRoute(db));
+    routes.route("/companies", companyRoutes(db));
+    routes.route("disaster", disasterRoutes(db));
+    routes.route("/disasterNotification", disasterNotificationRoutes(db));
+
+    app.route("/api/prisere", routes)
+    app.route("/api", setUpOpenApiRoutes(db))
 };
 
 const healthRoutes = (): Hono => {
