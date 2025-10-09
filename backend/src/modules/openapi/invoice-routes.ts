@@ -46,7 +46,7 @@ export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): O
 
 const bulkCreateOrUpdateInvoiceRoute = createRoute({
     method: "post",
-    path: "/quickbooks/invoice/bulk",
+    path: "/invoice/bulk",
     summary: "Bulk create or update new invoices",
     description:
         "Creates new invoices according to the schema. If there is an invoice in the database with the same quickbooks_id, company_id pairing, then it will overwrite it's attributes",
@@ -75,7 +75,7 @@ const bulkCreateOrUpdateInvoiceRoute = createRoute({
 
 const getInvoiceByIdRoute = createRoute({
     method: "get",
-    path: "/quickbooks/invoice/{id}",
+    path: "/invoice/{id}",
     summary: "Get invoice by id",
     description: "Get invoice with matching ID from the database",
     request: {
@@ -105,7 +105,7 @@ const getInvoiceByIdRoute = createRoute({
 
 const getInvoicesForCompanyRoute = createRoute({
     method: "get",
-    path: "/quickbooks/invoice",
+    path: "/invoice",
     summary: "Get invoices for a company",
     description: "Get invoices for a company with pagination params. Note page numbes are 0-indexed.",
     request: {
@@ -135,7 +135,7 @@ const getInvoicesForCompanyRoute = createRoute({
 
 const getInvoiceLineItemsForInvoiceRoute = createRoute({
     method: "get",
-    path: "/quickbooks/invoice/{id}/lines",
+    path: "/invoice/{id}/lines",
     summary: "Get all line items for a given invoice",
     description: "Get all line item for a given invoice",
     request: {

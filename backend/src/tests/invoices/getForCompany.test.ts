@@ -34,7 +34,7 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice - valid company id ", async () => {
-        const response = await app.request(`/quickbooks/invoice?companyId=${seededCompanyId}`);
+        const response = await app.request(`/invoice?companyId=${seededCompanyId}`);
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -42,7 +42,7 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice - bad company id ", async () => {
-        const response = await app.request(`/quickbooks/invoice?companyId=8d720d89-9999-4999-a999-1934f914907f`);
+        const response = await app.request(`/invoice?companyId=8d720d89-9999-4999-a999-1934f914907f`);
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -50,7 +50,7 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice - invalid company id ", async () => {
-        const response = await app.request(`/quickbooks/invoice?companyId=hellnah`);
+        const response = await app.request(`/invoice?companyId=hellnah`);
 
         expect(response.status).toBe(400);
         const body = await response.json();
@@ -59,9 +59,7 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice - valid company id paginated page 1", async () => {
-        const response = await app.request(
-            `/quickbooks/invoice?companyId=${seededCompanyId}&pageNumber=0&resultsPerPage=1`
-        );
+        const response = await app.request(`/invoice?companyId=${seededCompanyId}&pageNumber=0&resultsPerPage=1`);
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -69,9 +67,7 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice - valid company id paginated page 2", async () => {
-        const response = await app.request(
-            `/quickbooks/invoice?companyId=${seededCompanyId}&pageNumber=1&resultsPerPage=1`
-        );
+        const response = await app.request(`/invoice?companyId=${seededCompanyId}&pageNumber=1&resultsPerPage=1`);
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -79,9 +75,7 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice - valid company id paginated page 3", async () => {
-        const response = await app.request(
-            `/quickbooks/invoice?companyId=${seededCompanyId}&pageNumber=2&resultsPerPage=1`
-        );
+        const response = await app.request(`/invoice?companyId=${seededCompanyId}&pageNumber=2&resultsPerPage=1`);
 
         expect(response.status).toBe(200);
         const body = await response.json();

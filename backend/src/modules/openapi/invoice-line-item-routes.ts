@@ -31,7 +31,7 @@ export const addOpenApiInvoiceLineItemRoutes = (openApi: OpenAPIHono, db: DataSo
 
 const bulkCreateOrUpdateInvoiceLineItemRoute = createRoute({
     method: "post",
-    path: "/quickbooks/invoice/line/bulk",
+    path: "/invoice/line/bulk",
     summary: "Bulk create or update new invoice line items",
     description:
         "Creates new invoice line items according to the schema. If there is an invoice line item in the database with the same quickbooks_id, invoice_id pairing, then it will overwrite it's attributes",
@@ -60,7 +60,7 @@ const bulkCreateOrUpdateInvoiceLineItemRoute = createRoute({
 
 const getInvoiceLineItemByIdRoute = createRoute({
     method: "get",
-    path: "/quickbooks/invoice/line/{id}",
+    path: "/invoice/line/{id}",
     summary: "Get invoice line item by id",
     description: "Get invoice line item with matching ID from the database",
     request: {
