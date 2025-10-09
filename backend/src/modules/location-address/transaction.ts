@@ -2,6 +2,9 @@ import { DataSource, DeleteResult } from "typeorm";
 import { LocationAddress } from "../../entities/LocationAddress";
 import { CreateLocationAddressDTO, GetLocationAddressDTO } from "../../types/Location";
 import { plainToClass } from "class-transformer";
+import { FemaDisaster } from "../../entities/FemaDisaster";
+import { User } from "../../entities/User";
+import { logMessageToFile } from "../../utilities/logger";
 
 export interface ILocationAddressTransaction {
     /**
@@ -24,6 +27,13 @@ export interface ILocationAddressTransaction {
      * @return the location address that was removed
      */
     removeLocationAddressById(payload: GetLocationAddressDTO): Promise<DeleteResult>;
+
+    /**
+     * Gets all user-disaster pairs based on locations affedted by new disasters, for notification creation
+     * @param disasters Array of FEMA disasters to check
+     * @returns Promise resolving to array of user-disaster pairs
+     */
+    getUsersAffectedByDisasters(disasters: FemaDisaster[]): Promise<{ user: User; disaster: FemaDisaster }[]>;
 }
 
 /**
@@ -63,5 +73,71 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
         const id = payload.id;
         const result = await this.db.manager.delete(LocationAddress, { id: id });
         return result;
+    }
+
+    async getUsersAffectedByDisasters(disasters: FemaDisaster[]): Promise<{ user: User; disaster: FemaDisaster }[]> {
+        const fipsPairs = disasters.map((d) => ({
+            fipsStateCode: d.fipsStateCode,
+            fipsCountyCode: d.fipsCountyCode,
+            disaster: d,
+        }));
+
+        if (fipsPairs.length === 0) {
+            return [];
+        }
+
+        const query = this.db
+            .getRepository(LocationAddress)
+            .createQueryBuilder("location")
+            .innerJoinAndSelect("location.company", "company")
+            .innerJoinAndSelect("company.user", "user");
+
+        // Build OR conditions for each FIPS location pair
+        const conditions = fipsPairs
+            .map(
+                (pair, index) =>
+                    `(location.fipsStateCode = :state${index} AND location.fipsCountyCode = :county${index})`
+            )
+            .join(" OR ");
+
+        query.where(`(${conditions})`);
+
+        // Set parameters for type enforcing
+        const parameters: any = {};
+        fipsPairs.forEach((pair, index) => {
+            parameters[`state${index}`] = pair.fipsStateCode;
+            parameters[`county${index}`] = pair.fipsCountyCode;
+        });
+
+        query.setParameters(parameters);
+
+        const locations = await query.getMany();
+
+        logMessageToFile(`There are ${locations.length} locations that are affected by new FEMA Disasters.`);
+
+        // Map to user-disaster pairs
+        const userDisasterPairs: { user: User; disaster: FemaDisaster }[] = [];
+
+        for (const location of locations) {
+            // Find which disasters affect this location, there could be multiple
+            const affectingDisasters = disasters.filter(
+                (disaster) =>
+                    disaster.fipsStateCode === location.fipsStateCode &&
+                    disaster.fipsCountyCode === location.fipsCountyCode
+            );
+
+            // Create user-disaster pairs for each affecting disaster, to easily convert pairs to notifications
+            for (const disaster of affectingDisasters) {
+                if (location.company?.user) {
+                    logMessageToFile(`User ${location.company.user} is affected by disaster ${disaster}.`);
+                    userDisasterPairs.push({
+                        user: location.company.user,
+                        disaster: disaster,
+                    });
+                }
+            }
+        }
+
+        return userDisasterPairs;
     }
 }

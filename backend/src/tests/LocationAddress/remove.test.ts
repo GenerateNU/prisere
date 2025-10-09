@@ -2,30 +2,30 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
+import CompanySeeder from "../../database/seeds/company.seed";
+import { SeederFactoryManager } from "typeorm-extension";
+import { DataSource } from "typeorm";
+import { Company } from "../../entities/Company";
 
 describe("Remove Address Tests", () => {
     let app: Hono;
     let backup: IBackup;
-
-    let company_id: String;
+    let dataSource: DataSource;
+    let companyId: String;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
+        dataSource = testAppData.dataSource;
     });
 
     beforeEach(async () => {
-        const sampleCompany = {
-            name: "Cool Company",
-        };
-        const response = await app.request("/companies", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(sampleCompany),
-        });
-        const body = await response.json();
-        company_id = body.id;
+        backup.restore();
+        const companySeeder = new CompanySeeder();
+        await companySeeder.run(dataSource, {} as SeederFactoryManager);
+        const companies = await dataSource.getRepository(Company).find();
+        companyId = companies[0].id;
     });
 
     afterEach(async () => {
@@ -48,7 +48,7 @@ describe("Remove Address Tests", () => {
             streetAddress: "123 Main Street",
             postalCode: "94105",
             county: "San Francisco County",
-            companyId: company_id,
+            companyId: companyId,
         };
 
         const response = await app.request("/location-address", {
@@ -59,6 +59,18 @@ describe("Remove Address Tests", () => {
             body: JSON.stringify(requestBody),
         });
 
+        if (response.status === 500) {
+            try {
+                const errorData = await response.json();
+                console.log("500 Error details:", errorData);
+            } catch (error) {
+                const errorText = await response.text();
+                console.log("500 Error text:", errorText, error);
+            }
+            throw new Error(`Location creation failed with 500 error`);
+        }
+
+        expect(response.status).toBe(201);
         const location = await response.json();
         const locationId = location.id;
 
@@ -73,7 +85,6 @@ describe("Remove Address Tests", () => {
         const getRemovedResponse = await app.request(`/location-address/${locationId}`, {
             method: "GET",
         });
-
         expect(getRemovedResponse.status).toBe(404);
     });
 
@@ -90,7 +101,7 @@ describe("Remove Address Tests", () => {
             method: "DELETE",
         });
 
-        expect(removeResponse.status).toBe(404); // or 400 depending on your routing
+        expect(removeResponse.status).toBe(404);
     });
 
     test("should return 204 with no content body", async () => {
@@ -101,7 +112,7 @@ describe("Remove Address Tests", () => {
             streetAddress: "123 Main Street",
             postalCode: "94105",
             county: "San Francisco County",
-            companyId: company_id,
+            companyId: companyId,
         };
 
         const createResponse = await app.request("/location-address", {
@@ -109,10 +120,12 @@ describe("Remove Address Tests", () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(createBody),
         });
+
+        expect(createResponse.status).toBe(201);
         const location = await createResponse.json();
         const locationId = location.id;
 
-        const removeResponse = await app.request(`/location-address/${location.id}`, {
+        const removeResponse = await app.request(`/location-address/${locationId}`, {
             method: "DELETE",
         });
 
