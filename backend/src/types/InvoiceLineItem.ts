@@ -5,27 +5,23 @@ const InvoiceLineItemSchema = z.object({
     id: z.string(),
     description: z
         .string()
-        .max(
-            LINE_ITEM_DESCRIPTION_CHARS,
-            `Description must be at most ${LINE_ITEM_DESCRIPTION_CHARS} characters.`
-        )
+        .max(LINE_ITEM_DESCRIPTION_CHARS, `Description must be at most ${LINE_ITEM_DESCRIPTION_CHARS} characters.`)
         .optional(),
     invoiceId: z.string(),
     quickbooksId: z.number().int().positive().optional(),
     amountCents: z.number().int().nonnegative(),
     category: z
         .string()
-        .max(
-            LINE_ITEM_CATEGORY_CHARS,
-            `Category must be at most ${LINE_ITEM_CATEGORY_CHARS} characters.`
-        )
+        .max(LINE_ITEM_CATEGORY_CHARS, `Category must be at most ${LINE_ITEM_CATEGORY_CHARS} characters.`)
         .optional(),
     quickbooksDateCreated: z.iso.datetime().optional(),
     dateCreated: z.iso.datetime(),
     lastUpdated: z.iso.datetime(),
 });
 
-export const CreateOrUpdateInvoiceLineItemsDTOSchema = z.array(InvoiceLineItemSchema.omit({ id: true, dateCreated: true, lastUpdated: true }));
+export const CreateOrUpdateInvoiceLineItemsDTOSchema = z.array(
+    InvoiceLineItemSchema.omit({ id: true, dateCreated: true, lastUpdated: true })
+);
 
 export const CreateOrUpdateInvoiceLineItemsResponseSchema = z.array(InvoiceLineItemSchema);
 

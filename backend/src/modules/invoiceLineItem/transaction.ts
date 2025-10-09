@@ -24,7 +24,10 @@ export class InvoiceLineItemTransaction implements IInvoiceLineItemTransaction {
             .insert()
             .into(InvoiceLineItem)
             .values(newInvoices)
-            .orUpdate(["description", "amountCents", "category", "quickbooksDateCreated"], ["quickbooksId", "invoiceId"])
+            .orUpdate(
+                ["description", "amountCents", "category", "quickbooksDateCreated"],
+                ["quickbooksId", "invoiceId"]
+            )
             .returning("*")
             .execute();
         return result.raw;

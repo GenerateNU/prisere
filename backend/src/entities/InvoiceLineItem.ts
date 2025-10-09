@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, UpdateDateColumn, Unique, CreateDateColumn } from "typeorm";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    ManyToOne,
+    JoinColumn,
+    UpdateDateColumn,
+    Unique,
+    CreateDateColumn,
+} from "typeorm";
 import { Invoice } from "./Invoice.js";
 import { LINE_ITEM_DESCRIPTION_CHARS, LINE_ITEM_CATEGORY_CHARS } from "../utilities/constants.js";
 

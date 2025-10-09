@@ -13,7 +13,9 @@ export function CompareRequestToCreated(requestBody: any[], response: any[]) {
         );
         expect(responseElem.totalAmountCents).toBe(requestElem.totalAmountCents);
         if (requestElem.quickbooksDateCreated) {
-            expect(new Date(responseElem.quickbooksDateCreated).toISOString()).toBe(new Date(requestElem.quickbooksDateCreated).toISOString());
+            expect(new Date(responseElem.quickbooksDateCreated).toISOString()).toBe(
+                new Date(requestElem.quickbooksDateCreated).toISOString()
+            );
         }
 
         if (requestElem.quickbooksId) {

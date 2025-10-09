@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, UpdateDateColumn, Unique, CreateDateColumn } from "typeorm";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    ManyToOne,
+    JoinColumn,
+    UpdateDateColumn,
+    Unique,
+    CreateDateColumn,
+} from "typeorm";
 import { Company } from "./Company.js";
 
 @Unique(["quickbooksId", "companyId"])
