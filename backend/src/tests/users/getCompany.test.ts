@@ -4,6 +4,7 @@ import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { GetUserCompanyResponseSchema } from "../../types/User";
 import { validate } from "uuid";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("GET /users/:id/company", () => {
     let app: Hono;
@@ -21,7 +22,7 @@ describe("GET /users/:id/company", () => {
 
     test("should return 200 and company data when user exists and has a company", async () => {
         // First create a company
-        const createCompanyResponse = await app.request("/companies", {
+        const createCompanyResponse = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -33,7 +34,7 @@ describe("GET /users/:id/company", () => {
         const companyId = createdCompany.id;
 
         // Create a user and associate with company (this depends on your implementation)
-        const createUserResponse = await app.request("/users", {
+        const createUserResponse = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -48,7 +49,7 @@ describe("GET /users/:id/company", () => {
         const userId = createdUser.id;
 
         // Now test the GET /users/:id/company endpoint
-        const response = await app.request(`/users/${userId}/company`, {
+        const response = await app.request(TESTING_PREFIX + `/users/${userId}/company`, {
             method: "GET",
         });
 
@@ -69,7 +70,7 @@ describe("GET /users/:id/company", () => {
         const invalidIds = ["123", "not-a-uuid", "12345678-1234-1234-1234"];
 
         for (const invalidId of invalidIds) {
-            const response = await app.request(`/users/${invalidId}/company`, {
+            const response = await app.request(TESTING_PREFIX + `/users/${invalidId}/company`, {
                 method: "GET",
             });
 
@@ -84,7 +85,7 @@ describe("GET /users/:id/company", () => {
     test("should return 404 when UUID is valid but user does not exist", async () => {
         const nonExistentId = "550e8400-e29b-41d4-a716-446655440000";
 
-        const response = await app.request(`/users/${nonExistentId}/company`, {
+        const response = await app.request(TESTING_PREFIX + `/users/${nonExistentId}/company`, {
             method: "GET",
         });
 
@@ -96,7 +97,7 @@ describe("GET /users/:id/company", () => {
 
     test("should return 404 when user exists but has no associated company", async () => {
         // Create user without company
-        const createUserResponse = await app.request("/users", {
+        const createUserResponse = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -110,7 +111,7 @@ describe("GET /users/:id/company", () => {
         const userId = createdUser.id;
 
         // Test GET /users/:id/company endpoint
-        const response = await app.request(`/users/${userId}/company`, {
+        const response = await app.request(TESTING_PREFIX + `/users/${userId}/company`, {
             method: "GET",
         });
 
@@ -122,7 +123,7 @@ describe("GET /users/:id/company", () => {
 
     test("should handle UUID in different case formats", async () => {
         // Create a company first
-        const createCompanyResponse = await app.request("/companies", {
+        const createCompanyResponse = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -133,7 +134,7 @@ describe("GET /users/:id/company", () => {
         const createdCompany = await createCompanyResponse.json();
 
         // Create a user with company
-        const createUserResponse = await app.request("/users", {
+        const createUserResponse = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -148,7 +149,7 @@ describe("GET /users/:id/company", () => {
 
         // Test with uppercase UUID
         const upperCaseId = userId.toUpperCase();
-        const responseUpper = await app.request(`/users/${upperCaseId}/company`, {
+        const responseUpper = await app.request(TESTING_PREFIX + `/users/${upperCaseId}/company`, {
             method: "GET",
         });
 
@@ -157,7 +158,7 @@ describe("GET /users/:id/company", () => {
 
         // Test with lowercase UUID
         const lowerCaseId = userId.toLowerCase();
-        const responseLower = await app.request(`/users/${lowerCaseId}/company`, {
+        const responseLower = await app.request(TESTING_PREFIX + `/users/${lowerCaseId}/company`, {
             method: "GET",
         });
 
@@ -196,7 +197,7 @@ describe("GET /users/:id/company", () => {
 
     test("should handle concurrent requests for the same user company", async () => {
         // Create a company
-        const createCompanyResponse = await app.request("/companies", {
+        const createCompanyResponse = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -207,7 +208,7 @@ describe("GET /users/:id/company", () => {
         const createdCompany = await createCompanyResponse.json();
 
         // Create a user with company
-        const createUserResponse = await app.request("/users", {
+        const createUserResponse = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -224,7 +225,7 @@ describe("GET /users/:id/company", () => {
         // Make multiple concurrent requests
         const requests = Array(5)
             .fill(null)
-            .map(() => app.request(`/users/${userId}/company`, { method: "GET" }));
+            .map(() => app.request(TESTING_PREFIX + `/users/${userId}/company`, { method: "GET" }));
 
         const responses = await Promise.all(requests);
 
@@ -253,7 +254,7 @@ describe("GET /users/:id/company", () => {
         ];
 
         for (const specialId of specialIds) {
-            const response = await app.request(`/users/${encodeURIComponent(specialId)}/company`, {
+            const response = await app.request(TESTING_PREFIX + `/users/${encodeURIComponent(specialId)}/company`, {
                 method: "GET",
             });
 
@@ -267,7 +268,7 @@ describe("GET /users/:id/company", () => {
 
     test("should return consistent company data structure", async () => {
         // Create company with all possible fields
-        const createCompanyResponse = await app.request("/companies", {
+        const createCompanyResponse = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -278,7 +279,7 @@ describe("GET /users/:id/company", () => {
         const createdCompany = await createCompanyResponse.json();
 
         // Create user with company
-        const createUserResponse = await app.request("/users", {
+        const createUserResponse = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -292,7 +293,7 @@ describe("GET /users/:id/company", () => {
         const userId = createdUser.id;
 
         // Test the endpoint
-        const response = await app.request(`/users/${userId}/company`, {
+        const response = await app.request(TESTING_PREFIX + `/users/${userId}/company`, {
             method: "GET",
         });
 
@@ -319,7 +320,7 @@ describe("GET /users/:id/company", () => {
         // You might need to adjust based on your actual data constraints
 
         // Create user first
-        const createUserResponse = await app.request("/users", {
+        const createUserResponse = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -333,7 +334,7 @@ describe("GET /users/:id/company", () => {
         const userId = createdUser.id;
 
         // Test GET /users/:id/company endpoint
-        const response = await app.request(`/users/${userId}/company`, {
+        const response = await app.request(TESTING_PREFIX + `/users/${userId}/company`, {
             method: "GET",
         });
 
@@ -346,7 +347,7 @@ describe("GET /users/:id/company", () => {
 
     test("should return appropriate headers", async () => {
         // Create company and user
-        const createCompanyResponse = await app.request("/companies", {
+        const createCompanyResponse = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -356,7 +357,7 @@ describe("GET /users/:id/company", () => {
 
         const createdCompany = await createCompanyResponse.json();
 
-        const createUserResponse = await app.request("/users", {
+        const createUserResponse = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -369,7 +370,7 @@ describe("GET /users/:id/company", () => {
         const createdUser = await createUserResponse.json();
         const userId = createdUser.id;
 
-        const response = await app.request(`/users/${userId}/company`, {
+        const response = await app.request(TESTING_PREFIX + `/users/${userId}/company`, {
             method: "GET",
         });
 

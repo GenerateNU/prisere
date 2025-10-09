@@ -4,6 +4,7 @@ import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { CreateUserResponseSchema } from "../../types/User";
 import { validate } from "uuid";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 const resetZahra = () => ({
     firstName: "Zahra",
@@ -28,7 +29,7 @@ describe("POST users/", () => {
     });
 
     test("The default case creates a new user", async () => {
-        const response = await app.request("/users", {
+        const response = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -50,7 +51,7 @@ describe("POST users/", () => {
 
     test("test that emails are optinal when creating a user", async () => {
         requestBody.email = undefined as unknown as string;
-        const response = await app.request("/users", {
+        const response = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -69,7 +70,7 @@ describe("POST users/", () => {
     });
 
     test("test that company ID is saved", async () => {
-        const companyResponse = await app.request("/companies", {
+        const companyResponse = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -80,7 +81,7 @@ describe("POST users/", () => {
         const newCompanyId = (await companyResponse.json()).id;
         (requestBody as unknown as { companyId: string }).companyId = newCompanyId;
 
-        const userResponse = await app.request("/users", {
+        const userResponse = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -102,7 +103,7 @@ describe("POST users/", () => {
     test("test that first names are not optional when creating a user", async () => {
         requestBody.firstName = undefined as unknown as string;
         requestBody.email = undefined as unknown as string;
-        const response = await app.request("/users", {
+        const response = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -114,7 +115,7 @@ describe("POST users/", () => {
 
     test("test that last names are not optional when creating a user", async () => {
         requestBody.lastName = undefined as unknown as string;
-        const response = await app.request("/users", {
+        const response = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -125,7 +126,7 @@ describe("POST users/", () => {
     });
 
     test("Test that an empty object fails when creating a user", async () => {
-        const response = await app.request("/users", {
+        const response = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -137,7 +138,7 @@ describe("POST users/", () => {
 
     test("Test that an empty first name fails when creating a user", async () => {
         requestBody.firstName = "";
-        const response = await app.request("/users", {
+        const response = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -148,7 +149,7 @@ describe("POST users/", () => {
     });
     test("Test that an empty last name fails when creating a user", async () => {
         requestBody.lastName = "";
-        const response = await app.request("/users", {
+        const response = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("GET /comapnies/:id", () => {
     let app: Hono;
@@ -21,7 +22,7 @@ describe("GET /comapnies/:id", () => {
         const requestBody = {
             name: "Cool Company",
         };
-        const response = await app.request("/companies", {
+        const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -38,7 +39,7 @@ describe("GET /comapnies/:id", () => {
         const requestBody = {
             name: "Cool Company",
         };
-        const response = await app.request("/companies", {
+        const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -55,7 +56,7 @@ describe("GET /comapnies/:id", () => {
         const requestBody = {
             name: "Cool Company",
         };
-        const response = await app.request("/companies", {
+        const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -72,7 +73,7 @@ describe("GET /comapnies/:id", () => {
         const requestBody = {
             name: "",
         };
-        const response = await app.request("/companies", {
+        const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -86,7 +87,7 @@ describe("GET /comapnies/:id", () => {
         const requestBody = {
             lastQuickBooksImportTime: new Date(2025, 11, 25, 9, 30, 0, 0),
         };
-        const response = await app.request("/companies", {
+        const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -100,7 +101,7 @@ describe("GET /comapnies/:id", () => {
         const requestBody = {
             name: 1,
         };
-        const response = await app.request("/companies", {
+        const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

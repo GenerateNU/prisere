@@ -5,6 +5,7 @@ import { IBackup } from "pg-mem";
 import { randomUUID } from "crypto";
 import { DataSource } from "typeorm";
 import { createTestData, TestDataSetup } from "./setup";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("Test dismiss disaster notifications", () => {
     let app: Hono;
@@ -54,7 +55,7 @@ describe("Test dismiss disaster notifications", () => {
     });
 
     test("Dismiss fake notification returns 404", async () => {
-        const response = await app.request(`/disasterNotification/${randomUUID()}/dismiss`, {
+        const response = await app.request(TESTING_PREFIX + `/disasterNotification/${randomUUID()}/dismiss`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",

@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 /**
  * Test:
@@ -25,7 +26,7 @@ describe("Get all locations for a company", () => {
     beforeEach(async () => {
         backup.restore();
 
-        const response = await app.request("/companies", {
+        const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name: "Test Company" }),
@@ -35,7 +36,7 @@ describe("Get all locations for a company", () => {
     });
 
     test("should return empty array when company has no locations", async () => {
-        const response = await app.request(`/companies/${createdCompanyId}/location-address`);
+        const response = await app.request(TESTING_PREFIX + `/companies/${createdCompanyId}/location-address`);
 
         expect(response.status).toBe(200);
         const data = await response.json();
@@ -73,14 +74,14 @@ describe("Get all locations for a company", () => {
         ];
 
         for (const location of locations) {
-            await app.request("/location-address", {
+            await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(location),
             });
         }
 
-        const response = await app.request(`/companies/${createdCompanyId}/location-address`);
+        const response = await app.request(TESTING_PREFIX + `/companies/${createdCompanyId}/location-address`);
 
         expect(response.status).toBe(200);
         const data = await response.json();
@@ -109,7 +110,7 @@ describe("Get all locations for a company", () => {
     });
 
     test("should return 400 when company ID is not a valid UUID", async () => {
-        const response = await app.request("/companies/invalid-uuid/location-address");
+        const response = await app.request(TESTING_PREFIX + "/companies/invalid-uuid/location-address");
 
         expect(response.status).toBe(400);
         const data = await response.json();
@@ -117,7 +118,7 @@ describe("Get all locations for a company", () => {
     });
 
     test("should only return locations for the specified company", async () => {
-        const otherCompanyResponse = await app.request("/companies", {
+        const otherCompanyResponse = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name: "Other Company" }),
@@ -125,7 +126,7 @@ describe("Get all locations for a company", () => {
         const otherCompany = await otherCompanyResponse.json();
         const otherCompanyId = otherCompany.id;
 
-        await app.request("/location-address", {
+        await app.request(TESTING_PREFIX + "/location-address", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -138,7 +139,7 @@ describe("Get all locations for a company", () => {
             }),
         });
 
-        await app.request("/location-address", {
+        await app.request(TESTING_PREFIX + "/location-address", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -151,7 +152,7 @@ describe("Get all locations for a company", () => {
             }),
         });
 
-        const response = await app.request(`/companies/${createdCompanyId}/location-address`);
+        const response = await app.request(TESTING_PREFIX + `/companies/${createdCompanyId}/location-address`);
 
         expect(response.status).toBe(200);
         const data = await response.json();
