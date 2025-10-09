@@ -7,13 +7,13 @@ import CompanySeeder from "../../database/seeds/company.seed";
 import { InvoiceSeeder, seededInvoices } from "../../database/seeds/invoice.seed";
 import { DataSource } from "typeorm";
 import { CompareRequestToCreated } from "./utils";
+import { InvoiceLineItemSeeder, seededInvoiceLineItems } from "../../database/seeds/invoiceLineItem.seed";
 
 describe("Invoice get by id", () => {
     let app: Hono;
     let backup: IBackup;
     let datasource: DataSource;
-    const seededInvoice = seededInvoices[0];
-    const seededInvoiceId = seededInvoice.id;
+    const seededInvoiceId = seededInvoices[0].id;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
@@ -28,32 +28,37 @@ describe("Invoice get by id", () => {
 
         const invoiceSeeder = new InvoiceSeeder();
         await invoiceSeeder.run(datasource, {} as SeederFactoryManager);
+
+        const invoiceLineItemSeeder = new InvoiceLineItemSeeder();
+        await invoiceLineItemSeeder.run(datasource, {} as SeederFactoryManager);
     });
 
     afterEach(async () => {
         backup.restore();
     });
 
-    test("GET /quickbooks/invoices/:id - id that exists", async () => {
-        const response = await app.request(`/invoice/${seededInvoiceId}`);
+    test("GET /quickbooks/invoice/{id}/line - valid invoice id ", async () => {
+        const response = await app.request(`/invoice/${seededInvoiceId}/lines`);
+
         expect(response.status).toBe(200);
         const body = await response.json();
-        CompareRequestToCreated([seededInvoice], [body]);
+        CompareRequestToCreated([seededInvoiceLineItems[0], seededInvoiceLineItems[1]], body);
     });
 
-    test("GET /quickbooks/invoices/:id - id doesn't exist", async () => {
-        const response = await app.request(`/invoice/8d720d89-d047-4f19-a999-1934f914908d`); // bad uuid
-        expect(response.status).toBe(404);
+    test("GET /quickbooks/invoice/{id}/line - bad invoice id ", async () => {
+        const response = await app.request(`/invoice/8d720d89-9999-4999-a999-1934f914907f/lines`);
+
+        expect(response.status).toBe(200);
         const body = await response.json();
-        expect(body).toHaveProperty("error");
-        expect(body.error).toBe("No invoices found with id: 8d720d89-d047-4f19-a999-1934f914908d");
+        CompareRequestToCreated([], body);
     });
 
-    test("GET /quickbooks/invoices/:id - invalid UUID", async () => {
-        const response = await app.request(`/invoice/8d720d89-134f914908d`); // invalid uuid
+    test("GET /quickbooks/invoice/{id}/line - invalid invoice id ", async () => {
+        const response = await app.request(`/invoice/hellnah/lines`);
+
         expect(response.status).toBe(400);
         const body = await response.json();
         expect(body).toHaveProperty("error");
-        expect(body.error).toBe("Invalid invoice ID format");
+        expect(body.error).toBe("Invalid Invoice ID format");
     });
 });

@@ -15,6 +15,13 @@ import {
 } from "../../types/Invoice";
 import { CompanyTransaction } from "../company/transaction";
 import { z } from "zod";
+import { IInvoiceLineItemController, InvoiceLineItemController } from "../invoiceLineItem/controller";
+import { IInvoiceLineItemService, InvoiceLineItemService } from "../invoiceLineItem/service";
+import { IInvoiceLineItemTransaction, InvoiceLineItemTransaction } from "../invoiceLineItem/transaction";
+import {
+    GetInvoiceLineItemsByInvoiceDTOSchema,
+    GetInvoiceLineItemsByInvoiceResponseSchema,
+} from "../../types/InvoiceLineItem";
 
 export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const invoiceTransaction = new InvoiceTransaction(db);
@@ -22,16 +29,26 @@ export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): O
     const invoiceService = new InvoiceService(invoiceTransaction, companyTransaction);
     const invoiceController = new InvoiceController(invoiceService);
 
+    const invoiceLineItemTransaction: IInvoiceLineItemTransaction = new InvoiceLineItemTransaction(db);
+    const invoiceLineItemService: IInvoiceLineItemService = new InvoiceLineItemService(
+        invoiceLineItemTransaction,
+        invoiceTransaction
+    );
+    const invoiceLineItemController: IInvoiceLineItemController = new InvoiceLineItemController(invoiceLineItemService);
+
     openApi.openapi(bulkCreateOrUpdateInvoiceRoute, (ctx) => invoiceController.bulkCreateOrUpdateInvoice(ctx));
     openApi.openapi(getInvoiceByIdRoute, (ctx) => invoiceController.getInvoice(ctx));
     openApi.openapi(getInvoicesForCompanyRoute, (ctx) => invoiceController.getInvoicesForCompany(ctx));
     openApi.openapi(sumInvoicesByCompanyAndDateRange, (ctx) => invoiceController.sumInvoicesByCompanyAndDateRange(ctx));
+    openApi.openapi(getInvoiceLineItemsForInvoiceRoute, (ctx) =>
+        invoiceLineItemController.getInvoiceLineItemsForInvoice(ctx)
+    );
     return openApi;
 };
 
 const bulkCreateOrUpdateInvoiceRoute = createRoute({
     method: "post",
-    path: "/quickbooks/invoice/bulk",
+    path: "/invoice/bulk",
     summary: "Bulk create or update new invoices",
     description:
         "Creates new invoices according to the schema. If there is an invoice in the database with the same quickbooks_id, company_id pairing, then it will overwrite it's attributes",
@@ -60,7 +77,7 @@ const bulkCreateOrUpdateInvoiceRoute = createRoute({
 
 const getInvoiceByIdRoute = createRoute({
     method: "get",
-    path: "/quickbooks/invoice/{id}",
+    path: "/invoice/{id}",
     summary: "Get invoice by id",
     description: "Get invoice with matching ID from the database",
     request: {
@@ -90,7 +107,7 @@ const getInvoiceByIdRoute = createRoute({
 
 const getInvoicesForCompanyRoute = createRoute({
     method: "get",
-    path: "/quickbooks/invoice",
+    path: "/invoice",
     summary: "Get invoices for a company",
     description: "Get invoices for a company with pagination params. Note page numbes are 0-indexed.",
     request: {
@@ -114,6 +131,36 @@ const getInvoicesForCompanyRoute = createRoute({
             description: "No Invoice with given UUID found",
         },
         ...openApiErrorCodes("Getting Invoice Error"),
+    },
+    tags: ["Invoice"],
+});
+
+const getInvoiceLineItemsForInvoiceRoute = createRoute({
+    method: "get",
+    path: "/invoice/{id}/lines",
+    summary: "Get all line items for a given invoice",
+    description: "Get all line item for a given invoice",
+    request: {
+        params: GetInvoiceLineItemsByInvoiceDTOSchema,
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetInvoiceLineItemsByInvoiceResponseSchema,
+                },
+            },
+            description: "Retrieved invoice line item",
+        },
+        404: {
+            content: {
+                "application/json": {
+                    schema: z.object({ error: z.string() }),
+                },
+            },
+            description: "No Invoice Line Item with given UUID found",
+        },
+        ...openApiErrorCodes("Getting Invoice Line Item Error"),
     },
     tags: ["Invoice"],
 });
