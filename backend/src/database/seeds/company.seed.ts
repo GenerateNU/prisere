@@ -12,6 +12,12 @@ export default class CompanySeeder implements Seeder {
                 name: "Northeastern Inc.",
                 lastQuickBooksImportTime: new Date("2023-01-01T12:00:00Z"),
             },
+
+            {
+                id: "35fe231e-0635-49c7-9096-4b6a17b3639b",
+                name: "Generate and Associates",
+                lastQuickBooksImportTime: new Date("2023-02-01T12:00:00Z"),
+            },
         ]);
     }
 }

@@ -1,25 +1,32 @@
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, afterEach } from "bun:test";
+import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
+import CompanySeeder from "../../database/seeds/company.seed";
+import { SeederFactoryManager } from "typeorm-extension";
+import { InvoiceSeeder, seededInvoices } from "../../database/seeds/invoice.seed";
+import { DataSource } from "typeorm";
 
 describe("Invoice get by id", () => {
     let app: Hono;
     let backup: IBackup;
-    let createdCompanyId: string;
+    let dataSource: DataSource;
+    const seededInvoice = seededInvoices[0];
+    const seededInvoiceCompany = seededInvoice.companyId;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
+        dataSource = testAppData.dataSource;
+    });
 
-        const response = await app.request("/companies", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: "Test Company" }),
-        });
-        const body = await response.json();
-        createdCompanyId = body.id;
+    beforeEach(async () => {
+        const companySeeder = new CompanySeeder();
+        await companySeeder.run(dataSource, {} as SeederFactoryManager);
+
+        const invoiceSeeder = new InvoiceSeeder();
+        await invoiceSeeder.run(dataSource, {} as SeederFactoryManager);
     });
 
     afterEach(async () => {
@@ -36,86 +43,26 @@ describe("Invoice get by id", () => {
         const threeDaysAgo = new Date();
         threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
-        const invoices: any[] = [
-            {
-                companyId: createdCompanyId,
-                totalAmountCents: 45,
-                dateCreated: tenDaysAgo,
-            },
-            {
-                companyId: createdCompanyId,
-                totalAmountCents: 50,
-                dateCreated: fiveDaysAgo,
-            },
-            {
-                companyId: createdCompanyId,
-                totalAmountCents: 80,
-                dateCreated: threeDaysAgo,
-            },
-        ];
-
-        await app.request("/quickbooks/invoice/bulk", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(invoices),
-        });
-
         const response = await app.request(
-            `/quickbooks/invoice/bulk/${createdCompanyId}/totalIncome?startDate=${tenDaysAgo.toISOString()}&endDate=${fiveDaysAgo.toISOString()}`
+            `/quickbooks/invoice/bulk/${seededInvoiceCompany}/totalIncome?startDate=2025-01-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
         );
         const body = await response.json();
         expect(response.status).toBe(200);
-        expect(body).toBe(95);
+        expect(body.total).toBe(735);
     });
 
     test("should return 0 if no invoices in the valid date range", async () => {
-        const tenDaysAgo = new Date();
-        tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
-
-        const fiveDaysAgo = new Date();
-        fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
-
-        const threeDaysAgo = new Date();
-        threeDaysAgo.setDate(fiveDaysAgo.getDate() - 3);
-
-        const twoDaysAgo = new Date();
-        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-
-        const invoices: any[] = [
-            {
-                companyId: createdCompanyId,
-                totalAmountCents: 45,
-                dateCreated: tenDaysAgo,
-            },
-            {
-                companyId: createdCompanyId,
-                totalAmountCents: 50,
-                dateCreated: fiveDaysAgo,
-            },
-            {
-                companyId: createdCompanyId,
-                totalAmountCents: 50,
-                dateCreated: threeDaysAgo,
-            },
-        ];
-
-        await app.request("/quickbooks/invoice/bulk", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(invoices),
-        });
-
         const response = await app.request(
-            `/quickbooks/invoice/bulk/${createdCompanyId}/totalIncome?startDate=${twoDaysAgo.toISOString()}&endDate=${new Date().toISOString()}`
+            `/quickbooks/invoice/bulk/${seededInvoiceCompany}/totalIncome?startDate=2025-08-11T12:00:00Z&endDate=2025-10-11T12:00:00Z`
         );
         const body = await response.json();
         expect(response.status).toBe(200);
-        expect(body).toBe(0);
+        expect(body.total).toBe(0);
     });
 
     test("should return 400 if invalid dates", async () => {
         const response = await app.request(
-            `/quickbooks/invoice/bulk/${createdCompanyId}/totalIncome?startDate=${new Date().toISOString()}&endDate=${new Date().toISOString()}`
+            `/quickbooks/invoice/bulk/${seededInvoiceCompany}/totalIncome?startDate=2025-04-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
         );
         const body = await response.json();
         expect(response.status).toBe(400);
@@ -125,7 +72,7 @@ describe("Invoice get by id", () => {
 
     test("should return 400 if invalid companyID", async () => {
         const response = await app.request(
-            `/quickbooks/invoice/bulk/bla/totalIncome?startDate=${new Date().toISOString()}&endDate=${new Date().toISOString()}`
+            `/quickbooks/invoice/bulk/bla/totalIncome?startDate=2025-04-11T12:00:00Z&endDate=2025-06-11T12:00:00Z`
         );
         const body = await response.json();
         expect(response.status).toBe(400);
