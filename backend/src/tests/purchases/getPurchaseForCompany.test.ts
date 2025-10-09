@@ -4,7 +4,7 @@ import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { CreateOrChangePurchaseDTO, GetCompanyPurchasesResponse } from "../../modules/purchase/types";
 
-describe("GET /purchases", () => {
+describe("GET /purchase", () => {
     let app: Hono;
     let backup: IBackup;
 
@@ -35,7 +35,7 @@ describe("GET /purchases", () => {
     };
 
     const createPurchase = async (payload?: Partial<CreateOrChangePurchaseDTO>) => {
-        const response = await app.request("/purchases", {
+        const response = await app.request("/purchase/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -46,7 +46,7 @@ describe("GET /purchases", () => {
         return await response.json();
     };
 
-    test("GET /purchases - Valid companyId", async () => {
+    test("GET /purchase - Valid companyId", async () => {
         const company = await createCompany();
         const companyId = company.id;
 
@@ -61,7 +61,7 @@ describe("GET /purchases", () => {
             ]);
         }
 
-        const response = await app.request(`/purchases?companyId=${companyId}`, {
+        const response = await app.request(`/purchase?companyId=${companyId}`, {
             method: "GET",
         });
 
@@ -79,7 +79,7 @@ describe("GET /purchases", () => {
         });
     });
 
-    test("GET /purchases - With pageNumber", async () => {
+    test("GET /purchase - With pageNumber", async () => {
         const company = await createCompany();
         const companyId = company.id;
 
@@ -95,7 +95,7 @@ describe("GET /purchases", () => {
             ]);
         }
 
-        const response = await app.request(`/purchases?companyId=${companyId}&pageNumber=1`, {
+        const response = await app.request(`/purchase?companyId=${companyId}&pageNumber=1`, {
             method: "GET",
         });
 
@@ -104,7 +104,7 @@ describe("GET /purchases", () => {
         expect(Array.isArray(body)).toBe(true);
     });
 
-    test("GET /purchases - With resultsPerPage", async () => {
+    test("GET /purchase - With resultsPerPage", async () => {
         const company = await createCompany();
         const companyId = company.id;
 
@@ -120,7 +120,7 @@ describe("GET /purchases", () => {
             ]);
         }
 
-        const response = await app.request(`/purchases?companyId=${companyId}&resultsPerPage=10`, {
+        const response = await app.request(`/purchase?companyId=${companyId}&resultsPerPage=10`, {
             method: "GET",
         });
 
@@ -130,7 +130,7 @@ describe("GET /purchases", () => {
         expect(body.length).toBeLessThanOrEqual(10);
     });
 
-    test("GET /purchases - With pageNumber and resultsPerPage", async () => {
+    test("GET /purchase - With pageNumber and resultsPerPage", async () => {
         const company = await createCompany();
         const companyId = company.id;
 
@@ -146,7 +146,7 @@ describe("GET /purchases", () => {
             ]);
         }
 
-        const response = await app.request(`/purchases?companyId=${companyId}&pageNumber=0&resultsPerPage=5`, {
+        const response = await app.request(`/purchase?companyId=${companyId}&pageNumber=0&resultsPerPage=5`, {
             method: "GET",
         });
 
@@ -156,7 +156,7 @@ describe("GET /purchases", () => {
         expect(body.length).toBeLessThanOrEqual(5);
     });
 
-    test("GET /purchases - Default Pagination Values", async () => {
+    test("GET /purchase - Default Pagination Values", async () => {
         const company = await createCompany();
         const companyId = company.id;
 
@@ -173,7 +173,7 @@ describe("GET /purchases", () => {
         }
 
         // Should use default pageNumber=0 and resultsPerPage=20
-        const response = await app.request(`/purchases?companyId=${companyId}`, {
+        const response = await app.request(`/purchase?companyId=${companyId}`, {
             method: "GET",
         });
 
@@ -183,8 +183,8 @@ describe("GET /purchases", () => {
         expect(body.length).toBeLessThanOrEqual(20);
     });
 
-    test("GET /purchases - Non-Existent companyId", async () => {
-        const response = await app.request("/purchases?companyId=b32504f7-2e20-4bbc-869c-dea036d352e7", {
+    test("GET /purchase - Non-Existent companyId", async () => {
+        const response = await app.request("/purchase?companyId=b32504f7-2e20-4bbc-869c-dea036d352e7", {
             method: "GET",
         });
 
@@ -194,68 +194,68 @@ describe("GET /purchases", () => {
         expect(body.length).toBe(0);
     });
 
-    test("GET /purchases - Missing companyId", async () => {
-        const response = await app.request("/purchases", {
+    test("GET /purchase - Missing companyId", async () => {
+        const response = await app.request("/purchase", {
             method: "GET",
         });
 
         expect(response.status).toBe(400);
     });
 
-    test("GET /purchases - Invalid companyId Type (String)", async () => {
-        const response = await app.request("/purchases?companyId=not-a-number", {
+    test("GET /purchase - Invalid companyId Type (String)", async () => {
+        const response = await app.request("/purchase?companyId=not-a-number", {
             method: "GET",
         });
 
         expect(response.status).toBe(400);
     });
 
-    test("GET /purchases - Invalid pageNumber Type", async () => {
+    test("GET /purchase - Invalid pageNumber Type", async () => {
         const company = await createCompany();
-        const response = await app.request(`/purchases?companyId=${company.id}&pageNumber=invalid`, {
+        const response = await app.request(`/purchase?companyId=${company.id}&pageNumber=invalid`, {
             method: "GET",
         });
 
         expect(response.status).toBe(400);
     });
 
-    test("GET /purchases - Invalid resultsPerPage Type", async () => {
+    test("GET /purchase - Invalid resultsPerPage Type", async () => {
         const company = await createCompany();
-        const response = await app.request(`/purchases?companyId=${company.id}&resultsPerPage=invalid`, {
+        const response = await app.request(`/purchase?companyId=${company.id}&resultsPerPage=invalid`, {
             method: "GET",
         });
 
         expect(response.status).toBe(400);
     });
 
-    test("GET /purchases - Negative pageNumber", async () => {
+    test("GET /purchase - Negative pageNumber", async () => {
         const company = await createCompany();
-        const response = await app.request(`/purchases?companyId=${company.id}&pageNumber=-1`, {
+        const response = await app.request(`/purchase?companyId=${company.id}&pageNumber=-1`, {
             method: "GET",
         });
 
         expect(response.status).toBe(400);
     });
 
-    test("GET /purchases - Negative resultsPerPage", async () => {
+    test("GET /purchase - Negative resultsPerPage", async () => {
         const company = await createCompany();
-        const response = await app.request(`/purchases?companyId=${company.id}&resultsPerPage=-5`, {
+        const response = await app.request(`/purchase?companyId=${company.id}&resultsPerPage=-5`, {
             method: "GET",
         });
 
         expect(response.status).toBe(400);
     });
 
-    test("GET /purchases - Zero resultsPerPage", async () => {
+    test("GET /purchase - Zero resultsPerPage", async () => {
         const company = await createCompany();
-        const response = await app.request(`/purchases?companyId=${company.id}&resultsPerPage=0`, {
+        const response = await app.request(`/purchase?companyId=${company.id}&resultsPerPage=0`, {
             method: "GET",
         });
 
         expect(response.status).toBe(400);
     });
 
-    test("GET /purchases - Very Large pageNumber", async () => {
+    test("GET /purchase - Very Large pageNumber", async () => {
         const company = await createCompany();
         const companyId = company.id;
 
@@ -271,7 +271,7 @@ describe("GET /purchases", () => {
             ]);
         }
 
-        const response = await app.request(`/purchases?companyId=${companyId}&pageNumber=10000`, {
+        const response = await app.request(`/purchase?companyId=${companyId}&pageNumber=10000`, {
             method: "GET",
         });
 
@@ -281,7 +281,7 @@ describe("GET /purchases", () => {
         expect(body.length).toBe(0);
     });
 
-    test("GET /purchases - Very Large resultsPerPage", async () => {
+    test("GET /purchase - Very Large resultsPerPage", async () => {
         const company = await createCompany();
         const companyId = company.id;
 
@@ -297,7 +297,7 @@ describe("GET /purchases", () => {
             ]);
         }
 
-        const response = await app.request(`/purchases?companyId=${companyId}&resultsPerPage=1000`, {
+        const response = await app.request(`/purchase?companyId=${companyId}&resultsPerPage=1000`, {
             method: "GET",
         });
 
@@ -306,7 +306,7 @@ describe("GET /purchases", () => {
         expect(Array.isArray(body)).toBe(true);
     });
 
-    test("GET /purchases - Multiple Purchases Same Company", async () => {
+    test("GET /purchase - Multiple Purchases Same Company", async () => {
         const company = await createCompany();
         const companyId = company.id;
         const purchaseCount = 5;
@@ -323,7 +323,7 @@ describe("GET /purchases", () => {
             ]);
         }
 
-        const response = await app.request(`/purchases?companyId=${companyId}&resultsPerPage=10`, {
+        const response = await app.request(`/purchase?companyId=${companyId}&resultsPerPage=10`, {
             method: "GET",
         });
 
