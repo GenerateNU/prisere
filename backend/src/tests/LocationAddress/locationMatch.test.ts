@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach } from "bun:test";
-import { FEMALocationMatcher } from "../../modules/fips-location-matching/service";
+import { FEMALocationMatcher } from "../../modules/clients/fips-location-matching/service";
 import { LocationAddress } from "../../entities/LocationAddress";
 
 describe("FEMA Location Matcher - Real API Integration Tests", () => {

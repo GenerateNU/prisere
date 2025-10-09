@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { ILocationAddressTransaction, LocationAddressTransactions } from "./transaction";
 import { ILocationAddressService, LocationAddressService } from "./service";
 import { ILocationAddressController, LocationAddressController } from "./controller";
-import { FEMALocationMatcher, IFEMALocationMatcher } from "../fips-location-matching/service";
+import { FEMALocationMatcher, IFEMALocationMatcher } from "../clients/fips-location-matching/service";
 
 /**
  * Routes for the address of a location for some company.

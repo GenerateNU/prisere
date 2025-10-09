@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach } from "bun:test";
-import { FEMALocationMatcher } from "../../modules/fips-location-matching/service";
+import { FEMALocationMatcher } from "../../modules/clients/fips-location-matching/service";
 import { MockFEMALocationMatcher, mockCensusAPI } from "./fips-location-match-client";
 import { LocationAddress } from "../../entities/LocationAddress";
 

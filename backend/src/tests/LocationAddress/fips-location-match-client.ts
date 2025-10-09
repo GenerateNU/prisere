@@ -2,7 +2,7 @@ import {
     IFEMALocationMatcher,
     LocationFips,
     CensusGeocodeResponse,
-} from "../../modules/fips-location-matching/service";
+} from "../../modules/clients/fips-location-matching/service";
 import { LocationAddress } from "../../entities/LocationAddress";
 
 export class MockFEMALocationMatcher implements IFEMALocationMatcher {

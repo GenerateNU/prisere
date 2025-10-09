@@ -9,7 +9,7 @@ import {
     GetLocationAddressResponse,
     LocationAddress,
 } from "../../types/Location";
-import { IFEMALocationMatcher } from "../fips-location-matching/service";
+import { IFEMALocationMatcher } from "../clients/fips-location-matching/service";
 
 export interface ILocationAddressService {
     /**

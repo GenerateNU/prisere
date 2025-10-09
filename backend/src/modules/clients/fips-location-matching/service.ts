@@ -1,5 +1,5 @@
-import { LocationAddress } from "../../entities/LocationAddress";
-import { logMessageToFile } from "../../utilities/logger";
+import { LocationAddress } from "../../../entities/LocationAddress";
+import { logMessageToFile } from "../../../utilities/logger";
 
 // Cross-check if a location is in the same area as a disaster
 export interface LocationFips {
