@@ -6,6 +6,7 @@ import { initTestData } from "./setup";
 import { DataSource } from "typeorm";
 import { beforeEach } from "node:test";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("POST /claims", () => {
     let app: Hono;
@@ -33,7 +34,7 @@ describe("POST /claims", () => {
             companyId: "c0ce685a-27d8-4183-90ff-31f294b2c6da",
         };
 
-        const response = await app.request("/claims", {
+        const response = await app.request(TESTING_PREFIX + "/claims", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -49,7 +50,7 @@ describe("POST /claims", () => {
         expect(body.createdAt).toBeDefined();
         expect(body.updatedAt).toBeDefined();
 
-        const fetchResponse = await app.request(`/claims/company/${requestBody.companyId}`);
+        const fetchResponse = await app.request(TESTING_PREFIX + `/claims/company/${requestBody.companyId}`);
         const fetchBody = await fetchResponse.json();
 
         expect(fetchResponse.status).toBe(200);
@@ -65,7 +66,7 @@ describe("POST /claims", () => {
             companyId: "a1a542da-0abe-4531-9386-8919c9f86369",
         };
 
-        const response2 = await app.request("/claims", {
+        const response2 = await app.request(TESTING_PREFIX + "/claims", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -88,7 +89,7 @@ describe("POST /claims", () => {
             disasterId: "2aa52e71-5f89-4efe-a820-1bfc65ded6ec",
         };
 
-        const response = await app.request("/claims", {
+        const response = await app.request(TESTING_PREFIX + "/claims", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -105,7 +106,7 @@ describe("POST /claims", () => {
             disasterId: "2aa52e71-5f89-4efe-a820-1bfc65ded6e2",
         };
 
-        const response = await app.request("/claims", {
+        const response = await app.request(TESTING_PREFIX + "/claims", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -121,7 +122,7 @@ describe("POST /claims", () => {
             companyId: "5667a729-f000-4190-b4ee-7957badca27b",
         };
 
-        const response = await app.request("/claims", {
+        const response = await app.request(TESTING_PREFIX + "/claims", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -138,7 +139,7 @@ describe("POST /claims", () => {
             companyId: "",
         };
 
-        const response = await app.request("/claims", {
+        const response = await app.request(TESTING_PREFIX + "/claims", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -150,7 +151,7 @@ describe("POST /claims", () => {
     });
 
     test("POST /claims - Empty Request Body", async () => {
-        const response = await app.request("/claims", {
+        const response = await app.request(TESTING_PREFIX + "/claims", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

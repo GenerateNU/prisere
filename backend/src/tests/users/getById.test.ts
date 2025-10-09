@@ -4,7 +4,7 @@ import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { GetUserResponseSchema } from "../../types/User";
 import { validate } from "uuid";
-
+import { TESTING_PREFIX } from "../../utilities/constants";
 describe("GET /users/:id", () => {
     let app: Hono;
     let backup: IBackup;
@@ -21,7 +21,7 @@ describe("GET /users/:id", () => {
 
     test("should return 200 and user data when valid UUID is provided", async () => {
         // First create a user to retrieve
-        const createResponse = await app.request("/users", {
+        const createResponse = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -35,7 +35,7 @@ describe("GET /users/:id", () => {
         const userId = createdUser.id;
 
         // Now test the GET endpoint
-        const response = await app.request(`/users/${userId}`, {
+        const response = await app.request(TESTING_PREFIX + `/users/${userId}`, {
             method: "GET",
         });
 
@@ -56,7 +56,7 @@ describe("GET /users/:id", () => {
 
     test("should return 200 and user data without email when user has no email", async () => {
         // Create user without email
-        const createResponse = await app.request("/users", {
+        const createResponse = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -69,7 +69,7 @@ describe("GET /users/:id", () => {
         const userId = createdUser.id;
 
         // Test GET endpoint
-        const response = await app.request(`/users/${userId}`, {
+        const response = await app.request(TESTING_PREFIX + `/users/${userId}`, {
             method: "GET",
         });
 
@@ -88,7 +88,7 @@ describe("GET /users/:id", () => {
         const invalidIds = ["123", "not-a-uuid", "12345678-1234-1234-1234"];
 
         for (const invalidId of invalidIds) {
-            const response = await app.request(`/users/${invalidId}`, {
+            const response = await app.request(TESTING_PREFIX + `/users/${invalidId}`, {
                 method: "GET",
             });
 
@@ -103,7 +103,7 @@ describe("GET /users/:id", () => {
     test("should return 404 when UUID is valid but user does not exist", async () => {
         const nonExistentId = "550e8400-e29b-41d4-a716-446655440000";
 
-        const response = await app.request(`/users/${nonExistentId}`, {
+        const response = await app.request(TESTING_PREFIX + `/users/${nonExistentId}`, {
             method: "GET",
         });
 
@@ -114,7 +114,7 @@ describe("GET /users/:id", () => {
 
     test("should handle UUID in different case formats", async () => {
         // Create a user first
-        const createResponse = await app.request("/users", {
+        const createResponse = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -128,7 +128,7 @@ describe("GET /users/:id", () => {
 
         // Test with uppercase UUID
         const upperCaseId = userId.toUpperCase();
-        const responseUpper = await app.request(`/users/${upperCaseId}`, {
+        const responseUpper = await app.request(TESTING_PREFIX + `/users/${upperCaseId}`, {
             method: "GET",
         });
 
@@ -138,7 +138,7 @@ describe("GET /users/:id", () => {
 
         // Test with lowercase UUID
         const lowerCaseId = userId.toLowerCase();
-        const responseLower = await app.request(`/users/${lowerCaseId}`, {
+        const responseLower = await app.request(TESTING_PREFIX + `/users/${lowerCaseId}`, {
             method: "GET",
         });
 
@@ -177,7 +177,7 @@ describe("GET /users/:id", () => {
 
     test("should handle concurrent requests for the same user", async () => {
         // Create a user
-        const createResponse = await app.request("/users", {
+        const createResponse = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -193,7 +193,7 @@ describe("GET /users/:id", () => {
         // Make multiple concurrent requests
         const requests = Array(5)
             .fill(null)
-            .map(() => app.request(`/users/${userId}`, { method: "GET" }));
+            .map(() => app.request(TESTING_PREFIX + `/users/${userId}`, { method: "GET" }));
 
         const responses = await Promise.all(requests);
 
@@ -224,7 +224,7 @@ describe("GET /users/:id", () => {
         ];
 
         for (const specialId of specialIds) {
-            const response = await app.request(`/users/${encodeURIComponent(specialId)}`, {
+            const response = await app.request(TESTING_PREFIX + `/users/${encodeURIComponent(specialId)}`, {
                 method: "GET",
             });
 

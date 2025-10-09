@@ -5,6 +5,7 @@ import { IBackup } from "pg-mem";
 import { randomUUID } from "crypto";
 import { DataSource } from "typeorm";
 import { createTestData, TestDataSetup } from "./setup";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("Bulk create disaster notifications", () => {
     let app: Hono;
@@ -38,7 +39,7 @@ describe("Bulk create disaster notifications", () => {
             },
         ];
 
-        const response = await app.request(`/disasterNotification/create`, {
+        const response = await app.request(TESTING_PREFIX + `/disasterNotification/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -77,7 +78,7 @@ describe("Bulk create disaster notifications", () => {
             },
         ];
 
-        const response = await app.request(`/disasterNotification/create`, {
+        const response = await app.request(TESTING_PREFIX + `/disasterNotification/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -112,7 +113,7 @@ describe("Bulk create disaster notifications", () => {
             },
         ];
 
-        const response = await app.request(`/disasterNotification/create`, {
+        const response = await app.request(TESTING_PREFIX + `/disasterNotification/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

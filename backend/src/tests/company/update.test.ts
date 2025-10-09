@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("Company - Update lastQuickBooksImportTime", () => {
     let app: Hono;
@@ -14,7 +15,7 @@ describe("Company - Update lastQuickBooksImportTime", () => {
         backup = testAppData.backup;
 
         // Create a company to update later
-        const createResponse = await app.request("/companies", {
+        const createResponse = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name: "Update Test Company" }),
@@ -29,7 +30,7 @@ describe("Company - Update lastQuickBooksImportTime", () => {
 
     test("PATCH /companies/:id/quickbooks-import-time - Valid date", async () => {
         const newDate = new Date("2025-12-25T09:30:00.000Z");
-        const response = await app.request(`/companies/${companyId}/quickbooks-import-time`, {
+        const response = await app.request(TESTING_PREFIX + `/companies/${companyId}/quickbooks-import-time`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ importTime: newDate.toISOString() }), // <-- use importTime
@@ -40,7 +41,7 @@ describe("Company - Update lastQuickBooksImportTime", () => {
     });
 
     test("PATCH /companies/:id/quickbooks-import-time - Invalid date string", async () => {
-        const response = await app.request(`/companies/${companyId}/quickbooks-import-time`, {
+        const response = await app.request(TESTING_PREFIX + `/companies/${companyId}/quickbooks-import-time`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ importTime: "not-a-date" }), // <-- use importTime
@@ -49,7 +50,7 @@ describe("Company - Update lastQuickBooksImportTime", () => {
     });
 
     test("PATCH /companies/:id/quickbooks-import-time - Missing date", async () => {
-        const response = await app.request(`/companies/${companyId}/quickbooks-import-time`, {
+        const response = await app.request(TESTING_PREFIX + `/companies/${companyId}/quickbooks-import-time`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({}),
@@ -59,7 +60,7 @@ describe("Company - Update lastQuickBooksImportTime", () => {
 
     test("PATCH /companies/:id/quickbooks-import-time - Non-existent company", async () => {
         const newDate = new Date("2025-12-25T09:30:00.000Z");
-        const response = await app.request(`/companies/non-existent-id/quickbooks-import-time`, {
+        const response = await app.request(TESTING_PREFIX + `/companies/non-existent-id/quickbooks-import-time`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ importTime: newDate.toISOString() }), // <-- use importTime

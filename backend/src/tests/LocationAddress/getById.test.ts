@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("Location Address Controller Tests", () => {
     let app: Hono;
@@ -18,7 +19,7 @@ describe("Location Address Controller Tests", () => {
             name: "Cool Company",
         };
 
-        const companyResponse = await app.request("/companies", {
+        const companyResponse = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -46,7 +47,7 @@ describe("Location Address Controller Tests", () => {
                 companyId: company_id,
             };
 
-            const createResponse = await app.request("/location-address", {
+            const createResponse = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -58,7 +59,7 @@ describe("Location Address Controller Tests", () => {
             const addressId = createdAddress.id;
 
             // Now retrieve it using query parameter
-            const response = await app.request(`/location-address/${addressId}`, {
+            const response = await app.request(TESTING_PREFIX + `/location-address/${addressId}`, {
                 method: "GET",
             });
 
@@ -74,7 +75,7 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should return 404 for non-existent id", async () => {
-            const response = await app.request("/location-address/b82951e8-e30d-4c84-8d02-c28f29143101", {
+            const response = await app.request(TESTING_PREFIX + "/location-address/b82951e8-e30d-4c84-8d02-c28f29143101", {
                 method: "GET",
             });
 
@@ -84,7 +85,7 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should handle empty string id", async () => {
-            const response = await app.request("/location-address/", {
+            const response = await app.request(TESTING_PREFIX + "/location-address/", {
                 method: "GET",
             });
 
@@ -93,7 +94,7 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should handle an invalid UUID", async () => {
-            const response = await app.request("/location-address/testing", {
+            const response = await app.request(TESTING_PREFIX + "/location-address/testing", {
                 method: "GET",
             });
 

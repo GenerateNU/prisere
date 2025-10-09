@@ -13,6 +13,7 @@ import { describe, test, expect, beforeAll, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { logMessageToFile } from "../../utilities/logger";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("Example", () => {
     let app: Hono;
@@ -27,7 +28,7 @@ describe("Example", () => {
         app = testAppData.app;
         backup = testAppData.backup;
 
-        const response = await app.request("/companies", {
+        const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -43,7 +44,7 @@ describe("Example", () => {
         backup.restore(); // Restore to clean state before each test
 
         // Re-create the company for each test and save ID
-        const response = await app.request("/companies", {
+        const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name: "Test Company" }),
@@ -53,14 +54,14 @@ describe("Example", () => {
     });
 
     test("GET /companies/:id - id that exists", async () => {
-        const response = await app.request(`/companies/${createdCompanyId}`);
+        const response = await app.request(TESTING_PREFIX + `/companies/${createdCompanyId}`);
         expect(response.status).toBe(200);
         const body = await response.json();
         expect(body.name).toBe(requestBody.name);
     });
 
     test("GET /companies/:id - validates response structure", async () => {
-        const response = await app.request(`/companies/${createdCompanyId}`);
+        const response = await app.request(TESTING_PREFIX + `/companies/${createdCompanyId}`);
         expect(response.status).toBe(200);
 
         const body = await response.json();
@@ -73,7 +74,7 @@ describe("Example", () => {
 
     test("GET /companies/:id - error response structure", async () => {
         const nonExistentUUID = "12345678-1234-1234-1234-123456789012";
-        const response = await app.request(`/companies/${nonExistentUUID}`);
+        const response = await app.request(TESTING_PREFIX + `/companies/${nonExistentUUID}`);
         expect(response.status).toBe(400);
 
         const body = await response.json();
@@ -83,35 +84,35 @@ describe("Example", () => {
 
     test("GET /companies/:id - id that does not exist", async () => {
         const nonExistentUUID = "12345678-1234-1234-1234-123456789012";
-        const response = await app.request(`/companies/${nonExistentUUID}`);
+        const response = await app.request(TESTING_PREFIX + `/companies/${nonExistentUUID}`);
         expect(response.status).toBe(400);
     });
 
     test("GET /companies/:id - id not in UIUD format", async () => {
         const nonExistentUUID = "baka";
-        const response = await app.request(`/companies/${nonExistentUUID}`);
+        const response = await app.request(TESTING_PREFIX + `/companies/${nonExistentUUID}`);
         expect(response.status).toBe(400);
     });
 
     test("GET /companies/:id - uuid with invalid characters", async () => {
-        const response = await app.request("/companies/1234567g-1234-1234-1234-123456789012"); // g is not hex
+        const response = await app.request(TESTING_PREFIX + "/companies/1234567g-1234-1234-1234-123456789012"); // g is not hex
         expect(response.status).toBe(400);
     });
 
     test("GET /companies/:id - no id", async () => {
-        const response = await app.request("/companies/");
+        const response = await app.request(TESTING_PREFIX + "/companies/");
         expect([400, 404]).toContain(response.status);
     });
 
     test("GET /companies/:id - white space", async () => {
-        const response = await app.request("/companies/   ");
+        const response = await app.request(TESTING_PREFIX + "/companies/   ");
         expect([400, 404]).toContain(response.status);
     });
 
     test("GET /companies/:id - concurrent requests", async () => {
         const requests = Array(10)
             .fill(null)
-            .map(() => app.request(`/companies/${createdCompanyId}`));
+            .map(() => app.request(TESTING_PREFIX + `/companies/${createdCompanyId}`));
 
         const responses = await Promise.all(requests);
         responses.forEach((response) => {
