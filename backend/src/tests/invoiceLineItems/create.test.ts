@@ -14,6 +14,7 @@ describe("POST /quickbooks/invoice/line/bulk", () => {
     let app: Hono;
     let backup: IBackup;
     let datasource: DataSource;
+    const quickbooksDateCreatedEx = new Date().toISOString();
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
@@ -43,7 +44,7 @@ describe("POST /quickbooks/invoice/line/bulk", () => {
                 invoiceId: seededInvoices[0].id,
                 quickbooksId: 12,
                 amountCents: 4004,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/line/bulk", {
@@ -65,7 +66,7 @@ describe("POST /quickbooks/invoice/line/bulk", () => {
                 invoiceId: seededInvoices[0].id,
                 quickbooksId: 13,
                 amountCents: 4004,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
                 description: "description",
                 category: "CAT1",
             },
@@ -73,7 +74,7 @@ describe("POST /quickbooks/invoice/line/bulk", () => {
                 invoiceId: seededInvoices[1].id,
                 quickbooksId: 14,
                 amountCents: 0,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/line/bulk", {
@@ -94,12 +95,12 @@ describe("POST /quickbooks/invoice/line/bulk", () => {
             {
                 invoiceId: seededInvoices[0].id,
                 amountCents: 4004,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
                 invoiceId: seededInvoices[0].id,
                 amountCents: 0,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/line/bulk", {
@@ -120,13 +121,13 @@ describe("POST /quickbooks/invoice/line/bulk", () => {
             {
                 invoiceId: seededInvoices[0].id,
                 quickbooksId: 13,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
                 invoiceId: seededInvoices[0].id,
                 quickbooksId: 14,
                 amountCents: 0,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/line/bulk", {
@@ -149,7 +150,7 @@ describe("POST /quickbooks/invoice/line/bulk", () => {
                 invoiceId: seededInvoices[0].id,
                 quickbooksId: 13,
                 amountCents: 998,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
                 invoiceId: seededInvoices[0].id,
@@ -175,7 +176,7 @@ describe("POST /quickbooks/invoice/line/bulk", () => {
                 invoiceId: "114ca29d-c64b-4494-b1f3-db25def57a5f", // bad UUID
                 quickbooksId: 13,
                 amountCents: 11,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/line/bulk", {
@@ -198,13 +199,13 @@ describe("POST /quickbooks/invoice/line/bulk", () => {
                 invoiceId: "114ca29d-c64b-4494-b1f3-db25def57a5f", // bad UUID
                 quickbooksId: 13,
                 amountCents: 11,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
                 invoiceId: "ffc8243b-9999-9999", // invalid UUID
                 quickbooksId: 15,
                 amountCents: 11,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/line/bulk", {
@@ -228,13 +229,13 @@ describe("POST /quickbooks/invoice/line/bulk", () => {
                 invoiceId: "114ca29d-c64b-4494-b1f3-db25def57a5f", // bad UUID
                 quickbooksId: 13,
                 amountCents: 11,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
                 invoiceId: seededInvoices[0].id,
                 quickbooksId: 15,
                 amountCents: 11,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/line/bulk", {
@@ -257,7 +258,7 @@ describe("POST /quickbooks/invoice/line/bulk", () => {
                 invoiceId: seededInvoices[0].id, // good UUID
                 quickbooksId: -15,
                 amountCents: 11,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/line/bulk", {
@@ -280,7 +281,7 @@ describe("POST /quickbooks/invoice/line/bulk", () => {
                 invoiceId: seededInvoices[0].id, // good UUID
                 quickbooksId: 15,
                 amountCents: -11,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/line/bulk", {
@@ -303,7 +304,7 @@ describe("POST /quickbooks/invoice/line/bulk", () => {
                 invoiceId: seededInvoices[0].id, // good UUID
                 quickbooksId: 3, // already exists from the seeded example
                 amountCents: 999999,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/line/bulk", {

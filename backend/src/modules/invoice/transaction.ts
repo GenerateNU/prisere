@@ -33,7 +33,7 @@ export class InvoiceTransaction implements IInvoiceTransaction {
             .insert()
             .into(Invoice)
             .values(newInvoices)
-            .orUpdate(["totalAmountCents", "dateCreated"], ["quickbooksId", "companyId"])
+            .orUpdate(["totalAmountCents", "quickbooksDateCreated"], ["quickbooksId", "companyId"])
             .returning("*")
             .execute();
         return result.raw;
@@ -56,7 +56,7 @@ export class InvoiceTransaction implements IInvoiceTransaction {
             skip: numToSkip,
             take: resultsPerPage,
             order: {
-                dateCreated: "DESC",
+                quickbooksDateCreated: "DESC",
             },
         });
 

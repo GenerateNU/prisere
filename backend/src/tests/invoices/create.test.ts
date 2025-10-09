@@ -8,11 +8,13 @@ import { DataSource } from "typeorm";
 import CompanySeeder from "../../database/seeds/company.seed";
 import { InvoiceSeeder } from "../../database/seeds/invoice.seed";
 import { CompareRequestToCreated } from "./utils";
+import { request } from "http";
 
 describe("POST /quickbooks/invoice/bulk", () => {
     let app: Hono;
     let backup: IBackup;
     let datasource: DataSource;
+    const quickbooksDateCreatedEx = new Date().toISOString();
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
@@ -39,7 +41,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
                 quickbooksId: 12,
                 totalAmountCents: 4004,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/bulk", {
@@ -61,13 +63,13 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
                 quickbooksId: 13,
                 totalAmountCents: 4004,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
                 quickbooksId: 14,
                 totalAmountCents: 0,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/bulk", {
@@ -88,12 +90,12 @@ describe("POST /quickbooks/invoice/bulk", () => {
             {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
                 totalAmountCents: 4004,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
                 totalAmountCents: 0,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/bulk", {
@@ -114,13 +116,13 @@ describe("POST /quickbooks/invoice/bulk", () => {
             {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
                 quickbooksId: 13,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
                 quickbooksId: 14,
                 totalAmountCents: 0,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/bulk", {
@@ -143,7 +145,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
                 quickbooksId: 13,
                 totalAmountCents: 998,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
@@ -169,7 +171,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 companyId: "ffc8243b-9999-4999-9999-ffc73522a838", // bad UUID
                 quickbooksId: 13,
                 totalAmountCents: 11,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/bulk", {
@@ -192,13 +194,13 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 companyId: "ffc8243b-9999-4999-9999-ffc73522a838", // bad UUID
                 quickbooksId: 13,
                 totalAmountCents: 11,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
                 companyId: "ffc8243b-9999-9999", // invalid UUID
                 quickbooksId: 15,
                 totalAmountCents: 11,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/bulk", {
@@ -222,13 +224,13 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 companyId: "ffc8243b-9999-4999-9999-ffc73522a838", // bad UUID
                 quickbooksId: 13,
                 totalAmountCents: 11,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // good UUID
                 quickbooksId: 15,
                 totalAmountCents: 11,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/bulk", {
@@ -251,7 +253,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // good UUID
                 quickbooksId: -15,
                 totalAmountCents: 11,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/bulk", {
@@ -274,7 +276,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // good UUID
                 quickbooksId: 15,
                 totalAmountCents: -11,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/bulk", {
@@ -297,7 +299,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // good UUID
                 quickbooksId: 1, // already exists from the seeded example
                 totalAmountCents: 999999,
-                dateCreated: new Date().toISOString(),
+                quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
         const response = await app.request("/quickbooks/invoice/bulk", {

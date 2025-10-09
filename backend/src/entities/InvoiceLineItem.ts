@@ -1,8 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, UpdateDateColumn, Unique } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, UpdateDateColumn, Unique, CreateDateColumn } from "typeorm";
 import { Invoice } from "./Invoice.js";
-
-export const INVOICE_LINE_ITEM_DESCRIPTION_CHARS = 250;
-export const INVOICE_LINE_ITEM_CATEGORY_CHARS = 100;
+import { LINE_ITEM_DESCRIPTION_CHARS, LINE_ITEM_CATEGORY_CHARS } from "../utilities/constants.js";
 
 @Unique(["quickbooksId", "invoiceId"])
 @Entity("invoice_line_item")
@@ -10,7 +8,7 @@ export class InvoiceLineItem {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
 
-    @Column({ nullable: true, length: INVOICE_LINE_ITEM_DESCRIPTION_CHARS })
+    @Column({ nullable: true, length: LINE_ITEM_DESCRIPTION_CHARS })
     description?: string;
 
     @ManyToOne(() => Invoice, { nullable: true })
@@ -28,12 +26,15 @@ export class InvoiceLineItem {
     @Column()
     amountCents!: number;
 
-    @Column({ nullable: true, length: INVOICE_LINE_ITEM_CATEGORY_CHARS })
+    @Column({ nullable: true, length: LINE_ITEM_CATEGORY_CHARS })
     category?: string;
 
-    @Column()
+    @CreateDateColumn()
     dateCreated!: Date;
 
     @UpdateDateColumn()
     lastUpdated!: Date;
+
+    @Column({ nullable: true })
+    quickbooksDateCreated?: Date;
 }

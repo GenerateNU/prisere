@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, UpdateDateColumn, Unique } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, UpdateDateColumn, Unique, CreateDateColumn } from "typeorm";
 import { Company } from "./Company.js";
 
 @Unique(["quickbooksId", "companyId"])
@@ -22,9 +22,12 @@ export class Invoice {
     @Column()
     totalAmountCents!: number;
 
-    @Column()
+    @CreateDateColumn()
     dateCreated!: Date;
 
     @UpdateDateColumn()
     lastUpdated!: Date;
+
+    @Column({ nullable: true })
+    quickbooksDateCreated?: Date;
 }

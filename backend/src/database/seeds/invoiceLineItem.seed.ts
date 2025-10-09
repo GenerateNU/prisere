@@ -10,7 +10,7 @@ export const seededInvoiceLineItems = [
         invoiceId: seededInvoices[0].id,
         quickbooksId: 3,
         amountCents: 234,
-        dateCreated: new Date("2025-02-05T12:00:00Z"),
+        quickbooksDateCreated: new Date("2025-02-05T12:00:00Z"),
         category: "CAT_1",
     },
     {
@@ -19,7 +19,7 @@ export const seededInvoiceLineItems = [
         invoiceId: seededInvoices[0].id,
         quickbooksId: 4,
         amountCents: 456,
-        dateCreated: new Date("2025-01-11T12:00:00Z"),
+        quickbooksDateCreated: new Date("2025-01-11T12:00:00Z"),
         category: "CAT_2",
     },
     {
@@ -28,7 +28,7 @@ export const seededInvoiceLineItems = [
         invoiceId: seededInvoices[1].id,
         quickbooksId: 5,
         amountCents: 234,
-        dateCreated: new Date("2025-02-05T12:00:00Z"),
+        quickbooksDateCreated: new Date("2025-02-05T12:00:00Z"),
         category: "CAT_1",
     },
     {
@@ -37,7 +37,7 @@ export const seededInvoiceLineItems = [
         invoiceId: seededInvoices[1].id,
         quickbooksId: 6,
         amountCents: 456,
-        dateCreated: new Date("2025-01-11T12:00:00Z"),
+        quickbooksDateCreated: new Date("2025-01-11T12:00:00Z"),
         category: "CAT_2",
     },
 ];

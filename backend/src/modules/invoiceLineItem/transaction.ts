@@ -24,7 +24,7 @@ export class InvoiceLineItemTransaction implements IInvoiceLineItemTransaction {
             .insert()
             .into(InvoiceLineItem)
             .values(newInvoices)
-            .orUpdate(["description", "amountCents", "category", "dateCreated"], ["quickbooksId", "invoiceId"])
+            .orUpdate(["description", "amountCents", "category", "quickbooksDateCreated"], ["quickbooksId", "invoiceId"])
             .returning("*")
             .execute();
         return result.raw;
@@ -43,7 +43,7 @@ export class InvoiceLineItemTransaction implements IInvoiceLineItemTransaction {
         const invoiceLineItems: InvoiceLineItem[] = await this.db.getRepository(InvoiceLineItem).find({
             where: { invoiceId: invoiceId },
             order: {
-                dateCreated: "DESC",
+                quickbooksDateCreated: "DESC",
             },
         });
 
