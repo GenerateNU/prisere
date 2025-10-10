@@ -49,12 +49,7 @@ describe("Bulk create disaster notifications", () => {
 
         const responseText = await response.text();
 
-        let body;
-        try {
-            body = JSON.parse(responseText);
-        } catch (e) {
-            console.error("Failed to parse response as JSON:", e);
-        }
+        const body = JSON.parse(responseText);
 
         expect(response.status).toBe(201);
         expect(body).toHaveLength(2);
@@ -88,12 +83,7 @@ describe("Bulk create disaster notifications", () => {
 
         const responseText = await response.text();
 
-        let body;
-        try {
-            body = JSON.parse(responseText);
-        } catch (e) {
-            console.error("Failed to parse response as JSON:", e);
-        }
+        const body = JSON.parse(responseText);
 
         expect(response.status).toBe(201);
         expect(body).toHaveLength(1);
