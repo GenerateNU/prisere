@@ -29,7 +29,7 @@ export class ClaimLocationService {
         });
 
         if (!claimLocation) {
-            throw new Error("Failed to create Link between Claim and Location");
+            throw Boom.internal("Failed to create Link between Claim and Location");
         }
 
         return claimLocation;
