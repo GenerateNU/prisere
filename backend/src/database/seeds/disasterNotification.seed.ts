@@ -1,108 +1,62 @@
-import { describe, beforeAll, beforeEach } from "bun:test";
-import { startTestApp } from "../../tests/setup-tests";
-import { IBackup } from "pg-mem";
-import { randomUUID } from "crypto";
 import { DataSource } from "typeorm";
-import { User } from "../../entities/User";
-import { FemaDisaster } from "../../entities/FemaDisaster";
+import { Seeder, SeederFactoryManager } from "typeorm-extension";
 import { DisasterNotification } from "../../entities/DisasterNotification";
 import { NotificationType } from "../../types/NotificationEnums";
+import { FemaDisaster } from "../../entities/FemaDisaster";
 
-describe("Test acknowledge disaster notifications", () => {
-    // let app: Hono;
-    let backup: IBackup;
-    let dataSource: DataSource;
-    let seedUserId1: string;
-    let seedUserId2: string;
-    let seedDisasterId1: string;
-    let seedDisasterId2: string;
+export const seededFemaDisasters = [
+    {
+        id: "94c00695-39f9-4c92-a4cb-76ccb8664516",
+        disasterNumber: 12345,
+        fipsStateCode: 6,
+        declarationDate: new Date(),
+        incidentBeginDate: new Date(),
+        incidentEndDate: new Date(),
+        incidentType: "Flood",
+        fipsCountyCode: 1,
+        declarationType: "Major Disaster",
+        designatedArea: "Test Area",
+        designatedIncidentTypes: "Flooding",
+    },
+    {
+        id: "a36dc729-c2ee-411d-8291-3b7e4f9c4d80",
+        disasterNumber: 67890,
+        fipsStateCode: 12,
+        declarationDate: new Date(),
+        incidentBeginDate: new Date(),
+        incidentEndDate: new Date(),
+        incidentType: "Hurricane",
+        fipsCountyCode: 2,
+        declarationType: "Medium",
+        designatedArea: "Test Area 2",
+        designatedIncidentTypes: "Wind",
+    },
+];
 
-    const seedUsers = [
-        {
-            id: randomUUID(),
-            firstName: "John",
-            lastName: "Pork",
-            email: "john.doe@example.com",
-        },
-        {
-            id: randomUUID(),
-            firstName: "Jane",
-            lastName: "Porke",
-            email: "jane.smith@example.com",
-        },
-    ];
+export const seededDisasterNotifications = [
+    {
+        id: "d16424ca-d389-4f17-8138-2a6a62923a23",
+        userId: "c34197fc-b944-4291-89ee-2e47ea77dc27",
+        femaDisasterId: seededFemaDisasters[0].id,
+        notificationType: NotificationType.WEB,
+        firstSentAt: new Date(),
+        lastSentAt: new Date(),
+    },
+    {
+        id: "5ef04fd1-e342-4d8a-8d1a-6d14efcea5f0",
+        userId: "c34197fc-b944-4291-89ee-2e47ea77dc27",
+        femaDisasterId: seededFemaDisasters[1].id,
+        notificationType: NotificationType.EMAIL,
+        firstSentAt: new Date(),
+        lastSentAt: new Date(),
+    },
+];
 
-    const seedDisasters = [
-        {
-            id: randomUUID(),
-            disasterNumber: 12345,
-            fipsStateCode: 6,
-            declarationDate: new Date(),
-            incidentBeginDate: new Date(),
-            incidentEndDate: new Date(),
-            incidentType: "Flood",
-            fipsCountyCode: 1,
-            declarationType: "Major Disaster",
-            designatedArea: "Test Area",
-            designatedIncidentTypes: "Flooding",
-        },
-        {
-            id: randomUUID(),
-            disasterNumber: 67890,
-            fipsStateCode: 12,
-            declarationDate: new Date(),
-            incidentBeginDate: new Date(),
-            incidentEndDate: new Date(),
-            incidentType: "Hurricane",
-            fipsCountyCode: 2,
-            declarationType: "Medium",
-            designatedArea: "Test Area 2",
-            designatedIncidentTypes: "Wind",
-        },
-    ];
-
-    beforeAll(async () => {
-        const testAppData = await startTestApp();
-        // app = testAppData.app;
-        backup = testAppData.backup;
-        dataSource = testAppData.dataSource;
-
-        const userRepository = dataSource.getRepository(User);
-        await userRepository.insert(seedUsers);
-
-        const disasterRepository = dataSource.getRepository(FemaDisaster);
-        await disasterRepository.insert(seedDisasters);
-
-        seedUserId1 = seedUsers[0].id;
-        seedUserId2 = seedUsers[1].id;
-        seedDisasterId1 = seedDisasters[0].id;
-        seedDisasterId2 = seedDisasters[1].id;
-    });
-
-    beforeEach(async () => {
-        backup.restore();
-
-        const notificationRepository = dataSource.getRepository(DisasterNotification);
-
-        const notifications = [
-            {
-                id: randomUUID(),
-                userId: seedUserId1,
-                femaDisasterId: seedDisasterId1,
-                notificationType: NotificationType.WEB,
-                firstSentAt: new Date(),
-                lastSentAt: new Date(),
-            },
-            {
-                id: randomUUID(),
-                userId: seedUserId2,
-                femaDisasterId: seedDisasterId2,
-                notificationType: NotificationType.EMAIL,
-                firstSentAt: new Date(),
-                lastSentAt: new Date(),
-            },
-        ];
-
-        await notificationRepository.insert(notifications);
-    });
-});
+export class InvoiceSeeder implements Seeder {
+    track = false;
+    public async run(dataSource: DataSource, _factoryManager: SeederFactoryManager): Promise<void> {
+        // c34197fc-b944-4291-89ee-2e47ea77dc27
+        await dataSource.manager.insert(FemaDisaster, seededFemaDisasters);
+        await dataSource.manager.insert(DisasterNotification, seededDisasterNotifications);
+    }
+}
