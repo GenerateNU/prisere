@@ -26,7 +26,7 @@ describe("notification preference retreival", () => {
     });
 
     it("should create a user's preferences on user creation", async () => {
-        const { data: user } = await createUser(app, {id:randomUUID() , firstName: "test", lastName: "user" });
+        const { data: user } = await createUser(app, { id: randomUUID(), firstName: "test", lastName: "user" });
         const response = await app.request(TESTING_PREFIX + `/notifications/preferences/${user.id}`);
 
         expect(response.status).toBe(200);

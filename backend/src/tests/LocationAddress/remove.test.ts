@@ -34,9 +34,12 @@ describe("Remove Address Tests", () => {
     });
 
     test("error if id does not match any location", async () => {
-        const removeResponse = await app.request(TESTING_PREFIX + `/location-address/e6b07e08-3435-4a4e-86bc-2e6995788ad9`, {
-            method: "DELETE",
-        });
+        const removeResponse = await app.request(
+            TESTING_PREFIX + `/location-address/e6b07e08-3435-4a4e-86bc-2e6995788ad9`,
+            {
+                method: "DELETE",
+            }
+        );
 
         expect(removeResponse.status).toBe(400);
     });
