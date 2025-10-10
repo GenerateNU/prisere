@@ -26,7 +26,7 @@ describe("Test acknowledge disaster notifications", () => {
     });
 
     test("Acknowledge disaster notification", async () => {
-        const response = await app.request(
+        const response = await app.request( TESTING_PREFIX +
             `/disasterNotification/${testData.notifications!.notification1.id}/acknowledge`,
             {
                 method: "PATCH",
@@ -53,7 +53,7 @@ describe("Test acknowledge disaster notifications", () => {
     });
 
     test("Invalid notification ID format returns 400", async () => {
-        const response = await app.request(
+        const response = await app.request( TESTING_PREFIX +
             `/disasterNotification/${testData.notifications!.notification1.id}-asdf/acknowledge`,
             {
                 method: "PATCH",
