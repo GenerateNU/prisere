@@ -36,7 +36,6 @@ export const seededInvoices = [
 export class InvoiceSeeder implements Seeder {
     track = false;
     public async run(dataSource: DataSource, _factoryManager: SeederFactoryManager): Promise<void> {
-        const repository = dataSource.getRepository(Invoice);
-        await repository.insert(seededInvoices);
+        await dataSource.manager.insert(Invoice, seededInvoices);
     }
 }

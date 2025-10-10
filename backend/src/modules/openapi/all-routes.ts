@@ -8,7 +8,9 @@ import { addOpenApiLocationAddressRoutes } from "./location-address-route";
 import { addOpenApiDisasterNotificationRoutes } from "./disaster-notification-routes";
 import { addOpenApiQBRoutes } from "./quickbooks-routes";
 import { addOpenApiInvoiceRoutes } from "./invoice-routes";
+import { addOpenApiPurchaseRoutes } from "./purchase-routes";
 import { createOpenAPIClaimRoutes } from "./claim-routes";
+import { addOpenApiClaimLocationRoutes } from "./claim-location-routes";
 import { addOpenApiPreferenceRoutes } from "./preference-routes";
 import { addOpenApiInvoiceLineItemRoutes } from "./invoice-line-item-routes";
 
@@ -43,7 +45,9 @@ const openApiRoutes = (db: DataSource): OpenAPIHono => {
     addOpenApiDisasterNotificationRoutes(openApi, db);
     addOpenApiQBRoutes(openApi, db);
     addOpenApiInvoiceRoutes(openApi, db);
+    addOpenApiPurchaseRoutes(openApi, db);
     createOpenAPIClaimRoutes(openApi, db);
+    addOpenApiClaimLocationRoutes(openApi, db);
     addOpenApiPreferenceRoutes(openApi, db);
     addOpenApiInvoiceLineItemRoutes(openApi, db);
 

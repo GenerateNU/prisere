@@ -2,15 +2,52 @@ import { Seeder, SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
 import { Company } from "../../entities/Company.js";
 
+const seededCompanies = [
+    {
+        // NEU
+        id: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        name: "Northeastern Inc.",
+    },
+    {
+        // Big Corp
+        id: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+        name: "Big Corp",
+    },
+    {
+        // Small LLC
+        id: "0b6d17e5-37fa-4fe6-bca5-1a18051ae222",
+        name: "Small LLC",
+    },
+    {
+        id: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+        name: "Institue of Company.",
+    },
+    {
+        // Business
+        id: "7f8e9d0c-1b2a-3c4d-5e6f-7a8b9c0d1e2f",
+        name: "Business",
+    },
+];
+
 export default class CompanySeeder implements Seeder {
     track = false;
+
     public async run(dataSource: DataSource, _factoryManager: SeederFactoryManager): Promise<void> {
         const repository = dataSource.getRepository(Company);
         await repository.insert([
             {
                 id: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
-                name: "Northeastern Inc.",
-                lastQuickBooksImportTime: new Date("2023-01-01T12:00:00Z"),
+                name: "Test Company ABC",
+                lastQuickBooksImportTime: new Date("2025-01-15T10:30:00Z"),
+            },
+            {
+                id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                name: "Test Company DEF",
+            },
+            {
+                id: "12345678-9abc-1234-5678-56789abcdef0",
+                name: "Test Company EFG",
+                lastQuickBooksImportTime: new Date("2025-02-01T14:45:00Z"),
             },
 
             {
@@ -19,5 +56,7 @@ export default class CompanySeeder implements Seeder {
                 lastQuickBooksImportTime: new Date("2023-02-01T12:00:00Z"),
             },
         ]);
+
+        await repository.insert(seededCompanies);
     }
 }
