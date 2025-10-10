@@ -54,7 +54,9 @@ describe("Get all locations for a company", () => {
     });
 
     test("should return all locations when company has more than one location", async () => {
-        const response = await app.request(TESTING_PREFIX + `/companies/${companyWithMultipleLocations}/location-address`);
+        const response = await app.request(
+            TESTING_PREFIX + `/companies/${companyWithMultipleLocations}/location-address`
+        );
 
         expect(response.status).toBe(200);
         const data = await response.json();
@@ -107,8 +109,12 @@ describe("Get all locations for a company", () => {
 
     test("should only return locations for the specified company", async () => {
         // Test that company A's locations don't include company B's locations
-        const companyAResponse = await app.request(TESTING_PREFIX + `/companies/${companyWithMultipleLocations}/location-address`);
-        const companyBResponse = await app.request(TESTING_PREFIX + `/companies/${companyWithOneLocation}/location-address`);
+        const companyAResponse = await app.request(
+            TESTING_PREFIX + `/companies/${companyWithMultipleLocations}/location-address`
+        );
+        const companyBResponse = await app.request(
+            TESTING_PREFIX + `/companies/${companyWithOneLocation}/location-address`
+        );
 
         expect(companyAResponse.status).toBe(200);
         expect(companyBResponse.status).toBe(200);
@@ -143,7 +149,9 @@ describe("Get all locations for a company", () => {
     });
 
     test("should verify location data integrity", async () => {
-        const response = await app.request(TESTING_PREFIX + `/companies/${companyWithMultipleLocations}/location-address`);
+        const response = await app.request(
+            TESTING_PREFIX + `/companies/${companyWithMultipleLocations}/location-address`
+        );
 
         expect(response.status).toBe(200);
         const data = await response.json();

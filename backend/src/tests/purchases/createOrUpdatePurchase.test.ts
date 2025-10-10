@@ -97,7 +97,7 @@ describe("POST /purchase", () => {
             },
         ];
 
-        const response = await app.request(TESTING_PREFIX +  "/purchase/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -176,7 +176,7 @@ describe("POST /purchase", () => {
             },
         ];
 
-        const response = await app.request(TESTING_PREFIX +  "/purchase/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -201,7 +201,7 @@ describe("POST /purchase", () => {
             },
         ];
 
-        const response = await app.request(TESTING_PREFIX +  "/purchase/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -226,7 +226,7 @@ describe("POST /purchase", () => {
             },
         ];
 
-        const response = await app.request(TESTING_PREFIX +  "/purchase/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -60,7 +60,9 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice - valid company id paginated page 1", async () => {
-        const response = await app.request(TESTING_PREFIX + `/invoice?companyId=${seededCompanyId}&pageNumber=0&resultsPerPage=1`);
+        const response = await app.request(
+            TESTING_PREFIX + `/invoice?companyId=${seededCompanyId}&pageNumber=0&resultsPerPage=1`
+        );
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -68,7 +70,9 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice - valid company id paginated page 2", async () => {
-        const response = await app.request(TESTING_PREFIX + `/invoice?companyId=${seededCompanyId}&pageNumber=1&resultsPerPage=1`);
+        const response = await app.request(
+            TESTING_PREFIX + `/invoice?companyId=${seededCompanyId}&pageNumber=1&resultsPerPage=1`
+        );
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -76,7 +80,9 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice - valid company id paginated page 3", async () => {
-        const response = await app.request(TESTING_PREFIX + `/invoice?companyId=${seededCompanyId}&pageNumber=2&resultsPerPage=1`);
+        const response = await app.request(
+            TESTING_PREFIX + `/invoice?companyId=${seededCompanyId}&pageNumber=2&resultsPerPage=1`
+        );
 
         expect(response.status).toBe(200);
         const body = await response.json();

@@ -75,9 +75,12 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should return 404 for non-existent id", async () => {
-            const response = await app.request(TESTING_PREFIX + "/location-address/b82951e8-e30d-4c84-8d02-c28f29143101", {
-                method: "GET",
-            });
+            const response = await app.request(
+                TESTING_PREFIX + "/location-address/b82951e8-e30d-4c84-8d02-c28f29143101",
+                {
+                    method: "GET",
+                }
+            );
 
             expect(response.status).toBe(404);
             const data = await response.json();

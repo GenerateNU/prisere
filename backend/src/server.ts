@@ -11,7 +11,6 @@ import { FemaService, IFemaService } from "./modules/clients/fema-client/service
 import { FemaFetching } from "./utilities/cron_job_handler";
 import { isAuthorized } from "./utilities/auth-middleware";
 import { cors } from "hono/cors";
-import { setUpOpenApiRoutes } from "./modules/openapi/all-routes";
 
 const app = new Hono();
 

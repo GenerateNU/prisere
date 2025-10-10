@@ -147,9 +147,12 @@ describe("GET /purchase", () => {
             ]);
         }
 
-        const response = await app.request(TESTING_PREFIX + `/purchase?companyId=${companyId}&pageNumber=0&resultsPerPage=5`, {
-            method: "GET",
-        });
+        const response = await app.request(
+            TESTING_PREFIX + `/purchase?companyId=${companyId}&pageNumber=0&resultsPerPage=5`,
+            {
+                method: "GET",
+            }
+        );
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -185,9 +188,12 @@ describe("GET /purchase", () => {
     });
 
     test("GET /purchase - Non-Existent companyId", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase?companyId=b32504f7-2e20-4bbc-869c-dea036d352e7", {
-            method: "GET",
-        });
+        const response = await app.request(
+            TESTING_PREFIX + "/purchase?companyId=b32504f7-2e20-4bbc-869c-dea036d352e7",
+            {
+                method: "GET",
+            }
+        );
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -222,9 +228,12 @@ describe("GET /purchase", () => {
 
     test("GET /purchase - Invalid resultsPerPage Type", async () => {
         const company = await createCompany();
-        const response = await app.request(TESTING_PREFIX + `/purchase?companyId=${company.id}&resultsPerPage=invalid`, {
-            method: "GET",
-        });
+        const response = await app.request(
+            TESTING_PREFIX + `/purchase?companyId=${company.id}&resultsPerPage=invalid`,
+            {
+                method: "GET",
+            }
+        );
 
         expect(response.status).toBe(400);
     });

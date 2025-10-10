@@ -33,7 +33,7 @@ describe("creating oauth connection", () => {
     });
 
     it("create a pending session in the db on start of auth", async () => {
-        const user = (await createUserWithCompany(app, {id: randomUUID(), firstName: "test", lastName: "user" })).data;
+        const user = (await createUserWithCompany(app, { id: randomUUID(), firstName: "test", lastName: "user" })).data;
 
         const { state } = await service.generateAuthUrl({ userId: user.id });
 
@@ -63,7 +63,7 @@ describe("creating oauth connection", () => {
     });
 
     it("it should reject requests with mismatched state ids", async () => {
-        const user = (await createUserWithCompany(app, {id: randomUUID(), firstName: "test", lastName: "user" })).data;
+        const user = (await createUserWithCompany(app, { id: randomUUID(), firstName: "test", lastName: "user" })).data;
 
         await service.generateAuthUrl({ userId: user.id });
 

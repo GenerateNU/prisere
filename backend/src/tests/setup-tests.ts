@@ -39,10 +39,9 @@ const createNewDB = async (): Promise<IMemoryDb> => {
 };
 
 type ContextVariables = {
-    userId: string
-  }
+    userId: string;
+};
 
-  
 export const startTestApp = async (): Promise<TestAppData> => {
     const app = new Hono<{ Variables: ContextVariables }>();
     const db = await createNewDB();
@@ -51,17 +50,16 @@ export const startTestApp = async (): Promise<TestAppData> => {
         entities: ["src/entities/*.ts"],
     });
 
-
     await dataSource.initialize();
     await dataSource.synchronize();
     await runSeeders(dataSource);
     const backup = db.backup();
 
-    app.use('*', async (c, next) => {
-        c.set('userId', '3c191e85-7f80-40a6-89ec-cbdbff33a5b2')
-        await next()
-    })
-    
+    app.use("*", async (c, next) => {
+        c.set("userId", "3c191e85-7f80-40a6-89ec-cbdbff33a5b2");
+        await next();
+    });
+
     setUpRoutes(app, dataSource);
     return { app, backup, dataSource };
 };
