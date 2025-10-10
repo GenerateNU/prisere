@@ -11,6 +11,7 @@ import { StatusCode } from "hono/utils/http-status";
 
 import { quickbooksRoutes } from "./modules/quickbooks/routes";
 import { invoiceRoutes } from "./modules/invoice/route";
+import { purchaseRoutes } from "./modules/purchase/route";
 import { preferenceRoutes } from "./modules/preferences/route";
 import { invoiceLineItemsRoutes } from "./modules/invoiceLineItem/route";
 
@@ -20,13 +21,14 @@ export const setUpRoutes = (app: Hono<any>, db: DataSource) => {
     routes.route("/users", userRoutes(db));
     routes.route("/location-address", locationAddressRoute(db));
     routes.route("/companies", companyRoutes(db));
-    routes.route("disaster", disasterRoutes(db));
+    routes.route("/disaster", disasterRoutes(db));
     routes.route("/disasterNotification", disasterNotificationRoutes(db));
     routes.route("/claims", claimRoutes(db));
     routes.route("/quickbooks", quickbooksRoutes(db));
     routes.route("/invoice", invoiceRoutes(db));
-    routes.route("/notifications", preferenceRoutes(db));
     routes.route("/invoice/line", invoiceLineItemsRoutes(db));
+    routes.route("/purchase", purchaseRoutes(db));
+    routes.route("/notifications", preferenceRoutes(db));
 
     app.route("/api/prisere", routes)
     app.route("/api/openapi", setUpOpenApiRoutes(db))

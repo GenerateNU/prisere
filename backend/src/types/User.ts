@@ -32,7 +32,7 @@ export const GetUserResponseSchema = z.object({
 });
 
 //GET COMPANY
-export const GetUserComapnyDTOSchema = z.object({
+export const GetUsercompanyDTOSchema = z.object({
     id: z.string().nonempty(),
 });
 
@@ -52,5 +52,5 @@ export type GetUserDTO = z.infer<typeof GetUserDTOSchema>;
 export type GetUserResponse = z.infer<typeof GetUserResponseSchema>;
 
 //GET COMPANY
-export type GetUserCompanyDTO = z.infer<typeof GetUserComapnyDTOSchema>;
+export type GetUserCompanyDTO = z.infer<typeof GetUsercompanyDTOSchema>;
 export type GetUserCompanyResponse = z.infer<typeof GetUserCompanyResponseSchema>;

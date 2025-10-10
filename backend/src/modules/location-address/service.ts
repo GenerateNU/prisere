@@ -1,7 +1,6 @@
 import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { ILocationAddressTransaction } from "./transaction";
-
 import { DeleteResult } from "typeorm";
 import {
     CreateLocationAddressDTO,
@@ -10,6 +9,7 @@ import {
     GetLocationAddressResponse,
     LocationAddress,
 } from "../../types/Location";
+import { IFEMALocationMatcher } from "../clients/fips-location-matching/service";
 
 export interface ILocationAddressService {
     /**
@@ -36,9 +36,11 @@ export interface ILocationAddressService {
 
 export class LocationAddressService implements ILocationAddressService {
     private locationAddressTransaction: ILocationAddressTransaction;
+    private locationMatcher: IFEMALocationMatcher;
 
-    constructor(locationAddressTransaction: ILocationAddressTransaction) {
+    constructor(locationAddressTransaction: ILocationAddressTransaction, locationMatcher: IFEMALocationMatcher) {
         this.locationAddressTransaction = locationAddressTransaction;
+        this.locationMatcher = locationMatcher;
     }
 
     /**
@@ -48,11 +50,25 @@ export class LocationAddressService implements ILocationAddressService {
      */
     createLocationAddress = withServiceErrorHandling(
         async (payload: CreateLocationAddressDTO): Promise<CreateLocationAddressResponse> => {
-            const locationAddress = await this.locationAddressTransaction.createLocationAddress(payload);
+            const fipsLocation = await this.locationMatcher.getLocationFips(payload);
+
+            if (fipsLocation === null) {
+                throw Boom.badRequest("Fips state and county code cannot be null");
+            }
+
+            // Add FIPS codes into payload to send to transaction layer
+            const completePayload = {
+                ...payload,
+                fipsStateCode: Number(fipsLocation.fipsStateCode),
+                fipsCountyCode: Number(fipsLocation.fipsCountyCode),
+            };
+            // Pass complete data with fips codes to transaction layer
+            const locationAddress = await this.locationAddressTransaction.createLocationAddress(completePayload);
 
             if (!locationAddress) {
-                throw Boom.internal(`Failed to create a location address from the given payload: ${payload}`);
+                throw new Error("Failed to create location address");
             }
+
             return locationAddress;
         }
     );

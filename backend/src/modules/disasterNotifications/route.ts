@@ -3,13 +3,19 @@ import { Hono } from "hono";
 import { DisasterNotificationTransaction, IDisasterNotificationTransaction } from "./transaction";
 import { DisasterNotificationService, IDisasterNotificationService } from "./service";
 import { DisasterNotificationController, IDisasterNotificationController } from "./controller";
+import { ILocationAddressTransaction, LocationAddressTransactions } from "../location-address/transaction";
+import { IPreferenceTransaction, PreferenceTransaction } from "../preferences/transaction";
 
 export const disasterNotificationRoutes = (db: DataSource): Hono => {
     const disasterNotification = new Hono();
 
     const disasterNotificationTransaction: IDisasterNotificationTransaction = new DisasterNotificationTransaction(db);
+    const locationTransaction: ILocationAddressTransaction = new LocationAddressTransactions(db);
+    const userPreferencesTransaction: IPreferenceTransaction = new PreferenceTransaction(db);
     const disasterNotificationService: IDisasterNotificationService = new DisasterNotificationService(
-        disasterNotificationTransaction
+        disasterNotificationTransaction,
+        locationTransaction,
+        userPreferencesTransaction
     );
     const disasterNotificationController: IDisasterNotificationController = new DisasterNotificationController(
         disasterNotificationService

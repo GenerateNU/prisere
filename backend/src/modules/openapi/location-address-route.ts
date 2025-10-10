@@ -3,7 +3,7 @@ import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import {
     CreateLocationAddressResponseSchema,
     CreateLocationAddressSchema,
-    GetLocationAddressResponseSchema,
+    LocationAddressSchema,
     GetLocationAddressSchema,
 } from "../../types/Location";
 import { ILocationAddressTransaction, LocationAddressTransactions } from "../location-address/transaction";
@@ -11,10 +11,15 @@ import { ILocationAddressService, LocationAddressService } from "../location-add
 import { ILocationAddressController, LocationAddressController } from "../location-address/controller";
 import { ErrorResponseSchema } from "../../types/Utils";
 import { openApiErrorCodes } from "../../utilities/error";
+import { FEMALocationMatcher, IFEMALocationMatcher } from "../clients/fips-location-matching/service";
 
 export const addOpenApiLocationAddressRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const locationAddressTransaction: ILocationAddressTransaction = new LocationAddressTransactions(db);
-    const locationAddressService: ILocationAddressService = new LocationAddressService(locationAddressTransaction);
+    const locationMatcher: IFEMALocationMatcher = new FEMALocationMatcher();
+    const locationAddressService: ILocationAddressService = new LocationAddressService(
+        locationAddressTransaction,
+        locationMatcher
+    );
     const locationAddressController: ILocationAddressController = new LocationAddressController(locationAddressService);
 
     openApi.openapi(createLocationAddressRoute, (ctx) => locationAddressController.createLocationAddress(ctx));
@@ -63,7 +68,7 @@ const getLocationAddressRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: GetLocationAddressResponseSchema,
+                    schema: LocationAddressSchema,
                 },
             },
             description: "The associated location address for the given information",
