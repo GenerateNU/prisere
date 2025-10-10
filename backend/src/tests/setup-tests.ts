@@ -38,8 +38,12 @@ const createNewDB = async (): Promise<IMemoryDb> => {
     return db;
 };
 
+type ContextVariables = {
+    userId: string;
+};
+
 export const startTestApp = async (): Promise<TestAppData> => {
-    const app = new Hono();
+    const app = new Hono<{ Variables: ContextVariables }>();
     const db = await createNewDB();
     const dataSource: DataSource = await db.adapters.createTypeormDataSource({
         type: "postgres",
@@ -50,6 +54,11 @@ export const startTestApp = async (): Promise<TestAppData> => {
     await dataSource.synchronize();
     await runSeeders(dataSource);
     const backup = db.backup();
+
+    app.use("*", async (c, next) => {
+        c.set("userId", "3c191e85-7f80-40a6-89ec-cbdbff33a5b2");
+        await next();
+    });
 
     setUpRoutes(app, dataSource);
     return { app, backup, dataSource };

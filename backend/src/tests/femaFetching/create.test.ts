@@ -5,6 +5,7 @@ import { startTestApp } from "../setup-tests";
 import { GetAllDisastersResponseSchema } from "../../types/disaster";
 import { DataSource } from "typeorm";
 import { FemaService } from "../../modules/clients/fema-client/service";
+import { TESTING_PREFIX } from "../../utilities/constants";
 import { MockFemaService } from "./mock-fetch-client";
 
 describe("Test Fetching Disasters", () => {
@@ -53,7 +54,7 @@ describe("Test Fetching Disasters", () => {
             threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
             await femaService.fetchFemaDisasters({ lastRefreshDate: threeMonthsAgo });
 
-            const response = await app.request("/disaster", {
+            const response = await app.request(TESTING_PREFIX + "/disaster", {
                 method: "GET",
             });
             const responseBody = await response.json();
@@ -62,7 +63,7 @@ describe("Test Fetching Disasters", () => {
 
             await femaService.fetchFemaDisasters({ lastRefreshDate: new Date() });
 
-            const responseAfter = await app.request("/disaster", {
+            const responseAfter = await app.request(TESTING_PREFIX + "/disaster", {
                 method: "GET",
             });
             const responseBodyAfter = await responseAfter.json();

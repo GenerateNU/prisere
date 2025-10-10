@@ -8,6 +8,7 @@ import { DataSource } from "typeorm";
 import CompanySeeder from "../../database/seeds/company.seed";
 import { InvoiceSeeder } from "../../database/seeds/invoice.seed";
 import { CompareRequestToCreated } from "./utils";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("POST /quickbooks/invoice/bulk", () => {
     let app: Hono;
@@ -43,7 +44,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
-        const response = await app.request("/invoice/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -71,7 +72,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
-        const response = await app.request("/invoice/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -97,7 +98,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
-        const response = await app.request("/invoice/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -124,7 +125,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
-        const response = await app.request("/invoice/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -150,7 +151,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
         ];
-        const response = await app.request("/invoice/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -173,7 +174,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
-        const response = await app.request("/invoice/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -202,7 +203,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
-        const response = await app.request("/invoice/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -232,7 +233,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
-        const response = await app.request("/invoice/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -255,7 +256,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
-        const response = await app.request("/invoice/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -278,7 +279,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
-        const response = await app.request("/invoice/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -301,7 +302,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
         ];
-        const response = await app.request("/invoice/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

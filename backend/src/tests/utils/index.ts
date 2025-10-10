@@ -1,9 +1,10 @@
 import { Hono } from "hono";
 import { CreateUserDTO, CreateUserResponse } from "../../types/User";
 import { CreateCompanyDTO, CreateCompanyResponse } from "../../types/Company";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 export async function createUser(app: Hono, request: CreateUserDTO) {
-    const userResponse = await app.request("/users", {
+    const userResponse = await app.request(TESTING_PREFIX + "/users", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -17,7 +18,7 @@ export async function createUser(app: Hono, request: CreateUserDTO) {
 }
 
 export async function createUserWithCompany(app: Hono, request: Omit<CreateUserDTO, "companyId">) {
-    const companyResponse = await app.request("/companies", {
+    const companyResponse = await app.request(TESTING_PREFIX + "/companies", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

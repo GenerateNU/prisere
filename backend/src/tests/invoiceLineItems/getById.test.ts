@@ -8,6 +8,7 @@ import { DataSource } from "typeorm";
 import { CompareRequestToCreated } from "./utils";
 import { InvoiceLineItemSeeder, seededInvoiceLineItems } from "../../database/seeds/invoiceLineItem.seed";
 import { InvoiceSeeder } from "../../database/seeds/invoice.seed";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("Invoice get by id", () => {
     let app: Hono;
@@ -39,14 +40,14 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice/line/:id - id that exists", async () => {
-        const response = await app.request(`/invoice/line/${seededInvoiceLineItemId}`);
+        const response = await app.request(TESTING_PREFIX + `/invoice/line/${seededInvoiceLineItemId}`);
         expect(response.status).toBe(200);
         const body = await response.json();
         CompareRequestToCreated([seededInvoiceLineItem], [body]);
     });
 
     test("GET /quickbooks/invoice/line/:id - id doesn't exist", async () => {
-        const response = await app.request(`/invoice/line/8d720d89-d047-4f19-a999-1934f914908d`); // bad uuid
+        const response = await app.request(TESTING_PREFIX + `/invoice/line/8d720d89-d047-4f19-a999-1934f914908d`); // bad uuid
         expect(response.status).toBe(404);
         const body = await response.json();
         expect(body).toHaveProperty("error");
@@ -54,7 +55,7 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice/line/:id - invalid UUID", async () => {
-        const response = await app.request(`/invoice/line/8d720d89-134f914908d`); // invalid uuid
+        const response = await app.request(TESTING_PREFIX + `/invoice/line/8d720d89-134f914908d`); // invalid uuid
         expect(response.status).toBe(400);
         const body = await response.json();
         expect(body).toHaveProperty("error");

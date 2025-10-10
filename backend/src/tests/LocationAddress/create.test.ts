@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
+import { TESTING_PREFIX } from "../../utilities/constants";
 import CompanySeeder from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
@@ -46,7 +47,7 @@ describe("Location Address Controller Tests", () => {
                 companyId: company_id,
             };
 
-            const response = await app.request("/location-address", {
+            const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -76,7 +77,7 @@ describe("Location Address Controller Tests", () => {
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             };
 
-            const response = await app.request("/location-address", {
+            const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -99,7 +100,7 @@ describe("Location Address Controller Tests", () => {
                 companyId: company_id,
             };
 
-            const response = await app.request("/location-address", {
+            const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -122,7 +123,7 @@ describe("Location Address Controller Tests", () => {
                 companyId: company_id,
             };
 
-            const response = await app.request("/location-address", {
+            const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -145,7 +146,7 @@ describe("Location Address Controller Tests", () => {
                 companyId: company_id,
             };
 
-            const response = await app.request("/location-address", {
+            const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -168,7 +169,7 @@ describe("Location Address Controller Tests", () => {
                 companyId: company_id,
             };
 
-            const response = await app.request("/location-address", {
+            const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -191,7 +192,7 @@ describe("Location Address Controller Tests", () => {
                 companyId: company_id,
             };
 
-            const response = await app.request("/location-address", {
+            const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -205,7 +206,7 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should fail with 500 when body is malformed JSON", async () => {
-            const response = await app.request("/location-address", {
+            const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -217,7 +218,7 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should fail with 500 when body is empty", async () => {
-            const response = await app.request("/location-address", {
+            const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -239,7 +240,7 @@ describe("Location Address Controller Tests", () => {
                 anotherExtra: 123,
             };
 
-            const response = await app.request("/location-address", {
+            const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -262,7 +263,7 @@ describe("Location Address Controller Tests", () => {
                 companyId: "invalid-company-id",
             };
 
-            const response = await app.request("/location-address", {
+            const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

@@ -14,7 +14,6 @@ import { addOpenApiPreferenceRoutes } from "./preference-routes";
 import { addOpenApiInvoiceLineItemRoutes } from "./invoice-line-item-routes";
 
 export const setUpOpenApiRoutes = (db: DataSource) => {
-    const openApiServerURL = process.env.NODE_ENV === "production" ? "/api" : "";
     const openApiApp = openApiRoutes(db);
 
     openApiApp.doc("/spec.json", {
@@ -25,7 +24,7 @@ export const setUpOpenApiRoutes = (db: DataSource) => {
         },
         servers: [
             {
-                url: openApiServerURL,
+                url: "/api/prisere",
             },
         ],
     });

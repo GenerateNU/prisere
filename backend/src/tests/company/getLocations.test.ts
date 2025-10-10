@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
+import { TESTING_PREFIX } from "../../utilities/constants";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
 import CompanySeeder from "../../database/seeds/company.seed";
@@ -45,7 +46,7 @@ describe("Get all locations for a company", () => {
     });
 
     test("should return empty array when company has no locations", async () => {
-        const response = await app.request(`/companies/${companyWithNoLocations}/location-address`);
+        const response = await app.request(TESTING_PREFIX + `/companies/${companyWithNoLocations}/location-address`);
         const data = await response.json();
 
         expect(Array.isArray(data)).toBe(true);
@@ -53,7 +54,9 @@ describe("Get all locations for a company", () => {
     });
 
     test("should return all locations when company has more than one location", async () => {
-        const response = await app.request(`/companies/${companyWithMultipleLocations}/location-address`);
+        const response = await app.request(
+            TESTING_PREFIX + `/companies/${companyWithMultipleLocations}/location-address`
+        );
 
         expect(response.status).toBe(200);
         const data = await response.json();
@@ -81,7 +84,7 @@ describe("Get all locations for a company", () => {
     });
 
     test("should return single location when company has one location", async () => {
-        const response = await app.request(`/companies/${companyWithOneLocation}/location-address`);
+        const response = await app.request(TESTING_PREFIX + `/companies/${companyWithOneLocation}/location-address`);
 
         expect(response.status).toBe(200);
         const data = await response.json();
@@ -97,7 +100,7 @@ describe("Get all locations for a company", () => {
     });
 
     test("should return 400 when company ID is not a valid UUID", async () => {
-        const response = await app.request("/companies/invalid-uuid/location-address");
+        const response = await app.request(TESTING_PREFIX + "/companies/invalid-uuid/location-address");
 
         expect(response.status).toBe(400);
         const data = await response.json();
@@ -106,8 +109,12 @@ describe("Get all locations for a company", () => {
 
     test("should only return locations for the specified company", async () => {
         // Test that company A's locations don't include company B's locations
-        const companyAResponse = await app.request(`/companies/${companyWithMultipleLocations}/location-address`);
-        const companyBResponse = await app.request(`/companies/${companyWithOneLocation}/location-address`);
+        const companyAResponse = await app.request(
+            TESTING_PREFIX + `/companies/${companyWithMultipleLocations}/location-address`
+        );
+        const companyBResponse = await app.request(
+            TESTING_PREFIX + `/companies/${companyWithOneLocation}/location-address`
+        );
 
         expect(companyAResponse.status).toBe(200);
         expect(companyBResponse.status).toBe(200);
@@ -136,13 +143,15 @@ describe("Get all locations for a company", () => {
 
     test("should return 404 for non-existent", async () => {
         const nonExistentCompanyId = "99999999-9999-9999-9999-999999999999";
-        const response = await app.request(`/companies/${nonExistentCompanyId}/location-address`);
+        const response = await app.request(TESTING_PREFIX + `/companies/${nonExistentCompanyId}/location-address`);
 
         expect(response.status).toBe(400);
     });
 
     test("should verify location data integrity", async () => {
-        const response = await app.request(`/companies/${companyWithMultipleLocations}/location-address`);
+        const response = await app.request(
+            TESTING_PREFIX + `/companies/${companyWithMultipleLocations}/location-address`
+        );
 
         expect(response.status).toBe(200);
         const data = await response.json();

@@ -5,6 +5,7 @@ import { IBackup } from "pg-mem";
 import { randomUUID } from "crypto";
 import { DataSource } from "typeorm";
 import { createTestData, TestDataSetup } from "./setup";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("Test getting a users disaster notifications", () => {
     let app: Hono;
@@ -26,7 +27,7 @@ describe("Test getting a users disaster notifications", () => {
 
     test("GET users disaster notifications", async () => {
         // Test user1 notifications
-        const response = await app.request(`/disasterNotification/${testData.users.user1.id}`);
+        const response = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user1.id}`);
 
         const responseText = await response.text();
 
@@ -50,7 +51,7 @@ describe("Test getting a users disaster notifications", () => {
         expect(response.status).toBe(200);
 
         // Test user2 notifications
-        const response2 = await app.request(`/disasterNotification/${testData.users.user2.id}`);
+        const response2 = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user2.id}`);
 
         const responseText2 = await response2.text();
 
@@ -77,7 +78,7 @@ describe("Test getting a users disaster notifications", () => {
     test("GET fake user returns 404 user not found", async () => {
         const fakeUserId = randomUUID();
 
-        const response = await app.request(`/disasterNotification/${fakeUserId}`);
+        const response = await app.request(TESTING_PREFIX + `/disasterNotification/${fakeUserId}`);
 
         const responseText = await response.text();
 
@@ -93,7 +94,7 @@ describe("Test getting a users disaster notifications", () => {
     });
 
     test("GET user ID with incorrect format returns a 400", async () => {
-        const response = await app.request(`/disasterNotification/user-id`);
+        const response = await app.request(TESTING_PREFIX + `/disasterNotification/user-id`);
 
         const responseText = await response.text();
 

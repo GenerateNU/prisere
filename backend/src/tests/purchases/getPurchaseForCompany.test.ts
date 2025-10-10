@@ -3,6 +3,7 @@ import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { CreateOrChangePurchaseDTO, GetCompanyPurchasesResponse } from "../../modules/purchase/types";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("GET /purchase", () => {
     let app: Hono;
@@ -23,7 +24,7 @@ describe("GET /purchase", () => {
             name: "Cool Company",
         };
 
-        const createCompanyResponse = await app.request("/companies", {
+        const createCompanyResponse = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -35,7 +36,7 @@ describe("GET /purchase", () => {
     };
 
     const createPurchase = async (payload?: Partial<CreateOrChangePurchaseDTO>) => {
-        const response = await app.request("/purchase/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -61,7 +62,7 @@ describe("GET /purchase", () => {
             ]);
         }
 
-        const response = await app.request(`/purchase?companyId=${companyId}`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase?companyId=${companyId}`, {
             method: "GET",
         });
 
@@ -95,7 +96,7 @@ describe("GET /purchase", () => {
             ]);
         }
 
-        const response = await app.request(`/purchase?companyId=${companyId}&pageNumber=1`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase?companyId=${companyId}&pageNumber=1`, {
             method: "GET",
         });
 
@@ -120,7 +121,7 @@ describe("GET /purchase", () => {
             ]);
         }
 
-        const response = await app.request(`/purchase?companyId=${companyId}&resultsPerPage=10`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase?companyId=${companyId}&resultsPerPage=10`, {
             method: "GET",
         });
 
@@ -146,9 +147,12 @@ describe("GET /purchase", () => {
             ]);
         }
 
-        const response = await app.request(`/purchase?companyId=${companyId}&pageNumber=0&resultsPerPage=5`, {
-            method: "GET",
-        });
+        const response = await app.request(
+            TESTING_PREFIX + `/purchase?companyId=${companyId}&pageNumber=0&resultsPerPage=5`,
+            {
+                method: "GET",
+            }
+        );
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -173,7 +177,7 @@ describe("GET /purchase", () => {
         }
 
         // Should use default pageNumber=0 and resultsPerPage=20
-        const response = await app.request(`/purchase?companyId=${companyId}`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase?companyId=${companyId}`, {
             method: "GET",
         });
 
@@ -184,9 +188,12 @@ describe("GET /purchase", () => {
     });
 
     test("GET /purchase - Non-Existent companyId", async () => {
-        const response = await app.request("/purchase?companyId=b32504f7-2e20-4bbc-869c-dea036d352e7", {
-            method: "GET",
-        });
+        const response = await app.request(
+            TESTING_PREFIX + "/purchase?companyId=b32504f7-2e20-4bbc-869c-dea036d352e7",
+            {
+                method: "GET",
+            }
+        );
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -195,7 +202,7 @@ describe("GET /purchase", () => {
     });
 
     test("GET /purchase - Missing companyId", async () => {
-        const response = await app.request("/purchase", {
+        const response = await app.request(TESTING_PREFIX + "/purchase", {
             method: "GET",
         });
 
@@ -203,7 +210,7 @@ describe("GET /purchase", () => {
     });
 
     test("GET /purchase - Invalid companyId Type (String)", async () => {
-        const response = await app.request("/purchase?companyId=not-a-number", {
+        const response = await app.request(TESTING_PREFIX + "/purchase?companyId=not-a-number", {
             method: "GET",
         });
 
@@ -212,7 +219,7 @@ describe("GET /purchase", () => {
 
     test("GET /purchase - Invalid pageNumber Type", async () => {
         const company = await createCompany();
-        const response = await app.request(`/purchase?companyId=${company.id}&pageNumber=invalid`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase?companyId=${company.id}&pageNumber=invalid`, {
             method: "GET",
         });
 
@@ -221,16 +228,19 @@ describe("GET /purchase", () => {
 
     test("GET /purchase - Invalid resultsPerPage Type", async () => {
         const company = await createCompany();
-        const response = await app.request(`/purchase?companyId=${company.id}&resultsPerPage=invalid`, {
-            method: "GET",
-        });
+        const response = await app.request(
+            TESTING_PREFIX + `/purchase?companyId=${company.id}&resultsPerPage=invalid`,
+            {
+                method: "GET",
+            }
+        );
 
         expect(response.status).toBe(400);
     });
 
     test("GET /purchase - Negative pageNumber", async () => {
         const company = await createCompany();
-        const response = await app.request(`/purchase?companyId=${company.id}&pageNumber=-1`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase?companyId=${company.id}&pageNumber=-1`, {
             method: "GET",
         });
 
@@ -239,7 +249,7 @@ describe("GET /purchase", () => {
 
     test("GET /purchase - Negative resultsPerPage", async () => {
         const company = await createCompany();
-        const response = await app.request(`/purchase?companyId=${company.id}&resultsPerPage=-5`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase?companyId=${company.id}&resultsPerPage=-5`, {
             method: "GET",
         });
 
@@ -248,7 +258,7 @@ describe("GET /purchase", () => {
 
     test("GET /purchase - Zero resultsPerPage", async () => {
         const company = await createCompany();
-        const response = await app.request(`/purchase?companyId=${company.id}&resultsPerPage=0`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase?companyId=${company.id}&resultsPerPage=0`, {
             method: "GET",
         });
 
@@ -271,7 +281,7 @@ describe("GET /purchase", () => {
             ]);
         }
 
-        const response = await app.request(`/purchase?companyId=${companyId}&pageNumber=10000`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase?companyId=${companyId}&pageNumber=10000`, {
             method: "GET",
         });
 
@@ -297,7 +307,7 @@ describe("GET /purchase", () => {
             ]);
         }
 
-        const response = await app.request(`/purchase?companyId=${companyId}&resultsPerPage=1000`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase?companyId=${companyId}&resultsPerPage=1000`, {
             method: "GET",
         });
 
@@ -323,7 +333,7 @@ describe("GET /purchase", () => {
             ]);
         }
 
-        const response = await app.request(`/purchase?companyId=${companyId}&resultsPerPage=10`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase?companyId=${companyId}&resultsPerPage=10`, {
             method: "GET",
         });
 

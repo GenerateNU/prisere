@@ -5,6 +5,7 @@ import { IBackup } from "pg-mem";
 import { randomUUID } from "crypto";
 import { DataSource } from "typeorm";
 import { createTestData, TestDataSetup } from "./setup";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("Test dismiss disaster notifications", () => {
     let app: Hono;
@@ -26,7 +27,7 @@ describe("Test dismiss disaster notifications", () => {
 
     test("Dismiss disaster notification", async () => {
         const response = await app.request(
-            `/disasterNotification/${testData.notifications!.notification1.id}/dismiss`,
+            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}/dismiss`,
             {
                 method: "PATCH",
                 headers: {
@@ -40,7 +41,7 @@ describe("Test dismiss disaster notifications", () => {
 
         // Test dismissing already dismissed notification
         const response2 = await app.request(
-            `/disasterNotification/${testData.notifications!.notification1.id}/dismiss`,
+            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}/dismiss`,
             {
                 method: "PATCH",
                 headers: {
@@ -54,7 +55,7 @@ describe("Test dismiss disaster notifications", () => {
     });
 
     test("Dismiss fake notification returns 404", async () => {
-        const response = await app.request(`/disasterNotification/${randomUUID()}/dismiss`, {
+        const response = await app.request(TESTING_PREFIX + `/disasterNotification/${randomUUID()}/dismiss`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -67,7 +68,7 @@ describe("Test dismiss disaster notifications", () => {
 
     test("Invalid notification ID format returns 400", async () => {
         const response = await app.request(
-            `/disasterNotification/${testData.notifications!.notification1.id}-asdf/dismiss`,
+            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}-asdf/dismiss`,
             {
                 method: "PATCH",
                 headers: {

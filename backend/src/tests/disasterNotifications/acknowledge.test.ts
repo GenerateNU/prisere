@@ -5,6 +5,7 @@ import { IBackup } from "pg-mem";
 import { randomUUID } from "crypto";
 import { DataSource } from "typeorm";
 import { createTestData, TestDataSetup } from "./setup";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("Test acknowledge disaster notifications", () => {
     let app: Hono;
@@ -26,7 +27,7 @@ describe("Test acknowledge disaster notifications", () => {
 
     test("Acknowledge disaster notification", async () => {
         const response = await app.request(
-            `/disasterNotification/${testData.notifications!.notification1.id}/acknowledge`,
+            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}/acknowledge`,
             {
                 method: "PATCH",
                 headers: {
@@ -40,7 +41,7 @@ describe("Test acknowledge disaster notifications", () => {
     });
 
     test("Acknowledge fake notification returns 404", async () => {
-        const response = await app.request(`/disasterNotification/${randomUUID()}/acknowledge`, {
+        const response = await app.request(TESTING_PREFIX + `/disasterNotification/${randomUUID()}/acknowledge`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -53,7 +54,7 @@ describe("Test acknowledge disaster notifications", () => {
 
     test("Invalid notification ID format returns 400", async () => {
         const response = await app.request(
-            `/disasterNotification/${testData.notifications!.notification1.id}-asdf/acknowledge`,
+            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}-asdf/acknowledge`,
             {
                 method: "PATCH",
                 headers: {
