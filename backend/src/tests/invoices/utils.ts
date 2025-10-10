@@ -12,7 +12,11 @@ export function CompareRequestToCreated(requestBody: any[], response: any[]) {
             new Date().toISOString().split("T")[0]
         );
         expect(responseElem.totalAmountCents).toBe(requestElem.totalAmountCents);
-        expect(new Date(responseElem.dateCreated).toISOString()).toBe(new Date(requestElem.dateCreated).toISOString());
+        if (requestElem.quickbooksDateCreated) {
+            expect(new Date(responseElem.quickbooksDateCreated).toISOString()).toBe(
+                new Date(requestElem.quickbooksDateCreated).toISOString()
+            );
+        }
 
         if (requestElem.quickbooksId) {
             expect(responseElem.quickbooksId).toBe(requestElem.quickbooksId);

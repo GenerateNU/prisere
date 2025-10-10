@@ -2,6 +2,7 @@ import { User } from "../../entities/User";
 import { DataSource } from "typeorm";
 import { plainToClass } from "class-transformer";
 import { GetUserDTO, CreateUserDTO, GetUserCompanyDTO, GetUserCompanyResponse } from "../../types/User";
+import { UserPreferences } from "../../entities/UserPreferences";
 
 export interface IUserTransaction {
     /**
@@ -9,7 +10,7 @@ export interface IUserTransaction {
      * @param payload User to be inserted into Database
      * @returns Promise resolving to inserted User or null if failed
      */
-    createUser(payload: CreateUserDTO): Promise<User | null>;
+    createUser(payload: CreateUserDTO): Promise<User>;
 
     /**
      * Fetches the user with the given id
@@ -19,9 +20,9 @@ export interface IUserTransaction {
     getUser(payload: GetUserDTO): Promise<User | null>;
 
     /**
-     * Fetches the comapny associated with the given User id
+     * Fetches the company associated with the given User id
      * @param payload The id of the user whose company data will be returned
-     * @returns The found comapny ID and name
+     * @returns The found company ID and name
      */
     getCompany(payload: GetUserCompanyDTO): Promise<GetUserCompanyResponse | null>;
 }
@@ -33,10 +34,13 @@ export class UserTransaction implements IUserTransaction {
         this.db = db;
     }
 
-    async createUser(payload: CreateUserDTO): Promise<User | null> {
-        const user: User = plainToClass(User, payload);
-        const result: User = await this.db.manager.save(User, user);
-        return result ?? null;
+    async createUser(payload: CreateUserDTO) {
+        const user = plainToClass(User, payload);
+        const result = await this.db.manager.save(User, user);
+        await this.db.getRepository(UserPreferences).insert({
+            userId: result.id,
+        });
+        return result;
     }
 
     async getUser(payload: GetUserDTO): Promise<User | null> {

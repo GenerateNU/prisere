@@ -33,6 +33,12 @@ export class LocationAddress {
     @JoinColumn({ name: "companyId" })
     company?: Company;
 
+    @Column()
+    fipsStateCode!: number;
+
+    @Column()
+    fipsCountyCode!: number;
+
     @OneToMany(() => ClaimLocation, (claimLocation) => claimLocation.locationAddress)
     claimLocations?: ClaimLocation[];
 }
