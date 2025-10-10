@@ -21,7 +21,7 @@ export class DisasterNotification {
 
     @ManyToOne(() => FemaDisaster)
     @JoinColumn({ name: "femaDisasterId" })
-    femaDisaster!: FemaDisaster;
+    femaDisaster!: Relation<FemaDisaster>;
 
     @Column({
         type: "enum",
