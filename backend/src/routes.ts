@@ -14,7 +14,7 @@ import { invoiceRoutes } from "./modules/invoice/route";
 import { preferenceRoutes } from "./modules/preferences/route";
 import { invoiceLineItemsRoutes } from "./modules/invoiceLineItem/route";
 
-export const setUpRoutes = (app: Hono, db: DataSource) => {
+export const setUpRoutes = (app: Hono<any>, db: DataSource) => {
     const routes = new Hono();
     routes.route("/", healthRoutes());
     routes.route("/users", userRoutes(db));

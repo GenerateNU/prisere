@@ -26,7 +26,7 @@ describe("Test dismiss disaster notifications", () => {
     });
 
     test("Dismiss disaster notification", async () => {
-        const response = await app.request(
+        const response = await app.request( TESTING_PREFIX +
             `/disasterNotification/${testData.notifications!.notification1.id}/dismiss`,
             {
                 method: "PATCH",
@@ -40,7 +40,7 @@ describe("Test dismiss disaster notifications", () => {
         expect(body.notificationStatus).toBe("read");
 
         // Test dismissing already dismissed notification
-        const response2 = await app.request(
+        const response2 = await app.request( TESTING_PREFIX +
             `/disasterNotification/${testData.notifications!.notification1.id}/dismiss`,
             {
                 method: "PATCH",
@@ -67,7 +67,7 @@ describe("Test dismiss disaster notifications", () => {
     });
 
     test("Invalid notification ID format returns 400", async () => {
-        const response = await app.request(
+        const response = await app.request( TESTING_PREFIX +
             `/disasterNotification/${testData.notifications!.notification1.id}-asdf/dismiss`,
             {
                 method: "PATCH",
