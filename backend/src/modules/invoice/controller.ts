@@ -17,7 +17,9 @@ export interface IInvoiceController {
     bulkCreateOrUpdateInvoice(_ctx: Context): ControllerResponse<TypedResponse<CreateOrUpdateInvoicesResponse, 201>>;
     getInvoice(ctx: Context): ControllerResponse<TypedResponse<GetInvoiceResponse, 200>>;
     getInvoicesForCompany(ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>>;
-    sumInvoicesByCompanyAndDateRange(ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesSummationResponse, 200>>;
+    sumInvoicesByCompanyAndDateRange(
+        ctx: Context
+    ): ControllerResponse<TypedResponse<GetCompanyInvoicesSummationResponse, 200>>;
 }
 
 export class InvoiceController implements IInvoiceController {

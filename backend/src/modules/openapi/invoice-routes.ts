@@ -184,14 +184,6 @@ const sumInvoicesByCompanyAndDateRange = createRoute({
             },
             description: "Found summation successfully",
         },
-        404: {
-            content: {
-                "application/json": {
-                    schema: z.object({ error: z.string() }),
-                },
-            },
-            description: "No Invoice with given UUID found",
-        },
         ...openApiErrorCodes("Getting Invoice Error"),
     },
     tags: ["Invoice"],
