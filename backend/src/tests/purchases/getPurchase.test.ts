@@ -3,7 +3,7 @@ import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { CreateOrChangePurchaseDTO } from "../../modules/purchase/types";
-
+import { TESTING_PREFIX } from "../../utilities/constants";
 describe("GET /purchase/:id", () => {
     let app: Hono;
     let backup: IBackup;
@@ -23,7 +23,7 @@ describe("GET /purchase/:id", () => {
             name: "Cool Company",
         };
 
-        const createCompanyResponse = await app.request("/companies", {
+        const createCompanyResponse = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -35,7 +35,7 @@ describe("GET /purchase/:id", () => {
     };
 
     const createPurchase = async (payload: Partial<CreateOrChangePurchaseDTO>) => {
-        const response = await app.request("/purchase/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -59,7 +59,7 @@ describe("GET /purchase/:id", () => {
         const createdPurchase = await createPurchase([createBody]);
 
         // Now retrieve the purchase
-        const response = await app.request(`/purchase/${createdPurchase.id}`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase/${createdPurchase.id}`, {
             method: "GET",
         });
 
@@ -86,7 +86,7 @@ describe("GET /purchase/:id", () => {
         const createdPurchase = await createPurchase([createBody]);
 
         // Retrieve the purchase
-        const response = await app.request(`/purchase/${createdPurchase.id}`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase/${createdPurchase.id}`, {
             method: "GET",
         });
 
@@ -96,7 +96,7 @@ describe("GET /purchase/:id", () => {
     });
 
     test("GET /purchase/:id - Non-Existent Purchase ID", async () => {
-        const response = await app.request("/purchase/111e99a6-d082-4327-9843-97fd228d4d37", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/111e99a6-d082-4327-9843-97fd228d4d37", {
             method: "GET",
         });
 
@@ -104,7 +104,7 @@ describe("GET /purchase/:id", () => {
     });
 
     test("GET /purchase/:id - Empty Purchase ID", async () => {
-        const response = await app.request("/purchase/", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/", {
             method: "GET",
         });
 
@@ -112,7 +112,7 @@ describe("GET /purchase/:id", () => {
     });
 
     test("GET /purchase/:id - Invalid UUID Format", async () => {
-        const response = await app.request("/purchase/invalid-uuid-format", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/invalid-uuid-format", {
             method: "GET",
         });
 
@@ -120,7 +120,7 @@ describe("GET /purchase/:id", () => {
     });
 
     test("GET /purchase/:id - Special Characters in ID", async () => {
-        const response = await app.request("/purchase/@#$%^&*()", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/@#$%^&*()", {
             method: "GET",
         });
 
@@ -128,7 +128,7 @@ describe("GET /purchase/:id", () => {
     });
 
     test("GET /purchase/:id - Numeric ID", async () => {
-        const response = await app.request("/purchase/12345", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/12345", {
             method: "GET",
         });
 
@@ -137,7 +137,7 @@ describe("GET /purchase/:id", () => {
 
     test("GET /purchase/:id - Very Long ID String", async () => {
         const longId = "a".repeat(500);
-        const response = await app.request(`"/purchase/${longId}`, {
+        const response = await app.request(TESTING_PREFIX + `"/purchase/${longId}`, {
             method: "GET",
         });
 
