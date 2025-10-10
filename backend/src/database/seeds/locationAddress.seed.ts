@@ -13,6 +13,8 @@ const seededLocations = [
         postalCode: "90001",
         county: "Los Angeles",
         companyId: "7f8e9d0c-1b2a-3c4d-5e6f-7a8b9c0d1e2f",
+        fipsStateCode: 36,
+        fipsCountyCode: 61,
     },
     {
         // NEU Location 1
@@ -24,6 +26,8 @@ const seededLocations = [
         postalCode: "90001",
         county: "Los Angeles",
         companyId: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        fipsStateCode: 36,
+        fipsCountyCode: 61,
     },
     {
         // NEU Location 2
@@ -35,6 +39,8 @@ const seededLocations = [
         postalCode: "90001",
         county: "Los Angeles",
         companyId: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        fipsStateCode: 36,
+        fipsCountyCode: 61,
     },
     {
         // Big Corp Location 1
@@ -46,6 +52,8 @@ const seededLocations = [
         postalCode: "90001",
         county: "Los Angeles",
         companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+        fipsStateCode: 36,
+        fipsCountyCode: 61,
     },
     {
         // Small LLC Location 1
@@ -57,6 +65,8 @@ const seededLocations = [
         postalCode: "90001",
         county: "Los Angeles",
         companyId: "0b6d17e5-37fa-4fe6-bca5-1a18051ae222",
+        fipsStateCode: 36,
+        fipsCountyCode: 61,
     },
     {
         // Big Corp Location 2
@@ -68,6 +78,8 @@ const seededLocations = [
         postalCode: "90001",
         county: "Los Angeles",
         companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+        fipsStateCode: 36,
+        fipsCountyCode: 61,
     },
 ];
 
