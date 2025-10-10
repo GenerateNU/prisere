@@ -5,7 +5,7 @@ import { LocationAddress } from "../../entities/LocationAddress";
 const seededLocations = [
     {
         // Business Location 1
-        id: "5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b",
+        id: "5e6f7a8b-9c0d-4e2f-8a4b-5c6d7e8f9a0b",
         country: "USA",
         stateProvince: "CA",
         city: "Los Angeles",

@@ -1,3 +1,4 @@
+import Boom from "@hapi/boom";
 import { ClaimLocation } from "../../entities/ClaimLocation";
 import { LocationAddress } from "../../entities/LocationAddress";
 import {
@@ -40,7 +41,7 @@ export class ClaimLocationService {
                 ...payload,
             });
             if (!locations) {
-                throw new Error("Failed to fetch Locations for Company");
+                throw Boom.notFound("Unable to find the locations for the company with: ", payload);
             }
             return locations;
         }
@@ -52,7 +53,7 @@ export class ClaimLocationService {
                 await this.claimLocationTransaction.deleteClaimLocationById({ ...payload });
 
             if (!deletedClaimLocation) {
-                throw new Error("Failed to delete Link between Claim and Location");
+                throw Boom.internal("Failed to delete Link between Claim and Location: ", payload);
             }
             return deletedClaimLocation;
         }

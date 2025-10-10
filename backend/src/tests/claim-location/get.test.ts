@@ -71,13 +71,13 @@ describe("GET /claim-locations/company/:id", () => {
         const companyId = "f47ac10b-58cc-4372-j2009-0e02b2c35470";
         const response = await app.request(`/claim-locations/company/${companyId}`);
 
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(404);
     });
 
     test("GET /claim-locations/company/:id - invalid UUID", async () => {
         const companyId = "invalid";
         const response = await app.request(`/claim-locations/company/${companyId}`);
 
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(404);
     });
 });

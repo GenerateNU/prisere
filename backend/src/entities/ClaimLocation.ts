@@ -7,7 +7,7 @@ import type { Relation } from "typeorm";
 @Entity("claim_location")
 export class ClaimLocation {
     // TypeORM requires a primary column
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn("uuid")
     id!: string;
 
     @Column()

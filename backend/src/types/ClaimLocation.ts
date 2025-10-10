@@ -2,35 +2,35 @@ import { z } from "zod";
 import { LocationAddressSchema } from "./Location";
 
 export const ClaimLocationSchema = z.object({
-    id: z.string().nonempty(),
-    claimId: z.string().nonempty(),
-    locationAddressId: z.string().nonempty(),
+    id: z.uuid(),
+    claimId: z.uuid(),
+    locationAddressId: z.uuid(),
 });
 
 /* POST */
 export const CreateClaimLocationDTOSchema = z.object({
-    claimId: z.string().nonempty(),
-    locationAddressId: z.string().nonempty(),
+    claimId: z.uuid(),
+    locationAddressId: z.uuid(),
 });
 
 export const CreateClaimLocationResponseSchema = ClaimLocationSchema;
 
 /* GET */
 export const GetLocationsByCompanyIdDTOSchema = z.object({
-    companyId: z.string().nonempty(),
+    companyId: z.uuid(),
 });
 
 export const GetLocationsByCompanyIdResponseSchema = z.array(LocationAddressSchema);
 
 /* DELETE */
 export const DeleteClaimLocationDTOSchema = z.object({
-    claimId: z.string().nonempty(),
-    locationId: z.string().nonempty(),
+    claimId: z.uuid(),
+    locationId: z.uuid(),
 });
 
 export const DeleteClaimLocationDTOSchemaOpenAPI = z.object({
-    cid: z.string().nonempty(),
-    lid: z.string().nonempty(),
+    cid: z.uuid(),
+    lid: z.uuid(),
 });
 
 export const DeleteClaimLocationResponseSchema = z.object({
