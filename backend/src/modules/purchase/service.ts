@@ -3,6 +3,7 @@ import { withServiceErrorHandling } from "../../utilities/error";
 import {
     CreateOrChangePurchaseDTO,
     CreateOrChangePurchaseResponse,
+    GetCompanyPurchasesByDateDTO,
     GetCompanyPurchasesDTO,
     GetCompanyPurchasesResponse,
     GetPurchaseResponse,
@@ -12,6 +13,7 @@ export interface IPurchaseService {
     createOrUpdatePurchase(payload: CreateOrChangePurchaseDTO): Promise<CreateOrChangePurchaseResponse>;
     getPurchase(id: string): Promise<GetPurchaseResponse>;
     getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<GetCompanyPurchasesResponse>;
+    sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number>;
 }
 
 export class PurchaseService implements IPurchaseService {
@@ -62,6 +64,14 @@ export class PurchaseService implements IPurchaseService {
                 totalAmountCents: qbPurchase.totalAmountCents,
                 quickbooksDateCreated: qbPurchase.quickbooksDateCreated?.toUTCString(),
             }));
+        }
+    );
+
+    sumPurchasesByCompanyAndDateRange = withServiceErrorHandling(
+        async (payload: GetCompanyPurchasesByDateDTO): Promise<number> => {
+            const purchases = await this.PurchaseTransaction.sumPurchasesByCompanyAndDateRange(payload);
+
+            return purchases;
         }
     );
 }
