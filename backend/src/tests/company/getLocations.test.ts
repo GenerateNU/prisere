@@ -82,7 +82,7 @@ describe("Get all locations for a company", () => {
     });
 
     test("should return single location when company has one location", async () => {
-        const response = await app.request(`/companies/${companyWithOneLocation}/location-address`);
+        const response = await app.request(TESTING_PREFIX + `/companies/${companyWithOneLocation}/location-address`);
 
         expect(response.status).toBe(200);
         const data = await response.json();
