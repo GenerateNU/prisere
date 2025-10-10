@@ -22,8 +22,8 @@ export class DisasterNotificationService implements IDisasterNotificationService
     getUserNotifications = withServiceErrorHandling(
         async (payload: GetUsersDisasterNotificationsDTO): Promise<DisasterNotification[]> => {
             const notifications = await this.notificationTransaction.getUserNotifications(payload);
-            if (!notifications || notifications.length === 0) {
-                throw Boom.notFound("No notifications found for user");
+            if (!notifications) {
+                throw Boom.notFound("Unable to find notifications");
             }
             return notifications;
         }
