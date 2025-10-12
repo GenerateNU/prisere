@@ -79,6 +79,6 @@ describe("Invoice get by id", () => {
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        CompareRequestToCreated([], body);
+        CompareRequestToCreated([seededInvoices[2]], body);
     });
 });
