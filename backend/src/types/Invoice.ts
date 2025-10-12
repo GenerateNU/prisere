@@ -41,13 +41,25 @@ export const GetCompanyInvoicesDTOSchema = z.object({
     resultsPerPage: z.number().optional().default(20),
 });
 
+export const GetCompanyInvoicesByDateDTOSchema = z.object({
+    companyId: z.string(),
+    startDate: z.iso.datetime(),
+    endDate: z.iso.datetime(),
+});
+
+export const GetCompanyInvoicesSummationResponseSchema = z.object({
+    total: z.number().nonnegative(),
+});
+
 export const GetCompanyInvoicesResponseSchema = z.array(GetInvoiceResponseSchema);
 
 //Controller Responses
 export type CreateOrUpdateInvoicesResponse = z.infer<typeof CreateOrUpdateInvoiceResponseSchema>;
 export type GetInvoiceResponse = z.infer<typeof GetInvoiceResponseSchema>;
 export type GetCompanyInvoicesResponse = z.infer<typeof GetCompanyInvoicesResponseSchema>;
+export type GetCompanyInvoicesSummationResponse = z.infer<typeof GetCompanyInvoicesSummationResponseSchema>;
 
 //Input types
 export type CreateOrUpdateInvoicesDTO = z.infer<typeof CreateOrUpdateInvoicesDTOSchema>;
 export type GetCompanyInvoicesDTO = z.infer<typeof GetCompanyInvoicesDTOSchema>;
+export type GetCompanyInvoicesByDateDTO = z.infer<typeof GetCompanyInvoicesByDateDTOSchema>;

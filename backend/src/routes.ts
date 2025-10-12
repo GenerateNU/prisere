@@ -11,6 +11,7 @@ import { StatusCode } from "hono/utils/http-status";
 
 import { quickbooksRoutes } from "./modules/quickbooks/routes";
 import { invoiceRoutes } from "./modules/invoice/route";
+import { claimLocationRoutes } from "./modules/claim-location/route";
 import { purchaseRoutes } from "./modules/purchase/route";
 import { preferenceRoutes } from "./modules/preferences/route";
 import { invoiceLineItemsRoutes } from "./modules/invoiceLineItem/route";
@@ -43,4 +44,18 @@ const healthRoutes = (): Hono => {
         return ctx.json({ message: "OK" }, 200);
     });
     return app;
+export const setUpRoutes = (app: Hono, db: DataSource) => {
+    app.route("/users", userRoutes(db));
+    app.route("/location-address", locationAddressRoute(db));
+    app.route("/companies", companyRoutes(db));
+    app.route("/openapi", setUpOpenApiRoutes(db));
+    app.route("/disaster", disasterRoutes(db));
+    app.route("/claims", claimRoutes(db));
+    app.route("/disasterNotification", disasterNotificationRoutes(db));
+    app.route("/quickbooks", quickbooksRoutes(db));
+    app.route("/claim-locations", claimLocationRoutes(db));
+    app.route("/purchase", purchaseRoutes(db));
+    app.route("/invoice", invoiceRoutes(db));
+    app.route("/notifications", preferenceRoutes(db));
+    app.route("/invoice/line", invoiceLineItemsRoutes(db));
 };
