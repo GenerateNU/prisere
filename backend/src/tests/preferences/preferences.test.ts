@@ -27,7 +27,7 @@ describe("notification preference retreival", () => {
 
     it("should create a user's preferences on user creation", async () => {
         const { data: user } = await createUser(app, { id: randomUUID(), firstName: "test", lastName: "user" });
-        const response = await app.request(TESTING_PREFIX + `/notifications/preferences/${user.id}`);
+        const response = await app.request(TESTING_PREFIX + `/preferences/${user.id}`);
 
         expect(response.status).toBe(200);
         expect(await response.json()).toEqual({
@@ -43,7 +43,7 @@ describe("notification preference retreival", () => {
         // delete user preferences from the database (simulates user that was created before preferences existed)
         await db.getRepository(UserPreferences).delete({ userId: user.id });
 
-        const response = await app.request(TESTING_PREFIX + `/notifications/preferences/${user.id}`);
+        const response = await app.request(TESTING_PREFIX + `/preferences/${user.id}`);
 
         expect(response.status).toBe(200);
         expect(await response.json()).toEqual({
@@ -70,7 +70,7 @@ describe("notification preference update", () => {
 
     it("should perform full update to user preferences", async () => {
         const { data: user } = await createUser(app, { id: randomUUID(), firstName: "test", lastName: "user" });
-        const getResponse = await app.request(TESTING_PREFIX + `/notifications/preferences/${user.id}`);
+        const getResponse = await app.request(TESTING_PREFIX + `/preferences/${user.id}`);
 
         expect(getResponse.status).toBe(200);
         expect(await getResponse.json()).toEqual({
@@ -79,7 +79,7 @@ describe("notification preference update", () => {
             notificationFrequency: "daily",
         });
 
-        const updateResponse = await app.request(TESTING_PREFIX + `/notifications/preferences/${user.id}`, {
+        const updateResponse = await app.request(TESTING_PREFIX + `/preferences/${user.id}`, {
             method: "PUT",
             body: JSON.stringify({
                 emailEnabled: false,
@@ -98,7 +98,7 @@ describe("notification preference update", () => {
 
     it("should perform partial update to user preferences", async () => {
         const { data: user } = await createUser(app, { id: randomUUID(), firstName: "test", lastName: "user" });
-        const getResponse = await app.request(TESTING_PREFIX + `/notifications/preferences/${user.id}`);
+        const getResponse = await app.request(TESTING_PREFIX + `/preferences/${user.id}`);
 
         expect(getResponse.status).toBe(200);
         expect(await getResponse.json()).toEqual({
@@ -107,7 +107,7 @@ describe("notification preference update", () => {
             notificationFrequency: "daily",
         });
 
-        const updateResponse = await app.request(TESTING_PREFIX + `/notifications/preferences/${user.id}`, {
+        const updateResponse = await app.request(TESTING_PREFIX + `/preferences/${user.id}`, {
             method: "PUT",
             body: JSON.stringify({
                 emailEnabled: false,
@@ -125,7 +125,7 @@ describe("notification preference update", () => {
 
     it("should error on no values given", async () => {
         const { data: user } = await createUser(app, { id: randomUUID(), firstName: "test", lastName: "user" });
-        const getResponse = await app.request(TESTING_PREFIX + `/notifications/preferences/${user.id}`);
+        const getResponse = await app.request(TESTING_PREFIX + `/preferences/${user.id}`);
 
         expect(getResponse.status).toBe(200);
         expect(await getResponse.json()).toEqual({
@@ -134,7 +134,7 @@ describe("notification preference update", () => {
             notificationFrequency: "daily",
         });
 
-        const updateResponse = await app.request(TESTING_PREFIX + `/notifications/preferences/${user.id}`, {
+        const updateResponse = await app.request(TESTING_PREFIX + `/preferences/${user.id}`, {
             method: "PUT",
             body: JSON.stringify({} satisfies UpdateUesrNotificationPreferencesDTO),
         });

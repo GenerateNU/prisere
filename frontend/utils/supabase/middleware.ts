@@ -32,11 +32,15 @@ export async function updateSession(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser();
 
+    if (request.nextUrl.pathname.startsWith("/disasterNotification") || request.nextUrl.pathname.startsWith("/api")) {
+        return supabaseResponse;
+    }
+
     if (
         !user &&
         !request.nextUrl.pathname.startsWith("/login") &&
         !request.nextUrl.pathname.startsWith("/signup") &&
-        !request.nextUrl.pathname.startsWith("/error")
+        !request.nextUrl.pathname.startsWith("/error") 
     ) {
         const url = request.nextUrl.clone();
         url.pathname = "/login";

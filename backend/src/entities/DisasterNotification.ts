@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn } from "typeorm";
 import { FemaDisaster } from "./FemaDisaster.js";
 import { NotificationType, NotificationStatus } from "../types/NotificationEnums.js";
 import { User } from "./User.js";
@@ -44,4 +44,7 @@ export class DisasterNotification {
 
     @Column({ nullable: true })
     acknowledgedAt?: Date;
+
+    @CreateDateColumn()
+    createdAt!: Date;
 }

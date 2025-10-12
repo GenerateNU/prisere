@@ -1256,10 +1256,133 @@
         }
       }
     },
-    "/notifications/user/{id}": {
+    "/disasterNotification/{id}": {
       "get": {
         "summary": "Get user notifications",
-        "description": "Retrieves all disaster notifications for a specific user",
+        "description": "Retrieves all disaster notifications for a specific user with optional filtering and pagination",
+        "tags": ["Disaster Notifications"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "User ID"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["web", "email"]
+            },
+            "description": "Filter by notification type"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "description": "Number of items per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved user notifications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string" },
+                      "userId": { "type": "string" },
+                      "femaDisasterId": { "type": "string" },
+                      "notificationType": {
+                        "type": "string",
+                        "enum": ["web", "email"]
+                      },
+                      "notificationStatus": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": ["unread", "read", "acknowledged"]
+                      },
+                      "firstSentAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                      },
+                      "lastSentAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                      },
+                      "acknowledgedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                      }
+                    },
+                    "required": ["id", "userId", "femaDisasterId", "notificationType"]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "string" }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found or no notifications found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "string" }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete notification",
+        "description": "Permanently deletes a specific notification",
         "tags": [
           "Disaster Notifications"
         ],
@@ -1277,95 +1400,29 @@
         ],
         "responses": {
           "200": {
-            "description": "Successfully retrieved user notifications",
+            "description": "Notification successfully deleted",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string"
-                      },
-                      "userId": {
-                        "type": "string"
-                      },
-                      "femaDisasterId": {
-                        "type": "string"
-                      },
-                      "notificationType": {
-                        "type": "string",
-                        "enum": [
-                          "web",
-                          "email"
-                        ]
-                      },
-                      "notificationStatus": {
-                        "type": "string",
-                        "nullable": true,
-                        "enum": [
-                          "unread",
-                          "read",
-                          "acknowledged"
-                        ]
-                      },
-                      "firstSentAt": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "date"
-                          },
-                          {
-                            "type": "string"
-                          },
-                          {
-                            "nullable": true
-                          }
-                        ]
-                      },
-                      "lastSentAt": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "date"
-                          },
-                          {
-                            "type": "string"
-                          },
-                          {
-                            "nullable": true
-                          }
-                        ]
-                      },
-                      "acknowledgedAt": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "date"
-                          },
-                          {
-                            "type": "string"
-                          },
-                          {
-                            "nullable": true
-                          }
-                        ]
-                      }
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
                     },
-                    "required": [
-                      "id",
-                      "userId",
-                      "femaDisasterId",
-                      "notificationType"
-                    ]
-                  }
+                    "deletedId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "deletedId"
+                  ]
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid user ID format",
+            "description": "Invalid notification ID format",
             "content": {
               "application/json": {
                 "schema": {
@@ -1383,7 +1440,7 @@
             }
           },
           "404": {
-            "description": "User not found or no notifications found",
+            "description": "Notification not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1403,7 +1460,7 @@
         }
       }
     },
-    "/notifications/{id}/acknowledge": {
+    "/disasterNotification/{id}/acknowledge": {
       "patch": {
         "summary": "Acknowledge notification",
         "description": "Marks a specific notification as acknowledged",
@@ -1547,7 +1604,7 @@
         }
       }
     },
-    "/notifications/{id}/dismiss": {
+    "/disasterNotification/{id}/dismiss": {
       "patch": {
         "summary": "Dismiss notification",
         "description": "Marks a specific notification as read/dismissed",
@@ -1691,7 +1748,7 @@
         }
       }
     },
-    "/notifications/bulk": {
+    "/disasterNotification/bulk": {
       "post": {
         "summary": "Bulk create notifications",
         "description": "Creates multiple disaster notifications at once for impacted users",
@@ -1876,50 +1933,177 @@
         }
       }
     },
-    "/notifications/{id}": {
-      "delete": {
-        "summary": "Delete notification",
-        "description": "Permanently deletes a specific notification",
+    "/preferences/{id}": {
+      "get": {
+        "summary": "Get user notification preferences",
+        "description": "Retrieves notification preferences for a specific user",
         "tags": [
-          "Disaster Notifications"
+          "Preferences"
         ],
         "parameters": [
           {
             "schema": {
               "type": "string",
-              "format": "uuid",
-              "example": "123e4567-e89b-12d3-a456-426614174000"
+              "format": "uuid"
             },
             "required": true,
             "name": "id",
-            "in": "path"
+            "in": "path",
+            "description": "User ID"
           }
         ],
         "responses": {
           "200": {
-            "description": "Notification successfully deleted",
+            "description": "Successfully retrieved user preferences",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": {
+                    "emailEnabled": {
                       "type": "boolean"
                     },
-                    "deletedId": {
+                    "webNotificationsEnabled": {
+                      "type": "boolean"
+                    },
+                    "notificationFrequency": {
                       "type": "string"
                     }
                   },
                   "required": [
-                    "success",
-                    "deletedId"
+                    "emailEnabled",
+                    "webNotificationsEnabled",
+                    "notificationFrequency"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
                   ]
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid notification ID format",
+            "description": "Invalid user ID format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update user notification preferences",
+        "description": "Updates notification preferences for a specific user",
+        "tags": [
+          "Preferences"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path",
+            "description": "User ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "emailEnabled": {
+                    "type": "boolean"
+                  },
+                  "webNotificationsEnabled": {
+                    "type": "boolean"
+                  },
+                  "notificationFrequency": {
+                    "type": "string"
+                  }
+                },
+                "minProperties": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully updated user preferences",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "emailEnabled": {
+                      "type": "boolean"
+                    },
+                    "webNotificationsEnabled": {
+                      "type": "boolean"
+                    },
+                    "notificationFrequency": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "emailEnabled",
+                    "webNotificationsEnabled",
+                    "notificationFrequency"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request - empty payload or invalid user ID",
             "content": {
               "application/json": {
                 "schema": {
@@ -1937,7 +2121,25 @@
             }
           },
           "404": {
-            "description": "Notification not found",
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
             "content": {
               "application/json": {
                 "schema": {

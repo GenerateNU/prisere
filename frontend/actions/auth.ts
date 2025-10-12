@@ -38,6 +38,12 @@ export async function signup(prevState: signupInitialState, formData: FormData) 
     return { success: true, message: "Form submitted successfully!", email: payload.email };
 }
 
+export const getCurrentUser = async () => {
+    const supabase = await createSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    return user;
+};
+
 export async function retrieveToken(): Promise<string> {
     const supabase = await createSupabaseClient();
     const { data } = await supabase.auth.getSession();
