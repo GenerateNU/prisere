@@ -3,7 +3,7 @@ import { DataSource, InsertResult } from "typeorm";
 import Boom from "@hapi/boom";
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
-import { GetUsersDisasterNotificationsDTO } from "../../types/DisasterNotification";
+import { GetUsersDisasterNotificationsDTO, NotificationTypeFilter } from "../../types/DisasterNotification";
 import { User } from "../../entities/User";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 
@@ -16,7 +16,7 @@ export interface IDisasterNotificationTransaction {
      * @param payload - The payload containing user info and possible filters.
      * @returns Promise resolving to an array of DisasterNotification entities.
      */
-    getUserNotifications(payload: GetUsersDisasterNotificationsDTO): Promise<DisasterNotification[]>;
+    getUserNotifications(payload: GetUsersDisasterNotificationsDTO, type?: NotificationTypeFilter, page?: number, limit?: number): Promise<DisasterNotification[]>;
 
     /**
      * Acknowledge a specific notification.
@@ -55,26 +55,52 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
         this.db = db;
     }
 
-    async getUserNotifications(payload: GetUsersDisasterNotificationsDTO): Promise<DisasterNotification[]> {
-        const existing = await this.db.getRepository(User).findOne({ where: { id: payload.id } });
-        if (!existing) {
-            logMessageToFile(`User not found: ${payload.id}`);
-            throw Boom.notFound("user not found");
-        }
-
-        const result: DisasterNotification[] = await this.db
+    async getUserNotifications(payload: GetUsersDisasterNotificationsDTO, type?: NotificationTypeFilter,
+         page?: number, limit?: number): Promise<DisasterNotification[]> {
+        const queryBuilder = this.db
             .createQueryBuilder()
             .select("disasterNotification")
             .from(DisasterNotification, "disasterNotification")
             .where("disasterNotification.userId = :id", { id: payload.id })
-            .getMany();
+            .orderBy("disasterNotification.createdAt", "DESC"); // Added sorting since we will show most recent notif as banner
+
+        if (type) {
+            queryBuilder.andWhere("disasterNotification.notificationType = :type", { type });
+        }
+
+        if (page && limit) {
+            const totalCount = await queryBuilder.getCount();
+            const maxPage = Math.ceil(totalCount / limit);
+            
+            // If requesting a page beyond available data, return empty array
+            if (page > maxPage && totalCount > 0) {
+                console.log(`Page ${page} exceeds maximum page ${maxPage} for user ${payload.id}. Returning empty results.`)
+                logMessageToFile(`Page ${page} exceeds maximum page ${maxPage} for user ${payload.id}. Returning empty results.`);
+                return [];
+            }
+
+            queryBuilder.skip((page - 1) * limit)
+            .take(limit)
+        }
+
+        const result: DisasterNotification[] = await queryBuilder.getMany();
 
         if (!result || result.length === 0) {
-            logMessageToFile(`No notifications found for user ID: ${payload.id}`);
+            const existing = await this.db.getRepository(User).findOne({ 
+                where: { id: payload.id },
+                select: ["id"] // Only select from id field
+            });
+            if (!existing) {
+                console.log(`User ${payload.id} not found.`)
+                logMessageToFile(`User ${payload.id} not found.`);
+                throw Boom.notFound("User not found");
+            }
+            logMessageToFile(`No notifications found for user ID: ${payload.id}${type ? ` with type: ${type}` : ''}`);
             throw Boom.notFound("No notifications found for user");
         }
 
         return result;
+        
     }
 
     async acknowledgeNotification(notificationId: string): Promise<DisasterNotification> {

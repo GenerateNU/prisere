@@ -28,7 +28,7 @@ export const setUpRoutes = (app: Hono<any>, db: DataSource) => {
     routes.route("/invoice", invoiceRoutes(db));
     routes.route("/invoice/line", invoiceLineItemsRoutes(db));
     routes.route("/purchase", purchaseRoutes(db));
-    routes.route("/notifications", preferenceRoutes(db));
+    routes.route("/preferences", preferenceRoutes(db));
 
     app.route("/api/prisere", routes);
     app.route("/api/openapi", setUpOpenApiRoutes(db));

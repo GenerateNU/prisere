@@ -53,3 +53,5 @@ export const DeleteNotificationResponseSchema = z.object({
     deletedId: z.string(),
 });
 export type DeleteNotificationResponse = z.infer<typeof DeleteNotificationResponseSchema>;
+
+export type NotificationTypeFilter = 'web' | 'email';

@@ -2,7 +2,7 @@ import { DisasterNotification } from "../../entities/DisasterNotification";
 import { IDisasterNotificationTransaction } from "./transaction";
 import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
-import { GetUsersDisasterNotificationsDTO } from "../../types/DisasterNotification";
+import { GetUsersDisasterNotificationsDTO, NotificationTypeFilter } from "../../types/DisasterNotification";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { ILocationAddressTransaction } from "../location-address/transaction";
 import { NotificationStatus, NotificationType } from "../../types/NotificationEnums";
@@ -11,7 +11,7 @@ import { logMessageToFile } from "../../utilities/logger";
 import { IPreferenceTransaction } from "../preferences/transaction";
 
 export interface IDisasterNotificationService {
-    getUserNotifications(payload: GetUsersDisasterNotificationsDTO): Promise<DisasterNotification[]>;
+    getUserNotifications(payload: GetUsersDisasterNotificationsDTO, type?: NotificationTypeFilter, page?: number, limit?: number): Promise<DisasterNotification[]>;
     acknowledgeNotification(notificationId: string): Promise<DisasterNotification>;
     dismissNotification(notificationId: string): Promise<DisasterNotification>;
     bulkCreateNotifications(notifications: Partial<DisasterNotification>[]): Promise<DisasterNotification[]>;
@@ -35,12 +35,9 @@ export class DisasterNotificationService implements IDisasterNotificationService
     }
 
     getUserNotifications = withServiceErrorHandling(
-        async (payload: GetUsersDisasterNotificationsDTO): Promise<DisasterNotification[]> => {
-            const notifications = await this.notificationTransaction.getUserNotifications(payload);
-            if (!notifications) {
-                throw Boom.notFound("Unable to find notifications");
-            }
-            return notifications;
+        async (payload: GetUsersDisasterNotificationsDTO, type?: NotificationTypeFilter, page?: number, limit?: number): Promise<DisasterNotification[]> => {
+            console.log("Got request in service layer")
+            return await this.notificationTransaction.getUserNotifications(payload, type, page, limit);
         }
     );
 
