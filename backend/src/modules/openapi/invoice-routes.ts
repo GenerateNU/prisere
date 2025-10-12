@@ -167,7 +167,7 @@ const getInvoiceLineItemsForInvoiceRoute = createRoute({
 
 const sumInvoicesByCompanyAndDateRange = createRoute({
     method: "get",
-    path: "/quickbooks/invoice/bulk/{id}/totalIncome",
+    path: "/invoice/bulk/{id}/totalIncome",
     summary: "Get the summation of invoices for a company in a date range",
     description:
         "Get the summation of invoices for a company that were made after the start date and before the end date",
