@@ -2,12 +2,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Purchase } from "../../types/purchase";
 import { Invoice } from "@/types/invoice";
 type InvoiceOrPurchase = Invoice | Purchase;
-import { getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from "@tanstack/react-table";
+import {
+    flexRender,
+    getCoreRowModel,
+    getSortedRowModel,
+    Header,
+    SortingState,
+    useReactTable,
+} from "@tanstack/react-table";
 import { useState } from "react";
 import { columns } from "./expense-table";
-
-
-
 
 export default function BasicTable({ combined }: { combined: InvoiceOrPurchase[] }) {
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -26,13 +30,13 @@ export default function BasicTable({ combined }: { combined: InvoiceOrPurchase[]
             <Table>
                 <TableHeader>
                     <TableRow>
-                        {table.getHeaderGroups()[0].headers.map((header: any) => (
+                        {table.getHeaderGroups()[0].headers.map((header: Header<InvoiceOrPurchase, unknown>) => (
                             <TableHead
                                 key={header.id}
                                 onClick={header.column.getToggleSortingHandler()}
                                 className="cursor-pointer"
                             >
-                                {header.column.columnDef.header}
+                                {flexRender(header.column.columnDef.header, header.getContext())}
                                 {header.column.getIsSorted() === "asc" && " ↑"}
                                 {header.column.getIsSorted() === "desc" && " ↓"}
                             </TableHead>
@@ -40,22 +44,15 @@ export default function BasicTable({ combined }: { combined: InvoiceOrPurchase[]
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {sortedRows.map((row: any) => {
+                    {sortedRows.map((row) => {
                         const item = row.original;
                         return (
                             <TableRow key={item.id}>
                                 <TableCell>
-                                    {"isRefund" in item
-                                        ? (item.isRefund ? "Refund" : "Purchase")
-                                        : "Invoice"
-                                    }
+                                    {"isRefund" in item ? (item.isRefund ? "Refund" : "Purchase") : "Invoice"}
                                 </TableCell>
-                                <TableCell>
-                                    ${(item.totalAmountCents / 100).toFixed(2)}
-                                </TableCell>
-                                <TableCell>
-                                    {new Date(item.dateCreated).toLocaleDateString()}
-                                </TableCell>
+                                <TableCell>${(item.totalAmountCents / 100).toFixed(2)}</TableCell>
+                                <TableCell>{new Date(item.dateCreated).toLocaleDateString()}</TableCell>
                                 <TableCell>WIP</TableCell>
                                 <TableCell>WIP</TableCell>
                             </TableRow>

@@ -2,7 +2,8 @@ import type { paths } from "../schema";
 
 export type CreateUserRequest = paths["/users"]["post"]["requestBody"]["content"]["application/json"];
 export type CreateUserResponse = paths["/users"]["post"]["requestBody"]["content"]["application/json"];
-export type GetUserCompanyResponse = paths["/users/{id}/company"]["get"]["responses"]["200"]["content"]["application/json"];
+export type GetUserCompanyResponse =
+    paths["/users/{id}/company"]["get"]["responses"]["200"]["content"]["application/json"];
 
 export type loginInitialState = {
     success: boolean;

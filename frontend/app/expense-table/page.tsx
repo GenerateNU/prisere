@@ -17,5 +17,5 @@ export default async function ExpenseTracker() {
     return <div>You have not added a company to your account.</div>
      */
 
-    return <ExpenseTable companyId="f91a274e-cc9d-47e5-bd48-42ea3a7c202e"></ExpenseTable>
+    return <ExpenseTable companyId="f91a274e-cc9d-47e5-bd48-42ea3a7c202e"></ExpenseTable>;
 }

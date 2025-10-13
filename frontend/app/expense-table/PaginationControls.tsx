@@ -6,19 +6,27 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 
-export default function PaginationControls({ page, onPageChange}:
-{ page: number; onPageChange: (page: number) => void}) {
+export default function PaginationControls({
+    page,
+    onPageChange,
+    isLastPage,
+}: {
+    page: number;
+    onPageChange: (page: number) => void;
+    isLastPage: boolean;
+}) {
     return (
         <Pagination>
             <PaginationContent>
                 <PaginationItem>
-                    <PaginationPrevious className="text-sm"
-                                        onClick={() => onPageChange(Math.max(0, page - 1))}
-                    />
+                    <PaginationPrevious className="text-sm" onClick={() => onPageChange(Math.max(0, page - 1))} />
                 </PaginationItem>
                 <PaginationItem>
-                    <PaginationNext  className="text-sm"
-                                     onClick={() => onPageChange(page + 1)}
+                    <PaginationNext
+                        className="text-sm"
+                        onClick={() => {
+                            if (!isLastPage) onPageChange(page + 1);
+                        }}
                     />
                 </PaginationItem>
             </PaginationContent>

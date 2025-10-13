@@ -18,10 +18,11 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
-import { Filter, Printer } from "lucide-react"
+} from "@/components/ui/card";
+import { Filter, Printer } from "lucide-react";
 
 type InvoiceOrPurchase = Invoice | Purchase;
+export type columnValueTypes = string | number | Date;
 export const columns: ColumnDef<InvoiceOrPurchase>[] = [
     {
         id: "type",
@@ -45,11 +46,9 @@ export const columns: ColumnDef<InvoiceOrPurchase>[] = [
     },
 ];
 
-
 export default function ExpenseTable({ companyId }: { companyId: string }) {
     const [page, setPage] = useState(0);
     const [resultsPerPage, setResultsPerPage] = useState(5);
-
 
     const purchases = useQuery({
         queryKey: ["purchases-for-company", companyId, page, resultsPerPage],
@@ -65,10 +64,9 @@ export default function ExpenseTable({ companyId }: { companyId: string }) {
 
     if (purchases.error || invoices.error) return <div>Error loading expenses and invoices</div>;
 
-    const combined = [
-        ...purchases.data,
-        ...invoices.data,
-    ];
+    const combined = [...purchases.data, ...invoices.data];
+
+    const isLastPage = combined.length < resultsPerPage * 2;
 
     return (
         <Card>
@@ -88,15 +86,14 @@ export default function ExpenseTable({ companyId }: { companyId: string }) {
             <CardFooter>
                 <PaginationControls
                     page={page}
-                    onPageChange={(page: number)=> setPage(page)}
+                    onPageChange={(page: number) => setPage(page)}
+                    isLastPage={isLastPage}
                 />
                 <ResultsPerPageSelect
                     value={resultsPerPage}
-                    onValueChange={(results: number)=> setResultsPerPage(results)}
+                    onValueChange={(results: number) => setResultsPerPage(results)}
                 />
             </CardFooter>
         </Card>
     );
 }
-
-
