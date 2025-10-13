@@ -871,7 +871,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/notifications/user/{id}": {
+    "/disasterNotification/user/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -906,10 +906,10 @@ export interface paths {
                             /** @enum {string} */
                             notificationType: "web" | "email";
                             /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
-                            acknowledgedAt?: string | unknown;
+                            readAt?: string | unknown;
                         }[];
                     };
                 };
@@ -945,7 +945,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/notifications/{id}/acknowledge": {
+    "/disasterNotification/{id}/markAsRead": {
         parameters: {
             query?: never;
             header?: never;
@@ -959,8 +959,8 @@ export interface paths {
         options?: never;
         head?: never;
         /**
-         * Acknowledge notification
-         * @description Marks a specific notification as acknowledged
+         * MarkRead notification
+         * @description Marks a specific notification as read
          */
         patch: {
             parameters: {
@@ -973,7 +973,7 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Notification successfully acknowledged */
+                /** @description Notification successfully read */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -986,10 +986,10 @@ export interface paths {
                             /** @enum {string} */
                             notificationType: "web" | "email";
                             /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
-                            acknowledgedAt?: string | unknown;
+                            readAt?: string | unknown;
                         };
                     };
                 };
@@ -1019,7 +1019,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/notifications/{id}/dismiss": {
+    "/disasterNotification/{id}/markUnread": {
         parameters: {
             query?: never;
             header?: never;
@@ -1034,7 +1034,7 @@ export interface paths {
         head?: never;
         /**
          * Dismiss notification
-         * @description Marks a specific notification as read/dismissed
+         * @description Marks a specific notification as read/markUnreaded
          */
         patch: {
             parameters: {
@@ -1047,7 +1047,7 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Notification successfully dismissed */
+                /** @description Notification successfully markUnreaded */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -1060,10 +1060,10 @@ export interface paths {
                             /** @enum {string} */
                             notificationType: "web" | "email";
                             /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
-                            acknowledgedAt?: string | unknown;
+                            readAt?: string | unknown;
                         };
                     };
                 };
@@ -1093,7 +1093,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/notifications/bulk": {
+    "/disasterNotification/bulk": {
         parameters: {
             query?: never;
             header?: never;
@@ -1137,10 +1137,10 @@ export interface paths {
                             /** @enum {string} */
                             notificationType: "web" | "email";
                             /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
-                            acknowledgedAt?: string | unknown;
+                            readAt?: string | unknown;
                         }[];
                     };
                 };
@@ -1185,7 +1185,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/notifications/{id}": {
+    "/disasterNotification/{id}": {
         parameters: {
             query?: never;
             header?: never;

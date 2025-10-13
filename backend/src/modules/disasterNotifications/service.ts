@@ -23,6 +23,7 @@ export interface IDisasterNotificationService {
     bulkCreateNotifications(notifications: Partial<DisasterNotification>[]): Promise<DisasterNotification[]>;
     deleteNotification(notificationId: string): Promise<boolean>;
     processNewDisasters(newDisasters: FemaDisaster[]): Promise<boolean>;
+    markAllAsRead(userId: string): Promise<number>;
 }
 
 export class DisasterNotificationService implements IDisasterNotificationService {
@@ -150,4 +151,10 @@ export class DisasterNotificationService implements IDisasterNotificationService
             return false;
         }
     });
+
+    markAllAsRead = withServiceErrorHandling(
+        async (userId: string): Promise<number> => {
+            return await this.notificationTransaction.markAllAsRead(userId);
+        }
+    );
 }

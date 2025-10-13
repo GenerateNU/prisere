@@ -6,6 +6,7 @@ import { validate } from "uuid";
 import { GetUsersDisasterNotificationsDTO, NotificationTypeFilter } from "../../types/DisasterNotification";
 import { User } from "../../entities/User";
 import { FemaDisaster } from "../../entities/FemaDisaster";
+import { NotificationStatus } from "../../types/NotificationEnums";
 
 /**
  * Interface for disaster notification transaction operations.
@@ -37,6 +38,7 @@ export interface IDisasterNotificationTransaction {
      * @returns Promise resolving to the updated DisasterNotification entity.
      */
     markUnreadNotification(notificationId: string): Promise<DisasterNotification>;
+    markAllAsRead(userId: string): Promise<number> 
 
     /**
      * Bulk create new notifications. Takes in all new disasters and creates the notifications
@@ -150,6 +152,8 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
             .execute();
 
         const updatedNotification = result.raw[0];
+        console.log("Update result:", result);
+        console.log("Updated notification:", updatedNotification);
         if (!updatedNotification) {
             logMessageToFile(`Notification not found or could not update: ${notificationId}`);
             throw Boom.notFound("Notification not found or could not update status");
@@ -235,5 +239,20 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
             .execute();
 
         return true;
+    }
+
+    async markAllAsRead(userId: string): Promise<number> {
+        const result = await this.db
+            .createQueryBuilder()
+            .update(DisasterNotification)
+            .set({ 
+                notificationStatus: NotificationStatus.READ,
+                readAt: new Date()
+            })
+            .where("userId = :userId", { userId })
+            .andWhere("notificationStatus = :status", { status: NotificationStatus.UNREAD })
+            .execute();
+
+        return result.affected || 0;
     }
 }

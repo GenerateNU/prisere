@@ -41,6 +41,7 @@ export async function signup(prevState: signupInitialState, formData: FormData) 
 export const getCurrentUser = async () => {
     const supabase = await createSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
+    console.log("Fetched user: ", user);
     return user;
 };
 
