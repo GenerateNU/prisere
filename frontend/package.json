@@ -23,6 +23,7 @@
     "next": "15.5.3",
     "openapi-fetch": "^0.14.1",
     "openapi-typescript": "^7.9.1",
+    "prettier": "^3.6.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "tailwind-merge": "^3.3.1",

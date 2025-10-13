@@ -8,6 +8,8 @@ import {
     GetCompanyInvoicesResponse,
     CreateOrUpdateInvoicesDTOSchema,
     GetCompanyInvoicesDTOSchema,
+    GetCompanyInvoicesByDateDTOSchema,
+    GetCompanyInvoicesSummationResponse,
 } from "../../types/Invoice";
 import { ControllerResponse } from "../../utilities/response";
 
@@ -15,6 +17,9 @@ export interface IInvoiceController {
     bulkCreateOrUpdateInvoice(_ctx: Context): ControllerResponse<TypedResponse<CreateOrUpdateInvoicesResponse, 201>>;
     getInvoice(ctx: Context): ControllerResponse<TypedResponse<GetInvoiceResponse, 200>>;
     getInvoicesForCompany(ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>>;
+    sumInvoicesByCompanyAndDateRange(
+        ctx: Context
+    ): ControllerResponse<TypedResponse<GetCompanyInvoicesSummationResponse, 200>>;
 }
 
 export class InvoiceController implements IInvoiceController {
@@ -61,6 +66,26 @@ export class InvoiceController implements IInvoiceController {
 
             const fetchedQuickBooksPurchases = await this.invoiceService.getInvoicesForCompany(payload);
             return ctx.json(fetchedQuickBooksPurchases, 200);
+        }
+    );
+
+    sumInvoicesByCompanyAndDateRange = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesSummationResponse, 200>> => {
+            const queryParams = {
+                companyId: ctx.req.param("id"),
+                startDate: ctx.req.query("startDate"),
+                endDate: ctx.req.query("endDate"),
+            };
+            const payload = GetCompanyInvoicesByDateDTOSchema.parse(queryParams);
+
+            if (!validate(payload.companyId)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            } else if (new Date(payload.startDate) >= new Date(payload.endDate)) {
+                return ctx.json({ error: "Start date must be before End date" }, 400);
+            }
+
+            const invoiceSummationAmount = await this.invoiceService.sumInvoicesByCompanyAndDateRange(payload);
+            return ctx.json({ total: invoiceSummationAmount }, 200);
         }
     );
 }
