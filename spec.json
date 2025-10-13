@@ -28,6 +28,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
                   "firstName": {
                     "type": "string",
                     "minLength": 1
@@ -46,6 +50,7 @@
                   }
                 },
                 "required": [
+                  "id",
                   "firstName",
                   "lastName"
                 ]
@@ -129,7 +134,7 @@
     "/users/{id}/company": {
       "get": {
         "summary": "Fetches a user's associated company by the given user ID",
-        "description": "Finds the user's comapny with the given user's ID in the database",
+        "description": "Finds the user's company with the given user's ID in the database",
         "tags": [
           "Users"
         ],
@@ -1159,6 +1164,12 @@
                     "companyId": {
                       "type": "string",
                       "format": "uuid"
+                    },
+                    "fipsStateCode": {
+                      "type": "number"
+                    },
+                    "fipsCountyCode": {
+                      "type": "number"
                     }
                   },
                   "required": [
@@ -1168,7 +1179,9 @@
                     "city",
                     "streetAddress",
                     "postalCode",
-                    "companyId"
+                    "companyId",
+                    "fipsStateCode",
+                    "fipsCountyCode"
                   ]
                 }
               }
@@ -1938,6 +1951,2333 @@
           },
           "404": {
             "description": "Notification not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/quickbooks": {
+      "get": {
+        "summary": "Generates an OAuth URL for the user and redirects them",
+        "tags": [
+          "quickbooks"
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirected to QuickBooks OAuth url"
+          }
+        }
+      }
+    },
+    "/quickbooks/redirect": {
+      "get": {
+        "summary": "Syncs a QB OAuth session to our DB",
+        "description": "The path where the QuickBooks OAuth server redirects to upon a completed (successful or not) OAuth connection",
+        "tags": [
+          "quickbooks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "code",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "state",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "realmId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully logged in through QB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Did not grant permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoice/bulk": {
+      "post": {
+        "summary": "Bulk create or update new invoices",
+        "description": "Creates new invoices according to the schema. If there is an invoice in the database with the same quickbooks_id, company_id pairing, then it will overwrite it's attributes",
+        "tags": [
+          "Invoice"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "companyId": {
+                      "type": "string"
+                    },
+                    "quickbooksId": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true
+                    },
+                    "totalAmountCents": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "quickbooksDateCreated": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "companyId",
+                    "totalAmountCents"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Invoice(s) successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "companyId": {
+                        "type": "string"
+                      },
+                      "quickbooksId": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                      },
+                      "totalAmountCents": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "dateCreated": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "lastUpdated": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "quickbooksDateCreated": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "companyId",
+                      "totalAmountCents",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Creating/Updating Invoice Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Creating/Updating Invoice Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoice/{id}": {
+      "get": {
+        "summary": "Get invoice by id",
+        "description": "Get invoice with matching ID from the database",
+        "tags": [
+          "Invoice"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retrieved invoice",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "companyId": {
+                      "type": "string"
+                    },
+                    "quickbooksId": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true
+                    },
+                    "totalAmountCents": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "dateCreated": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "lastUpdated": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "quickbooksDateCreated": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "companyId",
+                    "totalAmountCents",
+                    "dateCreated",
+                    "lastUpdated"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Getting Invoice Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No Invoice with given UUID found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Getting Invoice Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoice": {
+      "get": {
+        "summary": "Get invoices for a company",
+        "description": "Get invoices for a company with pagination params. Note page numbes are 0-indexed.",
+        "tags": [
+          "Invoice"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "companyId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "default": 0
+            },
+            "required": false,
+            "name": "pageNumber",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "default": 20
+            },
+            "required": false,
+            "name": "resultsPerPage",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retrieved invoice",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "companyId": {
+                        "type": "string"
+                      },
+                      "quickbooksId": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                      },
+                      "totalAmountCents": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "dateCreated": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "lastUpdated": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "quickbooksDateCreated": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "companyId",
+                      "totalAmountCents",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Getting Invoice Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No Invoice with given UUID found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Getting Invoice Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoice/bulk/{id}/totalIncome": {
+      "get": {
+        "summary": "Get the summation of invoices for a company in a date range",
+        "description": "Get the summation of invoices for a company that were made after the start date and before the end date",
+        "tags": [
+          "Invoice"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "name": "startDate",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "name": "endDate",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Found summation successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "total"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Getting Invoice Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Getting Invoice Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoice/{id}/lines": {
+      "get": {
+        "summary": "Get all line items for a given invoice",
+        "description": "Get all line item for a given invoice",
+        "tags": [
+          "Invoice"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retrieved invoice line item",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "maxLength": 400
+                      },
+                      "invoiceId": {
+                        "type": "string"
+                      },
+                      "quickbooksId": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                      },
+                      "amountCents": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "category": {
+                        "type": "string",
+                        "maxLength": 100
+                      },
+                      "quickbooksDateCreated": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "dateCreated": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "lastUpdated": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "invoiceId",
+                      "amountCents",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Getting Invoice Line Item Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No Invoice Line Item with given UUID found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Getting Invoice Line Item Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/purchase/bulk": {
+      "post": {
+        "summary": "Create or update a purchase",
+        "description": "Creates a new purchase or updates an existing purchase with the provided information",
+        "tags": [
+          "Purchases"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "quickBooksId": {
+                      "type": "number"
+                    },
+                    "totalAmountCents": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "isRefund": {
+                      "type": "boolean"
+                    },
+                    "companyId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "quickbooksDateCreated": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "totalAmountCents",
+                    "isRefund",
+                    "companyId"
+                  ]
+                },
+                "minItems": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Purchase updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "companyId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "quickBooksId": {
+                        "type": "number"
+                      },
+                      "totalAmountCents": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "quickbooksDateCreated": {
+                        "type": "string"
+                      },
+                      "isRefund": {
+                        "type": "boolean"
+                      },
+                      "dateCreated": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "companyId",
+                      "totalAmountCents",
+                      "isRefund",
+                      "dateCreated"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Purchase created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "companyId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "quickBooksId": {
+                        "type": "number"
+                      },
+                      "totalAmountCents": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "quickbooksDateCreated": {
+                        "type": "string"
+                      },
+                      "isRefund": {
+                        "type": "boolean"
+                      },
+                      "dateCreated": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "companyId",
+                      "totalAmountCents",
+                      "isRefund",
+                      "dateCreated"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Create or update purchase error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Purchase not found when attempting to update"
+          },
+          "500": {
+            "description": "Create or update purchase error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/purchase/{id}": {
+      "get": {
+        "summary": "Fetches a purchase by the given ID",
+        "description": "Finds the purchase with the given ID in the database",
+        "tags": [
+          "Purchases"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful fetch of a purchase from the database",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "companyId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "quickBooksId": {
+                      "type": "number"
+                    },
+                    "totalAmountCents": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "quickbooksDateCreated": {
+                      "type": "string"
+                    },
+                    "isRefund": {
+                      "type": "boolean"
+                    },
+                    "dateCreated": {
+                      "type": "string"
+                    },
+                    "lastUpdated": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "companyId",
+                    "totalAmountCents",
+                    "isRefund",
+                    "dateCreated",
+                    "lastUpdated"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get purchase error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "There does not exist any purchase in the database such that the given id matches their id"
+          },
+          "500": {
+            "description": "Get purchase error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/purchase": {
+      "get": {
+        "summary": "Fetches all purchases for a company",
+        "description": "Retrieves a paginated list of purchases for the specified company",
+        "tags": [
+          "Purchases"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "companyId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "default": 0
+            },
+            "required": false,
+            "name": "pageNumber",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 20
+            },
+            "required": false,
+            "name": "resultsPerPage",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful fetch of company purchases from the database",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "companyId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "quickBooksID": {
+                        "type": "number"
+                      },
+                      "totalAmountCents": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "quickbooksDateCreated": {
+                        "type": "string"
+                      },
+                      "isRefund": {
+                        "type": "boolean"
+                      },
+                      "dateCreated": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "companyId",
+                      "totalAmountCents",
+                      "isRefund",
+                      "dateCreated"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get company purchases error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Get company purchases error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/purchase/bulk/{id}/totalExpenses": {
+      "get": {
+        "summary": "Get the summation of purchases for a company in a date range",
+        "description": "Get the summation of purchases for a company that were made after the start date and before the end date",
+        "tags": [
+          "Purchases"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "name": "startDate",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "name": "endDate",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Found summation successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "total"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Getting Purchase Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Getting Purchase Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/claims": {
+      "post": {
+        "summary": "Create a new claim",
+        "description": "Creates a new claim using a given company ID and disaster ID",
+        "tags": [
+          "Claims"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "companyId": {
+                    "type": "string"
+                  },
+                  "disasterId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "companyId",
+                  "disasterId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Claim created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ACTIVE",
+                        "FILED"
+                      ],
+                      "default": "ACTIVE"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "companyId": {
+                      "type": "string"
+                    },
+                    "disasterId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "createdAt",
+                    "companyId",
+                    "disasterId"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Create Company Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Create Company Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/claims/company/{id}": {
+      "get": {
+        "summary": "Gets all the claims associated with a company",
+        "description": "Gets all the claims for a company using a company ID",
+        "tags": [
+          "Claims"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Claims fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "ACTIVE",
+                          "FILED"
+                        ],
+                        "default": "ACTIVE"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "companyId": {
+                        "type": "string"
+                      },
+                      "disasterId": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "createdAt",
+                      "companyId",
+                      "disasterId"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Create Claims Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Claims not found"
+          },
+          "500": {
+            "description": "Create Claims Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/claims/{id}": {
+      "delete": {
+        "summary": "Deletes a claim from the database",
+        "description": "Deletes a claim based off a claim ID",
+        "tags": [
+          "Claims"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Claim deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Create Claims Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Create Claims Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/claim-locations": {
+      "post": {
+        "summary": "Create a new claim-location link",
+        "description": "Creates a link between a claim and a location using given IDs",
+        "tags": [
+          "Claim-Locations"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "claimId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "locationAddressId": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "required": [
+                  "claimId",
+                  "locationAddressId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Claim-Location link created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "claimId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "locationAddressId": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "claimId",
+                    "locationAddressId"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Create Claim-Location  Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Create Claim-Location  Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/claim-locations/company/{companyId}": {
+      "get": {
+        "summary": "Gets all the locations affected by claims for a company",
+        "description": "Gets all the locations affected by claims for a company based on the given ID",
+        "tags": [
+          "Claim-Locations"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "companyId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Locations fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string"
+                      },
+                      "stateProvince": {
+                        "type": "string"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "streetAddress": {
+                        "type": "string"
+                      },
+                      "postalCode": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "^\\d+$"
+                      },
+                      "county": {
+                        "type": "string"
+                      },
+                      "companyId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "fipsStateCode": {
+                        "type": "number"
+                      },
+                      "fipsCountyCode": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "country",
+                      "stateProvince",
+                      "city",
+                      "streetAddress",
+                      "postalCode",
+                      "companyId",
+                      "fipsStateCode",
+                      "fipsCountyCode"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get Claim-Location Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Locations/Company not found"
+          },
+          "500": {
+            "description": "Get Claim-Location Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/claim-locations/claim/{claimId}/location-address/{locationId}": {
+      "delete": {
+        "summary": "Deletes a claim-location link from the database",
+        "description": "Deletes a claim-location link based off the given claim ID and location ID",
+        "tags": [
+          "Claim-Locations"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "claimId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "locationId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Claim-Location link deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Delete Claim-Location Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Delete Claim-Location Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/preferences/{id}": {
+      "get": {
+        "summary": "Get a user's notificiation preferences",
+        "tags": [
+          "Preferences"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retreived user preferences",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "emailEnabled": {
+                      "type": "boolean"
+                    },
+                    "webNotificationsEnabled": {
+                      "type": "boolean"
+                    },
+                    "notificationFrequency": {
+                      "type": "string",
+                      "enum": [
+                        "daily",
+                        "weekly"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "emailEnabled",
+                    "webNotificationsEnabled",
+                    "notificationFrequency"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get user notification preferences errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Get user notification preferences errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a user's notificiation preferences",
+        "tags": [
+          "Preferences"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "emailEnabled": {
+                    "type": "boolean"
+                  },
+                  "webNotificationsEnabled": {
+                    "type": "boolean"
+                  },
+                  "notificationFrequency": {
+                    "type": "string",
+                    "enum": [
+                      "daily",
+                      "weekly"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully updated user preferences",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "emailEnabled": {
+                      "type": "boolean"
+                    },
+                    "webNotificationsEnabled": {
+                      "type": "boolean"
+                    },
+                    "notificationFrequency": {
+                      "type": "string",
+                      "enum": [
+                        "daily",
+                        "weekly"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "emailEnabled",
+                    "webNotificationsEnabled",
+                    "notificationFrequency"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Update user notification preferences errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Update user notification preferences errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoice/line/bulk": {
+      "post": {
+        "summary": "Bulk create or update new invoice line items",
+        "description": "Creates new invoice line items according to the schema. If there is an invoice line item in the database with the same quickbooks_id, invoice_id pairing, then it will overwrite it's attributes",
+        "tags": [
+          "InvoiceLineItem"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string",
+                      "maxLength": 400
+                    },
+                    "invoiceId": {
+                      "type": "string"
+                    },
+                    "quickbooksId": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true
+                    },
+                    "amountCents": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "category": {
+                      "type": "string",
+                      "maxLength": 100
+                    },
+                    "quickbooksDateCreated": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "invoiceId",
+                    "amountCents"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Invoice line items(s) successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string",
+                        "maxLength": 400
+                      },
+                      "invoiceId": {
+                        "type": "string"
+                      },
+                      "quickbooksId": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                      },
+                      "amountCents": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "category": {
+                        "type": "string",
+                        "maxLength": 100
+                      },
+                      "quickbooksDateCreated": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "dateCreated": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "lastUpdated": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "invoiceId",
+                      "amountCents",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Creating/Updating Invoice Line Item Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Creating/Updating Invoice Line Item Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoice/line/{id}": {
+      "get": {
+        "summary": "Get invoice line item by id",
+        "description": "Get invoice line item with matching ID from the database",
+        "tags": [
+          "InvoiceLineItem"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retrieved invoice line item",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string",
+                      "maxLength": 400
+                    },
+                    "invoiceId": {
+                      "type": "string"
+                    },
+                    "quickbooksId": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true
+                    },
+                    "amountCents": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "category": {
+                      "type": "string",
+                      "maxLength": 100
+                    },
+                    "quickbooksDateCreated": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "dateCreated": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "lastUpdated": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "invoiceId",
+                    "amountCents",
+                    "dateCreated",
+                    "lastUpdated"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Getting Invoice Line Item Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No Invoice line item with given UUID found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Getting Invoice Line Item Error",
             "content": {
               "application/json": {
                 "schema": {
