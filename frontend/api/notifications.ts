@@ -1,4 +1,4 @@
-import { GetNotificationsResponse, NotificationFilters } from "@/types/notifications";
+import { MarkReadNotificationResponse, GetNotificationsResponse, NotificationFilters, MarkAllAsReadResponse } from "@/types/notifications";
 import { authHeader, authWrapper, client } from "./client";
 
 export const getNotifications = async (
@@ -11,9 +11,10 @@ export const getNotifications = async (
         // path: { id: userId },
         path: { id: "5d3c5843-31d2-4eaf-a290-cf753e9fa32b"},
         query: {
-          type: filters?.type,
+          type: "web",
           page: filters?.page,
           limit: filters?.limit,
+          status: filters?.status
         },
       },
       headers: authHeader(token),
@@ -27,4 +28,49 @@ export const getNotifications = async (
   };
 
   return authWrapper<GetNotificationsResponse>()(req);
+};
+
+export const updateNotificationStatus = async (
+    notificationId: string,
+    status: string
+): Promise<MarkReadNotificationResponse> => {
+    const req = async (token: string): Promise<MarkReadNotificationResponse> => {
+    const path = status == 'read' ? "/disasterNotification/{id}/markAsRead" : "/disasterNotification/{id}/markUnread"
+    const { data, error, response } = await client.PATCH(path, {
+      params: {
+        // path: { id: notificationId }, // CHANGE BACK
+        path: { id: "5d3c5843-31d2-4eaf-a290-cf753e9fa32b"},
+      },
+      headers: authHeader(token),
+    });
+
+    if (response.ok) {
+      return data!;
+    } else {
+      throw Error(error?.error);
+    }
+  };
+
+  return authWrapper<MarkReadNotificationResponse>()(req);
+}
+
+export const markAllNotificationsAsRead = async (
+    userId: string
+): Promise<MarkAllAsReadResponse> => {
+    const req = async (token: string): Promise<MarkAllAsReadResponse> => {
+        const { data, error, response } = await client.PATCH("/disasterNotification/user/{id}/markAllAsRead", {
+            params: {
+                path: { id: userId },
+            },
+            headers: authHeader(token),
+        });
+
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error || "Failed to mark all as read");
+        }
+    };
+
+    return authWrapper<MarkAllAsReadResponse>()(req);
 };

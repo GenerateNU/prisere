@@ -56,3 +56,11 @@ export const DeleteNotificationResponseSchema = z.object({
     deletedId: z.string(),
 });
 export type DeleteNotificationResponse = z.infer<typeof DeleteNotificationResponseSchema>;
+
+// Mark all notifications as read
+export const MarkAllAsReadResponseSchema = z.object({
+    success: z.boolean(),
+    updatedCount: z.number(),
+});
+
+export type MarkAllAsReadResponse = z.infer<typeof MarkAllAsReadResponseSchema>;

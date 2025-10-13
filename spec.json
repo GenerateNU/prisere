@@ -1307,48 +1307,52 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Successfully retrieved user notifications",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": { "type": "string" },
-                      "userId": { "type": "string" },
-                      "femaDisasterId": { "type": "string" },
-                      "notificationType": {
-                        "type": "string",
-                        "enum": ["web", "email"]
-                      },
-                      "notificationStatus": {
-                        "type": "string",
-                        "nullable": true,
-                        "enum": ["unread", "read", "acknowledged"]
-                      },
-                      "firstSentAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "nullable": true
-                      },
-                      "lastSentAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "nullable": true
-                      },
-                      "acknowledgedAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "nullable": true
+            "200": {
+              "description": "Successfully retrieved user notifications",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string" },
+                        "userId": { "type": "string" },
+                        "femaDisasterId": { "type": "string" },
+                        "locationAddressId": { "type": "string" },
+                        "notificationStatus": { "type": "string" },
+                        "femaDisaster": {
+                          "type": "object",
+                          "properties": {
+                            "disasterNumber": { "type": "number" },
+                            "incidentType": { "type": "string" },
+                            "designatedArea": { "type": "string" },
+                            "declarationDate": { "type": "string" }
+                          }
+                        },
+                        "locationAddress": {
+                          "type": "object",
+                          "properties": {
+                            "id": { "type": "string" },
+                            "streetAddress": { "type": "string" },
+                            "city": { "type": "string" },
+                            "stateProvince": { "type": "string" },
+                            "postalCode": { "type": "string" },
+                            "company": {
+                              "type": "object",
+                              "properties": {
+                                "id": { "type": "string" },
+                                "name": { "type": "string" }
+                              }
+                            }
+                          }
+                        }
                       }
-                    },
-                    "required": ["id", "userId", "femaDisasterId", "notificationType"]
+                    }
                   }
                 }
               }
-            }
+            }   
           },
           "400": {
             "description": "Invalid parameters",
@@ -1460,10 +1464,10 @@
         }
       }
     },
-    "/disasterNotification/{id}/acknowledge": {
+    "/disasterNotification/{id}/markAsRead": {
       "patch": {
-        "summary": "Acknowledge notification",
-        "description": "Marks a specific notification as acknowledged",
+        "summary": "MarkRead notification",
+        "description": "Marks a specific notification as read",
         "tags": [
           "Disaster Notifications"
         ],
@@ -1481,7 +1485,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Notification successfully acknowledged",
+            "description": "Notification successfully read",
             "content": {
               "application/json": {
                 "schema": {
@@ -1496,6 +1500,7 @@
                     "femaDisasterId": {
                       "type": "string"
                     },
+                    "locationAddressId": { "type": "string" },
                     "notificationType": {
                       "type": "string",
                       "enum": [
@@ -1509,7 +1514,7 @@
                       "enum": [
                         "unread",
                         "read",
-                        "acknowledged"
+                        "read"
                       ]
                     },
                     "firstSentAt": {
@@ -1540,7 +1545,7 @@
                         }
                       ]
                     },
-                    "acknowledgedAt": {
+                    "readAt": {
                       "anyOf": [
                         {
                           "type": "string",
@@ -1559,6 +1564,7 @@
                     "id",
                     "userId",
                     "femaDisasterId",
+                    "locationAddressId",
                     "notificationType"
                   ]
                 }
@@ -1604,10 +1610,10 @@
         }
       }
     },
-    "/disasterNotification/{id}/dismiss": {
+    "/disasterNotification/{id}/markUnread": {
       "patch": {
         "summary": "Dismiss notification",
-        "description": "Marks a specific notification as read/dismissed",
+        "description": "Marks a specific notification as read/markUnreaded",
         "tags": [
           "Disaster Notifications"
         ],
@@ -1625,7 +1631,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Notification successfully dismissed",
+            "description": "Notification successfully markUnreaded",
             "content": {
               "application/json": {
                 "schema": {
@@ -1640,6 +1646,7 @@
                     "femaDisasterId": {
                       "type": "string"
                     },
+                    "locationAddressId": { "type": "string" },
                     "notificationType": {
                       "type": "string",
                       "enum": [
@@ -1653,7 +1660,7 @@
                       "enum": [
                         "unread",
                         "read",
-                        "acknowledged"
+                        "read"
                       ]
                     },
                     "firstSentAt": {
@@ -1684,7 +1691,7 @@
                         }
                       ]
                     },
-                    "acknowledgedAt": {
+                    "readAt": {
                       "anyOf": [
                         {
                           "type": "string",
@@ -1703,6 +1710,7 @@
                     "id",
                     "userId",
                     "femaDisasterId",
+                    "locationAddressId",
                     "notificationType"
                   ]
                 }
@@ -1769,6 +1777,7 @@
                     "femaDisasterId": {
                       "type": "string"
                     },
+                    "locationAddressId": { "type": "string" },
                     "notificationType": {
                       "type": "string",
                       "enum": [
@@ -1780,6 +1789,7 @@
                   "required": [
                     "userId",
                     "femaDisasterId",
+                    "locationAddressId",
                     "notificationType"
                   ]
                 }
@@ -1806,6 +1816,7 @@
                       "femaDisasterId": {
                         "type": "string"
                       },
+                      "locationAddressId": { "type": "string" },
                       "notificationType": {
                         "type": "string",
                         "enum": [
@@ -1819,7 +1830,7 @@
                         "enum": [
                           "unread",
                           "read",
-                          "acknowledged"
+                          "read"
                         ]
                       },
                       "firstSentAt": {
@@ -1850,7 +1861,7 @@
                           }
                         ]
                       },
-                      "acknowledgedAt": {
+                      "readAt": {
                         "anyOf": [
                           {
                             "type": "string",
@@ -2159,5 +2170,4 @@
         }
       }
     }
-  }
 }

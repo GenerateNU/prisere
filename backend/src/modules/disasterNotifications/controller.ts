@@ -24,6 +24,8 @@ export interface IDisasterNotificationController {
     ): Promise<TypedResponse<DismissNotificationResponse | { error: string }> | Response>;
     bulkCreateNotifications(ctx: Context): Promise<TypedResponse<BulkCreateNotificationsResponse> | Response>;
     deleteNotification(ctx: Context): Promise<TypedResponse<DeleteNotificationResponse | { error: string }> | Response>;
+    markAllAsRead(ctx: Context): Promise<TypedResponse<{ success: boolean; updatedCount: number } | { error: string }>>;
+            
 }
 
 export class DisasterNotificationController implements IDisasterNotificationController {
@@ -84,6 +86,20 @@ export class DisasterNotificationController implements IDisasterNotificationCont
             console.log("Marking notification as read");
             const notification = await this.notificationService.markAsReadNotification(notificationId);
             return ctx.json(notification, 200);
+        }
+    );
+
+    markAllAsRead = withControllerErrorHandling(
+        async (ctx: Context): Promise<TypedResponse<{ success: boolean; updatedCount: number } | { error: string }>> => {
+            const userId = ctx.req.param("id");
+
+            if (!validate(userId)) {
+                return ctx.json({ error: "Invalid user ID format" }, 400);
+            }
+
+            const updatedCount = await this.notificationService.markAllAsRead(userId);
+
+            return ctx.json({ success: true, updatedCount }, 200);
         }
     );
 
