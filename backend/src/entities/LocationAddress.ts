@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { Company } from "./Company.js";
 import { DisasterNotification } from "./DisasterNotification.js";
+import { ClaimLocation } from "./ClaimLocation.js";
 
 //Represents an address for a location of a company
 @Entity("location_address")
@@ -31,7 +32,7 @@ export class LocationAddress {
 
     @ManyToOne(() => Company)
     @JoinColumn({ name: "companyId" })
-    company!: Company;
+    company?: Company;
 
     @Column()
     fipsStateCode!: number;
@@ -41,4 +42,7 @@ export class LocationAddress {
 
     @OneToMany(() => DisasterNotification, (notification: { locationAddress: any }) => notification.locationAddress)
     disasterNotifications?: DisasterNotification[];
+
+    @OneToMany(() => ClaimLocation, (claimLocation) => claimLocation.locationAddress)
+    claimLocations?: ClaimLocation[];
 }

@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import Boom from "@hapi/boom";
-import { CreateOrChangePurchaseDTO, GetCompanyPurchasesDTO } from "./types";
+import { CreateOrChangePurchaseDTO, GetCompanyPurchasesByDateDTO, GetCompanyPurchasesDTO } from "./types";
 import { Purchase } from "../../entities/Purchase";
 import { plainToInstance } from "class-transformer";
 
@@ -8,6 +8,7 @@ export interface IPurchaseTransaction {
     createOrUpdatePurchase(payload: CreateOrChangePurchaseDTO): Promise<Purchase[]>;
     getPurchase(id: string): Promise<Purchase>;
     getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<Purchase[]>;
+    sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number>;
 }
 
 export class PurchaseTransaction implements IPurchaseTransaction {
@@ -55,5 +56,23 @@ export class PurchaseTransaction implements IPurchaseTransaction {
             skip: numToSkip,
             take: resultsPerPage,
         });
+    }
+
+    async sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number> {
+        const { companyId, startDate, endDate } = payload;
+
+        const summation = await this.db
+            .createQueryBuilder(Purchase, "purchase")
+            .select("SUM(purchase.totalAmountCents)", "total")
+            .where("purchase.companyId = :companyId", { companyId })
+            .andWhere("purchase.dateCreated BETWEEN :startDate AND :endDate", {
+                startDate: new Date(startDate),
+                endDate: new Date(endDate),
+            })
+            .getRawOne();
+
+        const totalCents: number = summation?.total || 0;
+
+        return totalCents;
     }
 }
