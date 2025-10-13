@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getNotifications, updateNotificationStatus, markAllNotificationsAsRead } from "@/api/notifications";
 import { useState } from "react";
-import type { DisasterNotificationType } from "../../../backend/src/types/DisasterNotification";
+import type { DisasterNotificationWithRealtionsType } from "../../../backend/src/types/DisasterNotification";
 import Link from "next/link";
 type NotificationStatus = "unread" | "read";
 type SortOption = "most-recent" | "oldest-first";
@@ -62,7 +62,7 @@ export default function NotificationsPage({ userId }: { userId: string }) {
   };
 
   // Client-side sorting (since backend returns paginated data)
-  const sortedData = data?.sort((a, b) => {
+  const sortedData = data?.sort((a: { createdAt: Date; femaDisaster: { declarationDate: Date; }; }, b: { createdAt: Date; femaDisaster: { declarationDate: Date; }; }) => {
     // First, sort by createdAt date
     const createdAtA = new Date(a.createdAt || 0).getTime();
     const createdAtB = new Date(b.createdAt || 0).getTime();
@@ -80,6 +80,7 @@ export default function NotificationsPage({ userId }: { userId: string }) {
     });
 
   // Pagination handlers
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedNotification, setSelectedNotification] = useState<any>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const handleNextPage = () => {
@@ -98,7 +99,7 @@ export default function NotificationsPage({ userId }: { userId: string }) {
   };
 
   // View extra details handlers
-  const handleViewDetails = (notification: any) => {
+  const handleViewDetails = (notification: DisasterNotificationWithRealtionsType) => {
     setSelectedNotification(notification);
     setShowDetailsModal(true);
     };
@@ -254,7 +255,7 @@ const handleMarkAllAsRead = () => {
       </div>
 
       <div className="space-y-4">
-        {sortedData?.map((notification: DisasterNotificationType) => (
+        {sortedData?.map((notification: DisasterNotificationWithRealtionsType) => (
           <div
             key={notification.id}
             className="p-4 bg-white border rounded shadow hover:shadow-md transition"

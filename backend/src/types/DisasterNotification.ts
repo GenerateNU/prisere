@@ -1,4 +1,7 @@
 import { z } from "zod";
+import { CreateUserResponseSchema } from "../types/User";
+import { FemaDisasterSchema } from "../types/disaster/get";
+import { LocationAddressSchemaType } from "./Location";
 
 const notificationTypes = ["web", "email"] as const;
 const notificationStatus = ["unread", "read", "acknowledged"] as const;
@@ -15,7 +18,23 @@ export const DisasterNotification = z.object({
     createdAt: z.union([z.date(), z.string()]),
 });
 
+export const DisasterNotificationWithRelations = z.object({
+    id: z.string(),
+    userId: z.string(),
+    femaDisasterId: z.string(),
+    notificationType: z.enum(notificationTypes),
+    notificationStatus: z.enum(notificationStatus).optional().nullable(),
+    firstSentAt: z.union([z.date(), z.string()]).optional().nullable(),
+    lastSentAt: z.union([z.date(), z.string()]).optional().nullable(),
+    acknowledgedAt: z.union([z.date(), z.string()]).optional().nullable(),
+    createdAt: z.union([z.date(), z.string()]),
+    user: CreateUserResponseSchema,
+    femaDisaster: FemaDisasterSchema,
+    locationAddress: LocationAddressSchemaType,
+});
+
 export type DisasterNotificationType = z.infer<typeof DisasterNotification>;
+export type DisasterNotificationWithRealtionsType = z.infer<typeof DisasterNotificationWithRelations>;
 
 export type NotificationTypeFilter = z.infer<typeof notificationTypes>;
 
@@ -34,7 +53,7 @@ export type MarkReadNotificationResponse = DisasterNotificationType;
 
 // POST /api/notifications/{id}/dismiss
 export const DismissNotificationResponseSchema = DisasterNotification;
-export type DismissNotificationResponse = DisasterNotificationType;
+export type DismissNotificationResponse = z.infer<typeof DismissNotificationResponseSchema>;
 
 // POST /api/notifications
 export const BulkCreateNotificationsRequestSchema = z.array(

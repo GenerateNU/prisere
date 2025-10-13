@@ -49,7 +49,6 @@ export class DisasterNotificationService implements IDisasterNotificationService
             limit?: number,
             status?: string
         ): Promise<DisasterNotification[]> => {
-            console.log("Got request in service layer");
             return await this.notificationTransaction.getUserNotifications(payload, type, page, limit, status);
         }
     );
@@ -152,9 +151,7 @@ export class DisasterNotificationService implements IDisasterNotificationService
         }
     });
 
-    markAllAsRead = withServiceErrorHandling(
-        async (userId: string): Promise<number> => {
-            return await this.notificationTransaction.markAllAsRead(userId);
-        }
-    );
+    markAllAsRead = withServiceErrorHandling(async (userId: string): Promise<number> => {
+        return await this.notificationTransaction.markAllAsRead(userId);
+    });
 }
