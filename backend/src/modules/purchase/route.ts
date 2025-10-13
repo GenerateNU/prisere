@@ -14,6 +14,7 @@ export const purchaseRoutes = (db: DataSource): Hono => {
     PurchaseRoutes.post("/bulk", (ctx) => controller.createOrUpdatePurchase(ctx));
     PurchaseRoutes.get("/:id", (ctx) => controller.getPurchase(ctx));
     PurchaseRoutes.get("/", (ctx) => controller.getPurchasesForCompany(ctx));
+    PurchaseRoutes.get("/bulk/:id/totalExpenses", (ctx) => controller.sumPurchasesByCompanyAndDateRange(ctx));
 
     return PurchaseRoutes;
 };
