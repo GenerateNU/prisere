@@ -2,12 +2,13 @@ import { DataSource, In } from "typeorm";
 import Boom from "@hapi/boom";
 import { plainToInstance } from "class-transformer";
 import { Invoice } from "../../entities/Invoice";
-import { CreateOrUpdateInvoicesDTO, GetCompanyInvoicesDTO } from "../../types/Invoice";
+import { CreateOrUpdateInvoicesDTO, GetCompanyInvoicesDTO, GetCompanyInvoicesByDateDTO } from "../../types/Invoice";
 
 export interface IInvoiceTransaction {
     createOrUpdateInvoices(payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]>;
     getInvoiceById(id: string): Promise<Invoice>;
     getInvoicesForCompany(payload: GetCompanyInvoicesDTO): Promise<Invoice[]>;
+    sumInvoicesByCompanyAndDateRange(payload: GetCompanyInvoicesByDateDTO): Promise<number>;
 
     /**
      * Validates that all the passed invoice IDs exist in the database
@@ -71,5 +72,23 @@ export class InvoiceTransaction implements IInvoiceTransaction {
             return missing;
         }
         return [];
+    }
+
+    async sumInvoicesByCompanyAndDateRange(payload: GetCompanyInvoicesByDateDTO): Promise<number> {
+        const { companyId, startDate, endDate } = payload;
+
+        const summation = await this.db
+            .createQueryBuilder(Invoice, "invoice")
+            .select("SUM(invoice.totalAmountCents)", "total")
+            .where("invoice.companyId = :companyId", { companyId })
+            .andWhere("invoice.quickbooksDateCreated BETWEEN :startDate AND :endDate", {
+                startDate: new Date(startDate),
+                endDate: new Date(endDate),
+            })
+            .getRawOne();
+
+        const totalCents: number = summation?.total || 0;
+
+        return totalCents;
     }
 }

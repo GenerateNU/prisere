@@ -1,6 +1,6 @@
 import { IInvoiceTransaction } from "./transaction";
 import { withServiceErrorHandling } from "../../utilities/error";
-import { CreateOrUpdateInvoicesDTO, GetCompanyInvoicesDTO } from "../../types/Invoice";
+import { CreateOrUpdateInvoicesDTO, GetCompanyInvoicesByDateDTO, GetCompanyInvoicesDTO } from "../../types/Invoice";
 import { Invoice } from "../../entities/Invoice";
 import Boom from "@hapi/boom";
 import { ICompanyTransaction } from "../company/transaction";
@@ -10,6 +10,7 @@ export interface IInvoiceService {
     bulkCreateOrUpdateInvoice(payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]>;
     getInvoiceById(id: string): Promise<Invoice>;
     getInvoicesForCompany(payload: GetCompanyInvoicesDTO): Promise<Invoice[]>;
+    sumInvoicesByCompanyAndDateRange(payload: GetCompanyInvoicesByDateDTO): Promise<number>;
 }
 
 export class InvoiceService implements IInvoiceService {
@@ -64,4 +65,12 @@ export class InvoiceService implements IInvoiceService {
 
         return invoices;
     });
+
+    sumInvoicesByCompanyAndDateRange = withServiceErrorHandling(
+        async (payload: GetCompanyInvoicesByDateDTO): Promise<number> => {
+            const invoices = await this.invoiceTransaction.sumInvoicesByCompanyAndDateRange(payload);
+
+            return invoices;
+        }
+    );
 }

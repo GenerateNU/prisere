@@ -7,6 +7,8 @@ import {
     GetCompanyPurchasesResponseSchema,
     CreateOrChangePurchaseDTOSchema,
     CreateOrChangePurchasesResponseSchema,
+    GetPurchaseDTOSchema,
+    GetCompanyPurchasesSummationResponseSchema,
 } from "../../modules/purchase/types";
 import { IPurchaseController, PurchaseController } from "../purchase/controller";
 import { IPurchaseService, PurchaseService } from "../purchase/service";
@@ -21,6 +23,7 @@ export const addOpenApiPurchaseRoutes = (openApi: OpenAPIHono, db: DataSource): 
     openApi.openapi(createOrUpdatePurchaseRoute, (ctx) => controller.createOrUpdatePurchase(ctx));
     openApi.openapi(getPurchaseRoute, (ctx) => controller.getPurchase(ctx));
     openApi.openapi(getPurchasesForCompanyRoute, (ctx) => controller.getPurchasesForCompany(ctx));
+    openApi.openapi(sumPurchasesByCompanyAndDateRange, (ctx) => controller.sumPurchasesByCompanyAndDateRange(ctx));
 
     return openApi;
 };
@@ -31,7 +34,7 @@ const GetPurchaseDTOSchemaLocal = z.object({
 
 const createOrUpdatePurchaseRoute = createRoute({
     method: "post",
-    path: "/purchase",
+    path: "/purchase/bulk",
     summary: "Create or update a purchase",
     description: "Creates a new purchase or updates an existing purchase with the provided information",
     request: {
@@ -111,6 +114,30 @@ const getPurchasesForCompanyRoute = createRoute({
             description: "Successful fetch of company purchases from the database",
         },
         ...openApiErrorCodes("Get company purchases error"),
+    },
+    tags: ["Purchases"],
+});
+
+const sumPurchasesByCompanyAndDateRange = createRoute({
+    method: "get",
+    path: "/purchase/bulk/{id}/totalExpenses",
+    summary: "Get the summation of purchases for a company in a date range",
+    description:
+        "Get the summation of purchases for a company that were made after the start date and before the end date",
+    request: {
+        params: GetPurchaseDTOSchema,
+        query: z.object({ startDate: z.iso.datetime(), endDate: z.iso.datetime() }),
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetCompanyPurchasesSummationResponseSchema,
+                },
+            },
+            description: "Found summation successfully",
+        },
+        ...openApiErrorCodes("Getting Purchase Error"),
     },
     tags: ["Purchases"],
 });
