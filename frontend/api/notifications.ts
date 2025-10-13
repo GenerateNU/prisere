@@ -8,8 +8,7 @@ export const getNotifications = async (
   const req = async (token: string): Promise<GetNotificationsResponse> => {
     const { data, error, response } = await client.GET("/disasterNotification/{id}", {
       params: {
-        // path: { id: userId },
-        path: { id: "5d3c5843-31d2-4eaf-a290-cf753e9fa32b"},
+        path: { id: userId },
         query: {
           type: "web",
           page: filters?.page,
@@ -59,8 +58,7 @@ export const markAllNotificationsAsRead = async (
     const req = async (token: string): Promise<MarkAllAsReadResponse> => {
         const { data, error, response } = await client.PATCH("/disasterNotification/user/{id}/markAllAsRead", {
             params: {
-                // path: { id: userId },
-                path: { id: "5d3c5843-31d2-4eaf-a290-cf753e9fa32b"},
+                path: { id: userId },
             },
             headers: authHeader(token),
         });
