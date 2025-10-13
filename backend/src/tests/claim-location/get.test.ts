@@ -9,6 +9,7 @@ import CompanySeeder from "../../database/seeds/company.seed";
 import { FemaDisasterSeeder } from "../../database/seeds/femaDisaster.seed";
 import { ClaimSeeder } from "../../database/seeds/claim.seed";
 import { LocationAddressSeeder } from "../../database/seeds/locationAddress.seed";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("GET /claim-locations/company/:id", () => {
     let app: Hono;
@@ -45,7 +46,7 @@ describe("GET /claim-locations/company/:id", () => {
 
     test("GET /claim-locations/company/:id - Success (multiple disasters, two locations)", async () => {
         const companyId = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
-        const response = await app.request(`/claim-locations/company/${companyId}`);
+        const response = await app.request(TESTING_PREFIX + `/claim-locations/company/${companyId}`);
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -58,7 +59,7 @@ describe("GET /claim-locations/company/:id", () => {
 
     test("GET /claim-locations/company/:id - Success (one disaster, one location)", async () => {
         const companyId = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
-        const response = await app.request(`/claim-locations/company/${companyId}`);
+        const response = await app.request(TESTING_PREFIX + `/claim-locations/company/${companyId}`);
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -69,14 +70,14 @@ describe("GET /claim-locations/company/:id", () => {
 
     test("GET /claim-locations/company/:id - Company doesn't exist", async () => {
         const companyId = "f47ac10b-58cc-4372-j2009-0e02b2c35470";
-        const response = await app.request(`/claim-locations/company/${companyId}`);
+        const response = await app.request(TESTING_PREFIX + `/claim-locations/company/${companyId}`);
 
         expect(response.status).toBe(404);
     });
 
     test("GET /claim-locations/company/:id - invalid UUID", async () => {
         const companyId = "invalid";
-        const response = await app.request(`/claim-locations/company/${companyId}`);
+        const response = await app.request(TESTING_PREFIX + `/claim-locations/company/${companyId}`);
 
         expect(response.status).toBe(404);
     });
