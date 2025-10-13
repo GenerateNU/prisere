@@ -1600,6 +1600,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/invoice/bulk/{id}/totalIncome": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the summation of invoices for a company in a date range
+         * @description Get the summation of invoices for a company that were made after the start date and before the end date
+         */
+        get: {
+            parameters: {
+                query: {
+                    startDate: string;
+                    endDate: string;
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Found summation successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            total: number;
+                        };
+                    };
+                };
+                /** @description Getting Invoice Error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Getting Invoice Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/invoice/{id}/lines": {
         parameters: {
             query?: never;
@@ -1687,71 +1755,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/purchase": {
+    "/purchase/bulk": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * Fetches all purchases for a company
-         * @description Retrieves a paginated list of purchases for the specified company
-         */
-        get: {
-            parameters: {
-                query: {
-                    companyId: string;
-                    pageNumber?: number;
-                    resultsPerPage?: number;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful fetch of company purchases from the database */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            id: string;
-                            companyId: string;
-                            quickBooksID?: number;
-                            totalAmountCents: number;
-                            quickbooksDateCreated?: string;
-                            isRefund: boolean;
-                            dateCreated: string;
-                        }[];
-                    };
-                };
-                /** @description Get company purchases error */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                        };
-                    };
-                };
-                /** @description Get company purchases error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
+        get?: never;
         put?: never;
         /**
          * Create or update a purchase
@@ -1771,7 +1782,7 @@ export interface paths {
                         totalAmountCents: number;
                         isRefund: boolean;
                         companyId: string;
-                        /** Format: date */
+                        /** Format: date-time */
                         quickbooksDateCreated?: string;
                     }[];
                 };
@@ -1907,6 +1918,148 @@ export interface paths {
                     content?: never;
                 };
                 /** @description Get purchase error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/purchase": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Fetches all purchases for a company
+         * @description Retrieves a paginated list of purchases for the specified company
+         */
+        get: {
+            parameters: {
+                query: {
+                    companyId: string;
+                    pageNumber?: number;
+                    resultsPerPage?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful fetch of company purchases from the database */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            companyId: string;
+                            quickBooksId?: number;
+                            totalAmountCents: number;
+                            quickbooksDateCreated?: string;
+                            isRefund: boolean;
+                            dateCreated: string;
+                            lastUpdated: string;
+                        }[];
+                    };
+                };
+                /** @description Get company purchases error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Get company purchases error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/purchase/bulk/{id}/totalExpenses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the summation of purchases for a company in a date range
+         * @description Get the summation of purchases for a company that were made after the start date and before the end date
+         */
+        get: {
+            parameters: {
+                query: {
+                    startDate: string;
+                    endDate: string;
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Found summation successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            total: number;
+                        };
+                    };
+                };
+                /** @description Getting Purchase Error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Getting Purchase Error */
                 500: {
                     headers: {
                         [name: string]: unknown;

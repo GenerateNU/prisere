@@ -1,3 +1,7 @@
+"use client";
+
+import { getAllInvoicesForCompany } from "@/api/invoice";
+import { getAllPurchasesForCompany } from "@/api/purchase";
 import {
     Table,
     TableBody,
@@ -7,33 +11,33 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { createSupabaseClient } from "@/utils/supabase/server";
-const API_URL = process.env.NEXT_PUBLIC_LOCAL_API_BASE_URL;
+import { Invoice } from "@/types/invoice";
+import { Purchase } from "@/types/purchase";
+import { useQuery } from "@tanstack/react-query";
 
-type CashFlows = Purchase | Invoice;
+type InvoiceOrPurchase = Invoice | Purchase;
 
-export default function ExpenseTable() {
-    const [purchases, setPurchases] = useState<Purchase[]>([]);
-    const [loading, setLoading] = useState(true);
+export default function ExpenseTable({ companyId } : { companyId : string }) {
+    const purchases = useQuery({
+        queryKey: ["purchases-for-company", companyId],
+        queryFn: () => getAllPurchasesForCompany(companyId),
+    });
 
-    useEffect(() => {
-        async function fetchPurchases() {
-            // Your API call here
-            const response = await fetch('http://localhost:3001/purchase?companyId=...');
-            const data = await response.json();
-            setPurchases(data.purchases);
-            setLoading(false);
-        }
+    const invoices = useQuery({
+        queryKey: ["invoices-for-company", companyId],
+        queryFn: () => getAllInvoicesForCompany(companyId),
+    });
 
-        fetchPurchases();
-    }, []);
+    if (purchases.isPending || invoices.isPending) return <div>Loading expenses and invoices...</div>;
+
+    if (purchases.error || invoices.error) return <div>Error loading expenses and invoices</div>;
 
     return (
-        <BasicTable />
+        <BasicTable purchases={purchases.data} invoices={invoices.data}  />
     );
 }
 
-function BasicTable() {
+function BasicTable({ purchases, invoices, }: { purchases: Purchase[]; invoices: Invoice[]; }) {
     return (
         <Table>
             <TableCaption>A list of your recent cash-flows.</TableCaption>
@@ -46,14 +50,24 @@ function BasicTable() {
                     <TableHead>Disaster?</TableHead>
                 </TableRow>
             </TableHeader>
-            <TableBody>
+            {purchases.map((purchase) => (
                 <TableRow>
-                    <TableCell className="font-medium">INV001</TableCell>
-                    <TableCell>Paid</TableCell>
-                    <TableCell>Credit Card</TableCell>
-                    <TableCell>$250.00</TableCell>
+                    <TableCell>Purchase</TableCell>
+                    <TableCell>${(purchase.totalAmountCents / 100).toFixed(2)}</TableCell>
+                    <TableCell>{new Date(purchase.dateCreated).toLocaleDateString()}</TableCell>
+                    <TableCell>WIP</TableCell>
+                    <TableHead>WIP</TableHead>
                 </TableRow>
-            </TableBody>
+            ))}
+            {invoices.map((invoice) => (
+                <TableRow>
+                    <TableCell>Invoice</TableCell>
+                    <TableCell>${(invoice.totalAmountCents / 100).toFixed(2)}</TableCell>
+                    <TableCell>{new Date(invoice.dateCreated).toLocaleDateString()}</TableCell>
+                    <TableCell>WIP</TableCell>
+                    <TableHead>WIP</TableHead>
+                </TableRow>
+            ))}
         </Table>
     );
 }

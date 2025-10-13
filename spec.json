@@ -2453,6 +2453,101 @@
         }
       }
     },
+    "/invoice/bulk/{id}/totalIncome": {
+      "get": {
+        "summary": "Get the summation of invoices for a company in a date range",
+        "description": "Get the summation of invoices for a company that were made after the start date and before the end date",
+        "tags": [
+          "Invoice"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "name": "startDate",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "name": "endDate",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Found summation successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "total"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Getting Invoice Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Getting Invoice Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/invoice/{id}/lines": {
       "get": {
         "summary": "Get all line items for a given invoice",
@@ -2586,7 +2681,7 @@
         }
       }
     },
-    "/purchase": {
+    "/purchase/bulk": {
       "post": {
         "summary": "Create or update a purchase",
         "description": "Creates a new purchase or updates an existing purchase with the provided information",
@@ -2617,7 +2712,7 @@
                     },
                     "quickbooksDateCreated": {
                       "type": "string",
-                      "format": "date"
+                      "format": "date-time"
                     }
                   },
                   "required": [
@@ -2764,129 +2859,6 @@
             }
           }
         }
-      },
-      "get": {
-        "summary": "Fetches all purchases for a company",
-        "description": "Retrieves a paginated list of purchases for the specified company",
-        "tags": [
-          "Purchases"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 1
-            },
-            "required": true,
-            "name": "companyId",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "number",
-              "minimum": 0,
-              "default": 0
-            },
-            "required": false,
-            "name": "pageNumber",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "number",
-              "minimum": 0,
-              "exclusiveMinimum": true,
-              "default": 20
-            },
-            "required": false,
-            "name": "resultsPerPage",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful fetch of company purchases from the database",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "minLength": 1
-                      },
-                      "companyId": {
-                        "type": "string",
-                        "minLength": 1
-                      },
-                      "quickBooksID": {
-                        "type": "number"
-                      },
-                      "totalAmountCents": {
-                        "type": "number",
-                        "minimum": 0
-                      },
-                      "quickbooksDateCreated": {
-                        "type": "string"
-                      },
-                      "isRefund": {
-                        "type": "boolean"
-                      },
-                      "dateCreated": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "id",
-                      "companyId",
-                      "totalAmountCents",
-                      "isRefund",
-                      "dateCreated"
-                    ]
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Get company purchases error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Get company purchases error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/purchase/{id}": {
@@ -2978,6 +2950,230 @@
           },
           "500": {
             "description": "Get purchase error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/purchase": {
+      "get": {
+        "summary": "Fetches all purchases for a company",
+        "description": "Retrieves a paginated list of purchases for the specified company",
+        "tags": [
+          "Purchases"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "companyId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "default": 0
+            },
+            "required": false,
+            "name": "pageNumber",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 20
+            },
+            "required": false,
+            "name": "resultsPerPage",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful fetch of company purchases from the database",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "companyId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "quickBooksId": {
+                        "type": "number"
+                      },
+                      "totalAmountCents": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "quickbooksDateCreated": {
+                        "type": "string"
+                      },
+                      "isRefund": {
+                        "type": "boolean"
+                      },
+                      "dateCreated": {
+                        "type": "string"
+                      },
+                      "lastUpdated": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "companyId",
+                      "totalAmountCents",
+                      "isRefund",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get company purchases error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Get company purchases error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/purchase/bulk/{id}/totalExpenses": {
+      "get": {
+        "summary": "Get the summation of purchases for a company in a date range",
+        "description": "Get the summation of purchases for a company that were made after the start date and before the end date",
+        "tags": [
+          "Purchases"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "name": "startDate",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "name": "endDate",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Found summation successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "total"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Getting Purchase Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Getting Purchase Error",
             "content": {
               "application/json": {
                 "schema": {
