@@ -2,73 +2,101 @@
 
 import { getAllInvoicesForCompany } from "@/api/invoice";
 import { getAllPurchasesForCompany } from "@/api/purchase";
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
-import { Invoice } from "@/types/invoice";
-import { Purchase } from "@/types/purchase";
 import { useQuery } from "@tanstack/react-query";
+import { Purchase } from "../../types/purchase";
+import { Invoice } from "@/types/invoice";
+import { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import BasicTable from "./BasicTable";
+import PaginationControls from "./PaginationControls";
+import ResultsPerPageSelect from "./ResultsPerPageSelect";
+import {
+    Card,
+    CardAction,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+import { Filter, Printer } from "lucide-react"
 
 type InvoiceOrPurchase = Invoice | Purchase;
+export const columns: ColumnDef<InvoiceOrPurchase>[] = [
+    {
+        id: "type",
+        header: "Type",
+    },
+    {
+        accessorKey: "totalAmountCents",
+        header: "Amount",
+    },
+    {
+        accessorKey: "dateCreated",
+        header: "Date",
+    },
+    {
+        id: "category",
+        header: "Category",
+    },
+    {
+        id: "disaster",
+        header: "Disaster",
+    },
+];
 
-export default function ExpenseTable({ companyId } : { companyId : string }) {
+
+export default function ExpenseTable({ companyId }: { companyId: string }) {
+    const [page, setPage] = useState(0);
+    const [resultsPerPage, setResultsPerPage] = useState(5);
+
+
     const purchases = useQuery({
-        queryKey: ["purchases-for-company", companyId],
-        queryFn: () => getAllPurchasesForCompany(companyId),
+        queryKey: ["purchases-for-company", companyId, page, resultsPerPage],
+        queryFn: () => getAllPurchasesForCompany(companyId, page, resultsPerPage),
     });
 
     const invoices = useQuery({
-        queryKey: ["invoices-for-company", companyId],
-        queryFn: () => getAllInvoicesForCompany(companyId),
+        queryKey: ["invoices-for-company", companyId, page, resultsPerPage],
+        queryFn: () => getAllInvoicesForCompany(companyId, page, resultsPerPage),
     });
 
     if (purchases.isPending || invoices.isPending) return <div>Loading expenses and invoices...</div>;
 
     if (purchases.error || invoices.error) return <div>Error loading expenses and invoices</div>;
 
+    const combined = [
+        ...purchases.data,
+        ...invoices.data,
+    ];
+
     return (
-        <BasicTable purchases={purchases.data} invoices={invoices.data}  />
+        <Card>
+            <CardHeader>
+                <CardTitle className="text-2xl font-bold">Business Transactions</CardTitle>
+                <CardDescription>Description</CardDescription>
+                <CardAction>
+                    <div className="flex gap-2">
+                        <Filter></Filter>
+                        <Printer></Printer>
+                    </div>
+                </CardAction>
+            </CardHeader>
+            <CardContent>
+                <BasicTable combined={combined} />
+            </CardContent>
+            <CardFooter>
+                <PaginationControls
+                    page={page}
+                    onPageChange={(page: number)=> setPage(page)}
+                />
+                <ResultsPerPageSelect
+                    value={resultsPerPage}
+                    onValueChange={(results: number)=> setResultsPerPage(results)}
+                />
+            </CardFooter>
+        </Card>
     );
 }
 
-function BasicTable({ purchases, invoices, }: { purchases: Purchase[]; invoices: Invoice[]; }) {
-    return (
-        <Table>
-            <TableCaption>A list of your recent cash-flows.</TableCaption>
-            <TableHeader>
-                <TableRow>
-                    <TableHead className="w-[100px]">Type</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Disaster?</TableHead>
-                </TableRow>
-            </TableHeader>
-            {purchases.map((purchase) => (
-                <TableRow>
-                    <TableCell>Purchase</TableCell>
-                    <TableCell>${(purchase.totalAmountCents / 100).toFixed(2)}</TableCell>
-                    <TableCell>{new Date(purchase.dateCreated).toLocaleDateString()}</TableCell>
-                    <TableCell>WIP</TableCell>
-                    <TableHead>WIP</TableHead>
-                </TableRow>
-            ))}
-            {invoices.map((invoice) => (
-                <TableRow>
-                    <TableCell>Invoice</TableCell>
-                    <TableCell>${(invoice.totalAmountCents / 100).toFixed(2)}</TableCell>
-                    <TableCell>{new Date(invoice.dateCreated).toLocaleDateString()}</TableCell>
-                    <TableCell>WIP</TableCell>
-                    <TableHead>WIP</TableHead>
-                </TableRow>
-            ))}
-        </Table>
-    );
-}
 
