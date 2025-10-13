@@ -2453,101 +2453,6 @@
         }
       }
     },
-    "/invoice/bulk/{id}/totalIncome": {
-      "get": {
-        "summary": "Get the summation of invoices for a company in a date range",
-        "description": "Get the summation of invoices for a company that were made after the start date and before the end date",
-        "tags": [
-          "Invoice"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 1
-            },
-            "required": true,
-            "name": "id",
-            "in": "path"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "required": true,
-            "name": "startDate",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "required": true,
-            "name": "endDate",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Found summation successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "total": {
-                      "type": "number",
-                      "minimum": 0
-                    }
-                  },
-                  "required": [
-                    "total"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Getting Invoice Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Getting Invoice Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/invoice/{id}/lines": {
       "get": {
         "summary": "Get all line items for a given invoice",
@@ -2681,7 +2586,7 @@
         }
       }
     },
-    "/purchase/bulk": {
+    "/purchase": {
       "post": {
         "summary": "Create or update a purchase",
         "description": "Creates a new purchase or updates an existing purchase with the provided information",
@@ -2712,7 +2617,7 @@
                     },
                     "quickbooksDateCreated": {
                       "type": "string",
-                      "format": "date-time"
+                      "format": "date"
                     }
                   },
                   "required": [
@@ -2859,117 +2764,7 @@
             }
           }
         }
-      }
-    },
-    "/purchase/{id}": {
-      "get": {
-        "summary": "Fetches a purchase by the given ID",
-        "description": "Finds the purchase with the given ID in the database",
-        "tags": [
-          "Purchases"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 1
-            },
-            "required": true,
-            "name": "id",
-            "in": "path"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful fetch of a purchase from the database",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "minLength": 1
-                    },
-                    "companyId": {
-                      "type": "string",
-                      "minLength": 1
-                    },
-                    "quickBooksId": {
-                      "type": "number"
-                    },
-                    "totalAmountCents": {
-                      "type": "number",
-                      "minimum": 0
-                    },
-                    "quickbooksDateCreated": {
-                      "type": "string"
-                    },
-                    "isRefund": {
-                      "type": "boolean"
-                    },
-                    "dateCreated": {
-                      "type": "string"
-                    },
-                    "lastUpdated": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "companyId",
-                    "totalAmountCents",
-                    "isRefund",
-                    "dateCreated",
-                    "lastUpdated"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Get purchase error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "There does not exist any purchase in the database such that the given id matches their id"
-          },
-          "500": {
-            "description": "Get purchase error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/purchase": {
+      },
       "get": {
         "summary": "Fetches all purchases for a company",
         "description": "Retrieves a paginated list of purchases for the specified company",
@@ -3094,10 +2889,10 @@
         }
       }
     },
-    "/purchase/bulk/{id}/totalExpenses": {
+    "/purchase/{id}": {
       "get": {
-        "summary": "Get the summation of purchases for a company in a date range",
-        "description": "Get the summation of purchases for a company that were made after the start date and before the end date",
+        "summary": "Fetches a purchase by the given ID",
+        "description": "Finds the purchase with the given ID in the database",
         "tags": [
           "Purchases"
         ],
@@ -3110,48 +2905,58 @@
             "required": true,
             "name": "id",
             "in": "path"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "required": true,
-            "name": "startDate",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "required": true,
-            "name": "endDate",
-            "in": "query"
           }
         ],
         "responses": {
           "200": {
-            "description": "Found summation successfully",
+            "description": "Successful fetch of a purchase from the database",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "total": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "companyId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "quickBooksId": {
+                      "type": "number"
+                    },
+                    "totalAmountCents": {
                       "type": "number",
                       "minimum": 0
+                    },
+                    "quickbooksDateCreated": {
+                      "type": "string"
+                    },
+                    "isRefund": {
+                      "type": "boolean"
+                    },
+                    "dateCreated": {
+                      "type": "string"
+                    },
+                    "lastUpdated": {
+                      "type": "string"
                     }
                   },
                   "required": [
-                    "total"
+                    "id",
+                    "companyId",
+                    "totalAmountCents",
+                    "isRefund",
+                    "dateCreated",
+                    "lastUpdated"
                   ]
                 }
               }
             }
           },
           "400": {
-            "description": "Getting Purchase Error",
+            "description": "Get purchase error",
             "content": {
               "application/json": {
                 "schema": {
@@ -3168,8 +2973,11 @@
               }
             }
           },
+          "404": {
+            "description": "There does not exist any purchase in the database such that the given id matches their id"
+          },
           "500": {
-            "description": "Getting Purchase Error",
+            "description": "Get purchase error",
             "content": {
               "application/json": {
                 "schema": {
@@ -3466,310 +3274,6 @@
           },
           "500": {
             "description": "Create Claims Errors",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/claim-locations": {
-      "post": {
-        "summary": "Create a new claim-location link",
-        "description": "Creates a link between a claim and a location using given IDs",
-        "tags": [
-          "Claim-Locations"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "claimId": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
-                  "locationAddressId": {
-                    "type": "string",
-                    "format": "uuid"
-                  }
-                },
-                "required": [
-                  "claimId",
-                  "locationAddressId"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Claim-Location link created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "claimId": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "locationAddressId": {
-                      "type": "string",
-                      "format": "uuid"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "claimId",
-                    "locationAddressId"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Create Claim-Location  Errors",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Create Claim-Location  Errors",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/claim-locations/company/{companyId}": {
-      "get": {
-        "summary": "Gets all the locations affected by claims for a company",
-        "description": "Gets all the locations affected by claims for a company based on the given ID",
-        "tags": [
-          "Claim-Locations"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "required": true,
-            "name": "companyId",
-            "in": "path"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Locations fetched successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string"
-                      },
-                      "country": {
-                        "type": "string"
-                      },
-                      "stateProvince": {
-                        "type": "string"
-                      },
-                      "city": {
-                        "type": "string"
-                      },
-                      "streetAddress": {
-                        "type": "string"
-                      },
-                      "postalCode": {
-                        "type": "string",
-                        "minLength": 1,
-                        "pattern": "^\\d+$"
-                      },
-                      "county": {
-                        "type": "string"
-                      },
-                      "companyId": {
-                        "type": "string",
-                        "format": "uuid"
-                      },
-                      "fipsStateCode": {
-                        "type": "number"
-                      },
-                      "fipsCountyCode": {
-                        "type": "number"
-                      }
-                    },
-                    "required": [
-                      "id",
-                      "country",
-                      "stateProvince",
-                      "city",
-                      "streetAddress",
-                      "postalCode",
-                      "companyId",
-                      "fipsStateCode",
-                      "fipsCountyCode"
-                    ]
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Get Claim-Location Errors",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Locations/Company not found"
-          },
-          "500": {
-            "description": "Get Claim-Location Errors",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/claim-locations/claim/{claimId}/location-address/{locationId}": {
-      "delete": {
-        "summary": "Deletes a claim-location link from the database",
-        "description": "Deletes a claim-location link based off the given claim ID and location ID",
-        "tags": [
-          "Claim-Locations"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "required": true,
-            "name": "claimId",
-            "in": "path"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "required": true,
-            "name": "locationId",
-            "in": "path"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Claim-Location link deleted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    }
-                  },
-                  "required": [
-                    "success"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Delete Claim-Location Errors",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Delete Claim-Location Errors",
             "content": {
               "application/json": {
                 "schema": {
