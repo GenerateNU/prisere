@@ -26,6 +26,7 @@ export const disasterNotificationRoutes = (db: DataSource): Hono => {
     disasterNotification.patch("/:id/markUnread", (ctx) => disasterNotificationController.markUnreadNotification(ctx));
     disasterNotification.post("/create", (ctx) => disasterNotificationController.bulkCreateNotifications(ctx));
     disasterNotification.delete("/:id", (ctx) => disasterNotificationController.deleteNotification(ctx));
+    disasterNotification.patch("/user/:id/markAllAsRead", (ctx) => disasterNotificationController.markAllAsRead(ctx));
 
     return disasterNotification;
 };
