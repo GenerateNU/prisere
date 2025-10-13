@@ -8,7 +8,7 @@ import {
     BulkCreateNotificationsRequestSchema,
     BulkCreateNotificationsResponseSchema,
     DeleteNotificationResponseSchema,
-    AcknowledgeNotificationResponseSchema,
+    MarkReadNotificationResponseSchema,
     DismissNotificationResponseSchema,
 } from "../../types/DisasterNotification";
 import { z } from "zod";
@@ -27,8 +27,8 @@ export const addOpenApiDisasterNotificationRoutes = (openApi: OpenAPIHono, db: D
     const notificationController = new DisasterNotificationController(notificationService);
 
     openApi.openapi(getUserNotificationsRoute, (ctx) => notificationController.getUserNotifications(ctx) as any);
-    openApi.openapi(acknowledgeNotificationRoute, (ctx) => notificationController.acknowledgeNotification(ctx) as any);
-    openApi.openapi(dismissNotificationRoute, (ctx) => notificationController.dismissNotification(ctx) as any);
+    openApi.openapi(markAsReadNotificationRoute, (ctx) => notificationController.markAsReadNotification(ctx) as any);
+    openApi.openapi(markUnreadNotificationRoute, (ctx) => notificationController.markUnreadNotification(ctx) as any);
     openApi.openapi(bulkCreateNotificationsRoute, (ctx) => notificationController.bulkCreateNotifications(ctx) as any);
     openApi.openapi(deleteNotificationRoute, (ctx) => notificationController.deleteNotification(ctx) as any);
 
@@ -37,9 +37,9 @@ export const addOpenApiDisasterNotificationRoutes = (openApi: OpenAPIHono, db: D
 
 const getUserNotificationsRoute = createRoute({
     method: "get",
-    path: "/notifications/user/{id}",
+    path: "/disasterNotification/{id}",
     summary: "Get user notifications",
-    description: "Retrieves all disaster notifications for a specific user",
+    description: "Retrieves all disaster notifications for a specific user with optional filtering and pagination",
     request: {
         params: z.object({
             id: z
@@ -52,6 +52,12 @@ const getUserNotificationsRoute = createRoute({
                     },
                     example: "123e4567-e89b-12d3-a456-426614174000",
                 }),
+        }),
+        query: z.object({
+            type: z.enum(["web", "email"]).optional(),
+            status: z.enum(["unread", "read", "acknowledged"]).optional(),
+            page: z.string().transform(Number).pipe(z.number().int().positive()).optional(),
+            limit: z.string().transform(Number).pipe(z.number().int().positive().max(100)).optional(),
         }),
     },
     responses: {
@@ -71,7 +77,7 @@ const getUserNotificationsRoute = createRoute({
                     }),
                 },
             },
-            description: "Invalid user ID format",
+            description: "Invalid user ID format or query parameters",
         },
         404: {
             content: {
@@ -87,11 +93,11 @@ const getUserNotificationsRoute = createRoute({
     tags: ["Disaster Notifications"],
 });
 
-const acknowledgeNotificationRoute = createRoute({
+const markAsReadNotificationRoute = createRoute({
     method: "patch",
-    path: "/notifications/{id}/acknowledge",
-    summary: "Acknowledge notification",
-    description: "Marks a specific notification as acknowledged",
+    path: "/disasterNotification/{id}/markAsRead",
+    summary: "Mark notification as read",
+    description: "Marks a specific notification as read and updates readAt timestamp",
     request: {
         params: z.object({
             id: z
@@ -110,10 +116,10 @@ const acknowledgeNotificationRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: AcknowledgeNotificationResponseSchema,
+                    schema: MarkReadNotificationResponseSchema,
                 },
             },
-            description: "Notification successfully acknowledged",
+            description: "Notification successfully marked as read",
         },
         400: {
             content: {
@@ -139,11 +145,11 @@ const acknowledgeNotificationRoute = createRoute({
     tags: ["Disaster Notifications"],
 });
 
-const dismissNotificationRoute = createRoute({
+const markUnreadNotificationRoute = createRoute({
     method: "patch",
-    path: "/notifications/{id}/dismiss",
-    summary: "Dismiss notification",
-    description: "Marks a specific notification as read/dismissed",
+    path: "/disasterNotification/{id}/markUnread",
+    summary: "Mark notification as unread",
+    description: "Marks a specific notification as unread and clears the readAt timestamp",
     request: {
         params: z.object({
             id: z
@@ -165,7 +171,7 @@ const dismissNotificationRoute = createRoute({
                     schema: DismissNotificationResponseSchema,
                 },
             },
-            description: "Notification successfully dismissed",
+            description: "Notification successfully marked as unread",
         },
         400: {
             content: {
@@ -193,7 +199,7 @@ const dismissNotificationRoute = createRoute({
 
 const bulkCreateNotificationsRoute = createRoute({
     method: "post",
-    path: "/notifications/bulk",
+    path: "/disasterNotification/bulk",
     summary: "Bulk create notifications",
     description: "Creates multiple disaster notifications at once for impacted users",
     request: {
@@ -212,7 +218,7 @@ const bulkCreateNotificationsRoute = createRoute({
                     schema: BulkCreateNotificationsResponseSchema,
                 },
             },
-            description: "Notifications successfully created",
+            description: "Notifications successfully created with createdAt timestamps",
         },
         400: {
             content: {
@@ -250,7 +256,7 @@ const bulkCreateNotificationsRoute = createRoute({
 
 const deleteNotificationRoute = createRoute({
     method: "delete",
-    path: "/notifications/{id}",
+    path: "/disasterNotification/{id}",
     summary: "Delete notification",
     description: "Permanently deletes a specific notification",
     request: {

@@ -7,7 +7,7 @@ import { DataSource } from "typeorm";
 import { createTestData, TestDataSetup } from "./setup";
 import { TESTING_PREFIX } from "../../utilities/constants";
 
-describe("Test dismiss disaster notifications", () => {
+describe("Test markUnread disaster notifications", () => {
     let app: Hono;
     let backup: IBackup;
     let dataSource: DataSource;
@@ -27,7 +27,7 @@ describe("Test dismiss disaster notifications", () => {
 
     test("Dismiss disaster notification", async () => {
         const response = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}/dismiss`,
+            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}/markUnread`,
             {
                 method: "PATCH",
                 headers: {
@@ -37,11 +37,11 @@ describe("Test dismiss disaster notifications", () => {
         );
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(body.notificationStatus).toBe("read");
+        expect(body.notificationStatus).toBe("unread");
 
-        // Test dismissing already dismissed notification
+        // Test markUnreading already markUnreaded notification
         const response2 = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}/dismiss`,
+            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}/markUnread`,
             {
                 method: "PATCH",
                 headers: {
@@ -51,11 +51,11 @@ describe("Test dismiss disaster notifications", () => {
         );
         expect(response2.status).toBe(200);
         const body2 = await response2.json();
-        expect(body2.notificationStatus).toBe("read");
+        expect(body2.notificationStatus).toBe("unread");
     });
 
     test("Dismiss fake notification returns 404", async () => {
-        const response = await app.request(TESTING_PREFIX + `/disasterNotification/${randomUUID()}/dismiss`, {
+        const response = await app.request(TESTING_PREFIX + `/disasterNotification/${randomUUID()}/markUnread`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -68,7 +68,7 @@ describe("Test dismiss disaster notifications", () => {
 
     test("Invalid notification ID format returns 400", async () => {
         const response = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}-asdf/dismiss`,
+            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}-asdf/markUnread`,
             {
                 method: "PATCH",
                 headers: {

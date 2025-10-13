@@ -22,10 +22,8 @@ export const disasterNotificationRoutes = (db: DataSource): Hono => {
     );
 
     disasterNotification.get("/:id", (ctx) => disasterNotificationController.getUserNotifications(ctx));
-    disasterNotification.patch("/:id/acknowledge", (ctx) =>
-        disasterNotificationController.acknowledgeNotification(ctx)
-    );
-    disasterNotification.patch("/:id/dismiss", (ctx) => disasterNotificationController.dismissNotification(ctx));
+    disasterNotification.patch("/:id/markAsRead", (ctx) => disasterNotificationController.markAsReadNotification(ctx));
+    disasterNotification.patch("/:id/markUnread", (ctx) => disasterNotificationController.markUnreadNotification(ctx));
     disasterNotification.post("/create", (ctx) => disasterNotificationController.bulkCreateNotifications(ctx));
     disasterNotification.delete("/:id", (ctx) => disasterNotificationController.deleteNotification(ctx));
 

@@ -158,7 +158,7 @@ export const createTestData = async (dataSource: DataSource, includeNotification
                 notificationType: NotificationType.WEB,
                 firstSentAt: new Date(),
                 lastSentAt: new Date(),
-            },)
+            });
         }
 
         const notificationRepository = dataSource.getRepository(DisasterNotification);

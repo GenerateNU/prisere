@@ -112,67 +112,78 @@ describe("Test getting a users disaster notifications", () => {
 
     test("GET notifications with web filter", async () => {
         // user 1 has 2 web 1 email, user 2 has 3 email 1 web
-        const response1 = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user1.id}?type=web`)
+        const response1 = await app.request(
+            TESTING_PREFIX + `/disasterNotification/${testData.users.user1.id}?type=web`
+        );
 
-        const response2 = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user2.id}?type=web`)
+        const response2 = await app.request(
+            TESTING_PREFIX + `/disasterNotification/${testData.users.user2.id}?type=web`
+        );
 
-        const result1 = JSON.parse(await response1.text())
-        const result2 = JSON.parse(await response2.text())
+        const result1 = JSON.parse(await response1.text());
+        const result2 = JSON.parse(await response2.text());
 
         // Test the length matches what we expect of each type
-        expect(result1.length == 2);
-        expect(result2.length == 1);
+        expect(result1.length === 2);
+        expect(result2.length === 1);
 
-        const response1Email = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user1.id}?type=email`)
+        const response1Email = await app.request(
+            TESTING_PREFIX + `/disasterNotification/${testData.users.user1.id}?type=email`
+        );
 
-        const response2Email = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user2.id}?type=email`)
+        const response2Email = await app.request(
+            TESTING_PREFIX + `/disasterNotification/${testData.users.user2.id}?type=email`
+        );
 
-        const result1Email = JSON.parse(await response1Email.text())
-        const result2Email = JSON.parse(await response2Email.text())
+        const result1Email = JSON.parse(await response1Email.text());
+        const result2Email = JSON.parse(await response2Email.text());
 
-        expect(result1Email.length == 1);
-        expect(result2Email.length == 3);
-
-    })
+        expect(result1Email.length === 1);
+        expect(result2Email.length === 3);
+    });
 
     test("Test pagination", async () => {
         // User 3 should have 25 notifications
-        const response1 = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}`)
-        const result = JSON.parse(await response1.text())
+        const response1 = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}`);
+        const result = JSON.parse(await response1.text());
         // Should only return 20 (default limit) when there are 25 notifications
-        expect(result.length).toBe(20)
-        expect(response1.status).toBe(200)
+        expect(result.length).toBe(20);
+        expect(response1.status).toBe(200);
 
-        const response2 = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}?limit=5&page=1`)
-        const result2 = JSON.parse(await response2.text())
-        expect(result2.length).toBe(5) // Return limit amount
-        expect(response2.status).toBe(200)
+        const response2 = await app.request(
+            TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}?limit=5&page=1`
+        );
+        const result2 = JSON.parse(await response2.text());
+        expect(result2.length).toBe(5); // Return limit amount
+        expect(response2.status).toBe(200);
 
-
-        const response3 = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}?limit=4&page=3`)
-        const result3 = JSON.parse(await response3.text())
-        expect(result3.length).toBe(4) // Return limit amount
-        expect(response3.status).toBe(200)
-
-    })
+        const response3 = await app.request(
+            TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}?limit=4&page=3`
+        );
+        const result3 = JSON.parse(await response3.text());
+        expect(result3.length).toBe(4); // Return limit amount
+        expect(response3.status).toBe(200);
+    });
 
     test("Test pagination out of bounds limit/request", async () => {
         // User 3 should have 25 notifications
-        const response1 = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}`)
-        const result = JSON.parse(await response1.text())
+        const response1 = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}`);
+        const result = JSON.parse(await response1.text());
         // Should only return 20 (default limit) when there are 25 notifications
-        expect(result.length).toBe(20)
-        expect(response1.status).toBe(200)
+        expect(result.length).toBe(20);
+        expect(response1.status).toBe(200);
 
+        const response2 = await app.request(
+            TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}?limit=5&page=100`
+        );
+        const result2 = JSON.parse(await response2.text());
+        expect(result2.length).toBe(0); // Return limit amount
+        expect(response2.status).toBe(200);
 
-        const response2 = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}?limit=5&page=100`)
-        const result2 = JSON.parse(await response2.text())
-        expect(result2.length).toBe(0) // Return limit amount
-        expect(response2.status).toBe(200)
-
-
-        const response3 = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}?limit=9999&page=1`)
+        const response3 = await app.request(
+            TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}?limit=9999&page=1`
+        );
         // const result3 = JSON.parse(await response3.text())
-        expect(response3.status).toBe(400) 
-    })
+        expect(response3.status).toBe(400);
+    });
 });
