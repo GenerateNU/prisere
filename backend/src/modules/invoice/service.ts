@@ -1,6 +1,6 @@
 import { IInvoiceTransaction } from "./transaction";
 import { withServiceErrorHandling } from "../../utilities/error";
-import { CreateOrUpdateInvoicesDTO, GetCompanyInvoicesByDateDTO, GetCompanyInvoicesDTO } from "../../types/Invoice";
+import { CreateOrUpdateInvoicesDTO, GetCompanyInvoicesByDateDTO, GetCompanyInvoicesDTO, GetCompanyInvoicesInMonthBinsResponse } from "../../types/Invoice";
 import { Invoice } from "../../entities/Invoice";
 import Boom from "@hapi/boom";
 import { ICompanyTransaction } from "../company/transaction";
@@ -11,6 +11,7 @@ export interface IInvoiceService {
     getInvoiceById(id: string): Promise<Invoice>;
     getInvoicesForCompany(payload: GetCompanyInvoicesDTO): Promise<Invoice[]>;
     sumInvoicesByCompanyAndDateRange(payload: GetCompanyInvoicesByDateDTO): Promise<number>;
+    sumInvoicesByCompanyInMonthBins(payload: GetCompanyInvoicesByDateDTO): Promise<GetCompanyInvoicesInMonthBinsResponse>;
 }
 
 export class InvoiceService implements IInvoiceService {
@@ -71,6 +72,14 @@ export class InvoiceService implements IInvoiceService {
             const invoices = await this.invoiceTransaction.sumInvoicesByCompanyAndDateRange(payload);
 
             return invoices;
+        }
+    );
+
+    sumInvoicesByCompanyInMonthBins = withServiceErrorHandling(
+        async (payload: GetCompanyInvoicesByDateDTO): Promise<GetCompanyInvoicesInMonthBinsResponse> => {
+            const perMonthSums = await this.invoiceTransaction.sumInvoicesByCompanyInMonthBins(payload);
+
+            return perMonthSums;
         }
     );
 }

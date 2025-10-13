@@ -27,6 +27,7 @@ export const invoiceRoutes = (db: DataSource): Hono => {
     invoice.get("/", (ctx) => invoiceController.getInvoicesForCompany(ctx));
     invoice.post("/bulk", (ctx) => invoiceController.bulkCreateOrUpdateInvoice(ctx));
     invoice.get("/bulk/:id/totalIncome", (ctx) => invoiceController.sumInvoicesByCompanyAndDateRange(ctx));
+    invoice.get("/bulk/:id/months", (ctx) => invoiceController.sumInvoicesByCompanyInMonthBins(ctx));
     invoice.get("/:id/lines", (ctx) => invoiceLineItemController.getInvoiceLineItemsForInvoice(ctx));
 
     return invoice;

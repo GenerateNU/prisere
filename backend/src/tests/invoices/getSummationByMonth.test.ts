@@ -4,15 +4,15 @@ import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import CompanySeeder from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
+import { InvoiceSeeder, seededInvoices } from "../../database/seeds/invoice.seed";
 import { DataSource } from "typeorm";
-import { PurchaseSeeder, seededPurchases } from "../../database/seeds/purchase.seed";
 
-describe("Get Purchase summation by company id", () => {
+describe(" Get Invoice summation by company id", () => {
     let app: Hono;
     let backup: IBackup;
     let dataSource: DataSource;
-    const seededPurchase = seededPurchases[0];
-    const seededPurchaseCompany = seededPurchase.companyId;
+    const seededInvoice = seededInvoices[0];
+    const seededInvoiceCompany = seededInvoice.companyId;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
@@ -25,35 +25,49 @@ describe("Get Purchase summation by company id", () => {
         const companySeeder = new CompanySeeder();
         await companySeeder.run(dataSource, {} as SeederFactoryManager);
 
-        const purchaseSeeder = new PurchaseSeeder();
-        await purchaseSeeder.run(dataSource, {} as SeederFactoryManager);
+        const invoiceSeeder = new InvoiceSeeder();
+        await invoiceSeeder.run(dataSource, {} as SeederFactoryManager);
     });
 
     afterEach(async () => {
         backup.restore();
     });
 
-    test("should return the sum of purchases in the valid date range, ignoring refunded purchases", async () => {
+    test("should return the sum of invoices in the valid date range", async () => {
         const response = await app.request(
-            `/purchase/bulk/${seededPurchaseCompany}/totalExpenses?startDate=2025-01-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
+            `/invoice/bulk/${seededInvoiceCompany}/months?startDate=2025-01-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
         );
         const body = await response.json();
         expect(response.status).toBe(200);
-        expect(body.total).toBe(5678);
+        expect(body.length).toBe(3);
+        expect(body).toEqual([
+            {
+                month: "2025-01",
+                total: 456
+            },
+            {
+                month: "2025-02",
+                total: 234
+            },
+            {
+                month: "2025-04",
+                total: 45
+            }
+        ])
     });
 
-    test("should return 0 if no purchases in the valid date range", async () => {
+    test("should return 0 if no invoices in the valid date range", async () => {
         const response = await app.request(
-            `/purchase/bulk/${seededPurchaseCompany}/totalExpenses?startDate=2025-08-11T12:00:00Z&endDate=2025-10-11T12:00:00Z`
+            `/invoice/bulk/${seededInvoiceCompany}/months?startDate=2025-08-11T12:00:00Z&endDate=2025-10-11T12:00:00Z`
         );
         const body = await response.json();
         expect(response.status).toBe(200);
-        expect(body.total).toBe(0);
+        expect(body).toEqual([]);
     });
 
     test("should return 400 if invalid dates", async () => {
         const response = await app.request(
-            `/purchase/bulk/${seededPurchaseCompany}/totalExpenses?startDate=2025-04-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
+            `/invoice/bulk/${seededInvoiceCompany}/months?startDate=2025-04-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
         );
         const body = await response.json();
         expect(response.status).toBe(400);
@@ -63,7 +77,7 @@ describe("Get Purchase summation by company id", () => {
 
     test("should return 400 if invalid companyID", async () => {
         const response = await app.request(
-            `/purchase/bulk/bla/totalExpenses?startDate=2025-04-11T12:00:00Z&endDate=2025-06-11T12:00:00Z`
+            `/invoice/bulk/bla/months?startDate=2025-04-11T12:00:00Z&endDate=2025-06-11T12:00:00Z`
         );
         const body = await response.json();
         expect(response.status).toBe(400);

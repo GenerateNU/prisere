@@ -51,6 +51,13 @@ export const GetCompanyInvoicesSummationResponseSchema = z.object({
     total: z.number().nonnegative(),
 });
 
+export const GetCompanyInvoicesInMonthBinsResponseSchema = z.array(
+    z.object({
+        month: z.string(),
+        total: z.number().nonnegative(),
+    })
+);
+
 export const GetCompanyInvoicesResponseSchema = z.array(GetInvoiceResponseSchema);
 
 //Controller Responses
@@ -58,6 +65,7 @@ export type CreateOrUpdateInvoicesResponse = z.infer<typeof CreateOrUpdateInvoic
 export type GetInvoiceResponse = z.infer<typeof GetInvoiceResponseSchema>;
 export type GetCompanyInvoicesResponse = z.infer<typeof GetCompanyInvoicesResponseSchema>;
 export type GetCompanyInvoicesSummationResponse = z.infer<typeof GetCompanyInvoicesSummationResponseSchema>;
+export type GetCompanyInvoicesInMonthBinsResponse = z.infer<typeof GetCompanyInvoicesInMonthBinsResponseSchema>;
 
 //Input types
 export type CreateOrUpdateInvoicesDTO = z.infer<typeof CreateOrUpdateInvoicesDTOSchema>;

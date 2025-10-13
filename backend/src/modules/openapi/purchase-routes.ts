@@ -9,6 +9,7 @@ import {
     CreateOrChangePurchasesResponseSchema,
     GetPurchaseDTOSchema,
     GetCompanyPurchasesSummationResponseSchema,
+    GetCompanyPurchasesInMonthBinsResponseSchema,
 } from "../../modules/purchase/types";
 import { IPurchaseController, PurchaseController } from "../purchase/controller";
 import { IPurchaseService, PurchaseService } from "../purchase/service";
@@ -24,6 +25,7 @@ export const addOpenApiPurchaseRoutes = (openApi: OpenAPIHono, db: DataSource): 
     openApi.openapi(getPurchaseRoute, (ctx) => controller.getPurchase(ctx));
     openApi.openapi(getPurchasesForCompanyRoute, (ctx) => controller.getPurchasesForCompany(ctx));
     openApi.openapi(sumPurchasesByCompanyAndDateRange, (ctx) => controller.sumPurchasesByCompanyAndDateRange(ctx));
+    openApi.openapi(sumPurchasesByCompanyInMonthBins, (ctx) => controller.sumPurchasesByCompanyInMonthBins(ctx));
 
     return openApi;
 };
@@ -133,6 +135,30 @@ const sumPurchasesByCompanyAndDateRange = createRoute({
             content: {
                 "application/json": {
                     schema: GetCompanyPurchasesSummationResponseSchema,
+                },
+            },
+            description: "Found summation successfully",
+        },
+        ...openApiErrorCodes("Getting Purchase Error"),
+    },
+    tags: ["Purchases"],
+});
+
+const sumPurchasesByCompanyInMonthBins = createRoute({
+    method: "get",
+    path: "/purchase/bulk/{id}/months",
+    summary: "Get the total purchase amounts broken down by months",
+    description:
+        "Get the summation of purchases for a company that were made after the start date and before the end date split into each month that exists in the date range",
+    request: {
+        params: GetPurchaseDTOSchema,
+        query: z.object({ startDate: z.iso.datetime(), endDate: z.iso.datetime() }),
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetCompanyPurchasesInMonthBinsResponseSchema,
                 },
             },
             description: "Found summation successfully",
