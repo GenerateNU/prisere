@@ -11,6 +11,7 @@ import {
     GetInvoiceResponseSchema,
     GetCompanyInvoicesDTOSchema,
     GetCompanyInvoicesResponseSchema,
+    GetCompanyInvoicesSummationResponseSchema,
 } from "../../types/Invoice";
 import { CompanyTransaction } from "../company/transaction";
 import { z } from "zod";
@@ -38,6 +39,7 @@ export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): O
     openApi.openapi(bulkCreateOrUpdateInvoiceRoute, (ctx) => invoiceController.bulkCreateOrUpdateInvoice(ctx));
     openApi.openapi(getInvoiceByIdRoute, (ctx) => invoiceController.getInvoice(ctx));
     openApi.openapi(getInvoicesForCompanyRoute, (ctx) => invoiceController.getInvoicesForCompany(ctx));
+    openApi.openapi(sumInvoicesByCompanyAndDateRange, (ctx) => invoiceController.sumInvoicesByCompanyAndDateRange(ctx));
     openApi.openapi(getInvoiceLineItemsForInvoiceRoute, (ctx) =>
         invoiceLineItemController.getInvoiceLineItemsForInvoice(ctx)
     );
@@ -159,6 +161,30 @@ const getInvoiceLineItemsForInvoiceRoute = createRoute({
             description: "No Invoice Line Item with given UUID found",
         },
         ...openApiErrorCodes("Getting Invoice Line Item Error"),
+    },
+    tags: ["Invoice"],
+});
+
+const sumInvoicesByCompanyAndDateRange = createRoute({
+    method: "get",
+    path: "/invoice/bulk/{id}/totalIncome",
+    summary: "Get the summation of invoices for a company in a date range",
+    description:
+        "Get the summation of invoices for a company that were made after the start date and before the end date",
+    request: {
+        params: GetInvoiceDTOSchema,
+        query: z.object({ startDate: z.iso.datetime(), endDate: z.iso.datetime() }),
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetCompanyInvoicesSummationResponseSchema,
+                },
+            },
+            description: "Found summation successfully",
+        },
+        ...openApiErrorCodes("Getting Invoice Error"),
     },
     tags: ["Invoice"],
 });

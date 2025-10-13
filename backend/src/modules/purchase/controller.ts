@@ -8,6 +8,8 @@ import {
     GetCompanyPurchasesResponse,
     GetPurchaseResponse,
     CreateOrChangePurchaseResponse,
+    GetCompanyPurchasesSummationResponse,
+    GetCompanyPurchasesByDateDTOSchema,
 } from "./types";
 import { ControllerResponse } from "../../utilities/response";
 
@@ -15,6 +17,9 @@ export interface IPurchaseController {
     createOrUpdatePurchase(_ctx: Context): ControllerResponse<TypedResponse<CreateOrChangePurchaseResponse, 200>>;
     getPurchase(ctx: Context): ControllerResponse<TypedResponse<GetPurchaseResponse, 200>>;
     getPurchasesForCompany(ctx: Context): ControllerResponse<TypedResponse<GetCompanyPurchasesResponse, 200>>;
+    sumPurchasesByCompanyAndDateRange(
+        ctx: Context
+    ): ControllerResponse<TypedResponse<GetCompanyPurchasesSummationResponse, 200>>;
 }
 
 export class PurchaseController implements IPurchaseController {
@@ -61,6 +66,26 @@ export class PurchaseController implements IPurchaseController {
             const payload = GetCompanyPurchasesDTOSchema.parse(queryParams);
             const fetchedPurchases = await this.PurchaseService.getPurchasesForCompany(payload);
             return ctx.json(fetchedPurchases, 200);
+        }
+    );
+
+    sumPurchasesByCompanyAndDateRange = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyPurchasesSummationResponse, 200>> => {
+            const queryParams = {
+                companyId: ctx.req.param("id"),
+                startDate: ctx.req.query("startDate"),
+                endDate: ctx.req.query("endDate"),
+            };
+            const payload = GetCompanyPurchasesByDateDTOSchema.parse(queryParams);
+
+            if (!validate(payload.companyId)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            } else if (new Date(payload.startDate) >= new Date(payload.endDate)) {
+                return ctx.json({ error: "Start date must be before End date" }, 400);
+            }
+
+            const purchaseSummationAmount = await this.PurchaseService.sumPurchasesByCompanyAndDateRange(payload);
+            return ctx.json({ total: purchaseSummationAmount }, 200);
         }
     );
 }

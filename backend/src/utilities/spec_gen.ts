@@ -19,7 +19,7 @@ async function generateSpec() {
         ],
     });
 
-    writeFileSync(join(process.cwd(), "../spec.json"), JSON.stringify(spec, null, 2));
+    writeFileSync(join(process.cwd(), "./spec.json"), JSON.stringify(spec, null, 2));
 
     console.log("OpenAPI spec generated successfully!");
     process.exit(0);

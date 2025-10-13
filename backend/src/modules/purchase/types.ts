@@ -8,7 +8,7 @@ export const CreateOrChangePurchaseDTOSchema = z
             totalAmountCents: z.number().min(0),
             isRefund: z.boolean(),
             companyId: z.string().nonempty(),
-            quickbooksDateCreated: z.date().optional(),
+            quickbooksDateCreated: z.iso.datetime().optional(),
         })
     )
     .nonempty();
@@ -43,6 +43,16 @@ export const GetCompanyPurchasesDTOSchema = z.object({
     resultsPerPage: z.number().gt(0).optional().default(20),
 });
 
+export const GetPurchaseDTOSchema = z.object({
+    id: z.string().nonempty(),
+});
+
+export const GetCompanyPurchasesByDateDTOSchema = z.object({
+    companyId: z.string(),
+    startDate: z.iso.datetime(),
+    endDate: z.iso.datetime(),
+});
+
 export const GetCompanyPurchasesResponseSchema = z.array(
     z.object({
         id: z.string().nonempty(),
@@ -55,11 +65,18 @@ export const GetCompanyPurchasesResponseSchema = z.array(
     })
 );
 
+export const GetCompanyPurchasesSummationResponseSchema = z.object({
+    total: z.number().nonnegative(),
+});
+
 //Controller Responses
 export type CreateOrChangePurchaseResponse = z.infer<typeof CreateOrChangePurchasesResponseSchema>;
 export type GetPurchaseResponse = z.infer<typeof GetPurchasesResponseSchema>;
 export type GetCompanyPurchasesResponse = z.infer<typeof GetCompanyPurchasesResponseSchema>;
+export type GetCompanyPurchasesSummationResponse = z.infer<typeof GetCompanyPurchasesSummationResponseSchema>;
 
 //Input types
 export type CreateOrChangePurchaseDTO = z.infer<typeof CreateOrChangePurchaseDTOSchema>;
 export type GetCompanyPurchasesDTO = z.infer<typeof GetCompanyPurchasesDTOSchema>;
+export type GetCompanyPurchasesByDateDTO = z.infer<typeof GetCompanyPurchasesByDateDTOSchema>;
+export type GetPurchaseDTO = z.infer<typeof GetPurchaseDTOSchema>;
