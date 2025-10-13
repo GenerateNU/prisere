@@ -22,7 +22,6 @@ import {
 import { Filter, Printer } from "lucide-react";
 
 type InvoiceOrPurchase = Invoice | Purchase;
-export type columnValueTypes = string | number | Date;
 export const columns: ColumnDef<InvoiceOrPurchase>[] = [
     {
         id: "type",
