@@ -54,15 +54,7 @@ export const GetCompanyPurchasesByDateDTOSchema = z.object({
 });
 
 export const GetCompanyPurchasesResponseSchema = z.array(
-    z.object({
-        id: z.string().nonempty(),
-        companyId: z.string().nonempty(),
-        quickBooksID: z.number().optional(),
-        totalAmountCents: z.number().min(0),
-        quickbooksDateCreated: z.string().optional(),
-        isRefund: z.boolean(),
-        dateCreated: z.string(),
-    })
+    GetPurchasesResponseSchema
 );
 
 export const GetCompanyPurchasesSummationResponseSchema = z.object({

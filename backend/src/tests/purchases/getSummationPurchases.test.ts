@@ -37,8 +37,8 @@ describe("Get Purchase summation by company id", () => {
         const response = await app.request(
             `/purchase/bulk/${seededPurchaseCompany}/totalExpenses?startDate=2025-01-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
         );
-        const body = await response.json();
         expect(response.status).toBe(200);
+        const body = await response.json();
         expect(body.total).toBe(6912);
     });
 
@@ -46,8 +46,8 @@ describe("Get Purchase summation by company id", () => {
         const response = await app.request(
             `/purchase/bulk/${seededPurchaseCompany}/totalExpenses?startDate=2025-08-11T12:00:00Z&endDate=2025-10-11T12:00:00Z`
         );
-        const body = await response.json();
         expect(response.status).toBe(200);
+        const body = await response.json();
         expect(body.total).toBe(0);
     });
 
@@ -55,8 +55,8 @@ describe("Get Purchase summation by company id", () => {
         const response = await app.request(
             `/purchase/bulk/${seededPurchaseCompany}/totalExpenses?startDate=2025-04-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
         );
-        const body = await response.json();
         expect(response.status).toBe(400);
+        const body = await response.json();
         expect(body).toHaveProperty("error");
         expect(body.error).toBe("Start date must be before End date");
     });
@@ -65,8 +65,8 @@ describe("Get Purchase summation by company id", () => {
         const response = await app.request(
             `/purchase/bulk/bla/totalExpenses?startDate=2025-04-11T12:00:00Z&endDate=2025-06-11T12:00:00Z`
         );
-        const body = await response.json();
         expect(response.status).toBe(400);
+        const body = await response.json();
         expect(body).toHaveProperty("error");
         expect(body.error).toBe("Invalid company ID format");
     });

@@ -58,28 +58,3 @@ function BasicTable() {
     );
 }
 
-
-const fetchCompanyId = async () => {
-    const supabase = await createSupabaseClient();
-    const supabaseResponse = await supabase.auth.getUser();
-    const user = await supabaseResponse.data.user;
-    if (user == null) {
-        throw Error("Could not fetch user info.")
-    }
-
-    const backEndResponse = await fetch(`${API_URL}/users/${user.id}/company`)
-    const companyId = await backEndResponse.json();
-    return companyId;
-}
-
-
-const fetchPurchaseAndInvoiceData = async (companyId: string) => {
-    const purchaseResponse = await fetch(`${API_URL}/purchase?companyId=${companyId}`);
-    const purchases = await purchaseResponse.json();
-
-    const invoiceResponse = await fetch(`${API_URL}/invoice?companyId=${companyId}`);
-    const invoices = await invoiceResponse.json();
-
-    const result = [...purchases, ...invoices];
-    return result;
-}
