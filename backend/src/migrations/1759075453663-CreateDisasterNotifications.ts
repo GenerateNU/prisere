@@ -12,7 +12,7 @@ export class AddDisasterNotifications1759075453663 implements MigrationInterface
         );
         await queryRunner.query(`ALTER TABLE "disasterNotification" ALTER COLUMN "firstSentAt" DROP NOT NULL`);
         await queryRunner.query(`ALTER TABLE "disasterNotification" ALTER COLUMN "lastSentAt" DROP NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "disasterNotification" ALTER COLUMN "acknowledgedAt" DROP NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "disasterNotification" ALTER COLUMN "readAt" DROP NOT NULL`);
         await queryRunner.query(
             `ALTER TABLE "userPreferences" ADD CONSTRAINT "FK_4f8d527eeb2409b3f726535b1e3" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`
         );
@@ -20,7 +20,7 @@ export class AddDisasterNotifications1759075453663 implements MigrationInterface
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "userPreferences" DROP CONSTRAINT "FK_4f8d527eeb2409b3f726535b1e3"`);
-        await queryRunner.query(`ALTER TABLE "disasterNotification" ALTER COLUMN "acknowledgedAt" SET NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "disasterNotification" ALTER COLUMN "readAt" SET NOT NULL`);
         await queryRunner.query(`ALTER TABLE "disasterNotification" ALTER COLUMN "lastSentAt" SET NOT NULL`);
         await queryRunner.query(`ALTER TABLE "disasterNotification" ALTER COLUMN "firstSentAt" SET NOT NULL`);
         await queryRunner.query(`DROP TABLE "userPreferences"`);

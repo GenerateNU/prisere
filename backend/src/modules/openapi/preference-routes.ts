@@ -28,7 +28,7 @@ export const addOpenApiPreferenceRoutes = (openApi: OpenAPIHono, db: DataSource)
 
 const getUserNotificationPreferencesRoute = createRoute({
     method: "get",
-    path: "/notifications/preferences/{id}",
+    path: "/disasterNotification/preferences/{id}",
     summary: "Get a user's notificiation preferences",
     request: {
         params: GetUserNotificationPreferencesRequestParams,
@@ -57,7 +57,7 @@ const getUserNotificationPreferencesRoute = createRoute({
 
 const updateUserNotificationPreferencesRoute = createRoute({
     method: "put",
-    path: "/notifications/preferences/{id}",
+    path: "/disasterNotification/preferences/{id}",
     summary: "Update a user's notificiation preferences",
     request: {
         params: UpdateUserNotificationPreferencesRequestParams,

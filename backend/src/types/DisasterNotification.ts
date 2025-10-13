@@ -12,9 +12,12 @@ export const DisasterNotification = z.object({
     firstSentAt: z.union([z.date(), z.string()]).optional().nullable(),
     lastSentAt: z.union([z.date(), z.string()]).optional().nullable(),
     acknowledgedAt: z.union([z.date(), z.string()]).optional().nullable(),
+    createdAt: z.union([z.date(), z.string()]),
 });
 
 export type DisasterNotificationType = z.infer<typeof DisasterNotification>;
+
+export type NotificationTypeFilter = z.infer<typeof notificationTypes>;
 
 // GET /api/notifications/{user-id}
 export const GetUsersDisasterNotificationsResponseSchema = z.array(DisasterNotification);
@@ -26,8 +29,8 @@ export const GetUsersDisasterNotificationsDTOSchema = z.object({
 export type GetUsersDisasterNotificationsDTO = z.infer<typeof GetUsersDisasterNotificationsDTOSchema>;
 
 // POST /api/notifications/{id}/acknowledge
-export const AcknowledgeNotificationResponseSchema = DisasterNotification;
-export type AcknowledgeNotificationResponse = DisasterNotificationType;
+export const MarkReadNotificationResponseSchema = DisasterNotification;
+export type MarkReadNotificationResponse = DisasterNotificationType;
 
 // POST /api/notifications/{id}/dismiss
 export const DismissNotificationResponseSchema = DisasterNotification;
@@ -53,5 +56,3 @@ export const DeleteNotificationResponseSchema = z.object({
     deletedId: z.string(),
 });
 export type DeleteNotificationResponse = z.infer<typeof DeleteNotificationResponseSchema>;
-
-export type NotificationTypeFilter = 'web' | 'email';

@@ -8,7 +8,7 @@ export class DisasterNotifications1759072454465 implements MigrationInterface {
             `CREATE TYPE "public"."disasterNotification_notificationtype_enum" AS ENUM('web', 'email')`
         );
         await queryRunner.query(
-            `CREATE TYPE "public"."disasterNotification_notificationstatus_enum" AS ENUM('unread', 'read', 'acknowledged')`
+            `CREATE TYPE "public"."disasterNotification_notificationstatus_enum" AS ENUM('unread', 'read', 'read')`
         );
         await queryRunner.query(`CREATE TABLE "disasterNotification" (
             "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
@@ -18,7 +18,7 @@ export class DisasterNotifications1759072454465 implements MigrationInterface {
             "notificationStatus" "public"."disasterNotification_notificationstatus_enum" NOT NULL DEFAULT 'unread',
             "firstSentAt" TIMESTAMP NOT NULL,
             "lastSentAt" TIMESTAMP NOT NULL,
-            "acknowledgedAt" TIMESTAMP NOT NULL,
+            "readAt" TIMESTAMP NOT NULL,
             CONSTRAINT "PK_e910e9a1629b878751458edf731" PRIMARY KEY ("id")
         )`);
         await queryRunner.query(

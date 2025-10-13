@@ -11,9 +11,15 @@ import { logMessageToFile } from "../../utilities/logger";
 import { IPreferenceTransaction } from "../preferences/transaction";
 
 export interface IDisasterNotificationService {
-    getUserNotifications(payload: GetUsersDisasterNotificationsDTO, type?: NotificationTypeFilter, page?: number, limit?: number): Promise<DisasterNotification[]>;
-    acknowledgeNotification(notificationId: string): Promise<DisasterNotification>;
-    dismissNotification(notificationId: string): Promise<DisasterNotification>;
+    getUserNotifications(
+        payload: GetUsersDisasterNotificationsDTO,
+        type?: NotificationTypeFilter,
+        page?: number,
+        limit?: number,
+        status?: string
+    ): Promise<DisasterNotification[]>;
+    markAsReadNotification(notificationId: string): Promise<DisasterNotification>;
+    markUnreadNotification(notificationId: string): Promise<DisasterNotification>;
     bulkCreateNotifications(notifications: Partial<DisasterNotification>[]): Promise<DisasterNotification[]>;
     deleteNotification(notificationId: string): Promise<boolean>;
     processNewDisasters(newDisasters: FemaDisaster[]): Promise<boolean>;
@@ -35,26 +41,30 @@ export class DisasterNotificationService implements IDisasterNotificationService
     }
 
     getUserNotifications = withServiceErrorHandling(
-        async (payload: GetUsersDisasterNotificationsDTO, type?: NotificationTypeFilter, page?: number, limit?: number): Promise<DisasterNotification[]> => {
-            console.log("Got request in service layer")
-            return await this.notificationTransaction.getUserNotifications(payload, type, page, limit);
+        async (
+            payload: GetUsersDisasterNotificationsDTO,
+            type?: NotificationTypeFilter,
+            page?: number,
+            limit?: number,
+            status?: string
+        ): Promise<DisasterNotification[]> => {
+            console.log("Got request in service layer");
+            return await this.notificationTransaction.getUserNotifications(payload, type, page, limit, status);
         }
     );
 
-    acknowledgeNotification = withServiceErrorHandling(
-        async (notificationId: string): Promise<DisasterNotification> => {
-            const notification = await this.notificationTransaction.acknowledgeNotification(notificationId);
-            if (!notification) {
-                throw Boom.notFound("Notification not found or could not be acknowledged");
-            }
-            return notification;
-        }
-    );
-
-    dismissNotification = withServiceErrorHandling(async (notificationId: string): Promise<DisasterNotification> => {
-        const notification = await this.notificationTransaction.dismissNotification(notificationId);
+    markAsReadNotification = withServiceErrorHandling(async (notificationId: string): Promise<DisasterNotification> => {
+        const notification = await this.notificationTransaction.markAsReadNotification(notificationId);
         if (!notification) {
-            throw Boom.notFound("Notification not found or could not be dismissed");
+            throw Boom.notFound("Notification not found or could not be read");
+        }
+        return notification;
+    });
+
+    markUnreadNotification = withServiceErrorHandling(async (notificationId: string): Promise<DisasterNotification> => {
+        const notification = await this.notificationTransaction.markUnreadNotification(notificationId);
+        if (!notification) {
+            throw Boom.notFound("Notification not found or could not be markUnreaded");
         }
         return notification;
     });
@@ -96,13 +106,14 @@ export class DisasterNotificationService implements IDisasterNotificationService
                 `Found ${userDisasterPairs.length} user-disaster combinations to create notifications for`
             );
 
-            for (const { user, disaster } of userDisasterPairs) {
+            for (const { user, disaster, location } of userDisasterPairs) {
                 const preferences = await this.userPreferences.getOrCreateUserPreferences(user.id);
                 // Check web notification preferences
                 if (preferences?.webNotificationsEnabled) {
                     notificationsToCreate.push({
                         userId: user.id,
                         femaDisasterId: disaster.id,
+                        locationAddressId: location.id,
                         notificationType: NotificationType.WEB,
                         notificationStatus: NotificationStatus.UNREAD,
                         user: user,
@@ -115,6 +126,7 @@ export class DisasterNotificationService implements IDisasterNotificationService
                     notificationsToCreate.push({
                         userId: user.id,
                         femaDisasterId: disaster.id,
+                        locationAddressId: location.id,
                         notificationType: NotificationType.EMAIL,
                         notificationStatus: NotificationStatus.UNREAD,
                         user: user,

@@ -6,5 +6,4 @@ export enum NotificationType {
 export enum NotificationStatus {
     UNREAD = "unread",
     READ = "read",
-    ACKNOWLEDGED = "acknowledged",
 }
