@@ -25,7 +25,6 @@ export interface IDisasterNotificationController {
     bulkCreateNotifications(ctx: Context): Promise<TypedResponse<BulkCreateNotificationsResponse> | Response>;
     deleteNotification(ctx: Context): Promise<TypedResponse<DeleteNotificationResponse | { error: string }> | Response>;
     markAllAsRead(ctx: Context): Promise<TypedResponse<{ success: boolean; updatedCount: number } | { error: string }>>;
-            
 }
 
 export class DisasterNotificationController implements IDisasterNotificationController {
@@ -42,9 +41,6 @@ export class DisasterNotificationController implements IDisasterNotificationCont
             const page = parseInt(ctx.req.query("page") || "1");
             const limit = parseInt(ctx.req.query("limit") || "20");
             const status = ctx.req.query("status"); // read, unread
-            // console.log("Got request in controller: ")
-            console.log("User: ", userId);
-            console.log(`imit/page: ${limit} ${page}`);
             if (page < 1) {
                 return ctx.json({ error: "Page must be greater than 0" }, 400);
             }
@@ -83,14 +79,15 @@ export class DisasterNotificationController implements IDisasterNotificationCont
             if (!validate(notificationId)) {
                 return ctx.json({ error: "Invalid notification ID format" }, 400);
             }
-            console.log("Marking notification as read");
             const notification = await this.notificationService.markAsReadNotification(notificationId);
             return ctx.json(notification, 200);
         }
     );
 
     markAllAsRead = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<{ success: boolean; updatedCount: number } | { error: string }>> => {
+        async (
+            ctx: Context
+        ): Promise<TypedResponse<{ success: boolean; updatedCount: number } | { error: string }>> => {
             const userId = ctx.req.param("id");
 
             if (!validate(userId)) {
@@ -109,7 +106,6 @@ export class DisasterNotificationController implements IDisasterNotificationCont
             if (!validate(notificationId)) {
                 return ctx.json({ error: "Invalid notification ID format" }, 400);
             }
-            console.log("Marking as unread");
             const notification = await this.notificationService.markUnreadNotification(notificationId);
 
             return ctx.json(notification, 200);
