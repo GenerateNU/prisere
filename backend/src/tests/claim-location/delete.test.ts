@@ -9,6 +9,7 @@ import CompanySeeder from "../../database/seeds/company.seed";
 import { FemaDisasterSeeder } from "../../database/seeds/femaDisaster.seed";
 import { ClaimSeeder } from "../../database/seeds/claim.seed";
 import { LocationAddressSeeder } from "../../database/seeds/locationAddress.seed";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("DELETE /claim-locations/claim/id/location/id", () => {
     let app: Hono;
@@ -47,7 +48,7 @@ describe("DELETE /claim-locations/claim/id/location/id", () => {
         const claimId = "3f4e5d6c-7b8a-9f0e-1d2c-3b4a5f6e7d8c";
         const locationAddressId = "e7f8a9b0-c1d2-4e3f-5a6b-7c8d9e0f1a2b";
 
-        const response = await app.request(`/claim-locations/claim/${claimId}/location-address/${locationAddressId}`, {
+        const response = await app.request(TESTING_PREFIX + `/claim-locations/claim/${claimId}/location-address/${locationAddressId}`, {
             method: "DELETE",
         });
 
@@ -62,7 +63,7 @@ describe("DELETE /claim-locations/claim/id/location/id", () => {
         const claimId = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
         const locationAddressId = "e7f8a9b0-c1d2-4e3f-5a6b-7c8d9e0f1a2b";
 
-        const response = await app.request(`/claim-locations/claim/${claimId}/location-address/${locationAddressId}`, {
+        const response = await app.request(TESTING_PREFIX + `/claim-locations/claim/${claimId}/location-address/${locationAddressId}`, {
             method: "DELETE",
         });
 
@@ -73,7 +74,7 @@ describe("DELETE /claim-locations/claim/id/location/id", () => {
         const claimId = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
         const locationAddressId = undefined;
 
-        const response = await app.request(`/claim-locations/claim/${claimId}/location-address/${locationAddressId}`, {
+        const response = await app.request(TESTING_PREFIX + `/claim-locations/claim/${claimId}/location-address/${locationAddressId}`, {
             method: "DELETE",
         });
 
@@ -84,7 +85,7 @@ describe("DELETE /claim-locations/claim/id/location/id", () => {
         const claimId = "NANA";
         const locationAddressId = "e7f8a9b0-c1d2-4e3f-5a6b-7c8d9e0f1a2b";
 
-        const response = await app.request(`/claim-locations/claim/${claimId}/location-address/${locationAddressId}`, {
+        const response = await app.request(TESTING_PREFIX + `/claim-locations/claim/${claimId}/location-address/${locationAddressId}`, {
             method: "DELETE",
         });
 
