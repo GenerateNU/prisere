@@ -62,9 +62,10 @@ export const startTestApp = async (): Promise<TestAppData> => {
 
 export const testingAuthorized = () => {
     return async (ctx: Context, next: Next) => {
+        const userId = ctx.req.header("userId");
         const companyId = ctx.req.header("companyId");
-    
-        ctx.set("userId", "3c191e85-7f80-40a6-89ec-cbdbff33a5b2")
+       
+        ctx.set("userId", userId)
         ctx.set("companyId", companyId)
         await next();
        

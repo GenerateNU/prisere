@@ -23,6 +23,7 @@ describe("Location Address Controller Tests", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "userId": "0199e0cc-4e92-702c-9773-071340163ae4",
             },
             body: JSON.stringify(sampleCompany),
         });

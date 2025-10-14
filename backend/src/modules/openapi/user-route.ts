@@ -71,9 +71,6 @@ const getUserRoute = createRoute({
     path: "/users/{id}",
     summary: "Fetches a user by the given ID",
     description: "Finds the user with the given ID in the database",
-    request: {
-        params: GetUserDTOSchemaLocal,
-    },
     responses: {
         200: {
             content: {
@@ -97,9 +94,6 @@ const getUserCompanyRoute = createRoute({
     path: "/users/{id}/company",
     summary: "Fetches a user's associated company by the given user ID",
     description: "Finds the user's company with the given user's ID in the database",
-    request: {
-        params: GetUserComapnyDTOSchemaLocal,
-    },
     responses: {
         200: {
             content: {

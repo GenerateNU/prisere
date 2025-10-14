@@ -19,6 +19,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
             },
             body: JSON.stringify(companyRequests[0]),
         });
