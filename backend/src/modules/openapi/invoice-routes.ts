@@ -15,7 +15,7 @@ import {
     GetCompanyInvoicesInMonthBinsResponseSchema,
 } from "../../types/Invoice";
 import { CompanyTransaction } from "../company/transaction";
-import { xid, z } from "zod";
+import { z } from "zod";
 import { IInvoiceLineItemController, InvoiceLineItemController } from "../invoiceLineItem/controller";
 import { IInvoiceLineItemService, InvoiceLineItemService } from "../invoiceLineItem/service";
 import { IInvoiceLineItemTransaction, InvoiceLineItemTransaction } from "../invoiceLineItem/transaction";
@@ -43,7 +43,7 @@ export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): O
     openApi.openapi(sumInvoicesByCompanyAndDateRange, (ctx) => invoiceController.sumInvoicesByCompanyAndDateRange(ctx));
     openApi.openapi(getInvoiceLineItemsForInvoiceRoute, (ctx) =>
         invoiceLineItemController.getInvoiceLineItemsForInvoice(ctx)
-    );xid
+    );
     openApi.openapi(sumInvoicesByCompanyInMonthBins, (ctx) => invoiceController.sumInvoicesByCompanyInMonthBins(ctx));
     return openApi;
 };
