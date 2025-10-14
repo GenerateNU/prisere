@@ -12,7 +12,7 @@ export interface ILocationAddressTransaction {
      * @param payload The location information to be inserted into the database
      * @returns Promise resolving to inserted LocationAddress or null if failed
      */
-    createLocationAddress(payload: CreateLocationAddressDTO): Promise<LocationAddress | null>;
+    createLocationAddress(payload: CreateLocationAddressDTO, companyId: string): Promise<LocationAddress | null>;
 
     /**
      * Finds an existing location address in the database
@@ -51,8 +51,11 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
      * @param payload The location information to be inserted into the database
      * @returns Promise resolving to inserted LocationAddress or null if failed
      */
-    async createLocationAddress(payload: CreateLocationAddressDTO): Promise<LocationAddress | null> {
-        const address: LocationAddress = plainToClass(LocationAddress, payload);
+    async createLocationAddress(payload: CreateLocationAddressDTO, companyId: string): Promise<LocationAddress | null> {
+        const address: LocationAddress = plainToClass(LocationAddress, {
+            ...payload,
+            companyId: companyId
+        });
         const newAddress: LocationAddress = await this.db.getRepository(LocationAddress).save(address);
 
         return newAddress ?? null;
