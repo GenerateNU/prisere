@@ -62,9 +62,6 @@ const getCompanyByIdRoute = createRoute({
     path: "/companies/{id}",
     summary: "Gets a company from the database",
     description: "Gets a company using the company ID",
-    request: {
-        params: GetCompanyByIdDTOSchema,
-    },
     responses: {
         200: {
             content: {
@@ -88,7 +85,6 @@ const updateCompanyImportTimeRoute = createRoute({
     summary: "Update a company's lastQuickBooksImportTime",
     description: "Updates the lastQuickBooksImportTime for a company by ID",
     request: {
-        params: GetCompanyByIdDTOSchema,
         body: {
             content: {
                 "application/json": {
@@ -116,9 +112,6 @@ const getCompanyLocationsByIdRoute = createRoute({
     path: "/companies/{id}/location-address",
     summary: "Gets a company's location from the database",
     description: "Gets a company's locations using the company ID",
-    request: {
-        params: GetCompanyByIdDTOSchema,
-    },
     responses: {
         200: {
             content: {

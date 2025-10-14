@@ -3,6 +3,13 @@ import { ErrorResponseSchema } from "./Utils";
 
 /* Zod schemas for OpenAPI docs */
 //POST
+export const createUserRequestBody = z.object({
+    firstName: z.string().nonempty(),
+    lastName: z.string().nonempty(),
+    email: z.string().email().optional(),
+    companyId: z.string().nullish(),
+})
+
 export const CreateUserDTOSchema = z.object({
     id: z.uuid(),
     firstName: z.string().nonempty(),
