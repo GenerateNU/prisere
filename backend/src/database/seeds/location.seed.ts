@@ -2,8 +2,9 @@ import { DataSource } from "typeorm";
 import { LocationAddress } from "../../entities/LocationAddress";
 import { Company } from "../../entities/Company";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
+import { seededCompanies } from "./company.seed";
 
-export const seededLocationAddresses = [
+export const seededLocations = [
     // Added the same company under multiple locations, and one to one
     {
         id: "11111111-1111-1111-1111-111111111111",
@@ -13,7 +14,7 @@ export const seededLocationAddresses = [
         streetAddress: "123 Ocean Drive",
         postalCode: "33139",
         county: "Miami-Dade",
-        companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+        companyId: seededCompanies[0].id,
         fipsStateCode: 12,
         fipsCountyCode: 86,
     },
@@ -25,7 +26,7 @@ export const seededLocationAddresses = [
         streetAddress: "456 Main Street",
         postalCode: "77002",
         county: "Harris",
-        companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+        companyId: seededCompanies[0].id,
         fipsStateCode: 48,
         fipsCountyCode: 201,
     },
@@ -37,7 +38,7 @@ export const seededLocationAddresses = [
         streetAddress: "789 Sunset Blvd",
         postalCode: "90028",
         county: "Los Angeles",
-        companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+        companyId: seededCompanies[0].id,
         fipsStateCode: 6,
         fipsCountyCode: 37,
     },
@@ -55,7 +56,7 @@ export const seededLocationAddresses = [
     },
 ];
 
-export class LocationAddressSeeder implements Seeder {
+export class LocationSeeder implements Seeder {
     track = false;
 
     public async run(dataSource: DataSource, _factoryManager: SeederFactoryManager): Promise<void> {
@@ -63,7 +64,7 @@ export class LocationAddressSeeder implements Seeder {
         const companyRepository = dataSource.getRepository(Company);
 
         // Check company exists first
-        for (const locationData of seededLocationAddresses) {
+        for (const locationData of seededLocations) {
             const company = await companyRepository.findOne({
                 where: { id: locationData.companyId },
             });
