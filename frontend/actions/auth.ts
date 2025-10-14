@@ -27,6 +27,9 @@ export async function signup(prevState: signupInitialState, formData: FormData) 
     const payload = {
         email: formData.get("email") as string,
         password: formData.get("password") as string,
+        options: {
+            data: {},
+        },
     };
     const { error } = await supabase.auth.signUp(payload);
     if (error) {
@@ -35,6 +38,7 @@ export async function signup(prevState: signupInitialState, formData: FormData) 
             message: error.message || "Login failed",
         };
     }
+
     return { success: true, message: "Form submitted successfully!", email: payload.email };
 }
 
