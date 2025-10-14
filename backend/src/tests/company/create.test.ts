@@ -3,9 +3,10 @@ import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { TESTING_PREFIX } from "../../utilities/constants";
+import { ContextVariables } from "../../types/Utils";
 
 describe("GET /comapnies/:id", () => {
-    let app: Hono;
+    let app: Hono<{ Variables: ContextVariables }>;
     let backup: IBackup;
 
     beforeAll(async () => {
@@ -21,7 +22,7 @@ describe("GET /comapnies/:id", () => {
     test("POST /companies - All Fields Given - String Date 2", async () => {
         const requestBody = {
             name: "Cool Company",
-        };
+        };   
         const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: {

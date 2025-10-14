@@ -2,10 +2,10 @@ import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { z } from "zod";
 import {
-    CreateUserDTOSchema,
     CreateUserResponseSchema,
     GetUserResponseSchema,
     GetUserCompanyResponseSchema,
+    createUserRequestBody,
 } from "../../types/User";
 import { IUserController, UserController } from "../user/controller";
 import { IUserService, UserService } from "../user/service";
@@ -47,7 +47,7 @@ const createUserRoute = createRoute({
             required: true,
             content: {
                 "application/json": {
-                    schema: CreateUserDTOSchema,
+                    schema: createUserRequestBody,
                 },
             },
         },
