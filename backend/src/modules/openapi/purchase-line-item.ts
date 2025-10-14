@@ -34,7 +34,7 @@ const GetPurchaseLineItemsFromParentDTOSchema = z.object({
 
 const createOrUpdatePurchaseLineItemsRoute = createRoute({
     method: "post",
-    path: "/purchase/line",
+    path: "/purchase/line/bulk",
     summary: "Create or update purchase line items",
     description:
         "Creates new purchase line items or updates existing ones. If an id is provided in the payload, the line item will be updated; otherwise, a new line item will be created. Multiple line items can be created or updated in a single request.",

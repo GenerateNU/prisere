@@ -15,7 +15,7 @@ export const purchaseLineItemsRoutes = (db: DataSource, PurchaseRoutes: Hono): H
     const service: IPurchaseLineItemService = new PurchaseLineItemService(transaction);
     const controller: IPurchaseLineItemController = new PurchaseLineItemController(service);
 
-    PurchaseRoutes.post("/line/post", (ctx) => controller.createOrUpdatePurchaseLineItems(ctx));
+    PurchaseRoutes.post("/line/bulk", (ctx) => controller.createOrUpdatePurchaseLineItems(ctx));
     PurchaseRoutes.get("/line/:id", (ctx) => controller.getPurchaseLineItem(ctx));
     PurchaseRoutes.get("/:id/lines", (ctx) => controller.getPurchaseLineItemsForPurchase(ctx));
 

@@ -39,9 +39,6 @@ describe("Get single purchase line item", () => {
     it("should return a purchase line item by id", async () => {
         const createdItem = seededPurchaseLineItems[0];
 
-        const allLineItems = await datasource.manager.find(PurchaseLineItem, {});
-        console.log(allLineItems);
-
         const response = await app.request(`/purchase/line/${createdItem.id}`, {
             method: "GET",
         });

@@ -55,7 +55,7 @@ describe("Create or update purchase line items", () => {
             },
         ];
 
-        const response = await app.request("/purchase/line/post", {
+        const response = await app.request("/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -91,7 +91,7 @@ describe("Create or update purchase line items", () => {
             },
         ] satisfies CreateOrChangePurchaseLineItemsDTO;
 
-        const response = await app.request("/purchase/line/post", {
+        const response = await app.request("/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -115,7 +115,7 @@ describe("Create or update purchase line items", () => {
             },
         ] satisfies CreateOrChangePurchaseLineItemsDTO;
 
-        const response = await app.request("/purchase/line/post", {
+        const response = await app.request("/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -131,7 +131,7 @@ describe("Create or update purchase line items", () => {
     });
 
     it("should reject empty array", async () => {
-        const response = await app.request("/purchase/line/post", {
+        const response = await app.request("/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -155,7 +155,7 @@ describe("Create or update purchase line items", () => {
             },
         ] satisfies CreateOrChangePurchaseLineItemsDTO;
 
-        const response = await app.request("/purchase/line/post", {
+        const response = await app.request("/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -179,7 +179,7 @@ describe("Create or update purchase line items", () => {
             },
         ] satisfies CreateOrChangePurchaseLineItemsDTO;
 
-        const response = await app.request("/purchase/line/post", {
+        const response = await app.request("/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -201,7 +201,7 @@ describe("Create or update purchase line items", () => {
             },
         ] satisfies CreateOrChangePurchaseLineItemsDTO;
 
-        const response = await app.request("/purchase/line/post", {
+        const response = await app.request("/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -223,7 +223,7 @@ describe("Create or update purchase line items", () => {
             },
         ];
 
-        const response = await app.request("/purchase/line/post", {
+        const response = await app.request("/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -245,7 +245,7 @@ describe("Create or update purchase line items", () => {
             },
         ];
 
-        const response = await app.request("/purchase/line/post", {
+        const response = await app.request("/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -267,7 +267,7 @@ describe("Create or update purchase line items", () => {
             },
         ] satisfies CreateOrChangePurchaseLineItemsDTO;
 
-        const response = await app.request("/purchase/line/post", {
+        const response = await app.request("/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -293,7 +293,7 @@ describe("Create or update purchase line items", () => {
             },
         ];
 
-        const updateResponse = await app.request("/purchase/line/post", {
+        const updateResponse = await app.request("/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

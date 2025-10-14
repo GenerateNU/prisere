@@ -9,6 +9,7 @@ import {
     GetPurchaseLineItemResponse,
 } from "./types";
 import { ControllerResponse } from "../../utilities/response";
+import { logObjectToFile } from "../../utilities/logger";
 
 export interface IPurchaseLineItemController {
     createOrUpdatePurchaseLineItems(
@@ -36,7 +37,7 @@ export class PurchaseLineItemController implements IPurchaseLineItemController {
                     await this.purchaseLineItemService.createOrUpdatePurchaseLineItems(payload);
                 return ctx.json(updatedPurchaseLineItems, 200);
             } catch (err: unknown) {
-                console.log(err);
+                logObjectToFile(err as any);
                 throw err;
             }
         }
