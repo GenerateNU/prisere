@@ -3,8 +3,6 @@ import { SeederOptions } from "typeorm-extension";
 import { config } from "dotenv";
 import UserSeeder from "./database/seeds/user.seed.js";
 import UserFactory from "./database/factories/user.factory.js";
-import { InvoiceSeeder } from "./database/seeds/disasterNotification.seed.js";
-import { LocationSeeder } from "./database/seeds/location.seed.js";
 config({ path: ".env" });
 
 const databaseUrl =
