@@ -27,8 +27,6 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
-                        /** Format: uuid */
-                        id: string;
                         firstName: string;
                         lastName: string;
                         /** Format: email */
@@ -1600,6 +1598,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/invoice/bulk/{id}/totalIncome": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the summation of invoices for a company in a date range
+         * @description Get the summation of invoices for a company that were made after the start date and before the end date
+         */
+        get: {
+            parameters: {
+                query: {
+                    startDate: string;
+                    endDate: string;
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Found summation successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            total: number;
+                        };
+                    };
+                };
+                /** @description Getting Invoice Error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Getting Invoice Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/invoice/{id}/lines": {
         parameters: {
             query?: never;
@@ -1687,71 +1753,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/purchase": {
+    "/purchase/bulk": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * Fetches all purchases for a company
-         * @description Retrieves a paginated list of purchases for the specified company
-         */
-        get: {
-            parameters: {
-                query: {
-                    companyId: string;
-                    pageNumber?: number;
-                    resultsPerPage?: number;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful fetch of company purchases from the database */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            id: string;
-                            companyId: string;
-                            quickBooksID?: number;
-                            totalAmountCents: number;
-                            quickbooksDateCreated?: string;
-                            isRefund: boolean;
-                            dateCreated: string;
-                        }[];
-                    };
-                };
-                /** @description Get company purchases error */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                        };
-                    };
-                };
-                /** @description Get company purchases error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
+        get?: never;
         put?: never;
         /**
          * Create or update a purchase
@@ -1771,7 +1780,7 @@ export interface paths {
                         totalAmountCents: number;
                         isRefund: boolean;
                         companyId: string;
-                        /** Format: date */
+                        /** Format: date-time */
                         quickbooksDateCreated?: string;
                     }[];
                 };
@@ -1907,6 +1916,147 @@ export interface paths {
                     content?: never;
                 };
                 /** @description Get purchase error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/purchase": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Fetches all purchases for a company
+         * @description Retrieves a paginated list of purchases for the specified company
+         */
+        get: {
+            parameters: {
+                query: {
+                    companyId: string;
+                    pageNumber?: number;
+                    resultsPerPage?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful fetch of company purchases from the database */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            companyId: string;
+                            quickBooksID?: number;
+                            totalAmountCents: number;
+                            quickbooksDateCreated?: string;
+                            isRefund: boolean;
+                            dateCreated: string;
+                        }[];
+                    };
+                };
+                /** @description Get company purchases error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Get company purchases error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/purchase/bulk/{id}/totalExpenses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the summation of purchases for a company in a date range
+         * @description Get the summation of purchases for a company that were made after the start date and before the end date
+         */
+        get: {
+            parameters: {
+                query: {
+                    startDate: string;
+                    endDate: string;
+                };
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Found summation successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            total: number;
+                        };
+                    };
+                };
+                /** @description Getting Purchase Error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Getting Purchase Error */
                 500: {
                     headers: {
                         [name: string]: unknown;
@@ -2139,6 +2289,231 @@ export interface paths {
                     };
                 };
                 /** @description Create Claims Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/claim-locations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create a new claim-location link
+         * @description Creates a link between a claim and a location using given IDs
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        claimId: string;
+                        /** Format: uuid */
+                        locationAddressId: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Claim-Location link created successfully */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            claimId: string;
+                            /** Format: uuid */
+                            locationAddressId: string;
+                        };
+                    };
+                };
+                /** @description Create Claim-Location  Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Create Claim-Location  Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/claim-locations/company/{companyId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Gets all the locations affected by claims for a company
+         * @description Gets all the locations affected by claims for a company based on the given ID
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    companyId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Locations fetched successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            country: string;
+                            stateProvince: string;
+                            city: string;
+                            streetAddress: string;
+                            postalCode: string;
+                            county?: string;
+                            /** Format: uuid */
+                            companyId: string;
+                            fipsStateCode: number;
+                            fipsCountyCode: number;
+                        }[];
+                    };
+                };
+                /** @description Get Claim-Location Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Locations/Company not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Get Claim-Location Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/claim-locations/claim/{claimId}/location-address/{locationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Deletes a claim-location link from the database
+         * @description Deletes a claim-location link based off the given claim ID and location ID
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    claimId: string;
+                    locationId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Claim-Location link deleted successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            success: boolean;
+                        };
+                    };
+                };
+                /** @description Delete Claim-Location Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Delete Claim-Location Errors */
                 500: {
                     headers: {
                         [name: string]: unknown;
