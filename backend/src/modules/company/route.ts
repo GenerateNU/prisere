@@ -13,8 +13,8 @@ export const companyRoutes = (db: DataSource): Hono => {
 
     company.get("/", (ctx) => companyController.getCompanyById(ctx));
     company.post("/", (ctx) => companyController.createCompany(ctx));
-    company.patch("/:id/quickbooks-import-time", (ctx) => companyController.updateQuickbooksImportTime(ctx));
-    company.get("/:id/location-address", (ctx) => companyController.getCompanyLocationsById(ctx));
+    company.patch("/quickbooks-import-time", (ctx) => companyController.updateQuickbooksImportTime(ctx));
+    company.get("/location-address", (ctx) => companyController.getCompanyLocationsById(ctx));
 
     return company;
 };
