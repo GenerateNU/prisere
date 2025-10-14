@@ -50,9 +50,9 @@ export class PurchaseLineItemService implements IPurchaseLineItemService {
     normalizeEntity = (item: PurchaseLineItem) => {
         return {
             ...item,
-            dateCreated: item.dateCreated.toUTCString(),
-            lastUpdated: item.dateCreated.toUTCString(),
-            quickbooksDateCreated: item.quickbooksDateCreated?.toUTCString(),
+            dateCreated: item.dateCreated.toISOString(),
+            lastUpdated: item.dateCreated.toISOString(),
+            quickbooksDateCreated: item.quickbooksDateCreated?.toISOString(),
         };
     };
 }

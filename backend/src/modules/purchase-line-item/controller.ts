@@ -29,11 +29,16 @@ export class PurchaseLineItemController implements IPurchaseLineItemController {
 
     createOrUpdatePurchaseLineItems = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<CreateOrChangePurchaseLineItemsResponse, 200>> => {
-            const json = await ctx.req.json();
-            const payload = CreateOrChangePurchaseLineItemsDTOSchema.parse(json);
-            const updatedPurchaseLineItems =
-                await this.purchaseLineItemService.createOrUpdatePurchaseLineItems(payload);
-            return ctx.json(updatedPurchaseLineItems, 200);
+            try {
+                const json = await ctx.req.json();
+                const payload = CreateOrChangePurchaseLineItemsDTOSchema.parse(json);
+                const updatedPurchaseLineItems =
+                    await this.purchaseLineItemService.createOrUpdatePurchaseLineItems(payload);
+                return ctx.json(updatedPurchaseLineItems, 200);
+            } catch (err: unknown) {
+                console.log(err);
+                throw err;
+            }
         }
     );
 

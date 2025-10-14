@@ -20,7 +20,7 @@ export const CreateOrChangePurchaseLineItemsDTOSchema = z
                 .max(LINE_ITEM_CATEGORY_CHARS, `Category must be at most ${LINE_ITEM_CATEGORY_CHARS} characters.`)
                 .optional(),
             type: z.enum(PurchaseLineItemType),
-            quickbooksDateCreated: z.date().optional(),
+            quickbooksDateCreated: z.iso.datetime().optional(),
         })
     )
     .nonempty();
@@ -36,7 +36,7 @@ export const CreateOrChangePurchaseLineItemsResponseSchema = z.array(
         type: z.enum(PurchaseLineItemType),
         dateCreated: z.string(),
         lastUpdated: z.string(),
-        quickbooksDateCreated: z.string().optional(),
+        quickbooksDateCreated: z.iso.datetime().optional(),
     })
 );
 
@@ -50,7 +50,7 @@ export const GetPurchaseLineItemResponseSchema = z.object({
     type: z.enum(PurchaseLineItemType),
     dateCreated: z.string(),
     lastUpdated: z.string(),
-    quickbooksDateCreated: z.string().optional(),
+    quickbooksDateCreated: z.iso.datetime().optional(),
 });
 
 export const GetPurchaseLineItemsFromParentResponseSchema = z.array(GetPurchaseLineItemResponseSchema);

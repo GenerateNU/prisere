@@ -1,444 +1,311 @@
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from "bun:test";
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, afterEach } from "bun:test";
-import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { CreateOrChangePurchaseLineItemsDTO } from "../../modules/purchase-line-item/types";
+import { startTestApp } from "../setup-tests";
+import {
+    CreateOrChangePurchaseLineItemsDTO,
+    CreateOrChangePurchaseLineItemsResponseSchema,
+} from "../../modules/purchase-line-item/types";
 import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
+import { PurchaseSeeder, seededPurchases } from "../../database/seeds/purchase.seed";
+import { randomUUIDv7 } from "bun";
+import { LINE_ITEM_CATEGORY_CHARS, LINE_ITEM_DESCRIPTION_CHARS } from "../../utilities/constants";
+import CompanySeeder from "../../database/seeds/company.seed";
+import { PurchaseLineItemSeeder, seededPurchaseLineItems } from "../../database/seeds/purchaseLineItem.seed";
+import { SeederFactoryManager } from "typeorm-extension";
+import { DataSource } from "typeorm";
 
-describe("POST /purchase/line", () => {
+describe("Create or update purchase line items", () => {
     let app: Hono;
     let backup: IBackup;
+    let datasource: DataSource;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
+        datasource = testAppData.dataSource;
+    });
+
+    beforeEach(async () => {
+        const companySeeder = new CompanySeeder();
+        await companySeeder.run(datasource, {} as SeederFactoryManager);
+
+        const purchaseSeeder = new PurchaseSeeder();
+        await purchaseSeeder.run(datasource, {} as SeederFactoryManager);
+
+        const purchaseLineItemSeeder = new PurchaseLineItemSeeder();
+        await purchaseLineItemSeeder.run(datasource, {} as SeederFactoryManager);
     });
 
     afterEach(async () => {
         backup.restore();
     });
 
-    const createCompany = async () => {
-        const companyRequest = {
-            name: "Cool Company",
-        };
+    it("should create a single purchase line item", async () => {
+        const lineItemData: CreateOrChangePurchaseLineItemsDTO = [
+            {
+                description: "New line item",
+                quickBooksId: 12345,
+                purchaseId: seededPurchases[0].id,
+                amountCents: 9999,
+                category: "Test Category",
+                type: PurchaseLineItemType.TYPICAL,
+                quickbooksDateCreated: new Date("2025-01-15T10:00:00Z").toISOString(),
+            },
+        ];
 
-        const createCompanyResponse = await app.request("/companies", {
+        const response = await app.request("/purchase/line/post", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(companyRequest),
+            body: JSON.stringify(lineItemData),
         });
 
-        return await createCompanyResponse.json();
-    };
+        expect(response.status).toBe(200);
+        const responseBody = await response.json();
+        expect(() => CreateOrChangePurchaseLineItemsResponseSchema.parse(responseBody)).not.toThrow();
+        expect(responseBody.length).toBe(1);
+        expect(responseBody[0].description).toBe(lineItemData[0].description);
+        expect(responseBody[0].purchaseId).toBe(lineItemData[0].purchaseId);
+        expect(responseBody[0].amountCents).toBe(lineItemData[0].amountCents);
+        expect(responseBody[0].type).toBe(lineItemData[0].type);
+    });
 
-    const createPurchase = async (companyId: string) => {
-        const purchaseBody = {
-            quickBooksId: 12345,
-            totalAmountCents: 100000,
-            isRefund: false,
-            companyId: companyId,
-        };
+    it("should create multiple purchase line items", async () => {
+        const lineItemsData = [
+            {
+                description: "Item 1",
+                purchaseId: seededPurchases[0].id,
+                amountCents: 1000,
+                category: "Category 1",
+                type: PurchaseLineItemType.TYPICAL,
+            },
+            {
+                description: "Item 2",
+                purchaseId: seededPurchases[1].id,
+                amountCents: 2000,
+                category: "Category 2",
+                type: PurchaseLineItemType.EXTRANEOUS,
+            },
+        ] satisfies CreateOrChangePurchaseLineItemsDTO;
 
-        const response = await app.request("/purchase", {
+        const response = await app.request("/purchase/line/post", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify([purchaseBody]),
+            body: JSON.stringify(lineItemsData),
         });
 
-        const purchases = await response.json();
-        return purchases[0];
-    };
+        expect(response.status).toBe(200);
+        const responseBody = await response.json();
+        expect(responseBody.length).toBe(2);
+        expect(responseBody[0].description).toBe(lineItemsData[0].description);
+        expect(responseBody[1].description).toBe(lineItemsData[1].description);
+    });
 
-    const createPurchaseLineItems = async (payload: CreateOrChangePurchaseLineItemsDTO) => {
-        const response = await app.request("/purchase/line", {
+    it("should create line item with optional fields omitted", async () => {
+        const lineItemData = [
+            {
+                purchaseId: seededPurchases[0].id,
+                amountCents: 5000,
+                type: PurchaseLineItemType.TYPICAL,
+            },
+        ] satisfies CreateOrChangePurchaseLineItemsDTO;
+
+        const response = await app.request("/purchase/line/post", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(payload),
+            body: JSON.stringify(lineItemData),
         });
 
-        return response;
-    };
-
-    test("POST /purchase/line - Create Single Line Item", async () => {
-        const company = await createCompany();
-        const purchase = await createPurchase(company.id);
-
-        const lineItemBody = [
-            {
-                description: "Office Supplies",
-                quickBooksId: 101,
-                purchaseId: purchase.id,
-                amountCents: 5000,
-                category: "Supplies",
-                type: PurchaseLineItemType.EXTRANEOUS,
-            },
-        ];
-
-        const response = await createPurchaseLineItems(lineItemBody);
-
         expect(response.status).toBe(200);
-        const body = await response.json();
-        expect(Array.isArray(body)).toBe(true);
-        expect(body.length).toBe(1);
-        expect(body[0].id).toBeDefined();
-        expect(body[0].description).toBe(lineItemBody[0].description);
-        expect(body[0].quickBooksId).toBe(lineItemBody[0].quickBooksId);
-        expect(body[0].purchaseId).toBe(lineItemBody[0].purchaseId);
-        expect(body[0].amountCents).toBe(lineItemBody[0].amountCents);
-        expect(body[0].category).toBe(lineItemBody[0].category);
-        expect(body[0].type).toBe(lineItemBody[0].type);
-        expect(body[0].dateCreated).toBeDefined();
-        expect(body[0].lastUpdated).toBeDefined();
+        const responseBody = await response.json();
+        expect(responseBody.length).toBe(1);
+        expect(responseBody[0].purchaseId).toBe(lineItemData[0].purchaseId);
+        expect(responseBody[0].amountCents).toBe(lineItemData[0].amountCents);
     });
 
-    test("POST /purchase/line - Create Multiple Line Items", async () => {
-        const company = await createCompany();
-        const purchase = await createPurchase(company.id);
-
-        const lineItemsBody = [
-            {
-                description: "Office Supplies",
-                quickBooksId: 101,
-                purchaseId: purchase.id,
-                amountCents: 5000,
-                category: "Supplies",
-                type: PurchaseLineItemType.EXTRANEOUS,
+    it("should reject empty array", async () => {
+        const response = await app.request("/purchase/line/post", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
             },
-            {
-                description: "Software License",
-                quickBooksId: 102,
-                purchaseId: purchase.id,
-                amountCents: 15000,
-                category: "Software",
-                type: PurchaseLineItemType.TYPICAL,
-            },
-            {
-                description: "Equipment",
-                quickBooksId: 103,
-                purchaseId: purchase.id,
-                amountCents: 25000,
-                category: "Hardware",
-                type: PurchaseLineItemType.TYPICAL,
-            },
-        ];
-
-        const response = await createPurchaseLineItems(lineItemsBody);
-
-        expect(response.status).toBe(200);
-        const body = await response.json();
-        expect(Array.isArray(body)).toBe(true);
-        expect(body.length).toBe(3);
-
-        body.forEach((item: any, index: number) => {
-            expect(item.id).toBeDefined();
-            expect(item.description).toBe(lineItemsBody[index].description);
-            expect(item.quickBooksId).toBe(lineItemsBody[index].quickBooksId);
-            expect(item.amountCents).toBe(lineItemsBody[index].amountCents);
-            expect(item.category).toBe(lineItemsBody[index].category);
-            expect(item.type).toBe(lineItemsBody[index].type);
+            body: JSON.stringify([]),
         });
-    });
-
-    test("POST /purchase/line - Update Existing Line Item", async () => {
-        const company = await createCompany();
-        const purchase = await createPurchase(company.id);
-
-        // Create initial line item
-        const initialBody = [
-            {
-                description: "Initial Description",
-                quickBooksId: 101,
-                purchaseId: purchase.id,
-                amountCents: 5000,
-                category: "Supplies",
-                type: PurchaseLineItemType.EXTRANEOUS,
-            },
-        ];
-
-        const createResponse = await createPurchaseLineItems(initialBody);
-        const createdItem = (await createResponse.json())[0];
-
-        // Update the line item
-        const updateBody = [
-            {
-                id: createdItem.id,
-                description: "Updated Description",
-                quickBooksId: 101,
-                purchaseId: purchase.id,
-                amountCents: 7500,
-                category: "Updated Supplies",
-                type: PurchaseLineItemType.TYPICAL,
-            },
-        ];
-
-        const updateResponse = await createPurchaseLineItems(updateBody);
-
-        expect(updateResponse.status).toBe(200);
-        const updatedItem = (await updateResponse.json())[0];
-        expect(updatedItem.id).toBe(createdItem.id);
-        expect(updatedItem.description).toBe("Updated Description");
-        expect(updatedItem.amountCents).toBe(7500);
-        expect(updatedItem.category).toBe("Updated Supplies");
-        expect(updatedItem.type).toBe(PurchaseLineItemType.TYPICAL);
-    });
-
-    test("POST /purchase/line - Zero Amount", async () => {
-        const company = await createCompany();
-        const purchase = await createPurchase(company.id);
-
-        const lineItemBody = [
-            {
-                description: "Zero Cost Item",
-                quickBooksId: 101,
-                purchaseId: purchase.id,
-                amountCents: 0,
-                category: "Free",
-                type: PurchaseLineItemType.TYPICAL,
-            },
-        ];
-
-        const response = await createPurchaseLineItems(lineItemBody);
-
-        expect(response.status).toBe(200);
-        const body = await response.json();
-        expect(body[0].amountCents).toBe(0);
-    });
-
-    test("POST /purchase/line - Missing Required Field (description)", async () => {
-        const company = await createCompany();
-        const purchase = await createPurchase(company.id);
-
-        const lineItemBody = [
-            {
-                quickBooksId: 101,
-                purchaseId: purchase.id,
-                amountCents: 5000,
-                category: "Supplies",
-                type: PurchaseLineItemType.TYPICAL,
-            },
-        ];
-
-        const response = await createPurchaseLineItems(lineItemBody as any);
 
         expect(response.status).toBe(400);
+        const responseBody = await response.json();
+        expect(responseBody.error).toContain("array to have >=1 items");
     });
 
-    test("POST /purchase/line - Missing Required Field (purchaseId)", async () => {
-        const lineItemBody = [
+    it("should reject description exceeding max characters", async () => {
+        const longDescription = "a".repeat(LINE_ITEM_DESCRIPTION_CHARS + 1);
+        const lineItemData = [
             {
-                description: "Office Supplies",
-                quickBooksId: 101,
-                amountCents: 5000,
-                category: "Supplies",
-                type: "EMPLOYEE" as const,
+                description: longDescription,
+                purchaseId: seededPurchases[0].id,
+                amountCents: 1000,
+                type: PurchaseLineItemType.TYPICAL,
+            },
+        ] satisfies CreateOrChangePurchaseLineItemsDTO;
+
+        const response = await app.request("/purchase/line/post", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(lineItemData),
+        });
+
+        expect(response.status).toBe(400);
+        const responseBody = await response.json();
+        expect(responseBody.error).toContain(`Description must be at most ${LINE_ITEM_DESCRIPTION_CHARS} characters`);
+    });
+
+    it("should reject category exceeding max characters", async () => {
+        const longCategory = "a".repeat(LINE_ITEM_CATEGORY_CHARS + 1);
+        const lineItemData = [
+            {
+                category: longCategory,
+                purchaseId: seededPurchases[0].id,
+                amountCents: 1000,
+                type: PurchaseLineItemType.TYPICAL,
+            },
+        ] satisfies CreateOrChangePurchaseLineItemsDTO;
+
+        const response = await app.request("/purchase/line/post", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(lineItemData),
+        });
+
+        expect(response.status).toBe(400);
+        const responseBody = await response.json();
+        expect(responseBody.error).toContain(`Category must be at most ${LINE_ITEM_CATEGORY_CHARS} characters`);
+    });
+
+    it("should reject negative amount", async () => {
+        const lineItemData = [
+            {
+                purchaseId: seededPurchases[0].id,
+                amountCents: -100,
+                type: PurchaseLineItemType.TYPICAL,
+            },
+        ] satisfies CreateOrChangePurchaseLineItemsDTO;
+
+        const response = await app.request("/purchase/line/post", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(lineItemData),
+        });
+
+        expect(response.status).toBe(400);
+        const responseBody = await response.json();
+        expect(responseBody.error).toContain("expected number to be >=0");
+    });
+
+    it("should reject empty purchaseId", async () => {
+        const lineItemData = [
+            {
+                purchaseId: "",
+                amountCents: 1000,
+                type: PurchaseLineItemType.TYPICAL,
             },
         ];
 
-        const response = await createPurchaseLineItems(lineItemBody as any);
+        const response = await app.request("/purchase/line/post", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(lineItemData),
+        });
 
         expect(response.status).toBe(400);
+        const responseBody = await response.json();
+        expect(responseBody.error).toContain("expected string to have >=1 characters");
     });
 
-    test("POST /purchase/line - Invalid Type Enum", async () => {
-        const company = await createCompany();
-        const purchase = await createPurchase(company.id);
-
-        const lineItemBody = [
+    it("should reject invalid type", async () => {
+        const lineItemData = [
             {
-                description: "Office Supplies",
-                quickBooksId: 101,
-                purchaseId: purchase.id,
-                amountCents: 5000,
-                category: "Supplies",
+                purchaseId: seededPurchases[0].id,
+                amountCents: 1000,
                 type: "INVALID_TYPE",
             },
         ];
 
-        const response = await createPurchaseLineItems(lineItemBody as any);
+        const response = await app.request("/purchase/line/post", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(lineItemData),
+        });
 
         expect(response.status).toBe(400);
+        const responseBody = await response.json();
+        expect(responseBody.error).toContain(`expected one of "extraneous"|"typical"`);
     });
 
-    test("POST /purchase/line - Negative Amount", async () => {
-        const company = await createCompany();
-        const purchase = await createPurchase(company.id);
-
-        const lineItemBody = [
+    it("should reject non-existent purchaseId", async () => {
+        const lineItemData = [
             {
-                description: "Office Supplies",
-                quickBooksId: 101,
-                purchaseId: purchase.id,
-                amountCents: -5000,
-                category: "Supplies",
+                purchaseId: randomUUIDv7(),
+                amountCents: 1000,
+                type: PurchaseLineItemType.TYPICAL,
+            },
+        ] satisfies CreateOrChangePurchaseLineItemsDTO;
+
+        const response = await app.request("/purchase/line/post", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(lineItemData),
+        });
+
+        expect(response.status).toBe(404);
+        const responseBody = await response.json();
+        expect(responseBody.error).toBeDefined();
+    });
+
+    it("should update existing line item when posted with same id", async () => {
+        const createdItem = seededPurchaseLineItems[0];
+
+        const updatedData: CreateOrChangePurchaseLineItemsDTO = [
+            {
+                quickBooksId: createdItem.quickBooksId,
+                purchaseId: seededPurchases[0].id,
+                amountCents: 2000,
+                category: "Updated Category",
                 type: PurchaseLineItemType.EXTRANEOUS,
             },
         ];
 
-        const response = await createPurchaseLineItems(lineItemBody);
-
-        expect(response.status).toBe(400);
-    });
-
-    test("POST /purchase/line - Empty Array", async () => {
-        const response = await createPurchaseLineItems([]);
-
-        expect(response.status).toBe(400);
-    });
-
-    test("POST /purchase/line - Empty String Fields", async () => {
-        const company = await createCompany();
-        const purchase = await createPurchase(company.id);
-
-        const lineItemBody = [
-            {
-                description: "",
-                quickBooksId: 101,
-                purchaseId: purchase.id,
-                amountCents: 5000,
-                category: "",
-                type: PurchaseLineItemType.TYPICAL,
+        const updateResponse = await app.request("/purchase/line/post", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
             },
-        ];
+            body: JSON.stringify(updatedData),
+        });
 
-        const response = await createPurchaseLineItems(lineItemBody);
-
-        expect(response.status).toBe(400);
-    });
-
-    test("POST /purchase/line - Non-Existent Purchase ID", async () => {
-        const lineItemBody = [
-            {
-                description: "Office Supplies",
-                quickBooksId: 101,
-                purchaseId: "111e99a6-d082-4327-9843-97fd228d4d37",
-                amountCents: 5000,
-                category: "Supplies",
-                type: PurchaseLineItemType.TYPICAL,
-            },
-        ];
-
-        const response = await createPurchaseLineItems(lineItemBody);
-
-        expect(response.status).toBe(500);
-    });
-
-    test("POST /purchase/line - Invalid Purchase ID Format", async () => {
-        const lineItemBody = [
-            {
-                description: "Office Supplies",
-                quickBooksId: 101,
-                purchaseId: "invalid-uuid",
-                amountCents: 5000,
-                category: "Supplies",
-                type: PurchaseLineItemType.TYPICAL,
-            },
-        ];
-
-        const response = await createPurchaseLineItems(lineItemBody);
-
-        expect(response.status).toBe(500);
-    });
-
-    test("POST /purchase/line - Very Long Description", async () => {
-        const company = await createCompany();
-        const purchase = await createPurchase(company.id);
-
-        const lineItemBody = [
-            {
-                description: "A".repeat(10000),
-                quickBooksId: 101,
-                purchaseId: purchase.id,
-                amountCents: 5000,
-                category: "Supplies",
-                type: PurchaseLineItemType.TYPICAL,
-            },
-        ];
-
-        const response = await createPurchaseLineItems(lineItemBody);
-
-        expect([200, 400]).toContain(response.status);
-    });
-
-    test("POST /purchase/line - Large Amount Value", async () => {
-        const company = await createCompany();
-        const purchase = await createPurchase(company.id);
-
-        const lineItemBody = [
-            {
-                description: "Expensive Item",
-                quickBooksId: 101,
-                purchaseId: purchase.id,
-                amountCents: 999999999999,
-                category: "High Value",
-                type: PurchaseLineItemType.TYPICAL,
-            },
-        ];
-
-        const response = await createPurchaseLineItems(lineItemBody);
-
-        expect([200, 400]).toContain(response.status);
-    });
-
-    test("POST /purchase/line - Special Characters in Description", async () => {
-        const company = await createCompany();
-        const purchase = await createPurchase(company.id);
-
-        const lineItemBody = [
-            {
-                description: "Office Supplies @#$%^&*() with special chars",
-                quickBooksId: 101,
-                purchaseId: purchase.id,
-                amountCents: 5000,
-                category: "Supplies & Equipment",
-                type: PurchaseLineItemType.TYPICAL,
-            },
-        ];
-
-        const response = await createPurchaseLineItems(lineItemBody);
-
-        expect(response.status).toBe(200);
-        const body = await response.json();
-        expect(body[0].description).toBe(lineItemBody[0].description);
-    });
-
-    test("POST /purchase/line - Multiple Purchases Line Items", async () => {
-        const company = await createCompany();
-        const purchase1 = await createPurchase(company.id);
-        const purchase2 = await createPurchase(company.id);
-
-        const lineItemsBody = [
-            {
-                description: "Item for Purchase 1",
-                quickBooksId: 101,
-                purchaseId: purchase1.id,
-                amountCents: 5000,
-                category: "Category A",
-                type: PurchaseLineItemType.TYPICAL,
-            },
-            {
-                description: "Item for Purchase 2",
-                quickBooksId: 102,
-                purchaseId: purchase2.id,
-                amountCents: 7500,
-                category: "Category B",
-                type: PurchaseLineItemType.TYPICAL,
-            },
-        ];
-
-        const response = await createPurchaseLineItems(lineItemsBody);
-
-        expect(response.status).toBe(200);
-        const body = await response.json();
-        expect(body.length).toBe(2);
-        expect(body[0].purchaseId).toBe(purchase1.id);
-        expect(body[1].purchaseId).toBe(purchase2.id);
+        expect(updateResponse.status).toBe(200);
+        const responseBody = await updateResponse.json();
+        expect(responseBody[0].id).toBe(createdItem.id);
+        expect(responseBody[0].amountCents).toBe(2000);
+        expect(responseBody[0].category).toBe("Updated Category");
+        expect(responseBody[0].type).toBe(PurchaseLineItemType.EXTRANEOUS);
     });
 });

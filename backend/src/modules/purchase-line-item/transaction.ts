@@ -20,6 +20,13 @@ export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction
 
     async createOrUpdatePurchaseLineItems(payload: CreateOrChangePurchaseLineItemsDTO): Promise<PurchaseLineItem[]> {
         const normalizedPayload = payload.map((element) => plainToInstance(PurchaseLineItem, element));
+        const uniquePurchaseIds = [...new Set(payload.map((element) => element.purchaseId))];
+
+        const givenPurchaseIds = await this.db.manager.find(Purchase, { where: { id: In(uniquePurchaseIds) } });
+
+        if (givenPurchaseIds.length !== uniquePurchaseIds.length) {
+            throw Boom.notFound("Not all of the provided purchase Ids exist in the purchase table.");
+        }
 
         return (
             await this.db

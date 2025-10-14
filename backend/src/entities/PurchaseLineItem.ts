@@ -26,7 +26,7 @@ export class PurchaseLineItem {
     @Column({ nullable: true, length: LINE_ITEM_DESCRIPTION_CHARS })
     description?: string;
 
-    @Column()
+    @Column({ nullable: true })
     quickBooksId?: number;
 
     @ManyToOne(() => Purchase, (purchase) => purchase.lineItems)
