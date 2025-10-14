@@ -3,7 +3,6 @@ import { Hono } from "hono";
 import { IBackup } from "pg-mem";
 import { startTestApp } from "../setup-tests";
 import { GetPurchaseLineItemResponseSchema } from "../../modules/purchase-line-item/types";
-import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import { PurchaseSeeder } from "../../database/seeds/purchase.seed";
 import { randomUUIDv7 } from "bun";
 import { SeederFactoryManager } from "typeorm-extension";
