@@ -69,11 +69,19 @@ export const GetCompanyPurchasesSummationResponseSchema = z.object({
     total: z.number().nonnegative(),
 });
 
+export const GetCompanyPurchasesInMonthBinsResponseSchema = z.array(
+    z.object({
+        month: z.string(),
+        total: z.number().nonnegative(),
+    })
+);
+
 //Controller Responses
 export type CreateOrChangePurchaseResponse = z.infer<typeof CreateOrChangePurchasesResponseSchema>;
 export type GetPurchaseResponse = z.infer<typeof GetPurchasesResponseSchema>;
 export type GetCompanyPurchasesResponse = z.infer<typeof GetCompanyPurchasesResponseSchema>;
 export type GetCompanyPurchasesSummationResponse = z.infer<typeof GetCompanyPurchasesSummationResponseSchema>;
+export type GetCompanyPurchasesInMonthBinsResponse = z.infer<typeof GetCompanyPurchasesInMonthBinsResponseSchema>;
 
 //Input types
 export type CreateOrChangePurchaseDTO = z.infer<typeof CreateOrChangePurchaseDTOSchema>;
