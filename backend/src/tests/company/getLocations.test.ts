@@ -4,8 +4,8 @@ import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
-import CompanySeeder from "../../database/seeds/company.seed";
-import { LocationAddressSeeder } from "../../database/seeds/location.seed";
+import CompanySeeder, { seededCompanies } from "../../database/seeds/company.seed";
+import { LocationSeeder } from "../../database/seeds/location.seed";
 
 /**
  * Test:
@@ -21,7 +21,7 @@ describe("Get all locations for a company", () => {
     let datasource: DataSource;
 
     // Seeded company IDs from company.seed.ts
-    const companyWithMultipleLocations = "ffc8243b-876e-4b6d-8b80-ffc73522a838"; // 3 locations
+    const companyWithMultipleLocations = seededCompanies[0].id; // 3 locations
     const companyWithOneLocation = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"; // 1 location
     const companyWithNoLocations = "11b2c3d4-e5f6-7890-abcd-ef1234567890"; // 0 locations
 
@@ -36,7 +36,7 @@ describe("Get all locations for a company", () => {
         backup.restore();
         const companySeeder = new CompanySeeder();
         await companySeeder.run(datasource, {} as SeederFactoryManager);
-        const locationSeeder = new LocationAddressSeeder();
+        const locationSeeder = new LocationSeeder();
         await locationSeeder.run(datasource, {} as SeederFactoryManager);
     });
 

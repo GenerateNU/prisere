@@ -5,7 +5,7 @@ import { IBackup } from "pg-mem";
 import { beforeEach } from "node:test";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
-import CompanySeeder from "../../database/seeds/company.seed";
+import CompanySeeder, { seededCompanies } from "../../database/seeds/company.seed";
 import { InvoiceSeeder } from "../../database/seeds/invoice.seed";
 import { CompareRequestToCreated } from "./utils";
 
@@ -37,7 +37,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
     test("POST /quickbooks/invoice/bulk - All Fields Given, single creation", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
+                companyId: seededCompanies[0].id, // from the company seeder
                 quickbooksId: 12,
                 totalAmountCents: 4004,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
@@ -59,13 +59,13 @@ describe("POST /quickbooks/invoice/bulk", () => {
     test("POST /quickbooks/invoice/bulk - All Fields Given, multiple creations", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
+                companyId: seededCompanies[0].id, // from the company seeder
                 quickbooksId: 13,
                 totalAmountCents: 4004,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
+                companyId: seededCompanies[0].id, // from the company seeder
                 quickbooksId: 14,
                 totalAmountCents: 0,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
@@ -87,12 +87,12 @@ describe("POST /quickbooks/invoice/bulk", () => {
     test("POST /quickbooks/invoice/bulk - MIssing quickbooksId, multiple creations", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
+                companyId: seededCompanies[0].id, // from the company seeder
                 totalAmountCents: 4004,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
+                companyId: seededCompanies[0].id, // from the company seeder
                 totalAmountCents: 0,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
@@ -113,12 +113,12 @@ describe("POST /quickbooks/invoice/bulk", () => {
     test("POST /quickbooks/invoice/bulk - Missing Fields, multiple creations", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+                companyId: seededCompanies[0].id,
                 quickbooksId: 13,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+                companyId: seededCompanies[0].id,
                 quickbooksId: 14,
                 totalAmountCents: 0,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
@@ -141,13 +141,13 @@ describe("POST /quickbooks/invoice/bulk", () => {
     test("POST /quickbooks/invoice/bulk - Missing Fields 2, multiple creations", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+                companyId: seededCompanies[0].id,
                 quickbooksId: 13,
                 totalAmountCents: 998,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+                companyId: seededCompanies[0].id,
             },
         ];
         const response = await app.request("/invoice/bulk", {
@@ -226,7 +226,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // good UUID
+                companyId: seededCompanies[0].id, // good UUID
                 quickbooksId: 15,
                 totalAmountCents: 11,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
@@ -249,7 +249,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
     test("POST /quickbooks/invoice/bulk - Bad quickbooks ID", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // good UUID
+                companyId: seededCompanies[0].id, // good UUID
                 quickbooksId: -15,
                 totalAmountCents: 11,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
@@ -272,7 +272,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
     test("POST /quickbooks/invoice/bulk - Bad total cents", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // good UUID
+                companyId: seededCompanies[0].id, // good UUID
                 quickbooksId: 15,
                 totalAmountCents: -11,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
@@ -295,7 +295,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
     test("POST /quickbooks/invoice/bulk - updating invoice instance", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // good UUID
+                companyId: seededCompanies[0].id, // good UUID
                 quickbooksId: 1, // already exists from the seeded example
                 totalAmountCents: 999999,
                 quickbooksDateCreated: quickbooksDateCreatedEx,

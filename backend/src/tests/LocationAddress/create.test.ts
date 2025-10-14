@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import CompanySeeder from "../../database/seeds/company.seed";
+import CompanySeeder, { seededCompanies } from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
 import { Company } from "../../entities/Company";
@@ -20,7 +20,7 @@ describe("Location Address Controller Tests", () => {
     });
 
     // Use the company ID from the seeded data
-    let company_id = "ffc8243b-876e-4b6d-8b80-ffc73522a838";
+    let company_id = seededCompanies[0].id;
 
     beforeEach(async () => {
         backup.restore();
@@ -73,7 +73,7 @@ describe("Location Address Controller Tests", () => {
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
                 postalCode: "94105",
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+                companyId: seededCompanies[0].id,
             };
 
             const response = await app.request("/location-address", {

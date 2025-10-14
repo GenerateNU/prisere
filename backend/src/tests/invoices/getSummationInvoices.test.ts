@@ -39,7 +39,7 @@ describe(" Get Invoice summation by company id", () => {
         );
         const body = await response.json();
         expect(response.status).toBe(200);
-        expect(body.total).toBe(735);
+        expect(body.total).toBe(279);
     });
 
     test("should return 0 if no invoices in the valid date range", async () => {

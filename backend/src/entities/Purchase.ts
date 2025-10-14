@@ -6,10 +6,12 @@ import {
     JoinColumn,
     CreateDateColumn,
     UpdateDateColumn,
+    OneToMany,
     Unique,
 } from "typeorm";
 import type { Relation } from "typeorm";
 import { Company } from "./Company.js";
+import { PurchaseLineItem } from "./PurchaseLineItem.js";
 
 @Entity("purchase")
 @Unique(["companyId", "quickBooksId"])
@@ -34,6 +36,9 @@ export class Purchase {
 
     @Column()
     isRefund!: boolean;
+
+    @OneToMany(() => PurchaseLineItem, (purchaseLineItem) => purchaseLineItem.purchase)
+    lineItems!: Relation<PurchaseLineItem[]>;
 
     @Column({ type: "timestamptz", nullable: true })
     quickbooksDateCreated?: Date;
