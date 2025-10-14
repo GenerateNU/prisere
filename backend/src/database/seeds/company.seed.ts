@@ -2,7 +2,7 @@ import { Seeder, SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
 import { Company } from "../../entities/Company.js";
 
-const seededCompanies = [
+export const seededCompanies = [
     {
         // NEU
         id: "f47ac10b-58cc-4372-a567-0e02b2c3d479",

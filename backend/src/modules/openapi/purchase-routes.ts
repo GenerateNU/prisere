@@ -3,18 +3,12 @@ import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { z } from "zod";
 import {
     GetCompanyPurchasesDTOSchema,
-<<<<<<< HEAD
-    CreateOrChangePurchasesResponseSchema,
-    GetPurchasesResponseSchema,
-    GetCompanyPurchasesResponseSchema,
-=======
-    GetPurchasesResponseSchema,
-    GetCompanyPurchasesResponseSchema,
     CreateOrChangePurchaseDTOSchema,
     CreateOrChangePurchasesResponseSchema,
     GetPurchaseDTOSchema,
     GetCompanyPurchasesSummationResponseSchema,
->>>>>>> main
+    GetPurchasesResponseSchema,
+    GetCompanyPurchasesResponseSchema,
 } from "../../modules/purchase/types";
 import { IPurchaseController, PurchaseController } from "../purchase/controller";
 import { IPurchaseService, PurchaseService } from "../purchase/service";
@@ -29,10 +23,7 @@ export const addOpenApiPurchaseRoutes = (openApi: OpenAPIHono, db: DataSource): 
     openApi.openapi(createOrUpdatePurchaseRoute, (ctx) => controller.createOrUpdatePurchase(ctx));
     openApi.openapi(getPurchaseRoute, (ctx) => controller.getPurchase(ctx));
     openApi.openapi(getPurchasesForCompanyRoute, (ctx) => controller.getPurchasesForCompany(ctx));
-<<<<<<< HEAD
-=======
     openApi.openapi(sumPurchasesByCompanyAndDateRange, (ctx) => controller.sumPurchasesByCompanyAndDateRange(ctx));
->>>>>>> main
 
     return openApi;
 };
@@ -43,22 +34,14 @@ const GetPurchaseDTOSchemaLocal = z.object({
 
 const createOrUpdatePurchaseRoute = createRoute({
     method: "post",
-<<<<<<< HEAD
-    path: "/purchase",
-=======
     path: "/purchase/bulk",
->>>>>>> main
     summary: "Create or update a purchase",
     description: "Creates a new purchase or updates an existing purchase with the provided information",
     request: {
         body: {
             content: {
                 "application/json": {
-<<<<<<< HEAD
-                    schema: CreateOrChangePurchasesResponseSchema,
-=======
                     schema: CreateOrChangePurchaseDTOSchema,
->>>>>>> main
                 },
             },
         },
@@ -134,8 +117,6 @@ const getPurchasesForCompanyRoute = createRoute({
     },
     tags: ["Purchases"],
 });
-<<<<<<< HEAD
-=======
 
 const sumPurchasesByCompanyAndDateRange = createRoute({
     method: "get",
@@ -160,4 +141,3 @@ const sumPurchasesByCompanyAndDateRange = createRoute({
     },
     tags: ["Purchases"],
 });
->>>>>>> main
