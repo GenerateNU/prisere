@@ -12,12 +12,12 @@ export const purchaseRoutes = (db: DataSource): Hono => {
     const service: IPurchaseService = new PurchaseService(transaction);
     const controller: IPurchaseController = new PurchaseController(service);
 
-    //Add the line item routes
     purchaseLineItemsRoutes(db, PurchaseRoutes);
 
     PurchaseRoutes.post("/bulk", (ctx) => controller.createOrUpdatePurchase(ctx));
     PurchaseRoutes.get("/:id", (ctx) => controller.getPurchase(ctx));
     PurchaseRoutes.get("/", (ctx) => controller.getPurchasesForCompany(ctx));
+    PurchaseRoutes.get("/bulk/:id/totalExpenses", (ctx) => controller.sumPurchasesByCompanyAndDateRange(ctx));
 
     return PurchaseRoutes;
 };

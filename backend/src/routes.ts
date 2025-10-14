@@ -9,6 +9,10 @@ import { claimRoutes } from "./modules/claim/route";
 import { disasterNotificationRoutes } from "./modules/disasterNotifications/route";
 import { quickbooksRoutes } from "./modules/quickbooks/routes";
 import { invoiceRoutes } from "./modules/invoice/route";
+<<<<<<< HEAD
+=======
+import { claimLocationRoutes } from "./modules/claim-location/route";
+>>>>>>> main
 import { purchaseRoutes } from "./modules/purchase/route";
 import { preferenceRoutes } from "./modules/preferences/route";
 import { invoiceLineItemsRoutes } from "./modules/invoiceLineItem/route";
@@ -22,7 +26,11 @@ export const setUpRoutes = (app: Hono, db: DataSource) => {
     app.route("/claims", claimRoutes(db));
     app.route("/disasterNotification", disasterNotificationRoutes(db));
     app.route("/quickbooks", quickbooksRoutes(db));
+<<<<<<< HEAD
     app.route("/quickbooks/invoice", invoiceRoutes(db));
+=======
+    app.route("/claim-locations", claimLocationRoutes(db));
+>>>>>>> main
     app.route("/purchase", purchaseRoutes(db));
     app.route("/invoice", invoiceRoutes(db));
     app.route("/notifications", preferenceRoutes(db));

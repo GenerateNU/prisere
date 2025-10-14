@@ -20,6 +20,22 @@ export const seededPurchases = [
         isRefund: false,
         dateCreated: new Date("2025-01-11T12:00:00Z"),
     },
+    {
+        id: "840b4c83-f46b-4774-96c1-2f11959d45eb",
+        companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+        quickbooksId: 2108346,
+        totalAmountCents: 456,
+        isRefund: false,
+        dateCreated: new Date("2025-01-09T12:00:00Z"),
+    },
+    {
+        id: "013417a7-f85c-4440-b171-b461227446e5",
+        companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+        quickbooksId: 2108344,
+        totalAmountCents: 50,
+        isRefund: false,
+        dateCreated: new Date("2024-04-11T12:00:00Z"),
+    },
 ];
 
 export class PurchaseSeeder implements Seeder {
