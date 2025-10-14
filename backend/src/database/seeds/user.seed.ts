@@ -12,6 +12,19 @@ export default class UserSeeder implements Seeder {
                 lastName: "Imadulla",
                 email: "zainab.imadulla@gmail.com",
             },
+            {
+                id: "0199e0cc-4e92-702c-9773-071340163ae4",
+                firstName: "John",
+                lastName: "Doe",
+                email: "john.doe@example.com",
+            },
+            {
+                id: "0199e103-5452-76d7-8d4d-92e70c641bdb",
+                firstName: "zahra",
+                lastName: "wibisana",
+                email: "zahra.wib@example.com",
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+            }
         ]);
     }
 }

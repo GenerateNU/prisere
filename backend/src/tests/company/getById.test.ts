@@ -12,7 +12,6 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, beforeEach, afterEach} from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { logMessageToFile } from "../../utilities/logger";
 import { TESTING_PREFIX } from "../../utilities/constants";
 import { ContextVariables } from "../../types/Utils";
 import CompanySeeder from "../../database/seeds/company.seed";
