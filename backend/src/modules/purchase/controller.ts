@@ -22,8 +22,8 @@ export interface IPurchaseController {
         ctx: Context
     ): ControllerResponse<TypedResponse<GetCompanyPurchasesSummationResponse, 200>>;
     sumPurchasesByCompanyInMonthBins(
-            ctx: Context
-        ): ControllerResponse<TypedResponse<GetCompanyPurchasesInMonthBinsResponse, 200>>;
+        ctx: Context
+    ): ControllerResponse<TypedResponse<GetCompanyPurchasesInMonthBinsResponse, 200>>;
 }
 
 export class PurchaseController implements IPurchaseController {
@@ -94,22 +94,22 @@ export class PurchaseController implements IPurchaseController {
     );
 
     sumPurchasesByCompanyInMonthBins = withControllerErrorHandling(
-            async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyPurchasesInMonthBinsResponse, 200>> => {
-                const queryParams = {
-                    companyId: ctx.req.param("id"),
-                    startDate: ctx.req.query("startDate"),
-                    endDate: ctx.req.query("endDate"),
-                };
-                const payload = GetCompanyPurchasesByDateDTOSchema.parse(queryParams);
-    
-                if (!validate(payload.companyId)) {
-                    return ctx.json({ error: "Invalid company ID format" }, 400);
-                } else if (new Date(payload.startDate) >= new Date(payload.endDate)) {
-                    return ctx.json({ error: "Start date must be before End date" }, 400);
-                }
-    
-                const perMonthSums = await this.PurchaseService.sumPurchasesByCompanyInMonthBins(payload);
-                return ctx.json(perMonthSums, 200);
+        async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyPurchasesInMonthBinsResponse, 200>> => {
+            const queryParams = {
+                companyId: ctx.req.param("id"),
+                startDate: ctx.req.query("startDate"),
+                endDate: ctx.req.query("endDate"),
+            };
+            const payload = GetCompanyPurchasesByDateDTOSchema.parse(queryParams);
+
+            if (!validate(payload.companyId)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            } else if (new Date(payload.startDate) >= new Date(payload.endDate)) {
+                return ctx.json({ error: "Start date must be before End date" }, 400);
             }
-        );
+
+            const perMonthSums = await this.PurchaseService.sumPurchasesByCompanyInMonthBins(payload);
+            return ctx.json(perMonthSums, 200);
+        }
+    );
 }

@@ -40,10 +40,12 @@ describe("Get Purchase summation by company id per month", () => {
         const body = await response.json();
         expect(response.status).toBe(200);
         expect(body.length).toBe(1);
-        expect(body).toEqual([{
-            month: "2025-01",
-            total: 5678
-        }])
+        expect(body).toEqual([
+            {
+                month: "2025-01",
+                total: 5678,
+            },
+        ]);
     });
 
     test("should return multiple months", async () => {
@@ -56,13 +58,13 @@ describe("Get Purchase summation by company id per month", () => {
         expect(body).toEqual([
             {
                 month: "2024-04",
-                total: 50
+                total: 50,
             },
             {
                 month: "2025-01",
-                total: 6134
+                total: 6134,
             },
-        ])
+        ]);
     });
 
     test("should return empty arr if no purchases in the valid date range", async () => {

@@ -1,6 +1,11 @@
 import { DataSource } from "typeorm";
 import Boom from "@hapi/boom";
-import { CreateOrChangePurchaseDTO, GetCompanyPurchasesByDateDTO, GetCompanyPurchasesDTO, GetCompanyPurchasesInMonthBinsResponse } from "./types";
+import {
+    CreateOrChangePurchaseDTO,
+    GetCompanyPurchasesByDateDTO,
+    GetCompanyPurchasesDTO,
+    GetCompanyPurchasesInMonthBinsResponse,
+} from "./types";
 import { Purchase } from "../../entities/Purchase";
 import { plainToInstance } from "class-transformer";
 
@@ -9,7 +14,9 @@ export interface IPurchaseTransaction {
     getPurchase(id: string): Promise<Purchase>;
     getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<Purchase[]>;
     sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number>;
-    sumPurchasesByCompanyInMonthBins(payload: GetCompanyPurchasesByDateDTO): Promise<GetCompanyPurchasesInMonthBinsResponse>;
+    sumPurchasesByCompanyInMonthBins(
+        payload: GetCompanyPurchasesByDateDTO
+    ): Promise<GetCompanyPurchasesInMonthBinsResponse>;
 }
 
 export class PurchaseTransaction implements IPurchaseTransaction {
@@ -78,7 +85,9 @@ export class PurchaseTransaction implements IPurchaseTransaction {
         return totalCents;
     }
 
-    async sumPurchasesByCompanyInMonthBins(payload: GetCompanyPurchasesByDateDTO): Promise<GetCompanyPurchasesInMonthBinsResponse> {
+    async sumPurchasesByCompanyInMonthBins(
+        payload: GetCompanyPurchasesByDateDTO
+    ): Promise<GetCompanyPurchasesInMonthBinsResponse> {
         const { companyId, startDate, endDate } = payload;
 
         const results = await this.db
@@ -87,7 +96,7 @@ export class PurchaseTransaction implements IPurchaseTransaction {
                 // used EXTRACT here rather than TO_CHAR because pg-mem does not support TO_CHAR
                 "EXTRACT(YEAR FROM purchase.quickbooksDateCreated) as year",
                 "EXTRACT(MONTH FROM purchase.quickbooksDateCreated) as month",
-                "SUM(purchase.totalAmountCents) as total"
+                "SUM(purchase.totalAmountCents) as total",
             ])
             .where({ companyId: companyId })
             .andWhere("purchase.quickbooksDateCreated BETWEEN :startDate AND :endDate", {
@@ -95,14 +104,16 @@ export class PurchaseTransaction implements IPurchaseTransaction {
                 endDate: new Date(endDate),
             })
             .andWhere("purchase.isRefund = FALSE")
-            .groupBy("EXTRACT(YEAR FROM purchase.quickbooksDateCreated), EXTRACT(MONTH FROM purchase.quickbooksDateCreated)")
+            .groupBy(
+                "EXTRACT(YEAR FROM purchase.quickbooksDateCreated), EXTRACT(MONTH FROM purchase.quickbooksDateCreated)"
+            )
             .orderBy("year", "ASC")
             .addOrderBy("month", "ASC")
             .getRawMany();
 
-        return results.map(row => ({
-            month: `${row.year}-${String(row.month).padStart(2, '0')}`,
-            total: parseInt(row.total) || 0
+        return results.map((row) => ({
+            month: `${row.year}-${String(row.month).padStart(2, "0")}`,
+            total: parseInt(row.total) || 0,
         }));
     }
 }

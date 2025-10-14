@@ -2,14 +2,21 @@ import { DataSource, In } from "typeorm";
 import Boom from "@hapi/boom";
 import { plainToInstance } from "class-transformer";
 import { Invoice } from "../../entities/Invoice";
-import { CreateOrUpdateInvoicesDTO, GetCompanyInvoicesDTO, GetCompanyInvoicesByDateDTO, GetCompanyInvoicesInMonthBinsResponse } from "../../types/Invoice";
+import {
+    CreateOrUpdateInvoicesDTO,
+    GetCompanyInvoicesDTO,
+    GetCompanyInvoicesByDateDTO,
+    GetCompanyInvoicesInMonthBinsResponse,
+} from "../../types/Invoice";
 
 export interface IInvoiceTransaction {
     createOrUpdateInvoices(payload: CreateOrUpdateInvoicesDTO): Promise<Invoice[]>;
     getInvoiceById(id: string): Promise<Invoice>;
     getInvoicesForCompany(payload: GetCompanyInvoicesDTO): Promise<Invoice[]>;
     sumInvoicesByCompanyAndDateRange(payload: GetCompanyInvoicesByDateDTO): Promise<number>;
-    sumInvoicesByCompanyInMonthBins(payload: GetCompanyInvoicesByDateDTO): Promise<GetCompanyInvoicesInMonthBinsResponse>;
+    sumInvoicesByCompanyInMonthBins(
+        payload: GetCompanyInvoicesByDateDTO
+    ): Promise<GetCompanyInvoicesInMonthBinsResponse>;
 
     /**
      * Validates that all the passed invoice IDs exist in the database
@@ -93,7 +100,9 @@ export class InvoiceTransaction implements IInvoiceTransaction {
         return totalCents;
     }
 
-    async sumInvoicesByCompanyInMonthBins(payload: GetCompanyInvoicesByDateDTO): Promise<GetCompanyInvoicesInMonthBinsResponse> {
+    async sumInvoicesByCompanyInMonthBins(
+        payload: GetCompanyInvoicesByDateDTO
+    ): Promise<GetCompanyInvoicesInMonthBinsResponse> {
         const { companyId, startDate, endDate } = payload;
 
         const results = await this.db
@@ -102,21 +111,23 @@ export class InvoiceTransaction implements IInvoiceTransaction {
                 // used EXTRACT here rather than TO_CHAR because pg-mem does not support TO_CHAR
                 "EXTRACT(YEAR FROM invoice.quickbooksDateCreated) as year",
                 "EXTRACT(MONTH FROM invoice.quickbooksDateCreated) as month",
-                "SUM(invoice.totalAmountCents) as total"
+                "SUM(invoice.totalAmountCents) as total",
             ])
             .where({ companyId: companyId })
             .andWhere("invoice.quickbooksDateCreated BETWEEN :startDate AND :endDate", {
                 startDate: new Date(startDate),
                 endDate: new Date(endDate),
             })
-            .groupBy("EXTRACT(YEAR FROM invoice.quickbooksDateCreated), EXTRACT(MONTH FROM invoice.quickbooksDateCreated)")
+            .groupBy(
+                "EXTRACT(YEAR FROM invoice.quickbooksDateCreated), EXTRACT(MONTH FROM invoice.quickbooksDateCreated)"
+            )
             .orderBy("year", "ASC")
             .addOrderBy("month", "ASC")
             .getRawMany();
 
-        return results.map(row => ({
-            month: `${row.year}-${String(row.month).padStart(2, '0')}`,
-            total: parseInt(row.total) || 0
+        return results.map((row) => ({
+            month: `${row.year}-${String(row.month).padStart(2, "0")}`,
+            total: parseInt(row.total) || 0,
         }));
     }
 }

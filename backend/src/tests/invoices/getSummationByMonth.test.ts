@@ -43,17 +43,17 @@ describe(" Get Invoice summation by company id", () => {
         expect(body).toEqual([
             {
                 month: "2025-01",
-                total: 456
+                total: 456,
             },
             {
                 month: "2025-02",
-                total: 234
+                total: 234,
             },
             {
                 month: "2025-04",
-                total: 45
-            }
-        ])
+                total: 45,
+            },
+        ]);
     });
 
     test("should return 0 if no invoices in the valid date range", async () => {

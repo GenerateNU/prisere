@@ -15,7 +15,9 @@ export interface IPurchaseService {
     getPurchase(id: string): Promise<GetPurchaseResponse>;
     getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<GetCompanyPurchasesResponse>;
     sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number>;
-    sumPurchasesByCompanyInMonthBins(payload: GetCompanyPurchasesByDateDTO): Promise<GetCompanyPurchasesInMonthBinsResponse>;
+    sumPurchasesByCompanyInMonthBins(
+        payload: GetCompanyPurchasesByDateDTO
+    ): Promise<GetCompanyPurchasesInMonthBinsResponse>;
 }
 
 export class PurchaseService implements IPurchaseService {
@@ -78,10 +80,10 @@ export class PurchaseService implements IPurchaseService {
     );
 
     sumPurchasesByCompanyInMonthBins = withServiceErrorHandling(
-            async (payload: GetCompanyPurchasesByDateDTO): Promise<GetCompanyPurchasesInMonthBinsResponse> => {
-                const perMonthSums = await this.PurchaseTransaction.sumPurchasesByCompanyInMonthBins(payload);
-    
-                return perMonthSums;
-            }
-        );
+        async (payload: GetCompanyPurchasesByDateDTO): Promise<GetCompanyPurchasesInMonthBinsResponse> => {
+            const perMonthSums = await this.PurchaseTransaction.sumPurchasesByCompanyInMonthBins(payload);
+
+            return perMonthSums;
+        }
+    );
 }
