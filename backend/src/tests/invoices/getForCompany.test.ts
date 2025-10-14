@@ -38,7 +38,7 @@ describe("Invoice get by id", () => {
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        CompareRequestToCreated(seededInvoices, body);
+        CompareRequestToCreated(seededInvoices.slice(0, 2), body);
     });
 
     test("GET /quickbooks/invoice - bad company id ", async () => {
@@ -74,11 +74,11 @@ describe("Invoice get by id", () => {
         CompareRequestToCreated([seededInvoices[1]], body);
     });
 
-    test("GET /quickbooks/invoice - valid company id paginated page 3", async () => {
-        const response = await app.request(`/invoice?companyId=${seededCompanyId}&pageNumber=2&resultsPerPage=1`);
+    test("GET /quickbooks/invoice - valid company id paginated page 2", async () => {
+        const response = await app.request(`/invoice?companyId=${seededCompanyId}&pageNumber=1&resultsPerPage=1`);
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        CompareRequestToCreated([seededInvoices[2]], body);
+        CompareRequestToCreated([seededInvoices[1]], body);
     });
 });

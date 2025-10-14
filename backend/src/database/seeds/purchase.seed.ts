@@ -22,7 +22,7 @@ export const seededPurchases = [
     },
     {
         id: "840b4c83-f46b-4774-96c1-2f11959d45eb",
-        companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+        companyId: seededCompanies[0].id,
         quickbooksId: 2108346,
         totalAmountCents: 456,
         isRefund: false,
@@ -30,7 +30,7 @@ export const seededPurchases = [
     },
     {
         id: "013417a7-f85c-4440-b171-b461227446e5",
-        companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+        companyId: seededCompanies[0].id,
         quickbooksId: 2108344,
         totalAmountCents: 50,
         isRefund: false,
