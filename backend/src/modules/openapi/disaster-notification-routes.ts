@@ -37,23 +37,9 @@ export const addOpenApiDisasterNotificationRoutes = (openApi: OpenAPIHono, db: D
 
 const getUserNotificationsRoute = createRoute({
     method: "get",
-    path: "/notifications/user/{id}",
+    path: "/notifications/user",
     summary: "Get user notifications",
     description: "Retrieves all disaster notifications for a specific user",
-    request: {
-        params: z.object({
-            id: z
-                .string()
-                .uuid()
-                .openapi({
-                    param: {
-                        name: "id",
-                        in: "path",
-                    },
-                    example: "123e4567-e89b-12d3-a456-426614174000",
-                }),
-        }),
-    },
     responses: {
         200: {
             content: {

@@ -1,9 +1,9 @@
 import { Hono } from "hono";
-import { CreateUserDTO, CreateUserResponse } from "../../types/User";
+import { CreartUserRequest, CreateUserDTO, CreateUserResponse } from "../../types/User";
 import { CreateCompanyDTO, CreateCompanyResponse } from "../../types/Company";
 import { TESTING_PREFIX } from "../../utilities/constants";
 
-export async function createUser(app: Hono, request: CreateUserDTO) {
+export async function createUser(app: Hono, request: CreartUserRequest) {
     const userResponse = await app.request(TESTING_PREFIX + "/users", {
         method: "POST",
         headers: {

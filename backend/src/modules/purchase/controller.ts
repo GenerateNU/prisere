@@ -4,12 +4,13 @@ import { withControllerErrorHandling } from "../../utilities/error";
 import { validate } from "uuid";
 import {
     GetCompanyPurchasesDTOSchema,
-    CreateOrChangePurchaseDTOSchema,
     GetCompanyPurchasesResponse,
     GetPurchaseResponse,
     CreateOrChangePurchaseResponse,
     GetCompanyPurchasesSummationResponse,
     GetCompanyPurchasesByDateDTOSchema,
+    CreateOrChangePurchaseDTOSchema,
+    CreateOrChangePurchaseRequest,
 } from "./types";
 import { ControllerResponse } from "../../utilities/response";
 
@@ -32,8 +33,19 @@ export class PurchaseController implements IPurchaseController {
     createOrUpdatePurchase = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<CreateOrChangePurchaseResponse, 200>> => {
             const json = await ctx.req.json();
-            const payload = CreateOrChangePurchaseDTOSchema.parse(json);
+            const companyId = await ctx.get("companyId");
+
+            if (!validate(companyId)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
+            const purchasesWithCompanyId = json.map((purchase : CreateOrChangePurchaseRequest)  => ({
+                ...purchase,
+                companyId: companyId
+            }));
+            
+            const payload = CreateOrChangePurchaseDTOSchema.parse(purchasesWithCompanyId);
             const updatedPurchase = await this.PurchaseService.createOrUpdatePurchase(payload);
+
             return ctx.json(updatedPurchase, 200);
         }
     );
@@ -54,7 +66,7 @@ export class PurchaseController implements IPurchaseController {
     getPurchasesForCompany = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyPurchasesResponse, 200>> => {
             const queryParams = {
-                companyId: ctx.req.query("companyId"),
+                companyId: ctx.get("companyId"),
                 pageNumber: ctx.req.query("pageNumber") ? Number(ctx.req.query("pageNumber")) : undefined,
                 resultsPerPage: ctx.req.query("resultsPerPage") ? Number(ctx.req.query("resultsPerPage")) : undefined,
             };
@@ -72,7 +84,7 @@ export class PurchaseController implements IPurchaseController {
     sumPurchasesByCompanyAndDateRange = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyPurchasesSummationResponse, 200>> => {
             const queryParams = {
-                companyId: ctx.req.param("id"),
+                companyId: ctx.get("companyId"),
                 startDate: ctx.req.query("startDate"),
                 endDate: ctx.req.query("endDate"),
             };
