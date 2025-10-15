@@ -13,10 +13,10 @@ import {
 import { useState } from "react";
 import { columns } from "./expense-table";
 
-export default function BasicTable({ combined }: { combined: InvoiceOrPurchase[] }) {
+export default function BasicTable({ purchases }: { purchases: Purchase[]}) {
     const [sorting, setSorting] = useState<SortingState>([]);
     const table = useReactTable({
-        data: combined,
+        data: purchases,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -30,7 +30,7 @@ export default function BasicTable({ combined }: { combined: InvoiceOrPurchase[]
             <Table>
                 <TableHeader>
                     <TableRow>
-                        {table.getHeaderGroups()[0].headers.map((header: Header<InvoiceOrPurchase, unknown>) => (
+                        {table.getHeaderGroups()[0].headers.map((header: Header<Purchase, unknown>) => (
                             <TableHead
                                 key={header.id}
                                 onClick={header.column.getToggleSortingHandler()}
@@ -49,7 +49,7 @@ export default function BasicTable({ combined }: { combined: InvoiceOrPurchase[]
                         return (
                             <TableRow key={item.id}>
                                 <TableCell>
-                                    {"isRefund" in item ? (item.isRefund ? "Refund" : "Purchase") : "Invoice"}
+                                    {item.isRefund ? "Refund" : "Purchase"}
                                 </TableCell>
                                 <TableCell>${(item.totalAmountCents / 100).toFixed(2)}</TableCell>
                                 <TableCell>{new Date(item.dateCreated).toLocaleDateString()}</TableCell>

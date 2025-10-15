@@ -21,8 +21,7 @@ import {
 } from "@/components/ui/card";
 import { Filter, Printer } from "lucide-react";
 
-type InvoiceOrPurchase = Invoice | Purchase;
-export const columns: ColumnDef<InvoiceOrPurchase>[] = [
+export const columns: ColumnDef<Purchase>[] = [
     {
         id: "type",
         header: "Type",
@@ -54,18 +53,11 @@ export default function ExpenseTable({ companyId }: { companyId: string }) {
         queryFn: () => getAllPurchasesForCompany(companyId, page, resultsPerPage),
     });
 
-    const invoices = useQuery({
-        queryKey: ["invoices-for-company", companyId, page, resultsPerPage],
-        queryFn: () => getAllInvoicesForCompany(companyId, page, resultsPerPage),
-    });
+    if (purchases.isPending) return <div>Loading expenses...</div>;
 
-    if (purchases.isPending || invoices.isPending) return <div>Loading expenses and invoices...</div>;
+    if (purchases.error) return <div>Error loading expenses</div>;
 
-    if (purchases.error || invoices.error) return <div>Error loading expenses and invoices</div>;
-
-    const combined = [...purchases.data, ...invoices.data];
-
-    const isLastPage = combined.length < resultsPerPage * 2;
+    const isLastPage = purchases.data.length < resultsPerPage;
 
     return (
         <Card>
@@ -80,7 +72,7 @@ export default function ExpenseTable({ companyId }: { companyId: string }) {
                 </CardAction>
             </CardHeader>
             <CardContent>
-                <BasicTable combined={combined} />
+                <BasicTable purchases={purchases.data} />
             </CardContent>
             <CardFooter>
                 <PaginationControls
