@@ -3,15 +3,14 @@ import {
     CreateClaimDTO,
     DeleteClaimDTO,
     DeleteClaimResponse,
-    GetClaimsByCompanyIdDTO,
     GetClaimsByCompanyIdResponse,
 } from "../../types/Claim";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { IClaimTransaction } from "./transaction";
 
 export interface IClaimService {
-    createClaim(payload: CreateClaimDTO): Promise<Claim>;
-    getClaimsByCompanyId(payload: GetClaimsByCompanyIdDTO): Promise<GetClaimsByCompanyIdResponse>;
+    createClaim(payload: CreateClaimDTO, companyId: string): Promise<Claim>;
+    getClaimsByCompanyId(companyId: string): Promise<GetClaimsByCompanyIdResponse>;
     deleteClaim(payload: DeleteClaimDTO): Promise<DeleteClaimResponse>;
 }
 
@@ -22,10 +21,10 @@ export class ClaimService implements IClaimService {
         this.claimTransaction = claimTransaction;
     }
 
-    createClaim = withServiceErrorHandling(async (payload: CreateClaimDTO): Promise<Claim> => {
+    createClaim = withServiceErrorHandling(async (payload: CreateClaimDTO, companyId: string): Promise<Claim> => {
         const claim = await this.claimTransaction.createClaim({
             ...payload,
-        });
+        }, companyId);
         if (!claim) {
             throw new Error("Failed to create claim");
         }
@@ -33,10 +32,8 @@ export class ClaimService implements IClaimService {
     });
 
     getClaimsByCompanyId = withServiceErrorHandling(
-        async (payload: GetClaimsByCompanyIdDTO): Promise<GetClaimsByCompanyIdResponse> => {
-            const claim = await this.claimTransaction.getClaimsByCompanyId({
-                ...payload,
-            });
+        async (companyId: string): Promise<GetClaimsByCompanyIdResponse> => {
+            const claim = await this.claimTransaction.getClaimsByCompanyId(companyId);
             if (!claim) {
                 throw new Error("Claim not found");
             }
