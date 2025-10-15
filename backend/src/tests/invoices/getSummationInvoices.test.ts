@@ -35,8 +35,9 @@ describe(" Get Invoice summation by company id", () => {
     });
 
     test("should return the sum of invoices in the valid date range", async () => {
-        const response = await app.request(TESTING_PREFIX + 
-            `/invoice/bulk/${seededInvoiceCompany}/totalIncome?startDate=2025-01-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
+        const response = await app.request(
+            TESTING_PREFIX +
+                `/invoice/bulk/${seededInvoiceCompany}/totalIncome?startDate=2025-01-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
         );
         const body = await response.json();
         expect(response.status).toBe(200);
@@ -44,8 +45,9 @@ describe(" Get Invoice summation by company id", () => {
     });
 
     test("should return 0 if no invoices in the valid date range", async () => {
-        const response = await app.request(TESTING_PREFIX +  
-            `/invoice/bulk/${seededInvoiceCompany}/totalIncome?startDate=2025-08-11T12:00:00Z&endDate=2025-10-11T12:00:00Z`
+        const response = await app.request(
+            TESTING_PREFIX +
+                `/invoice/bulk/${seededInvoiceCompany}/totalIncome?startDate=2025-08-11T12:00:00Z&endDate=2025-10-11T12:00:00Z`
         );
         const body = await response.json();
         expect(response.status).toBe(200);
@@ -53,8 +55,9 @@ describe(" Get Invoice summation by company id", () => {
     });
 
     test("should return 400 if invalid dates", async () => {
-        const response = await app.request(TESTING_PREFIX + 
-            `/invoice/bulk/${seededInvoiceCompany}/totalIncome?startDate=2025-04-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
+        const response = await app.request(
+            TESTING_PREFIX +
+                `/invoice/bulk/${seededInvoiceCompany}/totalIncome?startDate=2025-04-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
         );
         const body = await response.json();
         expect(response.status).toBe(400);
@@ -63,8 +66,8 @@ describe(" Get Invoice summation by company id", () => {
     });
 
     test("should return 400 if invalid companyID", async () => {
-        const response = await app.request(TESTING_PREFIX + 
-            `/invoice/bulk/bla/totalIncome?startDate=2025-04-11T12:00:00Z&endDate=2025-06-11T12:00:00Z`
+        const response = await app.request(
+            TESTING_PREFIX + `/invoice/bulk/bla/totalIncome?startDate=2025-04-11T12:00:00Z&endDate=2025-06-11T12:00:00Z`
         );
         const body = await response.json();
         expect(response.status).toBe(400);

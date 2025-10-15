@@ -17,8 +17,8 @@ export default function NotificationBanner({ userId }: { userId: string }) {
       limit: 1,
       status: "unread" // Only get unread notifications
     }),
-    // Refetch every 5 minutes to catch new disasters
-    refetchInterval: 5 * 60 * 1000,
+    // Refetch every 24 hours to catch new disasters
+    refetchInterval: 24 * 60 * 60 * 1000,
   });
 
   // Don't show banner if loading, no data, dismissed, or no unread notifications
