@@ -1,12 +1,10 @@
 import { authHeader, authWrapper, client } from "./client";
 
 export const sumPurchasesByCompanyAndDateRange = async (
-    companyId: string,
     startDate: Date,
     endDate: Date,
 ): Promise<{ total: number }> => {
     const req = async (token: string): Promise<{ total: number }> => {
-        console.log(token);
         const { data, error, response } = await client.GET("/purchase/bulk/totalExpenses", {
             headers: authHeader(token),
             params: {

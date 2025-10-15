@@ -1,7 +1,6 @@
 import { authHeader, authWrapper, client } from "./client";
 
 export const sumInvoicesByCompanyAndDateRange = async (
-    companyId: string,
     startDate: Date,
     endDate: Date,
 ): Promise<{ total: number }> => {

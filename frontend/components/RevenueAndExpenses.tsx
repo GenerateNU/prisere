@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import NavBarCircle from "@/icons/NavBarCircle";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 
 export default function RevenueAndExpenses() {
 
@@ -18,23 +17,15 @@ export default function RevenueAndExpenses() {
     const startOfMonth = getMonthStart();
     const endOfMonth = new Date();
 
-    // temporary company ID
-    const companyId = "7ed0db5d-c24f-4b6d-8b27-d89b0796ffe5";
-
-
     const { data: totalMonthRevenue } = useQuery({
-        queryKey: ['totalRevenue', companyId, startOfMonth, endOfMonth],
-        queryFn: () => sumInvoicesByCompanyAndDateRange(companyId, startOfMonth, endOfMonth),
+        queryKey: ['totalRevenue'],
+        queryFn: () => sumInvoicesByCompanyAndDateRange(startOfMonth, endOfMonth),
     });
 
     const { data: totalMonthExpenses } = useQuery({
-        queryKey: ['totalExpenses', companyId, startOfMonth, endOfMonth],
-        queryFn: () => sumPurchasesByCompanyAndDateRange(companyId, startOfMonth, endOfMonth),
+        queryKey: ['totalExpenses'],
+        queryFn: () => sumPurchasesByCompanyAndDateRange(startOfMonth, endOfMonth),
     });
-
-    useEffect(() => {
-        console.log(totalMonthRevenue, totalMonthExpenses)
-    }, [totalMonthRevenue, totalMonthExpenses])
 
     return (
         <Card className="h-[371] p-[25px] border-[1px] border-black">
