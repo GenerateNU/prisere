@@ -5,14 +5,13 @@ import {
     CreateClaimLocationDTO,
     DeleteClaimLocationDTO,
     DeleteClaimLocationResponse,
-    GetLocationsByCompanyIdDTO,
 } from "../../types/ClaimLocation";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { IClaimLocationTransaction } from "./transaction";
 
 export interface IClaimLocationService {
     createClaimLocation(payload: CreateClaimLocationDTO): Promise<ClaimLocation>;
-    getLocationsByCompanyId(payload: GetLocationsByCompanyIdDTO): Promise<LocationAddress[]>;
+    getLocationsByCompanyId(companyId: string): Promise<LocationAddress[]>;
     deleteClaimLocationsById(payload: DeleteClaimLocationDTO): Promise<DeleteClaimLocationResponse>;
 }
 
@@ -36,12 +35,10 @@ export class ClaimLocationService {
     });
 
     getLocationsByCompanyId = withServiceErrorHandling(
-        async (payload: GetLocationsByCompanyIdDTO): Promise<LocationAddress[]> => {
-            const locations: LocationAddress[] | null = await this.claimLocationTransaction.getLocationsByCompanyId({
-                ...payload,
-            });
+        async (companyId: string): Promise<LocationAddress[]> => {
+            const locations: LocationAddress[] | null = await this.claimLocationTransaction.getLocationsByCompanyId(companyId);
             if (!locations) {
-                throw Boom.notFound("Unable to find the locations for the company with: ", payload);
+                throw Boom.notFound("Unable to find the locations for the company with: ", companyId);
             }
             return locations;
         }

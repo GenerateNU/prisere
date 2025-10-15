@@ -13,10 +13,10 @@ export interface IClaimLocationTransaction {
 
     /**
      * Gets all of the locations impacted by a claim using a company ID
-     * @param payload ID of the company whose locations are to be fetched
+     * @param companyId ID of the company whose locations are to be fetched
      * @returns Promise resolving to fetched locations or empty array if none found
      */
-    getLocationsByCompanyId(payload: { companyId: string }): Promise<LocationAddress[] | null>;
+    getLocationsByCompanyId(companyId: string): Promise<LocationAddress[] | null>;
 
     /**
      * Deletes a ClaimLocation by its ID
@@ -47,14 +47,14 @@ export class ClaimLocationTransaction implements IClaimLocationTransaction {
         }
     }
 
-    async getLocationsByCompanyId(payload: { companyId: string }): Promise<LocationAddress[] | null> {
+    async getLocationsByCompanyId(companyId: string): Promise<LocationAddress[] | null> {
         try {
             return await this.db
                 .getRepository(LocationAddress)
                 .createQueryBuilder("location")
                 .innerJoin("location.claimLocations", "cl")
                 .innerJoin("cl.claim", "claim")
-                .where("claim.companyId = :companyId", { companyId: payload.companyId })
+                .where("claim.companyId = :companyId", { companyId: companyId })
                 .distinct(true)
                 .getMany();
         } catch (error) {

@@ -12,7 +12,7 @@ export const claimLocationRoutes = (db: DataSource): Hono => {
     const claimLocationController: IClaimLocationController = new ClaimLocationController(claimLocationService);
 
     claimLocation.post("/", (ctx) => claimLocationController.createClaimLocation(ctx));
-    claimLocation.get("/company/:id", (ctx) => claimLocationController.getLocationsByCompanyId(ctx));
+    claimLocation.get("/company", (ctx) => claimLocationController.getLocationsByCompanyId(ctx));
     claimLocation.delete("claim/:cid/location-address/:lid", (ctx) =>
         claimLocationController.deleteClaimLocationById(ctx)
     );
