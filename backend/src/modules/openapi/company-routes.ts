@@ -32,10 +32,10 @@ const createCompanyRoute = createRoute({
     description: "Creates a new company using a company name and optional Quickbooks import time",
     request: {
         body: {
+            required: true,
             content: {
                 "application/json": {
                     schema: CreateCompanyDTOSchema,
-                    required: true,
                 },
             },
         },

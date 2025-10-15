@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createSupabaseClient } from "@/utils/supabase/server";
 import { loginInitialState, signupInitialState } from "@/types/user";
+import { createClient } from "@supabase/supabase-js";
 
 export async function login(prevState: loginInitialState, formData: FormData) {
     const supabase = await createSupabaseClient();
@@ -40,6 +41,34 @@ export async function signup(prevState: signupInitialState, formData: FormData) 
     }
 
     return { success: true, message: "Form submitted successfully!", email: payload.email };
+}
+
+export async function setCompanyMetadata(companyID: string) {
+    const supabaseClient = await createSupabaseClient();
+    const supabaseService = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    const { data , error } = await supabaseClient.auth.getUser()
+    if(error) {
+        throw new Error("User not logged in")
+    }
+    const user = data.user!.id
+    const response = await supabaseService.auth.admin.updateUserById(
+        user,
+        { 
+            app_metadata: { 
+              company_id: companyID
+            }
+        }
+    )
+    const { data: refreshData, error: refreshError } = await supabaseClient.auth.refreshSession();
+  
+    if (refreshError) {
+        throw new Error("Failed to refresh session");
+    }
+    return response
 }
 
 export async function retrieveToken(): Promise<string> {
