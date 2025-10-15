@@ -19,3 +19,8 @@ export type NotificationFilters = {
   limit?: number;
   status?: "unread" | "read" | "acknowledged";
 };
+
+export type PaginationStatus = {
+    currentPage: number;
+    itemsPerPage: number;
+}

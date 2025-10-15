@@ -1,12 +1,12 @@
 import { getCurrentUser } from "@/actions/auth";
 import NotificationsPage from "./notifications-page";
-import { redirect } from "next/navigation";
 
 export default async function Page() {
   const user = await getCurrentUser();
 
+  // Middleware would redirect to /login page
   if (!user) {
-    redirect("/login");
+    throw new Error("User not found");
   }
 
   return <NotificationsPage userId={user.id} />;

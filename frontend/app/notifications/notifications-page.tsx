@@ -5,32 +5,47 @@ import { getNotifications, updateNotificationStatus, markAllNotificationsAsRead 
 import { useState } from "react";
 import type { DisasterNotificationWithRealtionsType } from "../../../backend/src/types/DisasterNotification";
 import Link from "next/link";
+import { PaginationStatus } from "@/types/notifications";
+
 type NotificationStatus = "unread" | "read";
 type SortOption = "most-recent" | "oldest-first";
 
 export default function NotificationsPage({ userId }: { userId: string }) {
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<NotificationStatus | "all">("all");
-  const [sortOption, setSortOption] = useState<SortOption>("most-recent");
-  const [showStatusFilter, setShowStatusFilter] = useState(false);
-  const [showSortFilter, setShowSortFilter] = useState(false);
-  
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(15);
+  // State management
+  const [filters, setFilters] = useState({
+    status: "all" as NotificationStatus | "all",
+    sort: "most-recent" as SortOption,
+  });
+
+  const [dropdowns, setDropdowns] = useState({
+    openDropdown: null as string | null,
+    showStatusFilter: false,
+    showSortFilter: false,
+  });
+
+  const [pagination, setPagination] = useState<PaginationStatus>({
+    currentPage: 1,
+    itemsPerPage: 15
+  });
+
+  const [modal, setModal] = useState({
+    selectedNotification: null as DisasterNotificationWithRealtionsType | null,
+    showDetails: false,
+  });
 
   const queryClient = useQueryClient();
 
+  // Queries and mutations
   const { data, isPending, error } = useQuery({
     queryKey: ["notifications", userId, { 
-      page: currentPage, 
-      limit: itemsPerPage,
-      status: statusFilter !== "all" ? statusFilter : undefined 
+      page: pagination.currentPage, 
+      limit: pagination.itemsPerPage,
+      status: filters.status !== "all" ? filters.status : undefined 
     }],
     queryFn: () => getNotifications(userId, { 
-      page: currentPage, 
-      limit: itemsPerPage,
-      status: statusFilter !== "all" ? statusFilter : undefined,
+      page: pagination.currentPage, 
+      limit: pagination.itemsPerPage,
+      status: filters.status !== "all" ? filters.status : undefined,
     }),
   });
 
@@ -45,9 +60,90 @@ export default function NotificationsPage({ userId }: { userId: string }) {
     },
   });
 
+  const markAllAsReadMutation = useMutation({
+    mutationFn: () => markAllNotificationsAsRead(userId),
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ["notifications", userId] });
+      console.log(`Marked ${result.updatedCount} notifications as read`);
+    },
+    onError: (error) => {
+      console.error("Failed to mark all as read:", error);
+    },
+  });
+
+  // Helper functions
+  const updateFilter = (key: keyof typeof filters, value: NotificationStatus | SortOption) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+    if (key === 'status') {
+      setPagination(prev => ({ ...prev, currentPage: 1 }));
+    }
+  };
+
+  const toggleDropdown = (type: 'status' | 'sort') => {
+    setDropdowns(prev => ({
+      ...prev,
+      showStatusFilter: type === 'status' ? !prev.showStatusFilter : false,
+      showSortFilter: type === 'sort' ? !prev.showSortFilter : false,
+    }));
+  };
+
+  const closeAllDropdowns = () => {
+    setDropdowns({
+      openDropdown: null,
+      showStatusFilter: false,
+      showSortFilter: false,
+    });
+  };
+
+  const openModal = (notification: DisasterNotificationWithRealtionsType) => {
+    setModal({
+      selectedNotification: notification,
+      showDetails: true,
+    });
+  };
+
+  const closeModal = () => {
+    setModal({
+      selectedNotification: null,
+      showDetails: false,
+    });
+  };
+
+  // Event handlers
   const handleStatusChange = (notificationId: string, newStatus: NotificationStatus) => {
     updateStatusMutation.mutate({ notificationId, status: newStatus });
-    setOpenDropdown(null);
+    setDropdowns(prev => ({ ...prev, openDropdown: null }));
+  };
+
+  const handleStatusFilterChange = (status: NotificationStatus | "all") => {
+    updateFilter('status', status as NotificationStatus);
+    closeAllDropdowns();
+  };
+
+  const handleSortChange = (sort: SortOption) => {
+    updateFilter('sort', sort);
+    closeAllDropdowns();
+  };
+
+  const handleViewDetails = (notification: DisasterNotificationWithRealtionsType) => {
+    openModal(notification);
+  };
+
+  const handleMarkAllAsRead = () => {
+    markAllAsReadMutation.mutate();
+    closeAllDropdowns();
+  };
+
+  const handleNextPage = () => {
+    setPagination(prev => ({ ...prev, currentPage: prev.currentPage + 1 }));
+  };
+
+  const handlePreviousPage = () => {
+    setPagination(prev => ({ ...prev, currentPage: prev.currentPage - 1 }));
+  };
+
+  const handleClickOutside = () => {
+    closeAllDropdowns();
   };
 
   const getStatusStyle = (status?: string) => {
@@ -61,90 +157,38 @@ export default function NotificationsPage({ userId }: { userId: string }) {
     }
   };
 
-  // Client-side sorting (since backend returns paginated data)
   const sortedData = data?.sort((a: { createdAt: Date; femaDisaster: { declarationDate: Date; }; }, b: { createdAt: Date; femaDisaster: { declarationDate: Date; }; }) => {
-    // First, sort by createdAt date
     const createdAtA = new Date(a.createdAt || 0).getTime();
     const createdAtB = new Date(b.createdAt || 0).getTime();
     
-    const createdAtComparison = sortOption === "most-recent" ? createdAtB - createdAtA : createdAtA - createdAtB;
+    const createdAtComparison = filters.sort === "most-recent" ? createdAtB - createdAtA : createdAtA - createdAtB;
     
-    // Break ties sorting with declarationDate
     if (createdAtComparison === 0) {
-        const dateA = new Date(a.femaDisaster?.declarationDate || 0).getTime();
-        const dateB = new Date(b.femaDisaster?.declarationDate || 0).getTime();
-        return sortOption === "most-recent" ? dateB - dateA : dateA - dateB;
+      const dateA = new Date(a.femaDisaster?.declarationDate || 0).getTime();
+      const dateB = new Date(b.femaDisaster?.declarationDate || 0).getTime();
+      return filters.sort === "most-recent" ? dateB - dateA : dateA - dateB;
     }
     
     return createdAtComparison;
-    });
-
-  // Pagination handlers
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [selectedNotification, setSelectedNotification] = useState<any>(null);
-  const [showDetailsModal, setShowDetailsModal] = useState(false);
-  const handleNextPage = () => {
-    setCurrentPage((prev) => prev + 1);
-  };
-
-  const handlePreviousPage = () => {
-    setCurrentPage((prev) => Math.max(1, prev - 1));
-  };
-
-  // Reset to page 1 when filter changes
-  const handleStatusFilterChange = (status: NotificationStatus | "all") => {
-    setStatusFilter(status);
-    setCurrentPage(1);
-    setShowStatusFilter(false);
-  };
-
-  // View extra details handlers
-  const handleViewDetails = (notification: DisasterNotificationWithRealtionsType) => {
-    setSelectedNotification(notification);
-    setShowDetailsModal(true);
-    };
-
-    const closeDetailsModal = () => {
-    setShowDetailsModal(false);
-    setSelectedNotification(null);
-    };
-
-// Mark all as read
-  const markAllAsReadMutation = useMutation({
-    mutationFn: () => markAllNotificationsAsRead(userId),
-    onSuccess: (result) => {
-        // Refetch notifications to show updated status
-        queryClient.invalidateQueries({ queryKey: ["notifications", userId] });
-        console.log(`Marked ${result.updatedCount} notifications as read`);
-    },
-    onError: (error) => {
-        console.error("Failed to mark all as read:", error);
-    },
-});
-const handleMarkAllAsRead = () => {
-    markAllAsReadMutation.mutate();
-    setOpenDropdown(null);
-  };
+  });
 
   if (isPending) return <div className="p-8">Loading notifications...</div>;
   if (error) return <div className="p-8">Error loading notifications</div>;
 
-  const hasNextPage = data && data.length === itemsPerPage;
-  const hasPreviousPage = currentPage > 1;
-
-  
+  const hasNextPage = data && data.length === pagination.itemsPerPage;
+  const hasPreviousPage = pagination.currentPage > 1;
 
   return (
     <div className="p-8">
       <div className="mb-6">
         <div className="mt-3 flex gap-2">
-              <Link
-                href="/"
-                className="text-sm font-medium text-red-800 hover:text-red-900 underline"
-              >
-                Prisere Home 🪷
-              </Link>
-            </div>
+          <Link
+            href="/"
+            className="text-sm font-medium text-red-800 hover:text-red-900 underline"
+          >
+            Prisere Home 🪷
+          </Link>
+        </div>
         <h1 className="text-2xl font-bold mb-4">Disaster Notifications</h1>
         
         {/* Filter Controls */}
@@ -155,22 +199,19 @@ const handleMarkAllAsRead = () => {
               Filter by Status:
             </label>
             <button
-              onClick={() => {
-                setShowStatusFilter(!showStatusFilter);
-                setShowSortFilter(false);
-              }}
+              onClick={() => toggleDropdown('status')}
               className="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50 text-sm font-medium"
             >
-              {statusFilter === "all" ? "All Statuses" : statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1)}
+              {filters.status === "all" ? "All Statuses" : filters.status.charAt(0).toUpperCase() + filters.status.slice(1)}
               <span className="ml-2">▼</span>
             </button>
 
-            {showStatusFilter && (
+            {dropdowns.showStatusFilter && (
               <div className="absolute left-0 mt-1 w-48 bg-white border rounded shadow-lg z-20">
                 <button
                   onClick={() => handleStatusFilterChange("all")}
                   className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 ${
-                    statusFilter === "all" ? "bg-gray-100 font-semibold" : ""
+                    filters.status === "all" ? "bg-gray-100 font-semibold" : ""
                   }`}
                 >
                   All Statuses
@@ -178,7 +219,7 @@ const handleMarkAllAsRead = () => {
                 <button
                   onClick={() => handleStatusFilterChange("unread")}
                   className={`w-full text-left px-4 py-2 text-sm hover:bg-blue-50 text-blue-800 ${
-                    statusFilter === "unread" ? "bg-blue-100 font-semibold" : ""
+                    filters.status === "unread" ? "bg-blue-100 font-semibold" : ""
                   }`}
                 >
                   Unread
@@ -186,12 +227,11 @@ const handleMarkAllAsRead = () => {
                 <button
                   onClick={() => handleStatusFilterChange("read")}
                   className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 text-gray-800 ${
-                    statusFilter === "read" ? "bg-gray-100 font-semibold" : ""
+                    filters.status === "read" ? "bg-gray-100 font-semibold" : ""
                   }`}
                 >
                   Read
                 </button>
-                
               </div>
             )}
           </div>
@@ -202,36 +242,27 @@ const handleMarkAllAsRead = () => {
               Sort by:
             </label>
             <button
-              onClick={() => {
-                setShowSortFilter(!showSortFilter);
-                setShowStatusFilter(false);
-              }}
+              onClick={() => toggleDropdown('sort')}
               className="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50 text-sm font-medium"
             >
-              {sortOption === "most-recent" ? "Most Recent" : "Oldest First"}
+              {filters.sort === "most-recent" ? "Most Recent" : "Oldest First"}
               <span className="ml-2">▼</span>
             </button>
 
-            {showSortFilter && (
+            {dropdowns.showSortFilter && (
               <div className="absolute left-0 mt-1 w-48 bg-white border rounded shadow-lg z-20">
                 <button
-                  onClick={() => {
-                    setSortOption("most-recent");
-                    setShowSortFilter(false);
-                  }}
+                  onClick={() => handleSortChange("most-recent")}
                   className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 ${
-                    sortOption === "most-recent" ? "bg-gray-100 font-semibold" : ""
+                    filters.sort === "most-recent" ? "bg-gray-100 font-semibold" : ""
                   }`}
                 >
                   Most Recent
                 </button>
                 <button
-                  onClick={() => {
-                    setSortOption("oldest-first");
-                    setShowSortFilter(false);
-                  }}
+                  onClick={() => handleSortChange("oldest-first")}
                   className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 ${
-                    sortOption === "oldest-first" ? "bg-gray-100 font-semibold" : ""
+                    filters.sort === "oldest-first" ? "bg-gray-100 font-semibold" : ""
                   }`}
                 >
                   Oldest First
@@ -240,15 +271,17 @@ const handleMarkAllAsRead = () => {
             )}
           </div>
 
-          {/* Results count */}
-          <div className="ml-auto text-sm text-gray-600">
-            Page {currentPage} • Showing {sortedData?.length || 0} notification(s)
-            <button className="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50 text-sm font-medium"
-                onClick={() => {
-                    handleMarkAllAsRead();
-                }}>
-                Mark all as read
-                
+          {/* Results count and Mark All as Read */}
+          <div className="ml-auto flex items-center gap-4">
+            <div className="text-sm text-gray-600">
+              Page {pagination.currentPage} • Showing {sortedData?.length || 0} notification(s)
+            </div>
+            <button 
+              className="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50 text-sm font-medium"
+              onClick={handleMarkAllAsRead}
+              disabled={markAllAsReadMutation.isPending}
+            >
+              {markAllAsReadMutation.isPending ? "Marking..." : "Mark all as read"}
             </button>
           </div>
         </div>
@@ -263,7 +296,6 @@ const handleMarkAllAsRead = () => {
             {/* Disaster Info */}
             <div className="flex justify-between items-start mb-3">
               <div>
-                
                 <p className="text-sm text-gray-600">
                   Disaster #{notification.femaDisaster?.disasterNumber}
                 </p>
@@ -273,9 +305,10 @@ const handleMarkAllAsRead = () => {
               <div className="relative">
                 <button
                   onClick={() =>
-                    setOpenDropdown(
-                      openDropdown === notification.id ? null : notification.id
-                    )
+                    setDropdowns(prev => ({
+                      ...prev,
+                      openDropdown: prev.openDropdown === notification.id ? null : notification.id
+                    }))
                   }
                   disabled={updateStatusMutation.isPending}
                   className={`px-3 py-1 text-xs rounded font-medium cursor-pointer hover:opacity-80 transition ${getStatusStyle(
@@ -286,7 +319,7 @@ const handleMarkAllAsRead = () => {
                   <span className="ml-1">▼</span>
                 </button>
 
-                {openDropdown === notification.id && (
+                {dropdowns.openDropdown === notification.id && (
                   <div className="absolute right-0 mt-1 w-40 bg-white border rounded shadow-lg z-10">
                     <button
                       onClick={() => handleStatusChange(notification.id, "unread")}
@@ -302,7 +335,6 @@ const handleMarkAllAsRead = () => {
                     >
                       Read
                     </button>
-                    
                   </div>
                 )}
               </div>
@@ -348,8 +380,10 @@ const handleMarkAllAsRead = () => {
 
             {/* Actions */}
             <div className="mt-4 flex gap-2">
-              <button onClick={() => handleViewDetails(notification)}
-              className="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+              <button 
+                onClick={() => handleViewDetails(notification)}
+                className="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+              >
                 View Details
               </button>
             </div>
@@ -357,107 +391,106 @@ const handleMarkAllAsRead = () => {
         ))}
 
         {/* Details Modal */}
-        {showDetailsModal && selectedNotification && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        {modal.showDetails && modal.selectedNotification && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-start mb-4">
+              <div className="flex justify-between items-start mb-4">
                 <h2 className="text-xl font-bold">Notification Details</h2>
                 <button
-                onClick={closeDetailsModal}
-                className="text-gray-500 hover:text-gray-700 text-xl"
+                  onClick={closeModal}
+                  className="text-gray-500 hover:text-gray-700 text-xl"
                 >
-                ×
+                  ×
                 </button>
-            </div>
-            
-            <div className="space-y-4">
+              </div>
+              
+              <div className="space-y-4">
                 {/* Disaster Information */}
                 <div>
-                <h3 className="font-semibold text-lg text-red-600 mb-2">
-                    {selectedNotification.femaDisaster?.incidentType}
-                </h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <h3 className="font-semibold text-lg text-red-600 mb-2">
+                    {modal.selectedNotification.femaDisaster?.incidentType}
+                  </h3>
+                  <div className="grid grid-cols-1 gap-4 text-sm">
                     <div>
-                    <span className="font-medium">Disaster Number:</span>
-                    <p>{selectedNotification.femaDisaster?.disasterNumber}</p>
+                      <span className="font-medium">Disaster Number:</span>
+                      <p>{modal.selectedNotification.femaDisaster?.disasterNumber}</p>
                     </div>
                     <div>
-                    <span className="font-medium">Declaration Date:</span>
-                    <p>
-                        {selectedNotification.femaDisaster?.declarationDate
-                        ? new Date(selectedNotification.femaDisaster.declarationDate).toLocaleDateString()
-                        : "N/A"}
-                    </p>
-                    <p>
-                        Declaration Type: {selectedNotification.femaDisaster?.declarationType}
-                    </p>
-                    <h3>
-                    Designated Incident Types: {selectedNotification.femaDisaster?.designatedIncidentTypes}
-                    </h3>
-                    <h3>
-                    FIPS state and country code: {selectedNotification.femaDisaster?.fipsStateCode} {selectedNotification.femaDisaster?.fipsCountyCode}
-                    </h3>
-                    <h3>Designated Area: {selectedNotification.femaDisaster?.designatedArea}</h3>
-                    <h3>Declaration Date: {selectedNotification.femaDisaster?.declarationDate
-                    ? new Date(selectedNotification.femaDisaster.declarationDate).toLocaleDateString()
-                    : "N/A"}</h3>
+                      <span className="font-medium">Declaration Date:</span>
+                      <p>
+                        {modal.selectedNotification.femaDisaster?.declarationDate
+                          ? new Date(modal.selectedNotification.femaDisaster.declarationDate).toLocaleDateString()
+                          : "N/A"}
+                      </p>
                     </div>
                     <div>
-                    <span className="font-medium">FEMA Area:</span>
-                    <p>{selectedNotification.femaDisaster?.designatedArea}</p>
+                      <span className="font-medium">Declaration Type:</span>
+                      <p>{modal.selectedNotification.femaDisaster?.declarationType}</p>
                     </div>
                     <div>
-                    <span className="font-medium">Status:</span>
-                    <p>{selectedNotification.notificationStatus || "unread"}</p>
+                      <span className="font-medium">Designated Incident Types:</span>
+                      <p>{modal.selectedNotification.femaDisaster?.designatedIncidentTypes}</p>
                     </div>
-                </div>
+                    <div>
+                      <span className="font-medium">FIPS State/County Code:</span>
+                      <p>{modal.selectedNotification.femaDisaster?.fipsStateCode} {modal.selectedNotification.femaDisaster?.fipsCountyCode}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium">Designated Area:</span>
+                      <p>{modal.selectedNotification.femaDisaster?.designatedArea}</p>
+                    </div>
+                    <div>
+                      <span className="font-medium">Status:</span>
+                      <p>{modal.selectedNotification.notificationStatus || "unread"}</p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Location Details */}
-                {selectedNotification.locationAddress && (
-                <div>
+                {modal.selectedNotification.locationAddress && (
+                  <div>
                     <h4 className="font-semibold mb-2">Affected Location</h4>
                     <div className="bg-gray-50 p-3 rounded">
-                    <p>{selectedNotification.locationAddress.streetAddress}</p>
-                    <p>
-                        {selectedNotification.locationAddress.city}, {selectedNotification.locationAddress.stateProvince} {selectedNotification.locationAddress.postalCode}
-                    </p>
-                    {selectedNotification.locationAddress.company && (
+                      <p>{modal.selectedNotification.locationAddress.streetAddress}</p>
+                      <p>
+                        {modal.selectedNotification.locationAddress.city}, {modal.selectedNotification.locationAddress.stateProvince} {modal.selectedNotification.locationAddress.postalCode}
+                      </p>
+                      {modal.selectedNotification.locationAddress.company && (
                         <p className="mt-2">
-                        <span className="font-medium">Company:</span> {selectedNotification.locationAddress.company.name}
+                          <span className="font-medium">Company:</span> {modal.selectedNotification.locationAddress.company.name}
                         </p>
-                    )}
+                      )}
                     </div>
-                </div>
+                  </div>
                 )}
 
                 {/* Additional details */}
                 <div>
-                <h4 className="font-semibold mb-2">Notification Details</h4>
-                <div className="text-sm space-y-1">
+                  <h4 className="font-semibold mb-2">Notification Details</h4>
+                  <div className="text-sm space-y-1">
                     <p>
-                    <span className="font-medium">ID:</span> {selectedNotification.id}
+                      <span className="font-medium">ID:</span> {modal.selectedNotification.id}
                     </p>
                     <p>
-                    <span className="font-medium">Created:</span>{" "}
-                    {selectedNotification.createdAt
-                        ? new Date(selectedNotification.createdAt).toLocaleDateString()
+                      <span className="font-medium">Created:</span>{" "}
+                      {modal.selectedNotification.createdAt
+                        ? new Date(modal.selectedNotification.createdAt).toLocaleDateString()
                         : "N/A"}
                     </p>
+                  </div>
                 </div>
-                </div>
-            </div>
+              </div>
 
-            <div className="mt-6 flex justify-end">
+              <div className="mt-6 flex justify-end">
                 <button
-                onClick={closeDetailsModal}
-                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                  onClick={closeModal}
+                  className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
                 >
-                Close
+                  Close
                 </button>
+              </div>
             </div>
-            </div>
-        </div>
+          </div>
         )}
 
         {/* Empty state */}
@@ -471,7 +504,7 @@ const handleMarkAllAsRead = () => {
       {/* Pagination Controls */}
       <div className="mt-8 flex items-center justify-between border-t pt-4">
         <div className="text-sm text-gray-600">
-          Page {currentPage}
+          Page {pagination.currentPage}
         </div>
         
         <div className="flex gap-2">
@@ -494,14 +527,10 @@ const handleMarkAllAsRead = () => {
       </div>
 
       {/* Click outside to close dropdowns */}
-      {(openDropdown || showStatusFilter || showSortFilter) && (
+      {(dropdowns.openDropdown || dropdowns.showStatusFilter || dropdowns.showSortFilter) && (
         <div
           className="fixed inset-0 z-0"
-          onClick={() => {
-            setOpenDropdown(null);
-            setShowStatusFilter(false);
-            setShowSortFilter(false);
-          }}
+          onClick={handleClickOutside}
         />
       )}
     </div>
