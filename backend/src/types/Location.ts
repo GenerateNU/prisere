@@ -26,7 +26,6 @@ export const CreateLocationAddressSchema = z.object({
         message: "Must be a non-negative number string",
     }),
     county: z.string().nonempty().optional(),
-    companyId: z.uuid(),
 });
 
 export const CreateLocationAddressResponseSchema = z.object({
