@@ -50,6 +50,7 @@ export const GetUserCompanyResponseSchema = z.object({
 export const CreateUserAPIResponseSchema = z.union([CreateUserResponseSchema, ErrorResponseSchema]);
 
 /* Zod types for payload validation */
+export type CreartUserRequest = z.infer<typeof createUserRequestBody>
 export type CreateUserDTO = z.infer<typeof CreateUserDTOSchema>;
 export type CreateUserResponse = z.infer<typeof CreateUserResponseSchema>;
 export type CreateUserAPIResponse = z.infer<typeof CreateUserAPIResponseSchema>;

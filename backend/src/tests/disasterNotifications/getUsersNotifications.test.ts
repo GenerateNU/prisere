@@ -27,8 +27,14 @@ describe("Test getting a users disaster notifications", () => {
 
     test("GET users disaster notifications", async () => {
         // Test user1 notifications
-        const response = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user1.id}`);
+        const response = await app.request(TESTING_PREFIX + `/disasterNotification`, {
+            method: "GET",
+            headers: {
+                "userId": "0199e585-621d-744a-81e2-8cc93d48b23d"
+            }
+        });
 
+        expect(response.status).toBe(200);
         const responseText = await response.text();
 
         let body;
@@ -48,10 +54,13 @@ describe("Test getting a users disaster notifications", () => {
             expect(body.femaDisasterId).toBe(testData.disasters.disaster1.id);
         }
 
-        expect(response.status).toBe(200);
-
         // Test user2 notifications
-        const response2 = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user2.id}`);
+        const response2 = await app.request(TESTING_PREFIX + `/disasterNotification`, {
+            method: "GET",
+            headers: {
+                "userId": "0199e585-a52b-7bcf-982d-a1c5230b3d40"
+            }
+        });
 
         const responseText2 = await response2.text();
 
@@ -78,7 +87,11 @@ describe("Test getting a users disaster notifications", () => {
     test("GET fake user returns 404 user not found", async () => {
         const fakeUserId = randomUUID();
 
-        const response = await app.request(TESTING_PREFIX + `/disasterNotification/${fakeUserId}`);
+        const response = await app.request(TESTING_PREFIX + `/disasterNotification`, {
+            headers: {
+                "userId": fakeUserId,
+            }
+        });
 
         const responseText = await response.text();
 
@@ -94,7 +107,11 @@ describe("Test getting a users disaster notifications", () => {
     });
 
     test("GET user ID with incorrect format returns a 400", async () => {
-        const response = await app.request(TESTING_PREFIX + `/disasterNotification/user-id`);
+        const response = await app.request(TESTING_PREFIX + `/disasterNotification`, {
+            headers: {
+                "userId": "fake-id"
+            }
+        });
 
         const responseText = await response.text();
 

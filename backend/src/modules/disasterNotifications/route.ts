@@ -21,7 +21,7 @@ export const disasterNotificationRoutes = (db: DataSource): Hono => {
         disasterNotificationService
     );
 
-    disasterNotification.get("/:id", (ctx) => disasterNotificationController.getUserNotifications(ctx));
+    disasterNotification.get("/", (ctx) => disasterNotificationController.getUserNotifications(ctx));
     disasterNotification.patch("/:id/acknowledge", (ctx) =>
         disasterNotificationController.acknowledgeNotification(ctx)
     );

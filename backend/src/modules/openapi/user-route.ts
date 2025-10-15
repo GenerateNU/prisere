@@ -68,7 +68,7 @@ const createUserRoute = createRoute({
 
 const getUserRoute = createRoute({
     method: "get",
-    path: "/users/{id}",
+    path: "/users",
     summary: "Fetches a user by the given ID",
     description: "Finds the user with the given ID in the database",
     responses: {
@@ -91,7 +91,7 @@ const getUserRoute = createRoute({
 
 const getUserCompanyRoute = createRoute({
     method: "get",
-    path: "/users/{id}/company",
+    path: "/users/company",
     summary: "Fetches a user's associated company by the given user ID",
     description: "Finds the user's company with the given user's ID in the database",
     responses: {

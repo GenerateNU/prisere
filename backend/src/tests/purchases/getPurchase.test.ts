@@ -1,22 +1,32 @@
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, afterEach } from "bun:test";
+import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { CreateOrChangePurchaseDTO } from "../../modules/purchase/types";
+import { CreateOrChangePurchaseRequest } from "../../modules/purchase/types";
 import { TESTING_PREFIX } from "../../utilities/constants";
+import { DataSource } from "typeorm";
+import CompanySeeder from "../../database/seeds/company.seed";
+import { SeederFactoryManager } from "typeorm-extension";
 describe("GET /purchase/:id", () => {
     let app: Hono;
     let backup: IBackup;
+    let dataSource: DataSource;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
+        dataSource = testAppData.dataSource;
     });
 
     afterEach(async () => {
         backup.restore();
     });
+
+    beforeEach(async () => {
+        const companySeeder = new CompanySeeder();
+        await companySeeder.run(dataSource, {} as SeederFactoryManager);
+    })
 
     const createCompany = async () => {
         const companyRequest = {
@@ -35,11 +45,12 @@ describe("GET /purchase/:id", () => {
         return await createCompanyResponse.json();
     };
 
-    const createPurchase = async (payload: Partial<CreateOrChangePurchaseDTO>) => {
+    const createPurchase = async (payload: Partial<CreateOrChangePurchaseRequest>) => {
         const response = await app.request(TESTING_PREFIX + "/purchase/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
             },
             body: JSON.stringify(payload),
         });
@@ -54,7 +65,6 @@ describe("GET /purchase/:id", () => {
             quickBooksId: 12345,
             totalAmountCents: 50000,
             isRefund: false,
-            companyId: company.id,
         };
 
         const createdPurchase = await createPurchase([createBody]);
@@ -81,7 +91,6 @@ describe("GET /purchase/:id", () => {
         const createBody = {
             totalAmountCents: 25000,
             isRefund: true,
-            companyId: company.id,
         };
 
         const createdPurchase = await createPurchase([createBody]);
