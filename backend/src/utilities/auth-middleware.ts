@@ -5,6 +5,13 @@ import { validate } from "uuid";
 import crypto from "crypto";
 config({ path: ".env" });
 
+interface DecodedToken extends jwt.JwtPayload {
+    app_metadata?: {
+      company_id?: string;
+    };
+  }
+
+  
 const jwk = JSON.parse(process.env.SUPABASE_PUBLIC_AUTH_KEY!);
 
 /**
@@ -25,11 +32,12 @@ export const isAuthorized = () => {
                 key: jwk,
                 format: "jwk",
             });
-            const decrypted = jwt.verify(token, publicKey, { algorithms: ["ES256"] });
+            const decrypted = jwt.verify(token, publicKey, { algorithms: ["ES256"] }) as DecodedToken;
             if (!decrypted.sub || !validate(decrypted.sub)) {
                 return ctx.json({ error: "User is not authenticated" }, 401);
             }
             ctx.set("userId", decrypted.sub);
+            ctx.set("companyId", decrypted.app_metadata?.company_id)
             await next();
         } catch {
             return ctx.json({ error: "Unauthorized" }, 401);

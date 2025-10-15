@@ -15,7 +15,7 @@ export default function Onboarding({email}: OnboardingProps){
 
     const components = [
         <UserInfoPage email={email} progress={progress} setProgress={setProgress}/>,
-        <Company/>,
+        <Company progress={progress} setProgress={setProgress}/>,
         <Insurance/>
     ]
     
@@ -26,11 +26,11 @@ export default function Onboarding({email}: OnboardingProps){
     ]
 
     return (
-        <div className = "flex flex-col items-center ">
-            <div className = "fixed top-15 ">
+        <div className = "flex flex-col items-center w-full">
+            <div className = "absolute top-15">
                 <Progress items={onboardingList} progress={progress}/>
             </div>
-            <div>
+            <div className="max-w-lg w-full space-y-8 mt-50 mb-50">
                 {components[progress]}
             </div>
 
