@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
+    "dev": "NODE_ENV=development next dev --turbopack",
+    "build": "NODE_ENV=development next build --turbopack",
+    "start": "NODE_ENV=production next start",
     "generate-types": "bun run openapi-typescript ../spec.json -o ./schema.d.ts",
     "lint": "eslint . --config ./eslint.config.mjs && prettier . --check",
     "lint:fix": "eslint . --config ./eslint.config.mjs --fix && prettier . --write"

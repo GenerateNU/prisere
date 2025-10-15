@@ -46,8 +46,10 @@ export async function signup(prevState: signupInitialState, formData: FormData) 
 export async function setCompanyMetadata(companyID: string) {
     const supabaseClient = await createSupabaseClient();
     const supabaseService = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
+        (process.env.NODE_ENV === "production"  ? 
+            process.env.NEXT_PUBLIC_SUPABASE_URL! : process.env.NEXT_PUBLIC_DEV_SUPABASE_URL! ),
+        (process.env.NODE_ENV === "production"  ? 
+            process.env.SUPABASE_SERVICE_ROLE_KEY! : process.env.SUPABASE_DEV_SERVICE_ROLE_KEY! ),
     );
 
     const { data , error } = await supabaseClient.auth.getUser()
