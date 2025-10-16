@@ -21,8 +21,7 @@ export default function Onboarding({email}: OnboardingProps){
     
     const onboardingList = [
         "Profile",
-        "Business",
-        "Insurance"
+        "Business"
     ]
 
     return (
