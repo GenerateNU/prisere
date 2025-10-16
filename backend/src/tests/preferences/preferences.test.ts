@@ -25,11 +25,11 @@ describe("notification preference retreival", () => {
     });
 
     it("should create a user's preferences on user creation", async () => {
-        const { data: user } = await createUser(app, {firstName: "test", lastName: "user" });
+        await createUser(app, { firstName: "test", lastName: "user" });
         const response = await app.request(TESTING_PREFIX + `/preferences`, {
             headers: {
-                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
-            }
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
+            },
         });
 
         expect(response.status).toBe(200);
@@ -48,8 +48,8 @@ describe("notification preference retreival", () => {
 
         const response = await app.request(TESTING_PREFIX + `/preferences`,{
             headers: {
-                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
-            }
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
+            },
         });
 
         expect(response.status).toBe(200);
@@ -76,11 +76,11 @@ describe("notification preference update", () => {
     });
 
     it("should perform full update to user preferences", async () => {
-        const { data: user } = await createUser(app, {firstName: "test", lastName: "user" });
+        await createUser(app, { firstName: "test", lastName: "user" });
         const getResponse = await app.request(TESTING_PREFIX + `/preferences`, {
             headers: {
-                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
-            }
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
+            },
         });
 
         expect(getResponse.status).toBe(200);
@@ -93,7 +93,7 @@ describe("notification preference update", () => {
         const updateResponse = await app.request(TESTING_PREFIX + `/preferences`, {
             method: "PUT",
             headers: {
-                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
             },
             body: JSON.stringify({
                 emailEnabled: false,
@@ -111,11 +111,11 @@ describe("notification preference update", () => {
     });
 
     it("should perform partial update to user preferences", async () => {
-        const { data: user } = await createUser(app, { firstName: "test", lastName: "user" });
+        await createUser(app, { firstName: "test", lastName: "user" });
         const getResponse = await app.request(TESTING_PREFIX + `/preferences`, {
             headers: {
-                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
-            }
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
+            },
         });
 
         expect(getResponse.status).toBe(200);
@@ -128,7 +128,7 @@ describe("notification preference update", () => {
         const updateResponse = await app.request(TESTING_PREFIX + `/preferences`, {
             method: "PUT",
             headers: {
-                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
             },
             body: JSON.stringify({
                 emailEnabled: false,
@@ -145,11 +145,11 @@ describe("notification preference update", () => {
     });
 
     it("should error on no values given", async () => {
-        const { data: user } = await createUser(app, {firstName: "test", lastName: "user" });
-        const getResponse = await app.request(TESTING_PREFIX + `/preferences`,{
+        await createUser(app, { firstName: "test", lastName: "user" });
+        const getResponse = await app.request(TESTING_PREFIX + `/preferences`, {
             headers: {
-                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
-            }
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
+            },
         });
 
         expect(getResponse.status).toBe(200);
@@ -162,7 +162,7 @@ describe("notification preference update", () => {
         const updateResponse = await app.request(TESTING_PREFIX + `/preferences`, {
             method: "PUT",
             headers: {
-                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
             },
             body: JSON.stringify({} satisfies UpdateUesrNotificationPreferencesDTO),
         });

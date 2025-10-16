@@ -28,16 +28,14 @@ describe("GET /claims/company/:id", () => {
     });
 
     test("GET - Successfully Gets related claims (multiple)", async () => {
-        const companyId = "5667a729-f000-4190-b4ee-7957badca27b"
-        const response = await app.request(
-            TESTING_PREFIX + "/claims/company", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "companyId": companyId,
-                }
-            }
-        );
+        const companyId = "5667a729-f000-4190-b4ee-7957badca27b";
+        const response = await app.request(TESTING_PREFIX + "/claims/company", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: companyId,
+            },
+        });
         const body = await response.json();
 
         expect(response.status).toBe(200);
@@ -46,15 +44,13 @@ describe("GET /claims/company/:id", () => {
         expect(body[1].companyId).toBe("5667a729-f000-4190-b4ee-7957badca27b");
 
         const companyId2 = "a1a542da-0abe-4531-9386-8919c9f86369";
-        const response2 = await app.request(
-            TESTING_PREFIX + "/claims/company", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "companyId": companyId2,
-                }
-            }
-        );
+        const response2 = await app.request(TESTING_PREFIX + "/claims/company", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: companyId2,
+            },
+        });
         const body2 = await response2.json();
 
         expect(response2.status).toBe(200);
@@ -64,15 +60,13 @@ describe("GET /claims/company/:id", () => {
 
     test("GET - Successfully Gets related claims (single)", async () => {
         const companyId = "a1a542da-0abe-4531-9386-8919c9f86369";
-        const response = await app.request(
-            TESTING_PREFIX + "/claims/company", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "companyId": companyId,
-                }
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + "/claims/company", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: companyId,
+            },
+        });
         const body = await response.json();
 
         expect(response.status).toBe(200);
@@ -82,15 +76,13 @@ describe("GET /claims/company/:id", () => {
 
     test("GET - No related claims for companyId", async () => {
         const companyId = "c0ce685a-27d8-4183-90ff-31f294b2c6da";
-        const response = await app.request(
-            TESTING_PREFIX + "/claims/company", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "companyId": companyId,
-                }
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + "/claims/company", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: companyId,
+            },
+        });
         const body = await response.json();
 
         expect(response.status).toBe(200);
@@ -99,43 +91,36 @@ describe("GET /claims/company/:id", () => {
 
     test("GET - CompanyID doesn't exist", async () => {
         const companyId = "c0ce685a-27d8-4183-90ff-31f294b2c6dp";
-        const response = await app.request(
-            TESTING_PREFIX + "/claims/company", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "companyId": companyId,
-                }
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + "/claims/company", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: companyId,
+            },
+        });
 
         expect(response.status).toBe(400);
     });
 
     test("GET - Malformed ID", async () => {
         const companyId = "--";
-        const response = await app.request(
-            TESTING_PREFIX + "/claims/company", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "companyId": companyId,
-                }
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + "/claims/company", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: companyId,
+            },
+        });
         expect(response.status).toBe(400);
 
-        
         const companyId2 = "{}";
-        const response3 = await app.request(
-            TESTING_PREFIX + "/claims/company", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "companyId": companyId2,
-                }
-            }
-        );
+        const response3 = await app.request(TESTING_PREFIX + "/claims/company", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: companyId2,
+            },
+        });
         expect(response3.status).toBe(400);
     });
 });

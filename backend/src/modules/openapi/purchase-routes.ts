@@ -2,12 +2,9 @@ import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { z } from "zod";
 import {
-    GetCompanyPurchasesDTOSchema,
     GetPurchasesResponseSchema,
     GetCompanyPurchasesResponseSchema,
-    CreateOrChangePurchaseDTOSchema,
     CreateOrChangePurchasesResponseSchema,
-    GetPurchaseDTOSchema,
     GetCompanyPurchasesSummationResponseSchema,
     CreateOrChangePurchaseRequestSchema,
     GetCompanyPurchasesQueryParams,

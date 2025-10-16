@@ -1,9 +1,3 @@
-
-
-export default function Insurance(){
-    return (
-        <div>
-            Insurance
-        </div>
-    )
+export default function Insurance() {
+    return <div>Insurance</div>;
 }

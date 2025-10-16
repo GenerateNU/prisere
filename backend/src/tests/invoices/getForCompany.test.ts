@@ -37,8 +37,8 @@ describe("Invoice get by id", () => {
     test("GET /quickbooks/invoice - valid company id ", async () => {
         const response = await app.request(TESTING_PREFIX + `/invoice`, {
             headers: {
-                "companyId": seededCompanyId
-            }
+                companyId: seededCompanyId,
+            },
         });
 
         expect(response.status).toBe(200);
@@ -49,8 +49,8 @@ describe("Invoice get by id", () => {
     test("GET /quickbooks/invoice - bad company id ", async () => {
         const response = await app.request(TESTING_PREFIX + `/invoice`, {
             headers: {
-                "companyId": "0199e5bb-9e51-78b7-ad43-9c8b4fddec57"
-            }
+                companyId: "0199e5bb-9e51-78b7-ad43-9c8b4fddec57",
+            },
         });
 
         expect(response.status).toBe(200);
@@ -61,8 +61,8 @@ describe("Invoice get by id", () => {
     test("GET /quickbooks/invoice - invalid company id ", async () => {
         const response = await app.request(TESTING_PREFIX + `/invoice`, {
             headers: {
-                "companyId": "hellnah"
-            }
+                companyId: "hellnah",
+            },
         });
 
         expect(response.status).toBe(400);
@@ -72,13 +72,11 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice - valid company id paginated page 1", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/invoice?pageNumber=0&resultsPerPage=1`, {
-                headers: {
-                    "companyId": seededCompanyId
-                }
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/invoice?pageNumber=0&resultsPerPage=1`, {
+            headers: {
+                companyId: seededCompanyId,
+            },
+        });
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -86,13 +84,11 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice - valid company id paginated page 2", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/invoice?pageNumber=1&resultsPerPage=1`, {
-                headers: {
-                    "companyId": seededCompanyId
-                }
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/invoice?pageNumber=1&resultsPerPage=1`, {
+            headers: {
+                companyId: seededCompanyId,
+            },
+        });
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -100,13 +96,11 @@ describe("Invoice get by id", () => {
     });
 
     test("GET /quickbooks/invoice - valid company id paginated page 3", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/invoice?&pageNumber=2&resultsPerPage=1`, {
-                headers: {
-                    "companyId": seededCompanyId
-                }
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/invoice?&pageNumber=2&resultsPerPage=1`, {
+            headers: {
+                companyId: seededCompanyId,
+            },
+        });
 
         expect(response.status).toBe(200);
         const body = await response.json();

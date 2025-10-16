@@ -2,15 +2,15 @@ import { z } from "zod";
 
 //Patch existing quick books purchase
 export const CreateOrChangePurchaseRequestSchema = z
-.array(
-    z.object({
-        quickBooksId: z.number().optional(),
-        totalAmountCents: z.number().min(0),
-        isRefund: z.boolean(),
-        quickbooksDateCreated: z.iso.datetime().optional(),
-    })
-)
-.nonempty();
+    .array(
+        z.object({
+            quickBooksId: z.number().optional(),
+            totalAmountCents: z.number().min(0),
+            isRefund: z.boolean(),
+            quickbooksDateCreated: z.iso.datetime().optional(),
+        })
+    )
+    .nonempty();
 export const CreateOrChangePurchaseDTOSchema = z
     .array(
         z.object({

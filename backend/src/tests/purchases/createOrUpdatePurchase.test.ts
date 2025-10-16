@@ -19,7 +19,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
             },
             body: JSON.stringify(companyRequests[0]),
         });
@@ -41,8 +41,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": createdCompany.id
-
+                companyId: createdCompany.id,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -74,7 +73,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": createdCompanyJSON?.id
+                companyId: createdCompanyJSON?.id,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -102,7 +101,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": createdCompanyJSON?.id
+                companyId: createdCompanyJSON?.id,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -129,7 +128,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": createdCompanyJSON?.id
+                companyId: createdCompanyJSON?.id,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -157,7 +156,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": createdCompanyJSON?.id
+                companyId: createdCompanyJSON?.id,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -181,7 +180,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": purchase[0].companyId
+                companyId: purchase[0].companyId,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -206,7 +205,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": purchase[0].companyId
+                companyId: purchase[0].companyId,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -231,7 +230,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": purchase[0].companyId
+                companyId: purchase[0].companyId,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -257,7 +256,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": "123"
+                companyId: "123",
             },
             body: JSON.stringify(requestBodies),
         });
@@ -279,7 +278,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": createdCompanyJSON?.id,
+                companyId: createdCompanyJSON?.id,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -301,7 +300,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": createdCompanyJSON?.id,
+                companyId: createdCompanyJSON?.id,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -323,7 +322,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": createdCompanyJSON?.id,
+                companyId: createdCompanyJSON?.id,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -344,7 +343,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": ""
+                companyId: "",
             },
             body: JSON.stringify(requestBodies),
         });
@@ -364,7 +363,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": "company-id",
+                companyId: "company-id",
             },
             body: JSON.stringify(requestBodies),
         });
@@ -385,7 +384,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": createdCompanyJSON?.id,
+                companyId: createdCompanyJSON?.id,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -406,7 +405,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": createdCompanyJSON?.id,
+                companyId: createdCompanyJSON?.id,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -458,7 +457,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": createdCompanyJSON?.id,
+                companyId: createdCompanyJSON?.id,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -585,7 +584,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": createdCompanyJSON?.id,
+                companyId: createdCompanyJSON?.id,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -600,7 +599,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": "0199e5bb-9e51-78b7-ad43-9c8b4fddec57"
+                companyId: "0199e5bb-9e51-78b7-ad43-9c8b4fddec57",
             },
             body: JSON.stringify(requestBodies),
         });
@@ -620,7 +619,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": createdCompanyJSON?.id,
+                companyId: createdCompanyJSON?.id,
             },
             body: JSON.stringify(requestBodies),
         });

@@ -7,12 +7,15 @@ config({ path: ".env" });
 
 interface DecodedToken extends jwt.JwtPayload {
     app_metadata?: {
-      company_id?: string;
+        company_id?: string;
     };
-  }
+}
 
-  
-const jwk = JSON.parse(process.env.NODE_ENV === "producion" ? process.env.SUPABASE_PUBLIC_AUTH_KEY! : process.env.SUPABASE_PUBLIC_AUTH_KEY_DEV!);
+const jwk = JSON.parse(
+    process.env.NODE_ENV === "producion"
+        ? process.env.SUPABASE_PUBLIC_AUTH_KEY!
+        : process.env.SUPABASE_PUBLIC_AUTH_KEY_DEV!
+);
 
 /**
  *
@@ -37,7 +40,7 @@ export const isAuthorized = () => {
                 return ctx.json({ error: "User is not authenticated" }, 401);
             }
             ctx.set("userId", decrypted.sub);
-            ctx.set("companyId", decrypted.app_metadata?.company_id)
+            ctx.set("companyId", decrypted.app_metadata?.company_id);
             await next();
         } catch {
             return ctx.json({ error: "Unauthorized" }, 401);

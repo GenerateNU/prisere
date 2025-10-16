@@ -68,10 +68,13 @@ export class LocationAddressController implements ILocationAddressController {
             const json = await ctx.req.json();
             const payload = CreateLocationAddressSchema.parse(json);
             const companyId = ctx.get("companyId");
-            if(!validate(companyId)) {
+            if (!validate(companyId)) {
                 return ctx.json({ error: "Invalid company ID format" }, 400);
             }
-            const resultingLocationAddress = await this.locationAddressService.createLocationAddress(payload, companyId);
+            const resultingLocationAddress = await this.locationAddressService.createLocationAddress(
+                payload,
+                companyId
+            );
             return ctx.json(resultingLocationAddress, 201);
         }
     );
