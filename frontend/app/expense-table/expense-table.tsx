@@ -75,7 +75,7 @@ export default function ExpenseTable() {
             <CardFooter>
                 <PaginationControls
                     page={page}
-                    onPageChange={(page: number) => setPage(page)}
+                    onPageChange={setPage}
                     isLastPage={isLastPage}
                 />
                 <ResultsPerPageSelect

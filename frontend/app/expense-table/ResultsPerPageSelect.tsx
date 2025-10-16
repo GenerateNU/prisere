@@ -1,12 +1,14 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+
 export default function ResultsPerPageSelect({
-    value,
-    onValueChange,
-}: {
+                                                 value,
+                                                 onValueChange,
+                                             }: {
     value: number;
     onValueChange: (value: number) => void;
 }) {
+    const pageSizeOptions = [5, 10, 15, 20];
     return (
         <div className="flex items-center gap-2">
             <p className="text-sm">Results per page</p>
@@ -15,10 +17,11 @@ export default function ResultsPerPageSelect({
                     <SelectValue placeholder={value.toString()} />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="5">5</SelectItem>
-                    <SelectItem value="10">10</SelectItem>
-                    <SelectItem value="15">15</SelectItem>
-                    <SelectItem value="20">20</SelectItem>
+                    {pageSizeOptions.map((i) => (
+                        <SelectItem key={i} value={i.toString()}>
+                            {i}
+                        </SelectItem>
+                    ))}
                 </SelectContent>
             </Select>
         </div>
