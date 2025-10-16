@@ -22,7 +22,7 @@ export const addOpenApiDisasterRoutes = (openApi: OpenAPIHono, db: DataSource): 
 
 const createDisasterRoute = createRoute({
     method: "post",
-    path: "/disaster",
+    path: "/disasterNotifications",
     summary: "Create a new disaster",
     description: "Creates a new disaster with the provided information",
     request: {
@@ -50,7 +50,7 @@ const createDisasterRoute = createRoute({
 
 const getAllDisastersRoute = createRoute({
     method: "get",
-    path: "/disaster",
+    path: "/disasterNotification",
     summary: "Get all disasters",
     description: "Gets all disasters stored in the database",
     responses: {

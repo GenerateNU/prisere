@@ -1,4 +1,5 @@
-import { MarkReadNotificationResponse, GetNotificationsResponse, NotificationFilters, MarkAllAsReadResponse } from "@/types/notifications";
+import { MarkReadNotificationResponse, GetNotificationsResponse, NotificationFilters } from "@/types/notifications";
+import { MarkAllAsReadResponse } from "../../backend/src/types/DisasterNotification";
 import { authHeader, authWrapper, client } from "./client";
 
 export const getNotifications = async (
