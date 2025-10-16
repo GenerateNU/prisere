@@ -24,21 +24,16 @@ export class ClaimService implements IClaimService {
     }
 
     createClaim = withServiceErrorHandling(async (payload: CreateClaimDTO): Promise<CreateClaimResponse> => {
-        try {
-            if (!payload.selfDisasterId && !payload.femaDisasterId) {
-                throw Boom.badRequest("There must be a fema or self disaster");
-            }
-            const claim = await this.claimTransaction.createClaim({
-                ...payload,
-            });
-            if (!claim) {
-                throw new Error("Failed to create claim");
-            }
-            return claim;
-        } catch (error) {
-            console.log(error);
-            throw error;
+        if (!payload.selfDisasterId && !payload.femaDisasterId) {
+            throw Boom.badRequest("There must be a fema or self disaster");
         }
+        const claim = await this.claimTransaction.createClaim({
+            ...payload,
+        });
+        if (!claim) {
+            throw new Error("Failed to create claim");
+        }
+        return claim;
     });
 
     getClaimsByCompanyId = withServiceErrorHandling(

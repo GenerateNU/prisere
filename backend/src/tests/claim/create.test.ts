@@ -6,6 +6,9 @@ import { initTestData } from "./setup";
 import { DataSource } from "typeorm";
 import { beforeEach } from "node:test";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
+import CompanySeeder, { seededCompanies } from "../../database/seeds/company.seed";
+import { SelfDisasterSeeder } from "../../database/seeds/selfDisaster.seed";
+import { SeederFactoryManager } from "typeorm-extension";
 
 describe("POST /claims", () => {
     let app: Hono;
@@ -21,6 +24,11 @@ describe("POST /claims", () => {
 
     beforeEach(async () => {
         await initTestData(testAppDataSource);
+        const companySeeder = new CompanySeeder();
+        await companySeeder.run(testAppDataSource, {} as SeederFactoryManager);
+
+        const selfDisasterSeeder = new SelfDisasterSeeder();
+        await selfDisasterSeeder.run(testAppDataSource, {} as SeederFactoryManager);
     });
 
     afterEach(async () => {
@@ -53,11 +61,43 @@ describe("POST /claims", () => {
         const fetchBody = await fetchResponse.json();
 
         expect(fetchResponse.status).toBe(200);
-        console.log(fetchBody, "HEY");
         expect(fetchBody.length).toBe(2);
         expect(fetchBody[1].id).toBe(body.id);
         expect(fetchBody[1].femaDisaster.id).toBe(requestBody.femaDisasterId);
         expect(fetchBody[1].companyId).toBe(requestBody.companyId);
+    });
+
+    test("POST /claims - Success", async () => {
+        const requestBody = {
+            selfDisasterId: "ba5735c4-fbd1-4f7d-97c1-bf5af2a3f533",
+            companyId: seededCompanies[0].id,
+        };
+
+        const response = await app.request("/claims", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        expect(response.status).toBe(201);
+        const body = await response.json();
+        expect(body.femaDisasterId).toBe(null);
+        expect(body.selfDisasterId).toBe(requestBody.selfDisasterId);
+        expect(body.companyId).toBe(requestBody.companyId);
+        expect(body.status).toBe(ClaimStatusType.ACTIVE);
+        expect(body.createdAt).toBeDefined();
+        expect(body.updatedAt).toBeDefined();
+
+        const fetchResponse = await app.request(`/claims/company/${requestBody.companyId}`);
+        const fetchBody = await fetchResponse.json();
+
+        expect(fetchResponse.status).toBe(200);
+        expect(fetchBody.length).toBe(1);
+        expect(fetchBody[0].id).toBe(body.id);
+        expect(fetchBody[0].selfDisaster.id).toBe(requestBody.selfDisasterId);
+        expect(fetchBody[0].companyId).toBe(requestBody.companyId);
     });
 
     test("POST /claims - Company with multiple claims", async () => {

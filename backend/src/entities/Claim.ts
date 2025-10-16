@@ -8,6 +8,7 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     OneToMany,
+    Check,
 } from "typeorm";
 import type { Relation } from "typeorm";
 import { Company } from "./Company.js";
@@ -17,6 +18,9 @@ import { ClaimLocation } from "./ClaimLocation.js";
 import { SelfDeclaredDisaster } from "./SelfDisaster.js";
 
 @Unique(["companyId", "femaDisasterId", "selfDisasterId"])
+@Check(
+    `("femaDisasterId" IS NOT NULL AND "selfDisasterId" IS NULL) OR ("femaDisasterId" IS NULL AND "selfDisasterId" IS NOT NULL)`
+)
 @Entity("claim")
 export class Claim {
     @PrimaryGeneratedColumn("uuid")

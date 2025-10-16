@@ -19,7 +19,7 @@ export const addOpenApiSelfDisasterRoutes = (openApi: OpenAPIHono, db: DataSourc
 
 const createSelfDisasterRoute = createRoute({
     method: "post",
-    path: "/self",
+    path: "disaster/self",
     summary: "Create a new self-reported disaster",
     description: "Creates a new self-reported disaster for a company with the provided information",
     request: {
@@ -47,7 +47,7 @@ const createSelfDisasterRoute = createRoute({
 
 const deleteSelfDisasterRoute = createRoute({
     method: "delete",
-    path: "/self/{id}",
+    path: "disaster/self/{id}",
     summary: "Delete a self-reported disaster",
     description: "Deletes a self-reported disaster by its ID",
     request: {

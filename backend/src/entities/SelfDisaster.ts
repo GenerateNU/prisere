@@ -6,6 +6,7 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     PrimaryGeneratedColumn,
+    Check,
 } from "typeorm";
 import type { Relation } from "typeorm";
 import { Company } from "./Company";
@@ -29,7 +30,7 @@ export class SelfDeclaredDisaster {
     startDate!: Date;
 
     //A null end date represents an open end
-    @Column({ nullable: true })
+    @Column({ type: "timestamptz", nullable: true })
     endDate?: Date;
 
     @CreateDateColumn()
