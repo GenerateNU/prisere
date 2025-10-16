@@ -3,14 +3,13 @@ import { MarkAllAsReadResponse } from "../../backend/src/types/DisasterNotificat
 import { authHeader, authWrapper, client } from "./client";
 
 export const getNotifications = async (
-  userId: string,
   filters?: NotificationFilters
 ): Promise<GetNotificationsResponse> => {
   const req = async (token: string): Promise<GetNotificationsResponse> => {
-    const { data, error, response } = await client.GET("/disasterNotification/{id}", {
+    const { data, error, response } = await client.GET("/disasterNotification", {
       params: {
         // path: { id: userId },
-        path: { id: "5d3c5843-31d2-4eaf-a290-cf753e9fa32b"},
+        // path: { id: "5d3c5843-31d2-4eaf-a290-cf753e9fa32b"},
         query: {
           type: "web",
           page: filters?.page,
@@ -54,14 +53,12 @@ export const updateNotificationStatus = async (
   return authWrapper<MarkReadNotificationResponse>()(req);
 }
 
-export const markAllNotificationsAsRead = async (
-    userId: string
-): Promise<MarkAllAsReadResponse> => {
+export const markAllNotificationsAsRead = async (): Promise<MarkAllAsReadResponse> => {
     const req = async (token: string): Promise<MarkAllAsReadResponse> => {
-        const { data, error, response } = await client.PATCH("/disasterNotification/user/{id}/markAllAsRead", {
+        const { data, error, response } = await client.PATCH("/disasterNotification/user/markAllAsRead", {
             params: {
                 // path: { id: userId },
-                path: { id: "5d3c5843-31d2-4eaf-a290-cf753e9fa32b"},
+                // path: { id: "5d3c5843-31d2-4eaf-a290-cf753e9fa32b"},
             },
             headers: authHeader(token),
         });

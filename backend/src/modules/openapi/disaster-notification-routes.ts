@@ -38,22 +38,10 @@ export const addOpenApiDisasterNotificationRoutes = (openApi: OpenAPIHono, db: D
 
 const markAllAsReadRoute = createRoute({
     method: "patch",
-    path: "/disasterNotification/user/{id}/markAllAsRead",
+    path: "/disasterNotification/user/markAllAsRead",
     summary: "Mark all notifications as read",
     description: "Marks all unread notifications for a specific user as read",
     request: {
-        params: z.object({
-            id: z
-                .string()
-                .uuid()
-                .openapi({
-                    param: {
-                        name: "id",
-                        in: "path",
-                    },
-                    example: "123e4567-e89b-12d3-a456-426614174000",
-                }),
-        }),
     },
     responses: {
         200: {
@@ -93,21 +81,10 @@ const markAllAsReadRoute = createRoute({
 
 const getUserNotificationsRoute = createRoute({
     method: "get",
-    path: "/disasterNotification/{id}",
+    path: "/disasterNotification",
     summary: "Get user notifications",
     description: "Retrieves all disaster notifications for a specific user with optional filtering and pagination",
     request: {
-        params: z.object({
-            id: z
-                .string()
-                .uuid()
-                .openapi({
-                    param: {
-                        in: "path",
-                    },
-                    example: "123e4567-e89b-12d3-a456-426614174000",
-                }),
-        }),
         query: z.object({
             type: z.enum(["web", "email"]).optional(),
             status: z.enum(["unread", "read", "acknowledged"]).optional(),
@@ -150,22 +127,10 @@ const getUserNotificationsRoute = createRoute({
 
 const markAsReadNotificationRoute = createRoute({
     method: "patch",
-    path: "/disasterNotification/{id}/markAsRead",
+    path: "/disasterNotification/markAsRead",
     summary: "Mark notification as read",
     description: "Marks a specific notification as read and updates readAt timestamp",
     request: {
-        params: z.object({
-            id: z
-                .string()
-                .uuid()
-                .openapi({
-                    param: {
-                        name: "id",
-                        in: "path",
-                    },
-                    example: "123e4567-e89b-12d3-a456-426614174000",
-                }),
-        }),
     },
     responses: {
         200: {
@@ -202,22 +167,10 @@ const markAsReadNotificationRoute = createRoute({
 
 const markUnreadNotificationRoute = createRoute({
     method: "patch",
-    path: "/disasterNotification/{id}/markUnread",
+    path: "/disasterNotification/markUnread",
     summary: "Mark notification as unread",
     description: "Marks a specific notification as unread and clears the readAt timestamp",
     request: {
-        params: z.object({
-            id: z
-                .string()
-                .uuid()
-                .openapi({
-                    param: {
-                        name: "id",
-                        in: "path",
-                    },
-                    example: "123e4567-e89b-12d3-a456-426614174000",
-                }),
-        }),
     },
     responses: {
         200: {
@@ -311,22 +264,10 @@ const bulkCreateNotificationsRoute = createRoute({
 
 const deleteNotificationRoute = createRoute({
     method: "delete",
-    path: "/disasterNotification/{id}",
+    path: "/disasterNotification",
     summary: "Delete notification",
     description: "Permanently deletes a specific notification",
     request: {
-        params: z.object({
-            id: z
-                .string()
-                .uuid()
-                .openapi({
-                    param: {
-                        name: "id",
-                        in: "path",
-                    },
-                    example: "123e4567-e89b-12d3-a456-426614174000",
-                }),
-        }),
     },
     responses: {
         200: {

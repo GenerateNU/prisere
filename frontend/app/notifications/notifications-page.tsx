@@ -10,7 +10,7 @@ import { PaginationStatus } from "@/types/notifications";
 type NotificationStatus = "unread" | "read";
 type SortOption = "most-recent" | "oldest-first";
 
-export default function NotificationsPage({ userId }: { userId: string }) {
+export default function NotificationsPage() {
   // State management
   const [filters, setFilters] = useState({
     status: "all" as NotificationStatus | "all",
@@ -37,12 +37,12 @@ export default function NotificationsPage({ userId }: { userId: string }) {
 
   // Queries and mutations
   const { data, isPending, error } = useQuery({
-    queryKey: ["notifications", userId, { 
+    queryKey: ["notifications", { 
       page: pagination.currentPage, 
       limit: pagination.itemsPerPage,
       status: filters.status !== "all" ? filters.status : undefined 
     }],
-    queryFn: () => getNotifications(userId, { 
+    queryFn: () => getNotifications({ 
       page: pagination.currentPage, 
       limit: pagination.itemsPerPage,
       status: filters.status !== "all" ? filters.status : undefined,
@@ -53,7 +53,7 @@ export default function NotificationsPage({ userId }: { userId: string }) {
     mutationFn: ({ notificationId, status }: { notificationId: string; status: NotificationStatus }) =>
       updateNotificationStatus(notificationId, status),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notifications", userId] });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
     onError: (error) => {
       console.error("Failed to update notification status:", error);
@@ -61,9 +61,9 @@ export default function NotificationsPage({ userId }: { userId: string }) {
   });
 
   const markAllAsReadMutation = useMutation({
-    mutationFn: () => markAllNotificationsAsRead(userId),
+    mutationFn: () => markAllNotificationsAsRead(),
     onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: ["notifications", userId] });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
       console.log(`Marked ${result.updatedCount} notifications as read`);
     },
     onError: (error) => {

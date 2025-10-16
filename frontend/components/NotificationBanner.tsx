@@ -5,13 +5,13 @@ import { getNotifications } from "@/api/notifications";
 import { useState } from "react";
 import Link from "next/link";
 
-export default function NotificationBanner({ userId }: { userId: string }) {
+export default function NotificationBanner() {
   const [isDismissed, setIsDismissed] = useState(false);
 
   // Fetch only unread notifications, limit to 1 (most recent)
   const { data, isPending } = useQuery({
-    queryKey: ["banner-notification", userId],
-    queryFn: () => getNotifications(userId, { 
+    queryKey: ["banner-notification"],
+    queryFn: () => getNotifications({ 
       type: "web",
       page: 1, 
       limit: 1,
