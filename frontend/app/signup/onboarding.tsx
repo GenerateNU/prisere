@@ -14,12 +14,12 @@ export default function Onboarding({ email }: OnboardingProps) {
     const [progress, setProgress] = useState(0);
 
     const components = [
-        <UserInfoPage email={email} progress={progress} setProgress={setProgress} />,
-        <Company progress={progress} setProgress={setProgress} />,
-        <Insurance />,
+        <UserInfoPage key={1} email={email} progress={progress} setProgress={setProgress} />,
+        <Company key={2} progress={progress} setProgress={setProgress} />,
+        <Insurance key={3} />,
     ];
 
-    const onboardingList = ["Profile", "Business", "Insurance"];
+    const onboardingList = ["Profile", "Business"];
 
     return (
         <div className="flex flex-col items-center w-full">

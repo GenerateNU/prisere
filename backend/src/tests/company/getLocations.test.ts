@@ -24,7 +24,6 @@ describe("Get all locations for a company", () => {
     // Seeded company IDs from company.seed.ts
     const companyWithMultipleLocations = "ffc8243b-876e-4b6d-8b80-ffc73522a838"; // 3 locations
     const companyWithOneLocation = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"; // 1 location
-    const companyWithNoLocations = "11b2c3d4-e5f6-7890-abcd-ef1234567890"; // 0 locations
 
     beforeAll(async () => {
         const testAppData = await startTestApp();

@@ -30,7 +30,7 @@ describe("GET /purchase", () => {
     });
 
     const createPurchase = async (payload?: Partial<CreateOrChangePurchaseRequest>) => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/bulk", {
+        await app.request(TESTING_PREFIX + "/purchase/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

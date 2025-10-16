@@ -6,7 +6,6 @@ import { DataSource } from "typeorm";
 import {
     CreateCompanyDTOSchema,
     CreateCompanyResponseSchema,
-    GetCompanyByIdDTOSchema,
     GetCompanyByIdResponseSchema,
     UpdateQuickBooksImportTimeDTOSchema,
 } from "../../types/Company";

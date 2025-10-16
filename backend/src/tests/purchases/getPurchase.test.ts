@@ -59,7 +59,7 @@ describe("GET /purchase/:id", () => {
     };
 
     test("GET /purchase/:id - Valid Purchase ID", async () => {
-        const company = await createCompany();
+        await createCompany();
         // First create a purchase to retrieve
         const createBody = {
             quickBooksId: 12345,
@@ -85,7 +85,7 @@ describe("GET /purchase/:id", () => {
     });
 
     test("GET /purchase/:id - Valid Purchase ID with Refund", async () => {
-        const company = await createCompany();
+        await createCompany();
 
         // Create a refund purchase
         const createBody = {

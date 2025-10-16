@@ -12,7 +12,6 @@ export const getAllInvoicesForCompany = async (pageNumber: number, resultsPerPag
             },
             headers: authHeader(token),
         });
-
         if (response.ok) {
             return data!;
         } else {
@@ -42,4 +41,5 @@ export const sumInvoicesByCompanyAndDateRange = async (startDate: Date, endDate:
     };
 
     return authWrapper<{ total: number }>()(req);
+
 };

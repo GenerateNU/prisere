@@ -54,49 +54,69 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
                 <label className="block text-4xl text-black font-bold"> Business Information </label>
             </div>
             <div className="w-full flex flex-col items-center space-y-4">
-                <label> Business Name</label>
-                <Input
-                    id="name"
-                    name="name"
-                    type="name"
-                    placeholder="Business Name"
-                    required
-                    onChange={(e) => setCompanyPayload({ ...companyPayload, name: e.target.value })}
-                />
-                <label> Address 1</label>
-                <Input
-                    id="name"
-                    name="streetAddress"
-                    type="name"
-                    required
-                    onChange={(e) => setLocationPayload({ ...locationPayload, streetAddress: e.target.value })}
-                />
-                <label> City </label>
-                <Input
-                    id="name"
-                    name="city"
-                    type="name"
-                    required
-                    onChange={(e) => setLocationPayload({ ...locationPayload, city: e.target.value })}
-                />
+                <div className="flex flex-col items-center gap-4 w-full">
+                    <label className="whitespace-nowrap self-start">
+                        Business Name<span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <Input
+                        id="name"
+                        name="name"
+                        type="text"
+                        placeholder="Business Name"
+                        required
+                        onChange={(e) => setCompanyPayload({ ...companyPayload, name: e.target.value })}
+                    />
+                </div>
+                <div className="flex flex-col items-center gap-4 w-full">
+                    <label className="whitespace-nowrap self-start">
+                        Address Line 1<span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <Input
+                        id="name"
+                        name="streetAddress"
+                        type="name"
+                        required
+                        onChange={(e) => setLocationPayload({ ...locationPayload, streetAddress: e.target.value })}
+                    />
+                </div>
+                <div className="flex flex-col items-center gap-4 w-full">
+                    <label className="whitespace-nowrap self-start">
+                        City <span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <Input
+                        id="name"
+                        name="city"
+                        type="name"
+                        required
+                        onChange={(e) => setLocationPayload({ ...locationPayload, city: e.target.value })}
+                    />
+                </div>
 
-                <label> State </label>
-                <Input
-                    id="name"
-                    name="stateProvince"
-                    type="name"
-                    required
-                    onChange={(e) => setLocationPayload({ ...locationPayload, stateProvince: e.target.value })}
-                />
+                <div className="flex flex-col items-center gap-4 w-full">
+                    <label className="whitespace-nowrap self-start">
+                        State <span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <Input
+                        id="name"
+                        name="stateProvince"
+                        type="name"
+                        required
+                        onChange={(e) => setLocationPayload({ ...locationPayload, stateProvince: e.target.value })}
+                    />
+                </div>
 
-                <label> Zip Code </label>
-                <Input
-                    id="name"
-                    name="postalCode"
-                    type="name"
-                    required
-                    onChange={(e) => setLocationPayload({ ...locationPayload, postalCode: e.target.value })}
-                />
+                <div className="flex flex-col items-center gap-4 w-full">
+                    <label className="whitespace-nowrap self-start">
+                        Zip Code <span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <Input
+                        id="name"
+                        name="postalCode"
+                        type="name"
+                        required
+                        onChange={(e) => setLocationPayload({ ...locationPayload, postalCode: e.target.value })}
+                    />
+                </div>
             </div>
             <div className="w-full flex flex-col gap-2 items-center">
                 <Button type="button" onClick={() => mutate(companyPayload)} disabled={isPending || isLocationPending}>

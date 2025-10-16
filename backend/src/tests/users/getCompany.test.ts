@@ -230,8 +230,7 @@ describe("GET /users/:id/company", () => {
             }),
         });
 
-        const createdUser = await createUserResponse.json();
-        const userId = createdUser.id;
+        await createUserResponse.json();
 
         // Test GET /users/:id/company endpoint
         const response = await app.request(TESTING_PREFIX + `/users/company`, {

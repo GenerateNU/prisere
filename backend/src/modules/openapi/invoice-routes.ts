@@ -5,7 +5,6 @@ import { InvoiceController } from "../invoice/controller";
 import { InvoiceService } from "../invoice/service";
 import { InvoiceTransaction } from "../invoice/transaction";
 import {
-    CreateOrUpdateInvoicesDTOSchema,
     CreateOrUpdateInvoiceResponseSchema,
     GetInvoiceDTOSchema,
     GetInvoiceResponseSchema,

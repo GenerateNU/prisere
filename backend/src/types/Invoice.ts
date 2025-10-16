@@ -7,7 +7,6 @@ export const CreateOrUpdateInvoicesRequestSchema = z.array(
         quickbooksDateCreated: z.iso.datetime().optional(),
     })
 );
-
 export const CreateOrUpdateInvoicesDTOSchema = z.array(
     z.object({
         companyId: z.string(),
