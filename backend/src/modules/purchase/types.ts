@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-//Patch existing quick books purchase
 export const CreateOrChangePurchaseRequestSchema = z
     .array(
         z.object({
@@ -68,17 +67,7 @@ export const GetCompanyPurchasesByDateDTOSchema = z.object({
     endDate: z.iso.datetime(),
 });
 
-export const GetCompanyPurchasesResponseSchema = z.array(
-    z.object({
-        id: z.string().nonempty(),
-        companyId: z.string().nonempty(),
-        quickBooksID: z.number().optional(),
-        totalAmountCents: z.number().min(0),
-        quickbooksDateCreated: z.string().optional(),
-        isRefund: z.boolean(),
-        dateCreated: z.string(),
-    })
-);
+export const GetCompanyPurchasesResponseSchema = z.array(GetPurchasesResponseSchema);
 
 export const GetCompanyPurchasesSummationResponseSchema = z.object({
     total: z.number().nonnegative(),

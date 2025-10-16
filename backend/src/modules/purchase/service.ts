@@ -63,6 +63,7 @@ export class PurchaseService implements IPurchaseService {
                 quickBooksID: qbPurchase.quickBooksId,
                 totalAmountCents: qbPurchase.totalAmountCents,
                 quickbooksDateCreated: qbPurchase.quickbooksDateCreated?.toUTCString(),
+                lastUpdated: qbPurchase.lastUpdated.toUTCString(),
             }));
         }
     );
