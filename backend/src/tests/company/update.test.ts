@@ -19,10 +19,10 @@ describe("Company - Update lastQuickBooksImportTime", () => {
         datasource = testAppData.dataSource;
     });
 
-    beforeEach(async() => {
+    beforeEach(async () => {
         const companySeeder = new CompanySeeder();
         await companySeeder.run(datasource, {} as SeederFactoryManager);
-    })
+    });
 
     afterEach(async () => {
         backup.restore();
@@ -32,10 +32,10 @@ describe("Company - Update lastQuickBooksImportTime", () => {
         const newDate = new Date("2025-12-25T09:30:00.000Z");
         const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-import-time`, {
             method: "PATCH",
-            headers: { 
+            headers: {
                 "Content-Type": "application/json",
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838",
-             },
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+            },
             body: JSON.stringify({ importTime: newDate.toISOString() }), // <-- use importTime
         });
         expect(response.status).toBe(200);
@@ -46,10 +46,10 @@ describe("Company - Update lastQuickBooksImportTime", () => {
     test("PATCH /companies/:id/quickbooks-import-time - Invalid date string", async () => {
         const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-import-time`, {
             method: "PATCH",
-            headers: { 
+            headers: {
                 "Content-Type": "application/json",
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838",
-             },
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+            },
             body: JSON.stringify({ importTime: "not-a-date" }), // <-- use importTime
         });
         expect(response.status).toBe(400);
@@ -58,10 +58,10 @@ describe("Company - Update lastQuickBooksImportTime", () => {
     test("PATCH /companies/:id/quickbooks-import-time - Missing date", async () => {
         const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-import-time`, {
             method: "PATCH",
-            headers: { 
+            headers: {
                 "Content-Type": "application/json",
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838",
-             },
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+            },
             body: JSON.stringify({}),
         });
         expect(response.status).toBe(400);
@@ -71,10 +71,10 @@ describe("Company - Update lastQuickBooksImportTime", () => {
         const newDate = new Date("2025-12-25T09:30:00.000Z");
         const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-import-time`, {
             method: "PATCH",
-            headers: { 
+            headers: {
                 "Content-Type": "application/json",
-                "companyId": "nonexistent-id",
-             },
+                companyId: "nonexistent-id",
+            },
             body: JSON.stringify({ importTime: newDate.toISOString() }), // <-- use importTime
         });
         expect(response.status).toBe(500);

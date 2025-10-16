@@ -1,9 +1,6 @@
 import { authHeader, authWrapper, client } from "./client";
 
-export const sumPurchasesByCompanyAndDateRange = async (
-    startDate: Date,
-    endDate: Date,
-): Promise<{ total: number }> => {
+export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate: Date): Promise<{ total: number }> => {
     const req = async (token: string): Promise<{ total: number }> => {
         const { data, error, response } = await client.GET("/purchase/bulk/totalExpenses", {
             headers: authHeader(token),
@@ -12,7 +9,7 @@ export const sumPurchasesByCompanyAndDateRange = async (
                     startDate: startDate.toISOString(),
                     endDate: endDate.toISOString(),
                 },
-            }
+            },
         });
 
         if (response.ok) {
@@ -20,8 +17,7 @@ export const sumPurchasesByCompanyAndDateRange = async (
         } else {
             throw Error(error?.error);
         }
-    }
+    };
 
     return authWrapper<{ total: number }>()(req);
-}
-
+};

@@ -3,10 +3,7 @@
     "kty": "EC",
     "kid": "03d4a51d-d8b1-469b-858b-0e586fef312d",
     "use": "sig",
-    "key_ops": [
-      "sign",
-      "verify"
-    ],
+    "key_ops": ["sign", "verify"],
     "alg": "ES256",
     "ext": true,
     "d": "ld8NdnybqZ7xL4w3vOZZ6OAtFt6lqcaCZ_Jno7GF9Co",

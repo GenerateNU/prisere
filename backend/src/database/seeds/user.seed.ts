@@ -24,7 +24,7 @@ export default class UserSeeder implements Seeder {
                 lastName: "wibisana",
                 email: "zahra.wib@example.com",
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
-            }
+            },
         ]);
     }
 }

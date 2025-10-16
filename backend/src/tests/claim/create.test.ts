@@ -38,7 +38,7 @@ describe("POST /claims", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": companyId,
+                companyId: companyId,
             },
             body: JSON.stringify(requestBody),
         });
@@ -55,8 +55,8 @@ describe("POST /claims", () => {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": companyId,
-            }
+                companyId: companyId,
+            },
         });
         const fetchBody = await fetchResponse.json();
 
@@ -77,7 +77,7 @@ describe("POST /claims", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": companyId
+                companyId: companyId,
             },
             body: JSON.stringify(requestBody2),
         });
@@ -101,7 +101,7 @@ describe("POST /claims", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": companyId
+                companyId: companyId,
             },
             body: JSON.stringify(requestBody),
         });
@@ -118,7 +118,7 @@ describe("POST /claims", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": "5667a729-f000-4190-b4ee-7957badca27b",
+                companyId: "5667a729-f000-4190-b4ee-7957badca27b",
             },
             body: JSON.stringify(requestBody),
         });
@@ -131,7 +131,7 @@ describe("POST /claims", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": "5667a729-f000-4190-b4ee-7957badca27b",
+                companyId: "5667a729-f000-4190-b4ee-7957badca27b",
             },
             body: JSON.stringify({}),
         });
@@ -148,7 +148,7 @@ describe("POST /claims", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": "",
+                companyId: "",
             },
             body: JSON.stringify(requestBody),
         });
