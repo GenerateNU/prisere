@@ -1,11 +1,6 @@
 import { DataSource } from "typeorm";
 import { Claim } from "../../entities/Claim";
-import {
-    CreateClaimDTO,
-    DeleteClaimDTO,
-    DeleteClaimResponse,
-    GetClaimsByCompanyIdResponse,
-} from "../../types/Claim";
+import { CreateClaimDTO, DeleteClaimDTO, DeleteClaimResponse, GetClaimsByCompanyIdResponse } from "../../types/Claim";
 import { logMessageToFile } from "../../utilities/logger";
 import { plainToClass } from "class-transformer";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
@@ -47,7 +42,7 @@ export class ClaimTransaction implements IClaimTransaction {
                 status: ClaimStatusType.ACTIVE,
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                companyId: companyId
+                companyId: companyId,
             });
 
             const result: Claim = await this.db.getRepository(Claim).save(claim);

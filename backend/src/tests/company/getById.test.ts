@@ -9,7 +9,7 @@
  */
 
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, beforeEach, afterEach} from "bun:test";
+import { describe, test, expect, beforeAll, beforeEach, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { TESTING_PREFIX } from "../../utilities/constants";
@@ -36,19 +36,17 @@ describe("Example", () => {
     beforeEach(async () => {
         const companySeeder = new CompanySeeder();
         await companySeeder.run(datasource, {} as SeederFactoryManager);
-
     });
 
     afterEach(async () => {
         backup.restore();
     });
 
-
     test("GET /companies/:id - id that exists", async () => {
         const response = await app.request(TESTING_PREFIX + `/companies`, {
             headers: {
-                "companyId": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
-            }
+                companyId: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+            },
         });
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -58,8 +56,8 @@ describe("Example", () => {
     test("GET /companies/:id - validates response structure", async () => {
         const response = await app.request(TESTING_PREFIX + `/companies`, {
             headers: {
-                "companyId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-            }
+                companyId: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+            },
         });
         expect(response.status).toBe(200);
 
@@ -75,8 +73,8 @@ describe("Example", () => {
         const nonExistentUUID = "12345678-1234-1234-1234-123456789012";
         const response = await app.request(TESTING_PREFIX + `/companies`, {
             headers: {
-                "companyId": nonExistentUUID,
-            }
+                companyId: nonExistentUUID,
+            },
         });
         expect(response.status).toBe(400);
 
@@ -89,9 +87,9 @@ describe("Example", () => {
         const nonExistentUUID = "12345678-1234-1234-1234-123456789012";
         const response = await app.request(TESTING_PREFIX + `/companies`, {
             headers: {
-                "companyId": nonExistentUUID,
-            }
-        } );
+                companyId: nonExistentUUID,
+            },
+        });
         expect(response.status).toBe(400);
     });
 
@@ -99,8 +97,8 @@ describe("Example", () => {
         const nonExistentUUID = "baka";
         const response = await app.request(TESTING_PREFIX + `/companies`, {
             headers: {
-                "companyId": nonExistentUUID,
-            }
+                companyId: nonExistentUUID,
+            },
         });
         expect(response.status).toBe(400);
     });
@@ -108,9 +106,9 @@ describe("Example", () => {
     test("GET /companies/:id - uuid with invalid characters", async () => {
         const response = await app.request(TESTING_PREFIX + "/companies", {
             headers: {
-                "companyId": "1234567g-1234-1234-1234-123456789012",
-            }
-        } ); // g is not hex
+                companyId: "1234567g-1234-1234-1234-123456789012",
+            },
+        }); // g is not hex
         expect(response.status).toBe(400);
     });
 
@@ -127,11 +125,13 @@ describe("Example", () => {
     test("GET /companies/:id - concurrent requests", async () => {
         const requests = Array(10)
             .fill(null)
-            .map(() => app.request(TESTING_PREFIX + `/companies`, {
-                headers: {
-                    "companyId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-                }
-            }));
+            .map(() =>
+                app.request(TESTING_PREFIX + `/companies`, {
+                    headers: {
+                        companyId: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                    },
+                })
+            );
 
         const responses = await Promise.all(requests);
         responses.forEach((response) => {

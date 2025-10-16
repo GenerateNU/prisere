@@ -31,18 +31,17 @@ describe("GET /comapnies/:id", () => {
 
         const userSeeder = new UserSeeder();
         await userSeeder.run(datasource, {} as SeederFactoryManager);
-    })
-
+    });
 
     test("POST /companies - All Fields Given - String Date 2", async () => {
         const requestBody = {
             name: "Cool Company",
-        };   
+        };
         const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "userId": "0199e0cc-4e92-702c-9773-071340163ae4"
+                userId: "0199e0cc-4e92-702c-9773-071340163ae4",
             },
             body: JSON.stringify(requestBody),
         });
@@ -50,9 +49,9 @@ describe("GET /comapnies/:id", () => {
         const response2 = await app.request(TESTING_PREFIX + "/users", {
             method: "GET",
             headers: {
-                "userId": "0199e0cc-4e92-702c-9773-071340163ae4"
+                userId: "0199e0cc-4e92-702c-9773-071340163ae4",
             },
-        })
+        });
 
         expect(response.status).toBe(201);
         const body = await response.json();
@@ -66,9 +65,8 @@ describe("GET /comapnies/:id", () => {
             firstName: "John",
             lastName: "Doe",
             email: "john.doe@example.com",
-            companyId: body.id
+            companyId: body.id,
         });
-       
     });
 
     test("POST /companies - All Fields Given - String Date 1", async () => {
@@ -79,7 +77,7 @@ describe("GET /comapnies/:id", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "userId": "0199e0cc-4e92-702c-9773-071340163ae4"
+                userId: "0199e0cc-4e92-702c-9773-071340163ae4",
             },
             body: JSON.stringify(requestBody),
         });
@@ -97,7 +95,7 @@ describe("GET /comapnies/:id", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "userId": "0199e0cc-4e92-702c-9773-071340163ae4"
+                userId: "0199e0cc-4e92-702c-9773-071340163ae4",
             },
             body: JSON.stringify(requestBody),
         });
@@ -115,7 +113,7 @@ describe("GET /comapnies/:id", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "userId": "0199e0cc-4e92-702c-9773-071340163ae4"
+                userId: "0199e0cc-4e92-702c-9773-071340163ae4",
             },
             body: JSON.stringify(requestBody),
         });
@@ -130,7 +128,7 @@ describe("GET /comapnies/:id", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "userId": "0199e0cc-4e92-702c-9773-071340163ae4"
+                userId: "0199e0cc-4e92-702c-9773-071340163ae4",
             },
             body: JSON.stringify(requestBody),
         });
@@ -145,11 +143,10 @@ describe("GET /comapnies/:id", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "userId": "0199e0cc-4e92-702c-9773-071340163ae4"
+                userId: "0199e0cc-4e92-702c-9773-071340163ae4",
             },
             body: JSON.stringify(requestBody),
         });
         expect(response.status).toBe(400);
-        
     });
 });

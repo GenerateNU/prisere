@@ -58,7 +58,7 @@ describe("Remove Address Tests", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": companyId,
+                companyId: companyId,
             },
             body: JSON.stringify(requestBody),
         });
@@ -120,9 +120,9 @@ describe("Remove Address Tests", () => {
 
         const createResponse = await app.request(TESTING_PREFIX + "/location-address", {
             method: "POST",
-            headers: { 
+            headers: {
                 "Content-Type": "application/json",
-                "companyId": companyId,
+                companyId: companyId,
             },
             body: JSON.stringify(createBody),
         });

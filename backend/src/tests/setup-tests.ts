@@ -39,7 +39,6 @@ const createNewDB = async (): Promise<IMemoryDb> => {
     return db;
 };
 
-
 export const startTestApp = async (): Promise<TestAppData> => {
     const app = new Hono<{ Variables: ContextVariables }>();
     const db = await createNewDB();
@@ -59,16 +58,13 @@ export const startTestApp = async (): Promise<TestAppData> => {
     return { app, backup, dataSource };
 };
 
-
 export const testingAuthorized = () => {
     return async (ctx: Context, next: Next) => {
         const userId = ctx.req.header("userId");
         const companyId = ctx.req.header("companyId");
-       
-        ctx.set("userId", userId)
-        ctx.set("companyId", companyId)
+
+        ctx.set("userId", userId);
+        ctx.set("companyId", companyId);
         await next();
-       
     };
 };
-

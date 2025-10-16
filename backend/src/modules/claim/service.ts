@@ -1,10 +1,5 @@
 import { Claim } from "../../entities/Claim";
-import {
-    CreateClaimDTO,
-    DeleteClaimDTO,
-    DeleteClaimResponse,
-    GetClaimsByCompanyIdResponse,
-} from "../../types/Claim";
+import { CreateClaimDTO, DeleteClaimDTO, DeleteClaimResponse, GetClaimsByCompanyIdResponse } from "../../types/Claim";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { IClaimTransaction } from "./transaction";
 
@@ -22,9 +17,12 @@ export class ClaimService implements IClaimService {
     }
 
     createClaim = withServiceErrorHandling(async (payload: CreateClaimDTO, companyId: string): Promise<Claim> => {
-        const claim = await this.claimTransaction.createClaim({
-            ...payload,
-        }, companyId);
+        const claim = await this.claimTransaction.createClaim(
+            {
+                ...payload,
+            },
+            companyId
+        );
         if (!claim) {
             throw new Error("Failed to create claim");
         }

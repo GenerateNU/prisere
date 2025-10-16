@@ -1,6 +1,5 @@
 import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
-import { z } from "zod";
 import {
     CreateUserResponseSchema,
     GetUserResponseSchema,
@@ -22,20 +21,6 @@ export const addOpenApiUserRoutes = (openApi: OpenAPIHono, db: DataSource): Open
     openApi.openapi(getUserRoute, (ctx) => userController.getUser(ctx));
     return openApi;
 };
-
-// we have to define this here (annoyingly) because the zod imports get messed up somehow
-// specifically from User.ts and specifically this schema
-// I can't figure out any more than that, so I give in.
-
-// If you move the schemas from User.ts to anywhere else it works.
-// If you use a different schema from Company.ts or something it also works.
-const GetUserDTOSchemaLocal = z.object({
-    id: z.string().nonempty(),
-});
-
-const GetUserComapnyDTOSchemaLocal = z.object({
-    id: z.string().nonempty(),
-});
 
 const createUserRoute = createRoute({
     method: "post",

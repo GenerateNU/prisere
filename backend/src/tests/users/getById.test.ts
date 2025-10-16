@@ -22,13 +22,13 @@ describe("GET /users/:id", () => {
         datasource = setup.dataSource;
     });
 
-    beforeEach(async() => {
+    beforeEach(async () => {
         const companySeeder = new CompanySeeder();
         await companySeeder.run(datasource, {} as SeederFactoryManager);
 
         const userSeeder = new UserSeeder();
         await userSeeder.run(datasource, {} as SeederFactoryManager);
-    })
+    });
 
     afterEach(() => {
         backup.restore();
@@ -39,7 +39,7 @@ describe("GET /users/:id", () => {
         const response = await app.request(TESTING_PREFIX + `/users`, {
             method: "GET",
             headers: {
-                "userId": "0199e0cc-4e92-702c-9773-071340163ae4",
+                userId: "0199e0cc-4e92-702c-9773-071340163ae4",
             },
         });
 
@@ -61,7 +61,7 @@ describe("GET /users/:id", () => {
     test("should return 200 and user data without email when user has no email", async () => {
         const response = await app.request(TESTING_PREFIX + `/users`, {
             headers: {
-                "userId": "0199e0cc-4e92-702c-9773-071340163ae4",
+                userId: "0199e0cc-4e92-702c-9773-071340163ae4",
             },
             method: "GET",
         });
@@ -73,7 +73,7 @@ describe("GET /users/:id", () => {
             id: "0199e0cc-4e92-702c-9773-071340163ae4",
             firstName: "John",
             lastName: "Doe",
-            email: "john.doe@example.com"
+            email: "john.doe@example.com",
         });
     });
 
@@ -84,7 +84,7 @@ describe("GET /users/:id", () => {
             const response = await app.request(TESTING_PREFIX + `/users`, {
                 method: "GET",
                 headers: {
-                    "userId": invalidId,
+                    userId: invalidId,
                 },
             });
 
@@ -102,7 +102,7 @@ describe("GET /users/:id", () => {
         const response = await app.request(TESTING_PREFIX + `/users`, {
             method: "GET",
             headers: {
-                "userId": nonExistentId,
+                userId: nonExistentId,
             },
         });
 
