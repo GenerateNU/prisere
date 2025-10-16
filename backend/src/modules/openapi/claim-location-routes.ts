@@ -8,7 +8,6 @@ import {
     CreateClaimLocationResponseSchema,
     DeleteClaimLocationDTOSchema,
     DeleteClaimLocationResponseSchema,
-    GetLocationsByCompanyIdDTOSchema,
     GetLocationsByCompanyIdResponseSchema,
 } from "../../types/ClaimLocation";
 import { openApiErrorCodes } from "../../utilities/error";
@@ -54,12 +53,9 @@ export const createClaimLocationRoute = createRoute({
 
 export const getClaimLocationsByCompanyIdRoute = createRoute({
     method: "get",
-    path: "/claim-locations/company/{companyId}",
+    path: "/claim-locations/company",
     summary: "Gets all the locations affected by claims for a company",
     description: "Gets all the locations affected by claims for a company based on the given ID",
-    request: {
-        params: GetLocationsByCompanyIdDTOSchema,
-    },
     responses: {
         200: {
             content: {

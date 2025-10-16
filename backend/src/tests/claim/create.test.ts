@@ -29,15 +29,16 @@ describe("POST /claims", () => {
     });
 
     test("POST /claims - Success", async () => {
+        const companyId = "c0ce685a-27d8-4183-90ff-31f294b2c6da";
         const requestBody = {
             disasterId: "47f0c515-2efc-49c3-abb8-623f48817950",
-            companyId: "c0ce685a-27d8-4183-90ff-31f294b2c6da",
         };
 
         const response = await app.request(TESTING_PREFIX + "/claims", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": companyId,
             },
             body: JSON.stringify(requestBody),
         });
@@ -45,31 +46,38 @@ describe("POST /claims", () => {
         expect(response.status).toBe(201);
         const body = await response.json();
         expect(body.disasterId).toBe(requestBody.disasterId);
-        expect(body.companyId).toBe(requestBody.companyId);
+        expect(body.companyId).toBe(companyId);
         expect(body.status).toBe(ClaimStatusType.ACTIVE);
         expect(body.createdAt).toBeDefined();
         expect(body.updatedAt).toBeDefined();
 
-        const fetchResponse = await app.request(TESTING_PREFIX + `/claims/company/${requestBody.companyId}`);
+        const fetchResponse = await app.request(TESTING_PREFIX + `/claims/company`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "companyId": companyId,
+            }
+        });
         const fetchBody = await fetchResponse.json();
 
         expect(fetchResponse.status).toBe(200);
         expect(fetchBody.length).toBe(2);
         expect(fetchBody[1].id).toBe(body.id);
         expect(fetchBody[1].disasterId).toBe(requestBody.disasterId);
-        expect(fetchBody[1].companyId).toBe(requestBody.companyId);
+        expect(fetchBody[1].companyId).toBe(companyId);
     });
 
     test("POST /claims - Company with multiple claims", async () => {
+        const companyId = "a1a542da-0abe-4531-9386-8919c9f86369";
         const requestBody2 = {
             disasterId: "47f0c515-2efc-49c3-abb8-623f48817950",
-            companyId: "a1a542da-0abe-4531-9386-8919c9f86369",
         };
 
         const response2 = await app.request(TESTING_PREFIX + "/claims", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": companyId
             },
             body: JSON.stringify(requestBody2),
         });
@@ -77,15 +85,15 @@ describe("POST /claims", () => {
         expect(response2.status).toBe(201);
         const body2 = await response2.json();
         expect(body2.disasterId).toBe(requestBody2.disasterId);
-        expect(body2.companyId).toBe(requestBody2.companyId);
+        expect(body2.companyId).toBe(companyId);
         expect(body2.status).toBe(ClaimStatusType.ACTIVE);
         expect(body2.createdAt).toBeDefined();
         expect(body2.updatedAt).toBeDefined();
     });
 
     test("POST /claims - CompanyID doesnt exist", async () => {
+        const companyId = "c290f1ee-6c54-4b01-90e6-d701748f0851";
         const requestBody = {
-            companyId: "c290f1ee-6c54-4b01-90e6-d701748f0851",
             disasterId: "2aa52e71-5f89-4efe-a820-1bfc65ded6ec",
         };
 
@@ -93,6 +101,7 @@ describe("POST /claims", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": companyId
             },
             body: JSON.stringify(requestBody),
         });
@@ -102,7 +111,6 @@ describe("POST /claims", () => {
 
     test("POST /claims - DisasterID doesnt exist", async () => {
         const requestBody = {
-            companyId: "5667a729-f000-4190-b4ee-7957badca27b",
             disasterId: "2aa52e71-5f89-4efe-a820-1bfc65ded6e2",
         };
 
@@ -110,6 +118,7 @@ describe("POST /claims", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": "5667a729-f000-4190-b4ee-7957badca27b",
             },
             body: JSON.stringify(requestBody),
         });
@@ -118,16 +127,13 @@ describe("POST /claims", () => {
     });
 
     test("POST /claims - Missing Fields", async () => {
-        const requestBody = {
-            companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-        };
-
         const response = await app.request(TESTING_PREFIX + "/claims", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": "5667a729-f000-4190-b4ee-7957badca27b",
             },
-            body: JSON.stringify(requestBody),
+            body: JSON.stringify({}),
         });
 
         expect(response.status).toBe(400);
@@ -136,18 +142,18 @@ describe("POST /claims", () => {
     test("POST /claims - Empty Fields", async () => {
         const requestBody = {
             disasterId: "",
-            companyId: "",
         };
 
         const response = await app.request(TESTING_PREFIX + "/claims", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": "",
             },
             body: JSON.stringify(requestBody),
         });
 
-        expect(response.status).toBe(500);
+        expect(response.status).toBe(400);
     });
 
     test("POST /claims - Empty Request Body", async () => {

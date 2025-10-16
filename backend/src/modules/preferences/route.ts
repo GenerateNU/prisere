@@ -13,8 +13,8 @@ export const preferenceRoutes = (db: DataSource) => {
     const service = new PreferenceService(transaction, userTransaction);
     const controller = new PreferencesController(service);
 
-    hono.get("/:id", (ctx) => controller.getUserPreferences(ctx));
-    hono.put("/:id", (ctx) => controller.updateUserPreferences(ctx));
+    hono.get("/", (ctx) => controller.getUserPreferences(ctx));
+    hono.put("/", (ctx) => controller.updateUserPreferences(ctx));
 
     return hono;
 };

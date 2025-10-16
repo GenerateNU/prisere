@@ -21,12 +21,12 @@ export const disasterNotificationRoutes = (db: DataSource): Hono => {
         disasterNotificationService
     );
 
-    disasterNotification.get("/:id", (ctx) => disasterNotificationController.getUserNotifications(ctx));
-    disasterNotification.patch("/:id/markAsRead", (ctx) => disasterNotificationController.markAsReadNotification(ctx));
-    disasterNotification.patch("/:id/markUnread", (ctx) => disasterNotificationController.markUnreadNotification(ctx));
+    disasterNotification.get("/", (ctx) => disasterNotificationController.getUserNotifications(ctx));
+    disasterNotification.patch("/markAsRead", (ctx) => disasterNotificationController.markAsReadNotification(ctx));
+    disasterNotification.patch("/markUnread", (ctx) => disasterNotificationController.markUnreadNotification(ctx));
     disasterNotification.post("/create", (ctx) => disasterNotificationController.bulkCreateNotifications(ctx));
-    disasterNotification.delete("/:id", (ctx) => disasterNotificationController.deleteNotification(ctx));
-    disasterNotification.patch("/user/:id/markAllAsRead", (ctx) => disasterNotificationController.markAllAsRead(ctx));
+    disasterNotification.delete("/", (ctx) => disasterNotificationController.deleteNotification(ctx));
+    disasterNotification.patch("/user/markAllAsRead", (ctx) => disasterNotificationController.markAllAsRead(ctx));
 
     return disasterNotification;
 };

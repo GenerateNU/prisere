@@ -4,6 +4,7 @@ import { ClaimLocation, CreateClaimLocationDTOSchema, DeleteClaimLocationRespons
 import { LocationAddress } from "../../types/Location";
 import { IClaimLocationService } from "./service";
 import { withControllerErrorHandling } from "../../utilities/error";
+import { validate } from "uuid";
 
 export interface IClaimLocationController {
     createClaimLocation(_ctx: Context): ControllerResponse<TypedResponse<ClaimLocation, 201>>;
@@ -20,8 +21,11 @@ export class ClaimLocationController implements IClaimLocationController {
 
     getLocationsByCompanyId = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<LocationAddress[], 200>> => {
-            const companyId = ctx.req.param("id");
-            const locations = await this.companyService.getLocationsByCompanyId({ companyId: companyId });
+            const companyId = ctx.get("companyId");
+            if (!validate(companyId)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
+            const locations = await this.companyService.getLocationsByCompanyId(companyId);
             return ctx.json(locations, 200);
         }
     );
