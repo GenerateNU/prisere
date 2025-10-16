@@ -1,9 +1,4 @@
-import {
-    CreateSelfDisasterDTO,
-    CreateSelfDisasterResponse,
-    GetDisastersForCompanyDTO,
-    GetDisastersForCompanyResponse,
-} from "./types";
+import { CreateSelfDisasterDTO, CreateSelfDisasterResponse } from "./types";
 
 import { withServiceErrorHandling } from "../../utilities/error";
 import Boom from "@hapi/boom";

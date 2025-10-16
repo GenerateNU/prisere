@@ -1,6 +1,5 @@
 import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
-import { FemaDisaster } from "../../entities/FemaDisaster";
 import { SelfDeclaredDisaster } from "../../entities/SelfDisaster";
 import { seededCompanies } from "./company.seed";
 

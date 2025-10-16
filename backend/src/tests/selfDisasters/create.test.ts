@@ -4,7 +4,6 @@ import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { DataSource } from "typeorm";
 import { beforeEach } from "node:test";
-import { ClaimStatusType } from "../../types/ClaimStatusType";
 import CompanySeeder, { seededCompanies } from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 

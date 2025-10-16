@@ -6,8 +6,6 @@ import { initTestData } from "./setup";
 import { DataSource } from "typeorm";
 import { beforeEach } from "node:test";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
-import femaDisasterFactory from "../../database/factories/femaDisaster.factory";
-import { FemaDisaster } from "../../entities/FemaDisaster";
 
 describe("POST /claims", () => {
     let app: Hono;

@@ -1,8 +1,5 @@
 import { DataSource } from "typeorm";
 import { Hono } from "hono";
-import { DisasterTransaction } from "../disaster/transaction";
-import { DisasterService } from "../disaster/service";
-import { DisasterController } from "../disaster/controller";
 import { SelfDisasterTransaction } from "./transaction";
 import { SelfDisasterService } from "./service";
 import { SelfDisasterController } from "./controller";
