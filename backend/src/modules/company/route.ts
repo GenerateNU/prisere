@@ -11,10 +11,10 @@ export const companyRoutes = (db: DataSource): Hono => {
     const companyService: ICompanyService = new CompanyService(companyTransaction);
     const companyController: ICompanyController = new CompanyController(companyService);
 
-    company.get("/:id", (ctx) => companyController.getCompanyById(ctx));
+    company.get("/", (ctx) => companyController.getCompanyById(ctx));
     company.post("/", (ctx) => companyController.createCompany(ctx));
-    company.patch("/:id/quickbooks-import-time", (ctx) => companyController.updateQuickbooksImportTime(ctx));
-    company.get("/:id/location-address", (ctx) => companyController.getCompanyLocationsById(ctx));
+    company.patch("/quickbooks-import-time", (ctx) => companyController.updateQuickbooksImportTime(ctx));
+    company.get("/location-address", (ctx) => companyController.getCompanyLocationsById(ctx));
 
     return company;
 };

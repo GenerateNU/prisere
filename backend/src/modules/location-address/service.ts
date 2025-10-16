@@ -17,7 +17,7 @@ export interface ILocationAddressService {
      * @throws If the given payload cannot be used to create a location address
      * @param payload The payload used to try to create a new location address
      */
-    createLocationAddress(payload: CreateLocationAddressDTO): Promise<CreateLocationAddressResponse>;
+    createLocationAddress(payload: CreateLocationAddressDTO, companyId: string): Promise<CreateLocationAddressResponse>;
 
     /**
      * Attempts to find a location address with the given payload
@@ -49,7 +49,7 @@ export class LocationAddressService implements ILocationAddressService {
      * @param payload The payload used to try to create a new location address
      */
     createLocationAddress = withServiceErrorHandling(
-        async (payload: CreateLocationAddressDTO): Promise<CreateLocationAddressResponse> => {
+        async (payload: CreateLocationAddressDTO, companyId: string): Promise<CreateLocationAddressResponse> => {
             const fipsLocation = await this.locationMatcher.getLocationFips(payload);
 
             if (fipsLocation === null) {
@@ -63,7 +63,7 @@ export class LocationAddressService implements ILocationAddressService {
                 fipsCountyCode: Number(fipsLocation.fipsCountyCode),
             };
             // Pass complete data with fips codes to transaction layer
-            const locationAddress = await this.locationAddressTransaction.createLocationAddress(completePayload);
+            const locationAddress = await this.locationAddressTransaction.createLocationAddress(completePayload, companyId);
 
             if (!locationAddress) {
                 throw new Error("Failed to create location address");

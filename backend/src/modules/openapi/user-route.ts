@@ -2,10 +2,10 @@ import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { z } from "zod";
 import {
-    CreateUserDTOSchema,
     CreateUserResponseSchema,
     GetUserResponseSchema,
     GetUserCompanyResponseSchema,
+    createUserRequestBody,
 } from "../../types/User";
 import { IUserController, UserController } from "../user/controller";
 import { IUserService, UserService } from "../user/service";
@@ -47,7 +47,7 @@ const createUserRoute = createRoute({
             required: true,
             content: {
                 "application/json": {
-                    schema: CreateUserDTOSchema,
+                    schema: createUserRequestBody,
                 },
             },
         },
@@ -68,12 +68,9 @@ const createUserRoute = createRoute({
 
 const getUserRoute = createRoute({
     method: "get",
-    path: "/users/{id}",
+    path: "/users",
     summary: "Fetches a user by the given ID",
     description: "Finds the user with the given ID in the database",
-    request: {
-        params: GetUserDTOSchemaLocal,
-    },
     responses: {
         200: {
             content: {
@@ -94,12 +91,9 @@ const getUserRoute = createRoute({
 
 const getUserCompanyRoute = createRoute({
     method: "get",
-    path: "/users/{id}/company",
+    path: "/users/company",
     summary: "Fetches a user's associated company by the given user ID",
     description: "Finds the user's company with the given user's ID in the database",
-    request: {
-        params: GetUserComapnyDTOSchemaLocal,
-    },
     responses: {
         200: {
             content: {

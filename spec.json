@@ -28,10 +28,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
                   "firstName": {
                     "type": "string",
                     "minLength": 1
@@ -50,7 +46,6 @@
                   }
                 },
                 "required": [
-                  "id",
                   "firstName",
                   "lastName"
                 ]
@@ -129,108 +124,12 @@
             }
           }
         }
-      }
-    },
-    "/users/{id}/company": {
-      "get": {
-        "summary": "Fetches a user's associated company by the given user ID",
-        "description": "Finds the user's company with the given user's ID in the database",
-        "tags": [
-          "Users"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 1
-            },
-            "required": true,
-            "name": "id",
-            "in": "path"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfull fetch of a user's company from the database",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "companyId": {
-                      "type": "string"
-                    },
-                    "companyName": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "companyId",
-                    "companyName"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Get Company from User",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "There does not exist any user in the database such that the given id matches their id OR there is no such user with the given ID that has a non-null company"
-          },
-          "500": {
-            "description": "Get Company from User",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/users/{id}": {
+      },
       "get": {
         "summary": "Fetches a user by the given ID",
         "description": "Finds the user with the given ID in the database",
         "tags": [
           "Users"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 1
-            },
-            "required": true,
-            "name": "id",
-            "in": "path"
-          }
         ],
         "responses": {
           "200": {
@@ -304,6 +203,78 @@
         }
       }
     },
+    "/users/company": {
+      "get": {
+        "summary": "Fetches a user's associated company by the given user ID",
+        "description": "Finds the user's company with the given user's ID in the database",
+        "tags": [
+          "Users"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfull fetch of a user's company from the database",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "companyId": {
+                      "type": "string"
+                    },
+                    "companyName": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "companyId",
+                    "companyName"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get Company from User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "There does not exist any user in the database such that the given id matches their id OR there is no such user with the given ID that has a non-null company"
+          },
+          "500": {
+            "description": "Get Company from User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/companies": {
       "post": {
         "summary": "Create a new company",
@@ -312,6 +283,7 @@
           "Companies"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -325,8 +297,7 @@
                 "required": [
                   "name"
                 ]
-              },
-              "required": true
+              }
             }
           }
         },
@@ -396,24 +367,12 @@
             }
           }
         }
-      }
-    },
-    "/companies/{id}": {
+      },
       "get": {
         "summary": "Gets a company from the database",
         "description": "Gets a company using the company ID",
         "tags": [
           "Companies"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "name": "id",
-            "in": "path"
-          }
         ],
         "responses": {
           "200": {
@@ -483,22 +442,12 @@
         }
       }
     },
-    "/companies/{id}/quickbooks-import-time": {
+    "/companies/quickbooks-import-time": {
       "patch": {
         "summary": "Update a company's lastQuickBooksImportTime",
         "description": "Updates the lastQuickBooksImportTime for a company by ID",
         "tags": [
           "Companies"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "name": "id",
-            "in": "path"
-          }
         ],
         "requestBody": {
           "content": {
@@ -583,22 +532,12 @@
         }
       }
     },
-    "/companies/{id}/location-address": {
+    "/companies/location-address": {
       "get": {
         "summary": "Gets a company's location from the database",
         "description": "Gets a company's locations using the company ID",
         "tags": [
           "Companies"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "name": "id",
-            "in": "path"
-          }
         ],
         "responses": {
           "200": {
@@ -973,6 +912,7 @@
           "Location Address"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -1002,10 +942,6 @@
                   "county": {
                     "type": "string",
                     "minLength": 1
-                  },
-                  "companyId": {
-                    "type": "string",
-                    "format": "uuid"
                   }
                 },
                 "required": [
@@ -1013,8 +949,7 @@
                   "stateProvince",
                   "city",
                   "streetAddress",
-                  "postalCode",
-                  "companyId"
+                  "postalCode"
                 ]
               }
             }
@@ -1055,10 +990,6 @@
                     "county": {
                       "type": "string",
                       "minLength": 1
-                    },
-                    "companyId": {
-                      "type": "string",
-                      "format": "uuid"
                     }
                   },
                   "required": [
@@ -1067,8 +998,7 @@
                     "stateProvince",
                     "city",
                     "streetAddress",
-                    "postalCode",
-                    "companyId"
+                    "postalCode"
                   ]
                 }
               }
@@ -1402,18 +1332,6 @@
         "description": "Permanently deletes a specific notification",
         "tags": [
           "Disaster Notifications"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "example": "123e4567-e89b-12d3-a456-426614174000"
-            },
-            "required": true,
-            "name": "id",
-            "in": "path"
-          }
         ],
         "responses": {
           "200": {
@@ -2287,9 +2205,6 @@
                 "items": {
                   "type": "object",
                   "properties": {
-                    "companyId": {
-                      "type": "string"
-                    },
                     "quickbooksId": {
                       "type": "integer",
                       "minimum": 0,
@@ -2305,7 +2220,6 @@
                     }
                   },
                   "required": [
-                    "companyId",
                     "totalAmountCents"
                   ]
                 }
@@ -2534,14 +2448,6 @@
         "parameters": [
           {
             "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "name": "companyId",
-            "in": "query"
-          },
-          {
-            "schema": {
               "type": "number",
               "default": 0
             },
@@ -2629,6 +2535,92 @@
           },
           "404": {
             "description": "No Invoice with given UUID found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Getting Invoice Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoice/bulk/totalIncome": {
+      "get": {
+        "summary": "Get the summation of invoices for a company in a date range",
+        "description": "Get the summation of invoices for a company that were made after the start date and before the end date",
+        "tags": [
+          "Invoice"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "name": "startDate",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "name": "endDate",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Found summation successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "total"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Getting Invoice Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -2799,7 +2791,7 @@
         }
       }
     },
-    "/purchase": {
+    "/purchase/bulk": {
       "post": {
         "summary": "Create or update a purchase",
         "description": "Creates a new purchase or updates an existing purchase with the provided information",
@@ -2824,19 +2816,14 @@
                     "isRefund": {
                       "type": "boolean"
                     },
-                    "companyId": {
-                      "type": "string",
-                      "minLength": 1
-                    },
                     "quickbooksDateCreated": {
                       "type": "string",
-                      "format": "date"
+                      "format": "date-time"
                     }
                   },
                   "required": [
                     "totalAmountCents",
-                    "isRefund",
-                    "companyId"
+                    "isRefund"
                   ]
                 },
                 "minItems": 1
@@ -2977,129 +2964,6 @@
             }
           }
         }
-      },
-      "get": {
-        "summary": "Fetches all purchases for a company",
-        "description": "Retrieves a paginated list of purchases for the specified company",
-        "tags": [
-          "Purchases"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 1
-            },
-            "required": true,
-            "name": "companyId",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "number",
-              "minimum": 0,
-              "default": 0
-            },
-            "required": false,
-            "name": "pageNumber",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "number",
-              "minimum": 0,
-              "exclusiveMinimum": true,
-              "default": 20
-            },
-            "required": false,
-            "name": "resultsPerPage",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful fetch of company purchases from the database",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "minLength": 1
-                      },
-                      "companyId": {
-                        "type": "string",
-                        "minLength": 1
-                      },
-                      "quickBooksID": {
-                        "type": "number"
-                      },
-                      "totalAmountCents": {
-                        "type": "number",
-                        "minimum": 0
-                      },
-                      "quickbooksDateCreated": {
-                        "type": "string"
-                      },
-                      "isRefund": {
-                        "type": "boolean"
-                      },
-                      "dateCreated": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "id",
-                      "companyId",
-                      "totalAmountCents",
-                      "isRefund",
-                      "dateCreated"
-                    ]
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Get company purchases error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Get company purchases error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/purchase/{id}": {
@@ -3210,6 +3074,208 @@
         }
       }
     },
+    "/purchase": {
+      "get": {
+        "summary": "Fetches all purchases for a company",
+        "description": "Retrieves a paginated list of purchases for the specified company",
+        "tags": [
+          "Purchases"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "default": 0
+            },
+            "required": false,
+            "name": "pageNumber",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 20
+            },
+            "required": false,
+            "name": "resultsPerPage",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful fetch of company purchases from the database",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "companyId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "quickBooksID": {
+                        "type": "number"
+                      },
+                      "totalAmountCents": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "quickbooksDateCreated": {
+                        "type": "string"
+                      },
+                      "isRefund": {
+                        "type": "boolean"
+                      },
+                      "dateCreated": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "companyId",
+                      "totalAmountCents",
+                      "isRefund",
+                      "dateCreated"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get company purchases error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Get company purchases error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/purchase/bulk/totalExpenses": {
+      "get": {
+        "summary": "Get the summation of purchases for a company in a date range",
+        "description": "Get the summation of purchases for a company that were made after the start date and before the end date",
+        "tags": [
+          "Purchases"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "name": "startDate",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true,
+            "name": "endDate",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Found summation successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "total"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Getting Purchase Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Getting Purchase Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/claims": {
       "post": {
         "summary": "Create a new claim",
@@ -3223,15 +3289,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "companyId": {
-                    "type": "string"
-                  },
                   "disasterId": {
                     "type": "string"
                   }
                 },
                 "required": [
-                  "companyId",
                   "disasterId"
                 ]
               }
@@ -3322,22 +3384,12 @@
         }
       }
     },
-    "/claims/company/{id}": {
+    "/claims/company": {
       "get": {
         "summary": "Gets all the claims associated with a company",
         "description": "Gets all the claims for a company using a company ID",
         "tags": [
           "Claims"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "name": "id",
-            "in": "path"
-          }
         ],
         "responses": {
           "200": {
@@ -3506,11 +3558,220 @@
         }
       }
     },
-    "/notifications/preferences/{id}": {
-      "get": {
-        "summary": "Get a user's notificiation preferences",
+    "/claim-locations": {
+      "post": {
+        "summary": "Create a new claim-location link",
+        "description": "Creates a link between a claim and a location using given IDs",
         "tags": [
-          "Preferences"
+          "Claim-Locations"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "claimId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "locationAddressId": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "required": [
+                  "claimId",
+                  "locationAddressId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Claim-Location link created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "claimId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "locationAddressId": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "claimId",
+                    "locationAddressId"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Create Claim-Location  Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Create Claim-Location  Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/claim-locations/company": {
+      "get": {
+        "summary": "Gets all the locations affected by claims for a company",
+        "description": "Gets all the locations affected by claims for a company based on the given ID",
+        "tags": [
+          "Claim-Locations"
+        ],
+        "responses": {
+          "200": {
+            "description": "Locations fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string"
+                      },
+                      "stateProvince": {
+                        "type": "string"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "streetAddress": {
+                        "type": "string"
+                      },
+                      "postalCode": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "^\\d+$"
+                      },
+                      "county": {
+                        "type": "string"
+                      },
+                      "companyId": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "fipsStateCode": {
+                        "type": "number"
+                      },
+                      "fipsCountyCode": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "country",
+                      "stateProvince",
+                      "city",
+                      "streetAddress",
+                      "postalCode",
+                      "companyId",
+                      "fipsStateCode",
+                      "fipsCountyCode"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get Claim-Location Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Locations/Company not found"
+          },
+          "500": {
+            "description": "Get Claim-Location Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/claim-locations/claim/{claimId}/location-address/{locationId}": {
+      "delete": {
+        "summary": "Deletes a claim-location link from the database",
+        "description": "Deletes a claim-location link based off the given claim ID and location ID",
+        "tags": [
+          "Claim-Locations"
         ],
         "parameters": [
           {
@@ -3519,9 +3780,82 @@
               "format": "uuid"
             },
             "required": true,
-            "name": "id",
+            "name": "claimId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "locationId",
             "in": "path"
           }
+        ],
+        "responses": {
+          "200": {
+            "description": "Claim-Location link deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Delete Claim-Location Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Delete Claim-Location Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/preferences": {
+      "get": {
+        "summary": "Get a user's notificiation preferences",
+        "tags": [
+          "Preferences"
         ],
         "responses": {
           "200": {
@@ -3614,17 +3948,6 @@
         "summary": "Update a user's notificiation preferences",
         "tags": [
           "Preferences"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "required": true,
-            "name": "id",
-            "in": "path"
-          }
         ],
         "requestBody": {
           "content": {

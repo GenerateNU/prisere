@@ -30,9 +30,6 @@ const getUserNotificationPreferencesRoute = createRoute({
     method: "get",
     path: "/disasterNotification/preferences/{id}",
     summary: "Get a user's notificiation preferences",
-    request: {
-        params: GetUserNotificationPreferencesRequestParams,
-    },
     responses: {
         200: {
             content: {
@@ -60,7 +57,6 @@ const updateUserNotificationPreferencesRoute = createRoute({
     path: "/disasterNotification/preferences/{id}",
     summary: "Update a user's notificiation preferences",
     request: {
-        params: UpdateUserNotificationPreferencesRequestParams,
         body: {
             content: {
                 "application/json": {

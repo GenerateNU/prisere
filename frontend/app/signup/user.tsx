@@ -4,11 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CreateUserRequest } from "@/types/user";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Dispatch, SetStateAction } from 'react'
 
-export default function UserInfoPage({ email }: { email: string }) {
-    const router = useRouter();
+interface UserInfoProps{
+    email:string
+    progress: number
+    setProgress: Dispatch<SetStateAction<number>>
+}
+export default function UserInfoPage({ email, progress, setProgress }: UserInfoProps) {
     const [payload, setPayload] = useState<CreateUserRequest>({
         firstName: "",
         lastName: "",
@@ -17,14 +21,14 @@ export default function UserInfoPage({ email }: { email: string }) {
     const { isPending, error, mutate } = useMutation({
         mutationFn: (payload: CreateUserRequest) => createUser(payload),
         onSuccess: () => {
-            router.push("/");
+            setProgress(progress + 1);
         },
     });
 
     return (
         <div className="max-w-lg w-full space-y-8">
             <div className="flex justify-center">
-                <label className="block text-4xl text-black font-bold"> Sign Up </label>
+                <label className="block text-4xl text-black font-bold"> Profile Information </label>
             </div>
             <div className="w-full flex flex-col items-center space-y-4">
                 <Input
@@ -46,10 +50,9 @@ export default function UserInfoPage({ email }: { email: string }) {
             </div>
             <div className="w-full flex flex-col gap-2 items-center">
                 <Button type="button" onClick={() => mutate(payload)} disabled={isPending}>
-                    Finish Sign Up
+                    Next
                 </Button>
-                {error && <p>Something went wrong</p>}
-                <p> Forgot Password?</p>
+                {error && <p>{error.message}</p>}
             </div>
         </div>
     );

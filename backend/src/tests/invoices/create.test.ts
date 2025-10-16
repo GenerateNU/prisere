@@ -38,7 +38,6 @@ describe("POST /quickbooks/invoice/bulk", () => {
     test("POST /quickbooks/invoice/bulk - All Fields Given, single creation", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
                 quickbooksId: 12,
                 totalAmountCents: 4004,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
@@ -48,25 +47,30 @@ describe("POST /quickbooks/invoice/bulk", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
             },
             body: JSON.stringify(requestBody),
         });
-
         expect(response.status).toBe(201);
         const body = await response.json();
-        CompareRequestToCreated(requestBody, body);
+        CompareRequestToCreated([
+            {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+                quickbooksId: 12,
+                totalAmountCents: 4004,
+                quickbooksDateCreated: quickbooksDateCreatedEx,
+            },
+        ], body);
     });
 
     test("POST /quickbooks/invoice/bulk - All Fields Given, multiple creations", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
                 quickbooksId: 13,
                 totalAmountCents: 4004,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
                 quickbooksId: 14,
                 totalAmountCents: 0,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
@@ -76,24 +80,36 @@ describe("POST /quickbooks/invoice/bulk", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
             },
             body: JSON.stringify(requestBody),
         });
 
         expect(response.status).toBe(201);
         const body = await response.json();
-        CompareRequestToCreated(requestBody, body);
+        CompareRequestToCreated([
+            {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+                quickbooksId: 13,
+                totalAmountCents: 4004,
+                quickbooksDateCreated: quickbooksDateCreatedEx,
+            },
+            {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+                quickbooksId: 14,
+                totalAmountCents: 0,
+                quickbooksDateCreated: quickbooksDateCreatedEx,
+            },
+        ], body);
     });
 
     test("POST /quickbooks/invoice/bulk - MIssing quickbooksId, multiple creations", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
                 totalAmountCents: 4004,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // from the company seeder
                 totalAmountCents: 0,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
@@ -102,24 +118,34 @@ describe("POST /quickbooks/invoice/bulk", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
             },
             body: JSON.stringify(requestBody),
         });
 
         expect(response.status).toBe(201);
         const body = await response.json();
-        CompareRequestToCreated(requestBody, body);
+        CompareRequestToCreated([
+            {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+                totalAmountCents: 4004,
+                quickbooksDateCreated: quickbooksDateCreatedEx,
+            },
+            {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+                totalAmountCents: 0,
+                quickbooksDateCreated: quickbooksDateCreatedEx,
+            },
+        ], body);
     });
 
     test("POST /quickbooks/invoice/bulk - Missing Fields, multiple creations", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
                 quickbooksId: 13,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
                 quickbooksId: 14,
                 totalAmountCents: 0,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
@@ -129,6 +155,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
             },
             body: JSON.stringify(requestBody),
         });
@@ -142,19 +169,18 @@ describe("POST /quickbooks/invoice/bulk", () => {
     test("POST /quickbooks/invoice/bulk - Missing Fields 2, multiple creations", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
                 quickbooksId: 13,
                 totalAmountCents: 998,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
             },
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
         ];
         const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
             },
             body: JSON.stringify(requestBody),
         });
@@ -168,7 +194,6 @@ describe("POST /quickbooks/invoice/bulk", () => {
     test("POST /quickbooks/invoice/bulk - Single Bad company ID", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-9999-4999-9999-ffc73522a838", // bad UUID
                 quickbooksId: 13,
                 totalAmountCents: 11,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
@@ -178,6 +203,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": "ffc8243b-9999-4999-9999-ffc73522a838"
             },
             body: JSON.stringify(requestBody),
         });
@@ -185,72 +211,12 @@ describe("POST /quickbooks/invoice/bulk", () => {
         expect(response.status).toBe(400);
         const body = await response.json();
         expect(body).toHaveProperty("error");
-        expect(body.error).toBe("Companies not found: " + requestBody[0].companyId);
-    });
-
-    test("POST /quickbooks/invoice/bulk - Invalid and Bad company IDs", async () => {
-        const requestBody = [
-            {
-                companyId: "ffc8243b-9999-4999-9999-ffc73522a838", // bad UUID
-                quickbooksId: 13,
-                totalAmountCents: 11,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-            {
-                companyId: "ffc8243b-9999-9999", // invalid UUID
-                quickbooksId: 15,
-                totalAmountCents: 11,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-        ];
-        const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestBody),
-        });
-
-        expect(response.status).toBe(400);
-        const body = await response.json();
-        expect(body).toHaveProperty("error");
-        // first checks for validity, then checks if they are in the DB
-        expect(body.error).toBe("Invalid uuid format: " + requestBody[1].companyId);
-    });
-
-    test("POST /quickbooks/invoice/bulk - Some Bad company ID and some good", async () => {
-        const requestBody = [
-            {
-                companyId: "ffc8243b-9999-4999-9999-ffc73522a838", // bad UUID
-                quickbooksId: 13,
-                totalAmountCents: 11,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-            {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // good UUID
-                quickbooksId: 15,
-                totalAmountCents: 11,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-        ];
-        const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestBody),
-        });
-
-        expect(response.status).toBe(400);
-        const body = await response.json();
-        expect(body).toHaveProperty("error");
-        expect(body.error).toBe("Companies not found: " + requestBody[0].companyId);
+        expect(body.error).toBe("Companies not found: " + "ffc8243b-9999-4999-9999-ffc73522a838");
     });
 
     test("POST /quickbooks/invoice/bulk - Bad quickbooks ID", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // good UUID
                 quickbooksId: -15,
                 totalAmountCents: 11,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
@@ -260,6 +226,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
             },
             body: JSON.stringify(requestBody),
         });
@@ -273,7 +240,6 @@ describe("POST /quickbooks/invoice/bulk", () => {
     test("POST /quickbooks/invoice/bulk - Bad total cents", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // good UUID
                 quickbooksId: 15,
                 totalAmountCents: -11,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
@@ -283,6 +249,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
             },
             body: JSON.stringify(requestBody),
         });
@@ -296,7 +263,6 @@ describe("POST /quickbooks/invoice/bulk", () => {
     test("POST /quickbooks/invoice/bulk - updating invoice instance", async () => {
         const requestBody = [
             {
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838", // good UUID
                 quickbooksId: 1, // already exists from the seeded example
                 totalAmountCents: 999999,
                 quickbooksDateCreated: quickbooksDateCreatedEx,
@@ -306,12 +272,20 @@ describe("POST /quickbooks/invoice/bulk", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
             },
             body: JSON.stringify(requestBody),
         });
 
         expect(response.status).toBe(201);
         const body = await response.json();
-        CompareRequestToCreated(requestBody, body);
+        CompareRequestToCreated([
+            {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+                quickbooksId: 1, // already exists from the seeded example
+                totalAmountCents: 999999,
+                quickbooksDateCreated: quickbooksDateCreatedEx,
+            },
+        ], body);
     });
 });

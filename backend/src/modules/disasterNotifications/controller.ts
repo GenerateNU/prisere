@@ -36,7 +36,7 @@ export class DisasterNotificationController implements IDisasterNotificationCont
 
     getUserNotifications = withControllerErrorHandling(
         async (ctx: Context): Promise<TypedResponse<GetUsersDisasterNotificationsResponse>> => {
-            const userId = ctx.req.param("id");
+            const userId = ctx.get("userId");
             const type = ctx.req.query("type"); // ?type=web or type=email
             const page = parseInt(ctx.req.query("page") || "1");
             const limit = parseInt(ctx.req.query("limit") || "20");
@@ -53,6 +53,7 @@ export class DisasterNotificationController implements IDisasterNotificationCont
             if (type && !["web", "email"].includes(type)) {
                 return ctx.json({ error: "Type must be 'web' or 'email' (or not provided)" }, 400);
             }
+            
             if (!validate(userId)) {
                 return ctx.json({ error: "Invalid user ID format" }, 400);
             }

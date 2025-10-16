@@ -7,8 +7,7 @@ import {
     CreateClaimDTOSchema,
     CreateClaimResponseSchema,
     DeleteClaimDTOSchema,
-    DeleteClaimResponseSchema /* GetClaimsByCompanyIdDTOSchema, GetClaimsByCompanyIdResponseSchema */,
-    GetClaimsByCompanyIdDTOSchema,
+    DeleteClaimResponseSchema,
     GetClaimsByCompanyIdResponseSchema,
 } from "../../types/Claim";
 import { openApiErrorCodes } from "../../utilities/error";
@@ -54,12 +53,9 @@ const createClaimRoute = createRoute({
 
 const getClaimsByCompanyIdRoute = createRoute({
     method: "get",
-    path: "/claims/company/{id}",
+    path: "/claims/company",
     summary: "Gets all the claims associated with a company",
     description: "Gets all the claims for a company using a company ID",
-    request: {
-        params: GetClaimsByCompanyIdDTOSchema,
-    },
     responses: {
         200: {
             content: {
