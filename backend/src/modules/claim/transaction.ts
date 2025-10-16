@@ -46,12 +46,11 @@ export class ClaimTransaction implements IClaimTransaction {
             const claim: Claim = plainToClass(Claim, {
                 ...payload,
                 status: ClaimStatusType.ACTIVE,
-                createdAt: new Date(),
-                updatedAt: new Date(),
             });
 
-            const result: Claim = await this.db.getRepository(Claim).save(claim);
+            const result: Claim = await this.db.manager.save(Claim, claim);
 
+            console.log(result, "RESSY");
             return result;
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
@@ -61,7 +60,13 @@ export class ClaimTransaction implements IClaimTransaction {
 
     async getClaimsByCompanyId(payload: GetClaimsByCompanyIdDTO): Promise<GetClaimsByCompanyIdResponse | null> {
         try {
-            const result: Claim[] = await this.db.getRepository(Claim).find({ where: { companyId: payload.id } });
+            const result: Claim[] = await this.db.getRepository(Claim).find({
+                where: { companyId: payload.id },
+                relations: {
+                    femaDisaster: true,
+                    selfDisaster: true,
+                },
+            });
 
             return result.map((claim) => ({
                 id: claim.id,
@@ -69,7 +74,23 @@ export class ClaimTransaction implements IClaimTransaction {
                 createdAt: claim.createdAt.toISOString(),
                 updatedAt: claim.updatedAt?.toISOString(),
                 companyId: claim.companyId,
-                disasterId: claim.disasterId,
+                femaDisaster: claim.femaDisaster
+                    ? {
+                          ...claim.femaDisaster,
+                          declarationDate: claim.femaDisaster.declarationDate.toISOString(),
+                          incidentBeginDate: claim.femaDisaster.incidentBeginDate?.toISOString() || null,
+                          incidentEndDate: claim.femaDisaster.incidentEndDate?.toISOString() || null,
+                      }
+                    : undefined,
+                selfDisaster: claim.selfDisaster
+                    ? {
+                          ...claim.selfDisaster,
+                          startDate: claim.selfDisaster.startDate.toISOString(),
+                          endDate: claim.selfDisaster.endDate?.toISOString(),
+                          createdAt: claim.selfDisaster.createdAt.toISOString(),
+                          updatedAt: claim.selfDisaster.updatedAt.toISOString(),
+                      }
+                    : undefined,
             }));
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);

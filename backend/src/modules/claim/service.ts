@@ -1,3 +1,4 @@
+import Boom from "@hapi/boom";
 import { Claim } from "../../entities/Claim";
 import {
     CreateClaimDTO,
@@ -23,13 +24,21 @@ export class ClaimService implements IClaimService {
     }
 
     createClaim = withServiceErrorHandling(async (payload: CreateClaimDTO): Promise<Claim> => {
-        const claim = await this.claimTransaction.createClaim({
-            ...payload,
-        });
-        if (!claim) {
-            throw new Error("Failed to create claim");
+        try {
+            if (!payload.selfDisasterId && !payload.femaDisasterId) {
+                throw Boom.badRequest("There must be a fema or self disaster");
+            }
+            const claim = await this.claimTransaction.createClaim({
+                ...payload,
+            });
+            if (!claim) {
+                throw new Error("Failed to create claim");
+            }
+            return claim;
+        } catch (error) {
+            console.log(error);
+            throw error;
         }
-        return claim;
     });
 
     getClaimsByCompanyId = withServiceErrorHandling(
@@ -37,6 +46,7 @@ export class ClaimService implements IClaimService {
             const claim = await this.claimTransaction.getClaimsByCompanyId({
                 ...payload,
             });
+            console.log(claim);
             if (!claim) {
                 throw new Error("Claim not found");
             }

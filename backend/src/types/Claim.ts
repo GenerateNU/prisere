@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { ClaimStatusType } from "./ClaimStatusType";
+import { GetAllDisastersResponseSchema } from "./fema-disaster";
+import { GetSelfDisasterForCompanyResponseSchema } from "../modules/self-disaster/types";
 /* Zod schemas for OpenAPI docs */
 
 const claimStatusTypes = Object.keys(ClaimStatusType);
@@ -12,14 +14,15 @@ export const ClaimSchema = z.object({
     createdAt: z.iso.datetime(),
     updatedAt: z.iso.datetime().optional(),
     companyId: z.string(),
-    disasterId: z.string(),
+    femaDisaster: GetAllDisastersResponseSchema.element.optional(), // .element extracts the item schema
+    selfDisaster: GetSelfDisasterForCompanyResponseSchema.optional(),
 });
 
 const stringClaimSchema = z.object({
     id: z.string().nonempty(),
     status: z.enum(claimStatusTypes).default(ClaimStatusType.ACTIVE),
     createdAt: z.iso.datetime(),
-    updatedAt: z.iso.datetime().optional(),
+    updatedAt: z.iso.datetime(),
     companyId: z.string(),
     disasterId: z.string(),
 });
@@ -27,7 +30,8 @@ const stringClaimSchema = z.object({
 /* POST */
 export const CreateClaimDTOSchema = z.object({
     companyId: z.string(),
-    disasterId: z.string(),
+    femaDisasterId: z.string().optional(),
+    selfDisasterId: z.string().optional(),
 });
 
 export const CreateClaimResponseSchema = stringClaimSchema;

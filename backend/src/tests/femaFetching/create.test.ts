@@ -2,7 +2,7 @@ import { afterEach, beforeAll, describe, expect, it } from "bun:test";
 import { Hono } from "hono";
 import { IBackup } from "pg-mem";
 import { startTestApp } from "../setup-tests";
-import { GetAllDisastersResponseSchema } from "../../types/disaster";
+import { GetAllDisastersResponseSchema } from "../../types/fema-disaster";
 import { DataSource } from "typeorm";
 import { FemaService } from "../../modules/clients/fema-client/service";
 import { MockFemaService } from "./mock-fetch-client";
