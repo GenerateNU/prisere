@@ -1,10 +1,8 @@
 "use client";
 
-import { getAllInvoicesForCompany } from "@/api/invoice";
 import { getAllPurchasesForCompany } from "@/api/purchase";
 import { useQuery } from "@tanstack/react-query";
 import { Purchase } from "../../types/purchase";
-import { Invoice } from "@/types/invoice";
 import { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
 import BasicTable from "./BasicTable";
@@ -44,13 +42,13 @@ export const columns: ColumnDef<Purchase>[] = [
     },
 ];
 
-export default function ExpenseTable({ companyId }: { companyId: string }) {
+export default function ExpenseTable() {
     const [page, setPage] = useState(0);
     const [resultsPerPage, setResultsPerPage] = useState(5);
 
     const purchases = useQuery({
-        queryKey: ["purchases-for-company", companyId, page, resultsPerPage],
-        queryFn: () => getAllPurchasesForCompany(companyId, page, resultsPerPage),
+        queryKey: ["purchases-for-company", page, resultsPerPage],
+        queryFn: () => getAllPurchasesForCompany(page, resultsPerPage),
     });
 
     if (purchases.isPending) return <div>Loading expenses...</div>;
