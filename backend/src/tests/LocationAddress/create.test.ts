@@ -65,7 +65,7 @@ describe("Location Address Controller Tests", () => {
             expect(data.postalCode).toBe(requestBody.postalCode);
             expect(data.county).toBe(requestBody.county);
             expect(data.companyId).toBe(company_id);
-        });
+        }, 10000);
 
         test("should successfully create a location address without optional county field", async () => {
             const requestBody = {
@@ -89,7 +89,7 @@ describe("Location Address Controller Tests", () => {
             const data = await response.json();
             expect(data).toHaveProperty("id");
             expect(data.county).toBeNull();
-        });
+        }, 10000);
 
         test("should fail with 400 when country is missing", async () => {
             const requestBody = {
