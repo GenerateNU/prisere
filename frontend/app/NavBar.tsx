@@ -9,7 +9,7 @@ export default function NavBar() {
     const pathname = usePathname();
 
     const navigationItems = [
-        { name: "Dashboard", href: "/dashboard", icon: "" },
+        { name: "Dashboard", href: "/", icon: "" },
         { name: "Notifications", href: "/notifications", icon: "" },
         { name: "Business Profile", href: "/business-profile", icon: "" },
         { name: "Claims", href: "/claims", icon: "" },

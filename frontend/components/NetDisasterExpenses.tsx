@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from "@/components/ui/card";
 
-export default function LocationRisk() {
+export default function NetDisasterExpenses() {
     const disasterName = "Hurricane Sandy"; // Example disaster name
 
     return (

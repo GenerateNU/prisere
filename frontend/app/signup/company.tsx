@@ -51,7 +51,7 @@ export default function Company({ progress, setProgress }: CompanyInfoProps){
                 <label className="block text-4xl text-black font-bold"> Business Information </label>
             </div>
             <div className="w-full flex flex-col items-center space-y-4">
-                <label> Business Name</label>
+                <label className = ""> Business Name</label>
                 <Input
                     id="name"
                     name="name"
