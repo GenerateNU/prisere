@@ -67,7 +67,11 @@ export class LocationAddressController implements ILocationAddressController {
         async (ctx: Context): ControllerResponse<TypedResponse<CreateLocationAddressResponse, 201>> => {
             const json = await ctx.req.json();
             const payload = CreateLocationAddressSchema.parse(json);
-            const resultingLocationAddress = await this.locationAddressService.createLocationAddress(payload);
+            const companyId = ctx.get("companyId");
+            if(!validate(companyId)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
+            const resultingLocationAddress = await this.locationAddressService.createLocationAddress(payload, companyId);
             return ctx.json(resultingLocationAddress, 201);
         }
     );

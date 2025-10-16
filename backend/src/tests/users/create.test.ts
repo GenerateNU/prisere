@@ -33,6 +33,7 @@ describe("POST users/", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
             },
             body: JSON.stringify(requestBody),
         });
@@ -49,12 +50,13 @@ describe("POST users/", () => {
         expect(validate(validatedResponse.id)).toBe(true);
     });
 
-    test("test that emails are optinal when creating a user", async () => {
+    test("test that emails are optional when creating a user", async () => {
         requestBody.email = undefined as unknown as string;
-        const response = await app.request(TESTING_PREFIX + "/users", {
+        const response = await app.request(TESTING_PREFIX +  "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
             },
             body: JSON.stringify(requestBody),
         });
@@ -69,44 +71,15 @@ describe("POST users/", () => {
         expect(validate(responseData.id)).toBe(true);
     });
 
-    test("test that company ID is saved", async () => {
-        const companyResponse = await app.request(TESTING_PREFIX + "/companies", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ name: "Josh & Co." }),
-        });
-
-        const newCompanyId = (await companyResponse.json()).id;
-        (requestBody as unknown as { companyId: string }).companyId = newCompanyId;
-
-        const userResponse = await app.request(TESTING_PREFIX + "/users", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestBody),
-        });
-        expect(userResponse.status).toBe(201);
-        const responseData = await userResponse.json();
-
-        expect(responseData).toMatchObject({
-            firstName: requestBody.firstName,
-            lastName: requestBody.lastName,
-            email: null,
-            companyId: newCompanyId,
-        });
-        expect(validate(responseData.id)).toBe(true);
-    });
 
     test("test that first names are not optional when creating a user", async () => {
         requestBody.firstName = undefined as unknown as string;
         requestBody.email = undefined as unknown as string;
-        const response = await app.request(TESTING_PREFIX + "/users", {
+        const response = await app.request(TESTING_PREFIX +  "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
             },
             body: JSON.stringify(requestBody),
         });
@@ -115,10 +88,11 @@ describe("POST users/", () => {
 
     test("test that last names are not optional when creating a user", async () => {
         requestBody.lastName = undefined as unknown as string;
-        const response = await app.request(TESTING_PREFIX + "/users", {
+        const response = await app.request(TESTING_PREFIX +  "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
             },
             body: JSON.stringify(requestBody),
         });
@@ -130,6 +104,7 @@ describe("POST users/", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
             },
             body: JSON.stringify({}),
         });
@@ -142,6 +117,7 @@ describe("POST users/", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
             },
             body: JSON.stringify({}),
         });
@@ -153,6 +129,7 @@ describe("POST users/", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
             },
             body: JSON.stringify({}),
         });

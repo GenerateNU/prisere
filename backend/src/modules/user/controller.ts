@@ -30,7 +30,7 @@ export class UserController implements IUserController {
 
     getUser = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetUserResponse, 200>> => {
-            const maybeId = await ctx.req.param("id");
+            const maybeId = ctx.get("userId");
 
             if (!validate(maybeId)) {
                 return ctx.json({ error: "The given ID must be well formed and present to get a User." }, 400);
@@ -43,7 +43,7 @@ export class UserController implements IUserController {
 
     getCompany = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetUserCompanyResponse, 200>> => {
-            const maybeId = await ctx.req.param("id");
+            const maybeId = ctx.get("userId");
 
             if (!validate(maybeId)) {
                 return ctx.json(

@@ -11,7 +11,64 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Fetches a user by the given ID
+         * @description Finds the user with the given ID in the database
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successfull fetch of a user from the databse */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            firstName: string;
+                            lastName: string;
+                            email?: string;
+                        };
+                    };
+                };
+                /** @description Get User Error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description There does not exist any user in the database such that the given id matches their id */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Get User Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         put?: never;
         /**
          * Create a new user
@@ -27,8 +84,6 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
-                        /** Format: uuid */
-                        id: string;
                         firstName: string;
                         lastName: string;
                         /** Format: email */
@@ -83,7 +138,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users/{id}/company": {
+    "/users/company": {
         parameters: {
             query?: never;
             header?: never;
@@ -98,9 +153,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: never;
-                path: {
-                    id: string;
-                };
+                path?: never;
                 cookie?: never;
             };
             requestBody?: never;
@@ -156,7 +209,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users/{id}": {
+    "/companies": {
         parameters: {
             query?: never;
             header?: never;
@@ -164,21 +217,19 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Fetches a user by the given ID
-         * @description Finds the user with the given ID in the database
+         * Gets a company from the database
+         * @description Gets a company using the company ID
          */
         get: {
             parameters: {
                 query?: never;
                 header?: never;
-                path: {
-                    id: string;
-                };
+                path?: never;
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description Successfull fetch of a user from the databse */
+                /** @description Company fetched successfully */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -186,13 +237,12 @@ export interface paths {
                     content: {
                         "application/json": {
                             id: string;
-                            firstName: string;
-                            lastName: string;
-                            email?: string;
+                            name: string;
+                            lastQuickBooksImportTime?: string;
                         };
                     };
                 };
-                /** @description Get User Error */
+                /** @description Create Company Errors */
                 400: {
                     headers: {
                         [name: string]: unknown;
@@ -203,14 +253,14 @@ export interface paths {
                         };
                     };
                 };
-                /** @description There does not exist any user in the database such that the given id matches their id */
+                /** @description Company not found */
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
                 };
-                /** @description Get User Error */
+                /** @description Create Company Errors */
                 500: {
                     headers: {
                         [name: string]: unknown;
@@ -224,22 +274,6 @@ export interface paths {
             };
         };
         put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/companies": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
         /**
          * Create a new company
          * @description Creates a new company using a company name and optional Quickbooks import time
@@ -251,7 +285,7 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
                         name: string;
@@ -309,81 +343,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/companies/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Gets a company from the database
-         * @description Gets a company using the company ID
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Company fetched successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            id: string;
-                            name: string;
-                            lastQuickBooksImportTime?: string;
-                        };
-                    };
-                };
-                /** @description Create Company Errors */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                        };
-                    };
-                };
-                /** @description Company not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Create Company Errors */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/companies/{id}/quickbooks-import-time": {
+    "/companies/quickbooks-import-time": {
         parameters: {
             query?: never;
             header?: never;
@@ -404,9 +364,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: never;
-                path: {
-                    id: string;
-                };
+                path?: never;
                 cookie?: never;
             };
             requestBody?: {
@@ -457,7 +415,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/companies/{id}/location-address": {
+    "/companies/location-address": {
         parameters: {
             query?: never;
             header?: never;
@@ -472,9 +430,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: never;
-                path: {
-                    id: string;
-                };
+                path?: never;
                 cookie?: never;
             };
             requestBody?: never;
@@ -695,7 +651,7 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
                         country: string;
@@ -704,8 +660,6 @@ export interface paths {
                         streetAddress: string;
                         postalCode: string;
                         county?: string;
-                        /** Format: uuid */
-                        companyId: string;
                     };
                 };
             };
@@ -724,8 +678,6 @@ export interface paths {
                             streetAddress: string;
                             postalCode: string;
                             county?: string;
-                            /** Format: uuid */
-                            companyId: string;
                         };
                     };
                 };
@@ -875,7 +827,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/notifications/user/{id}": {
+    "/notifications/user": {
         parameters: {
             query?: never;
             header?: never;
@@ -890,9 +842,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: never;
-                path: {
-                    id: string;
-                };
+                path?: never;
                 cookie?: never;
             };
             requestBody?: never;
@@ -1369,7 +1319,6 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        companyId: string;
                         quickbooksId?: number;
                         totalAmountCents: number;
                         /** Format: date-time */
@@ -1526,8 +1475,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
-                    companyId: string;
+                query?: {
                     pageNumber?: number;
                     resultsPerPage?: number;
                 };
@@ -1600,7 +1548,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/invoice/bulk/{id}/totalIncome": {
+    "/invoice/bulk/totalIncome": {
         parameters: {
             query?: never;
             header?: never;
@@ -1618,9 +1566,7 @@ export interface paths {
                     endDate: string;
                 };
                 header?: never;
-                path: {
-                    id: string;
-                };
+                path?: never;
                 cookie?: never;
             };
             requestBody?: never;
@@ -1781,7 +1727,6 @@ export interface paths {
                         quickBooksId?: number;
                         totalAmountCents: number;
                         isRefund: boolean;
-                        companyId: string;
                         /** Format: date-time */
                         quickbooksDateCreated?: string;
                     }[];
@@ -1951,8 +1896,7 @@ export interface paths {
          */
         get: {
             parameters: {
-                query: {
-                    companyId: string;
+                query?: {
                     pageNumber?: number;
                     resultsPerPage?: number;
                 };
@@ -1971,12 +1915,11 @@ export interface paths {
                         "application/json": {
                             id: string;
                             companyId: string;
-                            quickBooksId?: number;
+                            quickBooksID?: number;
                             totalAmountCents: number;
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
                             dateCreated: string;
-                            lastUpdated: string;
                         }[];
                     };
                 };
@@ -2012,7 +1955,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/purchase/bulk/{id}/totalExpenses": {
+    "/purchase/bulk/totalExpenses": {
         parameters: {
             query?: never;
             header?: never;
@@ -2030,9 +1973,7 @@ export interface paths {
                     endDate: string;
                 };
                 header?: never;
-                path: {
-                    id: string;
-                };
+                path?: never;
                 cookie?: never;
             };
             requestBody?: never;
@@ -2103,7 +2044,6 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        companyId: string;
                         disasterId: string;
                     };
                 };
@@ -2161,7 +2101,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/claims/company/{id}": {
+    "/claims/company": {
         parameters: {
             query?: never;
             header?: never;
@@ -2176,9 +2116,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: never;
-                path: {
-                    id: string;
-                };
+                path?: never;
                 cookie?: never;
             };
             requestBody?: never;
@@ -2309,7 +2247,230 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/notifications/preferences/{id}": {
+    "/claim-locations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create a new claim-location link
+         * @description Creates a link between a claim and a location using given IDs
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        claimId: string;
+                        /** Format: uuid */
+                        locationAddressId: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Claim-Location link created successfully */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            claimId: string;
+                            /** Format: uuid */
+                            locationAddressId: string;
+                        };
+                    };
+                };
+                /** @description Create Claim-Location  Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Create Claim-Location  Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/claim-locations/company": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Gets all the locations affected by claims for a company
+         * @description Gets all the locations affected by claims for a company based on the given ID
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Locations fetched successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            country: string;
+                            stateProvince: string;
+                            city: string;
+                            streetAddress: string;
+                            postalCode: string;
+                            county?: string;
+                            /** Format: uuid */
+                            companyId: string;
+                            fipsStateCode: number;
+                            fipsCountyCode: number;
+                        }[];
+                    };
+                };
+                /** @description Get Claim-Location Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Locations/Company not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Get Claim-Location Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/claim-locations/claim/{claimId}/location-address/{locationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Deletes a claim-location link from the database
+         * @description Deletes a claim-location link based off the given claim ID and location ID
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    claimId: string;
+                    locationId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Claim-Location link deleted successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            success: boolean;
+                        };
+                    };
+                };
+                /** @description Delete Claim-Location Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Delete Claim-Location Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notifications/preferences": {
         parameters: {
             query?: never;
             header?: never;
@@ -2321,9 +2482,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: never;
-                path: {
-                    id: string;
-                };
+                path?: never;
                 cookie?: never;
             };
             requestBody?: never;
@@ -2382,9 +2541,7 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: never;
-                path: {
-                    id: string;
-                };
+                path?: never;
                 cookie?: never;
             };
             requestBody?: {

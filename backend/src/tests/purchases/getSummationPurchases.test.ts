@@ -6,6 +6,11 @@ import CompanySeeder from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
 import { PurchaseSeeder, seededPurchases } from "../../database/seeds/purchase.seed";
+import { TESTING_PREFIX } from "../../utilities/constants";
+<<<<<<< HEAD
+=======
+import { TESTING_PREFIX } from "../../utilities/constants";
+>>>>>>> origin/frontend-setup
 
 describe("Get Purchase summation by company id", () => {
     let app: Hono;
@@ -34,39 +39,115 @@ describe("Get Purchase summation by company id", () => {
     });
 
     test("should return the sum of purchases in the valid date range", async () => {
+<<<<<<< HEAD
         const response = await app.request(
             `/purchase/bulk/${seededPurchaseCompany}/totalExpenses?startDate=2025-01-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
         );
         expect(response.status).toBe(200);
         const body = await response.json();
+=======
+        const response = await app.request(TESTING_PREFIX + 
+            `/purchase/bulk/totalExpenses?startDate=2025-01-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`, {
+                headers : {
+                    companyId: seededPurchaseCompany
+                }
+            }
+        );
+        const body = await response.json();
+        expect(response.status).toBe(200);
+>>>>>>> origin/frontend-setup
         expect(body.total).toBe(6912);
     });
 
     test("should return 0 if no purchases in the valid date range", async () => {
+<<<<<<< HEAD
         const response = await app.request(
             `/purchase/bulk/${seededPurchaseCompany}/totalExpenses?startDate=2025-08-11T12:00:00Z&endDate=2025-10-11T12:00:00Z`
         );
         expect(response.status).toBe(200);
         const body = await response.json();
+=======
+        const response = await app.request(TESTING_PREFIX + 
+            `/purchase/bulk/totalExpenses?startDate=2025-08-11T12:00:00Z&endDate=2025-10-11T12:00:00Z`, {
+                headers : {
+                    companyId: seededPurchaseCompany
+                }
+            }
+        );
+        const body = await response.json();
+        expect(response.status).toBe(200);
+>>>>>>> origin/frontend-setup
         expect(body.total).toBe(0);
     });
 
     test("should return 400 if invalid dates", async () => {
+<<<<<<< HEAD
         const response = await app.request(
             `/purchase/bulk/${seededPurchaseCompany}/totalExpenses?startDate=2025-04-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
         );
         expect(response.status).toBe(400);
         const body = await response.json();
+=======
+        const response = await app.request(TESTING_PREFIX + 
+            `/purchase/bulk/totalExpenses?startDate=2025-04-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`, {
+                headers : {
+                    companyId: seededPurchaseCompany
+                }
+            }
+        );
+        const body = await response.json();
+        expect(response.status).toBe(400);
+>>>>>>> origin/frontend-setup
         expect(body).toHaveProperty("error");
         expect(body.error).toBe("Start date must be before End date");
     });
 
     test("should return 400 if invalid companyID", async () => {
+<<<<<<< HEAD
         const response = await app.request(
             `/purchase/bulk/bla/totalExpenses?startDate=2025-04-11T12:00:00Z&endDate=2025-06-11T12:00:00Z`
         );
         expect(response.status).toBe(400);
         const body = await response.json();
+=======
+        const response = await app.request(TESTING_PREFIX + 
+            `/purchase/bulk/totalExpenses?startDate=2025-04-11T12:00:00Z&endDate=2025-06-11T12:00:00Z`, {
+                headers : {
+                    companyId: "bla"
+                }
+            }
+        );
+        const body = await response.json();
+        expect(response.status).toBe(400);
+>>>>>>> origin/frontend-setup
+        const response = await app.request(TESTING_PREFIX +
+            `/purchase/bulk/totalExpenses?startDate=2025-01-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`, {
+                headers : {
+                    companyId: seededPurchaseCompany
+                }
+            }
+        expect(response.status).toBe(200);
+        const response = await app.request(TESTING_PREFIX +
+            `/purchase/bulk/totalExpenses?startDate=2025-08-11T12:00:00Z&endDate=2025-10-11T12:00:00Z`, {
+                headers : {
+                    companyId: seededPurchaseCompany
+                }
+            }
+        expect(response.status).toBe(200);
+        const response = await app.request(TESTING_PREFIX +
+            `/purchase/bulk/totalExpenses?startDate=2025-04-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`, {
+                headers : {
+                    companyId: seededPurchaseCompany
+                }
+            }
+        expect(response.status).toBe(400);
+        const response = await app.request(TESTING_PREFIX +
+            `/purchase/bulk/totalExpenses?startDate=2025-04-11T12:00:00Z&endDate=2025-06-11T12:00:00Z`, {
+                headers : {
+                    companyId: "bla"
+                }
+            }
+        expect(response.status).toBe(400);
         expect(body).toHaveProperty("error");
         expect(body.error).toBe("Invalid company ID format");
     });

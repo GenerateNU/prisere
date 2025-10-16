@@ -32,10 +32,10 @@ const createCompanyRoute = createRoute({
     description: "Creates a new company using a company name and optional Quickbooks import time",
     request: {
         body: {
+            required: true,
             content: {
                 "application/json": {
                     schema: CreateCompanyDTOSchema,
-                    required: true,
                 },
             },
         },
@@ -59,12 +59,9 @@ const createCompanyRoute = createRoute({
 
 const getCompanyByIdRoute = createRoute({
     method: "get",
-    path: "/companies/{id}",
+    path: "/companies",
     summary: "Gets a company from the database",
     description: "Gets a company using the company ID",
-    request: {
-        params: GetCompanyByIdDTOSchema,
-    },
     responses: {
         200: {
             content: {
@@ -84,11 +81,10 @@ const getCompanyByIdRoute = createRoute({
 
 const updateCompanyImportTimeRoute = createRoute({
     method: "patch",
-    path: "/companies/{id}/quickbooks-import-time",
+    path: "/companies/quickbooks-import-time",
     summary: "Update a company's lastQuickBooksImportTime",
     description: "Updates the lastQuickBooksImportTime for a company by ID",
     request: {
-        params: GetCompanyByIdDTOSchema,
         body: {
             content: {
                 "application/json": {
@@ -113,12 +109,9 @@ const updateCompanyImportTimeRoute = createRoute({
 
 const getCompanyLocationsByIdRoute = createRoute({
     method: "get",
-    path: "/companies/{id}/location-address",
+    path: "/companies/location-address",
     summary: "Gets a company's location from the database",
     description: "Gets a company's locations using the company ID",
-    request: {
-        params: GetCompanyByIdDTOSchema,
-    },
     responses: {
         200: {
             content: {

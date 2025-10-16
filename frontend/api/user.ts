@@ -1,9 +1,9 @@
-import { CreateUserRequest, CreateUserResponse } from "@/types/user";
+import { CreateUserRequest, User } from "@/types/user";
 import { authHeader, authWrapper, client } from "./client";
 import { GetUserCompanyResponse } from "../types/user";
 
-export const createUser = async (payload: CreateUserRequest): Promise<CreateUserResponse> => {
-    const req = async (token: string): Promise<CreateUserResponse> => {
+export const createUser = async (payload: CreateUserRequest): Promise<User> => {
+    const req = async (token: string): Promise<User> => {
         const { data, error, response } = await client.POST("/users", {
             headers: authHeader(token),
             body: payload,
@@ -14,7 +14,7 @@ export const createUser = async (payload: CreateUserRequest): Promise<CreateUser
             throw Error(error?.error);
         }
     };
-    return authWrapper<CreateUserResponse>()(req);
+    return authWrapper<User>()(req);
 };
 
 export const getUserCompany = async (userId: string): Promise<GetUserCompanyResponse> => {

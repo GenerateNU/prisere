@@ -35,6 +35,7 @@ const createLocationAddressRoute = createRoute({
     description: "Creates a new location address with the provided information",
     request: {
         body: {
+            required: true,
             content: {
                 "application/json": {
                     schema: CreateLocationAddressSchema,

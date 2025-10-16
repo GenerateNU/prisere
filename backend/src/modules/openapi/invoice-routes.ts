@@ -12,6 +12,10 @@ import {
     GetCompanyInvoicesDTOSchema,
     GetCompanyInvoicesResponseSchema,
     GetCompanyInvoicesSummationResponseSchema,
+    CreateOrUpdateInvoicesRequestSchema,
+    GetCompanyInvoicesParams,
+    CreateOrUpdateInvoicesRequestSchema,
+    GetCompanyInvoicesParams,
 } from "../../types/Invoice";
 import { CompanyTransaction } from "../company/transaction";
 import { z } from "zod";
@@ -56,7 +60,7 @@ const bulkCreateOrUpdateInvoiceRoute = createRoute({
         body: {
             content: {
                 "application/json": {
-                    schema: CreateOrUpdateInvoicesDTOSchema,
+                    schema: CreateOrUpdateInvoicesRequestSchema,
                 },
             },
         },
@@ -111,7 +115,7 @@ const getInvoicesForCompanyRoute = createRoute({
     summary: "Get invoices for a company",
     description: "Get invoices for a company with pagination params. Note page numbes are 0-indexed.",
     request: {
-        query: GetCompanyInvoicesDTOSchema,
+        query: GetCompanyInvoicesParams,
     },
     responses: {
         200: {
@@ -167,12 +171,45 @@ const getInvoiceLineItemsForInvoiceRoute = createRoute({
 
 const sumInvoicesByCompanyAndDateRange = createRoute({
     method: "get",
+<<<<<<< HEAD
     path: "/invoice/bulk/{id}/totalIncome",
+=======
+    path: "/invoice/bulk/totalIncome",
+>>>>>>> origin/frontend-setup
     summary: "Get the summation of invoices for a company in a date range",
     description:
         "Get the summation of invoices for a company that were made after the start date and before the end date",
     request: {
+<<<<<<< HEAD
         params: GetInvoiceDTOSchema,
+=======
+>>>>>>> origin/frontend-setup
+        query: z.object({ startDate: z.iso.datetime(), endDate: z.iso.datetime() }),
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetCompanyInvoicesSummationResponseSchema,
+                },
+            },
+            description: "Found summation successfully",
+        },
+        ...openApiErrorCodes("Getting Invoice Error"),
+    openApi.openapi(sumInvoicesByCompanyAndDateRange, (ctx) => invoiceController.sumInvoicesByCompanyAndDateRange(ctx));
+                    schema: CreateOrUpdateInvoicesRequestSchema,
+        query: GetCompanyInvoicesParams,
+    },
+    tags: ["Invoice"],
+});
+
+const sumInvoicesByCompanyAndDateRange = createRoute({
+    method: "get",
+    path: "/invoice/bulk/totalIncome",
+    summary: "Get the summation of invoices for a company in a date range",
+    description:
+        "Get the summation of invoices for a company that were made after the start date and before the end date",
+    request: {
         query: z.object({ startDate: z.iso.datetime(), endDate: z.iso.datetime() }),
     },
     responses: {

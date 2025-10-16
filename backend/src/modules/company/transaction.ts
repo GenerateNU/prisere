@@ -5,6 +5,7 @@ import Boom from "@hapi/boom";
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
 import { LocationAddress } from "../../entities/LocationAddress";
+import { User } from "../../entities/User";
 
 export interface ICompanyTransaction {
     /**
@@ -12,7 +13,7 @@ export interface ICompanyTransaction {
      * @param payload Company to be inserted into Database
      * @returns Promise resolving to inserted Company or null if failed
      */
-    createCompany(payload: CreateCompanyDTO): Promise<Company | null>;
+    createCompany(payload: CreateCompanyDTO, userId:string): Promise<Company | null>;
 
     /**
      * Gets a Company by it ID
@@ -51,8 +52,17 @@ export class CompanyTransaction implements ICompanyTransaction {
         this.db = db;
     }
 
-    async createCompany(payload: CreateCompanyDTO): Promise<Company | null> {
-        const result: Company = await this.db.getRepository(Company).save(payload);
+    async createCompany(payload: CreateCompanyDTO, userId: string): Promise<Company | null> {
+        const result = await this.db.transaction(async (manager) => {
+            const company = manager.create(Company, payload)
+            await manager.save(company)
+            await manager.update(User, userId, {
+              companyId: company.id
+            })
+            
+            return company
+          })
+        
         if (!result) {
             return null;
         }

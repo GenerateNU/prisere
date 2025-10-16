@@ -44,13 +44,13 @@ describe("Location Address Controller Tests", () => {
                 streetAddress: "123 Main Street",
                 postalCode: "94105",
                 county: "San Francisco County",
-                companyId: company_id,
             };
 
             const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "companyId" : company_id
                 },
                 body: JSON.stringify(requestBody),
             });
@@ -64,7 +64,7 @@ describe("Location Address Controller Tests", () => {
             expect(data.streetAddress).toBe(requestBody.streetAddress);
             expect(data.postalCode).toBe(requestBody.postalCode);
             expect(data.county).toBe(requestBody.county);
-            expect(data.companyId).toBe(requestBody.companyId);
+            expect(data.companyId).toBe(company_id);
         });
 
         test("should successfully create a location address without optional county field", async () => {
@@ -74,13 +74,13 @@ describe("Location Address Controller Tests", () => {
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
                 postalCode: "94105",
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             };
 
             const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838",
                 },
                 body: JSON.stringify(requestBody),
             });
@@ -97,13 +97,13 @@ describe("Location Address Controller Tests", () => {
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
                 postalCode: "94105",
-                companyId: company_id,
             };
 
             const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "companyId": company_id,
                 },
                 body: JSON.stringify(requestBody),
             });
@@ -120,13 +120,13 @@ describe("Location Address Controller Tests", () => {
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
                 postalCode: "94105",
-                companyId: company_id,
             };
 
             const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "companyId": company_id,
                 },
                 body: JSON.stringify(requestBody),
             });
@@ -143,13 +143,13 @@ describe("Location Address Controller Tests", () => {
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
                 postalCode: 94105, // number instead of string
-                companyId: company_id,
             };
 
             const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "companyId": company_id,
                 },
                 body: JSON.stringify(requestBody),
             });
@@ -166,13 +166,13 @@ describe("Location Address Controller Tests", () => {
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
                 postalCode: "-94105",
-                companyId: company_id,
             };
 
             const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    'companyId': company_id,
                 },
                 body: JSON.stringify(requestBody),
             });
@@ -189,13 +189,13 @@ describe("Location Address Controller Tests", () => {
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
                 postalCode: "z41*5",
-                companyId: company_id,
             };
 
             const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "companyId": company_id,
                 },
                 body: JSON.stringify(requestBody),
             });
@@ -210,6 +210,7 @@ describe("Location Address Controller Tests", () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "companyId": company_id,
                 },
                 body: "{ invalid json }",
             });
@@ -222,6 +223,7 @@ describe("Location Address Controller Tests", () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "companyId": company_id,
                 },
                 body: "",
             });
@@ -260,13 +262,13 @@ describe("Location Address Controller Tests", () => {
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
                 postalCode: "94105",
-                companyId: "invalid-company-id",
             };
 
             const response = await app.request(TESTING_PREFIX + "/location-address", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    'companyId': "invalid-company-id",
                 },
                 body: JSON.stringify(requestBody),
             });
