@@ -29,7 +29,7 @@ export default function RootLayout({
             })
     );
 
-    const hideNavbar = pathname.includes('/login') || pathname.includes('/signup');
+    const hideNavbar = pathname.includes("/login") || pathname.includes("/signup");
 
     return (
         <html lang="en">
