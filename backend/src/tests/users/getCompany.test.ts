@@ -32,14 +32,14 @@ describe("GET /users/:id/company", () => {
 
         const userSeeder = new UserSeeder();
         await userSeeder.run(datasource, {} as SeederFactoryManager);
-    })
+    });
 
     test("should return 200 and company data when user exists and has a company", async () => {
         // Now test the GET /users/:id/company endpoint
         const response = await app.request(TESTING_PREFIX + `/users/company`, {
             method: "GET",
             headers: {
-                "userId": "0199e103-5452-76d7-8d4d-92e70c641bdb",
+                userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
             },
         });
 
@@ -63,7 +63,7 @@ describe("GET /users/:id/company", () => {
             const response = await app.request(TESTING_PREFIX + `/users/company`, {
                 method: "GET",
                 headers: {
-                    "userId": invalidId,
+                    userId: invalidId,
                 },
             });
 
@@ -80,7 +80,7 @@ describe("GET /users/:id/company", () => {
         const response = await app.request(TESTING_PREFIX + `/users/company`, {
             method: "GET",
             headers: {
-                "userId": nonExistentId,
+                userId: nonExistentId,
             },
         });
 
@@ -94,7 +94,7 @@ describe("GET /users/:id/company", () => {
         const response = await app.request(TESTING_PREFIX + `/users/company`, {
             method: "GET",
             headers: {
-                "userId": "0199e0cc-4e92-702c-9773-071340163ae4",
+                userId: "0199e0cc-4e92-702c-9773-071340163ae4",
             },
         });
 
@@ -110,7 +110,7 @@ describe("GET /users/:id/company", () => {
         const responseUpper = await app.request(TESTING_PREFIX + `/users/company`, {
             method: "GET",
             headers: {
-                "userId": upperCaseId,
+                userId: upperCaseId,
             },
         });
 
@@ -122,7 +122,7 @@ describe("GET /users/:id/company", () => {
         const responseLower = await app.request(TESTING_PREFIX + `/users/company`, {
             method: "GET",
             headers: {
-                "userId": lowerCaseId,
+                userId: lowerCaseId,
             },
         });
 
@@ -163,9 +163,14 @@ describe("GET /users/:id/company", () => {
         // Make multiple concurrent requests
         const requests = Array(5)
             .fill(null)
-            .map(() => app.request(TESTING_PREFIX + `/users/company`, { method: "GET", headers: {
-                "userId": "0199e103-5452-76d7-8d4d-92e70c641bdb",
-            }, }));
+            .map(() =>
+                app.request(TESTING_PREFIX + `/users/company`, {
+                    method: "GET",
+                    headers: {
+                        userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
+                    },
+                })
+            );
 
         const responses = await Promise.all(requests);
 
@@ -188,8 +193,8 @@ describe("GET /users/:id/company", () => {
         const response = await app.request(TESTING_PREFIX + `/users/company`, {
             method: "GET",
             headers: {
-                "userId": "0199e103-5452-76d7-8d4d-92e70c641bdb",
-            }
+                userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
+            },
         });
 
         expect(response.status).toBe(200);
@@ -217,13 +222,12 @@ describe("GET /users/:id/company", () => {
         // Create user first
         const createUserResponse = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
-            headers: { "Content-Type": "application/json",  "userId": "0199e0cc-4e92-702c-9773-071340163ae4", },
+            headers: { "Content-Type": "application/json", userId: "0199e0cc-4e92-702c-9773-071340163ae4" },
             body: JSON.stringify({
                 firstName: "Orphan",
                 lastName: "User",
                 email: "orphan@test.com",
             }),
-            
         });
 
         const createdUser = await createUserResponse.json();
@@ -233,8 +237,8 @@ describe("GET /users/:id/company", () => {
         const response = await app.request(TESTING_PREFIX + `/users/company`, {
             method: "GET",
             headers: {
-                "userId": "0199e0cc-4e92-702c-9773-071340163ae4",
-            }
+                userId: "0199e0cc-4e92-702c-9773-071340163ae4",
+            },
         });
 
         // Should return 404 since user has no company

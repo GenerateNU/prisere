@@ -34,13 +34,12 @@ export class InvoiceController implements IInvoiceController {
         async (ctx: Context): ControllerResponse<TypedResponse<CreateOrUpdateInvoicesResponse, 201>> => {
             const json = await ctx.req.json();
             const companyId = await ctx.get("companyId");
-            const invoicesWithCompanyId = json.map((invoice: CreateOrUpdateInvoicesRequest)  => ({
+            const invoicesWithCompanyId = json.map((invoice: CreateOrUpdateInvoicesRequest) => ({
                 ...invoice,
-                companyId: companyId
+                companyId: companyId,
             }));
             const payload = CreateOrUpdateInvoicesDTOSchema.parse(invoicesWithCompanyId);
 
-              
             const createdQuickBooksPurchase = await this.invoiceService.bulkCreateOrUpdateInvoice(payload);
             return ctx.json(createdQuickBooksPurchase, 201);
         }

@@ -38,9 +38,9 @@ export class PurchaseController implements IPurchaseController {
             if (!validate(companyId)) {
                 return ctx.json({ error: "Invalid company ID format" }, 400);
             }
-            const purchasesWithCompanyId = json.map((purchase : CreateOrChangePurchaseRequest)  => ({
+            const purchasesWithCompanyId = json.map((purchase: CreateOrChangePurchaseRequest) => ({
                 ...purchase,
-                companyId: companyId
+                companyId: companyId,
             }));
 
             const payload = CreateOrChangePurchaseDTOSchema.parse(purchasesWithCompanyId);

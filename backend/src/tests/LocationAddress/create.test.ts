@@ -50,7 +50,7 @@ describe("Location Address Controller Tests", () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "companyId" : company_id
+                    companyId: company_id,
                 },
                 body: JSON.stringify(requestBody),
             });
@@ -80,7 +80,7 @@ describe("Location Address Controller Tests", () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+                    companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
                 },
                 body: JSON.stringify(requestBody),
             });
@@ -103,7 +103,7 @@ describe("Location Address Controller Tests", () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "companyId": company_id,
+                    companyId: company_id,
                 },
                 body: JSON.stringify(requestBody),
             });
@@ -126,7 +126,7 @@ describe("Location Address Controller Tests", () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "companyId": company_id,
+                    companyId: company_id,
                 },
                 body: JSON.stringify(requestBody),
             });
@@ -149,7 +149,7 @@ describe("Location Address Controller Tests", () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "companyId": company_id,
+                    companyId: company_id,
                 },
                 body: JSON.stringify(requestBody),
             });
@@ -172,7 +172,7 @@ describe("Location Address Controller Tests", () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    'companyId': company_id,
+                    companyId: company_id,
                 },
                 body: JSON.stringify(requestBody),
             });
@@ -195,7 +195,7 @@ describe("Location Address Controller Tests", () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "companyId": company_id,
+                    companyId: company_id,
                 },
                 body: JSON.stringify(requestBody),
             });
@@ -210,7 +210,7 @@ describe("Location Address Controller Tests", () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "companyId": company_id,
+                    companyId: company_id,
                 },
                 body: "{ invalid json }",
             });
@@ -223,7 +223,7 @@ describe("Location Address Controller Tests", () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "companyId": company_id,
+                    companyId: company_id,
                 },
                 body: "",
             });
@@ -268,7 +268,7 @@ describe("Location Address Controller Tests", () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    'companyId': "invalid-company-id",
+                    companyId: "invalid-company-id",
                 },
                 body: JSON.stringify(requestBody),
             });

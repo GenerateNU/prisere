@@ -26,7 +26,7 @@ describe("GET /purchase/:id", () => {
     beforeEach(async () => {
         const companySeeder = new CompanySeeder();
         await companySeeder.run(dataSource, {} as SeederFactoryManager);
-    })
+    });
 
     const createCompany = async () => {
         const companyRequest = {
@@ -37,7 +37,7 @@ describe("GET /purchase/:id", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
             },
             body: JSON.stringify(companyRequest),
         });
@@ -50,7 +50,7 @@ describe("GET /purchase/:id", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
             body: JSON.stringify(payload),
         });

@@ -6,7 +6,7 @@ export const CreateOrUpdateInvoicesRequestSchema = z.array(
         totalAmountCents: z.number().int().nonnegative(),
         quickbooksDateCreated: z.iso.datetime().optional(),
     })
-)
+);
 
 export const CreateOrUpdateInvoicesDTOSchema = z.array(
     z.object({
@@ -52,7 +52,7 @@ export const GetCompanyInvoicesDTOSchema = z.object({
 export const GetCompanyInvoicesParams = z.object({
     pageNumber: z.number().optional().default(0),
     resultsPerPage: z.number().optional().default(20),
-})
+});
 
 export const GetCompanyInvoicesByDateDTOSchema = z.object({
     companyId: z.string(),
@@ -73,7 +73,7 @@ export type GetCompanyInvoicesResponse = z.infer<typeof GetCompanyInvoicesRespon
 export type GetCompanyInvoicesSummationResponse = z.infer<typeof GetCompanyInvoicesSummationResponseSchema>;
 
 //Input types
-export type CreateOrUpdateInvoicesRequest = z.infer<typeof CreateOrUpdateInvoicesRequestSchema>
+export type CreateOrUpdateInvoicesRequest = z.infer<typeof CreateOrUpdateInvoicesRequestSchema>;
 export type CreateOrUpdateInvoicesDTO = z.infer<typeof CreateOrUpdateInvoicesDTOSchema>;
 export type GetCompanyInvoicesDTO = z.infer<typeof GetCompanyInvoicesDTOSchema>;
 export type GetCompanyInvoicesByDateDTO = z.infer<typeof GetCompanyInvoicesByDateDTOSchema>;

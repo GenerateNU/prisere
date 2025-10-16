@@ -8,8 +8,7 @@ export async function createUser(app: Hono, request: CreartUserRequest) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
-            
+            userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
         },
         body: JSON.stringify(request),
     });
@@ -20,12 +19,12 @@ export async function createUser(app: Hono, request: CreartUserRequest) {
 }
 
 export async function createUserWithCompany(app: Hono, request: Omit<CreateUserDTO, "companyId">) {
-    createUser(app, request)
+    createUser(app, request);
     const companyResponse = await app.request(TESTING_PREFIX + "/companies", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
+            userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
         },
         body: JSON.stringify({ name: `company-${Math.random()}` } satisfies CreateCompanyDTO),
     });
@@ -36,8 +35,7 @@ export async function createUserWithCompany(app: Hono, request: Omit<CreateUserD
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "userId": "3c191e85-7f80-40a6-89ec-cbdbff33a5b2"
-            
+            userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
         },
     });
     const responseData = (await userResponse.clone().json()) as unknown as CreateUserResponse;

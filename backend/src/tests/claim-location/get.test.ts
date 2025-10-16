@@ -48,8 +48,8 @@ describe("GET /claim-locations/company/:id", () => {
         const companyId = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
         const response = await app.request(TESTING_PREFIX + `/claim-locations/company`, {
             headers: {
-                "companyId": companyId,
-            }
+                companyId: companyId,
+            },
         });
 
         expect(response.status).toBe(200);
@@ -65,8 +65,8 @@ describe("GET /claim-locations/company/:id", () => {
         const companyId = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
         const response = await app.request(TESTING_PREFIX + `/claim-locations/company`, {
             headers: {
-                "companyId": companyId,
-            }
+                companyId: companyId,
+            },
         });
 
         expect(response.status).toBe(200);
@@ -80,8 +80,8 @@ describe("GET /claim-locations/company/:id", () => {
         const companyId = "f47ac10b-58cc-4372-j2009-0e02b2c35470";
         const response = await app.request(TESTING_PREFIX + `/claim-locations/company`, {
             headers: {
-                "companyId": companyId,
-            }
+                companyId: companyId,
+            },
         });
 
         expect(response.status).toBe(400);
@@ -91,8 +91,8 @@ describe("GET /claim-locations/company/:id", () => {
         const companyId = "invalid";
         const response = await app.request(TESTING_PREFIX + `/claim-locations/company`, {
             headers: {
-                "companyId": companyId,
-            }
+                companyId: companyId,
+            },
         });
 
         expect(response.status).toBe(400);

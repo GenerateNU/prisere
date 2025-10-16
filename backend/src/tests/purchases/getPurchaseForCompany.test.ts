@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import {CreateOrChangePurchaseRequest, GetCompanyPurchasesResponse } from "../../modules/purchase/types";
+import { CreateOrChangePurchaseRequest, GetCompanyPurchasesResponse } from "../../modules/purchase/types";
 import { TESTING_PREFIX } from "../../utilities/constants";
 import CompanySeeder from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
@@ -27,17 +27,14 @@ describe("GET /purchase", () => {
     beforeEach(async () => {
         const companySeeder = new CompanySeeder();
         await companySeeder.run(dataSource, {} as SeederFactoryManager);
-    })
-
-
+    });
 
     const createPurchase = async (payload?: Partial<CreateOrChangePurchaseRequest>) => {
         const response = await app.request(TESTING_PREFIX + "/purchase/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
-
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
             body: JSON.stringify(payload),
         });
@@ -55,9 +52,8 @@ describe("GET /purchase", () => {
         }
 
         const response = await app.request(TESTING_PREFIX + `/purchase`, {
-            
-            headers : {
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
             method: "GET",
         });
@@ -77,7 +73,6 @@ describe("GET /purchase", () => {
     });
 
     test("GET /purchase - With pageNumber", async () => {
-
         // Create some purchases
         for (let i = 0; i < 3; i++) {
             await createPurchase([
@@ -90,8 +85,8 @@ describe("GET /purchase", () => {
         }
 
         const response = await app.request(TESTING_PREFIX + `/purchase?pageNumber=1`, {
-            headers : {
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
             method: "GET",
         });
@@ -102,7 +97,6 @@ describe("GET /purchase", () => {
     });
 
     test("GET /purchase - With resultsPerPage", async () => {
-
         // Create 15 purchases
         for (let i = 0; i < 15; i++) {
             await createPurchase([
@@ -116,8 +110,8 @@ describe("GET /purchase", () => {
 
         const response = await app.request(TESTING_PREFIX + `/purchase?resultsPerPage=10`, {
             method: "GET",
-            headers : {
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
         });
 
@@ -128,7 +122,6 @@ describe("GET /purchase", () => {
     });
 
     test("GET /purchase - With pageNumber and resultsPerPage", async () => {
-
         // Create 10 purchases
         for (let i = 0; i < 10; i++) {
             await createPurchase([
@@ -140,15 +133,12 @@ describe("GET /purchase", () => {
             ]);
         }
 
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?pageNumber=0&resultsPerPage=5`,
-            {
-                method: "GET",
-                headers : {
-                    "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?pageNumber=0&resultsPerPage=5`, {
+            method: "GET",
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+            },
+        });
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -157,7 +147,6 @@ describe("GET /purchase", () => {
     });
 
     test("GET /purchase - Default Pagination Values", async () => {
-
         // Create 25 purchases to test default page size
         for (let i = 0; i < 25; i++) {
             await createPurchase([
@@ -172,8 +161,8 @@ describe("GET /purchase", () => {
         // Should use default pageNumber=0 and resultsPerPage=20
         const response = await app.request(TESTING_PREFIX + `/purchase`, {
             method: "GET",
-            headers : {
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
         });
 
@@ -184,15 +173,12 @@ describe("GET /purchase", () => {
     });
 
     test("GET /purchase - Non-Existent companyId", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + "/purchase",
-            {
-                method: "GET",
-                headers : {
-                    "companyId": "b32504f7-2e20-4bbc-869c-dea036d352e7"
-                }
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + "/purchase", {
+            method: "GET",
+            headers: {
+                companyId: "b32504f7-2e20-4bbc-869c-dea036d352e7",
+            },
+        });
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -203,9 +189,9 @@ describe("GET /purchase", () => {
     test("GET /purchase - Missing companyId", async () => {
         const response = await app.request(TESTING_PREFIX + "/purchase", {
             method: "GET",
-            headers : {
-                "companyId": ""
-            }
+            headers: {
+                companyId: "",
+            },
         });
 
         expect(response.status).toBe(400);
@@ -214,9 +200,9 @@ describe("GET /purchase", () => {
     test("GET /purchase - Invalid companyId Type (String)", async () => {
         const response = await app.request(TESTING_PREFIX + "/purchase", {
             method: "GET",
-            headers : {
-                "companyId": "companyId=not-a-number"
-            }
+            headers: {
+                companyId: "companyId=not-a-number",
+            },
         });
 
         expect(response.status).toBe(400);
@@ -225,8 +211,8 @@ describe("GET /purchase", () => {
     test("GET /purchase - Invalid pageNumber Type", async () => {
         const response = await app.request(TESTING_PREFIX + `/purchase?pageNumber=invalid`, {
             method: "GET",
-            headers : {
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
         });
 
@@ -234,15 +220,12 @@ describe("GET /purchase", () => {
     });
 
     test("GET /purchase - Invalid resultsPerPage Type", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?resultsPerPage=invalid`,
-            {
-                method: "GET",
-                headers : {
-                    "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?resultsPerPage=invalid`, {
+            method: "GET",
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+            },
+        });
 
         expect(response.status).toBe(400);
     });
@@ -250,8 +233,8 @@ describe("GET /purchase", () => {
     test("GET /purchase - Negative pageNumber", async () => {
         const response = await app.request(TESTING_PREFIX + `/purchase?pageNumber=-1`, {
             method: "GET",
-            headers : {
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
         });
 
@@ -261,8 +244,8 @@ describe("GET /purchase", () => {
     test("GET /purchase - Negative resultsPerPage", async () => {
         const response = await app.request(TESTING_PREFIX + `/purchase?resultsPerPage=-5`, {
             method: "GET",
-            headers : {
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
         });
 
@@ -272,8 +255,8 @@ describe("GET /purchase", () => {
     test("GET /purchase - Zero resultsPerPage", async () => {
         const response = await app.request(TESTING_PREFIX + `/purchase?resultsPerPage=0`, {
             method: "GET",
-            headers : {
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
         });
 
@@ -294,8 +277,8 @@ describe("GET /purchase", () => {
 
         const response = await app.request(TESTING_PREFIX + `/purchase?pageNumber=10000`, {
             method: "GET",
-            headers : {
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
         });
 
@@ -319,8 +302,8 @@ describe("GET /purchase", () => {
 
         const response = await app.request(TESTING_PREFIX + `/purchase?resultsPerPage=1000`, {
             method: "GET",
-            headers : {
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
         });
 
@@ -345,8 +328,8 @@ describe("GET /purchase", () => {
 
         const response = await app.request(TESTING_PREFIX + `/purchase?resultsPerPage=10`, {
             method: "GET",
-            headers : {
-                "companyId": "ffc8243b-876e-4b6d-8b80-ffc73522a838"
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
         });
 
