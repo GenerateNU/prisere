@@ -6,6 +6,7 @@ import {
     GetClaimsByCompanyIdDTO as GetClaimsByCompanyIdDTO,
     DeleteClaimResponse,
     GetClaimsByCompanyIdResponse,
+    CreateClaimResponse,
 } from "../../types/Claim";
 import { logMessageToFile } from "../../utilities/logger";
 import { plainToClass } from "class-transformer";
@@ -17,7 +18,7 @@ export interface IClaimTransaction {
      * @param payload Claim to be inserted into the database
      * @returns A promise that resolves to the created claim or null
      */
-    createClaim(payload: CreateClaimDTO): Promise<Claim | null>;
+    createClaim(payload: CreateClaimDTO): Promise<CreateClaimResponse | null>;
 
     /**
      * Gets a claim by its id
@@ -41,7 +42,7 @@ export class ClaimTransaction implements IClaimTransaction {
         this.db = db;
     }
 
-    async createClaim(payload: CreateClaimDTO): Promise<Claim | null> {
+    async createClaim(payload: CreateClaimDTO): Promise<CreateClaimResponse | null> {
         try {
             const claim: Claim = plainToClass(Claim, {
                 ...payload,
@@ -50,8 +51,29 @@ export class ClaimTransaction implements IClaimTransaction {
 
             const result: Claim = await this.db.manager.save(Claim, claim);
 
-            console.log(result, "RESSY");
-            return result;
+            return {
+                ...result,
+                status: result.status as ClaimStatusType,
+                createdAt: claim.createdAt.toISOString(),
+                updatedAt: claim.updatedAt?.toISOString(),
+                femaDisaster: result.femaDisaster
+                    ? {
+                          ...result.femaDisaster,
+                          declarationDate: result.femaDisaster.declarationDate.toISOString(),
+                          incidentBeginDate: result.femaDisaster.incidentBeginDate?.toISOString(),
+                          incidentEndDate: result.femaDisaster.incidentEndDate?.toISOString(),
+                      }
+                    : undefined,
+                selfDisaster: claim.selfDisaster
+                    ? {
+                          ...claim.selfDisaster,
+                          startDate: claim.selfDisaster.startDate.toISOString(),
+                          endDate: claim.selfDisaster.endDate?.toISOString(),
+                          createdAt: claim.selfDisaster.createdAt.toISOString(),
+                          updatedAt: claim.selfDisaster.updatedAt.toISOString(),
+                      }
+                    : undefined,
+            };
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
             return null;
@@ -78,8 +100,8 @@ export class ClaimTransaction implements IClaimTransaction {
                     ? {
                           ...claim.femaDisaster,
                           declarationDate: claim.femaDisaster.declarationDate.toISOString(),
-                          incidentBeginDate: claim.femaDisaster.incidentBeginDate?.toISOString() || null,
-                          incidentEndDate: claim.femaDisaster.incidentEndDate?.toISOString() || null,
+                          incidentBeginDate: claim.femaDisaster.incidentBeginDate?.toISOString() || undefined,
+                          incidentEndDate: claim.femaDisaster.incidentEndDate?.toISOString() || undefined,
                       }
                     : undefined,
                 selfDisaster: claim.selfDisaster

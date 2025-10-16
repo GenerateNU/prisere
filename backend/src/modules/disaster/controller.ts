@@ -38,7 +38,7 @@ function toDisasterDTO(entity: FemaDisaster): GetAllDisastersResponse[number] {
     return {
         ...entity,
         declarationDate: entity.declarationDate.toISOString(),
-        incidentBeginDate: entity.incidentBeginDate?.toISOString() ?? null,
-        incidentEndDate: entity.incidentEndDate?.toISOString() ?? null,
+        incidentBeginDate: entity.incidentBeginDate?.toISOString() ?? undefined,
+        incidentEndDate: entity.incidentEndDate?.toISOString() ?? undefined,
     };
 }
