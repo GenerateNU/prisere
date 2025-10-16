@@ -27,7 +27,7 @@ describe("Test markAsRead disaster notifications", () => {
 
     test("MarkRead disaster notification", async () => {
         const response = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}/markAsRead`,
+            TESTING_PREFIX + `/notifications/${testData.notifications!.notification1.id}/markAsRead`,
             {
                 method: "PATCH",
                 headers: {
@@ -41,7 +41,7 @@ describe("Test markAsRead disaster notifications", () => {
     });
 
     test("MarkRead fake notification returns 404", async () => {
-        const response = await app.request(TESTING_PREFIX + `/disasterNotification/${randomUUID()}/markAsRead`, {
+        const response = await app.request(TESTING_PREFIX + `/notifications/${randomUUID()}/markAsRead`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -54,7 +54,7 @@ describe("Test markAsRead disaster notifications", () => {
 
     test("Invalid notification ID format returns 400", async () => {
         const response = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}-asdf/markAsRead`,
+            TESTING_PREFIX + `/notifications/${testData.notifications!.notification1.id}-asdf/markAsRead`,
             {
                 method: "PATCH",
                 headers: {

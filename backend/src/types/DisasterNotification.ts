@@ -2,6 +2,7 @@ import { z } from "zod";
 import { CreateUserResponseSchema } from "../types/User";
 import { FemaDisasterSchema } from "../types/disaster/get";
 import { LocationAddressSchemaType } from "./Location";
+import { FIPSCounty, FIPSState, incidentTypeString } from "./disaster";
 
 const notificationTypes = ["web", "email"] as const;
 const notificationStatus = ["unread", "read", "acknowledged"] as const;
@@ -29,7 +30,18 @@ export const DisasterNotificationWithRelations = z.object({
     acknowledgedAt: z.union([z.date(), z.string()]).optional().nullable(),
     createdAt: z.union([z.date(), z.string()]),
     user: CreateUserResponseSchema,
-    femaDisaster: FemaDisasterSchema,
+    femaDisaster: z.object({
+        id: z.uuid(),
+        disasterNumber: z.number(),
+        fipsStateCode: FIPSState,
+        declarationDate: z.iso.datetime(),
+        incidentBeginDate: z.string().nullable(),
+        incidentEndDate: z.string().nullable(),
+        fipsCountyCode: FIPSCounty,
+        declarationType: z.string().length(2),
+        designatedArea: z.string(),
+        designatedIncidentTypes: incidentTypeString,
+    }),
     locationAddress: LocationAddressSchemaType,
 });
 
@@ -39,7 +51,7 @@ export type DisasterNotificationWithRealtionsType = z.infer<typeof DisasterNotif
 export type NotificationTypeFilter = z.infer<typeof notificationTypes>;
 
 // GET /api/notifications/{user-id}
-export const GetUsersDisasterNotificationsResponseSchema = z.array(DisasterNotification);
+export const GetUsersDisasterNotificationsResponseSchema = z.array(DisasterNotificationWithRelations);
 export type GetUsersDisasterNotificationsResponse = DisasterNotificationType[] | { error: string };
 // for GET request payload validation:
 export const GetUsersDisasterNotificationsDTOSchema = z.object({

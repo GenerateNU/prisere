@@ -72,20 +72,20 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
     ): Promise<DisasterNotification[]> {
         const queryBuilder = this.db
             .createQueryBuilder()
-            .select("disasterNotification")
-            .from(DisasterNotification, "disasterNotification")
-            .leftJoinAndSelect("disasterNotification.femaDisaster", "disaster")
+            .select("notifications")
+            .from(DisasterNotification, "notifications")
+            .leftJoinAndSelect("notifications.femaDisaster", "disaster")
             // Join with affected location and company so we can use this info in the notification message
-            .leftJoinAndSelect("disasterNotification.locationAddress", "location")
+            .leftJoinAndSelect("notifications.locationAddress", "location")
             .leftJoinAndSelect("location.company", "company")
-            .where("disasterNotification.userId = :id", { id: payload.id })
-            .orderBy("disasterNotification.createdAt", "DESC"); // Added sorting since we will show most recent notif as banner
+            .where("notifications.userId = :id", { id: payload.id })
+            .orderBy("notifications.createdAt", "DESC"); // Added sorting since we will show most recent notif as banner
 
         if (type) {
-            queryBuilder.andWhere("disasterNotification.notificationType = :type", { type });
+            queryBuilder.andWhere("notifications.notificationType = :type", { type });
         }
         if (status) {
-            queryBuilder.andWhere("disasterNotification.notificationStatus = :status", { status });
+            queryBuilder.andWhere("notifications.notificationStatus = :status", { status });
         }
 
         if (page && limit) {

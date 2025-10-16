@@ -39,7 +39,7 @@ describe("Bulk create disaster notifications", () => {
             },
         ];
 
-        const response = await app.request(TESTING_PREFIX + `/disasterNotification/create`, {
+        const response = await app.request(TESTING_PREFIX + `/notifications/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -73,7 +73,7 @@ describe("Bulk create disaster notifications", () => {
             },
         ];
 
-        const response = await app.request(TESTING_PREFIX + `/disasterNotification/create`, {
+        const response = await app.request(TESTING_PREFIX + `/notifications/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -103,7 +103,7 @@ describe("Bulk create disaster notifications", () => {
             },
         ];
 
-        const response = await app.request(TESTING_PREFIX + `/disasterNotification/create`, {
+        const response = await app.request(TESTING_PREFIX + `/notifications/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -36,7 +36,7 @@ export const createTestData = async (dataSource: DataSource, includeNotification
             email: "jane@prisere.com",
         },
         {
-            id: randomUUID(),
+            id: "0189e585-a52b-7bcf-982d-a1c5230b3d40",
             firstName: "Jane",
             lastName: "Buddy",
             email: "janeB@prisere.com",
@@ -94,7 +94,7 @@ export const createTestData = async (dataSource: DataSource, includeNotification
     if (includeNotifications) {
         const seedNotifications = [
             {
-                id: "0199e586-14e2-76c7-bb29-089add6ad92f",
+                id: randomUUID(),
                 userId: seedUsers[0].id,
                 femaDisasterId: seedDisasters[0].id,
                 notificationType: NotificationType.WEB,
@@ -102,7 +102,7 @@ export const createTestData = async (dataSource: DataSource, includeNotification
                 lastSentAt: new Date(),
             },
             {
-                id: "0199e586-2a87-7074-94db-a4d7cd9321c0",
+                id: randomUUID(),
                 userId: seedUsers[1].id,
                 femaDisasterId: seedDisasters[1].id,
                 notificationType: NotificationType.EMAIL,

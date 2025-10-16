@@ -25,7 +25,7 @@ export class User {
     @Column({ nullable: true })
     companyId?: string;
 
-    @OneToMany(() => DisasterNotification, (disasterNotification) => disasterNotification.user)
+    @OneToMany(() => DisasterNotification, (notifications) => notifications.user)
     disasterNotifications!: Relation<DisasterNotification[]>;
 
     @OneToOne(() => UserPreferences, (pref) => pref.user)

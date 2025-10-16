@@ -88,7 +88,8 @@ export class DisasterNotificationController implements IDisasterNotificationCont
         async (
             ctx: Context
         ): Promise<TypedResponse<{ success: boolean; updatedCount: number } | { error: string }>> => {
-            const userId = ctx.req.param("id");
+            // const userId = ctx.req.param("id");
+            const userId = ctx.get("userId");
 
             if (!validate(userId)) {
                 return ctx.json({ error: "Invalid user ID format" }, 400);

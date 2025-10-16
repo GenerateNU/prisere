@@ -10,7 +10,7 @@ import { PaginationStatus } from "@/types/notifications";
 type NotificationStatus = "unread" | "read";
 type SortOption = "most-recent" | "oldest-first";
 
-export default function NotificationsPage({ userId }: { userId: string }) {
+export default function NotificationsPage() {
   // State management
   const [filters, setFilters] = useState({
     status: "all" as NotificationStatus | "all",
@@ -37,12 +37,12 @@ export default function NotificationsPage({ userId }: { userId: string }) {
 
   // Queries and mutations
   const { data, isPending, error } = useQuery({
-    queryKey: ["notifications", userId, { 
+    queryKey: ["notifications",{ 
       page: pagination.currentPage, 
       limit: pagination.itemsPerPage,
       status: filters.status !== "all" ? filters.status : undefined 
     }],
-    queryFn: () => getNotifications(userId, { 
+    queryFn: () => getNotifications({ 
       page: pagination.currentPage, 
       limit: pagination.itemsPerPage,
       status: filters.status !== "all" ? filters.status : undefined,
@@ -53,7 +53,7 @@ export default function NotificationsPage({ userId }: { userId: string }) {
     mutationFn: ({ notificationId, status }: { notificationId: string; status: NotificationStatus }) =>
       updateNotificationStatus(notificationId, status),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notifications", userId] });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
     onError: (error) => {
       console.error("Failed to update notification status:", error);
@@ -61,9 +61,9 @@ export default function NotificationsPage({ userId }: { userId: string }) {
   });
 
   const markAllAsReadMutation = useMutation({
-    mutationFn: () => markAllNotificationsAsRead(userId),
+    mutationFn: () => markAllNotificationsAsRead(),
     onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: ["notifications", userId] });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
       console.log(`Marked ${result.updatedCount} notifications as read`);
     },
     onError: (error) => {
@@ -157,15 +157,15 @@ export default function NotificationsPage({ userId }: { userId: string }) {
     }
   };
 
-  const sortedData = data?.sort((a: { createdAt: Date; femaDisaster: { declarationDate: Date; }; }, b: { createdAt: Date; femaDisaster: { declarationDate: Date; }; }) => {
+  const sortedData = data?.sort((a, b) => {
     const createdAtA = new Date(a.createdAt || 0).getTime();
     const createdAtB = new Date(b.createdAt || 0).getTime();
     
     const createdAtComparison = filters.sort === "most-recent" ? createdAtB - createdAtA : createdAtA - createdAtB;
     
     if (createdAtComparison === 0) {
-      const dateA = new Date(a.femaDisaster?.declarationDate || 0).getTime();
-      const dateB = new Date(b.femaDisaster?.declarationDate || 0).getTime();
+      const dateA = new Date(a.femaDisaster[0]?.declarationDate || 0).getTime();
+      const dateB = new Date(b.femaDisaster[0]?.declarationDate || 0).getTime();
       return filters.sort === "most-recent" ? dateB - dateA : dateA - dateB;
     }
     
@@ -288,7 +288,7 @@ export default function NotificationsPage({ userId }: { userId: string }) {
       </div>
 
       <div className="space-y-4">
-        {sortedData?.map((notification: DisasterNotificationWithRealtionsType) => (
+        {sortedData?.map((notification: any) => (
           <div
             key={notification.id}
             className="p-4 bg-white border rounded shadow hover:shadow-md transition"
@@ -297,7 +297,7 @@ export default function NotificationsPage({ userId }: { userId: string }) {
             <div className="flex justify-between items-start mb-3">
               <div>
                 <p className="text-sm text-gray-600">
-                  Disaster #{notification.femaDisaster?.disasterNumber}
+                  Disaster #{notification.disasterNumber}
                 </p>
               </div>
 
@@ -408,7 +408,7 @@ export default function NotificationsPage({ userId }: { userId: string }) {
                 {/* Disaster Information */}
                 <div>
                   <h3 className="font-semibold text-lg text-red-600 mb-2">
-                    {modal.selectedNotification.femaDisaster?.incidentType}
+                    {modal.selectedNotification.femaDisaster?.designatedIncidentTypes || "N/A"}
                   </h3>
                   <div className="grid grid-cols-1 gap-4 text-sm">
                     <div>
@@ -425,7 +425,7 @@ export default function NotificationsPage({ userId }: { userId: string }) {
                     </div>
                     <div>
                       <span className="font-medium">Declaration Type:</span>
-                      <p>{modal.selectedNotification.femaDisaster?.declarationType}</p>
+                      <p>{modal.selectedNotification.femaDisaster?.designatedIncidentTypes}</p>
                     </div>
                     <div>
                       <span className="font-medium">Designated Incident Types:</span>
