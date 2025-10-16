@@ -25,11 +25,9 @@ export class SelfDisasterController implements ISelfDisasterController {
         }
     );
 
-    deleteSelfDisaster = withControllerErrorHandling(
-        async (ctx: Context): ControllerResponse<TypedResponse<void, 200>> => {
-            const givenId = ctx.req.param("id");
-            await this.disasterService.deleteSelfDisaster(givenId);
-            return ctx.json(undefined, 200);
-        }
-    );
+    deleteSelfDisaster = withControllerErrorHandling(async (ctx: Context) => {
+        const givenId = ctx.req.param("id");
+        await this.disasterService.deleteSelfDisaster(givenId);
+        return ctx.json(undefined, 200);
+    });
 }
