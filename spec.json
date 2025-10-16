@@ -631,7 +631,7 @@
         }
       }
     },
-    "/disaster": {
+    "/disasterNotifications": {
       "post": {
         "summary": "Create a new disaster",
         "description": "Creates a new disaster with the provided information",
@@ -788,7 +788,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/disasterNotification": {
       "get": {
         "summary": "Get all disasters",
         "description": "Gets all disasters stored in the database",
@@ -1203,110 +1205,177 @@
       "get": {
         "summary": "Get user notifications",
         "description": "Retrieves all disaster notifications for a specific user with optional filtering and pagination",
-        "tags": ["Disaster Notifications"],
+        "tags": [
+          "Disaster Notifications"
+        ],
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            },
             "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "User ID"
+            "in": "path",
+            "name": "id"
           },
           {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "web",
+                "email"
+              ]
+            },
+            "required": false,
             "name": "type",
-            "in": "query",
-            "required": false,
+            "in": "query"
+          },
+          {
             "schema": {
               "type": "string",
-              "enum": ["web", "email"]
+              "enum": [
+                "unread",
+                "read",
+                "acknowledged"
+              ]
             },
-            "description": "Filter by notification type"
+            "required": false,
+            "name": "status",
+            "in": "query"
           },
           {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
             "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "default": 1
-            },
-            "description": "Page number for pagination"
+            "in": "query"
           },
           {
-            "name": "limit",
-            "in": "query",
-            "required": false,
             "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100,
-              "default": 20
+              "type": "string"
             },
-            "description": "Number of items per page"
+            "required": false,
+            "name": "limit",
+            "in": "query"
           }
         ],
         "responses": {
-            "200": {
-              "description": "Successfully retrieved user notifications",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "id": { "type": "string" },
-                        "userId": { "type": "string" },
-                        "femaDisasterId": { "type": "string" },
-                        "locationAddressId": { "type": "string" },
-                        "notificationStatus": { "type": "string" },
-                        "femaDisaster": {
-                          "type": "object",
-                          "properties": {
-                            "disasterNumber": { "type": "number" },
-                            "incidentType": { "type": "string" },
-                            "designatedArea": { "type": "string" },
-                            "declarationDate": { "type": "string" }
+          "200": {
+            "description": "Successfully retrieved user notifications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "userId": {
+                        "type": "string"
+                      },
+                      "femaDisasterId": {
+                        "type": "string"
+                      },
+                      "notificationType": {
+                        "type": "string",
+                        "enum": [
+                          "web",
+                          "email"
+                        ]
+                      },
+                      "notificationStatus": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                          "unread",
+                          "read",
+                          "acknowledged"
+                        ]
+                      },
+                      "firstSentAt": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date"
+                          },
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "nullable": true
                           }
-                        },
-                        "locationAddress": {
-                          "type": "object",
-                          "properties": {
-                            "id": { "type": "string" },
-                            "streetAddress": { "type": "string" },
-                            "city": { "type": "string" },
-                            "stateProvince": { "type": "string" },
-                            "postalCode": { "type": "string" },
-                            "company": {
-                              "type": "object",
-                              "properties": {
-                                "id": { "type": "string" },
-                                "name": { "type": "string" }
-                              }
-                            }
+                        ]
+                      },
+                      "lastSentAt": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date"
+                          },
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "nullable": true
                           }
-                        }
+                        ]
+                      },
+                      "acknowledgedAt": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date"
+                          },
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "nullable": true
+                          }
+                        ]
+                      },
+                      "createdAt": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
                       }
-                    }
+                    },
+                    "required": [
+                      "id",
+                      "userId",
+                      "femaDisasterId",
+                      "notificationType",
+                      "createdAt"
+                    ]
                   }
                 }
               }
-            }   
+            }
           },
           "400": {
-            "description": "Invalid parameters",
+            "description": "Invalid user ID format or query parameters",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": { "type": "string" }
+                    "error": {
+                      "type": "string"
+                    }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1318,9 +1387,13 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": { "type": "string" }
+                    "error": {
+                      "type": "string"
+                    }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1332,6 +1405,18 @@
         "description": "Permanently deletes a specific notification",
         "tags": [
           "Disaster Notifications"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
         ],
         "responses": {
           "200": {
@@ -1397,8 +1482,8 @@
     },
     "/disasterNotification/{id}/markAsRead": {
       "patch": {
-        "summary": "MarkRead notification",
-        "description": "Marks a specific notification as read",
+        "summary": "Mark notification as read",
+        "description": "Marks a specific notification as read and updates readAt timestamp",
         "tags": [
           "Disaster Notifications"
         ],
@@ -1416,7 +1501,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Notification successfully read",
+            "description": "Notification successfully marked as read",
             "content": {
               "application/json": {
                 "schema": {
@@ -1431,7 +1516,6 @@
                     "femaDisasterId": {
                       "type": "string"
                     },
-                    "locationAddressId": { "type": "string" },
                     "notificationType": {
                       "type": "string",
                       "enum": [
@@ -1445,7 +1529,7 @@
                       "enum": [
                         "unread",
                         "read",
-                        "read"
+                        "acknowledged"
                       ]
                     },
                     "firstSentAt": {
@@ -1476,7 +1560,7 @@
                         }
                       ]
                     },
-                    "readAt": {
+                    "acknowledgedAt": {
                       "anyOf": [
                         {
                           "type": "string",
@@ -1489,14 +1573,25 @@
                           "nullable": true
                         }
                       ]
+                    },
+                    "createdAt": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
                     }
                   },
                   "required": [
                     "id",
                     "userId",
                     "femaDisasterId",
-                    "locationAddressId",
-                    "notificationType"
+                    "notificationType",
+                    "createdAt"
                   ]
                 }
               }
@@ -1543,8 +1638,8 @@
     },
     "/disasterNotification/{id}/markUnread": {
       "patch": {
-        "summary": "Dismiss notification",
-        "description": "Marks a specific notification as read/markUnreaded",
+        "summary": "Mark notification as unread",
+        "description": "Marks a specific notification as unread and clears the readAt timestamp",
         "tags": [
           "Disaster Notifications"
         ],
@@ -1562,7 +1657,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Notification successfully markUnreaded",
+            "description": "Notification successfully marked as unread",
             "content": {
               "application/json": {
                 "schema": {
@@ -1577,7 +1672,6 @@
                     "femaDisasterId": {
                       "type": "string"
                     },
-                    "locationAddressId": { "type": "string" },
                     "notificationType": {
                       "type": "string",
                       "enum": [
@@ -1591,7 +1685,7 @@
                       "enum": [
                         "unread",
                         "read",
-                        "read"
+                        "acknowledged"
                       ]
                     },
                     "firstSentAt": {
@@ -1622,7 +1716,7 @@
                         }
                       ]
                     },
-                    "readAt": {
+                    "acknowledgedAt": {
                       "anyOf": [
                         {
                           "type": "string",
@@ -1635,14 +1729,25 @@
                           "nullable": true
                         }
                       ]
+                    },
+                    "createdAt": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
                     }
                   },
                   "required": [
                     "id",
                     "userId",
                     "femaDisasterId",
-                    "locationAddressId",
-                    "notificationType"
+                    "notificationType",
+                    "createdAt"
                   ]
                 }
               }
@@ -1708,7 +1813,6 @@
                     "femaDisasterId": {
                       "type": "string"
                     },
-                    "locationAddressId": { "type": "string" },
                     "notificationType": {
                       "type": "string",
                       "enum": [
@@ -1720,7 +1824,6 @@
                   "required": [
                     "userId",
                     "femaDisasterId",
-                    "locationAddressId",
                     "notificationType"
                   ]
                 }
@@ -1730,7 +1833,7 @@
         },
         "responses": {
           "201": {
-            "description": "Notifications successfully created",
+            "description": "Notifications successfully created with createdAt timestamps",
             "content": {
               "application/json": {
                 "schema": {
@@ -1747,7 +1850,6 @@
                       "femaDisasterId": {
                         "type": "string"
                       },
-                      "locationAddressId": { "type": "string" },
                       "notificationType": {
                         "type": "string",
                         "enum": [
@@ -1761,7 +1863,7 @@
                         "enum": [
                           "unread",
                           "read",
-                          "read"
+                          "acknowledged"
                         ]
                       },
                       "firstSentAt": {
@@ -1792,7 +1894,7 @@
                           }
                         ]
                       },
-                      "readAt": {
+                      "acknowledgedAt": {
                         "anyOf": [
                           {
                             "type": "string",
@@ -1805,13 +1907,25 @@
                             "nullable": true
                           }
                         ]
+                      },
+                      "createdAt": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
                       }
                     },
                     "required": [
                       "id",
                       "userId",
                       "femaDisasterId",
-                      "notificationType"
+                      "notificationType",
+                      "createdAt"
                     ]
                   }
                 }
@@ -1875,65 +1989,43 @@
         }
       }
     },
-    "/preferences/{id}": {
-      "get": {
-        "summary": "Get user notification preferences",
-        "description": "Retrieves notification preferences for a specific user",
+    "/disasterNotification/user/{id}/markAllAsRead": {
+      "patch": {
+        "summary": "Mark all notifications as read",
+        "description": "Marks all unread notifications for a specific user as read",
         "tags": [
-          "Preferences"
+          "Disaster Notifications"
         ],
         "parameters": [
           {
             "schema": {
               "type": "string",
-              "format": "uuid"
+              "format": "uuid",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
             },
             "required": true,
             "name": "id",
-            "in": "path",
-            "description": "User ID"
+            "in": "path"
           }
         ],
         "responses": {
           "200": {
-            "description": "Successfully retrieved user preferences",
+            "description": "All notifications successfully marked as read",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "emailEnabled": {
+                    "success": {
                       "type": "boolean"
                     },
-                    "webNotificationsEnabled": {
-                      "type": "boolean"
-                    },
-                    "notificationFrequency": {
-                      "type": "string"
+                    "updatedCount": {
+                      "type": "number"
                     }
                   },
                   "required": [
-                    "emailEnabled",
-                    "webNotificationsEnabled",
-                    "notificationFrequency"
-                  ]
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
+                    "success",
+                    "updatedCount"
                   ]
                 }
               }
@@ -1957,131 +2049,8 @@
               }
             }
           },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Update user notification preferences",
-        "description": "Updates notification preferences for a specific user",
-        "tags": [
-          "Preferences"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "required": true,
-            "name": "id",
-            "in": "path",
-            "description": "User ID"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "emailEnabled": {
-                    "type": "boolean"
-                  },
-                  "webNotificationsEnabled": {
-                    "type": "boolean"
-                  },
-                  "notificationFrequency": {
-                    "type": "string"
-                  }
-                },
-                "minProperties": 1
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Successfully updated user preferences",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "emailEnabled": {
-                      "type": "boolean"
-                    },
-                    "webNotificationsEnabled": {
-                      "type": "boolean"
-                    },
-                    "notificationFrequency": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "emailEnabled",
-                    "webNotificationsEnabled",
-                    "notificationFrequency"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request - empty payload or invalid user ID",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          },
           "404": {
             "description": "User not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
             "content": {
               "application/json": {
                 "schema": {
@@ -3851,7 +3820,7 @@
         }
       }
     },
-    "/notifications/preferences": {
+    "/disasterNotification/preferences/{id}": {
       "get": {
         "summary": "Get a user's notificiation preferences",
         "tags": [
@@ -4337,4 +4306,5 @@
         }
       }
     }
+  }
 }
