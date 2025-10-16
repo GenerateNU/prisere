@@ -5,7 +5,7 @@ import { User } from "./User.js";
 import type { Relation } from "typeorm";
 import { LocationAddress } from "./LocationAddress.js";
 
-@Entity("notifications")
+@Entity("disasterNotification")
 export class DisasterNotification {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
