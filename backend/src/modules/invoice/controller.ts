@@ -10,13 +10,7 @@ import {
     GetCompanyInvoicesDTOSchema,
     GetCompanyInvoicesByDateDTOSchema,
     GetCompanyInvoicesSummationResponse,
-    CreateOrUpdateInvoicesRequest
-    GetCompanyInvoicesByDateDTOSchema,
-    GetCompanyInvoicesSummationResponse,
-<<<<<<< HEAD
-=======
-    CreateOrUpdateInvoicesRequest
->>>>>>> origin/frontend-setup
+    CreateOrUpdateInvoicesRequest,
 } from "../../types/Invoice";
 import { ControllerResponse } from "../../utilities/response";
 
@@ -80,42 +74,6 @@ export class InvoiceController implements IInvoiceController {
 
             const fetchedQuickBooksPurchases = await this.invoiceService.getInvoicesForCompany(payload);
             return ctx.json(fetchedQuickBooksPurchases, 200);
-        }
-    );
-
-    sumInvoicesByCompanyAndDateRange = withControllerErrorHandling(
-        async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesSummationResponse, 200>> => {
-            const queryParams = {
-<<<<<<< HEAD
-                companyId: ctx.req.param("id"),
-=======
-                companyId: ctx.get("companyId"),
->>>>>>> origin/frontend-setup
-                startDate: ctx.req.query("startDate"),
-                endDate: ctx.req.query("endDate"),
-            };
-            const payload = GetCompanyInvoicesByDateDTOSchema.parse(queryParams);
-
-            if (!validate(payload.companyId)) {
-                return ctx.json({ error: "Invalid company ID format" }, 400);
-            } else if (new Date(payload.startDate) >= new Date(payload.endDate)) {
-                return ctx.json({ error: "Start date must be before End date" }, 400);
-            }
-
-            const invoiceSummationAmount = await this.invoiceService.sumInvoicesByCompanyAndDateRange(payload);
-            return ctx.json({ total: invoiceSummationAmount }, 200);
-    sumInvoicesByCompanyAndDateRange(
-        ctx: Context
-    ): ControllerResponse<TypedResponse<GetCompanyInvoicesSummationResponse, 200>>;
-            const companyId = await ctx.get("companyId");
-            const invoicesWithCompanyId = json.map((invoice: CreateOrUpdateInvoicesRequest)  => ({
-                ...invoice,
-                companyId: companyId
-            }));
-            const payload = CreateOrUpdateInvoicesDTOSchema.parse(invoicesWithCompanyId);
-
-
-                companyId: ctx.get("companyId"),
         }
     );
 

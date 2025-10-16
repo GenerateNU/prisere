@@ -1915,11 +1915,12 @@ export interface paths {
                         "application/json": {
                             id: string;
                             companyId: string;
-                            quickBooksID?: number;
+                            quickBooksId?: number;
                             totalAmountCents: number;
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
                             dateCreated: string;
+                            lastUpdated: string;
                         }[];
                     };
                 };

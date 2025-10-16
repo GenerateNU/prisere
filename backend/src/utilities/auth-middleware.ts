@@ -7,12 +7,12 @@ config({ path: ".env" });
 
 interface DecodedToken extends jwt.JwtPayload {
     app_metadata?: {
-      company_id?: string;
+        company_id?: string;
     };
-  }
+}
 
-  
-const jwk = JSON.parse(process.env.NODE_ENV === "producion" ? process.env.SUPABASE_PUBLIC_AUTH_KEY! : process.env.SUPABASE_PUBLIC_AUTH_KEY_DEV!);
+
+const jwk = JSON.parse(process.env.NODE_ENV === "production" ? process.env.SUPABASE_PUBLIC_AUTH_KEY! : process.env.SUPABASE_PUBLIC_AUTH_KEY_DEV!);
 
 /**
  *

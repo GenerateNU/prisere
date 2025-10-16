@@ -3006,26 +3006,6 @@
             "required": true,
             "name": "endDate",
             "in": "query"
-            "name": "id",
-            "in": "path"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "required": true,
-            "name": "startDate",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "required": true,
-            "name": "endDate",
-            "in": "query"
           }
         ],
         "responses": {

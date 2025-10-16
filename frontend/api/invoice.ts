@@ -1,24 +1,26 @@
 import { authHeader, authWrapper, client } from "./client";
-<<<<<<< HEAD
 import { Invoice } from "../types/invoice";
 
-export const getAllInvoicesForCompany = async (
-    companyId: string,
-    pageNumber: number,
-    resultsPerPage: number
-): Promise<Invoice[]> => {
-    const req = async (token: string): Promise<Invoice[]> => {
+export const getAllInvoicesForCompany = async (pageNumber: number, resultsPerPage: number): Promise<Invoice[]> => {
+    const req = async (token: string) => {
         const { data, error, response } = await client.GET("/invoice", {
             params: {
                 query: {
-                    companyId: companyId,
                     pageNumber: pageNumber,
                     resultsPerPage: resultsPerPage,
                 },
             },
             headers: authHeader(token),
         });
-=======
+
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    }
+        return authWrapper<Invoice[]>()(req);
+    };
 
 export const sumInvoicesByCompanyAndDateRange = async (
     startDate: Date,
@@ -36,34 +38,11 @@ export const sumInvoicesByCompanyAndDateRange = async (
 
         });
 
->>>>>>> origin/frontend-setup
         if (response.ok) {
             return data!;
         } else {
             throw Error(error?.error);
         }
-<<<<<<< HEAD
-    };
-    return authWrapper<Invoice[]>()(req);
-};
-=======
-    }
-
-    return authWrapper<{ total: number }>()(req);
-
-};
->>>>>>> origin/frontend-setup
-export const sumInvoicesByCompanyAndDateRange = async (
-    startDate: Date,
-    endDate: Date,
-): Promise<{ total: number }> => {
-    const req = async (token: string): Promise<{ total: number }> => {
-        const { data, error, response } = await client.GET("/invoice/bulk/totalIncome", {
-            headers: authHeader(token),
-                    startDate: startDate.toISOString(),
-                    endDate: endDate.toISOString(),
-
-
     }
 
     return authWrapper<{ total: number }>()(req);

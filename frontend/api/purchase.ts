@@ -21,5 +21,6 @@ export const getAllPurchasesForCompany = async (
             throw Error(error?.error);
         }
     };
+
     return authWrapper<Purchase[]>()(req);
 };
