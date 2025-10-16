@@ -3,6 +3,8 @@ import { PT_Sans } from "next/font/google";
 import "./globals.css";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import NavBar from "./NavBar";
+import { usePathname } from "next/navigation";
 
 const ptSans = PT_Sans({
     weight: ["400", "700"],
@@ -14,6 +16,7 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const pathname = usePathname();
     const [queryClient] = useState(
         () =>
             new QueryClient({
@@ -25,10 +28,18 @@ export default function RootLayout({
                 },
             })
     );
+
+    const hideNavbar = pathname.includes('/login') || pathname.includes('/signup');
+
     return (
         <html lang="en">
             <body className={`${ptSans.className} ${ptSans.className} antialiased`}>
-                <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+                <div>
+                    {!hideNavbar && <NavBar />}
+                    <main className={!hideNavbar ? "ml-[300px]" : ""}>
+                        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+                    </main>
+                </div>
             </body>
         </html>
     );
