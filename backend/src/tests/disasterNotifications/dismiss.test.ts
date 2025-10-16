@@ -27,7 +27,7 @@ describe("Test markUnread disaster notifications", () => {
 
     test("Dismiss disaster notification", async () => {
         const response = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}/markUnread`,
+            TESTING_PREFIX + `/notifications/${testData.notifications!.notification1.id}/markUnread`,
             {
                 method: "PATCH",
                 headers: {
@@ -41,7 +41,7 @@ describe("Test markUnread disaster notifications", () => {
 
         // Test markUnreading already markUnreaded notification
         const response2 = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}/markUnread`,
+            TESTING_PREFIX + `/notifications/${testData.notifications!.notification1.id}/markUnread`,
             {
                 method: "PATCH",
                 headers: {
@@ -55,7 +55,7 @@ describe("Test markUnread disaster notifications", () => {
     });
 
     test("Dismiss fake notification returns 404", async () => {
-        const response = await app.request(TESTING_PREFIX + `/disasterNotification/${randomUUID()}/markUnread`, {
+        const response = await app.request(TESTING_PREFIX + `/notifications/${randomUUID()}/markUnread`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -68,7 +68,7 @@ describe("Test markUnread disaster notifications", () => {
 
     test("Invalid notification ID format returns 400", async () => {
         const response = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}-asdf/markUnread`,
+            TESTING_PREFIX + `/notifications/${testData.notifications!.notification1.id}-asdf/markUnread`,
             {
                 method: "PATCH",
                 headers: {

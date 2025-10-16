@@ -15,85 +15,9 @@ import { z } from "zod";
 import { ILocationAddressTransaction, LocationAddressTransactions } from "../location-address/transaction";
 import { IPreferenceTransaction, PreferenceTransaction } from "../preferences/transaction";
 
-export const addOpenApiDisasterNotificationRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
-    const notificationTransaction = new DisasterNotificationTransaction(db);
-    const locationTransaction: ILocationAddressTransaction = new LocationAddressTransactions(db);
-    const userPreferencesTransaction: IPreferenceTransaction = new PreferenceTransaction(db);
-    const notificationService = new DisasterNotificationService(
-        notificationTransaction,
-        locationTransaction,
-        userPreferencesTransaction
-    );
-    const notificationController = new DisasterNotificationController(notificationService);
-
-    openApi.openapi(getUserNotificationsRoute, (ctx) => notificationController.getUserNotifications(ctx) as any);
-    openApi.openapi(markAsReadNotificationRoute, (ctx) => notificationController.markAsReadNotification(ctx) as any);
-    openApi.openapi(markUnreadNotificationRoute, (ctx) => notificationController.markUnreadNotification(ctx) as any);
-    openApi.openapi(bulkCreateNotificationsRoute, (ctx) => notificationController.bulkCreateNotifications(ctx) as any);
-    openApi.openapi(deleteNotificationRoute, (ctx) => notificationController.deleteNotification(ctx) as any);
-    openApi.openapi(markAllAsReadRoute, (ctx) => notificationController.markAllAsRead(ctx) as any);
-
-    return openApi;
-};
-
-const markAllAsReadRoute = createRoute({
-    method: "patch",
-    path: "/disasterNotification/user/{id}/markAllAsRead",
-    summary: "Mark all notifications as read",
-    description: "Marks all unread notifications for a specific user as read",
-    request: {
-        params: z.object({
-            id: z
-                .string()
-                .uuid()
-                .openapi({
-                    param: {
-                        name: "id",
-                        in: "path",
-                    },
-                    example: "123e4567-e89b-12d3-a456-426614174000",
-                }),
-        }),
-    },
-    responses: {
-        200: {
-            content: {
-                "application/json": {
-                    schema: z.object({
-                        success: z.boolean(),
-                        updatedCount: z.number(),
-                    }),
-                },
-            },
-            description: "All notifications successfully marked as read",
-        },
-        400: {
-            content: {
-                "application/json": {
-                    schema: z.object({
-                        error: z.string(),
-                    }),
-                },
-            },
-            description: "Invalid user ID format",
-        },
-        404: {
-            content: {
-                "application/json": {
-                    schema: z.object({
-                        error: z.string(),
-                    }),
-                },
-            },
-            description: "User not found",
-        },
-    },
-    tags: ["Disaster Notifications"],
-});
-
-const getUserNotificationsRoute = createRoute({
+export const getUserNotificationsRoute = createRoute({
     method: "get",
-    path: "/disasterNotification",
+    path: "/notifications",
     summary: "Get user notifications",
     description: "Retrieves all disaster notifications for a specific user with optional filtering and pagination",
     request: {
@@ -137,9 +61,9 @@ const getUserNotificationsRoute = createRoute({
     tags: ["Disaster Notifications"],
 });
 
-const markAsReadNotificationRoute = createRoute({
+export const markAsReadNotificationRoute = createRoute({
     method: "patch",
-    path: "/disasterNotification/{id}/markAsRead",
+    path: "/notifications/{id}/markAsRead",
     summary: "Mark notification as read",
     description: "Marks a specific notification as read and updates readAt timestamp",
     request: {
@@ -189,9 +113,9 @@ const markAsReadNotificationRoute = createRoute({
     tags: ["Disaster Notifications"],
 });
 
-const markUnreadNotificationRoute = createRoute({
+export const markUnreadNotificationRoute = createRoute({
     method: "patch",
-    path: "/disasterNotification/{id}/markUnread",
+    path: "/notifications/{id}/markUnread",
     summary: "Mark notification as unread",
     description: "Marks a specific notification as unread and clears the readAt timestamp",
     request: {
@@ -241,9 +165,51 @@ const markUnreadNotificationRoute = createRoute({
     tags: ["Disaster Notifications"],
 });
 
-const bulkCreateNotificationsRoute = createRoute({
+export const markAllAsReadRoute = createRoute({
+    method: "patch",
+    path: "/notifications/user/markAllAsRead",
+    summary: "Mark all notifications as read",
+    description: "Marks all unread notifications for a specific user as read",
+    request: {},
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        success: z.boolean(),
+                        updatedCount: z.number(),
+                    }),
+                },
+            },
+            description: "All notifications successfully marked as read",
+        },
+        400: {
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        error: z.string(),
+                    }),
+                },
+            },
+            description: "Invalid user ID format",
+        },
+        404: {
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        error: z.string(),
+                    }),
+                },
+            },
+            description: "User not found",
+        },
+    },
+    tags: ["Disaster Notifications"],
+});
+
+export const bulkCreateNotificationsRoute = createRoute({
     method: "post",
-    path: "/disasterNotification/bulk",
+    path: "/notifications/bulk",
     summary: "Bulk create notifications",
     description: "Creates multiple disaster notifications at once for impacted users",
     request: {
@@ -298,9 +264,9 @@ const bulkCreateNotificationsRoute = createRoute({
     tags: ["Disaster Notifications"],
 });
 
-const deleteNotificationRoute = createRoute({
+export const deleteNotificationRoute = createRoute({
     method: "delete",
-    path: "/disasterNotification/{id}",
+    path: "/notifications/{id}",
     summary: "Delete notification",
     description: "Permanently deletes a specific notification",
     request: {
@@ -349,3 +315,24 @@ const deleteNotificationRoute = createRoute({
     },
     tags: ["Disaster Notifications"],
 });
+
+export const addOpenApiDisasterNotificationRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
+    const notificationTransaction = new DisasterNotificationTransaction(db);
+    const locationTransaction: ILocationAddressTransaction = new LocationAddressTransactions(db);
+    const userPreferencesTransaction: IPreferenceTransaction = new PreferenceTransaction(db);
+    const notificationService = new DisasterNotificationService(
+        notificationTransaction,
+        locationTransaction,
+        userPreferencesTransaction
+    );
+    const notificationController = new DisasterNotificationController(notificationService);
+
+    openApi.openapi(getUserNotificationsRoute, (ctx) => notificationController.getUserNotifications(ctx) as any);
+    openApi.openapi(markAsReadNotificationRoute, (ctx) => notificationController.markAsReadNotification(ctx) as any);
+    openApi.openapi(markUnreadNotificationRoute, (ctx) => notificationController.markUnreadNotification(ctx) as any);
+    openApi.openapi(bulkCreateNotificationsRoute, (ctx) => notificationController.bulkCreateNotifications(ctx) as any);
+    openApi.openapi(deleteNotificationRoute, (ctx) => notificationController.deleteNotification(ctx) as any);
+    openApi.openapi(markAllAsReadRoute, (ctx) => notificationController.markAllAsRead(ctx) as any);
+
+    return openApi;
+};

@@ -27,7 +27,7 @@ describe("Test deleting disaster notifications", () => {
 
     test("Delete notification", async () => {
         const response = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}`,
+            TESTING_PREFIX + `/notifications/${testData.notifications!.notification1.id}`,
             {
                 method: "DELETE",
                 headers: {
@@ -38,7 +38,7 @@ describe("Test deleting disaster notifications", () => {
         expect(response.status).toBe(200);
 
         const response2 = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification2.id}`,
+            TESTING_PREFIX + `/notifications/${testData.notifications!.notification2.id}`,
             {
                 method: "DELETE",
                 headers: {
@@ -51,7 +51,7 @@ describe("Test deleting disaster notifications", () => {
 
     test("Delete notification returns 400 on non-UUID format ID", async () => {
         const response = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.notifications!.notification1.id}-fake`,
+            TESTING_PREFIX + `/notifications/${testData.notifications!.notification1.id}-fake`,
             {
                 method: "DELETE",
                 headers: {
@@ -65,7 +65,7 @@ describe("Test deleting disaster notifications", () => {
     });
 
     test("Delete notification returns 404 on non-existent ID", async () => {
-        const response = await app.request(TESTING_PREFIX + `/disasterNotification/${randomUUID()}`, {
+        const response = await app.request(TESTING_PREFIX + `/notifications/${randomUUID()}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",

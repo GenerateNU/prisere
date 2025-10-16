@@ -23,7 +23,7 @@ export const setUpRoutes = (app: Hono<any>, db: DataSource) => {
     routes.route("/location-address", locationAddressRoute(db));
     routes.route("/companies", companyRoutes(db));
     routes.route("/disaster", disasterRoutes(db));
-    routes.route("/disasterNotification", disasterNotificationRoutes(db));
+    routes.route("/notifications", disasterNotificationRoutes(db));
     routes.route("/claims", claimRoutes(db));
     routes.route("/quickbooks", quickbooksRoutes(db));
     routes.route("/invoice", invoiceRoutes(db));

@@ -27,7 +27,7 @@ describe("Test getting a users disaster notifications", () => {
 
     test("GET users disaster notifications", async () => {
         // Test user1 notifications
-        const response = await app.request(TESTING_PREFIX + `/disasterNotification`, {
+        const response = await app.request(TESTING_PREFIX + `/notifications`, {
             method: "GET",
             headers: {
                 "userId": "0199e585-621d-744a-81e2-8cc93d48b23d"
@@ -55,7 +55,7 @@ describe("Test getting a users disaster notifications", () => {
         }
 
         // Test user2 notifications
-        const response2 = await app.request(TESTING_PREFIX + `/disasterNotification`, {
+        const response2 = await app.request(TESTING_PREFIX + `/notifications`, {
             method: "GET",
             headers: {
                 "userId": "0199e585-a52b-7bcf-982d-a1c5230b3d40"
@@ -87,7 +87,7 @@ describe("Test getting a users disaster notifications", () => {
     test("GET fake user returns 404 user not found", async () => {
         const fakeUserId = randomUUID();
 
-        const response = await app.request(TESTING_PREFIX + `/disasterNotification`, {
+        const response = await app.request(TESTING_PREFIX + `/notifications`, {
             headers: {
                 "userId": fakeUserId,
             }
@@ -107,7 +107,7 @@ describe("Test getting a users disaster notifications", () => {
     });
 
     test("GET user ID with incorrect format returns a 400", async () => {
-        const response = await app.request(TESTING_PREFIX + `/disasterNotification`, {
+        const response = await app.request(TESTING_PREFIX + `/notifications`, {
             headers: {
                 "userId": "fake-id"
             }
@@ -129,13 +129,20 @@ describe("Test getting a users disaster notifications", () => {
 
     test("GET notifications with web filter", async () => {
         // user 1 has 2 web 1 email, user 2 has 3 email 1 web
-        const response1 = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.users.user1.id}?type=web`
-        );
+        const response1 = await app.request(TESTING_PREFIX + `/notifications?type=web`, {
+            method: "GET",
+            headers: {
+                "userId": "0199e585-621d-744a-81e2-8cc93d48b23d"
+            }
+        });
 
         const response2 = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.users.user2.id}?type=web`
-        );
+            TESTING_PREFIX + `/notifications?type=web`, {
+            method: "GET",
+            headers: {
+                "userId": "0199e585-621d-744a-81e2-8cc93d48b23d"
+            }
+        });
 
         const result1 = JSON.parse(await response1.text());
         const result2 = JSON.parse(await response2.text());
@@ -145,12 +152,20 @@ describe("Test getting a users disaster notifications", () => {
         expect(result2.length === 1);
 
         const response1Email = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.users.user1.id}?type=email`
-        );
+            TESTING_PREFIX + `/notifications?type=email`, {
+            method: "GET",
+            headers: {
+                "userId": "0199e585-621d-744a-81e2-8cc93d48b23d"
+            }
+        });
 
         const response2Email = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.users.user2.id}?type=email`
-        );
+            TESTING_PREFIX + `/notifications?type=email`, {
+            method: "GET",
+            headers: {
+                "userId": "0199e585-621d-744a-81e2-8cc93d48b23d"
+            }
+        });
 
         const result1Email = JSON.parse(await response1Email.text());
         const result2Email = JSON.parse(await response2Email.text());
@@ -161,22 +176,36 @@ describe("Test getting a users disaster notifications", () => {
 
     test("Test pagination", async () => {
         // User 3 should have 25 notifications
-        const response1 = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}`);
+        const response1 = await app.request(TESTING_PREFIX + `/notifications`, {
+            method: "GET",
+            headers: {
+                "userId": "0189e585-a52b-7bcf-982d-a1c5230b3d40"
+            }
+        });
+        
         const result = JSON.parse(await response1.text());
         // Should only return 20 (default limit) when there are 25 notifications
         expect(result.length).toBe(20);
         expect(response1.status).toBe(200);
 
         const response2 = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}?limit=5&page=1`
-        );
+            TESTING_PREFIX + `/notifications?limit=5&page=1`, {
+            method: "GET",
+            headers: {
+                "userId": "0189e585-a52b-7bcf-982d-a1c5230b3d40"
+            }
+        });
         const result2 = JSON.parse(await response2.text());
         expect(result2.length).toBe(5); // Return limit amount
         expect(response2.status).toBe(200);
 
         const response3 = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}?limit=4&page=3`
-        );
+            TESTING_PREFIX + `/notifications?limit=4&page=3`, {
+            method: "GET",
+            headers: {
+                "userId": "0189e585-a52b-7bcf-982d-a1c5230b3d40"
+            }
+        });
         const result3 = JSON.parse(await response3.text());
         expect(result3.length).toBe(4); // Return limit amount
         expect(response3.status).toBe(200);
@@ -184,22 +213,35 @@ describe("Test getting a users disaster notifications", () => {
 
     test("Test pagination out of bounds limit/request", async () => {
         // User 3 should have 25 notifications
-        const response1 = await app.request(TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}`);
+        const response1 = await app.request(TESTING_PREFIX + `/notifications`, {
+            method: "GET",
+            headers: {
+                "userId": "0189e585-a52b-7bcf-982d-a1c5230b3d40"
+            }
+        });
         const result = JSON.parse(await response1.text());
         // Should only return 20 (default limit) when there are 25 notifications
         expect(result.length).toBe(20);
         expect(response1.status).toBe(200);
 
         const response2 = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}?limit=5&page=100`
-        );
+            TESTING_PREFIX + `/notifications?limit=5&page=100`, {
+            method: "GET",
+            headers: {
+                "userId": "0199e585-a52b-7bcf-982d-a1c5230b3d40"
+            }
+        });
         const result2 = JSON.parse(await response2.text());
         expect(result2.length).toBe(0); // Return limit amount
         expect(response2.status).toBe(200);
 
         const response3 = await app.request(
-            TESTING_PREFIX + `/disasterNotification/${testData.users.user3.id}?limit=9999&page=1`
-        );
+            TESTING_PREFIX + `/notifications?limit=9999&page=1`, {
+            method: "GET",
+            headers: {
+                "userId": "0199e585-621d-744a-81e2-8cc93d48b23d"
+            }
+        });
         // const result3 = JSON.parse(await response3.text())
         expect(response3.status).toBe(400);
     });

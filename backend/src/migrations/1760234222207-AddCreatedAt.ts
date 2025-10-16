@@ -4,10 +4,10 @@ export class AddCreatedAt1760234222207 implements MigrationInterface {
     name = 'AddCreatedAt1760234222207';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "disasterNotification" ADD "createdAt" TIMESTAMP NOT NULL DEFAULT now()`);
+        await queryRunner.query(`ALTER TABLE "notifications" ADD "createdAt" TIMESTAMP NOT NULL DEFAULT now()`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "disasterNotification" DROP COLUMN "createdAt"`);
+        await queryRunner.query(`ALTER TABLE "notifications" DROP COLUMN "createdAt"`);
     }
 }
