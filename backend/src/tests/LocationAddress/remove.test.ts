@@ -12,7 +12,7 @@ describe("Remove Address Tests", () => {
     let app: Hono;
     let backup: IBackup;
     let dataSource: DataSource;
-    let companyId: String;
+    let companyId: string;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
@@ -52,13 +52,13 @@ describe("Remove Address Tests", () => {
             streetAddress: "123 Main Street",
             postalCode: "94105",
             county: "San Francisco County",
-            companyId: companyId,
         };
 
         const response = await app.request(TESTING_PREFIX + "/location-address", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "companyId": companyId,
             },
             body: JSON.stringify(requestBody),
         });
@@ -116,12 +116,14 @@ describe("Remove Address Tests", () => {
             streetAddress: "123 Main Street",
             postalCode: "94105",
             county: "San Francisco County",
-            companyId: companyId,
         };
 
         const createResponse = await app.request(TESTING_PREFIX + "/location-address", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json",
+                "companyId": companyId,
+            },
             body: JSON.stringify(createBody),
         });
 

@@ -28,7 +28,7 @@ export class CompanyController implements ICompanyController {
 
     getCompanyById = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyByIdResponse, 200>> => {
-            const id = ctx.req.param("id");
+            const id = ctx.get("companyId");
             if (!validate(id)) {
                 return ctx.json({ error: "Invalid company ID format" }, 400);
             }
@@ -41,14 +41,15 @@ export class CompanyController implements ICompanyController {
         async (ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 201>> => {
             const json = await ctx.req.json();
             const payload = CreateCompanyDTOSchema.parse(json);
-            const company = await this.companyService.createCompany(payload);
+            const userId = ctx.get("userId")
+            const company = await this.companyService.createCompany(payload, userId);
             return ctx.json(company, 201);
         }
     );
 
     updateQuickbooksImportTime = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 200>> => {
-            const companyId = ctx.req.param("id");
+            const companyId = ctx.get("companyId");
             const body = await ctx.req.json();
 
             const parseResult = UpdateQuickBooksImportTimeDTOSchema.safeParse({
@@ -79,7 +80,7 @@ export class CompanyController implements ICompanyController {
 
     getCompanyLocationsById = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetLocationAddressResponse[], 200>> => {
-            const id = ctx.req.param("id");
+            const id = ctx.get("companyId");
             if (!validate(id)) {
                 return ctx.json({ error: "Invalid company ID format" }, 400);
             }

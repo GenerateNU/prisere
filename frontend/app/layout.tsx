@@ -1,16 +1,13 @@
 "use client";
-import { Geist, Geist_Mono } from "next/font/google";
+import { PT_Sans } from "next/font/google";
 import "./globals.css";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import NavBar from "./NavBar";
+import { usePathname } from "next/navigation";
 
-const geistSans = Geist({
-    variable: "--font-geist-sans",
-    subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
+const ptSans = PT_Sans({
+    weight: ["400", "700"],
     subsets: ["latin"],
 });
 
@@ -19,6 +16,7 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const pathname = usePathname();
     const [queryClient] = useState(
         () =>
             new QueryClient({
@@ -30,10 +28,18 @@ export default function RootLayout({
                 },
             })
     );
+
+    const hideNavbar = pathname.includes('/login') || pathname.includes('/signup');
+
     return (
         <html lang="en">
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+            <body className={`${ptSans.className} ${ptSans.className} antialiased`}>
+                <div>
+                    {!hideNavbar && <NavBar />}
+                    <main className={!hideNavbar ? "ml-[300px]" : ""}>
+                        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+                    </main>
+                </div>
             </body>
         </html>
     );

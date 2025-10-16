@@ -28,7 +28,7 @@ export class PreferencesController implements IPreferencesController {
     constructor(private preferenceService: IPreferenceService) {}
 
     getUserPreferences = withControllerErrorHandling(async (ctx: Context) => {
-        const { id: userId } = GetUserNotificationPreferencesRequestParams.parse(ctx.req.param());
+        const userId = ctx.get("userId");
 
         const preferences = await this.preferenceService.getUserPreferences(userId);
 
@@ -47,7 +47,7 @@ export class PreferencesController implements IPreferencesController {
     });
 
     updateUserPreferences = withControllerErrorHandling(async (ctx: Context) => {
-        const { id: userId } = UpdateUserNotificationPreferencesRequestParams.parse(ctx.req.param());
+        const userId = ctx.get("userId");
         const preferences = UpdateUesrNotificationPreferencesDTOSchema.parse(await ctx.req.json());
 
         const result = await this.preferenceService.updateUserPreferences({ userId, preferences });

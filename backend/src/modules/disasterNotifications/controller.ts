@@ -36,7 +36,7 @@ export class DisasterNotificationController implements IDisasterNotificationCont
 
     getUserNotifications = withControllerErrorHandling(
         async (ctx: Context): Promise<TypedResponse<GetUsersDisasterNotificationsResponse>> => {
-            const userId = ctx.req.param("id");
+            const userId = ctx.get("userId");
             const type = ctx.req.query("type"); // ?type=web or type=email
             const page = parseInt(ctx.req.query("page") || "1");
             const limit = parseInt(ctx.req.query("limit") || "20");
