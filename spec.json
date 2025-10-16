@@ -2909,7 +2909,7 @@
                         "type": "string",
                         "minLength": 1
                       },
-                      "quickBooksID": {
+                      "quickBooksId": {
                         "type": "number"
                       },
                       "totalAmountCents": {
@@ -2924,6 +2924,9 @@
                       },
                       "dateCreated": {
                         "type": "string"
+                      },
+                      "lastUpdated": {
+                        "type": "string"
                       }
                     },
                     "required": [
@@ -2931,7 +2934,8 @@
                       "companyId",
                       "totalAmountCents",
                       "isRefund",
-                      "dateCreated"
+                      "dateCreated",
+                      "lastUpdated"
                     ]
                   }
                 }
