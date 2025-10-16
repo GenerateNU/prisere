@@ -1,6 +1,6 @@
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { DataSource } from "typeorm";
-import { CreateDisasterDTO } from "../../types/disaster";
+import { CreateDisasterDTO } from "../../types/fema-disaster";
 
 export interface IDisasterTransaction {
     createDisaster(payload: CreateDisasterDTO): Promise<FemaDisaster>;

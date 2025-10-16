@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import { DisasterTransaction } from "../../disaster/transaction";
-import { CreateDisasterDTOSchema } from "../../../types/disaster";
+import { CreateDisasterDTOSchema } from "../../../types/fema-disaster";
 import { fetch } from "bun";
 import { FemaDisaster } from "../../../entities/FemaDisaster";
 import { logMessageToFile } from "../../../utilities/logger";

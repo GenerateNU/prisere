@@ -7,7 +7,7 @@ import {
     CreateDisasterDTOSchema,
     CreateDisasterResponseSchema,
     GetAllDisastersResponseSchema,
-} from "../../types/disaster";
+} from "../../types/fema-disaster";
 import { openApiErrorCodes } from "../../utilities/error";
 
 export const addOpenApiDisasterRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
