@@ -63,7 +63,10 @@ export class LocationAddressService implements ILocationAddressService {
                 fipsCountyCode: Number(fipsLocation.fipsCountyCode),
             };
             // Pass complete data with fips codes to transaction layer
-            const locationAddress = await this.locationAddressTransaction.createLocationAddress(completePayload, companyId);
+            const locationAddress = await this.locationAddressTransaction.createLocationAddress(
+                completePayload,
+                companyId
+            );
 
             if (!locationAddress) {
                 throw new Error("Failed to create location address");

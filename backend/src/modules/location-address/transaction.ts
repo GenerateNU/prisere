@@ -54,7 +54,7 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
     async createLocationAddress(payload: CreateLocationAddressDTO, companyId: string): Promise<LocationAddress | null> {
         const address: LocationAddress = plainToClass(LocationAddress, {
             ...payload,
-            companyId: companyId
+            companyId: companyId,
         });
         const newAddress: LocationAddress = await this.db.getRepository(LocationAddress).save(address);
 

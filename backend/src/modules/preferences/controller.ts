@@ -2,10 +2,8 @@ import { Context, TypedResponse } from "hono";
 import { ControllerResponse } from "../../utilities/response";
 import { IPreferenceService } from "./service";
 import {
-    GetUserNotificationPreferencesRequestParams,
     GetUserNotificationPreferencesResponse,
     UpdateUesrNotificationPreferencesDTOSchema,
-    UpdateUserNotificationPreferencesRequestParams,
     UpdateUserNotificationPreferencesResponse,
     UserMissingErrorResponse,
 } from "../../types/Preferences";

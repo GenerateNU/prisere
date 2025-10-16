@@ -30,8 +30,8 @@ describe("Test getting a users disaster notifications", () => {
         const response = await app.request(TESTING_PREFIX + `/disasterNotification`, {
             method: "GET",
             headers: {
-                "userId": "0199e585-621d-744a-81e2-8cc93d48b23d"
-            }
+                userId: "0199e585-621d-744a-81e2-8cc93d48b23d",
+            },
         });
 
         expect(response.status).toBe(200);
@@ -58,8 +58,8 @@ describe("Test getting a users disaster notifications", () => {
         const response2 = await app.request(TESTING_PREFIX + `/disasterNotification`, {
             method: "GET",
             headers: {
-                "userId": "0199e585-a52b-7bcf-982d-a1c5230b3d40"
-            }
+                userId: "0199e585-a52b-7bcf-982d-a1c5230b3d40",
+            },
         });
 
         const responseText2 = await response2.text();
@@ -89,8 +89,8 @@ describe("Test getting a users disaster notifications", () => {
 
         const response = await app.request(TESTING_PREFIX + `/disasterNotification`, {
             headers: {
-                "userId": fakeUserId,
-            }
+                userId: fakeUserId,
+            },
         });
 
         const responseText = await response.text();
@@ -109,8 +109,8 @@ describe("Test getting a users disaster notifications", () => {
     test("GET user ID with incorrect format returns a 400", async () => {
         const response = await app.request(TESTING_PREFIX + `/disasterNotification`, {
             headers: {
-                "userId": "fake-id"
-            }
+                userId: "fake-id",
+            },
         });
 
         const responseText = await response.text();

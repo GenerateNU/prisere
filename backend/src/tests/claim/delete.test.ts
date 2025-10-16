@@ -28,15 +28,13 @@ describe("DELETE /claims/:id", () => {
     });
 
     test("DELETE /claims - Successful Delete", async () => {
-        const getResponseBefore = await app.request(
-            TESTING_PREFIX + "/claims/company", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "companyId": "5667a729-f000-4190-b4ee-7957badca27b",
-                }
-            }
-        );
+        const getResponseBefore = await app.request(TESTING_PREFIX + "/claims/company", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: "5667a729-f000-4190-b4ee-7957badca27b",
+            },
+        });
         const getBodyBefore = await getResponseBefore.json();
 
         expect(getBodyBefore.length).toBe(2);
@@ -50,15 +48,13 @@ describe("DELETE /claims/:id", () => {
         expect(response.status).toBe(200);
         expect(body.id).toBe("0174375f-e7c4-4862-bb9f-f58318bb2e7d");
 
-        const getResponseAfter = await app.request(
-            TESTING_PREFIX + "/claims/company", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "companyId": "5667a729-f000-4190-b4ee-7957badca27b",
-                }
-            }
-        );
+        const getResponseAfter = await app.request(TESTING_PREFIX + "/claims/company", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: "5667a729-f000-4190-b4ee-7957badca27b",
+            },
+        });
         const getBodyAfter = await getResponseAfter.json();
 
         expect(getBodyAfter.length).toBe(1);

@@ -1,10 +1,8 @@
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { DataSource } from "typeorm";
 import {
-    GetUserNotificationPreferencesRequestParams,
     GetUserNotificationPreferencesSchema,
     UpdateUesrNotificationPreferencesDTOSchema,
-    UpdateUserNotificationPreferencesRequestParams,
     UpdateUserNotificationPreferencesSchema,
     UserMissingErrorSchema,
 } from "../../types/Preferences";
