@@ -19,14 +19,9 @@ export class SelfDisasterController implements ISelfDisasterController {
     createSelfDisaster = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<CreateSelfDisasterResponse, 201>> => {
             const json = await ctx.req.json();
-            try {
-                const payload = CreateSelfDisasterDTOSchema.parse(json);
-                const disaster = await this.disasterService.createSelfDisaster(payload);
-                return ctx.json(disaster, 201);
-            } catch (err) {
-                console.log(err);
-                throw err;
-            }
+            const payload = CreateSelfDisasterDTOSchema.parse(json);
+            const disaster = await this.disasterService.createSelfDisaster(payload);
+            return ctx.json(disaster, 201);
         }
     );
 
