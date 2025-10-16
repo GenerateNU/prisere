@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CreateCompanyResponseSchema } from "./Company";
 
 // Define the LocationAddress schema (assuming the structure based on CreateLocationAddressResponseSchema)
 // If you have different fields in your LocationAddress entity, adjust accordingly
@@ -15,6 +16,22 @@ export const LocationAddressSchema = z.object({
     companyId: z.uuid(),
     fipsStateCode: z.number(),
     fipsCountyCode: z.number(),
+});
+
+export const LocationAddressSchemaType = z.object({
+    id: z.string(),
+    country: z.string(),
+    stateProvince: z.string(),
+    city: z.string(),
+    streetAddress: z.string(),
+    postalCode: z.string().nonempty().regex(/^\d+$/, {
+        message: "Must be a non-negative number string",
+    }),
+    county: z.string().optional(),
+    companyId: z.uuid(),
+    fipsStateCode: z.number(),
+    fipsCountyCode: z.number(),
+    company: CreateCompanyResponseSchema,
 });
 
 export const CreateLocationAddressSchema = z.object({

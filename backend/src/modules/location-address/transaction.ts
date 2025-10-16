@@ -33,7 +33,9 @@ export interface ILocationAddressTransaction {
      * @param disasters Array of FEMA disasters to check
      * @returns Promise resolving to array of user-disaster pairs
      */
-    getUsersAffectedByDisasters(disasters: FemaDisaster[]): Promise<{ user: User; disaster: FemaDisaster }[]>;
+    getUsersAffectedByDisasters(
+        disasters: FemaDisaster[]
+    ): Promise<{ user: User; disaster: FemaDisaster; location: LocationAddress }[]>;
 }
 
 /**
@@ -78,7 +80,9 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
         return result;
     }
 
-    async getUsersAffectedByDisasters(disasters: FemaDisaster[]): Promise<{ user: User; disaster: FemaDisaster }[]> {
+    async getUsersAffectedByDisasters(
+        disasters: FemaDisaster[]
+    ): Promise<{ user: User; disaster: FemaDisaster; location: LocationAddress }[]> {
         const fipsPairs = disasters.map((d) => ({
             fipsStateCode: d.fipsStateCode,
             fipsCountyCode: d.fipsCountyCode,
@@ -119,7 +123,7 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
         logMessageToFile(`There are ${locations.length} locations that are affected by new FEMA Disasters.`);
 
         // Map to user-disaster pairs
-        const userDisasterPairs: { user: User; disaster: FemaDisaster }[] = [];
+        const userDisasterPairs: { user: User; disaster: FemaDisaster; location: LocationAddress }[] = [];
 
         for (const location of locations) {
             // Find which disasters affect this location, there could be multiple
@@ -136,6 +140,7 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
                     userDisasterPairs.push({
                         user: location.company.user,
                         disaster: disaster,
+                        location: location,
                     });
                 }
             }

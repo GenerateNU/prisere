@@ -24,7 +24,7 @@ export interface ICompanyTransaction {
 
     /**
      * Updates a company's last quickbooks import time
-     * @param paylaod ID of company import time to update, Last quickbooks import time, Date
+     * @param payload ID of company import time to update, Last quickbooks import time, Date
      */
     updateLastQuickBooksImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company | null>;
 

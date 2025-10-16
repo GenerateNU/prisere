@@ -3,11 +3,13 @@ import { User } from "../../entities/User";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { DisasterNotification } from "../../entities/DisasterNotification";
 import { NotificationType } from "../../types/NotificationEnums";
+import { randomUUID } from "crypto";
 
 export interface TestDataSetup {
     users: {
         user1: User;
         user2: User;
+        user3: User;
     };
     disasters: {
         disaster1: FemaDisaster;
@@ -32,6 +34,12 @@ export const createTestData = async (dataSource: DataSource, includeNotification
             firstName: "Jane",
             lastName: "Smith",
             email: "jane@prisere.com",
+        },
+        {
+            id: "0189e585-a52b-7bcf-982d-a1c5230b3d40",
+            firstName: "Jane",
+            lastName: "Buddy",
+            email: "janeB@prisere.com",
         },
     ];
 
@@ -74,6 +82,7 @@ export const createTestData = async (dataSource: DataSource, includeNotification
         users: {
             user1: { ...seedUsers[0] } as User,
             user2: { ...seedUsers[1] } as User,
+            user3: { ...seedUsers[2] } as User,
         },
         disasters: {
             disaster1: { ...seedDisasters[0], disasterNotifications: [] } as FemaDisaster,
@@ -85,7 +94,7 @@ export const createTestData = async (dataSource: DataSource, includeNotification
     if (includeNotifications) {
         const seedNotifications = [
             {
-                id: "0199e586-14e2-76c7-bb29-089add6ad92f",
+                id: randomUUID(),
                 userId: seedUsers[0].id,
                 femaDisasterId: seedDisasters[0].id,
                 notificationType: NotificationType.WEB,
@@ -93,14 +102,48 @@ export const createTestData = async (dataSource: DataSource, includeNotification
                 lastSentAt: new Date(),
             },
             {
-                id: "0199e586-2a87-7074-94db-a4d7cd9321c0",
+                id: randomUUID(),
                 userId: seedUsers[1].id,
                 femaDisasterId: seedDisasters[1].id,
                 notificationType: NotificationType.EMAIL,
                 firstSentAt: new Date(),
                 lastSentAt: new Date(),
             },
+            {
+                id: randomUUID(),
+                userId: seedUsers[1].id,
+                femaDisasterId: seedDisasters[1].id,
+                notificationType: NotificationType.EMAIL,
+                firstSentAt: new Date(),
+                lastSentAt: new Date(),
+            },
+            {
+                id: randomUUID(),
+                userId: seedUsers[1].id,
+                femaDisasterId: seedDisasters[1].id,
+                notificationType: NotificationType.EMAIL,
+                firstSentAt: new Date(),
+                lastSentAt: new Date(),
+            },
+            {
+                id: randomUUID(),
+                userId: seedUsers[1].id,
+                femaDisasterId: seedDisasters[1].id,
+                notificationType: NotificationType.WEB,
+                firstSentAt: new Date(),
+                lastSentAt: new Date(),
+            },
         ];
+        for (let i = 0; i < 25; i++) {
+            seedNotifications.push({
+                id: randomUUID(),
+                userId: seedUsers[2].id,
+                femaDisasterId: seedDisasters[1].id,
+                notificationType: NotificationType.WEB,
+                firstSentAt: new Date(),
+                lastSentAt: new Date(),
+            });
+        }
 
         const notificationRepository = dataSource.getRepository(DisasterNotification);
         await notificationRepository.insert(seedNotifications);

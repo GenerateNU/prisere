@@ -2,7 +2,7 @@ import { DisasterNotification } from "../../entities/DisasterNotification";
 import { IDisasterNotificationTransaction } from "./transaction";
 import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
-import { GetUsersDisasterNotificationsDTO } from "../../types/DisasterNotification";
+import { GetUsersDisasterNotificationsDTO, NotificationTypeFilter } from "../../types/DisasterNotification";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { ILocationAddressTransaction } from "../location-address/transaction";
 import { NotificationStatus, NotificationType } from "../../types/NotificationEnums";
@@ -11,12 +11,19 @@ import { logMessageToFile } from "../../utilities/logger";
 import { IPreferenceTransaction } from "../preferences/transaction";
 
 export interface IDisasterNotificationService {
-    getUserNotifications(payload: GetUsersDisasterNotificationsDTO): Promise<DisasterNotification[]>;
-    acknowledgeNotification(notificationId: string): Promise<DisasterNotification>;
-    dismissNotification(notificationId: string): Promise<DisasterNotification>;
+    getUserNotifications(
+        payload: GetUsersDisasterNotificationsDTO,
+        type?: NotificationTypeFilter,
+        page?: number,
+        limit?: number,
+        status?: string
+    ): Promise<DisasterNotification[]>;
+    markAsReadNotification(notificationId: string): Promise<DisasterNotification>;
+    markUnreadNotification(notificationId: string): Promise<DisasterNotification>;
     bulkCreateNotifications(notifications: Partial<DisasterNotification>[]): Promise<DisasterNotification[]>;
     deleteNotification(notificationId: string): Promise<boolean>;
     processNewDisasters(newDisasters: FemaDisaster[]): Promise<boolean>;
+    markAllAsRead(userId: string): Promise<number>;
 }
 
 export class DisasterNotificationService implements IDisasterNotificationService {
@@ -35,29 +42,29 @@ export class DisasterNotificationService implements IDisasterNotificationService
     }
 
     getUserNotifications = withServiceErrorHandling(
-        async (payload: GetUsersDisasterNotificationsDTO): Promise<DisasterNotification[]> => {
-            const notifications = await this.notificationTransaction.getUserNotifications(payload);
-            if (!notifications) {
-                throw Boom.notFound("Unable to find notifications");
-            }
-            return notifications;
+        async (
+            payload: GetUsersDisasterNotificationsDTO,
+            type?: NotificationTypeFilter,
+            page?: number,
+            limit?: number,
+            status?: string
+        ): Promise<DisasterNotification[]> => {
+            return await this.notificationTransaction.getUserNotifications(payload, type, page, limit, status);
         }
     );
 
-    acknowledgeNotification = withServiceErrorHandling(
-        async (notificationId: string): Promise<DisasterNotification> => {
-            const notification = await this.notificationTransaction.acknowledgeNotification(notificationId);
-            if (!notification) {
-                throw Boom.notFound("Notification not found or could not be acknowledged");
-            }
-            return notification;
-        }
-    );
-
-    dismissNotification = withServiceErrorHandling(async (notificationId: string): Promise<DisasterNotification> => {
-        const notification = await this.notificationTransaction.dismissNotification(notificationId);
+    markAsReadNotification = withServiceErrorHandling(async (notificationId: string): Promise<DisasterNotification> => {
+        const notification = await this.notificationTransaction.markAsReadNotification(notificationId);
         if (!notification) {
-            throw Boom.notFound("Notification not found or could not be dismissed");
+            throw Boom.notFound("Notification not found or could not be read");
+        }
+        return notification;
+    });
+
+    markUnreadNotification = withServiceErrorHandling(async (notificationId: string): Promise<DisasterNotification> => {
+        const notification = await this.notificationTransaction.markUnreadNotification(notificationId);
+        if (!notification) {
+            throw Boom.notFound("Notification not found or could not be markUnreaded");
         }
         return notification;
     });
@@ -99,13 +106,14 @@ export class DisasterNotificationService implements IDisasterNotificationService
                 `Found ${userDisasterPairs.length} user-disaster combinations to create notifications for`
             );
 
-            for (const { user, disaster } of userDisasterPairs) {
+            for (const { user, disaster, location } of userDisasterPairs) {
                 const preferences = await this.userPreferences.getOrCreateUserPreferences(user.id);
                 // Check web notification preferences
                 if (preferences?.webNotificationsEnabled) {
                     notificationsToCreate.push({
                         userId: user.id,
                         femaDisasterId: disaster.id,
+                        locationAddressId: location.id,
                         notificationType: NotificationType.WEB,
                         notificationStatus: NotificationStatus.UNREAD,
                         user: user,
@@ -118,6 +126,7 @@ export class DisasterNotificationService implements IDisasterNotificationService
                     notificationsToCreate.push({
                         userId: user.id,
                         femaDisasterId: disaster.id,
+                        locationAddressId: location.id,
                         notificationType: NotificationType.EMAIL,
                         notificationStatus: NotificationStatus.UNREAD,
                         user: user,
@@ -140,5 +149,9 @@ export class DisasterNotificationService implements IDisasterNotificationService
             logMessageToFile(`Error processing new disasters: ${error}`);
             return false;
         }
+    });
+
+    markAllAsRead = withServiceErrorHandling(async (userId: string): Promise<number> => {
+        return await this.notificationTransaction.markAllAsRead(userId);
     });
 }

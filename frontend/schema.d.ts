@@ -827,7 +827,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/notifications/user": {
+    "/notifications": {
         parameters: {
             query?: never;
             header?: never;
@@ -836,11 +836,16 @@ export interface paths {
         };
         /**
          * Get user notifications
-         * @description Retrieves all disaster notifications for a specific user
+         * @description Retrieves all disaster notifications for a specific user with optional filtering and pagination
          */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    type?: "web" | "email";
+                    status?: "unread" | "read" | "acknowledged";
+                    page?: string;
+                    limit?: string;
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
@@ -864,10 +869,50 @@ export interface paths {
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;
+                            createdAt: string;
+                            user: {
+                                id: string;
+                                firstName: string;
+                                lastName: string;
+                                email?: string;
+                                companyId?: string | null;
+                            };
+                            femaDisaster: {
+                                /** Format: uuid */
+                                id: string;
+                                disasterNumber: number;
+                                fipsStateCode: number;
+                                /** Format: date-time */
+                                declarationDate: string;
+                                incidentBeginDate: string | null;
+                                incidentEndDate: string | null;
+                                fipsCountyCode: number;
+                                declarationType: string;
+                                designatedArea: string;
+                                designatedIncidentTypes: string | null;
+                            }[];
+                            locationAddress: {
+                                id: string;
+                                country: string;
+                                stateProvince: string;
+                                city: string;
+                                streetAddress: string;
+                                postalCode: string;
+                                county?: string;
+                                /** Format: uuid */
+                                companyId: string;
+                                fipsStateCode: number;
+                                fipsCountyCode: number;
+                                company: {
+                                    id: string;
+                                    name: string;
+                                    lastQuickBooksImportTime?: string;
+                                };
+                            };
                         }[];
                     };
                 };
-                /** @description Invalid user ID format */
+                /** @description Invalid user ID format or query parameters */
                 400: {
                     headers: {
                         [name: string]: unknown;
@@ -899,7 +944,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/notifications/{id}/acknowledge": {
+    "/notifications/{id}/markAsRead": {
         parameters: {
             query?: never;
             header?: never;
@@ -913,8 +958,8 @@ export interface paths {
         options?: never;
         head?: never;
         /**
-         * Acknowledge notification
-         * @description Marks a specific notification as acknowledged
+         * Mark notification as read
+         * @description Marks a specific notification as read and updates readAt timestamp
          */
         patch: {
             parameters: {
@@ -927,7 +972,7 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Notification successfully acknowledged */
+                /** @description Notification successfully marked as read */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -944,6 +989,7 @@ export interface paths {
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;
+                            createdAt: string;
                         };
                     };
                 };
@@ -973,7 +1019,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/notifications/{id}/dismiss": {
+    "/notifications/{id}/markUnread": {
         parameters: {
             query?: never;
             header?: never;
@@ -987,8 +1033,8 @@ export interface paths {
         options?: never;
         head?: never;
         /**
-         * Dismiss notification
-         * @description Marks a specific notification as read/dismissed
+         * Mark notification as unread
+         * @description Marks a specific notification as unread and clears the readAt timestamp
          */
         patch: {
             parameters: {
@@ -1001,7 +1047,7 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Notification successfully dismissed */
+                /** @description Notification successfully marked as unread */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -1018,6 +1064,7 @@ export interface paths {
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;
+                            createdAt: string;
                         };
                     };
                 };
@@ -1078,7 +1125,7 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description Notifications successfully created */
+                /** @description Notifications successfully created with createdAt timestamps */
                 201: {
                     headers: {
                         [name: string]: unknown;
@@ -1095,6 +1142,7 @@ export interface paths {
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;
+                            createdAt: string;
                         }[];
                     };
                 };
@@ -1203,6 +1251,70 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/notifications/user/markAllAsRead": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Mark all notifications as read
+         * @description Marks all unread notifications for a specific user as read
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description All notifications successfully marked as read */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            success: boolean;
+                            updatedCount: number;
+                        };
+                    };
+                };
+                /** @description Invalid user ID format */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description User not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/quickbooks": {

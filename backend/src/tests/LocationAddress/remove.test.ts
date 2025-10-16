@@ -63,17 +63,6 @@ describe("Remove Address Tests", () => {
             body: JSON.stringify(requestBody),
         });
 
-        if (response.status === 500) {
-            try {
-                const errorData = await response.json();
-                console.log("500 Error details:", errorData);
-            } catch (error) {
-                const errorText = await response.text();
-                console.log("500 Error text:", errorText, error);
-            }
-            throw new Error(`Location creation failed with 500 error`);
-        }
-
         expect(response.status).toBe(201);
         const location = await response.json();
         const locationId = location.id;

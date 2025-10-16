@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { Company } from "./Company.js";
+import { DisasterNotification } from "./DisasterNotification.js";
 import { ClaimLocation } from "./ClaimLocation.js";
 
 //Represents an address for a location of a company
@@ -38,6 +39,9 @@ export class LocationAddress {
 
     @Column()
     fipsCountyCode!: number;
+
+    @OneToMany(() => DisasterNotification, (notification: { locationAddress: any }) => notification.locationAddress)
+    disasterNotifications?: DisasterNotification[];
 
     @OneToMany(() => ClaimLocation, (claimLocation) => claimLocation.locationAddress)
     claimLocations?: ClaimLocation[];

@@ -31,7 +31,7 @@ const app = new Hono();
             cors({
                 origin: ["http://localhost:3000", "https://walrus-app-kwuoe.ondigitalocean.app"],
                 allowHeaders: ["Origin", "Content-Type", "Authorization"],
-                allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+                allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
                 credentials: true,
                 maxAge: 3600,
             })
