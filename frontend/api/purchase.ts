@@ -1,10 +1,7 @@
 import { Purchase } from "../types/purchase";
 import { authHeader, authWrapper, client } from "./client";
 
-export const getAllPurchasesForCompany = async (
-    pageNumber: number,
-    resultsPerPage: number
-): Promise<Purchase[]> => {
+export const getAllPurchasesForCompany = async (pageNumber: number, resultsPerPage: number): Promise<Purchase[]> => {
     const req = async (token: string): Promise<Purchase[]> => {
         const { data, error, response } = await client.GET("/purchase", {
             params: {

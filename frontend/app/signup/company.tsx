@@ -1,24 +1,24 @@
 import { setCompanyMetadata } from "@/actions/auth";
-import { createCompany} from "@/api/company";
-import { createLocation} from "@/api/location";
+import { createCompany } from "@/api/company";
+import { createLocation } from "@/api/location";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type Company, CreateCompanyRequest } from "@/types/company";
 import { CreateLocationRequest } from "@/types/location";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react"
-import { Dispatch, SetStateAction } from 'react'
+import React, { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
-interface CompanyInfoProps{
-    progress: number
-    setProgress: Dispatch<SetStateAction<number>>
+interface CompanyInfoProps {
+    progress: number;
+    setProgress: Dispatch<SetStateAction<number>>;
 }
 
-export default function Company({ progress, setProgress }: CompanyInfoProps){
+export default function Company({ progress, setProgress }: CompanyInfoProps) {
     const router = useRouter();
     const [companyPayload, setCompanyPayload] = useState<CreateCompanyRequest>({
-        name: ""
+        name: "",
     });
     const [locationPayload, setLocationPayload] = useState<CreateLocationRequest>({
         country: "United States",
@@ -26,13 +26,17 @@ export default function Company({ progress, setProgress }: CompanyInfoProps){
         city: "",
         streetAddress: "",
         postalCode: "",
-        county: "Roxbury"
+        county: "Roxbury",
     });
 
-    const { isPending:isLocationPending, error:locationError,  mutate:mutateLocation} = useMutation({
+    const {
+        isPending: isLocationPending,
+        error: locationError,
+        mutate: mutateLocation,
+    } = useMutation({
         mutationFn: (payload: CreateLocationRequest) => createLocation(payload),
         onSuccess: () => {
-            router.push("/")
+            router.push("/");
         },
     });
 
@@ -40,10 +44,9 @@ export default function Company({ progress, setProgress }: CompanyInfoProps){
         mutationFn: (payload: CreateCompanyRequest) => createCompany(payload),
         onSuccess: async (data: Company) => {
             await setCompanyMetadata(data.id);
-            mutateLocation(locationPayload)
+            mutateLocation(locationPayload);
         },
     });
-    
 
     return (
         <div className="max-w-lg w-full space-y-8">
@@ -93,14 +96,14 @@ export default function Company({ progress, setProgress }: CompanyInfoProps){
                     type="name"
                     required
                     onChange={(e) => setLocationPayload({ ...locationPayload, postalCode: e.target.value })}
-                />  
+                />
             </div>
             <div className="w-full flex flex-col gap-2 items-center">
                 <Button type="button" onClick={() => mutate(companyPayload)} disabled={isPending || isLocationPending}>
                     Next
                 </Button>
-            {(error || locationError) && <p> {error?.message || locationError?.message} </p>}
+                {(error || locationError) && <p> {error?.message || locationError?.message} </p>}
             </div>
         </div>
-    )
+    );
 }

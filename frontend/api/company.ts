@@ -8,7 +8,7 @@ export const createCompany = async (payload: CreateCompanyRequest): Promise<Comp
             body: payload,
         });
         if (response.ok) {
-            console.log(data)
+            console.log(data);
             return data!;
         } else {
             throw Error(error?.error);

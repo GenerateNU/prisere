@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function NextSteps() {
     return (
-        <Card className="h-[371] p-[25px] border-[1px] border-black" >
+        <Card className="h-[371] p-[25px] border-[1px] border-black">
             <CardTitle className="text-[25px]">Next Steps</CardTitle>
             <CardContent className="flex-1 p-0">
                 <ul className="flex flex-col gap-[15px]">
@@ -33,11 +33,11 @@ export default function NextSteps() {
                             </div>
                         </Link>
                     </li>
-                </ul >
-            </CardContent >
+                </ul>
+            </CardContent>
             <CardFooter className="p-0 flex justify-end">
                 <Button className="h-[32px] text-[10px] rounded-[10px] w-fit ">See Business Risk</Button>
             </CardFooter>
-        </Card >
+        </Card>
     );
 }

@@ -13,7 +13,7 @@ import {
 import { useState } from "react";
 import { columns } from "./expense-table";
 
-export default function BasicTable({ purchases }: { purchases: Purchase[]}) {
+export default function BasicTable({ purchases }: { purchases: Purchase[] }) {
     const [sorting, setSorting] = useState<SortingState>([]);
     const table = useReactTable({
         data: purchases,
@@ -48,9 +48,7 @@ export default function BasicTable({ purchases }: { purchases: Purchase[]}) {
                         const item = row.original;
                         return (
                             <TableRow key={item.id}>
-                                <TableCell>
-                                    {item.isRefund ? "Refund" : "Purchase"}
-                                </TableCell>
+                                <TableCell>{item.isRefund ? "Refund" : "Purchase"}</TableCell>
                                 <TableCell>${(item.totalAmountCents / 100).toFixed(2)}</TableCell>
                                 <TableCell>{new Date(item.dateCreated).toLocaleDateString()}</TableCell>
                                 <TableCell>WIP</TableCell>
