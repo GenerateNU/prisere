@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 import { redirect } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
-import UserInfoPage from "./user-info";
 import { signupInitialState } from "@/types/user";
+import Onboarding from "./onboarding";
 
 const initialState: signupInitialState = {
     success: false,
@@ -28,7 +28,7 @@ export default function SignUpPage() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-stone">
             {profileStage ? (
-                <UserInfoPage email={state.email!} />
+                <Onboarding email={state.email!} />
             ) : (
                 <div className="max-w-lg w-full space-y-8">
                     <div className="flex justify-center">

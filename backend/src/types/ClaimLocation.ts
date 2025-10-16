@@ -16,10 +16,6 @@ export const CreateClaimLocationDTOSchema = z.object({
 export const CreateClaimLocationResponseSchema = ClaimLocationSchema;
 
 /* GET */
-export const GetLocationsByCompanyIdDTOSchema = z.object({
-    companyId: z.uuid(),
-});
-
 export const GetLocationsByCompanyIdResponseSchema = z.array(LocationAddressSchema);
 
 /* DELETE */
@@ -43,7 +39,6 @@ export type ClaimLocation = z.infer<typeof ClaimLocationSchema>;
 export type CreateClaimLocationDTO = z.infer<typeof CreateClaimLocationDTOSchema>;
 export type CreateClaimLocationResponse = z.infer<typeof CreateClaimLocationResponseSchema>;
 
-export type GetLocationsByCompanyIdDTO = z.infer<typeof GetLocationsByCompanyIdDTOSchema>;
 export type GetLocationsByCompanyIdResponse = z.infer<typeof GetLocationsByCompanyIdResponseSchema>;
 
 export type DeleteClaimLocationDTO = z.infer<typeof DeleteClaimLocationDTOSchema>;

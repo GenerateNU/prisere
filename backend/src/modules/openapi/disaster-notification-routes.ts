@@ -93,22 +93,10 @@ const markAllAsReadRoute = createRoute({
 
 const getUserNotificationsRoute = createRoute({
     method: "get",
-    path: "/disasterNotification/{id}",
+    path: "/disasterNotification",
     summary: "Get user notifications",
     description: "Retrieves all disaster notifications for a specific user with optional filtering and pagination",
     request: {
-        params: z.object({
-            id: z
-                .string()
-                .uuid()
-                .openapi({
-                    param: {
-                        name: "id",
-                        in: "path",
-                    },
-                    example: "123e4567-e89b-12d3-a456-426614174000",
-                }),
-        }),
         query: z.object({
             type: z.enum(["web", "email"]).optional(),
             status: z.enum(["unread", "read", "acknowledged"]).optional(),

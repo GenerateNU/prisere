@@ -44,9 +44,13 @@ describe("GET /claim-locations/company/:id", () => {
         backup.restore();
     });
 
-    test("GET /claim-locations/company/:id - Success (multiple disasters, two locations)", async () => {
+    test("GET /claim-locations/company - Success (multiple disasters, two locations)", async () => {
         const companyId = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
-        const response = await app.request(TESTING_PREFIX + `/claim-locations/company/${companyId}`);
+        const response = await app.request(TESTING_PREFIX + `/claim-locations/company`, {
+            headers: {
+                "companyId": companyId,
+            }
+        });
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -57,9 +61,13 @@ describe("GET /claim-locations/company/:id", () => {
         expect(body[1].companyId).toBe(companyId);
     });
 
-    test("GET /claim-locations/company/:id - Success (one disaster, one location)", async () => {
+    test("GET /claim-locations/company- Success (one disaster, one location)", async () => {
         const companyId = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
-        const response = await app.request(TESTING_PREFIX + `/claim-locations/company/${companyId}`);
+        const response = await app.request(TESTING_PREFIX + `/claim-locations/company`, {
+            headers: {
+                "companyId": companyId,
+            }
+        });
 
         expect(response.status).toBe(200);
         const body = await response.json();
@@ -68,17 +76,25 @@ describe("GET /claim-locations/company/:id", () => {
         expect(body[0].id).toBe("b4c5d6e7-f8a9-4b0c-1d2e-3f4a5b6c7d8e");
     });
 
-    test("GET /claim-locations/company/:id - Company doesn't exist", async () => {
+    test("GET /claim-locations/company - Company doesn't exist", async () => {
         const companyId = "f47ac10b-58cc-4372-j2009-0e02b2c35470";
-        const response = await app.request(TESTING_PREFIX + `/claim-locations/company/${companyId}`);
+        const response = await app.request(TESTING_PREFIX + `/claim-locations/company`, {
+            headers: {
+                "companyId": companyId,
+            }
+        });
 
-        expect(response.status).toBe(404);
+        expect(response.status).toBe(400);
     });
 
-    test("GET /claim-locations/company/:id - invalid UUID", async () => {
+    test("GET /claim-locations/company - invalid UUID", async () => {
         const companyId = "invalid";
-        const response = await app.request(TESTING_PREFIX + `/claim-locations/company/${companyId}`);
+        const response = await app.request(TESTING_PREFIX + `/claim-locations/company`, {
+            headers: {
+                "companyId": companyId,
+            }
+        });
 
-        expect(response.status).toBe(404);
+        expect(response.status).toBe(400);
     });
 });

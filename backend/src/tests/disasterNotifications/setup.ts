@@ -24,13 +24,13 @@ export interface TestDataSetup {
 export const createTestData = async (dataSource: DataSource, includeNotifications = true): Promise<TestDataSetup> => {
     const seedUsers = [
         {
-            id: randomUUID(),
+            id: "0199e585-621d-744a-81e2-8cc93d48b23d",
             firstName: "Alice",
             lastName: "Bob",
             email: "alice@prisere.com",
         },
         {
-            id: randomUUID(),
+            id: "0199e585-a52b-7bcf-982d-a1c5230b3d40",
             firstName: "Jane",
             lastName: "Smith",
             email: "jane@prisere.com",
@@ -48,7 +48,7 @@ export const createTestData = async (dataSource: DataSource, includeNotification
 
     const seedDisasters = [
         {
-            id: randomUUID(),
+            id: "0199e585-d79d-785d-86fe-a51d51d4739f",
             disasterNumber: 1011,
             fipsStateCode: 23,
             declarationDate: new Date("2025-09-28T00:00:00.000Z"),
@@ -61,7 +61,7 @@ export const createTestData = async (dataSource: DataSource, includeNotification
             designatedIncidentTypes: "1",
         },
         {
-            id: randomUUID(),
+            id: "0199e585-ef55-7ea5-beec-f786e389d967",
             disasterNumber: 1012,
             fipsStateCode: 24,
             declarationDate: new Date("2025-09-28T00:00:00.000Z"),
@@ -94,7 +94,7 @@ export const createTestData = async (dataSource: DataSource, includeNotification
     if (includeNotifications) {
         const seedNotifications = [
             {
-                id: randomUUID(),
+                id: "0199e586-14e2-76c7-bb29-089add6ad92f",
                 userId: seedUsers[0].id,
                 femaDisasterId: seedDisasters[0].id,
                 notificationType: NotificationType.WEB,
@@ -102,23 +102,7 @@ export const createTestData = async (dataSource: DataSource, includeNotification
                 lastSentAt: new Date(),
             },
             {
-                id: randomUUID(),
-                userId: seedUsers[0].id,
-                femaDisasterId: seedDisasters[0].id,
-                notificationType: NotificationType.WEB,
-                firstSentAt: new Date(),
-                lastSentAt: new Date(),
-            },
-            {
-                id: randomUUID(),
-                userId: seedUsers[0].id,
-                femaDisasterId: seedDisasters[0].id,
-                notificationType: NotificationType.EMAIL,
-                firstSentAt: new Date(),
-                lastSentAt: new Date(),
-            },
-            {
-                id: randomUUID(),
+                id: "0199e586-2a87-7074-94db-a4d7cd9321c0",
                 userId: seedUsers[1].id,
                 femaDisasterId: seedDisasters[1].id,
                 notificationType: NotificationType.EMAIL,
