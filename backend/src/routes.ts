@@ -37,7 +37,7 @@ export const setUpRoutes = (app: Hono<any>, db: DataSource) => {
 
     process.env.NODE_ENV === "production" ? app.route("/prisere", routes) : app.route("/api/prisere", routes);
     process.env.NODE_ENV === "production"
-        ? app.route("/", setUpOpenApiRoutes(db))
+        ? app.route("/openapi", setUpOpenApiRoutes(db))
         : app.route("/api/openapi", setUpOpenApiRoutes(db));
 };
 
