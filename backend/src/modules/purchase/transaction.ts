@@ -70,8 +70,7 @@ export class PurchaseTransaction implements IPurchaseTransaction {
                     qb.where("purchase.quickbooksDateCreated BETWEEN :startDate AND :endDate", {
                         startDate: new Date(startDate),
                         endDate: new Date(endDate),
-                    })
-                    .orWhere(
+                    }).orWhere(
                         "purchase.quickbooksDateCreated IS NULL AND purchase.dateCreated BETWEEN :startDate AND :endDate",
                         {
                             startDate: new Date(startDate),

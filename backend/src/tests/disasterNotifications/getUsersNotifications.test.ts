@@ -132,16 +132,15 @@ describe("Test getting a users disaster notifications", () => {
         const response1 = await app.request(TESTING_PREFIX + `/notifications?type=web`, {
             method: "GET",
             headers: {
-                "userId": "0199e585-621d-744a-81e2-8cc93d48b23d"
-            }
+                userId: "0199e585-621d-744a-81e2-8cc93d48b23d",
+            },
         });
 
-        const response2 = await app.request(
-            TESTING_PREFIX + `/notifications?type=web`, {
+        const response2 = await app.request(TESTING_PREFIX + `/notifications?type=web`, {
             method: "GET",
             headers: {
-                "userId": "0199e585-621d-744a-81e2-8cc93d48b23d"
-            }
+                userId: "0199e585-621d-744a-81e2-8cc93d48b23d",
+            },
         });
 
         const result1 = JSON.parse(await response1.text());
@@ -151,20 +150,18 @@ describe("Test getting a users disaster notifications", () => {
         expect(result1.length === 2);
         expect(result2.length === 1);
 
-        const response1Email = await app.request(
-            TESTING_PREFIX + `/notifications?type=email`, {
+        const response1Email = await app.request(TESTING_PREFIX + `/notifications?type=email`, {
             method: "GET",
             headers: {
-                "userId": "0199e585-621d-744a-81e2-8cc93d48b23d"
-            }
+                userId: "0199e585-621d-744a-81e2-8cc93d48b23d",
+            },
         });
 
-        const response2Email = await app.request(
-            TESTING_PREFIX + `/notifications?type=email`, {
+        const response2Email = await app.request(TESTING_PREFIX + `/notifications?type=email`, {
             method: "GET",
             headers: {
-                "userId": "0199e585-621d-744a-81e2-8cc93d48b23d"
-            }
+                userId: "0199e585-621d-744a-81e2-8cc93d48b23d",
+            },
         });
 
         const result1Email = JSON.parse(await response1Email.text());
@@ -179,32 +176,30 @@ describe("Test getting a users disaster notifications", () => {
         const response1 = await app.request(TESTING_PREFIX + `/notifications`, {
             method: "GET",
             headers: {
-                "userId": "0189e585-a52b-7bcf-982d-a1c5230b3d40"
-            }
+                userId: "0189e585-a52b-7bcf-982d-a1c5230b3d40",
+            },
         });
-        
+
         const result = JSON.parse(await response1.text());
         // Should only return 20 (default limit) when there are 25 notifications
         expect(result.length).toBe(20);
         expect(response1.status).toBe(200);
 
-        const response2 = await app.request(
-            TESTING_PREFIX + `/notifications?limit=5&page=1`, {
+        const response2 = await app.request(TESTING_PREFIX + `/notifications?limit=5&page=1`, {
             method: "GET",
             headers: {
-                "userId": "0189e585-a52b-7bcf-982d-a1c5230b3d40"
-            }
+                userId: "0189e585-a52b-7bcf-982d-a1c5230b3d40",
+            },
         });
         const result2 = JSON.parse(await response2.text());
         expect(result2.length).toBe(5); // Return limit amount
         expect(response2.status).toBe(200);
 
-        const response3 = await app.request(
-            TESTING_PREFIX + `/notifications?limit=4&page=3`, {
+        const response3 = await app.request(TESTING_PREFIX + `/notifications?limit=4&page=3`, {
             method: "GET",
             headers: {
-                "userId": "0189e585-a52b-7bcf-982d-a1c5230b3d40"
-            }
+                userId: "0189e585-a52b-7bcf-982d-a1c5230b3d40",
+            },
         });
         const result3 = JSON.parse(await response3.text());
         expect(result3.length).toBe(4); // Return limit amount
@@ -216,31 +211,29 @@ describe("Test getting a users disaster notifications", () => {
         const response1 = await app.request(TESTING_PREFIX + `/notifications`, {
             method: "GET",
             headers: {
-                "userId": "0189e585-a52b-7bcf-982d-a1c5230b3d40"
-            }
+                userId: "0189e585-a52b-7bcf-982d-a1c5230b3d40",
+            },
         });
         const result = JSON.parse(await response1.text());
         // Should only return 20 (default limit) when there are 25 notifications
         expect(result.length).toBe(20);
         expect(response1.status).toBe(200);
 
-        const response2 = await app.request(
-            TESTING_PREFIX + `/notifications?limit=5&page=100`, {
+        const response2 = await app.request(TESTING_PREFIX + `/notifications?limit=5&page=100`, {
             method: "GET",
             headers: {
-                "userId": "0199e585-a52b-7bcf-982d-a1c5230b3d40"
-            }
+                userId: "0199e585-a52b-7bcf-982d-a1c5230b3d40",
+            },
         });
         const result2 = JSON.parse(await response2.text());
         expect(result2.length).toBe(0); // Return limit amount
         expect(response2.status).toBe(200);
 
-        const response3 = await app.request(
-            TESTING_PREFIX + `/notifications?limit=9999&page=1`, {
+        const response3 = await app.request(TESTING_PREFIX + `/notifications?limit=9999&page=1`, {
             method: "GET",
             headers: {
-                "userId": "0199e585-621d-744a-81e2-8cc93d48b23d"
-            }
+                userId: "0199e585-621d-744a-81e2-8cc93d48b23d",
+            },
         });
         // const result3 = JSON.parse(await response3.text())
         expect(response3.status).toBe(400);

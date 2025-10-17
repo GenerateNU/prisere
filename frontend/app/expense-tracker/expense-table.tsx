@@ -73,11 +73,7 @@ export default function ExpenseTable() {
                 <BasicTable purchases={purchases.data} />
             </CardContent>
             <CardFooter>
-                <PaginationControls
-                    page={page}
-                    onPageChange={setPage}
-                    isLastPage={isLastPage}
-                />
+                <PaginationControls page={page} onPageChange={setPage} isLastPage={isLastPage} />
                 <ResultsPerPageSelect
                     value={resultsPerPage}
                     onValueChange={(results: number) => setResultsPerPage(results)}

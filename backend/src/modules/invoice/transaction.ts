@@ -86,8 +86,7 @@ export class InvoiceTransaction implements IInvoiceTransaction {
                     qb.where("invoice.quickbooksDateCreated BETWEEN :startDate AND :endDate", {
                         startDate: new Date(startDate),
                         endDate: new Date(endDate),
-                    })
-                    .orWhere(
+                    }).orWhere(
                         "invoice.quickbooksDateCreated IS NULL AND invoice.dateCreated BETWEEN :startDate AND :endDate",
                         {
                             startDate: new Date(startDate),

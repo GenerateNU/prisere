@@ -36,7 +36,9 @@ export default function RevenueAndExpenses() {
                             <NavBarCircle size={10} />
                             Total Revenue this Month
                         </div>
-                        <div className="flex text-[25px] font-bold mb-[29px]">${(totalMonthRevenue?.total ?? 0) / 100.0}</div>
+                        <div className="flex text-[25px] font-bold mb-[29px]">
+                            ${(totalMonthRevenue?.total ?? 0) / 100.0}
+                        </div>
                         <div className="flex items-center gap-[8px] mb-[4px]">
                             <NavBarCircle size={10} />
                             Total Expenses this Month

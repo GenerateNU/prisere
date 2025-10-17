@@ -1,10 +1,9 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-
 export default function ResultsPerPageSelect({
-                                                 value,
-                                                 onValueChange,
-                                             }: {
+    value,
+    onValueChange,
+}: {
     value: number;
     onValueChange: (value: number) => void;
 }) {

@@ -41,5 +41,4 @@ export const sumInvoicesByCompanyAndDateRange = async (startDate: Date, endDate:
     };
 
     return authWrapper<{ total: number }>()(req);
-
 };

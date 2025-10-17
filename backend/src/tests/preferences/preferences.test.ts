@@ -46,7 +46,7 @@ describe("notification preference retreival", () => {
         // delete user preferences from the database (simulates user that was created before preferences existed)
         await db.getRepository(UserPreferences).delete({ userId: user.id });
 
-        const response = await app.request(TESTING_PREFIX + `/preferences`,{
+        const response = await app.request(TESTING_PREFIX + `/preferences`, {
             headers: {
                 userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
             },

@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { CreateUserResponseSchema } from "../types/User";
-import { FemaDisasterSchema } from "../types/disaster/get";
 import { LocationAddressSchemaType } from "./Location";
 import { FIPSCounty, FIPSState, incidentTypeString } from "./disaster";
 

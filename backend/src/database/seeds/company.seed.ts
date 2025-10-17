@@ -5,7 +5,7 @@ import { Company } from "../../entities/Company.js";
 export const seededCompanies = [
     {
         // NEU
-        id:"ffc8243b-876e-4b6d-8b80-ffc73522a838",
+        id: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
         name: "Northeastern Inc.",
     },
     {
