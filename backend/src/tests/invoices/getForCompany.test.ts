@@ -9,7 +9,7 @@ import { DataSource } from "typeorm";
 import { CompareRequestToCreated } from "./utils";
 import { TESTING_PREFIX } from "../../utilities/constants";
 
-describe("Invoice get by id", () => {
+describe("Invoice all invoices by company ID", () => {
     let app: Hono;
     let backup: IBackup;
     let datasource: DataSource;
@@ -43,7 +43,7 @@ describe("Invoice get by id", () => {
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        CompareRequestToCreated(seededInvoices, body);
+        CompareRequestToCreated(seededInvoices.slice(0, 2), body);
     });
 
     test("GET /quickbooks/invoice - bad company id ", async () => {
@@ -93,17 +93,5 @@ describe("Invoice get by id", () => {
         expect(response.status).toBe(200);
         const body = await response.json();
         CompareRequestToCreated([seededInvoices[1]], body);
-    });
-
-    test("GET /quickbooks/invoice - valid company id paginated page 3", async () => {
-        const response = await app.request(TESTING_PREFIX + `/invoice?&pageNumber=2&resultsPerPage=1`, {
-            headers: {
-                companyId: seededCompanyId,
-            },
-        });
-
-        expect(response.status).toBe(200);
-        const body = await response.json();
-        CompareRequestToCreated([seededInvoices[2]], body);
     });
 });

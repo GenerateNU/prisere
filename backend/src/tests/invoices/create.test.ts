@@ -5,7 +5,7 @@ import { IBackup } from "pg-mem";
 import { beforeEach } from "node:test";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
-import CompanySeeder from "../../database/seeds/company.seed";
+import CompanySeeder, { seededCompanies } from "../../database/seeds/company.seed";
 import { InvoiceSeeder } from "../../database/seeds/invoice.seed";
 import { CompareRequestToCreated } from "./utils";
 import { TESTING_PREFIX } from "../../utilities/constants";

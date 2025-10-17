@@ -18,7 +18,7 @@ import CompanySeeder from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
 
-describe("Example", () => {
+describe("Get Company by ID", () => {
     let app: Hono<{ Variables: ContextVariables }>;
     let backup: IBackup;
     let datasource: DataSource;
@@ -45,7 +45,7 @@ describe("Example", () => {
     test("GET /companies/:id - id that exists", async () => {
         const response = await app.request(TESTING_PREFIX + `/companies`, {
             headers: {
-                companyId: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
         });
         expect(response.status).toBe(200);

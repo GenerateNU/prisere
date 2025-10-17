@@ -10,7 +10,7 @@ import CompanySeeder from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
 
-describe("GET /users/:id/company", () => {
+describe("GET /users/company", () => {
     let app: Hono;
     let backup: IBackup;
     let datasource: DataSource;
@@ -48,7 +48,7 @@ describe("GET /users/:id/company", () => {
         const companyData = await response.json();
         expect(companyData).toMatchObject({
             companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
-            companyName: "Test Company ABC",
+            companyName: "Northeastern Inc.",
         });
 
         // Validate response schema
@@ -184,7 +184,7 @@ describe("GET /users/:id/company", () => {
         companyData.forEach((data) => {
             expect(data).toMatchObject({
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
-                companyName: "Test Company ABC",
+                companyName: "Northeastern Inc.",
             });
         });
     });

@@ -24,6 +24,7 @@ describe("Invoice get by id", () => {
     });
 
     beforeEach(async () => {
+        backup.restore();
         const companySeeder = new CompanySeeder();
         await companySeeder.run(datasource, {} as SeederFactoryManager);
 

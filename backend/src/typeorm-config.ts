@@ -15,7 +15,7 @@ const options: DataSourceOptions & SeederOptions = {
     logging: false,
     entities: ["src/entities/*.{ts,js}"],
     migrations: ["src/migrations/*.ts"],
-    seeds: [UserSeeder],
+    seeds: [UserSeeder], // InvoiceSeeder, LocationSeeder],
     seedTracking: false,
     factories: [UserFactory],
 };
