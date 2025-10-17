@@ -7,6 +7,9 @@ const apiBaseRoute =
         ? process.env.NEXT_PUBLIC_PROD_API_BASE_URL
         : process.env.NEXT_PUBLIC_LOCAL_API_BASE_URL;
 
+console.log('API Base Route:', apiBaseRoute);
+console.log('NODE_ENV:', process.env.NODE_ENV);
+
 export const client = createClient<paths>({ baseUrl: apiBaseRoute });
 
 export const authHeader = (token: string, contentType: string = "application/json") => {
