@@ -16,6 +16,9 @@ import { purchaseRoutes } from "./modules/purchase/route";
 import { preferenceRoutes } from "./modules/preferences/route";
 import { invoiceLineItemsRoutes } from "./modules/invoiceLineItem/route";
 
+import { config } from "dotenv";
+config({ path: ".env" });
+
 export const setUpRoutes = (app: Hono<any>, db: DataSource) => {
     const routes = new Hono();
     routes.route("/", healthRoutes());
@@ -32,8 +35,10 @@ export const setUpRoutes = (app: Hono<any>, db: DataSource) => {
     routes.route("/preferences", preferenceRoutes(db));
     routes.route("/claim-locations", claimLocationRoutes(db));
 
-    app.route("/api/prisere", routes);
-    app.route("/api/openapi", setUpOpenApiRoutes(db));
+    process.env.NODE_ENV === "production" ? app.route("/prisere", routes) : app.route("/api/prisere", routes);
+    process.env.NODE_ENV === "production"
+        ? app.route("/openapi", setUpOpenApiRoutes(db))
+        : app.route("/api/openapi", setUpOpenApiRoutes(db));
 };
 
 const healthRoutes = (): Hono => {
