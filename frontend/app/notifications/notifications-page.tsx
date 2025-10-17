@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getNotifications, updateNotificationStatus, markAllNotificationsAsRead } from "@/api/notifications";
 import { useState } from "react";
-import type { DisasterNotificationWithRealtionsType } from "../../../backend/src/types/DisasterNotification";
+import type { DisasterNotificationWithRealtionsType } from "@/types/notifications";
 import Link from "next/link";
 import { PaginationStatus } from "@/types/notifications";
 
