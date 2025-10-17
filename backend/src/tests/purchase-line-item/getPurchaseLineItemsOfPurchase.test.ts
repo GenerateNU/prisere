@@ -8,6 +8,7 @@ import { DataSource } from "typeorm";
 import { SeederFactoryManager } from "typeorm-extension";
 import { PurchaseLineItemSeeder } from "../../database/seeds/purchaseLineItem.seed";
 import { uuidv4 } from "zod";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("Get purchase line items for a purchase", () => {
     let app: Hono;
@@ -37,7 +38,7 @@ describe("Get purchase line items for a purchase", () => {
     });
 
     it("should return all line items for a purchase", async () => {
-        const response = await app.request(`/purchase/${seededPurchases[0].id}/lines`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase/${seededPurchases[0].id}/lines`, {
             method: "GET",
         });
 
@@ -50,7 +51,7 @@ describe("Get purchase line items for a purchase", () => {
     });
 
     it("should return 400 for a non existant purchase", async () => {
-        const response = await app.request(`/purchase/${uuidv4()}/lines`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase/${uuidv4()}/lines`, {
             method: "GET",
         });
 

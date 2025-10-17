@@ -5,7 +5,7 @@ import { Company } from "../../entities/Company.js";
 export const seededCompanies = [
     {
         // NEU
-        id: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        id: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
         name: "Northeastern Inc.",
     },
     {
@@ -29,7 +29,7 @@ export const seededCompanies = [
     },
 
     {
-        id: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+        id: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
         name: "Test Company ABC",
         lastQuickBooksImportTime: new Date("2025-01-15T10:30:00Z"),
     },

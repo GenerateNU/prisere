@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn } from "typeorm";
 import { FemaDisaster } from "./FemaDisaster.js";
 import { NotificationType, NotificationStatus } from "../types/NotificationEnums.js";
 import { User } from "./User.js";
 import type { Relation } from "typeorm";
+import { LocationAddress } from "./LocationAddress.js";
 
 @Entity("disasterNotification")
 export class DisasterNotification {
@@ -43,5 +44,15 @@ export class DisasterNotification {
     lastSentAt?: Date;
 
     @Column({ nullable: true })
-    acknowledgedAt?: Date;
+    readAt?: Date;
+
+    @CreateDateColumn()
+    createdAt!: Date;
+
+    @Column({ nullable: true })
+    locationAddressId?: string;
+
+    @ManyToOne(() => LocationAddress, { nullable: true })
+    @JoinColumn({ name: "locationAddressId" })
+    locationAddress?: LocationAddress;
 }

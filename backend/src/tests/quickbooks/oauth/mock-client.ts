@@ -3,6 +3,7 @@ import Csrf from "csrf";
 import { createUserWithCompany } from "../../utils";
 import { Hono } from "hono";
 import { QuickbooksService } from "../../../modules/quickbooks/service";
+import { randomUUID } from "crypto";
 
 export class MockQBClient implements IQuickbooksClient {
     static readonly mockAccessToken = "mock-access-token";
@@ -45,7 +46,7 @@ export class MockQBClient implements IQuickbooksClient {
 }
 
 export async function setupData(app: Hono, service: QuickbooksService) {
-    const user = (await createUserWithCompany(app, { firstName: "test", lastName: "user" })).data;
+    const user = (await createUserWithCompany(app, { id: randomUUID(), firstName: "test", lastName: "user" })).data;
 
     const { state } = await service.generateAuthUrl({ userId: user.id });
 

@@ -6,7 +6,7 @@ import { withServiceErrorHandling } from "../../utilities/error";
 import { LocationAddress } from "../../entities/LocationAddress";
 
 export interface ICompanyService {
-    createCompany(payload: CreateCompanyDTO): Promise<Company>;
+    createCompany(payload: CreateCompanyDTO, userId: string): Promise<Company>;
     getCompanyById(payload: GetCompanyByIdDTO): Promise<Company>;
     updateLastQuickBooksImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company>;
     getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]>;
@@ -19,10 +19,13 @@ export class CompanyService implements CompanyService {
         this.companyTransaction = CompanyTransaction;
     }
 
-    createCompany = withServiceErrorHandling(async (payload: CreateCompanyDTO): Promise<Company> => {
-        const company = await this.companyTransaction.createCompany({
-            ...payload,
-        });
+    createCompany = withServiceErrorHandling(async (payload: CreateCompanyDTO, userId: string): Promise<Company> => {
+        const company = await this.companyTransaction.createCompany(
+            {
+                ...payload,
+            },
+            userId
+        );
         if (!company) {
             throw Boom.internal("Creating Company Failed");
         }

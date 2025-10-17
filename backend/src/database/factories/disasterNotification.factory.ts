@@ -11,7 +11,7 @@ export default setSeederFactory(DisasterNotification, (faker) => {
     notification.notificationStatus = faker.helpers.enumValue(NotificationStatus);
     notification.firstSentAt = faker.date.recent();
     notification.lastSentAt = faker.date.recent();
-    notification.acknowledgedAt = faker.datatype.boolean() ? faker.date.recent() : undefined;
+    notification.readAt = faker.datatype.boolean() ? faker.date.recent() : undefined;
 
     return notification;
 });

@@ -2,13 +2,12 @@ import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { z } from "zod";
 import {
-    GetCompanyPurchasesDTOSchema,
-    CreateOrChangePurchaseDTOSchema,
-    CreateOrChangePurchasesResponseSchema,
-    GetPurchaseDTOSchema,
-    GetCompanyPurchasesSummationResponseSchema,
     GetPurchasesResponseSchema,
     GetCompanyPurchasesResponseSchema,
+    CreateOrChangePurchasesResponseSchema,
+    GetCompanyPurchasesSummationResponseSchema,
+    CreateOrChangePurchaseRequestSchema,
+    GetCompanyPurchasesQueryParams,
 } from "../../modules/purchase/types";
 import { IPurchaseController, PurchaseController } from "../purchase/controller";
 import { IPurchaseService, PurchaseService } from "../purchase/service";
@@ -41,7 +40,7 @@ const createOrUpdatePurchaseRoute = createRoute({
         body: {
             content: {
                 "application/json": {
-                    schema: CreateOrChangePurchaseDTOSchema,
+                    schema: CreateOrChangePurchaseRequestSchema,
                 },
             },
         },
@@ -102,7 +101,7 @@ const getPurchasesForCompanyRoute = createRoute({
     summary: "Fetches all purchases for a company",
     description: "Retrieves a paginated list of purchases for the specified company",
     request: {
-        query: GetCompanyPurchasesDTOSchema,
+        query: GetCompanyPurchasesQueryParams,
     },
     responses: {
         200: {
@@ -120,12 +119,11 @@ const getPurchasesForCompanyRoute = createRoute({
 
 const sumPurchasesByCompanyAndDateRange = createRoute({
     method: "get",
-    path: "/purchase/bulk/{id}/totalExpenses",
+    path: "/purchase/bulk/totalExpenses",
     summary: "Get the summation of purchases for a company in a date range",
     description:
         "Get the summation of purchases for a company that were made after the start date and before the end date",
     request: {
-        params: GetPurchaseDTOSchema,
         query: z.object({ startDate: z.iso.datetime(), endDate: z.iso.datetime() }),
     },
     responses: {

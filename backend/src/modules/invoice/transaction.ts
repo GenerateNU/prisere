@@ -1,4 +1,4 @@
-import { DataSource, In } from "typeorm";
+import { Brackets, DataSource, In } from "typeorm";
 import Boom from "@hapi/boom";
 import { plainToInstance } from "class-transformer";
 import { Invoice } from "../../entities/Invoice";
@@ -81,10 +81,20 @@ export class InvoiceTransaction implements IInvoiceTransaction {
             .createQueryBuilder(Invoice, "invoice")
             .select("SUM(invoice.totalAmountCents)", "total")
             .where("invoice.companyId = :companyId", { companyId })
-            .andWhere("invoice.quickbooksDateCreated BETWEEN :startDate AND :endDate", {
-                startDate: new Date(startDate),
-                endDate: new Date(endDate),
-            })
+            .andWhere(
+                new Brackets((qb) => {
+                    qb.where("invoice.quickbooksDateCreated BETWEEN :startDate AND :endDate", {
+                        startDate: new Date(startDate),
+                        endDate: new Date(endDate),
+                    }).orWhere(
+                        "invoice.quickbooksDateCreated IS NULL AND invoice.dateCreated BETWEEN :startDate AND :endDate",
+                        {
+                            startDate: new Date(startDate),
+                            endDate: new Date(endDate),
+                        }
+                    );
+                })
+            )
             .getRawOne();
 
         const totalCents: number = summation?.total || 0;
