@@ -5,7 +5,6 @@ import Insurance from "./insurance";
 import UserInfoPage from "./user";
 import { useState } from "react";
 
-
 interface OnboardingProps {
     email: string;
 }
