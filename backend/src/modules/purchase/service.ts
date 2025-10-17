@@ -60,7 +60,7 @@ export class PurchaseService implements IPurchaseService {
                 dateCreated: qbPurchase.dateCreated.toUTCString(),
                 id: qbPurchase.id,
                 isRefund: qbPurchase.isRefund,
-                quickBooksID: qbPurchase.quickBooksId,
+                quickBooksId: qbPurchase.quickBooksId,
                 totalAmountCents: qbPurchase.totalAmountCents,
                 quickbooksDateCreated: qbPurchase.quickbooksDateCreated?.toUTCString(),
                 lastUpdated: qbPurchase.lastUpdated.toUTCString(),

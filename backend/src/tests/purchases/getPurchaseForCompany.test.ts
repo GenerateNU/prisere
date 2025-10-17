@@ -65,7 +65,7 @@ describe("GET /purchase", () => {
         body.forEach((purchase: GetCompanyPurchasesResponse[number]) => {
             expect(purchase.id).toBeDefined();
             expect(purchase.companyId).toBeDefined();
-            expect(purchase.quickBooksID).toBeDefined();
+            expect(purchase.quickBooksId).toBeDefined();
             expect(purchase.totalAmountCents).toBeDefined();
             expect(purchase.isRefund).toBeDefined();
             expect(purchase.dateCreated).toBeDefined();
