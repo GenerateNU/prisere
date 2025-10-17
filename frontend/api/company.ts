@@ -1,4 +1,4 @@
-import { Company, CreateCompanyRequest, CreateCompanyResponse } from "@/types/company";
+import { Company, CreateCompanyRequest } from "@/types/company";
 import { authHeader, authWrapper, client } from "./client";
 
 export const createCompany = async (payload: CreateCompanyRequest): Promise<Company> => {

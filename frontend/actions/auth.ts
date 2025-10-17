@@ -64,7 +64,7 @@ export async function setCompanyMetadata(companyID: string) {
             company_id: companyID,
         },
     });
-    const { data: refreshData, error: refreshError } = await supabaseClient.auth.refreshSession();
+    const { error: refreshError } = await supabaseClient.auth.refreshSession();
 
     if (refreshError) {
         throw new Error("Failed to refresh session");
