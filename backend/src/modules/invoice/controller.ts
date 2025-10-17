@@ -10,6 +10,7 @@ import {
     GetCompanyInvoicesDTOSchema,
     GetCompanyInvoicesByDateDTOSchema,
     GetCompanyInvoicesSummationResponse,
+    CreateOrUpdateInvoicesRequest,
 } from "../../types/Invoice";
 import { ControllerResponse } from "../../utilities/response";
 
@@ -32,7 +33,13 @@ export class InvoiceController implements IInvoiceController {
     bulkCreateOrUpdateInvoice = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<CreateOrUpdateInvoicesResponse, 201>> => {
             const json = await ctx.req.json();
-            const payload = CreateOrUpdateInvoicesDTOSchema.parse(json);
+            const companyId = await ctx.get("companyId");
+            const invoicesWithCompanyId = json.map((invoice: CreateOrUpdateInvoicesRequest) => ({
+                ...invoice,
+                companyId: companyId,
+            }));
+            const payload = CreateOrUpdateInvoicesDTOSchema.parse(invoicesWithCompanyId);
+
             const createdQuickBooksPurchase = await this.invoiceService.bulkCreateOrUpdateInvoice(payload);
             return ctx.json(createdQuickBooksPurchase, 201);
         }
@@ -54,7 +61,7 @@ export class InvoiceController implements IInvoiceController {
     getInvoicesForCompany = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>> => {
             const queryParams = {
-                companyId: ctx.req.query("companyId"),
+                companyId: ctx.get("companyId"),
                 pageNumber: ctx.req.query("pageNumber") ? Number(ctx.req.query("pageNumber")) : undefined,
                 resultsPerPage: ctx.req.query("resultsPerPage") ? Number(ctx.req.query("resultsPerPage")) : undefined,
             };
@@ -72,7 +79,7 @@ export class InvoiceController implements IInvoiceController {
     sumInvoicesByCompanyAndDateRange = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesSummationResponse, 200>> => {
             const queryParams = {
-                companyId: ctx.req.param("id"),
+                companyId: ctx.get("companyId"),
                 startDate: ctx.req.query("startDate"),
                 endDate: ctx.req.query("endDate"),
             };

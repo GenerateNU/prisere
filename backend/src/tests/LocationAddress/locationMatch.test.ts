@@ -22,7 +22,7 @@ describe("FEMA Location Matcher - Real API Integration Tests", () => {
         expect(result).toBeDefined();
         expect(result?.fipsStateCode).toBe("06"); // California
         expect(result?.fipsCountyCode).toBe("075"); // San Francisco County
-    });
+    }, 10000);
 
     test("should return FIPS codes for valid New York address", async () => {
         const location: Partial<LocationAddress> = {
@@ -37,7 +37,7 @@ describe("FEMA Location Matcher - Real API Integration Tests", () => {
         expect(result).toBeDefined();
         expect(result?.fipsStateCode).toBe("36"); // New York
         expect(result?.fipsCountyCode).toBe("061"); // New York County (Manhattan)
-    });
+    }, 10000);
 
     test("should return null for completely invalid address", async () => {
         const location: Partial<LocationAddress> = {
@@ -50,7 +50,7 @@ describe("FEMA Location Matcher - Real API Integration Tests", () => {
         const result = await realService.getLocationFips(location);
 
         expect(result).toBeNull();
-    });
+    }, 10000);
 
     test("should return null for empty location data", async () => {
         const location: Partial<LocationAddress> = {};
@@ -58,7 +58,7 @@ describe("FEMA Location Matcher - Real API Integration Tests", () => {
         const result = await realService.getLocationFips(location);
 
         expect(result).toBeNull();
-    });
+    }, 10000);
 
     test("should handle partial address data", async () => {
         const location: Partial<LocationAddress> = {
@@ -69,7 +69,5 @@ describe("FEMA Location Matcher - Real API Integration Tests", () => {
         const result = await realService.getLocationFips(location);
 
         expect(result).toBeNull();
-    });
+    }, 10000);
 });
-
-// Add in timeout for real API calls

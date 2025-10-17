@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import "../dayjs.config";
-
+import { Context, Next } from "hono";
 import { Hono } from "hono";
 import { DataSource } from "typeorm";
 import { newDb, DataType, IMemoryDb } from "pg-mem";
@@ -8,6 +8,7 @@ import { runSeeders } from "typeorm-extension";
 import { setUpRoutes } from "../routes";
 import { v4 } from "uuid";
 import { TestAppData } from "../types/Test";
+import { ContextVariables } from "../types/Utils";
 
 const createNewDB = async (): Promise<IMemoryDb> => {
     const db = newDb({
@@ -39,7 +40,7 @@ const createNewDB = async (): Promise<IMemoryDb> => {
 };
 
 export const startTestApp = async (): Promise<TestAppData> => {
-    const app = new Hono();
+    const app = new Hono<{ Variables: ContextVariables }>();
     const db = await createNewDB();
     const dataSource: DataSource = await db.adapters.createTypeormDataSource({
         type: "postgres",
@@ -51,6 +52,19 @@ export const startTestApp = async (): Promise<TestAppData> => {
     await runSeeders(dataSource);
     const backup = db.backup();
 
+    app.use("*", testingAuthorized());
+
     setUpRoutes(app, dataSource);
     return { app, backup, dataSource };
+};
+
+export const testingAuthorized = () => {
+    return async (ctx: Context, next: Next) => {
+        const userId = ctx.req.header("userId");
+        const companyId = ctx.req.header("companyId");
+
+        ctx.set("userId", userId);
+        ctx.set("companyId", companyId);
+        await next();
+    };
 };

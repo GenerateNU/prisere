@@ -1,11 +1,10 @@
 import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
-import { z } from "zod";
 import {
-    CreateUserDTOSchema,
     CreateUserResponseSchema,
     GetUserResponseSchema,
     GetUserCompanyResponseSchema,
+    createUserRequestBody,
 } from "../../types/User";
 import { IUserController, UserController } from "../user/controller";
 import { IUserService, UserService } from "../user/service";
@@ -23,20 +22,6 @@ export const addOpenApiUserRoutes = (openApi: OpenAPIHono, db: DataSource): Open
     return openApi;
 };
 
-// we have to define this here (annoyingly) because the zod imports get messed up somehow
-// specifically from User.ts and specifically this schema
-// I can't figure out any more than that, so I give in.
-
-// If you move the schemas from User.ts to anywhere else it works.
-// If you use a different schema from Company.ts or something it also works.
-const GetUserDTOSchemaLocal = z.object({
-    id: z.string().nonempty(),
-});
-
-const GetUserComapnyDTOSchemaLocal = z.object({
-    id: z.string().nonempty(),
-});
-
 const createUserRoute = createRoute({
     method: "post",
     path: "/users",
@@ -44,9 +29,10 @@ const createUserRoute = createRoute({
     description: "Creates a new user with the provided information",
     request: {
         body: {
+            required: true,
             content: {
                 "application/json": {
-                    schema: CreateUserDTOSchema,
+                    schema: createUserRequestBody,
                 },
             },
         },
@@ -67,12 +53,9 @@ const createUserRoute = createRoute({
 
 const getUserRoute = createRoute({
     method: "get",
-    path: "/users/{id}",
+    path: "/users",
     summary: "Fetches a user by the given ID",
     description: "Finds the user with the given ID in the database",
-    request: {
-        params: GetUserDTOSchemaLocal,
-    },
     responses: {
         200: {
             content: {
@@ -93,12 +76,9 @@ const getUserRoute = createRoute({
 
 const getUserCompanyRoute = createRoute({
     method: "get",
-    path: "/users/{id}/company",
+    path: "/users/company",
     summary: "Fetches a user's associated company by the given user ID",
     description: "Finds the user's company with the given user's ID in the database",
-    request: {
-        params: GetUserComapnyDTOSchemaLocal,
-    },
     responses: {
         200: {
             content: {

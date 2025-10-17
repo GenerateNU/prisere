@@ -10,6 +10,7 @@ import CompanySeeder from "../../database/seeds/company.seed";
 import { DataSource } from "typeorm";
 import { PurchaseLineItemSeeder, seededPurchaseLineItems } from "../../database/seeds/purchaseLineItem.seed";
 import { beforeEach } from "node:test";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("Get single purchase line item", () => {
     let app: Hono;
@@ -38,7 +39,7 @@ describe("Get single purchase line item", () => {
     it("should return a purchase line item by id", async () => {
         const createdItem = seededPurchaseLineItems[0];
 
-        const response = await app.request(`/purchase/line/${createdItem.id}`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase/line/${createdItem.id}`, {
             method: "GET",
         });
 
@@ -52,7 +53,7 @@ describe("Get single purchase line item", () => {
 
     it("should return 404 for non-existent line item", async () => {
         const nonExistentId = randomUUIDv7();
-        const response = await app.request(`/purchase/line/${nonExistentId}`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase/line/${nonExistentId}`, {
             method: "GET",
         });
 
@@ -62,7 +63,7 @@ describe("Get single purchase line item", () => {
     });
 
     it("should return 400 for invalid id format", async () => {
-        const response = await app.request("/purchase/line/invalid-id", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/invalid-id", {
             method: "GET",
         });
 

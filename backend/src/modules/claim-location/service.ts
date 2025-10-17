@@ -1,18 +1,13 @@
 import Boom from "@hapi/boom";
 import { ClaimLocation } from "../../entities/ClaimLocation";
 import { LocationAddress } from "../../entities/LocationAddress";
-import {
-    CreateClaimLocationDTO,
-    DeleteClaimLocationDTO,
-    DeleteClaimLocationResponse,
-    GetLocationsByCompanyIdDTO,
-} from "../../types/ClaimLocation";
+import { CreateClaimLocationDTO, DeleteClaimLocationDTO, DeleteClaimLocationResponse } from "../../types/ClaimLocation";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { IClaimLocationTransaction } from "./transaction";
 
 export interface IClaimLocationService {
     createClaimLocation(payload: CreateClaimLocationDTO): Promise<ClaimLocation>;
-    getLocationsByCompanyId(payload: GetLocationsByCompanyIdDTO): Promise<LocationAddress[]>;
+    getLocationsByCompanyId(companyId: string): Promise<LocationAddress[]>;
     deleteClaimLocationsById(payload: DeleteClaimLocationDTO): Promise<DeleteClaimLocationResponse>;
 }
 
@@ -35,17 +30,14 @@ export class ClaimLocationService {
         return claimLocation;
     });
 
-    getLocationsByCompanyId = withServiceErrorHandling(
-        async (payload: GetLocationsByCompanyIdDTO): Promise<LocationAddress[]> => {
-            const locations: LocationAddress[] | null = await this.claimLocationTransaction.getLocationsByCompanyId({
-                ...payload,
-            });
-            if (!locations) {
-                throw Boom.notFound("Unable to find the locations for the company with: ", payload);
-            }
-            return locations;
+    getLocationsByCompanyId = withServiceErrorHandling(async (companyId: string): Promise<LocationAddress[]> => {
+        const locations: LocationAddress[] | null =
+            await this.claimLocationTransaction.getLocationsByCompanyId(companyId);
+        if (!locations) {
+            throw Boom.notFound("Unable to find the locations for the company with: ", companyId);
         }
-    );
+        return locations;
+    });
 
     deleteClaimLocationsById = withServiceErrorHandling(
         async (payload: DeleteClaimLocationDTO): Promise<DeleteClaimLocationResponse> => {

@@ -3,7 +3,7 @@ import { IBackup } from "pg-mem";
 import { DataSource } from "typeorm";
 
 export type TestAppData = {
-    app: Hono;
+    app: Hono<any>;
     backup: IBackup;
     dataSource: DataSource;
 };

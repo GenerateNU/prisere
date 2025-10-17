@@ -12,7 +12,7 @@ export interface ILocationAddressTransaction {
      * @param payload The location information to be inserted into the database
      * @returns Promise resolving to inserted LocationAddress or null if failed
      */
-    createLocationAddress(payload: CreateLocationAddressDTO): Promise<LocationAddress | null>;
+    createLocationAddress(payload: CreateLocationAddressDTO, companyId: string): Promise<LocationAddress | null>;
 
     /**
      * Finds an existing location address in the database
@@ -33,7 +33,9 @@ export interface ILocationAddressTransaction {
      * @param disasters Array of FEMA disasters to check
      * @returns Promise resolving to array of user-disaster pairs
      */
-    getUsersAffectedByDisasters(disasters: FemaDisaster[]): Promise<{ user: User; disaster: FemaDisaster }[]>;
+    getUsersAffectedByDisasters(
+        disasters: FemaDisaster[]
+    ): Promise<{ user: User; disaster: FemaDisaster; location: LocationAddress }[]>;
 }
 
 /**
@@ -51,8 +53,11 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
      * @param payload The location information to be inserted into the database
      * @returns Promise resolving to inserted LocationAddress or null if failed
      */
-    async createLocationAddress(payload: CreateLocationAddressDTO): Promise<LocationAddress | null> {
-        const address: LocationAddress = plainToClass(LocationAddress, payload);
+    async createLocationAddress(payload: CreateLocationAddressDTO, companyId: string): Promise<LocationAddress | null> {
+        const address: LocationAddress = plainToClass(LocationAddress, {
+            ...payload,
+            companyId: companyId,
+        });
         const newAddress: LocationAddress = await this.db.getRepository(LocationAddress).save(address);
 
         return newAddress ?? null;
@@ -75,7 +80,9 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
         return result;
     }
 
-    async getUsersAffectedByDisasters(disasters: FemaDisaster[]): Promise<{ user: User; disaster: FemaDisaster }[]> {
+    async getUsersAffectedByDisasters(
+        disasters: FemaDisaster[]
+    ): Promise<{ user: User; disaster: FemaDisaster; location: LocationAddress }[]> {
         const fipsPairs = disasters.map((d) => ({
             fipsStateCode: d.fipsStateCode,
             fipsCountyCode: d.fipsCountyCode,
@@ -116,7 +123,7 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
         logMessageToFile(`There are ${locations.length} locations that are affected by new FEMA Disasters.`);
 
         // Map to user-disaster pairs
-        const userDisasterPairs: { user: User; disaster: FemaDisaster }[] = [];
+        const userDisasterPairs: { user: User; disaster: FemaDisaster; location: LocationAddress }[] = [];
 
         for (const location of locations) {
             // Find which disasters affect this location, there could be multiple
@@ -133,6 +140,7 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
                     userDisasterPairs.push({
                         user: location.company.user,
                         disaster: disaster,
+                        location: location,
                     });
                 }
             }

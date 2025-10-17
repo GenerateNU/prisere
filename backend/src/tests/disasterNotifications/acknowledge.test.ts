@@ -5,8 +5,9 @@ import { IBackup } from "pg-mem";
 import { randomUUID } from "crypto";
 import { DataSource } from "typeorm";
 import { createTestData, TestDataSetup } from "./setup";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
-describe("Test acknowledge disaster notifications", () => {
+describe("Test markAsRead disaster notifications", () => {
     let app: Hono;
     let backup: IBackup;
     let dataSource: DataSource;
@@ -24,9 +25,9 @@ describe("Test acknowledge disaster notifications", () => {
         testData = await createTestData(dataSource, true); // true = include notifications
     });
 
-    test("Acknowledge disaster notification", async () => {
+    test("MarkRead disaster notification", async () => {
         const response = await app.request(
-            `/disasterNotification/${testData.notifications!.notification1.id}/acknowledge`,
+            TESTING_PREFIX + `/notifications/${testData.notifications!.notification1.id}/markAsRead`,
             {
                 method: "PATCH",
                 headers: {
@@ -36,11 +37,11 @@ describe("Test acknowledge disaster notifications", () => {
         );
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(body.notificationStatus).toBe("acknowledged");
+        expect(body.notificationStatus).toBe("read");
     });
 
-    test("Acknowledge fake notification returns 404", async () => {
-        const response = await app.request(`/disasterNotification/${randomUUID()}/acknowledge`, {
+    test("MarkRead fake notification returns 404", async () => {
+        const response = await app.request(TESTING_PREFIX + `/notifications/${randomUUID()}/markAsRead`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -53,7 +54,7 @@ describe("Test acknowledge disaster notifications", () => {
 
     test("Invalid notification ID format returns 400", async () => {
         const response = await app.request(
-            `/disasterNotification/${testData.notifications!.notification1.id}-asdf/acknowledge`,
+            TESTING_PREFIX + `/notifications/${testData.notifications!.notification1.id}-asdf/markAsRead`,
             {
                 method: "PATCH",
                 headers: {

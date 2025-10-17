@@ -10,6 +10,7 @@ export const withServiceErrorHandling = <T extends any[], R>(handler: (...args: 
             return await handler(...args);
         } catch (error: any) {
             if (process.env.NODE_ENV !== "test") {
+                console.log(error);
                 console.error(error);
             }
             if (Boom.isBoom(error)) {

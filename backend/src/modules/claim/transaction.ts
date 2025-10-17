@@ -1,12 +1,6 @@
 import { DataSource } from "typeorm";
 import { Claim } from "../../entities/Claim";
-import {
-    CreateClaimDTO,
-    DeleteClaimDTO,
-    GetClaimsByCompanyIdDTO as GetClaimsByCompanyIdDTO,
-    DeleteClaimResponse,
-    GetClaimsByCompanyIdResponse,
-} from "../../types/Claim";
+import { CreateClaimDTO, DeleteClaimDTO, DeleteClaimResponse, GetClaimsByCompanyIdResponse } from "../../types/Claim";
 import { logMessageToFile } from "../../utilities/logger";
 import { plainToClass } from "class-transformer";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
@@ -17,14 +11,14 @@ export interface IClaimTransaction {
      * @param payload Claim to be inserted into the database
      * @returns A promise that resolves to the created claim or null
      */
-    createClaim(payload: CreateClaimDTO): Promise<Claim | null>;
+    createClaim(payload: CreateClaimDTO, companyId: string): Promise<Claim | null>;
 
     /**
      * Gets a claim by its id
      * @param payload ID of the claim to be fetched
      * @returns Promise resolving to fetched claim or null if not found
      */
-    getClaimsByCompanyId(payload: GetClaimsByCompanyIdDTO): Promise<GetClaimsByCompanyIdResponse | null>;
+    getClaimsByCompanyId(companyId: string): Promise<GetClaimsByCompanyIdResponse | null>;
 
     /**
      * Deletes a claim by its id
@@ -41,13 +35,14 @@ export class ClaimTransaction implements IClaimTransaction {
         this.db = db;
     }
 
-    async createClaim(payload: CreateClaimDTO): Promise<Claim | null> {
+    async createClaim(payload: CreateClaimDTO, companyId: string): Promise<Claim | null> {
         try {
             const claim: Claim = plainToClass(Claim, {
                 ...payload,
                 status: ClaimStatusType.ACTIVE,
                 createdAt: new Date(),
                 updatedAt: new Date(),
+                companyId: companyId,
             });
 
             const result: Claim = await this.db.getRepository(Claim).save(claim);
@@ -59,9 +54,9 @@ export class ClaimTransaction implements IClaimTransaction {
         }
     }
 
-    async getClaimsByCompanyId(payload: GetClaimsByCompanyIdDTO): Promise<GetClaimsByCompanyIdResponse | null> {
+    async getClaimsByCompanyId(companyId: string): Promise<GetClaimsByCompanyIdResponse | null> {
         try {
-            const result: Claim[] = await this.db.getRepository(Claim).find({ where: { companyId: payload.id } });
+            const result: Claim[] = await this.db.getRepository(Claim).find({ where: { companyId: companyId } });
 
             return result.map((claim) => ({
                 id: claim.id,

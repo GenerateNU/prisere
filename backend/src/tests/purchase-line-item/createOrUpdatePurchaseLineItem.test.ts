@@ -9,7 +9,7 @@ import {
 import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
 import { PurchaseSeeder, seededPurchases } from "../../database/seeds/purchase.seed";
 import { randomUUIDv7 } from "bun";
-import { LINE_ITEM_CATEGORY_CHARS, LINE_ITEM_DESCRIPTION_CHARS } from "../../utilities/constants";
+import { LINE_ITEM_CATEGORY_CHARS, LINE_ITEM_DESCRIPTION_CHARS, TESTING_PREFIX } from "../../utilities/constants";
 import CompanySeeder from "../../database/seeds/company.seed";
 import { PurchaseLineItemSeeder, seededPurchaseLineItems } from "../../database/seeds/purchaseLineItem.seed";
 import { SeederFactoryManager } from "typeorm-extension";
@@ -55,7 +55,7 @@ describe("Create or update purchase line items", () => {
             },
         ];
 
-        const response = await app.request("/purchase/line/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -91,7 +91,7 @@ describe("Create or update purchase line items", () => {
             },
         ] satisfies CreateOrChangePurchaseLineItemsDTO;
 
-        const response = await app.request("/purchase/line/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -115,7 +115,7 @@ describe("Create or update purchase line items", () => {
             },
         ] satisfies CreateOrChangePurchaseLineItemsDTO;
 
-        const response = await app.request("/purchase/line/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -131,7 +131,7 @@ describe("Create or update purchase line items", () => {
     });
 
     it("should reject empty array", async () => {
-        const response = await app.request("/purchase/line/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -155,7 +155,7 @@ describe("Create or update purchase line items", () => {
             },
         ] satisfies CreateOrChangePurchaseLineItemsDTO;
 
-        const response = await app.request("/purchase/line/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -179,7 +179,7 @@ describe("Create or update purchase line items", () => {
             },
         ] satisfies CreateOrChangePurchaseLineItemsDTO;
 
-        const response = await app.request("/purchase/line/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -201,7 +201,7 @@ describe("Create or update purchase line items", () => {
             },
         ] satisfies CreateOrChangePurchaseLineItemsDTO;
 
-        const response = await app.request("/purchase/line/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -223,7 +223,7 @@ describe("Create or update purchase line items", () => {
             },
         ];
 
-        const response = await app.request("/purchase/line/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -245,7 +245,7 @@ describe("Create or update purchase line items", () => {
             },
         ];
 
-        const response = await app.request("/purchase/line/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -267,7 +267,7 @@ describe("Create or update purchase line items", () => {
             },
         ] satisfies CreateOrChangePurchaseLineItemsDTO;
 
-        const response = await app.request("/purchase/line/bulk", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -293,7 +293,7 @@ describe("Create or update purchase line items", () => {
             },
         ];
 
-        const updateResponse = await app.request("/purchase/line/bulk", {
+        const updateResponse = await app.request(TESTING_PREFIX + "/purchase/line/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

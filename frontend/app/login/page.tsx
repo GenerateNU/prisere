@@ -1,58 +1,50 @@
-'use client'
-import { login, signup } from '@/actions/auth'
+"use client";
+import { login } from "@/actions/auth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { loginInitialState } from "@/types/user";
+import { redirect } from "next/navigation";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 
+const initialState: loginInitialState = {
+    success: false,
+    message: "",
+};
 
 export default function LoginPage() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-sky-200">
-      <div className="max-w-md w-full space-y-8">
-        <div className = "flex justify-center">
-            <label className = "block text-3xl text-black font-bold"> Login and Signup </label>
+    const [state, loginAction] = useActionState(login, initialState);
+    const status = useFormStatus();
+
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-stone">
+            <div className="max-w-lg w-full space-y-8">
+                <div className="flex justify-center">
+                    <label className="block text-4xl text-black font-bold"> Log In </label>
+                </div>
+                <form className="mt-8 space-y-6 bg-white p-8">
+                    <div className="w-full flex flex-col items-center space-y-4">
+                        <Input id="email" name="email" type="email" placeholder="Email" required />
+                        <Input id="password" name="password" type="password" placeholder="Password" required />
+                        {state?.success && <p className="text-red-500 text-sm"> {state.message}</p>}
+                    </div>
+
+                    <div className="w-full flex flex-col gap-2 items-center">
+                        <Button formAction={loginAction} variant="secondary" disabled={status.pending}>
+                            LOG IN
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="default"
+                            onClick={() => redirect("/signup")}
+                            disabled={status.pending}
+                        >
+                            Sign Up
+                        </Button>
+                        <p> Forgot Password?</p>
+                    </div>
+                </form>
+            </div>
         </div>
-        <form className="mt-8 space-y-6 bg-white p-8 rounded-xl">
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-black">
-                Email
-              </label>
-              <input 
-                id="email" 
-                name="email" 
-                type="email" 
-                required 
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input 
-                id="password" 
-                name="password" 
-                type="password" 
-                required 
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
-              />
-            </div>
-          </div>
-          
-          <div className="flex gap-4">
-            <button 
-              formAction={login}
-              className="flex-1 bg-sky-200 text-black py-2 px-4 rounded-md hover:bg-sky-500"
-            >
-              Log in
-            </button>
-            <button 
-              formAction={signup}
-              className="flex-1 bg-gray-400 text-black py-2 px-4 rounded-md hover:bg-gray-700"
-            >
-              Sign up
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  )
+    );
 }

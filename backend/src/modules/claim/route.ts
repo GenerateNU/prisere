@@ -11,7 +11,7 @@ export const claimRoutes = (db: DataSource): Hono => {
     const claimService: IClaimService = new ClaimService(claimTransaction);
     const claimController: IClaimController = new ClaimController(claimService);
 
-    claim.get("/company/:id", (ctx) => claimController.getClaimByCompanyId(ctx));
+    claim.get("/company", (ctx) => claimController.getClaimByCompanyId(ctx));
     claim.post("/", (ctx) => claimController.createClaim(ctx));
     claim.delete("/:id", (ctx) => claimController.deleteClaim(ctx));
 

@@ -4,6 +4,7 @@ import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { CreateUserResponseSchema } from "../../types/User";
 import { validate } from "uuid";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 const resetZahra = () => ({
     firstName: "Zahra",
@@ -28,10 +29,11 @@ describe("POST users/", () => {
     });
 
     test("The default case creates a new user", async () => {
-        const response = await app.request("/users", {
+        const response = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
             },
             body: JSON.stringify(requestBody),
         });
@@ -48,12 +50,13 @@ describe("POST users/", () => {
         expect(validate(validatedResponse.id)).toBe(true);
     });
 
-    test("test that emails are optinal when creating a user", async () => {
+    test("test that emails are optional when creating a user", async () => {
         requestBody.email = undefined as unknown as string;
-        const response = await app.request("/users", {
+        const response = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
             },
             body: JSON.stringify(requestBody),
         });
@@ -68,44 +71,14 @@ describe("POST users/", () => {
         expect(validate(responseData.id)).toBe(true);
     });
 
-    test("test that company ID is saved", async () => {
-        const companyResponse = await app.request("/companies", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ name: "Josh & Co." }),
-        });
-
-        const newCompanyId = (await companyResponse.json()).id;
-        (requestBody as unknown as { companyId: string }).companyId = newCompanyId;
-
-        const userResponse = await app.request("/users", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestBody),
-        });
-        expect(userResponse.status).toBe(201);
-        const responseData = await userResponse.json();
-
-        expect(responseData).toMatchObject({
-            firstName: requestBody.firstName,
-            lastName: requestBody.lastName,
-            email: null,
-            companyId: newCompanyId,
-        });
-        expect(validate(responseData.id)).toBe(true);
-    });
-
     test("test that first names are not optional when creating a user", async () => {
         requestBody.firstName = undefined as unknown as string;
         requestBody.email = undefined as unknown as string;
-        const response = await app.request("/users", {
+        const response = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
             },
             body: JSON.stringify(requestBody),
         });
@@ -114,10 +87,11 @@ describe("POST users/", () => {
 
     test("test that last names are not optional when creating a user", async () => {
         requestBody.lastName = undefined as unknown as string;
-        const response = await app.request("/users", {
+        const response = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
             },
             body: JSON.stringify(requestBody),
         });
@@ -125,10 +99,11 @@ describe("POST users/", () => {
     });
 
     test("Test that an empty object fails when creating a user", async () => {
-        const response = await app.request("/users", {
+        const response = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
             },
             body: JSON.stringify({}),
         });
@@ -137,10 +112,11 @@ describe("POST users/", () => {
 
     test("Test that an empty first name fails when creating a user", async () => {
         requestBody.firstName = "";
-        const response = await app.request("/users", {
+        const response = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
             },
             body: JSON.stringify({}),
         });
@@ -148,10 +124,11 @@ describe("POST users/", () => {
     });
     test("Test that an empty last name fails when creating a user", async () => {
         requestBody.lastName = "";
-        const response = await app.request("/users", {
+        const response = await app.request(TESTING_PREFIX + "/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
             },
             body: JSON.stringify({}),
         });

@@ -7,7 +7,7 @@ import { ILocationAddressTransaction, LocationAddressTransactions } from "../loc
 import { IPreferenceTransaction, PreferenceTransaction } from "../preferences/transaction";
 
 export const disasterNotificationRoutes = (db: DataSource): Hono => {
-    const disasterNotification = new Hono();
+    const notifications = new Hono();
 
     const disasterNotificationTransaction: IDisasterNotificationTransaction = new DisasterNotificationTransaction(db);
     const locationTransaction: ILocationAddressTransaction = new LocationAddressTransactions(db);
@@ -21,13 +21,12 @@ export const disasterNotificationRoutes = (db: DataSource): Hono => {
         disasterNotificationService
     );
 
-    disasterNotification.get("/:id", (ctx) => disasterNotificationController.getUserNotifications(ctx));
-    disasterNotification.patch("/:id/acknowledge", (ctx) =>
-        disasterNotificationController.acknowledgeNotification(ctx)
-    );
-    disasterNotification.patch("/:id/dismiss", (ctx) => disasterNotificationController.dismissNotification(ctx));
-    disasterNotification.post("/create", (ctx) => disasterNotificationController.bulkCreateNotifications(ctx));
-    disasterNotification.delete("/:id", (ctx) => disasterNotificationController.deleteNotification(ctx));
+    notifications.get("/", (ctx) => disasterNotificationController.getUserNotifications(ctx)); // removed user ID
+    notifications.patch("/:id/markAsRead", (ctx) => disasterNotificationController.markAsReadNotification(ctx));
+    notifications.patch("/:id/markUnread", (ctx) => disasterNotificationController.markUnreadNotification(ctx));
+    notifications.post("/create", (ctx) => disasterNotificationController.bulkCreateNotifications(ctx));
+    notifications.delete("/:id", (ctx) => disasterNotificationController.deleteNotification(ctx));
+    notifications.patch("/user/markAllAsRead", (ctx) => disasterNotificationController.markAllAsRead(ctx)); // removed user ID
 
-    return disasterNotification;
+    return notifications;
 };
