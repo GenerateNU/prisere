@@ -35,8 +35,10 @@ export const setUpRoutes = (app: Hono<any>, db: DataSource) => {
     routes.route("/preferences", preferenceRoutes(db));
     routes.route("/claim-locations", claimLocationRoutes(db));
 
-    process.env.NODE_ENV == "production" ?  app.route("/prisere", routes) :  app.route("/api/prisere", routes);
-    process.env.NODE_ENV == "production" ?  app.route("/", setUpOpenApiRoutes(db)) :  app.route("/api/openapi", setUpOpenApiRoutes(db));
+    process.env.NODE_ENV === "production" ? app.route("/prisere", routes) : app.route("/api/prisere", routes);
+    process.env.NODE_ENV === "production"
+        ? app.route("/", setUpOpenApiRoutes(db))
+        : app.route("/api/openapi", setUpOpenApiRoutes(db));
 };
 
 const healthRoutes = (): Hono => {
