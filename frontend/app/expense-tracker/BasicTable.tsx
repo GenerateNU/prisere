@@ -1,7 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Purchase } from "../../types/purchase";
-import { Invoice } from "@/types/invoice";
-type InvoiceOrPurchase = Invoice | Purchase;
+
 import {
     flexRender,
     getCoreRowModel,

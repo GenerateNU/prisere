@@ -4,7 +4,7 @@ import Company from "./company";
 import Insurance from "./insurance";
 import UserInfoPage from "./user";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+
 
 interface OnboardingProps {
     email: string;
