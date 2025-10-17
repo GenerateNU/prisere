@@ -168,8 +168,8 @@ export default function NotificationsPage() {
         const createdAtComparison = filters.sort === "most-recent" ? createdAtB - createdAtA : createdAtA - createdAtB;
 
         if (createdAtComparison === 0) {
-            const dateA = new Date(a.femaDisaster[0]?.declarationDate || 0).getTime();
-            const dateB = new Date(b.femaDisaster[0]?.declarationDate || 0).getTime();
+            const dateA = new Date(a.femaDisaster?.declarationDate || 0).getTime();
+            const dateB = new Date(b.femaDisaster?.declarationDate || 0).getTime();
             return filters.sort === "most-recent" ? dateB - dateA : dateA - dateB;
         }
 

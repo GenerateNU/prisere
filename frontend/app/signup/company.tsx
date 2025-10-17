@@ -36,6 +36,7 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
     } = useMutation({
         mutationFn: (payload: CreateLocationRequest) => createLocation(payload),
         onSuccess: () => {
+            setProgress(progress);
             router.push("/");
         },
     });
