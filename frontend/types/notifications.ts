@@ -24,3 +24,50 @@ export type PaginationStatus = {
     currentPage: number;
     itemsPerPage: number;
 };
+
+
+export type DisasterNotificationWithRealtionsType= {
+    id: string,
+    userId: string,
+    femaDisasterId: string
+    notificationType: "web" | "email",
+    notificationStatus: "unread" | "read",
+    firstSentAt: Date
+    lastSentAt: Date,
+    acknowledgedAt: Date,
+    createdAt: Date
+    user: {
+        id: string
+        firstName: string
+        lastName: string
+        email: string
+        companyId: string | null
+    }
+    femaDisaster: {
+        id: string
+        disasterNumber: string 
+        fipsStateCode: string ,
+        declarationDate: string,
+        incidentBeginDate: string | null
+        incidentEndDate: string | null
+        fipsCountyCode: string,
+        declarationType: string
+        designatedArea: string
+        designatedIncidentTypes: string
+    },
+    locationAddress: {
+            id: string,
+            country: string;
+            stateProvince: string;
+            city: string;
+            streetAddress: string;
+            postalCode: string;
+            county: string | null;
+            companyId: string;
+            fipsStateCode: string;
+            fipsCountyCode: string;
+            company: {
+                name: string
+            }
+    }
+};
