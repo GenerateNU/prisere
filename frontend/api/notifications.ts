@@ -1,6 +1,6 @@
 import { MarkReadNotificationResponse, GetNotificationsResponse, NotificationFilters } from "@/types/notifications";
 import { authHeader, authWrapper, client } from "./client";
-import { MarkAllAsReadResponse } from "../../backend/src/types/DisasterNotification";
+import { MarkAllAsReadResponse } from "@/types/notifications";
 
 export const getNotifications = async (filters?: NotificationFilters): Promise<GetNotificationsResponse> => {
     const req = async (token: string): Promise<GetNotificationsResponse> => {
