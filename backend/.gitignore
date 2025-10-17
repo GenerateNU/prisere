@@ -6,3 +6,4 @@ package-lock.json
 bun.lock
 log/
 *.log
+dist/

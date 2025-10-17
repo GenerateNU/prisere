@@ -48,13 +48,13 @@ export default function NotificationBanner({ userId }: { userId: string }) {
                     {/* Content */}
                     <div className="flex-1">
                         <h3 className="text-sm font-semibold text-red-800">
-                            🚨 Disaster Alert: {notification.femaDisaster[0]?.designatedIncidentTypes || "Disaster"}{" "}
+                            🚨 Disaster Alert: {notification.femaDisaster?.designatedIncidentTypes || "Disaster"}{" "}
                             Declared
                         </h3>
                         <div className="mt-1 text-sm text-red-700">
                             <p>
                                 <span className="font-medium">Location:</span>{" "}
-                                {notification.femaDisaster[0]?.designatedArea || "Unknown"}
+                                {notification.femaDisaster?.designatedArea || "Unknown"}
                             </p>
                             {notification.locationAddress && (
                                 <p className="mt-1">
@@ -64,8 +64,8 @@ export default function NotificationBanner({ userId }: { userId: string }) {
                             )}
                             <p className="mt-1 text-xs text-red-600">
                                 Declared:{" "}
-                                {notification.femaDisaster[0]?.declarationDate
-                                    ? new Date(notification.femaDisaster[0].declarationDate).toLocaleDateString()
+                                {notification.femaDisaster?.declarationDate
+                                    ? new Date(notification.femaDisaster.declarationDate).toLocaleDateString()
                                     : "N/A"}
                             </p>
                         </div>

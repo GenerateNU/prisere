@@ -1364,66 +1364,63 @@
                         ]
                       },
                       "femaDisaster": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "format": "uuid"
-                            },
-                            "disasterNumber": {
-                              "type": "number"
-                            },
-                            "fipsStateCode": {
-                              "type": "number",
-                              "minimum": 0,
-                              "maximum": 56
-                            },
-                            "declarationDate": {
-                              "type": "string",
-                              "format": "date-time"
-                            },
-                            "incidentBeginDate": {
-                              "type": "string",
-                              "nullable": true
-                            },
-                            "incidentEndDate": {
-                              "type": "string",
-                              "nullable": true
-                            },
-                            "fipsCountyCode": {
-                              "type": "number",
-                              "minimum": 0,
-                              "maximum": 1000,
-                              "exclusiveMaximum": true
-                            },
-                            "declarationType": {
-                              "type": "string",
-                              "minLength": 2,
-                              "maxLength": 2
-                            },
-                            "designatedArea": {
-                              "type": "string"
-                            },
-                            "designatedIncidentTypes": {
-                              "type": "string",
-                              "nullable": true
-                            }
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
                           },
-                          "required": [
-                            "id",
-                            "disasterNumber",
-                            "fipsStateCode",
-                            "declarationDate",
-                            "incidentBeginDate",
-                            "incidentEndDate",
-                            "fipsCountyCode",
-                            "declarationType",
-                            "designatedArea",
-                            "designatedIncidentTypes"
-                          ]
-                        }
+                          "disasterNumber": {
+                            "type": "number"
+                          },
+                          "fipsStateCode": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 56
+                          },
+                          "declarationDate": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "incidentBeginDate": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "incidentEndDate": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "fipsCountyCode": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1000,
+                            "exclusiveMaximum": true
+                          },
+                          "declarationType": {
+                            "type": "string",
+                            "minLength": 2,
+                            "maxLength": 2
+                          },
+                          "designatedArea": {
+                            "type": "string"
+                          },
+                          "designatedIncidentTypes": {
+                            "type": "string",
+                            "nullable": true
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "disasterNumber",
+                          "fipsStateCode",
+                          "declarationDate",
+                          "incidentBeginDate",
+                          "incidentEndDate",
+                          "fipsCountyCode",
+                          "declarationType",
+                          "designatedArea",
+                          "designatedIncidentTypes"
+                        ]
                       },
                       "locationAddress": {
                         "type": "object",
@@ -4428,6 +4425,405 @@
           },
           "500": {
             "description": "Getting Invoice Line Item Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/purchase/line/bulk": {
+      "post": {
+        "summary": "Create or update purchase line items",
+        "description": "Creates new purchase line items or updates existing ones. If an id is provided in the payload, the line item will be updated; otherwise, a new line item will be created. Multiple line items can be created or updated in a single request.",
+        "tags": [
+          "Purchase Line Items"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "description": {
+                      "type": "string",
+                      "maxLength": 400
+                    },
+                    "quickBooksId": {
+                      "type": "number"
+                    },
+                    "purchaseId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "amountCents": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "category": {
+                      "type": "string",
+                      "maxLength": 100
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "extraneous",
+                        "typical"
+                      ]
+                    },
+                    "quickbooksDateCreated": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "purchaseId",
+                    "amountCents",
+                    "type"
+                  ]
+                },
+                "minItems": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully created or updated purchase line items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "quickBooksId": {
+                        "type": "number"
+                      },
+                      "purchaseId": {
+                        "type": "string"
+                      },
+                      "amountCents": {
+                        "type": "number"
+                      },
+                      "category": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "extraneous",
+                          "typical"
+                        ]
+                      },
+                      "dateCreated": {
+                        "type": "string"
+                      },
+                      "lastUpdated": {
+                        "type": "string"
+                      },
+                      "quickbooksDateCreated": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "purchaseId",
+                      "amountCents",
+                      "type",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Create or update purchase line items error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Purchase with the given purchaseId does not exist"
+          },
+          "500": {
+            "description": "Create or update purchase line items error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/purchase/line/{id}": {
+      "get": {
+        "summary": "Fetches a purchase line item by the given ID",
+        "description": "Finds the purchase line item with the given ID in the database",
+        "tags": [
+          "Purchase Line Items"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched purchase line item from the database",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "quickBooksId": {
+                      "type": "number"
+                    },
+                    "purchaseId": {
+                      "type": "string"
+                    },
+                    "amountCents": {
+                      "type": "number"
+                    },
+                    "category": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "extraneous",
+                        "typical"
+                      ]
+                    },
+                    "dateCreated": {
+                      "type": "string"
+                    },
+                    "lastUpdated": {
+                      "type": "string"
+                    },
+                    "quickbooksDateCreated": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "purchaseId",
+                    "amountCents",
+                    "type",
+                    "dateCreated",
+                    "lastUpdated"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get purchase line item error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "There does not exist any purchase line item in the database with the given id"
+          },
+          "500": {
+            "description": "Get purchase line item error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/purchase/{id}/lines": {
+      "get": {
+        "summary": "Fetches all line items for a purchase by the given purchase ID",
+        "description": "Finds all purchase line items associated with the given purchase ID in the database. Returns an empty array if the purchase exists but has no line items.",
+        "tags": [
+          "Purchase Line Items"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched all purchase line items for the given purchase from the database",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "quickBooksId": {
+                        "type": "number"
+                      },
+                      "purchaseId": {
+                        "type": "string"
+                      },
+                      "amountCents": {
+                        "type": "number"
+                      },
+                      "category": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "extraneous",
+                          "typical"
+                        ]
+                      },
+                      "dateCreated": {
+                        "type": "string"
+                      },
+                      "lastUpdated": {
+                        "type": "string"
+                      },
+                      "quickbooksDateCreated": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "purchaseId",
+                      "amountCents",
+                      "type",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get purchase line items for purchase error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "There does not exist any purchase in the database with the given id"
+          },
+          "500": {
+            "description": "Get purchase line items for purchase error",
             "content": {
               "application/json": {
                 "schema": {

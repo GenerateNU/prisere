@@ -12,7 +12,7 @@ interface DecodedToken extends jwt.JwtPayload {
 }
 
 const jwk = JSON.parse(
-    process.env.NODE_ENV === "producion"
+    process.env.NODE_ENV === "production"
         ? process.env.SUPABASE_PUBLIC_AUTH_KEY!
         : process.env.SUPABASE_PUBLIC_AUTH_KEY_DEV!
 );
