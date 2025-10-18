@@ -4,18 +4,20 @@ import { QuickbooksTransaction } from "../quickbooks/transaction";
 import { QuickbooksClient } from "../../external/quickbooks/client";
 import { QuickbooksService } from "../quickbooks/service";
 import { QuickbooksController } from "../quickbooks/controller";
-import { RedirectEndpointSuccessParams } from "../../types/Quickbooks";
+import { RedirectEndpointSuccessParams } from "../../types/quickbooks";
 import z from "zod";
+import { UserTransaction } from "../user/transaction";
 
 export const addOpenApiQBRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const transaction = new QuickbooksTransaction(db);
+    const userTransaction = new UserTransaction(db);
     const client = new QuickbooksClient({
         clientId: process.env.QUICKBOOKS_CLIENT_ID!,
         clientSecret: process.env.QUICKBOOKS_CLIENT_SECRET!,
         environment: "sandbox",
     });
 
-    const service = new QuickbooksService(transaction, client);
+    const service = new QuickbooksService(transaction, userTransaction, client);
     const controller = new QuickbooksController(service);
 
     openApi.openapi(generateAuthRoute, (ctx) => controller.redirectToAuthorization(ctx));

@@ -1,7 +1,9 @@
-import { DataSource, IsNull } from "typeorm";
+import { DataSource, In, IsNull } from "typeorm";
 import { CompanyExternal, CompanyExternalSource } from "../../entities/CompanyExternals";
 import { QuickbooksSession } from "../../entities/QuickbookSession";
 import { QuickbooksPendingOAuth } from "../../entities/QuickbooksPendingOAuth";
+import { Invoice } from "../../entities/Invoice";
+import { InvoiceLineItem } from "../../entities/InvoiceLineItem";
 
 export interface IQuickbooksTransaction {
     storeOAuth(args: { stateId: string; initiatorId: string }): Promise<QuickbooksPendingOAuth>;
@@ -20,6 +22,21 @@ export interface IQuickbooksTransaction {
         userId: string;
     }): Promise<{ session: QuickbooksSession | null; externalId: string | undefined }>;
     destroyQuickbooksSession(args: { externalId: string }): Promise<void>;
+    getInvoicesByQBId(args: { ids: Invoice["quickbooksId"][] }): Promise<Invoice[]>;
+    bulkUpsertInvoices(
+        data: {
+            companyId: string;
+            quickbooksId: number;
+            totalAmountCents: number;
+            qbDateCreated: Date;
+            lineItems: {
+                description: string;
+                qbLineItemId: number;
+                amountCents: number;
+                category: string;
+            }[];
+        }[]
+    ): Promise<void>;
 }
 
 export class QuickbooksTransaction implements IQuickbooksTransaction {
@@ -158,5 +175,54 @@ export class QuickbooksTransaction implements IQuickbooksTransaction {
                 companyId: external?.companyId,
             }),
         ]);
+    }
+
+    async getInvoicesByQBId({ ids }: { ids: Invoice["quickbooksId"][] }) {
+        return this.db.getRepository(Invoice).findBy({
+            quickbooksId: In(ids),
+        });
+    }
+
+    async bulkUpsertInvoices(
+        data: {
+            companyId: string;
+            quickbooksId: number;
+            totalAmountCents: number;
+            qbDateCreated: Date;
+            lineItems: {
+                description: string;
+                qbLineItemId: number;
+                amountCents: number;
+                category: string;
+                quickbooksDateCreated: Date;
+            }[];
+        }[]
+    ) {
+        const { raw } = await this.db
+            .createQueryBuilder()
+            .insert()
+            .into(Invoice)
+            .values(
+                data.map((d) => ({
+                    companyId: d.companyId,
+                    quickbooksId: d.quickbooksId,
+                    totalAmountCents: d.totalAmountCents,
+                    quickbooksDateCreated: d.qbDateCreated,
+                }))
+            )
+            .orUpdate(["totalAmountCents"], ["quickbooksId"])
+            .returning(["id", "quickbooksId"])
+            .execute();
+
+        const invoiceIds = raw as { id: string; quickbooksId: number }[];
+
+        const invoiceLineItemData = [] as ((typeof data)[number]["lineItems"][number] & { invoiceId: string })[];
+
+        for (const invoice of data) {
+            const insertedId = invoiceIds.find((i) => i.quickbooksId === invoice.quickbooksId)!.id;
+            invoiceLineItemData.push(...invoice.lineItems.map((li) => ({ ...li, invoiceId: insertedId })));
+        }
+
+        await this.db.createQueryBuilder().insert().into(InvoiceLineItem).values(invoiceLineItemData).execute();
     }
 }

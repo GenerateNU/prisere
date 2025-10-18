@@ -9,6 +9,9 @@ import { MockQBClient, setupData } from "./mock-client";
 import { QuickbooksSession } from "../../../entities/QuickbookSession";
 import dayjs from "dayjs";
 import { IQuickbooksClient } from "../../../external/quickbooks/client";
+import { UserTransaction } from "../../../modules/user/transaction";
+import { QBQueryResponse, QBSuccessfulQueryResponse } from "../../../external/quickbooks/types";
+import { QBInvoice } from "../../../types/quickbooks";
 
 describe("requesting from api", () => {
     let app: Hono;
@@ -22,8 +25,9 @@ describe("requesting from api", () => {
         ({ app, backup, dataSource: db } = await startTestApp());
 
         const transaction = new QuickbooksTransaction(db);
+        const userTransaction = new UserTransaction(db);
         client = new MockQBClient();
-        service = new QuickbooksService(transaction, client);
+        service = new QuickbooksService(transaction, userTransaction, client);
     });
 
     afterEach(() => {
@@ -34,14 +38,14 @@ describe("requesting from api", () => {
         const { user, companyId } = await setupData(app, service);
 
         const refreshSpy = spyOn(service, "refreshQuickbooksSession");
-        spyOn(client, "_exampleQueryData").mockImplementation(async () => {
+        spyOn(client, "query").mockImplementation(async <T>() => {
             return {
                 _id: "valid",
-                data: { QueryResponse: [] as unknown, time: "" },
-            } as const;
+                data: { QueryResponse: { Invoice: [] }, time: "" },
+            } satisfies QBSuccessfulQueryResponse<{ Invoice: QBInvoice[] }> as unknown as QBQueryResponse<T>;
         });
 
-        await service._queryExample({ userId: user.id });
+        await service.getUnprocessedInvoices({ userId: user.id });
         expect(refreshSpy).toBeCalledTimes(0);
 
         const now = dayjs();
@@ -55,7 +59,7 @@ describe("requesting from api", () => {
 
         expect(affected).toBe(1);
 
-        await service._queryExample({ userId: user.id });
+        await service.getUnprocessedInvoices({ userId: user.id });
         expect(refreshSpy).toBeCalledTimes(1);
     });
 
@@ -65,13 +69,15 @@ describe("requesting from api", () => {
         const session = await db.getRepository(QuickbooksSession).findOneBy({ companyId });
         expect(session).not.toBeNull();
 
-        spyOn(client, "_exampleQueryData").mockImplementation(async () => {
+        spyOn(client, "query").mockImplementation(async () => {
             return {
                 _id: "revoked",
             } as const;
         });
 
-        expect(async () => await service._queryExample({ userId: user.id })).toThrow("Quickbooks session deleted");
+        expect(async () => await service.getUnprocessedInvoices({ userId: user.id })).toThrow(
+            "Quickbooks session deleted"
+        );
 
         const sessionAfter = await db.getRepository(QuickbooksSession).findOneBy({ companyId });
         expect(sessionAfter).toBeNull();

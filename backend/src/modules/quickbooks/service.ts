@@ -5,17 +5,21 @@ import { IQuickbooksTransaction } from "./transaction";
 import { QuickbooksSession } from "../../entities/QuickbookSession";
 import Boom from "@hapi/boom";
 import { QBQueryResponse } from "../../external/quickbooks/types";
+import { QBInvoice } from "../../types/quickbooks";
+import { IUserTransaction } from "../user/transaction";
 
 export interface IQuickbooksService {
     generateAuthUrl(args: { userId: string }): Promise<{ state: string; url: string }>;
     createQuickbooksSession(args: { code: string; state: string; realmId: string }): Promise<QuickbooksSession>;
     refreshQuickbooksSession(args: { refreshToken: string; companyId: string }): Promise<QuickbooksSession>;
     consumeOAuthState(args: { state: string }): Promise<void>;
+    getUnprocessedInvoices(args: { userId: string }): Promise<QBInvoice[]>;
 }
 
 export class QuickbooksService implements IQuickbooksService {
     constructor(
         private transaction: IQuickbooksTransaction,
+        private userTransaction: IUserTransaction,
         private qbClient: IQuickbooksClient
     ) {}
 
@@ -173,20 +177,78 @@ export class QuickbooksService implements IQuickbooksService {
         return await this.retryClientApi(request, { existingSession: session, externalId });
     }
 
-    // [FUTURE]: We can use this general pattern to query data from QB api w/ safe retries + session revalidation
-    _queryExample = withServiceErrorHandling(async ({ userId }: { userId: string }) => {
-        const data = this.makeRequestToQB({
+    getUnprocessedInvoices = withServiceErrorHandling(async ({ userId }: { userId: string }) => {
+        const user = await this.userTransaction.getCompany({ id: userId });
+        if (!user) {
+            throw Boom.internal("No user found");
+        }
+        const lastImport = user.company.lastQuickBooksImportTime;
+        const lastImportDate = lastImport ? dayjs(lastImport) : null;
+
+        const {
+            QueryResponse: { Invoice: invoices },
+        } = await this.makeRequestToQB({
             userId,
-            request: async (session) => {
-                return await this.qbClient._exampleQueryData({
+            request: (session) =>
+                this.qbClient.query<{ Invoice: QBInvoice[] }>({
                     qbRealm: session.externalId,
                     accessToken: session.session.accessToken,
-                });
-            },
+                    query: lastImportDate
+                        ? `SELECT * FROM Invoice WHERE Metadata.LastUpdatedTime > '${lastImportDate.format("YYYY-MM-DDTHH:mm:ss")}'`
+                        : `SELECT * FROM Invoice`,
+                }),
         });
 
-        return data;
+        await this.transaction.bulkUpsertInvoices(
+            invoices.map((i) => ({
+                companyId: user.company.id,
+                qbDateCreated: new Date(i.MetaData.CreateTime),
+                quickbooksId: parseInt(i.Id),
+                totalAmountCents: i.TotalAmt * 100,
+                lineItems: getLineItems(i).map((i) => ({
+                    description: i.description,
+                    qbLineItemId: i.id,
+                    amountCents: i.amountCents,
+                    category: i.category,
+                })),
+            }))
+        );
+
+        return invoices;
     });
 }
 
 type ClientRequest<T> = (input: { session: QuickbooksSession; externalId: string }) => Promise<QBQueryResponse<T>>;
+
+function getLineItems(invoice: QBInvoice) {
+    const out = [] as { id: number; amountCents: number; description: string; category: string }[];
+
+    for (const lineItem of invoice.Line) {
+        switch (lineItem.DetailType) {
+            case "SalesLineItemDetail":
+                out.push({
+                    id: parseInt(lineItem.Id),
+                    amountCents: lineItem.Amount * 100,
+                    description: lineItem.Description ?? "",
+                    category: "", // TODO: there is no category reported?
+                });
+                break;
+            case "GroupLineDetail":
+                out.push(
+                    ...lineItem.GroupLineDetail.Line.map((l) => ({
+                        id: parseInt(l.Id),
+                        amountCents: l.Amount * 100,
+                        description: l.Description ?? "",
+                        category: "",
+                    }))
+                );
+                break;
+            case "DescriptionOnly":
+            case "DiscountLineDetail":
+            case "SubTotalLineDetail":
+                break;
+        }
+    }
+
+    return out;
+}

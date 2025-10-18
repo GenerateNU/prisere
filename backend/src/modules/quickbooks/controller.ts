@@ -1,6 +1,6 @@
 import { Context, TypedResponse } from "hono";
 import { IQuickbooksService } from "./service";
-import { RedirectEndpointParams } from "../../types/Quickbooks";
+import { RedirectEndpointParams } from "../../types/quickbooks";
 import { ControllerResponse } from "../../utilities/response";
 
 export interface IQuickbooksController {
@@ -8,6 +8,7 @@ export interface IQuickbooksController {
     generateSession(
         ctx: Context
     ): ControllerResponse<TypedResponse<{ success: true }, 200> | TypedResponse<{ error: string }, 400>>;
+    getUnprocessedInvoices(ctx: Context): ControllerResponse<TypedResponse<unknown, 200>>;
 }
 
 export class QuickbooksController implements IQuickbooksController {
@@ -35,11 +36,11 @@ export class QuickbooksController implements IQuickbooksController {
         return ctx.json({ success: true }, 200);
     }
 
-    async _queryExample(ctx: Context) {
-        // TODO: how are we doing auth? we need to get this userId in the Context I think
-        // @ts-expect-error this example is not listed on the public interface
-        const data = await this.service._queryExample({ userId: "086c8b52-69bc-411c-8346-30857fd2138d" });
+    async getUnprocessedInvoices(ctx: Context) {
+        const data = await this.service.getUnprocessedInvoices({
+            userId: "086c8b52-69bc-411c-8346-30857fd2138d",
+        });
 
-        return ctx.json(data);
+        return ctx.json(data, 200);
     }
 }
