@@ -69,8 +69,13 @@ export class PurchaseController implements IPurchaseController {
 
     getPurchasesForCompany = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyPurchasesResponse, 200>> => {
+            const id = ctx.req.param("companyId");
+
+            if (!validate(id)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
             const queryParams = {
-                companyId: ctx.get("companyId"),
+                companyId: id,
                 pageNumber: ctx.req.query("pageNumber") ? Number(ctx.req.query("pageNumber")) : undefined,
                 resultsPerPage: ctx.req.query("resultsPerPage") ? Number(ctx.req.query("resultsPerPage")) : undefined,
             };

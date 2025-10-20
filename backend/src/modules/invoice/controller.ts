@@ -64,8 +64,13 @@ export class InvoiceController implements IInvoiceController {
 
     getInvoicesForCompany = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyInvoicesResponse, 200>> => {
+            const companyId = await ctx.get("companyId");
+
+            if (!validate(companyId)) {
+                return ctx.json({ error: "Invalid invoice ID format" }, 400);
+            }
             const queryParams = {
-                companyId: ctx.get("companyId"),
+                companyId: companyId,
                 pageNumber: ctx.req.query("pageNumber") ? Number(ctx.req.query("pageNumber")) : undefined,
                 resultsPerPage: ctx.req.query("resultsPerPage") ? Number(ctx.req.query("resultsPerPage")) : undefined,
             };
