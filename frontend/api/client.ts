@@ -3,7 +3,7 @@ import createClient from "openapi-fetch";
 import type { paths } from "../schema";
 import { retrieveToken } from "@/actions/auth";
 
-export const getClient = () => {
+export const getClient = async () => {
     const apiBaseRoute =
         process.env.NODE_ENV === "production"
             ? process.env.PROD_API_BASE_URL
@@ -12,7 +12,7 @@ export const getClient = () => {
     return createClient<paths>({ baseUrl: apiBaseRoute });
 };
 
-export const authHeader = (token: string, contentType: string = "application/json") => {
+export const authHeader = async (token: string, contentType: string = "application/json") => {
     return {
         "Content-Type": contentType,
         Authorization: `Bearer ${token}`,
@@ -20,7 +20,7 @@ export const authHeader = (token: string, contentType: string = "application/jso
 };
 
 export const authWrapper =
-    <T>() =>
+    async <T>() =>
     async (fn: (token: string) => Promise<T>) => {
         const token = await retrieveToken();
         return fn(token);
