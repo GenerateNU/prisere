@@ -52,7 +52,7 @@ export const seededDisasterNotifications = [
     },
 ];
 
-export class InvoiceSeeder implements Seeder {
+export class DisasterNotificationSeeder implements Seeder {
     track = false;
     public async run(dataSource: DataSource, _factoryManager: SeederFactoryManager): Promise<void> {
         // c34197fc-b944-4291-89ee-2e47ea77dc27

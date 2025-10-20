@@ -69,13 +69,8 @@ export class PurchaseController implements IPurchaseController {
 
     getPurchasesForCompany = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyPurchasesResponse, 200>> => {
-            const id = ctx.req.param("companyId");
-
-            if (!validate(id)) {
-                return ctx.json({ error: "Invalid company ID format" }, 400);
-            }
             const queryParams = {
-                companyId: id,
+                companyId: ctx.get("companyId"),
                 pageNumber: ctx.req.query("pageNumber") ? Number(ctx.req.query("pageNumber")) : undefined,
                 resultsPerPage: ctx.req.query("resultsPerPage") ? Number(ctx.req.query("resultsPerPage")) : undefined,
             };
@@ -113,7 +108,7 @@ export class PurchaseController implements IPurchaseController {
     sumPurchasesByCompanyInMonthBins = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyPurchasesInMonthBinsResponse, 200>> => {
             const queryParams = {
-                companyId: ctx.req.param("id"),
+                companyId: ctx.get("companyId"),
                 startDate: ctx.req.query("startDate"),
                 endDate: ctx.req.query("endDate"),
             };

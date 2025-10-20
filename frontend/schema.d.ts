@@ -1813,6 +1813,73 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/invoice/bulk/months": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the total invoice amounts broken down by months
+         * @description Get the summation of invoices for a company that were made after the start date and before the end date split into each month that exists in the date range
+         */
+        get: {
+            parameters: {
+                query: {
+                    startDate: string;
+                    endDate: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Found summation successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            month: string;
+                            total: number;
+                        }[];
+                    };
+                };
+                /** @description Getting Invoice Error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Getting Invoice Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/purchase/bulk": {
         parameters: {
             query?: never;
@@ -2100,6 +2167,73 @@ export interface paths {
                         "application/json": {
                             total: number;
                         };
+                    };
+                };
+                /** @description Getting Purchase Error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Getting Purchase Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/purchase/bulk/months": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the total purchase amounts broken down by months
+         * @description Get the summation of purchases for a company that were made after the start date and before the end date split into each month that exists in the date range
+         */
+        get: {
+            parameters: {
+                query: {
+                    startDate: string;
+                    endDate: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Found summation successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            month: string;
+                            total: number;
+                        }[];
                     };
                 };
                 /** @description Getting Purchase Error */

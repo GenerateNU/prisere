@@ -192,12 +192,11 @@ const sumInvoicesByCompanyAndDateRange = createRoute({
 
 const sumInvoicesByCompanyInMonthBins = createRoute({
     method: "get",
-    path: "/invoice/bulk/{id}/months",
+    path: "/invoice/bulk/months",
     summary: "Get the total invoice amounts broken down by months",
     description:
         "Get the summation of invoices for a company that were made after the start date and before the end date split into each month that exists in the date range",
     request: {
-        params: GetInvoiceDTOSchema,
         query: z.object({ startDate: z.iso.datetime(), endDate: z.iso.datetime() }),
     },
     responses: {

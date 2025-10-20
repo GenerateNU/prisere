@@ -144,12 +144,11 @@ const sumPurchasesByCompanyAndDateRange = createRoute({
 
 const sumPurchasesByCompanyInMonthBins = createRoute({
     method: "get",
-    path: "/purchase/bulk/{id}/months",
+    path: "/purchase/bulk/months",
     summary: "Get the total purchase amounts broken down by months",
     description:
         "Get the summation of purchases for a company that were made after the start date and before the end date split into each month that exists in the date range",
     request: {
-        params: GetPurchaseDTOSchema,
         query: z.object({ startDate: z.iso.datetime(), endDate: z.iso.datetime() }),
     },
     responses: {

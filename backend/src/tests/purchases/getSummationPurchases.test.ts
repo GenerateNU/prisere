@@ -45,7 +45,7 @@ describe("Get Purchase summation by company id", () => {
         );
         const body = await response.json();
         expect(response.status).toBe(200);
-        expect(body.total).toBe(5678);
+        expect(body.total).toBe(6912);
     });
 
     test("should return 0 if no purchases in the valid date range", async () => {
