@@ -1,13 +1,16 @@
+'use server';
 import createClient from "openapi-fetch";
 import type { paths } from "../schema";
 import { retrieveToken } from "@/actions/auth";
 
-const apiBaseRoute =
-    process.env.NODE_ENV === "production"
-        ? process.env.PROD_API_BASE_URL
-        : process.env.LOCAL_API_BASE_URL;
-
-export const client = createClient<paths>({ baseUrl: apiBaseRoute });
+export const getClient = () => {
+    const apiBaseRoute =
+        process.env.NODE_ENV === "production"
+            ? process.env.PROD_API_BASE_URL
+            : process.env.LOCAL_API_BASE_URL;
+    
+    return createClient<paths>({ baseUrl: apiBaseRoute });
+};
 
 export const authHeader = (token: string, contentType: string = "application/json") => {
     return {

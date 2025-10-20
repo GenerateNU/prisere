@@ -1,8 +1,10 @@
+'use server';
 import { Company, CreateCompanyRequest } from "@/types/company";
-import { authHeader, authWrapper, client } from "./client";
+import { authHeader, authWrapper, getClient } from "./client";
 
 export const createCompany = async (payload: CreateCompanyRequest): Promise<Company> => {
     const req = async (token: string): Promise<Company> => {
+        const client = getClient(); 
         const { data, error, response } = await client.POST("/companies", {
             headers: authHeader(token),
             body: payload,
