@@ -5,8 +5,8 @@ import { retrieveToken } from "@/actions/auth";
 export const getClient = () => {
     const apiBaseRoute =
         process.env.NODE_ENV === "production"
-            ? process.env.PROD_API_BASE_URL
-            : process.env.LOCAL_API_BASE_URL;
+            ? process.env.NEXT_PUBLIC_PROD_API_BASE_URL
+            : process.env.NEXT_PUBLIC_LOCAL_API_BASE_URL;
     
     return createClient<paths>({ baseUrl: apiBaseRoute });
 };
