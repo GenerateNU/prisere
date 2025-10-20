@@ -15,6 +15,8 @@ const initialState: signupInitialState = {
 };
 
 export default function SignUpPage() {
+    console.log('From Page - PROD URL:', process.env.NEXT_PUBLIC_PROD_API_BASE_URL);
+    console.log('From Page - NODE_ENV:', process.env.NODE_ENV);
     const [state, signupAction] = useActionState(signup, initialState);
     const status = useFormStatus();
     const [profileStage, setProfileStage] = useState<boolean>(false);
