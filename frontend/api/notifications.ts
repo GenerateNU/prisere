@@ -1,11 +1,11 @@
-'use server';
+"use server";
 import { MarkReadNotificationResponse, GetNotificationsResponse, NotificationFilters } from "@/types/notifications";
 import { authHeader, authWrapper, getClient } from "./client";
 import { MarkAllAsReadResponse } from "@/types/notifications";
 
 export const getNotifications = async (filters?: NotificationFilters): Promise<GetNotificationsResponse> => {
     const req = async (token: string): Promise<GetNotificationsResponse> => {
-        const client = getClient(); 
+        const client = getClient();
         const { data, error, response } = await client.GET("/notifications", {
             params: {
                 query: {
@@ -34,7 +34,7 @@ export const updateNotificationStatus = async (
 ): Promise<MarkReadNotificationResponse> => {
     const req = async (token: string): Promise<MarkReadNotificationResponse> => {
         const path = status === "read" ? "/notifications/{id}/markAsRead" : "/notifications/{id}/markUnread";
-        const client = getClient(); 
+        const client = getClient();
         const { data, error, response } = await client.PATCH(path, {
             params: {
                 path: { id: notificationId },
@@ -54,7 +54,7 @@ export const updateNotificationStatus = async (
 
 export const markAllNotificationsAsRead = async (): Promise<MarkAllAsReadResponse> => {
     const req = async (token: string): Promise<MarkAllAsReadResponse> => {
-        const client = getClient(); 
+        const client = getClient();
         const { data, error, response } = await client.PATCH("/notifications/user/markAllAsRead", {
             headers: authHeader(token),
         });

@@ -1,10 +1,10 @@
-'use server';
+"use server";
 import { Purchase } from "../types/purchase";
 import { authHeader, authWrapper, getClient } from "./client";
 
 export const getAllPurchasesForCompany = async (pageNumber: number, resultsPerPage: number): Promise<Purchase[]> => {
     const req = async (token: string): Promise<Purchase[]> => {
-        const client = getClient(); 
+        const client = getClient();
         const { data, error, response } = await client.GET("/purchase", {
             params: {
                 query: {
@@ -26,7 +26,7 @@ export const getAllPurchasesForCompany = async (pageNumber: number, resultsPerPa
 
 export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate: Date): Promise<{ total: number }> => {
     const req = async (token: string): Promise<{ total: number }> => {
-        const client = getClient(); 
+        const client = getClient();
         const { data, error, response } = await client.GET("/purchase/bulk/totalExpenses", {
             headers: authHeader(token),
             params: {
