@@ -1,6 +1,15 @@
 import { z } from "zod";
 
-//Patch existing quick books purchase
+export const CreateOrChangePurchaseRequestSchema = z
+    .array(
+        z.object({
+            quickBooksId: z.number().optional(),
+            totalAmountCents: z.number().min(0),
+            isRefund: z.boolean(),
+            quickbooksDateCreated: z.iso.datetime().optional(),
+        })
+    )
+    .nonempty();
 export const CreateOrChangePurchaseDTOSchema = z
     .array(
         z.object({
@@ -38,7 +47,12 @@ export const GetPurchasesResponseSchema = z.object({
 
 //Get a list of purchases given the company ID
 export const GetCompanyPurchasesDTOSchema = z.object({
-    companyId: z.string().nonempty(), //This is bad
+    companyId: z.string().nonempty(),
+    pageNumber: z.number().gte(0).optional().default(0),
+    resultsPerPage: z.number().gt(0).optional().default(20),
+});
+
+export const GetCompanyPurchasesQueryParams = z.object({
     pageNumber: z.number().gte(0).optional().default(0),
     resultsPerPage: z.number().gt(0).optional().default(20),
 });
@@ -53,17 +67,7 @@ export const GetCompanyPurchasesByDateDTOSchema = z.object({
     endDate: z.iso.datetime(),
 });
 
-export const GetCompanyPurchasesResponseSchema = z.array(
-    z.object({
-        id: z.string().nonempty(),
-        companyId: z.string().nonempty(),
-        quickBooksID: z.number().optional(),
-        totalAmountCents: z.number().min(0),
-        quickbooksDateCreated: z.string().optional(),
-        isRefund: z.boolean(),
-        dateCreated: z.string(),
-    })
-);
+export const GetCompanyPurchasesResponseSchema = z.array(GetPurchasesResponseSchema);
 
 export const GetCompanyPurchasesSummationResponseSchema = z.object({
     total: z.number().nonnegative(),
@@ -84,6 +88,7 @@ export type GetCompanyPurchasesSummationResponse = z.infer<typeof GetCompanyPurc
 export type GetCompanyPurchasesInMonthBinsResponse = z.infer<typeof GetCompanyPurchasesInMonthBinsResponseSchema>;
 
 //Input types
+export type CreateOrChangePurchaseRequest = z.infer<typeof CreateOrChangePurchaseRequestSchema>;
 export type CreateOrChangePurchaseDTO = z.infer<typeof CreateOrChangePurchaseDTOSchema>;
 export type GetCompanyPurchasesDTO = z.infer<typeof GetCompanyPurchasesDTOSchema>;
 export type GetCompanyPurchasesByDateDTO = z.infer<typeof GetCompanyPurchasesByDateDTOSchema>;

@@ -3,9 +3,10 @@ import { DataSource, InsertResult } from "typeorm";
 import Boom from "@hapi/boom";
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
-import { GetUsersDisasterNotificationsDTO } from "../../types/DisasterNotification";
+import { GetUsersDisasterNotificationsDTO, NotificationTypeFilter } from "../../types/DisasterNotification";
 import { User } from "../../entities/User";
 import { FemaDisaster } from "../../entities/FemaDisaster";
+import { NotificationStatus } from "../../types/NotificationEnums";
 
 /**
  * Interface for disaster notification transaction operations.
@@ -16,21 +17,28 @@ export interface IDisasterNotificationTransaction {
      * @param payload - The payload containing user info and possible filters.
      * @returns Promise resolving to an array of DisasterNotification entities.
      */
-    getUserNotifications(payload: GetUsersDisasterNotificationsDTO): Promise<DisasterNotification[]>;
+    getUserNotifications(
+        payload: GetUsersDisasterNotificationsDTO,
+        type?: NotificationTypeFilter,
+        page?: number,
+        limit?: number,
+        status?: string
+    ): Promise<DisasterNotification[]>;
 
     /**
-     * Acknowledge a specific notification.
+     * MarkRead a specific notification.
      * @param notificationId - The notification's unique identifier.
      * @returns Promise resolving to the updated DisasterNotification entity.
      */
-    acknowledgeNotification(notificationId: string): Promise<DisasterNotification>;
+    markAsReadNotification(notificationId: string): Promise<DisasterNotification>;
 
     /**
-     * Mark a notification as read/dismissed.
+     * Mark a notification as read/markUnreaded.
      * @param notificationId - The notification's unique identifier.
      * @returns Promise resolving to the updated DisasterNotification entity.
      */
-    dismissNotification(notificationId: string): Promise<DisasterNotification>;
+    markUnreadNotification(notificationId: string): Promise<DisasterNotification>;
+    markAllAsRead(userId: string): Promise<number>;
 
     /**
      * Bulk create new notifications. Takes in all new disasters and creates the notifications
@@ -55,33 +63,73 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
         this.db = db;
     }
 
-    async getUserNotifications(payload: GetUsersDisasterNotificationsDTO): Promise<DisasterNotification[]> {
-        const existing = await this.db.getRepository(User).findOne({ where: { id: payload.id } });
-        if (!existing) {
-            logMessageToFile(`User not found: ${payload.id}`);
-            throw Boom.notFound("user not found");
+    async getUserNotifications(
+        payload: GetUsersDisasterNotificationsDTO,
+        type?: NotificationTypeFilter,
+        page?: number,
+        limit?: number,
+        status?: string
+    ): Promise<DisasterNotification[]> {
+        const queryBuilder = this.db
+            .createQueryBuilder()
+            .select("notifications")
+            .from(DisasterNotification, "notifications")
+            .leftJoinAndSelect("notifications.femaDisaster", "disaster")
+            // Join with affected location and company so we can use this info in the notification message
+            .leftJoinAndSelect("notifications.locationAddress", "location")
+            .leftJoinAndSelect("location.company", "company")
+            .where("notifications.userId = :id", { id: payload.id })
+            .orderBy("notifications.createdAt", "DESC"); // Added sorting since we will show most recent notif as banner
+
+        if (type) {
+            queryBuilder.andWhere("notifications.notificationType = :type", { type });
+        }
+        if (status) {
+            queryBuilder.andWhere("notifications.notificationStatus = :status", { status });
         }
 
-        const result: DisasterNotification[] = await this.db
-            .createQueryBuilder()
-            .select("disasterNotification")
-            .from(DisasterNotification, "disasterNotification")
-            .where("disasterNotification.userId = :id", { id: payload.id })
-            .getMany();
+        if (page && limit) {
+            const totalCount = await queryBuilder.getCount();
+            const maxPage = Math.ceil(totalCount / limit);
 
-        if (!result || result.length === 0) {
-            logMessageToFile(`No notifications found for user ID: ${payload.id}`);
+            // If requesting a page beyond available data, return empty array
+            if (page > maxPage && totalCount > 0) {
+                console.log(
+                    `Page ${page} exceeds maximum page ${maxPage} for user ${payload.id}. Returning empty results.`
+                );
+                logMessageToFile(
+                    `Page ${page} exceeds maximum page ${maxPage} for user ${payload.id}. Returning empty results.`
+                );
+                return [];
+            }
+
+            queryBuilder.skip((page - 1) * limit).take(limit);
+        }
+
+        const result: DisasterNotification[] = await queryBuilder.getMany();
+
+        if (!result) {
+            const existing = await this.db.getRepository(User).findOne({
+                where: { id: payload.id },
+                select: ["id"], // Only select from id field
+            });
+            if (!existing) {
+                console.log(`User ${payload.id} not found.`);
+                logMessageToFile(`User ${payload.id} not found.`);
+                throw Boom.notFound("User not found");
+            }
+            logMessageToFile(`No notifications found for user ID: ${payload.id}${type ? ` with type: ${type}` : ""}`);
             throw Boom.notFound("No notifications found for user");
         }
 
         return result;
     }
 
-    async acknowledgeNotification(notificationId: string): Promise<DisasterNotification> {
+    async markAsReadNotification(notificationId: string): Promise<DisasterNotification> {
         const result = await this.db
             .createQueryBuilder()
             .update(DisasterNotification)
-            .set({ notificationStatus: "acknowledged", acknowledgedAt: new Date() })
+            .set({ notificationStatus: "read", readAt: new Date() })
             .where("id = :id", { id: notificationId })
             .returning("*")
             .execute();
@@ -94,11 +142,11 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
         return updatedNotification;
     }
 
-    async dismissNotification(notificationId: string): Promise<DisasterNotification> {
+    async markUnreadNotification(notificationId: string): Promise<DisasterNotification> {
         const result = await this.db
             .createQueryBuilder()
             .update(DisasterNotification)
-            .set({ notificationStatus: "read" })
+            .set({ notificationStatus: "unread" })
             .where("id = :id", { id: notificationId })
             .returning("*")
             .execute();
@@ -189,5 +237,20 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
             .execute();
 
         return true;
+    }
+
+    async markAllAsRead(userId: string): Promise<number> {
+        const result = await this.db
+            .createQueryBuilder()
+            .update(DisasterNotification)
+            .set({
+                notificationStatus: NotificationStatus.READ,
+                readAt: new Date(),
+            })
+            .where("userId = :userId", { userId })
+            .andWhere("notificationStatus = :status", { status: NotificationStatus.UNREAD })
+            .execute();
+
+        return result.affected || 0;
     }
 }

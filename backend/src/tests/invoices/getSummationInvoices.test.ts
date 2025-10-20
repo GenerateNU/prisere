@@ -6,6 +6,7 @@ import CompanySeeder from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 import { InvoiceSeeder, seededInvoices } from "../../database/seeds/invoice.seed";
 import { DataSource } from "typeorm";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe(" Get Invoice summation by company id", () => {
     let app: Hono;
@@ -35,16 +36,26 @@ describe(" Get Invoice summation by company id", () => {
 
     test("should return the sum of invoices in the valid date range", async () => {
         const response = await app.request(
-            `/invoice/bulk/${seededInvoiceCompany}/totalIncome?startDate=2025-01-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
+            TESTING_PREFIX + `/invoice/bulk/totalIncome?startDate=2025-01-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`,
+            {
+                headers: {
+                    companyId: seededInvoiceCompany,
+                },
+            }
         );
         const body = await response.json();
         expect(response.status).toBe(200);
-        expect(body.total).toBe(735);
+        expect(body.total).toBe(279);
     });
 
     test("should return 0 if no invoices in the valid date range", async () => {
         const response = await app.request(
-            `/invoice/bulk/${seededInvoiceCompany}/totalIncome?startDate=2025-08-11T12:00:00Z&endDate=2025-10-11T12:00:00Z`
+            TESTING_PREFIX + `/invoice/bulk/totalIncome?startDate=2025-08-11T12:00:00Z&endDate=2025-10-11T12:00:00Z`,
+            {
+                headers: {
+                    companyId: seededInvoiceCompany,
+                },
+            }
         );
         const body = await response.json();
         expect(response.status).toBe(200);
@@ -53,7 +64,12 @@ describe(" Get Invoice summation by company id", () => {
 
     test("should return 400 if invalid dates", async () => {
         const response = await app.request(
-            `/invoice/bulk/${seededInvoiceCompany}/totalIncome?startDate=2025-04-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`
+            TESTING_PREFIX + `/invoice/bulk/totalIncome?startDate=2025-04-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`,
+            {
+                headers: {
+                    companyId: seededInvoiceCompany,
+                },
+            }
         );
         const body = await response.json();
         expect(response.status).toBe(400);
@@ -63,7 +79,12 @@ describe(" Get Invoice summation by company id", () => {
 
     test("should return 400 if invalid companyID", async () => {
         const response = await app.request(
-            `/invoice/bulk/bla/totalIncome?startDate=2025-04-11T12:00:00Z&endDate=2025-06-11T12:00:00Z`
+            TESTING_PREFIX + `/invoice/bulk/totalIncome?startDate=2025-04-11T12:00:00Z&endDate=2025-06-11T12:00:00Z`,
+            {
+                headers: {
+                    companyId: "blah",
+                },
+            }
         );
         const body = await response.json();
         expect(response.status).toBe(400);

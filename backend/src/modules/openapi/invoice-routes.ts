@@ -5,13 +5,13 @@ import { InvoiceController } from "../invoice/controller";
 import { InvoiceService } from "../invoice/service";
 import { InvoiceTransaction } from "../invoice/transaction";
 import {
-    CreateOrUpdateInvoicesDTOSchema,
     CreateOrUpdateInvoiceResponseSchema,
     GetInvoiceDTOSchema,
     GetInvoiceResponseSchema,
-    GetCompanyInvoicesDTOSchema,
     GetCompanyInvoicesResponseSchema,
     GetCompanyInvoicesSummationResponseSchema,
+    CreateOrUpdateInvoicesRequestSchema,
+    GetCompanyInvoicesParams,
     GetCompanyInvoicesInMonthBinsResponseSchema,
 } from "../../types/Invoice";
 import { CompanyTransaction } from "../company/transaction";
@@ -58,7 +58,7 @@ const bulkCreateOrUpdateInvoiceRoute = createRoute({
         body: {
             content: {
                 "application/json": {
-                    schema: CreateOrUpdateInvoicesDTOSchema,
+                    schema: CreateOrUpdateInvoicesRequestSchema,
                 },
             },
         },
@@ -113,7 +113,7 @@ const getInvoicesForCompanyRoute = createRoute({
     summary: "Get invoices for a company",
     description: "Get invoices for a company with pagination params. Note page numbes are 0-indexed.",
     request: {
-        query: GetCompanyInvoicesDTOSchema,
+        query: GetCompanyInvoicesParams,
     },
     responses: {
         200: {
@@ -169,12 +169,11 @@ const getInvoiceLineItemsForInvoiceRoute = createRoute({
 
 const sumInvoicesByCompanyAndDateRange = createRoute({
     method: "get",
-    path: "/invoice/bulk/{id}/totalIncome",
+    path: "/invoice/bulk/totalIncome",
     summary: "Get the summation of invoices for a company in a date range",
     description:
         "Get the summation of invoices for a company that were made after the start date and before the end date",
     request: {
-        params: GetInvoiceDTOSchema,
         query: z.object({ startDate: z.iso.datetime(), endDate: z.iso.datetime() }),
     },
     responses: {

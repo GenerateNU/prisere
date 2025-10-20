@@ -1,0 +1,84 @@
+"use client";
+
+import { getAllPurchasesForCompany } from "@/api/purchase";
+import { useQuery } from "@tanstack/react-query";
+import { Purchase } from "../../types/purchase";
+import { ColumnDef } from "@tanstack/react-table";
+import { useState } from "react";
+import BasicTable from "./BasicTable";
+import PaginationControls from "./PaginationControls";
+import ResultsPerPageSelect from "./ResultsPerPageSelect";
+import {
+    Card,
+    CardAction,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { Filter, Printer } from "lucide-react";
+
+export const columns: ColumnDef<Purchase>[] = [
+    {
+        id: "type",
+        header: "Type",
+    },
+    {
+        accessorKey: "totalAmountCents",
+        header: "Amount",
+    },
+    {
+        accessorKey: "dateCreated",
+        header: "Date",
+    },
+    {
+        id: "category",
+        header: "Category",
+    },
+    {
+        id: "disaster",
+        header: "Disaster",
+    },
+];
+
+export default function ExpenseTable() {
+    const [page, setPage] = useState(0);
+    const [resultsPerPage, setResultsPerPage] = useState(5);
+
+    const purchases = useQuery({
+        queryKey: ["purchases-for-company", page, resultsPerPage],
+        queryFn: () => getAllPurchasesForCompany(page, resultsPerPage),
+    });
+
+    if (purchases.isPending) return <div>Loading expenses...</div>;
+
+    if (purchases.error) return <div>Error loading expenses</div>;
+
+    const isLastPage = purchases.data.length < resultsPerPage;
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="text-2xl font-bold">Business Transactions</CardTitle>
+                <CardDescription>Description</CardDescription>
+                <CardAction>
+                    <div className="flex gap-2">
+                        <Filter></Filter>
+                        <Printer></Printer>
+                    </div>
+                </CardAction>
+            </CardHeader>
+            <CardContent>
+                <BasicTable purchases={purchases.data} />
+            </CardContent>
+            <CardFooter>
+                <PaginationControls page={page} onPageChange={setPage} isLastPage={isLastPage} />
+                <ResultsPerPageSelect
+                    value={resultsPerPage}
+                    onValueChange={(results: number) => setResultsPerPage(results)}
+                />
+            </CardFooter>
+        </Card>
+    );
+}
