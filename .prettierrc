@@ -5,7 +5,7 @@
     "trailingComma": "es5",
     "arrowParens": "always",
     "semi": true,
-    "endOfLine": "lf",
+    "endOfLine": "auto",
     "overrides": [
         {
             "files": ["*.json"],
