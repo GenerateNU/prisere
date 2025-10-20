@@ -1,4 +1,4 @@
-"use server"
+'use server';
 import { CreateUserRequest, User } from "@/types/user";
 import { authHeader, authWrapper, getClient } from "./client";
 
