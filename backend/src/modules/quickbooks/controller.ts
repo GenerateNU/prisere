@@ -8,7 +8,7 @@ export interface IQuickbooksController {
     generateSession(
         ctx: Context
     ): ControllerResponse<TypedResponse<{ success: true }, 200> | TypedResponse<{ error: string }, 400>>;
-    getUnprocessedInvoices(ctx: Context): ControllerResponse<TypedResponse<unknown, 200>>;
+    updateUnprocessedInvoices(ctx: Context): ControllerResponse<TypedResponse<unknown, 200>>;
 }
 
 export class QuickbooksController implements IQuickbooksController {
@@ -36,9 +36,9 @@ export class QuickbooksController implements IQuickbooksController {
         return ctx.json({ success: true }, 200);
     }
 
-    async getUnprocessedInvoices(ctx: Context) {
+    async updateUnprocessedInvoices(ctx: Context) {
         const userId = ctx.get("userId");
-        const data = await this.service.getUnprocessedInvoices({ userId });
+        const data = await this.service.updateUnprocessedInvoices({ userId });
 
         return ctx.json(data, 200);
     }

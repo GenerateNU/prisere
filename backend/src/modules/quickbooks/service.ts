@@ -7,19 +7,23 @@ import Boom from "@hapi/boom";
 import { QBQueryResponse } from "../../external/quickbooks/types";
 import { QBInvoice } from "../../types/quickbooks";
 import { IUserTransaction } from "../user/transaction";
+import { IInvoiceTransaction } from "../invoice/transaction";
+import { IInvoiceLineItemTransaction } from "../invoiceLineItem/transaction";
 
 export interface IQuickbooksService {
     generateAuthUrl(args: { userId: string }): Promise<{ state: string; url: string }>;
     createQuickbooksSession(args: { code: string; state: string; realmId: string }): Promise<QuickbooksSession>;
     refreshQuickbooksSession(args: { refreshToken: string; companyId: string }): Promise<QuickbooksSession>;
     consumeOAuthState(args: { state: string }): Promise<void>;
-    getUnprocessedInvoices(args: { userId: string }): Promise<QBInvoice[]>;
+    updateUnprocessedInvoices(args: { userId: string }): Promise<void>;
 }
 
 export class QuickbooksService implements IQuickbooksService {
     constructor(
         private transaction: IQuickbooksTransaction,
         private userTransaction: IUserTransaction,
+        private invoiceTransaction: IInvoiceTransaction,
+        private invoiceLineItemTransaction: IInvoiceLineItemTransaction,
         private qbClient: IQuickbooksClient
     ) {}
 
@@ -177,7 +181,7 @@ export class QuickbooksService implements IQuickbooksService {
         return await this.retryClientApi(request, { existingSession: session, externalId });
     }
 
-    getUnprocessedInvoices = withServiceErrorHandling(async ({ userId }: { userId: string }) => {
+    updateUnprocessedInvoices = withServiceErrorHandling(async ({ userId }: { userId: string }) => {
         const user = await this.userTransaction.getCompany({ id: userId });
         if (!user) {
             throw Boom.internal("No user found");
@@ -199,44 +203,50 @@ export class QuickbooksService implements IQuickbooksService {
                 }),
         });
 
-        await this.transaction.bulkUpsertInvoices(
+        const createdInvoices = await this.invoiceTransaction.createOrUpdateInvoices(
             invoices.map((i) => ({
-                companyId: user.company.id,
-                qbDateCreated: new Date(i.MetaData.CreateTime),
-                quickbooksId: parseInt(i.Id),
+                companyId: user.companyId,
                 totalAmountCents: i.TotalAmt * 100,
-                lineItems: getLineItems(i).map((i) => ({
-                    description: i.description,
-                    qbLineItemId: i.id,
-                    amountCents: i.amountCents,
-                    category: i.category,
-                })),
+                quickbooksDateCreated: i.MetaData.CreateTime,
+                quickbooksId: parseInt(i.Id),
             }))
         );
 
-        return invoices;
+        const lineItemData = invoices.flatMap((i) => {
+            const dbInvoice = createdInvoices.find((di) => di.quickbooksId === parseInt(i.Id))!;
+            return getLineItems(i).map((l) => ({ ...l, invoiceId: dbInvoice.id }));
+        });
+
+        await this.invoiceLineItemTransaction.createOrUpdateInvoiceLineItems(lineItemData);
+
+        await this.transaction.updateCompanyQuickbooksSync({ date: new Date(), companyId: user.companyId });
     });
 }
 
 type ClientRequest<T> = (input: { session: QuickbooksSession; externalId: string }) => Promise<QBQueryResponse<T>>;
 
 function getLineItems(invoice: QBInvoice) {
-    const out = [] as { id: number; amountCents: number; description: string; category: string }[];
+    const out = [] as {
+        amountCents: number;
+        quickbooksId: number | undefined;
+        description: string | undefined;
+        category: string | undefined;
+    }[];
 
     for (const lineItem of invoice.Line) {
         switch (lineItem.DetailType) {
             case "SalesLineItemDetail":
                 out.push({
-                    id: parseInt(lineItem.Id),
+                    quickbooksId: parseInt(lineItem.Id),
                     amountCents: lineItem.Amount * 100,
                     description: lineItem.Description ?? "",
-                    category: "", // TODO: there is no category reported?
+                    category: "", // TODO: there is no category reported?,
                 });
                 break;
             case "GroupLineDetail":
                 out.push(
                     ...lineItem.GroupLineDetail.Line.map((l) => ({
-                        id: parseInt(l.Id),
+                        quickbooksId: parseInt(l.Id),
                         amountCents: l.Amount * 100,
                         description: l.Description ?? "",
                         category: "",

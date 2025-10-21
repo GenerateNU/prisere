@@ -24,7 +24,7 @@ export function quickbooksRoutes(db: DataSource) {
     router.get("/redirect", async (ctx) => controller.generateSession(ctx));
 
     // TODO: probably not make this an actual endpoint
-    router.get("/invoices", (ctx) => controller.getUnprocessedInvoices(ctx));
+    router.get("/invoices", (ctx) => controller.updateUnprocessedInvoices(ctx));
 
     return router;
 }

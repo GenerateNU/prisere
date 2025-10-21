@@ -12,6 +12,8 @@ import { IQuickbooksClient } from "../../../external/quickbooks/client";
 import { UserTransaction } from "../../../modules/user/transaction";
 import { QBQueryResponse, QBSuccessfulQueryResponse } from "../../../external/quickbooks/types";
 import { QBInvoice } from "../../../types/quickbooks";
+import { InvoiceTransaction } from "../../../modules/invoice/transaction";
+import { InvoiceLineItemTransaction } from "../../../modules/invoiceLineItem/transaction";
 
 describe("requesting from api", () => {
     let app: Hono;
@@ -26,8 +28,16 @@ describe("requesting from api", () => {
 
         const transaction = new QuickbooksTransaction(db);
         const userTransaction = new UserTransaction(db);
+        const invoiceTransaction = new InvoiceTransaction(db);
+        const invoiceLineItemTransaction = new InvoiceLineItemTransaction(db);
         client = new MockQBClient();
-        service = new QuickbooksService(transaction, userTransaction, client);
+        service = new QuickbooksService(
+            transaction,
+            userTransaction,
+            invoiceTransaction,
+            invoiceLineItemTransaction,
+            client
+        );
     });
 
     afterEach(() => {
@@ -45,7 +55,7 @@ describe("requesting from api", () => {
             } satisfies QBSuccessfulQueryResponse<{ Invoice: QBInvoice[] }> as unknown as QBQueryResponse<T>;
         });
 
-        await service.getUnprocessedInvoices({ userId: user.id });
+        await service.updateUnprocessedInvoices({ userId: user.id });
         expect(refreshSpy).toBeCalledTimes(0);
 
         const now = dayjs();
@@ -59,7 +69,7 @@ describe("requesting from api", () => {
 
         expect(affected).toBe(1);
 
-        await service.getUnprocessedInvoices({ userId: user.id });
+        await service.updateUnprocessedInvoices({ userId: user.id });
         expect(refreshSpy).toBeCalledTimes(1);
     });
 
@@ -75,7 +85,7 @@ describe("requesting from api", () => {
             } as const;
         });
 
-        expect(async () => await service.getUnprocessedInvoices({ userId: user.id })).toThrow(
+        expect(async () => await service.updateUnprocessedInvoices({ userId: user.id })).toThrow(
             "Quickbooks session deleted"
         );
 

@@ -6,7 +6,6 @@ export type QBInvoice = {
      * A stringified integer id
      */
     Id: string;
-    // TODO: invoice line item
     Line: QBInvoiceLineItem[];
     TotalAmt: number;
     MetaData: {
