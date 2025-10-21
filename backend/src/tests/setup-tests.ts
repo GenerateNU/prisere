@@ -9,6 +9,7 @@ import { setUpRoutes } from "../routes";
 import { v4 } from "uuid";
 import { TestAppData } from "../types/Test";
 import { ContextVariables } from "../types/Utils";
+import { TESTING_PREFIX } from "../utilities/constants";
 
 const createNewDB = async (): Promise<IMemoryDb> => {
     const db = newDb({
@@ -54,7 +55,7 @@ export const startTestApp = async (): Promise<TestAppData> => {
 
     app.use("*", testingAuthorized());
 
-    setUpRoutes(app, dataSource);
+    setUpRoutes(app, dataSource, TESTING_PREFIX);
     return { app, backup, dataSource };
 };
 
