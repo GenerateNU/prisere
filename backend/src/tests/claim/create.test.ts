@@ -6,9 +6,7 @@ import { initTestData } from "./setup";
 import { DataSource } from "typeorm";
 import { beforeEach } from "node:test";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
-import CompanySeeder, { seededCompanies } from "../../database/seeds/company.seed";
-import { SelfDisasterSeeder } from "../../database/seeds/selfDisaster.seed";
-import { SeederFactoryManager } from "typeorm-extension";
+import { seededCompanies } from "../../database/seeds/company.seed";
 
 describe("POST /claims", () => {
     let app: Hono;
@@ -24,11 +22,6 @@ describe("POST /claims", () => {
 
     beforeEach(async () => {
         await initTestData(testAppDataSource);
-        const companySeeder = new CompanySeeder();
-        await companySeeder.run(testAppDataSource, {} as SeederFactoryManager);
-
-        const selfDisasterSeeder = new SelfDisasterSeeder();
-        await selfDisasterSeeder.run(testAppDataSource, {} as SeederFactoryManager);
     });
 
     afterEach(async () => {
@@ -51,7 +44,7 @@ describe("POST /claims", () => {
 
         expect(response.status).toBe(201);
         const body = await response.json();
-        expect(body.femaDisasterId).toBe("2aa52e71-5f89-4efe-a820-1bfc65ded6ec");
+        expect(body.femaDisasterId).toBe(requestBody.femaDisasterId);
         expect(body.companyId).toBe(requestBody.companyId);
         expect(body.status).toBe(ClaimStatusType.ACTIVE);
         expect(body.createdAt).toBeDefined();

@@ -44,7 +44,6 @@ export class ClaimTransaction implements IClaimTransaction {
 
     async createClaim(payload: CreateClaimDTO): Promise<CreateClaimResponse | null> {
         try {
-            console.log(payload);
             const claim: Claim = plainToClass(Claim, {
                 ...payload,
                 status: ClaimStatusType.ACTIVE,
@@ -76,7 +75,6 @@ export class ClaimTransaction implements IClaimTransaction {
                     : undefined,
             };
         } catch (error) {
-            console.log(error, "ERR");
             logMessageToFile(`Transaction error: ${error}`);
             return null;
         }

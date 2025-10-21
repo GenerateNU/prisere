@@ -6,7 +6,6 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     PrimaryGeneratedColumn,
-    Check,
 } from "typeorm";
 import type { Relation } from "typeorm";
 import { Company } from "./Company";
