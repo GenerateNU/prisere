@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CreateUserResponseSchema } from "../types/User";
 import { LocationAddressSchemaType } from "./Location";
-import { FIPSCounty, FIPSState, incidentTypeString } from "./disaster";
+import { FIPSCounty, FIPSState, incidentTypeString } from "./fema-disaster";
 
 const notificationTypes = ["web", "email"] as const;
 const notificationStatus = ["unread", "read", "acknowledged"] as const;

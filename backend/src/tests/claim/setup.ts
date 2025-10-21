@@ -2,6 +2,11 @@ import { DataSource } from "typeorm";
 import { Company } from "../../entities/Company";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
+import { seededSelfDisasters, SelfDisasterSeeder } from "../../database/seeds/selfDisaster.seed";
+import CompanySeeder from "../../database/seeds/company.seed";
+import { SeederFactoryManager } from "typeorm-extension";
+import { DisasterSeeder } from "../../database/seeds/disaster.seed";
+import { seededDisasters } from "../../database/seeds/disaster.seed"; // Change this import
 
 export const initTestData = async (dataSource: DataSource) => {
     const companyRepository = dataSource.getRepository(Company);
@@ -51,11 +56,20 @@ export const initTestData = async (dataSource: DataSource) => {
         },
     ]);
 
+    const companySeeder = new CompanySeeder();
+    await companySeeder.run(dataSource, {} as SeederFactoryManager);
+
+    const selfDisasterSeeder = new SelfDisasterSeeder();
+    await selfDisasterSeeder.run(dataSource, {} as SeederFactoryManager);
+
+    const femaDisasterSeeder = new DisasterSeeder();
+    await femaDisasterSeeder.run(dataSource, {} as SeederFactoryManager);
+
     const claimRepository = dataSource.getRepository("Claim");
     await claimRepository.insert([
         {
             id: "0174375f-e7c4-4862-bb9f-f58318bb2e7d",
-            disasterId: "2aa52e71-5f89-4efe-a820-1bfc65ded6ec",
+            selfDisasterId: seededSelfDisasters[0].id,
             companyId: "5667a729-f000-4190-b4ee-7957badca27b",
             status: ClaimStatusType.ACTIVE,
             createdAt: new Date(),
@@ -63,7 +77,7 @@ export const initTestData = async (dataSource: DataSource) => {
         },
         {
             id: "5efc380b-e527-4b8d-a784-5c2cc68eba87",
-            disasterId: "2aa52e71-5f89-4efe-a820-1bfc65ded6ec",
+            selfDisasterId: "bf2b32dd-c927-440b-8002-84906db3c783",
             companyId: "c0ce685a-27d8-4183-90ff-31f294b2c6da",
             status: ClaimStatusType.ACTIVE,
             createdAt: new Date(),
@@ -71,7 +85,7 @@ export const initTestData = async (dataSource: DataSource) => {
         },
         {
             id: "37d07be0-4e09-4e70-a395-c1464f408c1f",
-            disasterId: "47f0c515-2efc-49c3-abb8-623f48817950",
+            femaDisasterId: seededDisasters[0].id,
             companyId: "5667a729-f000-4190-b4ee-7957badca27b",
             status: ClaimStatusType.ACTIVE,
             createdAt: new Date(),
@@ -79,7 +93,7 @@ export const initTestData = async (dataSource: DataSource) => {
         },
         {
             id: "2c24c901-38e4-4a35-a1c6-140ce64edf2a",
-            disasterId: "2aa52e71-5f89-4efe-a820-1bfc65ded6ec",
+            femaDisasterId: seededDisasters[1].id,
             companyId: "a1a542da-0abe-4531-9386-8919c9f86369",
             status: ClaimStatusType.ACTIVE,
             createdAt: new Date(),

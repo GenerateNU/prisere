@@ -4,7 +4,7 @@ import { randomUUID } from "crypto";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { DisasterTransaction } from "../../modules/disaster/transaction";
-import { CreateDisasterDTO } from "../../types/disaster";
+import { CreateDisasterDTO } from "../../types/fema-disaster";
 
 describe("DisasterTransaction - upsertDisaster", () => {
     let backup: IBackup;

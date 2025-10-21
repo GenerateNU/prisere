@@ -6,6 +6,7 @@ import { initTestData } from "./setup";
 import { DataSource } from "typeorm";
 import { beforeEach } from "node:test";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
+import { seededCompanies } from "../../database/seeds/company.seed";
 import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("POST /claims", () => {
@@ -31,7 +32,7 @@ describe("POST /claims", () => {
     test("POST /claims - Success", async () => {
         const companyId = "c0ce685a-27d8-4183-90ff-31f294b2c6da";
         const requestBody = {
-            disasterId: "47f0c515-2efc-49c3-abb8-623f48817950",
+            femaDisasterId: "2aa52e71-5f89-4efe-a820-1bfc65ded6ec",
         };
 
         const response = await app.request(TESTING_PREFIX + "/claims", {
@@ -45,7 +46,7 @@ describe("POST /claims", () => {
 
         expect(response.status).toBe(201);
         const body = await response.json();
-        expect(body.disasterId).toBe(requestBody.disasterId);
+        expect(body.femaDisasterId).toBe(requestBody.femaDisasterId);
         expect(body.companyId).toBe(companyId);
         expect(body.status).toBe(ClaimStatusType.ACTIVE);
         expect(body.createdAt).toBeDefined();
@@ -63,14 +64,52 @@ describe("POST /claims", () => {
         expect(fetchResponse.status).toBe(200);
         expect(fetchBody.length).toBe(2);
         expect(fetchBody[1].id).toBe(body.id);
-        expect(fetchBody[1].disasterId).toBe(requestBody.disasterId);
+        expect(fetchBody[1].femaDisaster.id).toBe(requestBody.femaDisasterId);
         expect(fetchBody[1].companyId).toBe(companyId);
+    });
+
+    test("POST /claims - Success", async () => {
+        const requestBody = {
+            selfDisasterId: "ba5735c4-fbd1-4f7d-97c1-bf5af2a3f533",
+        };
+        const companyId = seededCompanies[0].id;
+
+        const response = await app.request(TESTING_PREFIX + "/claims", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: companyId,
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        expect(response.status).toBe(201);
+        const body = await response.json();
+        expect(body.femaDisasterId).toBe(null);
+        expect(body.selfDisasterId).toBe(requestBody.selfDisasterId);
+        expect(body.companyId).toBe(companyId);
+        expect(body.status).toBe(ClaimStatusType.ACTIVE);
+        expect(body.createdAt).toBeDefined();
+        expect(body.updatedAt).toBeDefined();
+
+        const fetchResponse = await app.request(TESTING_PREFIX + `/claims/company`, {
+            headers: {
+                companyId: companyId,
+            },
+        });
+        const fetchBody = await fetchResponse.json();
+
+        expect(fetchResponse.status).toBe(200);
+        expect(fetchBody.length).toBe(1);
+        expect(fetchBody[0].id).toBe(body.id);
+        expect(fetchBody[0].selfDisaster.id).toBe(requestBody.selfDisasterId);
+        expect(fetchBody[0].companyId).toBe(companyId);
     });
 
     test("POST /claims - Company with multiple claims", async () => {
         const companyId = "a1a542da-0abe-4531-9386-8919c9f86369";
         const requestBody2 = {
-            disasterId: "47f0c515-2efc-49c3-abb8-623f48817950",
+            femaDisasterId: "47f0c515-2efc-49c3-abb8-623f48817950",
         };
 
         const response2 = await app.request(TESTING_PREFIX + "/claims", {
@@ -84,7 +123,7 @@ describe("POST /claims", () => {
 
         expect(response2.status).toBe(201);
         const body2 = await response2.json();
-        expect(body2.disasterId).toBe(requestBody2.disasterId);
+        expect(body2.femaDisasterId).toBe(requestBody2.femaDisasterId);
         expect(body2.companyId).toBe(companyId);
         expect(body2.status).toBe(ClaimStatusType.ACTIVE);
         expect(body2.createdAt).toBeDefined();
@@ -94,7 +133,7 @@ describe("POST /claims", () => {
     test("POST /claims - CompanyID doesnt exist", async () => {
         const companyId = "c290f1ee-6c54-4b01-90e6-d701748f0851";
         const requestBody = {
-            disasterId: "2aa52e71-5f89-4efe-a820-1bfc65ded6ec",
+            femaDisasterId: "2aa52e71-5f89-4efe-a820-1bfc65ded6ec",
         };
 
         const response = await app.request(TESTING_PREFIX + "/claims", {
@@ -111,7 +150,7 @@ describe("POST /claims", () => {
 
     test("POST /claims - DisasterID doesnt exist", async () => {
         const requestBody = {
-            disasterId: "2aa52e71-5f89-4efe-a820-1bfc65ded6e2",
+            femaDisasterId: "2aa52e71-5f89-4efe-a820-1bfc65ded6e2",
         };
 
         const response = await app.request(TESTING_PREFIX + "/claims", {

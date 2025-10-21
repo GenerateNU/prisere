@@ -1,6 +1,12 @@
 import { DataSource } from "typeorm";
 import { Claim } from "../../entities/Claim";
-import { CreateClaimDTO, DeleteClaimDTO, DeleteClaimResponse, GetClaimsByCompanyIdResponse } from "../../types/Claim";
+import {
+    CreateClaimDTO,
+    DeleteClaimDTO,
+    DeleteClaimResponse,
+    GetClaimsByCompanyIdResponse,
+    CreateClaimResponse,
+} from "../../types/Claim";
 import { logMessageToFile } from "../../utilities/logger";
 import { plainToClass } from "class-transformer";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
@@ -11,7 +17,7 @@ export interface IClaimTransaction {
      * @param payload Claim to be inserted into the database
      * @returns A promise that resolves to the created claim or null
      */
-    createClaim(payload: CreateClaimDTO, companyId: string): Promise<Claim | null>;
+    createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse | null>;
 
     /**
      * Gets a claim by its id
@@ -25,7 +31,7 @@ export interface IClaimTransaction {
      * @param payload ID of the claim to be deleted
      * @returns Promise resolving delete operation or null if not present
      */
-    deleteClaim(payload: DeleteClaimDTO): Promise<DeleteClaimResponse | null>;
+    deleteClaim(payload: DeleteClaimDTO, companyId: string): Promise<DeleteClaimResponse | null>;
 }
 
 export class ClaimTransaction implements IClaimTransaction {
@@ -35,19 +41,39 @@ export class ClaimTransaction implements IClaimTransaction {
         this.db = db;
     }
 
-    async createClaim(payload: CreateClaimDTO, companyId: string): Promise<Claim | null> {
+    async createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse | null> {
         try {
             const claim: Claim = plainToClass(Claim, {
                 ...payload,
                 status: ClaimStatusType.ACTIVE,
-                createdAt: new Date(),
-                updatedAt: new Date(),
                 companyId: companyId,
             });
 
-            const result: Claim = await this.db.getRepository(Claim).save(claim);
+            const result: Claim = await this.db.manager.save(Claim, claim);
 
-            return result;
+            return {
+                ...result,
+                status: result.status as ClaimStatusType,
+                createdAt: claim.createdAt.toISOString(),
+                updatedAt: claim.updatedAt?.toISOString(),
+                femaDisaster: result.femaDisaster
+                    ? {
+                          ...result.femaDisaster,
+                          declarationDate: result.femaDisaster.declarationDate.toISOString(),
+                          incidentBeginDate: result.femaDisaster.incidentBeginDate?.toISOString(),
+                          incidentEndDate: result.femaDisaster.incidentEndDate?.toISOString(),
+                      }
+                    : undefined,
+                selfDisaster: claim.selfDisaster
+                    ? {
+                          ...claim.selfDisaster,
+                          startDate: claim.selfDisaster.startDate.toISOString(),
+                          endDate: claim.selfDisaster.endDate?.toISOString(),
+                          createdAt: claim.selfDisaster.createdAt.toISOString(),
+                          updatedAt: claim.selfDisaster.updatedAt.toISOString(),
+                      }
+                    : undefined,
+            };
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
             return null;
@@ -56,7 +82,13 @@ export class ClaimTransaction implements IClaimTransaction {
 
     async getClaimsByCompanyId(companyId: string): Promise<GetClaimsByCompanyIdResponse | null> {
         try {
-            const result: Claim[] = await this.db.getRepository(Claim).find({ where: { companyId: companyId } });
+            const result: Claim[] = await this.db.getRepository(Claim).find({
+                where: { companyId: companyId },
+                relations: {
+                    femaDisaster: true,
+                    selfDisaster: true,
+                },
+            });
 
             return result.map((claim) => ({
                 id: claim.id,
@@ -64,7 +96,23 @@ export class ClaimTransaction implements IClaimTransaction {
                 createdAt: claim.createdAt.toISOString(),
                 updatedAt: claim.updatedAt?.toISOString(),
                 companyId: claim.companyId,
-                disasterId: claim.disasterId,
+                femaDisaster: claim.femaDisaster
+                    ? {
+                          ...claim.femaDisaster,
+                          declarationDate: claim.femaDisaster.declarationDate.toISOString(),
+                          incidentBeginDate: claim.femaDisaster.incidentBeginDate?.toISOString() || undefined,
+                          incidentEndDate: claim.femaDisaster.incidentEndDate?.toISOString() || undefined,
+                      }
+                    : undefined,
+                selfDisaster: claim.selfDisaster
+                    ? {
+                          ...claim.selfDisaster,
+                          startDate: claim.selfDisaster.startDate.toISOString(),
+                          endDate: claim.selfDisaster.endDate?.toISOString(),
+                          createdAt: claim.selfDisaster.createdAt.toISOString(),
+                          updatedAt: claim.selfDisaster.updatedAt.toISOString(),
+                      }
+                    : undefined,
             }));
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
@@ -72,9 +120,9 @@ export class ClaimTransaction implements IClaimTransaction {
         }
     }
 
-    async deleteClaim(payload: DeleteClaimDTO): Promise<DeleteClaimResponse | null> {
+    async deleteClaim(payload: DeleteClaimDTO, companyId: string): Promise<DeleteClaimResponse | null> {
         try {
-            const result = await this.db.getRepository(Claim).delete({ id: payload.id });
+            const result = await this.db.manager.delete(Claim, { id: payload.id, companyId: companyId });
             if (result.affected === 1) {
                 return { id: payload.id };
             } else {

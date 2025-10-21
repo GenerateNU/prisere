@@ -52,10 +52,12 @@ export class ClaimController {
     deleteClaim = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<DeleteClaimResponse, 200>> => {
             const id = ctx.req.param("id");
+            const comapnyId = ctx.get("companyId");
+
             if (!validate(id)) {
                 return ctx.json({ error: "Invalid claim ID format" }, 400);
             }
-            const claim = await this.claimService.deleteClaim({ id: id });
+            const claim = await this.claimService.deleteClaim({ id: id }, comapnyId);
             return ctx.json(claim, 200);
         }
     );

@@ -41,6 +41,9 @@ describe("DELETE /claims/:id", () => {
 
         const response = await app.request(TESTING_PREFIX + "/claims/0174375f-e7c4-4862-bb9f-f58318bb2e7d", {
             method: "DELETE",
+            headers: {
+                companyId: "5667a729-f000-4190-b4ee-7957badca27b",
+            },
         });
 
         const body = await response.json();

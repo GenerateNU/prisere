@@ -10,7 +10,7 @@ const seededClaims = [
         createdAt: new Date(),
         updatedAt: new Date(),
         companyId: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-        disasterId: "1f2e3d4c-5b6a-7f8e-9d0c-1b2a3f4e5d6c",
+        femaDisasterId: "1f2e3d4c-5b6a-7f8e-9d0c-1b2a3f4e5d6c",
         status: ClaimStatusType.ACTIVE,
     },
     {
@@ -19,7 +19,7 @@ const seededClaims = [
         createdAt: new Date(),
         updatedAt: new Date(),
         companyId: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-        disasterId: "8a9b0c1d-2e3f-4a5b-6c7d-8e9f0a1b2c3d",
+        femaDisasterId: "8a9b0c1d-2e3f-4a5b-6c7d-8e9f0a1b2c3d",
         status: ClaimStatusType.ACTIVE,
     },
     {
@@ -28,7 +28,7 @@ const seededClaims = [
         createdAt: new Date(),
         updatedAt: new Date(),
         companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-        disasterId: "1f2e3d4c-5b6a-7f8e-9d0c-1b2a3f4e5d6c",
+        femaDisasterId: "1f2e3d4c-5b6a-7f8e-9d0c-1b2a3f4e5d6c",
         status: ClaimStatusType.ACTIVE,
     },
     {
@@ -37,7 +37,7 @@ const seededClaims = [
         createdAt: new Date(),
         updatedAt: new Date(),
         companyId: "0b6d17e5-37fa-4fe6-bca5-1a18051ae222",
-        disasterId: "5d4c3b2a-1f0e-9d8c-7b6a-5f4e3d2c1b0a",
+        femaDisasterId: "5d4c3b2a-1f0e-9d8c-7b6a-5f4e3d2c1b0a",
         status: ClaimStatusType.ACTIVE,
     },
     {
@@ -46,7 +46,7 @@ const seededClaims = [
         createdAt: new Date(),
         updatedAt: new Date(),
         companyId: "7f8e9d0c-1b2a-3c4d-5e6f-7a8b9c0d1e2f",
-        disasterId: "5d4c3b2a-1f0e-9d8c-7b6a-5f4e3d2c1b0a",
+        femaDisasterId: "5d4c3b2a-1f0e-9d8c-7b6a-5f4e3d2c1b0a",
         status: ClaimStatusType.ACTIVE,
     },
 ];
