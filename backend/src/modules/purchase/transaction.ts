@@ -1,4 +1,4 @@
-import { DataSource } from "typeorm";
+import { Brackets, DataSource } from "typeorm";
 import Boom from "@hapi/boom";
 import { CreateOrChangePurchaseDTO, GetCompanyPurchasesByDateDTO, GetCompanyPurchasesDTO } from "./types";
 import { Purchase } from "../../entities/Purchase";
@@ -65,10 +65,20 @@ export class PurchaseTransaction implements IPurchaseTransaction {
             .createQueryBuilder(Purchase, "purchase")
             .select("SUM(purchase.totalAmountCents)", "total")
             .where("purchase.companyId = :companyId", { companyId })
-            .andWhere("purchase.dateCreated BETWEEN :startDate AND :endDate", {
-                startDate: new Date(startDate),
-                endDate: new Date(endDate),
-            })
+            .andWhere(
+                new Brackets((qb) => {
+                    qb.where("purchase.quickbooksDateCreated BETWEEN :startDate AND :endDate", {
+                        startDate: new Date(startDate),
+                        endDate: new Date(endDate),
+                    }).orWhere(
+                        "purchase.quickbooksDateCreated IS NULL AND purchase.dateCreated BETWEEN :startDate AND :endDate",
+                        {
+                            startDate: new Date(startDate),
+                            endDate: new Date(endDate),
+                        }
+                    );
+                })
+            )
             .getRawOne();
 
         const totalCents: number = summation?.total || 0;

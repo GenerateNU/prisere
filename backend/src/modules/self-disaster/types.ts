@@ -2,7 +2,6 @@ import z from "zod";
 import { FIPSCounty, FIPSState, incidentTypeString } from "../../types/fema-disaster/common";
 
 export const CreateSelfDisasterDTOSchema = z.object({
-    companyId: z.string(),
     description: z.string(),
     startDate: z.iso.date(),
     endDate: z.iso.date().optional(),
@@ -10,7 +9,6 @@ export const CreateSelfDisasterDTOSchema = z.object({
 
 export const CreateSelfDisasterResponseSchema = z.object({
     id: z.string(),
-    companyId: z.string(),
     description: z.string(),
     startDate: z.iso.date(),
     endDate: z.iso.date().optional(),
@@ -24,7 +22,6 @@ export type CreateSelfDisasterResponse = z.infer<typeof CreateSelfDisasterRespon
 //Types not needed for deletion
 
 export const GetDisastersForCompanyDTOSchema = z.object({
-    companyId: z.string(),
     onlyActiveDisasters: z.boolean().default(false).optional(),
     startDate: z.iso.date().optional(),
     endDate: z.iso.date().optional(),
@@ -32,7 +29,6 @@ export const GetDisastersForCompanyDTOSchema = z.object({
 
 export const GetSelfDisasterForCompanyResponseSchema = z.object({
     id: z.string(),
-    companyId: z.string(),
     description: z.string(),
     startDate: z.iso.date(),
     endDate: z.iso.date().optional(),

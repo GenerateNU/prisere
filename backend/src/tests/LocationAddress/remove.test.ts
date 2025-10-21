@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
+import { TESTING_PREFIX } from "../../utilities/constants";
 import CompanySeeder from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
@@ -11,7 +12,7 @@ describe("Remove Address Tests", () => {
     let app: Hono;
     let backup: IBackup;
     let dataSource: DataSource;
-    let companyId: String;
+    let companyId: string;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
@@ -33,9 +34,12 @@ describe("Remove Address Tests", () => {
     });
 
     test("error if id does not match any location", async () => {
-        const removeResponse = await app.request(`/location-address/e6b07e08-3435-4a4e-86bc-2e6995788ad9`, {
-            method: "DELETE",
-        });
+        const removeResponse = await app.request(
+            TESTING_PREFIX + `/location-address/e6b07e08-3435-4a4e-86bc-2e6995788ad9`,
+            {
+                method: "DELETE",
+            }
+        );
 
         expect(removeResponse.status).toBe(400);
     });
@@ -48,27 +52,16 @@ describe("Remove Address Tests", () => {
             streetAddress: "123 Main Street",
             postalCode: "94105",
             county: "San Francisco County",
-            companyId: companyId,
         };
 
-        const response = await app.request("/location-address", {
+        const response = await app.request(TESTING_PREFIX + "/location-address", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                companyId: companyId,
             },
             body: JSON.stringify(requestBody),
         });
-
-        if (response.status === 500) {
-            try {
-                const errorData = await response.json();
-                console.log("500 Error details:", errorData);
-            } catch (error) {
-                const errorText = await response.text();
-                console.log("500 Error text:", errorText, error);
-            }
-            throw new Error(`Location creation failed with 500 error`);
-        }
 
         expect(response.status).toBe(201);
         const location = await response.json();
@@ -76,20 +69,20 @@ describe("Remove Address Tests", () => {
 
         expect(response.status).toBe(201);
 
-        const removeResponse = await app.request(`/location-address/${locationId}`, {
+        const removeResponse = await app.request(TESTING_PREFIX + `/location-address/${locationId}`, {
             method: "DELETE",
         });
 
         expect(removeResponse.status).toBe(204);
 
-        const getRemovedResponse = await app.request(`/location-address/${locationId}`, {
+        const getRemovedResponse = await app.request(TESTING_PREFIX + `/location-address/${locationId}`, {
             method: "GET",
         });
         expect(getRemovedResponse.status).toBe(404);
     });
 
     test("should return 400 for invalid UUID format", async () => {
-        const removeResponse = await app.request(`/location-address/not-a-valid-uuid`, {
+        const removeResponse = await app.request(TESTING_PREFIX + `/location-address/not-a-valid-uuid`, {
             method: "DELETE",
         });
 
@@ -97,7 +90,7 @@ describe("Remove Address Tests", () => {
     });
 
     test("should return 400 for empty string id", async () => {
-        const removeResponse = await app.request(`/location-address/`, {
+        const removeResponse = await app.request(TESTING_PREFIX + `/location-address/`, {
             method: "DELETE",
         });
 
@@ -112,12 +105,14 @@ describe("Remove Address Tests", () => {
             streetAddress: "123 Main Street",
             postalCode: "94105",
             county: "San Francisco County",
-            companyId: companyId,
         };
 
-        const createResponse = await app.request("/location-address", {
+        const createResponse = await app.request(TESTING_PREFIX + "/location-address", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                companyId: companyId,
+            },
             body: JSON.stringify(createBody),
         });
 
@@ -125,7 +120,7 @@ describe("Remove Address Tests", () => {
         const location = await createResponse.json();
         const locationId = location.id;
 
-        const removeResponse = await app.request(`/location-address/${locationId}`, {
+        const removeResponse = await app.request(TESTING_PREFIX + `/location-address/${locationId}`, {
             method: "DELETE",
         });
 
@@ -133,7 +128,7 @@ describe("Remove Address Tests", () => {
         const body = await removeResponse.text();
         expect(body).toBe("");
 
-        const getRemovedResponse = await app.request(`/location-address/${locationId}`, {
+        const getRemovedResponse = await app.request(TESTING_PREFIX + `/location-address/${locationId}`, {
             method: "GET",
         });
 

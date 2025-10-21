@@ -5,8 +5,8 @@ import { plainToClass } from "class-transformer";
 import Boom from "@hapi/boom";
 
 export interface ISelfDisasterTransaction {
-    createSelfDisaster(payload: CreateSelfDisasterDTO): Promise<SelfDeclaredDisaster | null>;
-    deleteSelfDisaster(params: string): Promise<SelfDeclaredDisaster | null>;
+    createSelfDisaster(payload: CreateSelfDisasterDTO, companyId: string): Promise<SelfDeclaredDisaster | null>;
+    deleteSelfDisaster(params: string, companyId: string): Promise<SelfDeclaredDisaster | null>;
 }
 
 export class SelfDisasterTransaction implements ISelfDisasterTransaction {
@@ -16,14 +16,20 @@ export class SelfDisasterTransaction implements ISelfDisasterTransaction {
         this.db = db;
     }
 
-    async createSelfDisaster(payload: CreateSelfDisasterDTO) {
-        const result = await this.db.manager.save(SelfDeclaredDisaster, plainToClass(SelfDeclaredDisaster, payload));
+    async createSelfDisaster(payload: CreateSelfDisasterDTO, companyId: string) {
+        const result = await this.db.manager.save(
+            SelfDeclaredDisaster,
+            plainToClass(SelfDeclaredDisaster, { ...payload, companyId: companyId })
+        );
 
         return await this.db.manager.findOneBy(SelfDeclaredDisaster, { id: result.id });
     }
 
-    async deleteSelfDisaster(params: string) {
-        const givenDisaster = await this.db.manager.findOneBy(SelfDeclaredDisaster, { id: params });
+    async deleteSelfDisaster(params: string, companyId: string) {
+        const givenDisaster = await this.db.manager.findOneBy(SelfDeclaredDisaster, {
+            id: params,
+            companyId: companyId,
+        });
 
         //Check if exists first
         if (!givenDisaster) {

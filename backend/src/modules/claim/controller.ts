@@ -25,12 +25,12 @@ export class ClaimController {
 
     getClaimByCompanyId = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetClaimsByCompanyIdResponse, 200>> => {
-            const id = ctx.req.param("id");
+            const id = ctx.get("companyId");
             if (!validate(id)) {
                 return ctx.json({ error: "Invalid company ID format" }, 400);
             }
 
-            const claimResponse = await this.claimService.getClaimsByCompanyId({ id: id });
+            const claimResponse = await this.claimService.getClaimsByCompanyId(id);
 
             return ctx.json(claimResponse, 200);
         }
@@ -40,7 +40,11 @@ export class ClaimController {
         async (ctx: Context): ControllerResponse<TypedResponse<CreateClaimResponse, 201>> => {
             const json = await ctx.req.json();
             const payload = CreateClaimDTOSchema.parse(json);
-            const claim = await this.claimService.createClaim(payload);
+            const id = ctx.get("companyId");
+            if (!validate(id)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
+            const claim = await this.claimService.createClaim(payload, id);
             return ctx.json(claim, 201);
         }
     );
@@ -48,10 +52,12 @@ export class ClaimController {
     deleteClaim = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<DeleteClaimResponse, 200>> => {
             const id = ctx.req.param("id");
+            const comapnyId = ctx.get("companyId");
+
             if (!validate(id)) {
                 return ctx.json({ error: "Invalid claim ID format" }, 400);
             }
-            const claim = await this.claimService.deleteClaim({ id: id });
+            const claim = await this.claimService.deleteClaim({ id: id }, comapnyId);
             return ctx.json(claim, 200);
         }
     );

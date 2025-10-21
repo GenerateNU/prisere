@@ -9,6 +9,7 @@ import CompanySeeder from "../../database/seeds/company.seed";
 import { FemaDisasterSeeder } from "../../database/seeds/femaDisaster.seed";
 import { ClaimSeeder } from "../../database/seeds/claim.seed";
 import { LocationAddressSeeder } from "../../database/seeds/locationAddress.seed";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("POST /claim-locations", () => {
     let app: Hono;
@@ -49,7 +50,7 @@ describe("POST /claim-locations", () => {
             locationAddressId: "5e6f7a8b-9c0d-4e2f-8a4b-5c6d7e8f9a0b", // Business Location 1
         };
 
-        const response = await app.request("/claim-locations", {
+        const response = await app.request(TESTING_PREFIX + "/claim-locations", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -69,7 +70,7 @@ describe("POST /claim-locations", () => {
             locationAddressId: "5e6f7a8b-9c0d-4e2f-8a4b-5c6d7e8f9a0b", // Business Location 1
         };
 
-        await app.request("/claim-locations", {
+        await app.request(TESTING_PREFIX + "/claim-locations", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -77,7 +78,7 @@ describe("POST /claim-locations", () => {
             body: JSON.stringify(requestBody),
         });
 
-        const response2 = await app.request("/claim-locations", {
+        const response2 = await app.request(TESTING_PREFIX + "/claim-locations", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -94,7 +95,7 @@ describe("POST /claim-locations", () => {
             locationAddressId: "5e6f7a8b-9c0d-4e2f-8a4b-5c6d7e8f9a0b", // Business Location 1
         };
 
-        const response = await app.request("/claim-locations", {
+        const response = await app.request(TESTING_PREFIX + "/claim-locations", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -111,7 +112,7 @@ describe("POST /claim-locations", () => {
             locationAddressId: "5e6f7a8b-9c0f-1e2f-3a4b-5c6d7e8f9a0b", // Business Location 1
         };
 
-        const response = await app.request("/claim-locations", {
+        const response = await app.request(TESTING_PREFIX + "/claim-locations", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -128,7 +129,7 @@ describe("POST /claim-locations", () => {
             locationAddressId: "5e6f7a8b-9c0d-4e2f-8a4b-5c6d7e8f9a0b", // Business Location 1
         };
 
-        const response = await app.request("/claim-locations", {
+        const response = await app.request(TESTING_PREFIX + "/claim-locations", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -145,7 +146,7 @@ describe("POST /claim-locations", () => {
             locationAddressId: "not an id", // Business Location 1
         };
 
-        const response = await app.request("/claim-locations", {
+        const response = await app.request(TESTING_PREFIX + "/claim-locations", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

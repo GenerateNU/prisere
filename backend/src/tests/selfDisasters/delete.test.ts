@@ -4,9 +4,10 @@ import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { DataSource } from "typeorm";
 import { beforeEach } from "node:test";
-import CompanySeeder from "../../database/seeds/company.seed";
+import CompanySeeder, { seededCompanies } from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 import { seededSelfDisasters, SelfDisasterSeeder } from "../../database/seeds/selfDisaster.seed";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("DELETE /disasters/self/:id", () => {
     let app: Hono;
@@ -32,10 +33,11 @@ describe("DELETE /disasters/self/:id", () => {
     });
 
     test("DELETE /disaster/self/:id - Success", async () => {
-        const deleteResponse = await app.request("/disaster/self/" + seededSelfDisasters[0].id, {
+        const deleteResponse = await app.request(TESTING_PREFIX + "/disaster/self/" + seededSelfDisasters[0].id, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
+                companyId: seededCompanies[0].id,
             },
         });
 

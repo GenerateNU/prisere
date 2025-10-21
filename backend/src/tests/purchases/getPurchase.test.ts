@@ -1,21 +1,31 @@
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, afterEach } from "bun:test";
+import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { CreateOrChangePurchaseDTO } from "../../modules/purchase/types";
-
+import { CreateOrChangePurchaseRequest } from "../../modules/purchase/types";
+import { TESTING_PREFIX } from "../../utilities/constants";
+import { DataSource } from "typeorm";
+import CompanySeeder from "../../database/seeds/company.seed";
+import { SeederFactoryManager } from "typeorm-extension";
 describe("GET /purchase/:id", () => {
     let app: Hono;
     let backup: IBackup;
+    let dataSource: DataSource;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
+        dataSource = testAppData.dataSource;
     });
 
     afterEach(async () => {
         backup.restore();
+    });
+
+    beforeEach(async () => {
+        const companySeeder = new CompanySeeder();
+        await companySeeder.run(dataSource, {} as SeederFactoryManager);
     });
 
     const createCompany = async () => {
@@ -23,10 +33,11 @@ describe("GET /purchase/:id", () => {
             name: "Cool Company",
         };
 
-        const createCompanyResponse = await app.request("/companies", {
+        const createCompanyResponse = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
             },
             body: JSON.stringify(companyRequest),
         });
@@ -34,11 +45,12 @@ describe("GET /purchase/:id", () => {
         return await createCompanyResponse.json();
     };
 
-    const createPurchase = async (payload: Partial<CreateOrChangePurchaseDTO>) => {
-        const response = await app.request("/purchase/bulk", {
+    const createPurchase = async (payload: Partial<CreateOrChangePurchaseRequest>) => {
+        const response = await app.request(TESTING_PREFIX + "/purchase/bulk", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
             body: JSON.stringify(payload),
         });
@@ -47,19 +59,18 @@ describe("GET /purchase/:id", () => {
     };
 
     test("GET /purchase/:id - Valid Purchase ID", async () => {
-        const company = await createCompany();
+        await createCompany();
         // First create a purchase to retrieve
         const createBody = {
             quickBooksId: 12345,
             totalAmountCents: 50000,
             isRefund: false,
-            companyId: company.id,
         };
 
         const createdPurchase = await createPurchase([createBody]);
 
         // Now retrieve the purchase
-        const response = await app.request(`/purchase/${createdPurchase.id}`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase/${createdPurchase.id}`, {
             method: "GET",
         });
 
@@ -74,19 +85,18 @@ describe("GET /purchase/:id", () => {
     });
 
     test("GET /purchase/:id - Valid Purchase ID with Refund", async () => {
-        const company = await createCompany();
+        await createCompany();
 
         // Create a refund purchase
         const createBody = {
             totalAmountCents: 25000,
             isRefund: true,
-            companyId: company.id,
         };
 
         const createdPurchase = await createPurchase([createBody]);
 
         // Retrieve the purchase
-        const response = await app.request(`/purchase/${createdPurchase.id}`, {
+        const response = await app.request(TESTING_PREFIX + `/purchase/${createdPurchase.id}`, {
             method: "GET",
         });
 
@@ -96,7 +106,7 @@ describe("GET /purchase/:id", () => {
     });
 
     test("GET /purchase/:id - Non-Existent Purchase ID", async () => {
-        const response = await app.request("/purchase/111e99a6-d082-4327-9843-97fd228d4d37", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/111e99a6-d082-4327-9843-97fd228d4d37", {
             method: "GET",
         });
 
@@ -104,7 +114,7 @@ describe("GET /purchase/:id", () => {
     });
 
     test("GET /purchase/:id - Empty Purchase ID", async () => {
-        const response = await app.request("/purchase/", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/", {
             method: "GET",
         });
 
@@ -112,7 +122,7 @@ describe("GET /purchase/:id", () => {
     });
 
     test("GET /purchase/:id - Invalid UUID Format", async () => {
-        const response = await app.request("/purchase/invalid-uuid-format", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/invalid-uuid-format", {
             method: "GET",
         });
 
@@ -120,7 +130,7 @@ describe("GET /purchase/:id", () => {
     });
 
     test("GET /purchase/:id - Special Characters in ID", async () => {
-        const response = await app.request("/purchase/@#$%^&*()", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/@#$%^&*()", {
             method: "GET",
         });
 
@@ -128,7 +138,7 @@ describe("GET /purchase/:id", () => {
     });
 
     test("GET /purchase/:id - Numeric ID", async () => {
-        const response = await app.request("/purchase/12345", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/12345", {
             method: "GET",
         });
 
@@ -137,7 +147,7 @@ describe("GET /purchase/:id", () => {
 
     test("GET /purchase/:id - Very Long ID String", async () => {
         const longId = "a".repeat(500);
-        const response = await app.request(`"/purchase/${longId}`, {
+        const response = await app.request(TESTING_PREFIX + `"/purchase/${longId}`, {
             method: "GET",
         });
 

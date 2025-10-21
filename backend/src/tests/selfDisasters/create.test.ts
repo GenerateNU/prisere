@@ -6,6 +6,7 @@ import { DataSource } from "typeorm";
 import { beforeEach } from "node:test";
 import CompanySeeder, { seededCompanies } from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("POST /disasters/self", () => {
     let app: Hono;
@@ -30,16 +31,16 @@ describe("POST /disasters/self", () => {
 
     test("POST /disaster/self - Success", async () => {
         const requestBody = {
-            companyId: seededCompanies[0].id,
             description: "This is my desc.",
             startDate: new Date().toISOString().split("T")[0],
             endDate: undefined,
         };
 
-        const response = await app.request("/disaster/self", {
+        const response = await app.request(TESTING_PREFIX + "/disaster/self", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                companyId: seededCompanies[0].id,
             },
             body: JSON.stringify(requestBody),
         });
@@ -47,14 +48,15 @@ describe("POST /disasters/self", () => {
         expect(response.status).toBe(201);
         const body = await response.json();
         expect(body.description).toBe(requestBody.description);
-        expect(body.companyId).toBe(requestBody.companyId);
+        expect(body.companyId).toBe(seededCompanies[0].id);
         expect(body.createdAt).toBeDefined();
         expect(body.updatedAt).toBeDefined();
 
-        const deleteResponse = await app.request("/disaster/self/" + body.id, {
+        const deleteResponse = await app.request(TESTING_PREFIX + "/disaster/self/" + body.id, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
+                companyId: seededCompanies[0].id,
             },
         });
 
@@ -64,16 +66,16 @@ describe("POST /disasters/self", () => {
 
     test("POST /disaster/self - Bad company id", async () => {
         const requestBody = {
-            companyId: seededCompanies[0].id + "l",
             description: "This is my desc.",
             startDate: new Date().toISOString().split("T")[0],
             endDate: undefined,
         };
 
-        const response = await app.request("/disaster/self", {
+        const response = await app.request(TESTING_PREFIX + "/disaster/self", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                companyId: "8df1f862-fe01-401d-a90f-8d364bc96ab2",
             },
             body: JSON.stringify(requestBody),
         });
@@ -83,16 +85,16 @@ describe("POST /disasters/self", () => {
 
     test("POST /disaster/self - Missing description", async () => {
         const requestBody = {
-            companyId: seededCompanies[0].id,
             description: undefined,
             startDate: new Date().toISOString().split("T")[0],
             endDate: undefined,
         };
 
-        const response = await app.request("/disaster/self", {
+        const response = await app.request(TESTING_PREFIX + "/disaster/self", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                companyId: seededCompanies[0].id,
             },
             body: JSON.stringify(requestBody),
         });
@@ -102,16 +104,16 @@ describe("POST /disasters/self", () => {
 
     test("POST /disaster/self - Success with non open end", async () => {
         const requestBody = {
-            companyId: seededCompanies[0].id,
             description: "This is my desc.",
             startDate: new Date().toISOString().split("T")[0],
             endDate: new Date("10/20/2026").toISOString().split("T")[0],
         };
 
-        const response = await app.request("/disaster/self", {
+        const response = await app.request(TESTING_PREFIX + "/disaster/self", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                companyId: seededCompanies[0].id,
             },
             body: JSON.stringify(requestBody),
         });
@@ -119,16 +121,17 @@ describe("POST /disasters/self", () => {
         expect(response.status).toBe(201);
         const body = await response.json();
         expect(body.description).toBe(requestBody.description);
-        expect(body.companyId).toBe(requestBody.companyId);
+        expect(body.companyId).toBe(seededCompanies[0].id);
         expect(body.startDate.split("T")[0]).toBe(requestBody.startDate);
         expect(body.endDate.split("T")[0]).toBe(requestBody.endDate);
         expect(body.createdAt).toBeDefined();
         expect(body.updatedAt).toBeDefined();
 
-        const deleteResponse = await app.request("/disaster/self/" + body.id, {
+        const deleteResponse = await app.request(TESTING_PREFIX + "/disaster/self/" + body.id, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
+                companyId: seededCompanies[0].id,
             },
         });
 

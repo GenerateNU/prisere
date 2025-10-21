@@ -44,6 +44,6 @@ export class InvoiceLineItem {
     @UpdateDateColumn()
     lastUpdated!: Date;
 
-    @Column({ nullable: true })
+    @Column({ type: "timestamptz", nullable: true })
     quickbooksDateCreated?: Date;
 }

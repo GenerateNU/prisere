@@ -16,4 +16,19 @@ export const GetAllDisastersResponseSchema = z.array(
     })
 );
 
+export const FemaDisasterSchema = z.array(
+    z.object({
+        id: z.uuid(),
+        disasterNumber: z.number(),
+        fipsStateCode: FIPSState,
+        declarationDate: z.iso.datetime(),
+        incidentBeginDate: z.string().nullable(),
+        incidentEndDate: z.string().nullable(),
+        fipsCountyCode: FIPSCounty,
+        declarationType: z.string().length(2),
+        designatedArea: z.string(),
+        designatedIncidentTypes: incidentTypeString,
+    })
+);
+
 export type GetAllDisastersResponse = z.infer<typeof GetAllDisastersResponseSchema>;

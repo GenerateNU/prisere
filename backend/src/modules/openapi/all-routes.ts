@@ -13,9 +13,9 @@ import { createOpenAPIClaimRoutes } from "./claim-routes";
 import { addOpenApiClaimLocationRoutes } from "./claim-location-routes";
 import { addOpenApiPreferenceRoutes } from "./preference-routes";
 import { addOpenApiInvoiceLineItemRoutes } from "./invoice-line-item-routes";
+import { addOpenApiPurchaseLineItemRoutes } from "./purchase-line-item";
 
 export const setUpOpenApiRoutes = (db: DataSource) => {
-    const openApiServerURL = process.env.NODE_ENV === "production" ? "/api" : "";
     const openApiApp = openApiRoutes(db);
 
     openApiApp.doc("/spec.json", {
@@ -26,7 +26,7 @@ export const setUpOpenApiRoutes = (db: DataSource) => {
         },
         servers: [
             {
-                url: openApiServerURL,
+                url: "/api/prisere",
             },
         ],
     });
@@ -50,6 +50,7 @@ const openApiRoutes = (db: DataSource): OpenAPIHono => {
     addOpenApiClaimLocationRoutes(openApi, db);
     addOpenApiPreferenceRoutes(openApi, db);
     addOpenApiInvoiceLineItemRoutes(openApi, db);
+    addOpenApiPurchaseLineItemRoutes(openApi, db);
 
     return openApi;
 };

@@ -6,6 +6,7 @@ import { createUser } from "../utils";
 import { DataSource } from "typeorm";
 import { UserPreferences } from "../../entities/UserPreferences";
 import { UpdateUesrNotificationPreferencesDTO } from "../../types/Preferences";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("notification preference retreival", () => {
     let app: Hono;
@@ -24,8 +25,12 @@ describe("notification preference retreival", () => {
     });
 
     it("should create a user's preferences on user creation", async () => {
-        const { data: user } = await createUser(app, { firstName: "test", lastName: "user" });
-        const response = await app.request(`/notifications/preferences/${user.id}`);
+        await createUser(app, { firstName: "test", lastName: "user" });
+        const response = await app.request(TESTING_PREFIX + `/preferences`, {
+            headers: {
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
+            },
+        });
 
         expect(response.status).toBe(200);
         expect(await response.json()).toEqual({
@@ -41,7 +46,11 @@ describe("notification preference retreival", () => {
         // delete user preferences from the database (simulates user that was created before preferences existed)
         await db.getRepository(UserPreferences).delete({ userId: user.id });
 
-        const response = await app.request(`/notifications/preferences/${user.id}`);
+        const response = await app.request(TESTING_PREFIX + `/preferences`, {
+            headers: {
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
+            },
+        });
 
         expect(response.status).toBe(200);
         expect(await response.json()).toEqual({
@@ -67,8 +76,12 @@ describe("notification preference update", () => {
     });
 
     it("should perform full update to user preferences", async () => {
-        const { data: user } = await createUser(app, { firstName: "test", lastName: "user" });
-        const getResponse = await app.request(`/notifications/preferences/${user.id}`);
+        await createUser(app, { firstName: "test", lastName: "user" });
+        const getResponse = await app.request(TESTING_PREFIX + `/preferences`, {
+            headers: {
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
+            },
+        });
 
         expect(getResponse.status).toBe(200);
         expect(await getResponse.json()).toEqual({
@@ -77,8 +90,11 @@ describe("notification preference update", () => {
             notificationFrequency: "daily",
         });
 
-        const updateResponse = await app.request(`/notifications/preferences/${user.id}`, {
+        const updateResponse = await app.request(TESTING_PREFIX + `/preferences`, {
             method: "PUT",
+            headers: {
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
+            },
             body: JSON.stringify({
                 emailEnabled: false,
                 webNotificationsEnabled: false,
@@ -95,8 +111,12 @@ describe("notification preference update", () => {
     });
 
     it("should perform partial update to user preferences", async () => {
-        const { data: user } = await createUser(app, { firstName: "test", lastName: "user" });
-        const getResponse = await app.request(`/notifications/preferences/${user.id}`);
+        await createUser(app, { firstName: "test", lastName: "user" });
+        const getResponse = await app.request(TESTING_PREFIX + `/preferences`, {
+            headers: {
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
+            },
+        });
 
         expect(getResponse.status).toBe(200);
         expect(await getResponse.json()).toEqual({
@@ -105,8 +125,11 @@ describe("notification preference update", () => {
             notificationFrequency: "daily",
         });
 
-        const updateResponse = await app.request(`/notifications/preferences/${user.id}`, {
+        const updateResponse = await app.request(TESTING_PREFIX + `/preferences`, {
             method: "PUT",
+            headers: {
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
+            },
             body: JSON.stringify({
                 emailEnabled: false,
                 notificationFrequency: "weekly",
@@ -122,8 +145,12 @@ describe("notification preference update", () => {
     });
 
     it("should error on no values given", async () => {
-        const { data: user } = await createUser(app, { firstName: "test", lastName: "user" });
-        const getResponse = await app.request(`/notifications/preferences/${user.id}`);
+        await createUser(app, { firstName: "test", lastName: "user" });
+        const getResponse = await app.request(TESTING_PREFIX + `/preferences`, {
+            headers: {
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
+            },
+        });
 
         expect(getResponse.status).toBe(200);
         expect(await getResponse.json()).toEqual({
@@ -132,8 +159,11 @@ describe("notification preference update", () => {
             notificationFrequency: "daily",
         });
 
-        const updateResponse = await app.request(`/notifications/preferences/${user.id}`, {
+        const updateResponse = await app.request(TESTING_PREFIX + `/preferences`, {
             method: "PUT",
+            headers: {
+                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
+            },
             body: JSON.stringify({} satisfies UpdateUesrNotificationPreferencesDTO),
         });
 

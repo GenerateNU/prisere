@@ -5,8 +5,8 @@ import Boom from "@hapi/boom";
 import { ISelfDisasterTransaction } from "./transaction";
 
 export interface ISelfDisasterService {
-    createSelfDisaster(payload: CreateSelfDisasterDTO): Promise<CreateSelfDisasterResponse>;
-    deleteSelfDisaster(params: string): Promise<void>;
+    createSelfDisaster(payload: CreateSelfDisasterDTO, companyId: string): Promise<CreateSelfDisasterResponse>;
+    deleteSelfDisaster(params: string, companyId: string): Promise<void>;
 }
 
 export class SelfDisasterService implements ISelfDisasterService {
@@ -17,8 +17,8 @@ export class SelfDisasterService implements ISelfDisasterService {
     }
 
     createSelfDisaster = withServiceErrorHandling(
-        async (payload: CreateSelfDisasterDTO): Promise<CreateSelfDisasterResponse> => {
-            const newDisaster = await this.disasterTransaction.createSelfDisaster(payload);
+        async (payload: CreateSelfDisasterDTO, companyId: string): Promise<CreateSelfDisasterResponse> => {
+            const newDisaster = await this.disasterTransaction.createSelfDisaster(payload, companyId);
 
             if (!newDisaster) {
                 throw Boom.internal("Creating Disaster failed");
@@ -34,8 +34,8 @@ export class SelfDisasterService implements ISelfDisasterService {
         }
     );
 
-    deleteSelfDisaster = withServiceErrorHandling(async (params: string): Promise<void> => {
-        const deletedDisaster = await this.disasterTransaction.deleteSelfDisaster(params);
+    deleteSelfDisaster = withServiceErrorHandling(async (params: string, companyId: string): Promise<void> => {
+        const deletedDisaster = await this.disasterTransaction.deleteSelfDisaster(params, companyId);
 
         if (!deletedDisaster) {
             throw Boom.internal("Deleting self disaster failed");

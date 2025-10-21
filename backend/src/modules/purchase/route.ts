@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { IPurchaseController, PurchaseController } from "./controller";
 import { IPurchaseService, PurchaseService } from "./service";
 import { IPurchaseTransaction, PurchaseTransaction } from "./transaction";
+import { purchaseLineItemsRoutes } from "../purchase-line-item/route";
 
 export const purchaseRoutes = (db: DataSource): Hono => {
     const PurchaseRoutes = new Hono();
@@ -11,10 +12,12 @@ export const purchaseRoutes = (db: DataSource): Hono => {
     const service: IPurchaseService = new PurchaseService(transaction);
     const controller: IPurchaseController = new PurchaseController(service);
 
+    purchaseLineItemsRoutes(db, PurchaseRoutes);
+
     PurchaseRoutes.post("/bulk", (ctx) => controller.createOrUpdatePurchase(ctx));
     PurchaseRoutes.get("/:id", (ctx) => controller.getPurchase(ctx));
     PurchaseRoutes.get("/", (ctx) => controller.getPurchasesForCompany(ctx));
-    PurchaseRoutes.get("/bulk/:id/totalExpenses", (ctx) => controller.sumPurchasesByCompanyAndDateRange(ctx));
+    PurchaseRoutes.get("/bulk/totalExpenses", (ctx) => controller.sumPurchasesByCompanyAndDateRange(ctx));
 
     return PurchaseRoutes;
 };

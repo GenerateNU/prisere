@@ -2,10 +2,11 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
+import { TESTING_PREFIX } from "../../utilities/constants";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
-import CompanySeeder from "../../database/seeds/company.seed";
-import { LocationAddressSeeder } from "../../database/seeds/location.seed";
+import CompanySeeder, { seededCompanies } from "../../database/seeds/company.seed";
+import { LocationSeeder } from "../../database/seeds/location.seed";
 
 /**
  * Test:
@@ -21,9 +22,8 @@ describe("Get all locations for a company", () => {
     let datasource: DataSource;
 
     // Seeded company IDs from company.seed.ts
-    const companyWithMultipleLocations = "ffc8243b-876e-4b6d-8b80-ffc73522a838"; // 3 locations
+    const companyWithMultipleLocations = seededCompanies[0].id; // 3 locations
     const companyWithOneLocation = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"; // 1 location
-    const companyWithNoLocations = "11b2c3d4-e5f6-7890-abcd-ef1234567890"; // 0 locations
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
@@ -36,7 +36,7 @@ describe("Get all locations for a company", () => {
         backup.restore();
         const companySeeder = new CompanySeeder();
         await companySeeder.run(datasource, {} as SeederFactoryManager);
-        const locationSeeder = new LocationAddressSeeder();
+        const locationSeeder = new LocationSeeder();
         await locationSeeder.run(datasource, {} as SeederFactoryManager);
     });
 
@@ -45,7 +45,11 @@ describe("Get all locations for a company", () => {
     });
 
     test("should return empty array when company has no locations", async () => {
-        const response = await app.request(`/companies/${companyWithNoLocations}/location-address`);
+        const response = await app.request(TESTING_PREFIX + `/companies/location-address`, {
+            headers: {
+                companyId: "11b2c3d4-e5f6-7890-abcd-ef1234567890",
+            },
+        });
         const data = await response.json();
 
         expect(Array.isArray(data)).toBe(true);
@@ -53,7 +57,11 @@ describe("Get all locations for a company", () => {
     });
 
     test("should return all locations when company has more than one location", async () => {
-        const response = await app.request(`/companies/${companyWithMultipleLocations}/location-address`);
+        const response = await app.request(TESTING_PREFIX + `/companies/location-address`, {
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+            },
+        });
 
         expect(response.status).toBe(200);
         const data = await response.json();
@@ -81,7 +89,11 @@ describe("Get all locations for a company", () => {
     });
 
     test("should return single location when company has one location", async () => {
-        const response = await app.request(`/companies/${companyWithOneLocation}/location-address`);
+        const response = await app.request(TESTING_PREFIX + `/companies/location-address`, {
+            headers: {
+                companyId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            },
+        });
 
         expect(response.status).toBe(200);
         const data = await response.json();
@@ -97,7 +109,11 @@ describe("Get all locations for a company", () => {
     });
 
     test("should return 400 when company ID is not a valid UUID", async () => {
-        const response = await app.request("/companies/invalid-uuid/location-address");
+        const response = await app.request(TESTING_PREFIX + "/companies/location-address", {
+            headers: {
+                companyId: "invalid-uuid",
+            },
+        });
 
         expect(response.status).toBe(400);
         const data = await response.json();
@@ -106,8 +122,17 @@ describe("Get all locations for a company", () => {
 
     test("should only return locations for the specified company", async () => {
         // Test that company A's locations don't include company B's locations
-        const companyAResponse = await app.request(`/companies/${companyWithMultipleLocations}/location-address`);
-        const companyBResponse = await app.request(`/companies/${companyWithOneLocation}/location-address`);
+        const companyAResponse = await app.request(TESTING_PREFIX + `/companies/location-address`, {
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+            },
+        });
+
+        const companyBResponse = await app.request(TESTING_PREFIX + `/companies/location-address`, {
+            headers: {
+                companyId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            },
+        });
 
         expect(companyAResponse.status).toBe(200);
         expect(companyBResponse.status).toBe(200);
@@ -135,14 +160,21 @@ describe("Get all locations for a company", () => {
     });
 
     test("should return 404 for non-existent", async () => {
-        const nonExistentCompanyId = "99999999-9999-9999-9999-999999999999";
-        const response = await app.request(`/companies/${nonExistentCompanyId}/location-address`);
+        const response = await app.request(TESTING_PREFIX + `/companies/location-address`, {
+            headers: {
+                companyId: "99999999-9999-9999-9999-999999999999",
+            },
+        });
 
         expect(response.status).toBe(400);
     });
 
     test("should verify location data integrity", async () => {
-        const response = await app.request(`/companies/${companyWithMultipleLocations}/location-address`);
+        const response = await app.request(TESTING_PREFIX + `/companies/location-address`, {
+            headers: {
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+            },
+        });
 
         expect(response.status).toBe(200);
         const data = await response.json();

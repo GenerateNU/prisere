@@ -10,6 +10,7 @@ import {
     CreateDisasterResponseSchema,
 } from "../../types/fema-disaster";
 import { randomUUIDv7 } from "bun";
+import { TESTING_PREFIX } from "../../utilities/constants";
 
 describe("Create disasters", () => {
     let app: Hono;
@@ -41,7 +42,7 @@ describe("Create disasters", () => {
             incidentType: "Other",
         } satisfies CreateDisasterDTOInput;
 
-        const response = await app.request("/disaster", {
+        const response = await app.request(TESTING_PREFIX + "/disaster", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -79,7 +80,7 @@ describe("Create disasters", () => {
             incidentType: "Other",
         } satisfies CreateDisasterDTOInput;
 
-        const response = await app.request("/disaster", {
+        const response = await app.request(TESTING_PREFIX + "/disaster", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -91,7 +92,7 @@ describe("Create disasters", () => {
     });
 
     it("should not accept an invalid county number", async () => {
-        const response = await app.request("/disaster", {
+        const response = await app.request(TESTING_PREFIX + "/disaster", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -115,7 +116,7 @@ describe("Create disasters", () => {
     });
 
     it("should not accept an invalid set of incident codes", async () => {
-        const response = await app.request("/disaster", {
+        const response = await app.request(TESTING_PREFIX + "/disaster", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -141,7 +142,7 @@ describe("Create disasters", () => {
     });
 
     it("should not accept an malformatted incident code set", async () => {
-        const response = await app.request("/disaster", {
+        const response = await app.request(TESTING_PREFIX + "/disaster", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -167,7 +168,7 @@ describe("Create disasters", () => {
     });
 
     it("should not accept an malformatted incident code set", async () => {
-        const response = await app.request("/disaster", {
+        const response = await app.request(TESTING_PREFIX + "/disaster", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -193,7 +194,7 @@ describe("Create disasters", () => {
     });
 
     it("should not accept a start date after an end date", async () => {
-        const response = await app.request("/disaster", {
+        const response = await app.request(TESTING_PREFIX + "/disaster", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -233,7 +234,7 @@ describe("Get disasters", () => {
     });
 
     it("should return empty array when no disasters in db", async () => {
-        const response = await app.request("/disaster", {
+        const response = await app.request(TESTING_PREFIX + "/disaster", {
             method: "GET",
         });
 
@@ -289,7 +290,7 @@ describe("Get disasters", () => {
 
         const inputs = [constructedObject1, constructedObject2, constructedObject3];
 
-        await app.request("/disaster", {
+        await app.request(TESTING_PREFIX + "/disaster", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -297,7 +298,7 @@ describe("Get disasters", () => {
             body: JSON.stringify(constructedObject1),
         });
 
-        await app.request("/disaster", {
+        await app.request(TESTING_PREFIX + "/disaster", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -305,7 +306,7 @@ describe("Get disasters", () => {
             body: JSON.stringify(constructedObject2),
         });
 
-        await app.request("/disaster", {
+        await app.request(TESTING_PREFIX + "/disaster", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -313,7 +314,7 @@ describe("Get disasters", () => {
             body: JSON.stringify(constructedObject3),
         });
 
-        const response = await app.request("/disaster", {
+        const response = await app.request(TESTING_PREFIX + "/disaster", {
             method: "GET",
         });
         expect(response.status).toBe(200);
@@ -373,7 +374,7 @@ describe("Get disasters", () => {
             incidentType: "Other",
         } satisfies CreateDisasterDTOInput;
 
-        await app.request("/disaster", {
+        await app.request(TESTING_PREFIX + "/disaster", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -381,7 +382,7 @@ describe("Get disasters", () => {
             body: JSON.stringify(constructedObject1),
         });
 
-        await app.request("/disaster", {
+        await app.request(TESTING_PREFIX + "/disaster", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -389,7 +390,7 @@ describe("Get disasters", () => {
             body: JSON.stringify(constructedObject2),
         });
 
-        const response = await app.request("/disaster", {
+        const response = await app.request(TESTING_PREFIX + "/disaster", {
             method: "GET",
         });
         expect(response.status).toBe(200);
@@ -433,7 +434,7 @@ describe("Get disasters", () => {
             incidentType: "Fire",
         } satisfies CreateDisasterDTOInput;
 
-        const response = await app.request("/disaster", {
+        const response = await app.request(TESTING_PREFIX + "/disaster", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

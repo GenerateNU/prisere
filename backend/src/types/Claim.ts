@@ -11,7 +11,6 @@ export const ClaimSchema = z.object({
     status: z.nativeEnum(ClaimStatusType).default(ClaimStatusType.ACTIVE),
     createdAt: z.iso.datetime(),
     updatedAt: z.iso.datetime().optional(),
-    companyId: z.string(),
     femaDisaster: GetAllDisastersResponseSchema.element.optional(), // .element extracts the item schema
     selfDisaster: GetSelfDisasterForCompanyResponseSchema.optional(),
 });
@@ -21,14 +20,12 @@ const stringClaimSchema = z.object({
     status: z.nativeEnum(ClaimStatusType).default(ClaimStatusType.ACTIVE),
     createdAt: z.iso.datetime(),
     updatedAt: z.iso.datetime().optional(),
-    companyId: z.string(),
     femaDisaster: GetAllDisastersResponseSchema.element.optional(),
     selfDisaster: GetSelfDisasterForCompanyResponseSchema.optional(),
 });
 
 /* POST */
 export const CreateClaimDTOSchema = z.object({
-    companyId: z.string(),
     femaDisasterId: z.string().optional(),
     selfDisasterId: z.string().optional(),
 });
@@ -36,9 +33,6 @@ export const CreateClaimDTOSchema = z.object({
 export const CreateClaimResponseSchema = stringClaimSchema;
 
 /* GET */
-export const GetClaimsByCompanyIdDTOSchema = z.object({
-    id: z.string(),
-});
 
 export const GetClaimsByCompanyIdResponseSchema = z.array(ClaimSchema);
 
@@ -58,7 +52,6 @@ export type ClaimWithRelations = z.infer<typeof ClaimSchema>;
 export type CreateClaimDTO = z.infer<typeof CreateClaimDTOSchema>;
 export type CreateClaimResponse = z.infer<typeof CreateClaimResponseSchema>;
 
-export type GetClaimsByCompanyIdDTO = z.infer<typeof GetClaimsByCompanyIdDTOSchema>;
 export type GetClaimsByCompanyIdResponse = z.infer<typeof GetClaimsByCompanyIdResponseSchema>;
 
 export type DeleteClaimDTO = z.infer<typeof DeleteClaimDTOSchema>;

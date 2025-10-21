@@ -3,7 +3,6 @@ import { Claim } from "../../entities/Claim";
 import {
     CreateClaimDTO,
     DeleteClaimDTO,
-    GetClaimsByCompanyIdDTO as GetClaimsByCompanyIdDTO,
     DeleteClaimResponse,
     GetClaimsByCompanyIdResponse,
     CreateClaimResponse,
@@ -18,21 +17,21 @@ export interface IClaimTransaction {
      * @param payload Claim to be inserted into the database
      * @returns A promise that resolves to the created claim or null
      */
-    createClaim(payload: CreateClaimDTO): Promise<CreateClaimResponse | null>;
+    createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse | null>;
 
     /**
      * Gets a claim by its id
      * @param payload ID of the claim to be fetched
      * @returns Promise resolving to fetched claim or null if not found
      */
-    getClaimsByCompanyId(payload: GetClaimsByCompanyIdDTO): Promise<GetClaimsByCompanyIdResponse | null>;
+    getClaimsByCompanyId(companyId: string): Promise<GetClaimsByCompanyIdResponse | null>;
 
     /**
      * Deletes a claim by its id
      * @param payload ID of the claim to be deleted
      * @returns Promise resolving delete operation or null if not present
      */
-    deleteClaim(payload: DeleteClaimDTO): Promise<DeleteClaimResponse | null>;
+    deleteClaim(payload: DeleteClaimDTO, companyId: string): Promise<DeleteClaimResponse | null>;
 }
 
 export class ClaimTransaction implements IClaimTransaction {
@@ -42,11 +41,12 @@ export class ClaimTransaction implements IClaimTransaction {
         this.db = db;
     }
 
-    async createClaim(payload: CreateClaimDTO): Promise<CreateClaimResponse | null> {
+    async createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse | null> {
         try {
             const claim: Claim = plainToClass(Claim, {
                 ...payload,
                 status: ClaimStatusType.ACTIVE,
+                companyId: companyId,
             });
 
             const result: Claim = await this.db.manager.save(Claim, claim);
@@ -80,10 +80,10 @@ export class ClaimTransaction implements IClaimTransaction {
         }
     }
 
-    async getClaimsByCompanyId(payload: GetClaimsByCompanyIdDTO): Promise<GetClaimsByCompanyIdResponse | null> {
+    async getClaimsByCompanyId(companyId: string): Promise<GetClaimsByCompanyIdResponse | null> {
         try {
             const result: Claim[] = await this.db.getRepository(Claim).find({
-                where: { companyId: payload.id },
+                where: { companyId: companyId },
                 relations: {
                     femaDisaster: true,
                     selfDisaster: true,
@@ -120,9 +120,9 @@ export class ClaimTransaction implements IClaimTransaction {
         }
     }
 
-    async deleteClaim(payload: DeleteClaimDTO): Promise<DeleteClaimResponse | null> {
+    async deleteClaim(payload: DeleteClaimDTO, companyId: string): Promise<DeleteClaimResponse | null> {
         try {
-            const result = await this.db.getRepository(Claim).delete({ id: payload.id });
+            const result = await this.db.manager.delete(Claim, { id: payload.id, companyId: companyId });
             if (result.affected === 1) {
                 return { id: payload.id };
             } else {

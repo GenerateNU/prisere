@@ -1,0 +1,19 @@
+{
+  "name": "prisere",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "gen-types": "bun run ./backend/src/utilities/spec_gen.ts && bun run openapi-typescript ./spec.json -o ./frontend/schema.d.ts ",
+    "g": "bun run gen-types"
+  },
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "openapi-typescript": "^7.9.1"
+  }
+}

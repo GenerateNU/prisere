@@ -21,7 +21,9 @@ export class UserController implements IUserController {
     createUser = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<CreateUserResponse, 201>> => {
             const json = await ctx.req.json();
-            const payload = CreateUserDTOSchema.parse(json);
+            const userId = ctx.get("userId");
+            console.log("userId", userId)
+            const payload = CreateUserDTOSchema.parse({ ...json, id: userId });
             const user = await this.userService.createUser(payload);
             return ctx.json(user, 201);
         }
@@ -29,7 +31,7 @@ export class UserController implements IUserController {
 
     getUser = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetUserResponse, 200>> => {
-            const maybeId = await ctx.req.param("id");
+            const maybeId = ctx.get("userId");
 
             if (!validate(maybeId)) {
                 return ctx.json({ error: "The given ID must be well formed and present to get a User." }, 400);
@@ -42,7 +44,7 @@ export class UserController implements IUserController {
 
     getCompany = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetUserCompanyResponse, 200>> => {
-            const maybeId = await ctx.req.param("id");
+            const maybeId = ctx.get("userId");
 
             if (!validate(maybeId)) {
                 return ctx.json(

@@ -19,15 +19,17 @@ export class SelfDisasterController implements ISelfDisasterController {
     createSelfDisaster = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<CreateSelfDisasterResponse, 201>> => {
             const json = await ctx.req.json();
+            const companyId = await ctx.get("companyId");
             const payload = CreateSelfDisasterDTOSchema.parse(json);
-            const disaster = await this.disasterService.createSelfDisaster(payload);
+            const disaster = await this.disasterService.createSelfDisaster(payload, companyId);
             return ctx.json(disaster, 201);
         }
     );
 
     deleteSelfDisaster = withControllerErrorHandling(async (ctx: Context) => {
         const givenId = ctx.req.param("id");
-        await this.disasterService.deleteSelfDisaster(givenId);
+        const companyId = await ctx.get("companyId");
+        await this.disasterService.deleteSelfDisaster(givenId, companyId);
         return ctx.json(undefined, 200);
     });
 }
