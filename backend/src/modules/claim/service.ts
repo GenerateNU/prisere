@@ -6,7 +6,6 @@ import {
     DeleteClaimResponse,
     GetClaimsByCompanyIdResponse,
 } from "../../types/Claim";
-import { Claim } from "../../entities/Claim";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { IClaimTransaction } from "./transaction";
 
