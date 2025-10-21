@@ -14,7 +14,7 @@ const InvoiceLineItemSchema = z.object({
         .string()
         .max(LINE_ITEM_CATEGORY_CHARS, `Category must be at most ${LINE_ITEM_CATEGORY_CHARS} characters.`)
         .optional(),
-    quickbooksDateCreated: z.iso.datetime().optional(),
+    quickbooksDateCreated: z.iso.datetime().nullish(),
     dateCreated: z.iso.datetime(),
     lastUpdated: z.iso.datetime(),
 });
