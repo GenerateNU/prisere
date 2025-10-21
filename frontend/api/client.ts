@@ -22,5 +22,6 @@ export const authWrapper =
     <T>() =>
     async (fn: (token: string) => Promise<T>) => {
         const token = await retrieveToken();
+        console.log("TOKEN", token);
         return fn(token);
     };
