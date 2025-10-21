@@ -25,12 +25,12 @@ const jwk = JSON.parse(
  */
 export const isAuthorized = () => {
     return async (ctx: Context, next: Next) => {
-        console.log("IN AUTH MIDDLEWARE")
+        console.log("IN AUTH MIDDLEWARE");
         const header = ctx.req.header("Authorization");
         if (!header) {
             return ctx.json({ error: "User is not authenticated" }, 401);
         }
-        console.log("HEADER:", header)
+        console.log("HEADER:", header);
         const token = header.split(" ")[1];
         try {
             const publicKey = crypto.createPublicKey({
@@ -41,7 +41,7 @@ export const isAuthorized = () => {
             if (!decrypted.sub || !validate(decrypted.sub)) {
                 return ctx.json({ error: "User is not authenticated" }, 401);
             }
-            console.log("USERID:", decrypted.sub)
+            console.log("USERID:", decrypted.sub);
             ctx.set("userId", decrypted.sub);
             ctx.set("companyId", decrypted.app_metadata?.company_id);
             await next();
