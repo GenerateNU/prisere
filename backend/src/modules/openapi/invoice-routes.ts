@@ -12,6 +12,7 @@ import {
     GetCompanyInvoicesSummationResponseSchema,
     CreateOrUpdateInvoicesRequestSchema,
     GetCompanyInvoicesParams,
+    GetCompanyInvoicesInMonthBinsResponseSchema,
 } from "../../types/Invoice";
 import { CompanyTransaction } from "../company/transaction";
 import { z } from "zod";
@@ -43,6 +44,7 @@ export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): O
     openApi.openapi(getInvoiceLineItemsForInvoiceRoute, (ctx) =>
         invoiceLineItemController.getInvoiceLineItemsForInvoice(ctx)
     );
+    openApi.openapi(sumInvoicesByCompanyInMonthBins, (ctx) => invoiceController.sumInvoicesByCompanyInMonthBins(ctx));
     return openApi;
 };
 
@@ -179,6 +181,29 @@ const sumInvoicesByCompanyAndDateRange = createRoute({
             content: {
                 "application/json": {
                     schema: GetCompanyInvoicesSummationResponseSchema,
+                },
+            },
+            description: "Found summation successfully",
+        },
+        ...openApiErrorCodes("Getting Invoice Error"),
+    },
+    tags: ["Invoice"],
+});
+
+const sumInvoicesByCompanyInMonthBins = createRoute({
+    method: "get",
+    path: "/invoice/bulk/months",
+    summary: "Get the total invoice amounts broken down by months",
+    description:
+        "Get the summation of invoices for a company that were made after the start date and before the end date split into each month that exists in the date range",
+    request: {
+        query: z.object({ startDate: z.iso.datetime(), endDate: z.iso.datetime() }),
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetCompanyInvoicesInMonthBinsResponseSchema,
                 },
             },
             description: "Found summation successfully",

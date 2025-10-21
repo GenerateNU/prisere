@@ -8,7 +8,7 @@ import { DataSource } from "typeorm";
 import { PurchaseSeeder, seededPurchases } from "../../database/seeds/purchase.seed";
 import { TESTING_PREFIX } from "../../utilities/constants";
 
-describe("Get Purchase summation by company id", () => {
+describe("Get Purchase summation by company id per month", () => {
     let app: Hono;
     let backup: IBackup;
     let dataSource: DataSource;
@@ -34,9 +34,9 @@ describe("Get Purchase summation by company id", () => {
         backup.restore();
     });
 
-    test("should return the sum of purchases in the valid date range, ignoring refunded purchases", async () => {
+    test("should return the sum of purchases in the valid date range by month, ignoring refunded purchases", async () => {
         const response = await app.request(
-            TESTING_PREFIX + `/purchase/bulk/totalExpenses?startDate=2025-01-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`,
+            TESTING_PREFIX + `/purchase/bulk/months?startDate=2025-01-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`,
             {
                 headers: {
                     companyId: seededPurchaseCompany,
@@ -45,12 +45,22 @@ describe("Get Purchase summation by company id", () => {
         );
         const body = await response.json();
         expect(response.status).toBe(200);
-        expect(body.total).toBe(6912);
+        expect(body.length).toBe(2);
+        expect(body).toEqual([
+            {
+                month: "2025-01",
+                total: 5678,
+            },
+            {
+                month: "2025-02",
+                total: 1234,
+            },
+        ]);
     });
 
-    test("should return 0 if no purchases in the valid date range", async () => {
+    test("should return multiple months", async () => {
         const response = await app.request(
-            TESTING_PREFIX + `/purchase/bulk/totalExpenses?startDate=2025-08-11T12:00:00Z&endDate=2025-10-11T12:00:00Z`,
+            TESTING_PREFIX + `/purchase/bulk/months?startDate=2024-01-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`,
             {
                 headers: {
                     companyId: seededPurchaseCompany,
@@ -59,12 +69,40 @@ describe("Get Purchase summation by company id", () => {
         );
         const body = await response.json();
         expect(response.status).toBe(200);
-        expect(body.total).toBe(0);
+        expect(body.length).toBe(3);
+        expect(body).toEqual([
+            {
+                month: "2024-04",
+                total: 50,
+            },
+            {
+                month: "2025-01",
+                total: 6134,
+            },
+            {
+                month: "2025-02",
+                total: 1234,
+            },
+        ]);
+    });
+
+    test("should return empty arr if no purchases in the valid date range", async () => {
+        const response = await app.request(
+            TESTING_PREFIX + `/purchase/bulk/months?startDate=2025-08-11T12:00:00Z&endDate=2025-10-11T12:00:00Z`,
+            {
+                headers: {
+                    companyId: seededPurchaseCompany,
+                },
+            }
+        );
+        const body = await response.json();
+        expect(response.status).toBe(200);
+        expect(body).toEqual([]);
     });
 
     test("should return 400 if invalid dates", async () => {
         const response = await app.request(
-            TESTING_PREFIX + `/purchase/bulk/totalExpenses?startDate=2025-04-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`,
+            TESTING_PREFIX + `/purchase/bulk/months?startDate=2025-04-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`,
             {
                 headers: {
                     companyId: seededPurchaseCompany,
@@ -79,7 +117,7 @@ describe("Get Purchase summation by company id", () => {
 
     test("should return 400 if invalid companyID", async () => {
         const response = await app.request(
-            TESTING_PREFIX + `/purchase/bulk/totalExpenses?startDate=2025-04-11T12:00:00Z&endDate=2025-06-11T12:00:00Z`,
+            TESTING_PREFIX + `/purchase/bulk/months?startDate=2025-04-11T12:00:00Z&endDate=2025-06-11T12:00:00Z`,
             {
                 headers: {
                     companyId: "bla",

@@ -5,6 +5,7 @@ import {
     CreateOrChangePurchaseResponse,
     GetCompanyPurchasesByDateDTO,
     GetCompanyPurchasesDTO,
+    GetCompanyPurchasesInMonthBinsResponse,
     GetCompanyPurchasesResponse,
     GetPurchaseResponse,
 } from "./types";
@@ -14,6 +15,9 @@ export interface IPurchaseService {
     getPurchase(id: string): Promise<GetPurchaseResponse>;
     getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<GetCompanyPurchasesResponse>;
     sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number>;
+    sumPurchasesByCompanyInMonthBins(
+        payload: GetCompanyPurchasesByDateDTO
+    ): Promise<GetCompanyPurchasesInMonthBinsResponse>;
 }
 
 export class PurchaseService implements IPurchaseService {
@@ -73,6 +77,14 @@ export class PurchaseService implements IPurchaseService {
             const purchases = await this.PurchaseTransaction.sumPurchasesByCompanyAndDateRange(payload);
 
             return purchases;
+        }
+    );
+
+    sumPurchasesByCompanyInMonthBins = withServiceErrorHandling(
+        async (payload: GetCompanyPurchasesByDateDTO): Promise<GetCompanyPurchasesInMonthBinsResponse> => {
+            const perMonthSums = await this.PurchaseTransaction.sumPurchasesByCompanyInMonthBins(payload);
+
+            return perMonthSums;
         }
     );
 }
