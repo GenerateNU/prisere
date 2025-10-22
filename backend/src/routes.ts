@@ -7,6 +7,7 @@ import { companyRoutes } from "./modules/company/route";
 import { disasterRoutes } from "./modules/disaster/route";
 import { claimRoutes } from "./modules/claim/route";
 import { disasterNotificationRoutes } from "./modules/disasterNotifications/route";
+import { insurancePolicyRoutes } from "./modules/insurance-policy/route";
 import { StatusCode } from "hono/utils/http-status";
 
 import { quickbooksRoutes } from "./modules/quickbooks/routes";
@@ -34,6 +35,7 @@ export const setUpRoutes = (app: Hono<any>, db: DataSource) => {
     routes.route("/purchase", purchaseRoutes(db));
     routes.route("/preferences", preferenceRoutes(db));
     routes.route("/claim-locations", claimLocationRoutes(db));
+    routes.route("/insurance", insurancePolicyRoutes(db));
 
     process.env.NODE_ENV === "production" ? app.route("/prisere", routes) : app.route("/api/prisere", routes);
     process.env.NODE_ENV === "production"
