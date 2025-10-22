@@ -3,13 +3,15 @@ import { z } from "zod";
 /* Zod schemas for OpenAPI docs */
 const CompanySchema = z.object({
     id: z.string(),
-    name: z.string(),
+    name: z.string().nonempty(),
+    businessOwnerFullName: z.string().nonempty(),
     lastQuickBooksImportTime: z.string().optional(),
 });
 
 /* Zod schema for POST company */
 export const CreateCompanyDTOSchema = z.object({
     name: z.string().min(1),
+    businessOwnerFullName: z.string().nonempty(),
 });
 
 export const CreateCompanyResponseSchema = CompanySchema;

@@ -18,6 +18,9 @@ export class Company {
     @Column()
     name!: string;
 
+    @Column()
+    businessOwnerFullName!: string;
+
     @Column({ type: "timestamptz", nullable: true })
     lastQuickBooksImportTime?: Date;
 

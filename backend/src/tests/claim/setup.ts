@@ -9,16 +9,19 @@ export const initTestData = async (dataSource: DataSource) => {
         {
             id: "5667a729-f000-4190-b4ee-7957badca27b",
             name: "Northeastern Inc.",
+            businessOwnerFullName: "joseph aoun",
             lastQuickBooksImportTime: new Date("2023-01-01T12:00:00Z"),
         },
         {
             id: "a1a542da-0abe-4531-9386-8919c9f86369",
             name: "Company Cool",
+            businessOwnerFullName: "Cool Guy",
             lastQuickBooksImportTime: new Date("2023-02-01T12:00:00Z"),
         },
         {
             id: "c0ce685a-27d8-4183-90ff-31f294b2c6da",
             name: "Company COMPANY",
+            businessOwnerFullName: "MA",
             lastQuickBooksImportTime: new Date("2023-02-01T12:00:00Z"),
         },
     ]);

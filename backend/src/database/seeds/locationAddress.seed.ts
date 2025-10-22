@@ -2,7 +2,7 @@ import { DataSource } from "typeorm";
 import { Seeder, SeederFactoryManager } from "typeorm-extension";
 import { LocationAddress } from "../../entities/LocationAddress";
 
-const seededLocations = [
+export const seededLocationAddresses = [
     {
         // Business Location 1
         id: "5e6f7a8b-9c0d-4e2f-8a4b-5c6d7e8f9a0b",
@@ -87,6 +87,6 @@ export class LocationAddressSeeder implements Seeder {
     track = false;
     public async run(dataSource: DataSource, _factoryManager: SeederFactoryManager): Promise<void> {
         const repository = dataSource.getRepository(LocationAddress);
-        await repository.insert(seededLocations);
+        await repository.insert(seededLocationAddresses);
     }
 }

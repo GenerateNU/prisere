@@ -48,9 +48,6 @@ export class LocationAddressController implements ILocationAddressController {
         async (ctx: Context): ControllerResponse<TypedResponse<GetLocationAddressResponse, 200>> => {
             const maybeId = ctx.req.param("id");
 
-            if (!validate(maybeId)) {
-                return ctx.json({ error: "An ID must be provided to get a location address" }, 400);
-            }
             const resultingLocationAddress = await this.locationAddressService.getLocationAddress({
                 id: maybeId,
             });

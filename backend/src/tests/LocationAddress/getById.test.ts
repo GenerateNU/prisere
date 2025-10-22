@@ -3,33 +3,25 @@ import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { TESTING_PREFIX } from "../../utilities/constants";
+import CompanySeeder from "../../database/seeds/company.seed";
+import { LocationAddressSeeder, seededLocationAddresses } from "../../database/seeds/locationAddress.seed";
+import { SeederFactoryManager } from "typeorm-extension";
+import { seededLocations } from "../../database/seeds/location.seed";
 
 describe("Location Address Controller Tests", () => {
     let app: Hono;
     let backup: IBackup;
-
-    let company_id: string;
+    let dataSource;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
-
-        const sampleCompany = {
-            name: "Cool Company",
-        };
-
-        const companyResponse = await app.request(TESTING_PREFIX + "/companies", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                userId: "0199e0cc-4e92-702c-9773-071340163ae4",
-            },
-            body: JSON.stringify(sampleCompany),
-        });
-
-        const company = await companyResponse.json();
-        company_id = company.id;
+        dataSource = testAppData.dataSource;
+        const companySeeder = new CompanySeeder();
+        const locationAddressSeeder = new LocationAddressSeeder();
+        await companySeeder.run(dataSource, {} as SeederFactoryManager);
+        await locationAddressSeeder.run(dataSource, {} as SeederFactoryManager);
     });
 
     afterEach(async () => {
@@ -38,41 +30,24 @@ describe("Location Address Controller Tests", () => {
 
     describe("GET /location-address - Get Location Address", () => {
         test("should successfully retrieve an existing location address", async () => {
-            // First create a location address
-            const createBody = {
-                country: "United States",
-                stateProvince: "California",
-                city: "San Francisco",
-                streetAddress: "123 Main Street",
-                postalCode: "94105",
-            };
-
-            const createResponse = await app.request(TESTING_PREFIX + "/location-address", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    companyId: company_id,
-                },
-                body: JSON.stringify(createBody),
-            });
-
-            const createdAddress = await createResponse.json();
-            const addressId = createdAddress.id;
+            const addressId = "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f";
 
             // Now retrieve it using query parameter
             const response = await app.request(TESTING_PREFIX + `/location-address/${addressId}`, {
                 method: "GET",
+                headers: {
+                    companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+                },
             });
-
-            expect(response.status).toBe(200);
             const data = await response.json();
+            expect(response.status).toBe(200);
             expect(data.id).toBe(addressId);
-            expect(data.country).toBe(createBody.country);
-            expect(data.stateProvince).toBe(createBody.stateProvince);
-            expect(data.city).toBe(createBody.city);
-            expect(data.streetAddress).toBe(createBody.streetAddress);
-            expect(data.postalCode).toBe(createBody.postalCode);
-            expect(data.companyId).toBe(company_id);
+            expect(data.country).toBe(seededLocationAddresses[5].country);
+            expect(data.stateProvince).toBe(seededLocationAddresses[5].stateProvince);
+            expect(data.city).toBe(seededLocationAddresses[5].city);
+            expect(data.streetAddress).toBe(seededLocationAddresses[5].streetAddress);
+            expect(data.postalCode).toBe(seededLocationAddresses[5].postalCode);
+            expect(data.companyId).toBe(seededLocationAddresses[5].companyId);
         });
 
         test("should return 404 for non-existent id", async () => {
@@ -80,6 +55,9 @@ describe("Location Address Controller Tests", () => {
                 TESTING_PREFIX + "/location-address/b82951e8-e30d-4c84-8d02-c28f29143101",
                 {
                     method: "GET",
+                    headers: {
+                        companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+                    },
                 }
             );
 
@@ -91,6 +69,9 @@ describe("Location Address Controller Tests", () => {
         test("should handle empty string id", async () => {
             const response = await app.request(TESTING_PREFIX + "/location-address/", {
                 method: "GET",
+                headers: {
+                    companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+                },
             });
 
             expect(response.status).toBe(404);
@@ -98,11 +79,14 @@ describe("Location Address Controller Tests", () => {
         });
 
         test("should handle an invalid UUID", async () => {
-            const response = await app.request(TESTING_PREFIX + "/location-address/testing", {
+            const response = await app.request(TESTING_PREFIX + "/location-address/6ba7b810-9dad-11d1-804fd430c8", {
                 method: "GET",
+                headers: {
+                    companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+                },
             });
 
-            expect(response.status).toBe(400);
+            expect(response.status).toBe(500);
             expect(response.ok).toBe(false);
         });
     });

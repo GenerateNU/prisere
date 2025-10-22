@@ -9,7 +9,7 @@ import { DataSource } from "typeorm";
 import { SeederFactoryManager } from "typeorm-extension";
 import UserSeeder from "../../database/seeds/user.seed";
 
-describe("GET /comapnies/:id", () => {
+describe("POST /comapny", () => {
     let app: Hono<{ Variables: ContextVariables }>;
     let backup: IBackup;
     let datasource: DataSource;
@@ -36,6 +36,7 @@ describe("GET /comapnies/:id", () => {
     test("POST /companies - All Fields Given - String Date 2", async () => {
         const requestBody = {
             name: "Cool Company",
+            businessOwnerFullName: "Cool Guy",
         };
         const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
@@ -56,6 +57,7 @@ describe("GET /comapnies/:id", () => {
         expect(response.status).toBe(201);
         const body = await response.json();
         expect(body.name).toBe(requestBody.name);
+        expect(body.businessOwnerFullName).toBe(requestBody.businessOwnerFullName);
         expect(body.lastQuickBooksImportTime).toBe(null);
 
         const userResponse = await response2.json();
@@ -72,6 +74,7 @@ describe("GET /comapnies/:id", () => {
     test("POST /companies - All Fields Given - String Date 1", async () => {
         const requestBody = {
             name: "Cool Company",
+            businessOwnerFullName: "Cooler Guy",
         };
         const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
@@ -84,12 +87,14 @@ describe("GET /comapnies/:id", () => {
         expect(response.status).toBe(201);
         const body = await response.json();
         expect(body.name).toBe(requestBody.name);
+        expect(body.businessOwnerFullName).toBe(requestBody.businessOwnerFullName);
         expect(body.lastQuickBooksImportTime).toBe(null);
     });
 
     test("POST /companies - All Fields Given, Date Object", async () => {
         const requestBody = {
             name: "Cool Company",
+            businessOwnerFullName: "Coolest Guy",
         };
         const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
@@ -102,12 +107,14 @@ describe("GET /comapnies/:id", () => {
         expect(response.status).toBe(201);
         const body = await response.json();
         expect(body.name).toBe(requestBody.name);
+        expect(body.businessOwnerFullName).toBe(requestBody.businessOwnerFullName);
         expect(body.lastQuickBooksImportTime).toBe(null);
     });
 
     test("POST /companies - Name is empty", async () => {
         const requestBody = {
             name: "",
+            businessOwnerFullName: "bad Guy",
         };
         const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
@@ -122,6 +129,7 @@ describe("GET /comapnies/:id", () => {
 
     test("POST /companies - Name not given", async () => {
         const requestBody = {
+            businessOwnerFullName: "Coolest Guy",
             lastQuickBooksImportTime: new Date(2025, 11, 25, 9, 30, 0, 0),
         };
         const response = await app.request(TESTING_PREFIX + "/companies", {
@@ -138,6 +146,22 @@ describe("GET /comapnies/:id", () => {
     test("POST /companies - Unsupported name type", async () => {
         const requestBody = {
             name: 1,
+            businessOwnerFullName: "Coolest Guy",
+        };
+        const response = await app.request(TESTING_PREFIX + "/companies", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                userId: "0199e0cc-4e92-702c-9773-071340163ae4",
+            },
+            body: JSON.stringify(requestBody),
+        });
+        expect(response.status).toBe(400);
+    });
+
+    test("POST /companies - Business owner name not given", async () => {
+        const requestBody = {
+            name: "Things and Stuff.co",
         };
         const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",

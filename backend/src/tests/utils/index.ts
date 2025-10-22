@@ -26,7 +26,10 @@ export async function createUserWithCompany(app: Hono, request: Omit<CreateUserD
             "Content-Type": "application/json",
             userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
         },
-        body: JSON.stringify({ name: `company-${Math.random()}` } satisfies CreateCompanyDTO),
+        body: JSON.stringify({
+            name: `company-${Math.random()}`,
+            businessOwnerFullName: "MRS BOSS",
+        } satisfies CreateCompanyDTO),
     });
 
     const userResponse = await app.request(TESTING_PREFIX + "/users", {

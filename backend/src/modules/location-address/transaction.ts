@@ -70,7 +70,7 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
      */
     async getLocationAddressById(payload: GetLocationAddressDTO): Promise<LocationAddress | null> {
         const { id: givenId } = payload;
-        const maybeFoundLocation = await this.db.manager.findOne(LocationAddress, { where: { id: givenId } });
+        const maybeFoundLocation = await this.db.manager.findOneBy(LocationAddress, { id: givenId });
         return maybeFoundLocation;
     }
 
