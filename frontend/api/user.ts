@@ -2,17 +2,16 @@
 import { CreateUserRequest, User, requiredOnboardingProgress } from "@/types/user";
 import { authHeader, authWrapper, getClient } from "./client";
 import { createSupabaseClient } from "@/utils/supabase/server";
-import Onboarding from "@/app/signup/onboarding";
 
 export const createUser = async (payload: CreateUserRequest): Promise<User> => {
     const req = async (token: string): Promise<User> => {
         const supabase = await createSupabaseClient();
-        if(!payload.email) {
+        if (!payload.email) {
             const { data, error } = await supabase.auth.getUser();
-            if (error){ 
-                throw Error("Error with Retrieving Email. Please Try Again")
+            if (error) {
+                throw Error("Error with Retrieving Email. Please Try Again");
             }
-            payload.email = data.user?.email
+            payload.email = data.user?.email;
         }
         const client = getClient();
         const { data, error, response } = await client.POST("/users", {
@@ -22,10 +21,10 @@ export const createUser = async (payload: CreateUserRequest): Promise<User> => {
         if (response.ok) {
             await supabase.auth.updateUser({
                 data: {
-                  onboarding_step: requiredOnboardingProgress.COMPANY,
-                }
+                    onboarding_step: requiredOnboardingProgress.COMPANY,
+                },
             });
-            return data!
+            return data!;
         } else {
             throw Error(error?.error);
         }

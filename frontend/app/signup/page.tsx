@@ -16,10 +16,10 @@ const initialState: signupInitialState = {
 
 export default function SignUpPage() {
     const searchParams = useSearchParams();
-    const stage = searchParams.get('stage');
+    const stage = searchParams.get("stage");
     const [state, signupAction] = useActionState(signup, initialState);
     const status = useFormStatus();
-    const [profileStage, setProfileStage] = useState<boolean>(stage? true : false);
+    const [profileStage, setProfileStage] = useState<boolean>(stage ? true : false);
 
     useEffect(() => {
         if (state.success) {

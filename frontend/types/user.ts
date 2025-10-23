@@ -17,15 +17,14 @@ export type signupInitialState = {
     email?: string;
 };
 
-
 export enum requiredOnboardingProgress {
     USER = "user",
     COMPANY = "company",
-    FINISHED = "finished"
+    FINISHED = "finished",
 }
 
 export const progressToNumber: Record<requiredOnboardingProgress, number> = {
     [requiredOnboardingProgress.USER]: 0,
     [requiredOnboardingProgress.COMPANY]: 1,
-    [requiredOnboardingProgress.FINISHED]: 2
-  };
+    [requiredOnboardingProgress.FINISHED]: 2,
+};

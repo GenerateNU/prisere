@@ -37,23 +37,23 @@ export async function updateSession(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser();
 
-    const isOnSignupPage = request.nextUrl.pathname === "/signup" && request.nextUrl.searchParams.has('stage');
+    const isOnSignupPage = request.nextUrl.pathname === "/signup" && request.nextUrl.searchParams.has("stage");
     if (
-        !isOnSignupPage && 
-        user && 
-        user.user_metadata.onboarding_step && 
-        user.user_metadata.onboarding_step != requiredOnboardingProgress.FINISHED 
-    ){
+        !isOnSignupPage &&
+        user &&
+        user.user_metadata.onboarding_step &&
+        user.user_metadata.onboarding_step != requiredOnboardingProgress.FINISHED
+    ) {
         const url = request.nextUrl.clone();
         url.pathname = `/signup`;
-        url.search = `?stage=${progressToNumber[user.user_metadata.onboarding_step as requiredOnboardingProgress]}`; 
+        url.search = `?stage=${progressToNumber[user.user_metadata.onboarding_step as requiredOnboardingProgress]}`;
         return NextResponse.redirect(url);
     }
-    if ( 
-       (isOnSignupPage || request.nextUrl.pathname.startsWith("/login")) &&
-        user && 
-        user.user_metadata.onboarding_step && 
-        user.user_metadata.onboarding_step == requiredOnboardingProgress.FINISHED 
+    if (
+        (isOnSignupPage || request.nextUrl.pathname.startsWith("/login")) &&
+        user &&
+        user.user_metadata.onboarding_step &&
+        user.user_metadata.onboarding_step == requiredOnboardingProgress.FINISHED
     ) {
         const url = request.nextUrl.clone();
         url.pathname = `/`;
@@ -64,7 +64,6 @@ export async function updateSession(request: NextRequest) {
         !request.nextUrl.pathname.startsWith("/login") &&
         !request.nextUrl.pathname.startsWith("/signup") &&
         !request.nextUrl.pathname.startsWith("/error")
-
     ) {
         const url = request.nextUrl.clone();
         url.pathname = "/login";

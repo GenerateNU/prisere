@@ -30,8 +30,8 @@ export async function signup(prevState: signupInitialState, formData: FormData) 
         password: formData.get("password") as string,
         options: {
             data: {
-              onboarding_step: requiredOnboardingProgress.USER,
-            }
+                onboarding_step: requiredOnboardingProgress.USER,
+            },
         },
     };
     const { error } = await supabase.auth.signUp(payload);
@@ -42,7 +42,6 @@ export async function signup(prevState: signupInitialState, formData: FormData) 
         };
     }
 
-    
     return { success: true, message: "Form submitted successfully!", email: payload.email };
 }
 
@@ -69,8 +68,8 @@ export async function setCompanyMetadata(companyID: string) {
     });
     await supabaseClient.auth.updateUser({
         data: {
-          onboarding_step: requiredOnboardingProgress.FINISHED,
-        }
+            onboarding_step: requiredOnboardingProgress.FINISHED,
+        },
     });
     const { error: refreshError } = await supabaseClient.auth.refreshSession();
 

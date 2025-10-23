@@ -12,7 +12,7 @@ interface OnboardingProps {
 
 export default function Onboarding({ email }: OnboardingProps) {
     const searchParams = useSearchParams();
-    const stage = parseInt(searchParams.get('stage') || "0");
+    const stage = parseInt(searchParams.get("stage") || "0");
     const [progress, setProgress] = useState(stage);
 
     const components = [
