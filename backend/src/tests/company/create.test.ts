@@ -58,7 +58,8 @@ describe("POST /comapny", () => {
         const body = await response.json();
         expect(body.name).toBe(requestBody.name);
         expect(body.businessOwnerFullName).toBe(requestBody.businessOwnerFullName);
-        expect(body.lastQuickBooksImportTime).toBe(null);
+        expect(body.lastQuickBooksInvoiceImportTime).toBe(null);
+        expect(body.lastQuickBooksPurchaseImportTime).toBe(null);
 
         const userResponse = await response2.json();
         expect(response2.status).toBe(200);
@@ -88,7 +89,8 @@ describe("POST /comapny", () => {
         const body = await response.json();
         expect(body.name).toBe(requestBody.name);
         expect(body.businessOwnerFullName).toBe(requestBody.businessOwnerFullName);
-        expect(body.lastQuickBooksImportTime).toBe(null);
+        expect(body.lastQuickBooksInvoiceImportTime).toBe(null);
+        expect(body.lastQuickBooksPurchaseImportTime).toBe(null);
     });
 
     test("POST /companies - All Fields Given, Date Object", async () => {
@@ -108,7 +110,8 @@ describe("POST /comapny", () => {
         const body = await response.json();
         expect(body.name).toBe(requestBody.name);
         expect(body.businessOwnerFullName).toBe(requestBody.businessOwnerFullName);
-        expect(body.lastQuickBooksImportTime).toBe(null);
+        expect(body.lastQuickBooksInvoiceImportTime).toBe(null);
+        expect(body.lastQuickBooksPurchaseImportTime).toBe(null);
     });
 
     test("POST /companies - Name is empty", async () => {
