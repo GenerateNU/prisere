@@ -5,6 +5,8 @@ import {
     CreateLocationAddressSchema,
     LocationAddressSchema,
     GetLocationAddressSchema,
+    CreateLocationAddressBulkSchema,
+    CreateLocationAddressBulkResponseSchema,
 } from "../../types/Location";
 import { ILocationAddressTransaction, LocationAddressTransactions } from "../location-address/transaction";
 import { ILocationAddressService, LocationAddressService } from "../location-address/service";
@@ -25,6 +27,8 @@ export const addOpenApiLocationAddressRoutes = (openApi: OpenAPIHono, db: DataSo
     openApi.openapi(createLocationAddressRoute, (ctx) => locationAddressController.createLocationAddress(ctx));
     openApi.openapi(getLocationAddressRoute, (ctx) => locationAddressController.getLocationAddress(ctx));
     openApi.openapi(removeLocationAddressRoute, (ctx) => locationAddressController.removeLocationAddressById(ctx));
+    openApi.openapi(createLocationAddressBulkRoute, (ctx) => locationAddressController.createLocationAddressBulk(ctx));
+
     return openApi;
 };
 
@@ -102,6 +106,35 @@ const removeLocationAddressRoute = createRoute({
                 },
             },
         },
+    },
+    tags: ["Location Address"],
+});
+
+const createLocationAddressBulkRoute = createRoute({
+    method: "post",
+    path: "/location-address/bulk",
+    summary: "Create many addresses for locations of a company",
+    description: "Creates new location addresses with the provided information",
+    request: {
+        body: {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: CreateLocationAddressBulkSchema,
+                },
+            },
+        },
+    },
+    responses: {
+        201: {
+            content: {
+                "application/json": {
+                    schema: CreateLocationAddressBulkResponseSchema,
+                },
+            },
+            description: "Create location addresses response",
+        },
+        ...openApiErrorCodes("Error Creating Location Address"),
     },
     tags: ["Location Address"],
 });
