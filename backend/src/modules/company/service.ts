@@ -20,12 +20,7 @@ export class CompanyService implements CompanyService {
     }
 
     createCompany = withServiceErrorHandling(async (payload: CreateCompanyDTO, userId: string): Promise<Company> => {
-        const company = await this.companyTransaction.createCompany(
-            {
-                ...payload,
-            },
-            userId
-        );
+        const company = await this.companyTransaction.createCompany(payload, userId);
         if (!company) {
             throw Boom.internal("Creating Company Failed");
         }
@@ -33,9 +28,7 @@ export class CompanyService implements CompanyService {
     });
 
     getCompanyById = withServiceErrorHandling(async (payload: GetCompanyByIdDTO): Promise<Company> => {
-        const company = await this.companyTransaction.getCompanyById({
-            ...payload,
-        });
+        const company = await this.companyTransaction.getCompanyById(payload);
         if (!company) {
             throw Boom.notFound("Company Not Found");
         }
@@ -44,9 +37,7 @@ export class CompanyService implements CompanyService {
 
     updateLastQuickBooksImportTime = withServiceErrorHandling(
         async (payload: UpdateQuickBooksImportTimeDTO): Promise<Company> => {
-            const company = await this.companyTransaction.updateLastQuickBooksImportTime({
-                ...payload,
-            });
+            const company = await this.companyTransaction.updateLastQuickBooksImportTime(payload);
             if (!company) {
                 throw Boom.notFound("Company Not Found");
             }
@@ -56,9 +47,7 @@ export class CompanyService implements CompanyService {
 
     getCompanyLocationsById = withServiceErrorHandling(
         async (payload: GetCompanyByIdDTO): Promise<LocationAddress[]> => {
-            const locations = await this.companyTransaction.getCompanyLocationsById({
-                ...payload,
-            });
+            const locations = await this.companyTransaction.getCompanyLocationsById(payload);
 
             return locations;
         }

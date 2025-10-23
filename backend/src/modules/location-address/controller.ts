@@ -2,6 +2,8 @@ import { Context, TypedResponse } from "hono";
 import { ILocationAddressService } from "./service";
 import { withControllerErrorHandling } from "../../utilities/error";
 import {
+    CreateLocationAddressBulkResponse,
+    CreateLocationAddressBulkSchema,
     CreateLocationAddressResponse,
     CreateLocationAddressSchema,
     GetLocationAddressResponse,
@@ -16,6 +18,8 @@ export interface ILocationAddressController {
      * @returns The result of the location address creation or an error
      */
     createLocationAddress(ctx: Context): ControllerResponse<TypedResponse<CreateLocationAddressResponse, 201>>;
+
+    createLocationAddressBulk(ctx: Context): ControllerResponse<TypedResponse<CreateLocationAddressBulkResponse, 201>>;
 
     /**
      * Will make request to the location address service to get an existing location address
@@ -48,13 +52,29 @@ export class LocationAddressController implements ILocationAddressController {
         async (ctx: Context): ControllerResponse<TypedResponse<GetLocationAddressResponse, 200>> => {
             const maybeId = ctx.req.param("id");
 
-            if (!validate(maybeId)) {
-                return ctx.json({ error: "An ID must be provided to get a location address" }, 400);
-            }
             const resultingLocationAddress = await this.locationAddressService.getLocationAddress({
                 id: maybeId,
             });
             return ctx.json(resultingLocationAddress, 200);
+        }
+    );
+
+    createLocationAddressBulk = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<CreateLocationAddressBulkResponse, 201>> => {
+            const json = await ctx.req.json();
+            const payload = CreateLocationAddressBulkSchema.parse(json);
+            const companyId = ctx.get("companyId");
+
+            if (!validate(companyId)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
+
+            const resultingLocationAddress = await this.locationAddressService.createLocationAddressBulk(
+                payload,
+                companyId
+            );
+
+            return ctx.json(resultingLocationAddress, 201);
         }
     );
 

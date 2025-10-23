@@ -3,56 +3,29 @@ import { describe, test, expect, beforeAll, afterEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
 import { TESTING_PREFIX } from "../../utilities/constants";
+import CompanySeeder from "../../database/seeds/company.seed";
+import { PurchaseSeeder, seededPurchases } from "../../database/seeds/purchase.seed";
+import { SeederFactoryManager } from "typeorm-extension";
+import { beforeEach } from "node:test";
+import { DataSource } from "typeorm";
 
 describe("POST /purchase", () => {
     let app: Hono;
     let backup: IBackup;
-
-    const createCompany = async () => {
-        const companyRequests = [
-            {
-                name: "Cool Company",
-            },
-        ];
-
-        const createCompanyResponse = await app.request(TESTING_PREFIX + "/companies", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
-            },
-            body: JSON.stringify(companyRequests[0]),
-        });
-
-        return await createCompanyResponse.json();
-    };
-
-    const createPurchase = async () => {
-        const createdCompany = await createCompany();
-        const requestBodies = [
-            {
-                quickBooksId: Math.ceil(Math.random() * 1000),
-                totalAmountCents: 50000,
-                isRefund: false,
-            },
-        ];
-
-        const response = await app.request(TESTING_PREFIX + "/purchase/bulk", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                companyId: createdCompany.id,
-            },
-            body: JSON.stringify(requestBodies),
-        });
-
-        return await response.json();
-    };
+    let dataSource: DataSource;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
         app = testAppData.app;
         backup = testAppData.backup;
+        dataSource = testAppData.dataSource;
+    });
+
+    beforeEach(async () => {
+        const companySeeder = new CompanySeeder();
+        const purchaseSeeder = new PurchaseSeeder();
+        await companySeeder.run(dataSource, {} as SeederFactoryManager);
+        await purchaseSeeder.run(dataSource, {} as SeederFactoryManager);
     });
 
     afterEach(async () => {
@@ -60,7 +33,7 @@ describe("POST /purchase", () => {
     });
 
     test("POST /purchase Create Purchase All Required Fields", async () => {
-        const createdCompanyJSON = await createCompany();
+        const createdCompanyJSON = "ffc8243b-876e-4b6d-8b80-ffc73522a838";
         const requestBodies = [
             {
                 quickBooksId: 12345,
@@ -73,14 +46,14 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                companyId: createdCompanyJSON?.id,
+                companyId: createdCompanyJSON,
             },
             body: JSON.stringify(requestBodies),
         });
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(body[0].companyId).toBe(createdCompanyJSON?.id);
+        expect(body[0].companyId).toBe(createdCompanyJSON);
         expect(body[0].quickBooksId).toBe(requestBodies[0].quickBooksId);
         expect(body[0].totalAmountCents).toBe(requestBodies[0].totalAmountCents);
         expect(body[0].isRefund).toBe(false);
@@ -89,7 +62,7 @@ describe("POST /purchase", () => {
     });
 
     test("POST /purchase Create Purchase Without quickBooksId", async () => {
-        const createdCompanyJSON = await createCompany();
+        const createdCompanyJSON = "ffc8243b-876e-4b6d-8b80-ffc73522a838";
         const requestBodies = [
             {
                 totalAmountCents: 50000,
@@ -101,21 +74,21 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                companyId: createdCompanyJSON?.id,
+                companyId: createdCompanyJSON,
             },
             body: JSON.stringify(requestBodies),
         });
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(body[0].companyId).toBe(createdCompanyJSON?.id);
+        expect(body[0].companyId).toBe(createdCompanyJSON);
         expect(body[0].quickBooksId).toBeNull();
         expect(body[0].totalAmountCents).toBe(requestBodies[0].totalAmountCents);
         expect(body[0].isRefund).toBe(false);
     });
 
     test("POST /purchase Create Purchase With isRefund True", async () => {
-        const createdCompanyJSON = await createCompany();
+        const createdCompanyJSON = "ffc8243b-876e-4b6d-8b80-ffc73522a838";
         const requestBodies = [
             {
                 quickBooksId: 67890,
@@ -128,21 +101,21 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                companyId: createdCompanyJSON?.id,
+                companyId: createdCompanyJSON,
             },
             body: JSON.stringify(requestBodies),
         });
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(body[0].companyId).toBe(createdCompanyJSON?.id);
+        expect(body[0].companyId).toBe(createdCompanyJSON);
         expect(body[0].quickBooksId).toBe(requestBodies[0].quickBooksId);
         expect(body[0].totalAmountCents).toBe(requestBodies[0].totalAmountCents);
         expect(body[0].isRefund).toBe(true);
     });
 
     test("POST /purchase Create Purchase With isRefund False", async () => {
-        const createdCompanyJSON = await createCompany();
+        const createdCompanyJSON = "ffc8243b-876e-4b6d-8b80-ffc73522a838";
 
         const requestBodies = [
             {
@@ -156,7 +129,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                companyId: createdCompanyJSON?.id,
+                companyId: createdCompanyJSON,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -167,10 +140,10 @@ describe("POST /purchase", () => {
     });
 
     test("POST /purchase Update Purchase Update totalAmountCents", async () => {
-        const purchase = await createPurchase();
+        const purchase = seededPurchases[0];
         const requestBodies = [
             {
-                quickBooksId: purchase[0].quickBooksId,
+                quickBooksId: purchase.quickBooksId,
                 totalAmountCents: 100000,
                 isRefund: false,
             },
@@ -180,23 +153,23 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                companyId: purchase[0].companyId,
+                companyId: purchase.companyId,
             },
             body: JSON.stringify(requestBodies),
         });
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(body[0].id).toBe(purchase[0].id);
+        expect(body[0].id).toBe(purchase.id);
         expect(body[0].totalAmountCents).toBe(requestBodies[0].totalAmountCents);
     });
 
     test("POST /purchase Update Purchase Update isRefund", async () => {
-        const purchase = await createPurchase();
+        const purchase = seededPurchases[0];
         const requestBodies = [
             {
-                quickBooksId: purchase[0].quickBooksId,
-                totalAmountCents: purchase[0].totalAmountCents,
+                quickBooksId: purchase.quickBooksId,
+                totalAmountCents: purchase.totalAmountCents,
                 isRefund: true,
             },
         ];
@@ -205,22 +178,22 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                companyId: purchase[0].companyId,
+                companyId: purchase.companyId,
             },
             body: JSON.stringify(requestBodies),
         });
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(body[0].id).toBe(purchase[0].id);
+        expect(body[0].id).toBe(purchase.id);
         expect(body[0].isRefund).toBe(true);
     });
 
     test("POST /purchase Update Purchase Update All Fields", async () => {
-        const purchase = await createPurchase();
+        const purchase = seededPurchases[0];
         const requestBodies = [
             {
-                quickBooksId: purchase[0].quickBooksId,
+                quickBooksId: purchase.quickBooksId,
                 totalAmountCents: 150000,
                 isRefund: true,
             },
@@ -230,14 +203,14 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                companyId: purchase[0].companyId,
+                companyId: purchase.companyId,
             },
             body: JSON.stringify(requestBodies),
         });
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(body[0].id).toBe(purchase[0].id);
+        expect(body[0].id).toBe(purchase.id);
         expect(body[0].quickBooksId).toBe(requestBodies[0].quickBooksId);
         expect(body[0].totalAmountCents).toBe(requestBodies[0].totalAmountCents);
         expect(body[0].isRefund).toBe(requestBodies[0].isRefund);
@@ -265,7 +238,7 @@ describe("POST /purchase", () => {
     });
 
     test("POST /purchase Invalid quickBooksId Type", async () => {
-        const createdCompanyJSON = await createCompany();
+        const createdCompanyJSON = "ffc8243b-876e-4b6d-8b80-ffc73522a838";
         const requestBodies = [
             {
                 quickBooksId: "not-a-number",
@@ -278,7 +251,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                companyId: createdCompanyJSON?.id,
+                companyId: createdCompanyJSON,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -287,7 +260,7 @@ describe("POST /purchase", () => {
     });
 
     test("POST /purchase Invalid totalAmountCents Type", async () => {
-        const createdCompanyJSON = await createCompany();
+        const createdCompanyJSON = "ffc8243b-876e-4b6d-8b80-ffc73522a838";
         const requestBodies = [
             {
                 quickBooksId: 12345,
@@ -300,7 +273,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                companyId: createdCompanyJSON?.id,
+                companyId: createdCompanyJSON,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -309,7 +282,7 @@ describe("POST /purchase", () => {
     });
 
     test("POST /purchase Invalid isRefund Type", async () => {
-        const createdCompanyJSON = await createCompany();
+        const createdCompanyJSON = "ffc8243b-876e-4b6d-8b80-ffc73522a838";
         const requestBodies = [
             {
                 quickBooksId: 12345,
@@ -322,7 +295,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                companyId: createdCompanyJSON?.id,
+                companyId: createdCompanyJSON,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -372,7 +345,7 @@ describe("POST /purchase", () => {
     });
 
     test("POST /purchase Missing isRefund Field", async () => {
-        const createdCompanyJSON = await createCompany();
+        const createdCompanyJSON = "ffc8243b-876e-4b6d-8b80-ffc73522a838";
         const requestBodies = [
             {
                 quickBooksId: 12345,
@@ -384,7 +357,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                companyId: createdCompanyJSON?.id,
+                companyId: createdCompanyJSON,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -393,7 +366,7 @@ describe("POST /purchase", () => {
     });
 
     test("POST /purchase Missing totalAmountCents Field", async () => {
-        const createdCompanyJSON = await createCompany();
+        const createdCompanyJSON = "ffc8243b-876e-4b6d-8b80-ffc73522a838";
         const requestBodies = [
             {
                 quickBooksId: 12345,
@@ -405,7 +378,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                companyId: createdCompanyJSON?.id,
+                companyId: createdCompanyJSON,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -434,7 +407,7 @@ describe("POST /purchase", () => {
     });
 
     test("POST /purchase Create Multiple Purchases in Batch", async () => {
-        const createdCompanyJSON = await createCompany();
+        const createdCompanyJSON = "ffc8243b-876e-4b6d-8b80-ffc73522a838";
         const requestBodies = [
             {
                 quickBooksId: 12345,
@@ -457,7 +430,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                companyId: createdCompanyJSON?.id,
+                companyId: createdCompanyJSON,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -561,7 +534,7 @@ describe("POST /purchase", () => {
     */
 
     test("POST /purchase Batch with One Invalid Entry Returns 400", async () => {
-        const createdCompanyJSON = await createCompany();
+        const createdCompanyJSON = "ffc8243b-876e-4b6d-8b80-ffc73522a838";
         const requestBodies = [
             {
                 quickBooksId: 12345,
@@ -584,7 +557,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                companyId: createdCompanyJSON?.id,
+                companyId: createdCompanyJSON,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -608,7 +581,7 @@ describe("POST /purchase", () => {
     });
 
     test("POST /purchase Large Batch of Purchases", async () => {
-        const createdCompanyJSON = await createCompany();
+        const createdCompanyJSON = "ffc8243b-876e-4b6d-8b80-ffc73522a838";
         const requestBodies = Array.from({ length: 50 }, (_, i) => ({
             quickBooksId: 10000 + i,
             totalAmountCents: 50000 + i * 1000,
@@ -619,7 +592,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                companyId: createdCompanyJSON?.id,
+                companyId: createdCompanyJSON,
             },
             body: JSON.stringify(requestBodies),
         });
