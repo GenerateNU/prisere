@@ -3,6 +3,8 @@ import { withServiceErrorHandling } from "../../utilities/error";
 import { ILocationAddressTransaction } from "./transaction";
 import { DeleteResult } from "typeorm";
 import {
+    CreateLocationAddressBulkDTO,
+    CreateLocationAddressBulkResponse,
     CreateLocationAddressDTO,
     CreateLocationAddressResponse,
     GetLocationAddressDTO,
@@ -18,6 +20,11 @@ export interface ILocationAddressService {
      * @param payload The payload used to try to create a new location address
      */
     createLocationAddress(payload: CreateLocationAddressDTO, companyId: string): Promise<CreateLocationAddressResponse>;
+
+    createLocationAddressBulk(
+        payload: CreateLocationAddressBulkDTO,
+        companyId: string
+    ): Promise<CreateLocationAddressBulkResponse>;
 
     /**
      * Attempts to find a location address with the given payload
@@ -94,6 +101,33 @@ export class LocationAddressService implements ILocationAddressService {
     removeLocationAddressById = withServiceErrorHandling(
         async (payload: GetLocationAddressDTO): Promise<DeleteResult> => {
             const result = await this.locationAddressTransaction.removeLocationAddressById(payload);
+            return result;
+        }
+    );
+
+    createLocationAddressBulk = withServiceErrorHandling(
+        async (
+            payload: CreateLocationAddressBulkDTO,
+            companyId: string
+        ): Promise<CreateLocationAddressBulkResponse> => {
+            const transformedPayload = await Promise.all(
+                payload.map(async (element) => {
+                    const currFips = await this.locationMatcher.getLocationFips(element);
+                    return { ...element, ...currFips };
+                })
+            );
+
+            const result = await this.locationAddressTransaction.createLocationAddressBulk(
+                transformedPayload,
+                companyId
+            );
+
+            if (result.length !== payload.length) {
+                throw Boom.internal(
+                    "The number of created addresses does not match the number of given new addresses."
+                );
+            }
+
             return result;
         }
     );

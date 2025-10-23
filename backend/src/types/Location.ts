@@ -45,10 +45,14 @@ export const CreateLocationAddressSchema = z.object({
     county: z.string().nonempty().optional(),
 });
 
+export const CreateLocationAddressBulkSchema = z.array(CreateLocationAddressSchema).nonempty();
+
 export const CreateLocationAddressResponseSchema = z.object({
     id: z.string(),
     ...CreateLocationAddressSchema.shape,
 });
+
+export const CreateLocationAddressBulkResponseSchema = z.array(CreateLocationAddressResponseSchema);
 
 export const GetLocationAddressSchema = z.object({
     id: z.string(),
@@ -75,3 +79,5 @@ export type CreateLocationAddressResponse = z.infer<typeof CreateLocationAddress
 export type GetLocationAddressDTO = z.infer<typeof GetLocationAddressSchema>;
 export type GetLocationAddressResponse = z.infer<typeof LocationAddressSchema>;
 export type GetAllLocationAddressesResponse = z.infer<typeof GetAllLocationAddressesSchema>;
+export type CreateLocationAddressBulkDTO = z.infer<typeof CreateLocationAddressBulkSchema>;
+export type CreateLocationAddressBulkResponse = z.infer<typeof CreateLocationAddressBulkResponseSchema>;
