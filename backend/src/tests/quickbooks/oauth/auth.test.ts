@@ -11,7 +11,10 @@ import { IBackup } from "pg-mem";
 import { afterEach } from "node:test";
 import { QuickbooksSession } from "../../../entities/QuickbookSession";
 import { CompanyExternal } from "../../../entities/CompanyExternals";
+import { UserTransaction } from "../../../modules/user/transaction";
 import { randomUUID } from "crypto";
+import { InvoiceTransaction } from "../../../modules/invoice/transaction";
+import { InvoiceLineItemTransaction } from "../../../modules/invoiceLineItem/transaction";
 
 describe("creating oauth connection", () => {
     let app: Hono;
@@ -24,8 +27,17 @@ describe("creating oauth connection", () => {
         ({ app, backup, dataSource: db } = await startTestApp());
 
         const transaction = new QuickbooksTransaction(db);
+        const userTransaction = new UserTransaction(db);
+        const invoiceTransaction = new InvoiceTransaction(db);
+        const invoiceLineItemTransaction = new InvoiceLineItemTransaction(db);
         const mockClient = new MockQBClient();
-        service = new QuickbooksService(transaction, mockClient);
+        service = new QuickbooksService(
+            transaction,
+            userTransaction,
+            invoiceTransaction,
+            invoiceLineItemTransaction,
+            mockClient
+        );
     });
 
     afterEach(() => {
@@ -96,8 +108,17 @@ describe("integration with company", () => {
         ({ app, backup, dataSource: db } = await startTestApp());
 
         const transaction = new QuickbooksTransaction(db);
+        const userTransaction = new UserTransaction(db);
+        const invoiceTransaction = new InvoiceTransaction(db);
+        const invoiceLineItemTransaction = new InvoiceLineItemTransaction(db);
         const mockClient = new MockQBClient();
-        service = new QuickbooksService(transaction, mockClient);
+        service = new QuickbooksService(
+            transaction,
+            userTransaction,
+            invoiceTransaction,
+            invoiceLineItemTransaction,
+            mockClient
+        );
     });
 
     afterEach(() => {

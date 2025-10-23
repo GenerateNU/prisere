@@ -1,7 +1,7 @@
 import { User } from "../../entities/User";
 import { DataSource } from "typeorm";
 import { plainToClass } from "class-transformer";
-import { GetUserDTO, CreateUserDTO, GetUserCompanyDTO, GetUserCompanyResponse } from "../../types/User";
+import { GetUserDTO, CreateUserDTO, GetUserCompanyDTO } from "../../types/User";
 import { UserPreferences } from "../../entities/UserPreferences";
 
 export interface IUserTransaction {
@@ -24,8 +24,13 @@ export interface IUserTransaction {
      * @param payload The id of the user whose company data will be returned
      * @returns The found company ID and name
      */
-    getCompany(payload: GetUserCompanyDTO): Promise<GetUserCompanyResponse | null>;
+    getCompany(payload: GetUserCompanyDTO): Promise<NonNullCompanyUser | null>;
 }
+
+type NonNullCompanyUser = Omit<User, "company" | "companyId"> & {
+    company: NonNullable<User["company"]>;
+    companyId: NonNullable<User["companyId"]>;
+};
 
 export class UserTransaction implements IUserTransaction {
     private db: DataSource;
@@ -49,14 +54,23 @@ export class UserTransaction implements IUserTransaction {
         return result;
     }
 
-    async getCompany(payload: GetUserCompanyDTO): Promise<GetUserCompanyResponse | null> {
+    private hasCompany(user: User): user is NonNullCompanyUser {
+        return !!user.companyId && !!user.company;
+    }
+
+    async getCompany(payload: GetUserCompanyDTO) {
         const { id: givenId } = payload;
         const result = await this.db.manager.findOne(User, {
             select: { company: true },
             where: { id: givenId },
             relations: { company: true },
         });
+
         //Check to make sure that the User entity and its associated company were found
-        return result && result.company ? { companyId: result.company.id, companyName: result.company.name } : null;
+        if (result && this.hasCompany(result)) {
+            return result;
+        }
+
+        return null;
     }
 }

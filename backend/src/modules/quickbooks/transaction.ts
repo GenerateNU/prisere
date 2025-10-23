@@ -2,6 +2,7 @@ import { DataSource, IsNull } from "typeorm";
 import { CompanyExternal, CompanyExternalSource } from "../../entities/CompanyExternals";
 import { QuickbooksSession } from "../../entities/QuickbookSession";
 import { QuickbooksPendingOAuth } from "../../entities/QuickbooksPendingOAuth";
+import { Company } from "../../entities/Company";
 
 export interface IQuickbooksTransaction {
     storeOAuth(args: { stateId: string; initiatorId: string }): Promise<QuickbooksPendingOAuth>;
@@ -20,6 +21,7 @@ export interface IQuickbooksTransaction {
         userId: string;
     }): Promise<{ session: QuickbooksSession | null; externalId: string | undefined }>;
     destroyQuickbooksSession(args: { externalId: string }): Promise<void>;
+    updateCompanyQuickbooksSync(args: { date: Date; companyId: string }): Promise<void>;
 }
 
 export class QuickbooksTransaction implements IQuickbooksTransaction {
@@ -158,5 +160,9 @@ export class QuickbooksTransaction implements IQuickbooksTransaction {
                 companyId: external?.companyId,
             }),
         ]);
+    }
+
+    async updateCompanyQuickbooksSync({ date, companyId }: { date: Date; companyId: string }) {
+        await this.db.getRepository(Company).update({ id: companyId }, { lastQuickBooksImportTime: date });
     }
 }
