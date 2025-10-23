@@ -15,22 +15,22 @@ export class InsurancePolicy {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
 
-    @Column()
+    @Column({ length: 100 })
     policyHolderFirstName!: string;
 
-    @Column()
+    @Column({ length: 100 })
     policyHolderLastName!: string;
 
-    @Column()
+    @Column({ length: 200 })
     insuranceCompanyName!: string;
 
-    @Column()
+    @Column({ length: 100 })
     policyNumber!: string;
 
-    @Column()
+    @Column({ length: 100 })
     insuranceType!: string;
 
-    @Column()
+    @Column({ select: false })
     companyId!: string;
 
     @ManyToOne(() => Company)

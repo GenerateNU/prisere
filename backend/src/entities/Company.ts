@@ -18,7 +18,7 @@ export class Company {
     @Column()
     name!: string;
 
-    @Column()
+    @Column({ length: 200 })
     businessOwnerFullName!: string;
 
     @Column({ type: "timestamptz", nullable: true })
