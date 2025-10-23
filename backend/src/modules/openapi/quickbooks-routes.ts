@@ -9,12 +9,16 @@ import z from "zod";
 import { UserTransaction } from "../user/transaction";
 import { InvoiceTransaction } from "../invoice/transaction";
 import { InvoiceLineItemTransaction } from "../invoiceLineItem/transaction";
+import { PurchaseTransaction } from "../purchase/transaction";
+import { PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
 
 export const addOpenApiQBRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const transaction = new QuickbooksTransaction(db);
     const userTransaction = new UserTransaction(db);
     const invoiceTransaction = new InvoiceTransaction(db);
     const invoiceLineItemTransaction = new InvoiceLineItemTransaction(db);
+    const purchaseTransaction = new PurchaseTransaction(db);
+    const purchaseLineItemTransaction = new PurchaseLineItemTransaction(db);
     const client = new QuickbooksClient({
         clientId: process.env.QUICKBOOKS_CLIENT_ID!,
         clientSecret: process.env.QUICKBOOKS_CLIENT_SECRET!,
@@ -26,6 +30,8 @@ export const addOpenApiQBRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAP
         userTransaction,
         invoiceTransaction,
         invoiceLineItemTransaction,
+        purchaseTransaction,
+        purchaseLineItemTransaction,
         client
     );
     const controller = new QuickbooksController(service);

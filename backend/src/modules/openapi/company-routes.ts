@@ -19,7 +19,12 @@ export const addOpenApiCompanyRoutes = (openApi: OpenAPIHono, db: DataSource): O
 
     openApi.openapi(createCompanyRoute, (ctx) => companyController.createCompany(ctx));
     openApi.openapi(getCompanyByIdRoute, (ctx) => companyController.getCompanyById(ctx));
-    openApi.openapi(updateCompanyImportTimeRoute, (ctx) => companyController.updateQuickbooksImportTime(ctx));
+    openApi.openapi(updateCompanyInvoiceImportTimeRoute, (ctx) =>
+        companyController.updateQuickbooksInvoiceImportTime(ctx)
+    );
+    openApi.openapi(updateCompanyPurchaseImportTimeRoute, (ctx) =>
+        companyController.updateQuickbooksPurchaseImportTime(ctx)
+    );
     openApi.openapi(getCompanyLocationsByIdRoute, (ctx) => companyController.getCompanyLocationsById(ctx));
     return openApi;
 };
@@ -78,11 +83,39 @@ const getCompanyByIdRoute = createRoute({
     tags: ["Companies"],
 });
 
-const updateCompanyImportTimeRoute = createRoute({
+const updateCompanyInvoiceImportTimeRoute = createRoute({
     method: "patch",
-    path: "/companies/quickbooks-import-time",
-    summary: "Update a company's lastQuickBooksImportTime",
-    description: "Updates the lastQuickBooksImportTime for a company by ID",
+    path: "/companies/quickbooks-invoice-import-time",
+    summary: "Update a company's lastQuickBooksInvoiceImportTime",
+    description: "Updates the lastQuickBooksInvoiceImportTime for a company by ID",
+    request: {
+        body: {
+            content: {
+                "application/json": {
+                    schema: UpdateQuickBooksImportTimeDTOSchema.omit({ companyId: true }),
+                },
+            },
+        },
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: CreateCompanyResponseSchema,
+                },
+            },
+            description: "Company updated successfully",
+        },
+        ...openApiErrorCodes("Create Company Errors"),
+    },
+    tags: ["Companies"],
+});
+
+const updateCompanyPurchaseImportTimeRoute = createRoute({
+    method: "patch",
+    path: "/companies/quickbooks-purchase-import-time",
+    summary: "Update a company's lastQuickBooksPurcahseImportTime",
+    description: "Updates the lastQuickBooksPurcahseImportTime for a company by ID",
     request: {
         body: {
             content: {
