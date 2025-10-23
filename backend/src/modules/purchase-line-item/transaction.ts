@@ -61,6 +61,7 @@ export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction
             throw Boom.notFound("Unable to find the given purchase");
         }
 
-        return givenPurchase.lineItems;
+        // asserting not null b/c we include it in above
+        return givenPurchase.lineItems!;
     }
 }
