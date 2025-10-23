@@ -4,13 +4,16 @@ import Company from "./company";
 import Insurance from "./insurance";
 import UserInfoPage from "./user";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 interface OnboardingProps {
     email: string;
 }
 
 export default function Onboarding({ email }: OnboardingProps) {
-    const [progress, setProgress] = useState(0);
+    const searchParams = useSearchParams();
+    const stage = parseInt(searchParams.get('stage') || "0");
+    const [progress, setProgress] = useState(stage);
 
     const components = [
         <UserInfoPage key={1} email={email} progress={progress} setProgress={setProgress} />,

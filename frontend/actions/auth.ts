@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createSupabaseClient } from "@/utils/supabase/server";
-import { loginInitialState, signupInitialState } from "@/types/user";
+import { loginInitialState, requiredOnboardingProgress, signupInitialState } from "@/types/user";
 import { createClient } from "@supabase/supabase-js";
 
 export async function login(prevState: loginInitialState, formData: FormData) {
@@ -29,7 +29,9 @@ export async function signup(prevState: signupInitialState, formData: FormData) 
         email: formData.get("email") as string,
         password: formData.get("password") as string,
         options: {
-            data: {},
+            data: {
+              onboarding_step: requiredOnboardingProgress.USER,
+            }
         },
     };
     const { error } = await supabase.auth.signUp(payload);
@@ -40,6 +42,7 @@ export async function signup(prevState: signupInitialState, formData: FormData) 
         };
     }
 
+    
     return { success: true, message: "Form submitted successfully!", email: payload.email };
 }
 
@@ -63,6 +66,11 @@ export async function setCompanyMetadata(companyID: string) {
         app_metadata: {
             company_id: companyID,
         },
+    });
+    await supabaseClient.auth.updateUser({
+        data: {
+          onboarding_step: requiredOnboardingProgress.FINISHED,
+        }
     });
     const { error: refreshError } = await supabaseClient.auth.refreshSession();
 

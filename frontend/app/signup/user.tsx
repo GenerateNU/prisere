@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CreateUserRequest } from "@/types/user";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dispatch, SetStateAction } from "react";
 
 interface UserInfoProps {
@@ -13,6 +13,7 @@ interface UserInfoProps {
     setProgress: Dispatch<SetStateAction<number>>;
 }
 export default function UserInfoPage({ email, progress, setProgress }: UserInfoProps) {
+
     const [payload, setPayload] = useState<CreateUserRequest>({
         firstName: "",
         lastName: "",
