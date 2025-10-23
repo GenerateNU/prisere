@@ -8,20 +8,20 @@ import { UserTransaction } from "../../../modules/user/transaction";
 import { MockQBClient } from "../oauth/mock-client";
 import { IQuickbooksClient } from "../../../external/quickbooks/client";
 import { mockQuerySuccessReturn } from "../utis";
-import { Invoice } from "../../../entities/Invoice";
 import dayjs from "dayjs";
-import { InvoiceLineItem } from "../../../entities/InvoiceLineItem";
 import { InvoiceTransaction } from "../../../modules/invoice/transaction";
 import { InvoiceLineItemTransaction } from "../../../modules/invoiceLineItem/transaction";
-import { QBInvoice } from "../../../types/quickbooks";
+import { QBPurchase } from "../../../types/quickbooks";
 import { PurchaseTransaction } from "../../../modules/purchase/transaction";
 import { PurchaseLineItemTransaction } from "../../../modules/purchase-line-item/transaction";
 import QuickbooksSeeder from "../../../database/seeds/quickbooks.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 import CompanySeeder from "../../../database/seeds/company.seed";
 import UserSeeder from "../../../database/seeds/user.seed";
+import { Purchase } from "../../../entities/Purchase";
+import { PurchaseLineItem, PurchaseLineItemType } from "../../../entities/PurchaseLineItem";
 
-describe("inserting invoice data", () => {
+describe("inserting purcahse data", () => {
     let db: DataSource;
     let backup: IBackup;
 
@@ -65,98 +65,116 @@ describe("inserting invoice data", () => {
         await userSeeder.run(db, {} as SeederFactoryManager);
     });
 
-    it("should create a new invoice", async () => {
+    it("should create a new purchase", async () => {
         const now = new Date().toISOString();
 
-        mockQuerySuccessReturn<{ Invoice: QBInvoice[] }>(client, {
-            Invoice: [
+        mockQuerySuccessReturn<{ Purchase: QBPurchase[] }>(client, {
+            Purchase: [
                 {
                     Id: "1",
                     MetaData: { CreateTime: now, LastUpdatedTime: now },
                     TotalAmt: 10.5,
-                    CustomerRef: {
-                        name: "test-cust",
-                    },
                     Line: [
                         {
-                            DetailType: "SalesLineItemDetail",
-                            Amount: 5.0,
+                            DetailType: "ItemBasedExpenseLineDetail",
+                            ItemBasedExpenseLineDetail: {
+                                TaxInclusiveAmt: 5.0,
+                                CustomerRef: {
+                                    value: "cust-ref",
+                                },
+                            },
                             Id: "1",
                             Description: "Testing description",
                         },
                         {
-                            DetailType: "SalesLineItemDetail",
+                            DetailType: "AccountBasedExpenseLineDetail",
+                            AccountBasedExpenseLineDetail: {
+                                AccountRef: {
+                                    value: "acc-ref",
+                                },
+                            },
                             Amount: 5.5,
                             Id: "2",
                             Description: "Testing description 2",
                         },
                     ],
+                    Credit: true,
                 },
             ],
         });
 
-        await service.updateUnprocessedInvoices({ userId });
+        await service.updateUnprocessedPurchases({ userId });
 
-        const invoices = await db.getRepository(Invoice).find({ where: { companyId } });
-        expect(invoices).toBeArrayOfSize(1);
-        expect(invoices[0]).toEqual({
+        const purchases = await db.getRepository(Purchase).find({ where: { companyId } });
+        expect(purchases).toBeArrayOfSize(1);
+        expect(purchases[0]).toEqual({
             companyId,
-            quickbooksId: 1,
+            quickBooksId: 1,
             quickbooksDateCreated: new Date(now),
             totalAmountCents: 1050,
+            isRefund: true,
             id: expect.anything(),
             dateCreated: expect.anything(),
             lastUpdated: expect.anything(),
         });
 
-        const lineItems = await db.getRepository(InvoiceLineItem).find({ where: { invoiceId: invoices[0].id } });
+        const lineItems = await db.getRepository(PurchaseLineItem).find({ where: { purchaseId: purchases[0].id } });
         expect(lineItems).toBeArrayOfSize(2);
-        lineItems.sort((i1, i2) => i1.quickbooksId - i2.quickbooksId);
+        lineItems.sort((i1, i2) => (i1.quickBooksId ?? -1) - (i2.quickBooksId ?? -1));
         expect(lineItems[0]).toEqual({
-            quickbooksId: 1,
+            quickBooksId: 1,
             amountCents: 500,
-            invoiceId: invoices[0].id,
-            category: "test-cust",
+            purchaseId: purchases[0].id,
+            category: null,
             description: "Testing description",
-            quickbooksDateCreated: null,
+            quickbooksDateCreated: new Date(now),
+            type: PurchaseLineItemType.TYPICAL,
             id: expect.anything(),
             dateCreated: expect.anything(),
             lastUpdated: expect.anything(),
         });
         expect(lineItems[1]).toEqual({
-            quickbooksId: 2,
+            quickBooksId: 2,
             amountCents: 550,
-            invoiceId: invoices[0].id,
-            category: "test-cust",
+            purchaseId: purchases[0].id,
+            category: "acc-ref",
             description: "Testing description 2",
-            quickbooksDateCreated: null,
+            quickbooksDateCreated: new Date(now),
+            type: PurchaseLineItemType.TYPICAL,
             id: expect.anything(),
             dateCreated: expect.anything(),
             lastUpdated: expect.anything(),
         });
     });
 
-    it("should update an existing invoice when it changes", async () => {
+    it("should update an existing purchase when it changes", async () => {
         const oneDayAgo = dayjs().subtract(1, "day").toISOString();
 
-        mockQuerySuccessReturn<{ Invoice: QBInvoice[] }>(client, {
-            Invoice: [
+        mockQuerySuccessReturn<{ Purchase: QBPurchase[] }>(client, {
+            Purchase: [
                 {
                     Id: "1",
                     MetaData: { CreateTime: oneDayAgo, LastUpdatedTime: oneDayAgo },
                     TotalAmt: 10.5,
-                    CustomerRef: {
-                        name: "test-cust",
-                    },
                     Line: [
                         {
-                            DetailType: "SalesLineItemDetail",
-                            Amount: 5.0,
+                            DetailType: "ItemBasedExpenseLineDetail",
+                            ItemBasedExpenseLineDetail: {
+                                TaxInclusiveAmt: 5.0,
+                                CustomerRef: {
+                                    value: "cust-ref",
+                                },
+                            },
                             Id: "1",
                             Description: "Testing description",
                         },
                         {
-                            DetailType: "SalesLineItemDetail",
+                            DetailType: "AccountBasedExpenseLineDetail",
+                            AccountBasedExpenseLineDetail: {
+                                AccountRef: {
+                                    value: "acc-ref",
+                                },
+                            },
                             Amount: 5.5,
                             Id: "2",
                             Description: "Testing description 2",
@@ -166,34 +184,41 @@ describe("inserting invoice data", () => {
             ],
         });
 
-        await service.updateUnprocessedInvoices({ userId });
+        await service.updateUnprocessedPurchases({ userId });
 
-        const invoicesBefore = await db.getRepository(Invoice).find({ where: { companyId: companyId } });
-        expect(invoicesBefore).toBeArrayOfSize(1);
+        const purchasesBefore = await db.getRepository(Purchase).find({ where: { companyId: companyId } });
+        expect(purchasesBefore).toBeArrayOfSize(1);
         const lineItemsBefore = await db
-            .getRepository(InvoiceLineItem)
-            .find({ where: { invoiceId: invoicesBefore[0].id } });
+            .getRepository(PurchaseLineItem)
+            .find({ where: { purchaseId: purchasesBefore[0].id } });
         expect(lineItemsBefore).toBeArrayOfSize(2);
 
         const now = dayjs().toISOString();
-        mockQuerySuccessReturn<{ Invoice: QBInvoice[] }>(client, {
-            Invoice: [
+        mockQuerySuccessReturn<{ Purchase: QBPurchase[] }>(client, {
+            Purchase: [
                 {
                     Id: "1",
                     MetaData: { CreateTime: oneDayAgo, LastUpdatedTime: now },
                     TotalAmt: 15.5,
-                    CustomerRef: {
-                        name: "test-cust",
-                    },
                     Line: [
                         {
-                            DetailType: "SalesLineItemDetail",
-                            Amount: 10.0,
+                            DetailType: "ItemBasedExpenseLineDetail",
+                            ItemBasedExpenseLineDetail: {
+                                TaxInclusiveAmt: 10.0,
+                                CustomerRef: {
+                                    value: "cust-ref",
+                                },
+                            },
                             Id: "1",
                             Description: "Testing description",
                         },
                         {
-                            DetailType: "SalesLineItemDetail",
+                            DetailType: "AccountBasedExpenseLineDetail",
+                            AccountBasedExpenseLineDetail: {
+                                AccountRef: {
+                                    value: "acc-ref",
+                                },
+                            },
                             Amount: 5.5,
                             Id: "2",
                             Description: "Testing description 2",
@@ -203,123 +228,46 @@ describe("inserting invoice data", () => {
             ],
         });
 
-        await service.updateUnprocessedInvoices({ userId });
+        await service.updateUnprocessedPurchases({ userId });
 
-        const invoicesAfter = await db.getRepository(Invoice).find({ where: { companyId } });
-        expect(invoicesAfter).toBeArrayOfSize(1);
-        expect(invoicesAfter[0]).toEqual({
+        const purchasesAfter = await db.getRepository(Purchase).find({ where: { companyId } });
+        expect(purchasesAfter).toBeArrayOfSize(1);
+        expect(purchasesAfter[0]).toEqual({
             companyId,
-            quickbooksId: 1,
+            quickBooksId: 1,
             quickbooksDateCreated: new Date(oneDayAgo),
             totalAmountCents: 1550,
+            isRefund: false,
             id: expect.anything(),
             dateCreated: expect.anything(),
             lastUpdated: expect.anything(),
         });
 
         const lineItemsAfter = await db
-            .getRepository(InvoiceLineItem)
-            .find({ where: { invoiceId: invoicesAfter[0].id } });
+            .getRepository(PurchaseLineItem)
+            .find({ where: { purchaseId: purchasesAfter[0].id } });
         expect(lineItemsAfter).toBeArrayOfSize(2);
-        lineItemsAfter.sort((i1, i2) => i1.quickbooksId - i2.quickbooksId);
+        lineItemsAfter.sort((i1, i2) => (i1.quickBooksId ?? -1) - (i2.quickBooksId ?? -1));
         expect(lineItemsAfter[0]).toEqual({
-            quickbooksId: 1,
+            quickBooksId: 1,
             amountCents: 1000,
-            invoiceId: invoicesAfter[0].id,
-            category: "test-cust",
+            purchaseId: purchasesAfter[0].id,
+            category: null,
             description: "Testing description",
-            quickbooksDateCreated: null,
+            quickbooksDateCreated: new Date(oneDayAgo),
+            type: PurchaseLineItemType.TYPICAL,
             id: expect.anything(),
             dateCreated: expect.anything(),
             lastUpdated: expect.anything(),
         });
         expect(lineItemsAfter[1]).toEqual({
-            quickbooksId: 2,
+            quickBooksId: 2,
             amountCents: 550,
-            invoiceId: invoicesAfter[0].id,
-            category: "test-cust",
+            purchaseId: purchasesAfter[0].id,
+            category: "acc-ref",
             description: "Testing description 2",
-            quickbooksDateCreated: null,
-            id: expect.anything(),
-            dateCreated: expect.anything(),
-            lastUpdated: expect.anything(),
-        });
-    });
-
-    it("should destructure a grouped line item", async () => {
-        const now = new Date().toISOString();
-
-        mockQuerySuccessReturn<{ Invoice: QBInvoice[] }>(client, {
-            Invoice: [
-                {
-                    Id: "1",
-                    MetaData: { CreateTime: now, LastUpdatedTime: now },
-                    TotalAmt: 10.5,
-                    CustomerRef: {
-                        name: "test-cust",
-                    },
-                    Line: [
-                        {
-                            DetailType: "GroupLineDetail",
-                            Id: "1",
-                            Description: "Group dsecription",
-                            GroupLineDetail: {
-                                Line: [
-                                    {
-                                        DetailType: "SalesLineItemDetail",
-                                        Amount: 5.0,
-                                        Id: "1",
-                                        Description: "Testing description",
-                                    },
-                                    {
-                                        DetailType: "SalesLineItemDetail",
-                                        Amount: 5.5,
-                                        Id: "2",
-                                        Description: "Testing description 2",
-                                    },
-                                ],
-                            },
-                        },
-                    ],
-                },
-            ],
-        });
-
-        await service.updateUnprocessedInvoices({ userId });
-
-        const invoices = await db.getRepository(Invoice).find({ where: { companyId } });
-        expect(invoices).toBeArrayOfSize(1);
-        expect(invoices[0]).toEqual({
-            companyId,
-            quickbooksId: 1,
-            quickbooksDateCreated: new Date(now),
-            totalAmountCents: 1050,
-            id: expect.anything(),
-            dateCreated: expect.anything(),
-            lastUpdated: expect.anything(),
-        });
-
-        const lineItems = await db.getRepository(InvoiceLineItem).find({ where: { invoiceId: invoices[0].id } });
-        expect(lineItems).toBeArrayOfSize(2);
-        lineItems.sort((i1, i2) => i1.quickbooksId - i2.quickbooksId);
-        expect(lineItems[0]).toEqual({
-            quickbooksId: 1,
-            amountCents: 500,
-            invoiceId: invoices[0].id,
-            category: "test-cust",
-            description: "Testing description",
-            quickbooksDateCreated: null,
-            id: expect.anything(),
-            dateCreated: expect.anything(),
-            lastUpdated: expect.anything(),
-        });
-        expect(lineItems[1]).toEqual({
-            quickbooksId: 2,
-            amountCents: 550,
-            invoiceId: invoices[0].id,
-            category: "test-cust",
-            description: "Testing description 2",
-            quickbooksDateCreated: null,
+            quickbooksDateCreated: new Date(oneDayAgo),
+            type: PurchaseLineItemType.TYPICAL,
             id: expect.anything(),
             dateCreated: expect.anything(),
             lastUpdated: expect.anything(),
