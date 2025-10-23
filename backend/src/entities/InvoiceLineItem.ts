@@ -22,7 +22,7 @@ export class InvoiceLineItem {
 
     @ManyToOne(() => Invoice, { nullable: true })
     @JoinColumn({ name: "invoiceId" })
-    invoice!: Invoice;
+    invoice?: Invoice;
 
     @Column()
     invoiceId!: string;
@@ -45,5 +45,5 @@ export class InvoiceLineItem {
     lastUpdated!: Date;
 
     @Column({ type: "timestamptz", nullable: true })
-    quickbooksDateCreated?: Date;
+    quickbooksDateCreated?: Date | null;
 }

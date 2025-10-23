@@ -35,12 +35,12 @@ export class UserService implements UserService {
     });
 
     getCompany = withServiceErrorHandling(async (payload: GetUserCompanyDTO): Promise<GetUserCompanyResponse> => {
-        const company = await this.userTransaction.getCompany(payload);
+        const user = await this.userTransaction.getCompany(payload);
 
-        if (!company) {
+        if (!user) {
             throw Boom.notFound("Unable to find the company from the User ID: ", payload);
         }
 
-        return company;
+        return { companyId: user.company.id, companyName: user.company.name };
     });
 }

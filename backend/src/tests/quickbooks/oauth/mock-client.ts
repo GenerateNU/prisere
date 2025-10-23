@@ -36,7 +36,7 @@ export class MockQBClient implements IQuickbooksClient {
         } as const;
     }
 
-    async _exampleQueryData(_args: { qbRealm: string; accessToken: string }) {
+    async query(_args: { qbRealm: string; accessToken: string }) {
         throw new Error("Attempted to perform unmocked query on QB client");
 
         // this is meant to be unreachable

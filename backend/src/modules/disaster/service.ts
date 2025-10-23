@@ -1,7 +1,7 @@
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { IDisasterTransaction } from "./transaction";
 import { withServiceErrorHandling } from "../../utilities/error";
-import { CreateDisasterDTO } from "../../types/disaster";
+import { CreateDisasterDTO } from "../../types/fema-disaster";
 import Boom from "@hapi/boom";
 
 export interface IDisasterService {

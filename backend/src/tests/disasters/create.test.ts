@@ -8,7 +8,7 @@ import {
     CreateDisasterDTOInput,
     GetAllDisastersResponseSchema,
     CreateDisasterResponseSchema,
-} from "../../types/disaster";
+} from "../../types/fema-disaster";
 import { randomUUIDv7 } from "bun";
 import { TESTING_PREFIX } from "../../utilities/constants";
 

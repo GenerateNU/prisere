@@ -11,6 +11,7 @@ export const seededPurchases = [
         totalAmountCents: 1234,
         isRefund: false,
         dateCreated: new Date("2025-02-05T12:00:00Z"),
+        quickbooksDateCreated: new Date("2025-02-05T12:00:00Z"),
     },
     {
         id: "1ffac23a-aefa-45ef-b0bd-b2b72ceae12e",
@@ -19,6 +20,7 @@ export const seededPurchases = [
         totalAmountCents: 5678,
         isRefund: false,
         dateCreated: new Date("2025-01-11T12:00:00Z"),
+        quickbooksDateCreated: new Date("2025-01-11T12:00:00Z"),
     },
     {
         id: "840b4c83-f46b-4774-96c1-2f11959d45eb",
@@ -27,6 +29,7 @@ export const seededPurchases = [
         totalAmountCents: 456,
         isRefund: false,
         dateCreated: new Date("2025-01-09T12:00:00Z"),
+        quickbooksDateCreated: new Date("2025-01-09T12:00:00Z"),
     },
     {
         id: "013417a7-f85c-4440-b171-b461227446e5",
@@ -35,6 +38,7 @@ export const seededPurchases = [
         totalAmountCents: 50,
         isRefund: false,
         dateCreated: new Date("2024-04-11T12:00:00Z"),
+        quickbooksDateCreated: new Date("2024-04-11T12:00:00Z"),
     },
 ];
 

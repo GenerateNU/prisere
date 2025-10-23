@@ -18,7 +18,7 @@ export class Invoice {
 
     @ManyToOne(() => Company, { nullable: true })
     @JoinColumn({ name: "companyId" })
-    company!: Company;
+    company?: Company;
 
     @Column()
     companyId!: string;

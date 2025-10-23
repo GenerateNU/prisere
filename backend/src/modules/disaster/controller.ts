@@ -1,7 +1,7 @@
 import { Context, TypedResponse } from "hono";
 import { withControllerErrorHandling } from "../../utilities/error";
 import { IDisasterService } from "./service";
-import { CreateDisasterDTOSchema, CreateDisasterResponse, GetAllDisastersResponse } from "../../types/disaster";
+import { CreateDisasterDTOSchema, CreateDisasterResponse, GetAllDisastersResponse } from "../../types/fema-disaster";
 import { ControllerResponse } from "../../utilities/response";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 
@@ -38,7 +38,7 @@ function toDisasterDTO(entity: FemaDisaster): GetAllDisastersResponse[number] {
     return {
         ...entity,
         declarationDate: entity.declarationDate.toISOString(),
-        incidentBeginDate: entity.incidentBeginDate?.toISOString() ?? null,
-        incidentEndDate: entity.incidentEndDate?.toISOString() ?? null,
+        incidentBeginDate: entity.incidentBeginDate?.toISOString() ?? undefined,
+        incidentEndDate: entity.incidentEndDate?.toISOString() ?? undefined,
     };
 }

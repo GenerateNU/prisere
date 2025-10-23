@@ -34,7 +34,7 @@ describe("Get Purchase summation by company id", () => {
         backup.restore();
     });
 
-    test("should return the sum of purchases in the valid date range", async () => {
+    test("should return the sum of purchases in the valid date range, ignoring refunded purchases", async () => {
         const response = await app.request(
             TESTING_PREFIX + `/purchase/bulk/totalExpenses?startDate=2025-01-11T12:00:00Z&endDate=2025-04-11T12:00:00Z`,
             {

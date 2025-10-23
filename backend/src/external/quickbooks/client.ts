@@ -20,18 +20,16 @@ export interface IQuickbooksClient {
     generateUrl(args: { scopes: (keyof typeof QB_SCOPES)[] }): { url: string; state: string };
     generateToken(args: { code: string }): Promise<QBOAuthTokenResponse>;
     refreshToken(args: { refreshToken: string }): Promise<QBOAuthTokenResponse>;
-    _exampleQueryData({
-        qbRealm,
-        accessToken,
-    }: {
+    query<T>(args: {
         /**
          * The QuickBooks realm is the externalId of the company's QuickBooks company.
          *
          * QuickBooks calls this a "realm", it's just an ID
          */
         qbRealm: string;
+        query: string;
         accessToken: string;
-    }): Promise<QBQueryResponse<unknown>>;
+    }): Promise<QBQueryResponse<T>>;
 }
 
 export class QuickbooksClient implements IQuickbooksClient {
@@ -135,17 +133,19 @@ export class QuickbooksClient implements IQuickbooksClient {
         return response;
     }
 
-    async _exampleQueryData({
+    async query<T>({
+        query,
         qbRealm,
         accessToken,
     }: {
+        query: string;
         qbRealm: string;
         accessToken: string;
-    }): Promise<QBQueryResponse<unknown>> {
+    }): Promise<QBQueryResponse<T>> {
         const params = new URLSearchParams({
             // [FUTURE]: This query string is changed out based on what we are requestign (sort of like SQL)
             // We might want to create a query builder or something down the road
-            query: "select * from bill maxresults 2",
+            query,
             minorVersion: "75",
         });
 
@@ -156,7 +156,7 @@ export class QuickbooksClient implements IQuickbooksClient {
                 Accept: "application/json",
                 Authorization: `Bearer ${accessToken}`,
             },
-        }).then(async (res): Promise<QBQueryResponse<unknown>> => {
+        }).then(async (res): Promise<QBQueryResponse<T>> => {
             if (res.status === 401) {
                 const response = (await res.json()) as unknown as QBAuthenticationErrorResponse;
 
@@ -167,16 +167,8 @@ export class QuickbooksClient implements IQuickbooksClient {
                 return { _id: "unauthorized" };
             }
 
-            return { _id: "valid", data: (await res.json()) as any };
+            return { _id: "valid", data: (await res.json()) as QBSuccessfulQueryResponse<T>["data"] };
         });
-
-        if (response._id === "valid") {
-            return {
-                _id: "valid",
-                // [FUTURE]: once we start querying data, this can be cleaned up
-                data: response.data as QBSuccessfulQueryResponse<unknown>["data"],
-            };
-        }
 
         return response;
     }

@@ -1,12 +1,18 @@
-import { Claim } from "../../entities/Claim";
-import { CreateClaimDTO, DeleteClaimDTO, DeleteClaimResponse, GetClaimsByCompanyIdResponse } from "../../types/Claim";
+import Boom from "@hapi/boom";
+import {
+    CreateClaimDTO,
+    CreateClaimResponse,
+    DeleteClaimDTO,
+    DeleteClaimResponse,
+    GetClaimsByCompanyIdResponse,
+} from "../../types/Claim";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { IClaimTransaction } from "./transaction";
 
 export interface IClaimService {
-    createClaim(payload: CreateClaimDTO, companyId: string): Promise<Claim>;
+    createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse>;
     getClaimsByCompanyId(companyId: string): Promise<GetClaimsByCompanyIdResponse>;
-    deleteClaim(payload: DeleteClaimDTO): Promise<DeleteClaimResponse>;
+    deleteClaim(payload: DeleteClaimDTO, companyId: string): Promise<DeleteClaimResponse>;
 }
 
 export class ClaimService implements IClaimService {
@@ -16,18 +22,24 @@ export class ClaimService implements IClaimService {
         this.claimTransaction = claimTransaction;
     }
 
-    createClaim = withServiceErrorHandling(async (payload: CreateClaimDTO, companyId: string): Promise<Claim> => {
-        const claim = await this.claimTransaction.createClaim(
-            {
-                ...payload,
-            },
-            companyId
-        );
-        if (!claim) {
-            throw new Error("Failed to create claim");
+    createClaim = withServiceErrorHandling(
+        async (payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse> => {
+            if (!payload.selfDisasterId && !payload.femaDisasterId) {
+                throw Boom.badRequest("There must be a fema or self disaster");
+            }
+
+            const claim = await this.claimTransaction.createClaim(
+                {
+                    ...payload,
+                },
+                companyId
+            );
+            if (!claim) {
+                throw new Error("Failed to create claim");
+            }
+            return claim;
         }
-        return claim;
-    });
+    );
 
     getClaimsByCompanyId = withServiceErrorHandling(
         async (companyId: string): Promise<GetClaimsByCompanyIdResponse> => {
@@ -39,13 +51,19 @@ export class ClaimService implements IClaimService {
         }
     );
 
-    deleteClaim = withServiceErrorHandling(async (payload: DeleteClaimDTO): Promise<DeleteClaimResponse> => {
-        const claim = await this.claimTransaction.deleteClaim({
-            ...payload,
-        });
-        if (!claim) {
-            throw new Error("Failed to delete claim");
+    deleteClaim = withServiceErrorHandling(
+        async (payload: DeleteClaimDTO, companyId: string): Promise<DeleteClaimResponse> => {
+            const claim = await this.claimTransaction.deleteClaim(
+                {
+                    ...payload,
+                },
+                companyId
+            );
+            console.log(claim);
+            if (!claim) {
+                throw new Error("Failed to delete claim");
+            }
+            return claim;
         }
-        return claim;
-    });
+    );
 }

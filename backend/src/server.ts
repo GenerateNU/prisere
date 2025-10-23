@@ -37,9 +37,11 @@ const app = new Hono();
             })
         );
 
-        app.use("/api/prisere/*", isAuthorized());
+        const apiPrefix = process.env.NODE_ENV === "production" ? "/prisere" : "/api/prisere";
 
-        setUpRoutes(app, AppDataSource);
+        app.use(`${apiPrefix}/*`, isAuthorized());
+
+        setUpRoutes(app, AppDataSource, apiPrefix);
 
         const femaService: IFemaService = new FemaService(AppDataSource);
         await femaService.preloadDisasters();

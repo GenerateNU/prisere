@@ -5,17 +5,25 @@ import { IQuickbooksTransaction } from "./transaction";
 import { QuickbooksSession } from "../../entities/QuickbookSession";
 import Boom from "@hapi/boom";
 import { QBQueryResponse } from "../../external/quickbooks/types";
+import { QBInvoice } from "../../types/quickbooks";
+import { IUserTransaction } from "../user/transaction";
+import { IInvoiceTransaction } from "../invoice/transaction";
+import { IInvoiceLineItemTransaction } from "../invoiceLineItem/transaction";
 
 export interface IQuickbooksService {
     generateAuthUrl(args: { userId: string }): Promise<{ state: string; url: string }>;
     createQuickbooksSession(args: { code: string; state: string; realmId: string }): Promise<QuickbooksSession>;
     refreshQuickbooksSession(args: { refreshToken: string; companyId: string }): Promise<QuickbooksSession>;
     consumeOAuthState(args: { state: string }): Promise<void>;
+    updateUnprocessedInvoices(args: { userId: string }): Promise<void>;
 }
 
 export class QuickbooksService implements IQuickbooksService {
     constructor(
         private transaction: IQuickbooksTransaction,
+        private userTransaction: IUserTransaction,
+        private invoiceTransaction: IInvoiceTransaction,
+        private invoiceLineItemTransaction: IInvoiceLineItemTransaction,
         private qbClient: IQuickbooksClient
     ) {}
 
@@ -173,20 +181,84 @@ export class QuickbooksService implements IQuickbooksService {
         return await this.retryClientApi(request, { existingSession: session, externalId });
     }
 
-    // [FUTURE]: We can use this general pattern to query data from QB api w/ safe retries + session revalidation
-    _queryExample = withServiceErrorHandling(async ({ userId }: { userId: string }) => {
-        const data = this.makeRequestToQB({
+    updateUnprocessedInvoices = withServiceErrorHandling(async ({ userId }: { userId: string }) => {
+        const user = await this.userTransaction.getCompany({ id: userId });
+        if (!user) {
+            throw Boom.internal("No user found");
+        }
+        const lastImport = user.company.lastQuickBooksImportTime;
+        const lastImportDate = lastImport ? dayjs(lastImport) : null;
+
+        const {
+            QueryResponse: { Invoice: invoices },
+        } = await this.makeRequestToQB({
             userId,
-            request: async (session) => {
-                return await this.qbClient._exampleQueryData({
+            request: (session) =>
+                this.qbClient.query<{ Invoice: QBInvoice[] }>({
                     qbRealm: session.externalId,
                     accessToken: session.session.accessToken,
-                });
-            },
+                    query: lastImportDate
+                        ? `SELECT * FROM Invoice WHERE Metadata.LastUpdatedTime > '${lastImportDate.format("YYYY-MM-DDTHH:mm:ss")}'`
+                        : `SELECT * FROM Invoice`,
+                }),
         });
 
-        return data;
+        const createdInvoices = await this.invoiceTransaction.createOrUpdateInvoices(
+            invoices.map((i) => ({
+                companyId: user.companyId,
+                totalAmountCents: i.TotalAmt * 100,
+                quickbooksDateCreated: i.MetaData.CreateTime,
+                quickbooksId: parseInt(i.Id),
+            }))
+        );
+
+        const lineItemData = invoices.flatMap((i) => {
+            const dbInvoice = createdInvoices.find((di) => di.quickbooksId === parseInt(i.Id))!;
+            return getLineItems(i).map((l) => ({ ...l, invoiceId: dbInvoice.id }));
+        });
+
+        await this.invoiceLineItemTransaction.createOrUpdateInvoiceLineItems(lineItemData);
+
+        await this.transaction.updateCompanyQuickbooksSync({ date: new Date(), companyId: user.companyId });
     });
 }
 
 type ClientRequest<T> = (input: { session: QuickbooksSession; externalId: string }) => Promise<QBQueryResponse<T>>;
+
+function getLineItems(invoice: QBInvoice) {
+    const out = [] as {
+        amountCents: number;
+        quickbooksId: number | undefined;
+        description: string | undefined;
+        category: string | undefined;
+    }[];
+
+    for (const lineItem of invoice.Line) {
+        switch (lineItem.DetailType) {
+            case "SalesLineItemDetail":
+                out.push({
+                    quickbooksId: parseInt(lineItem.Id),
+                    amountCents: lineItem.Amount * 100,
+                    description: lineItem.Description ?? "",
+                    category: invoice.CustomerRef.name,
+                });
+                break;
+            case "GroupLineDetail":
+                out.push(
+                    ...lineItem.GroupLineDetail.Line.map((l) => ({
+                        quickbooksId: parseInt(l.Id),
+                        amountCents: l.Amount * 100,
+                        description: l.Description ?? "",
+                        category: invoice.CustomerRef.name,
+                    }))
+                );
+                break;
+            case "DescriptionOnly":
+            case "DiscountLineDetail":
+            case "SubTotalLineDetail":
+                break;
+        }
+    }
+
+    return out;
+}
