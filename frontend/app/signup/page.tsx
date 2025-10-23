@@ -2,7 +2,7 @@
 import { signup } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { signupInitialState } from "@/types/user";
@@ -15,9 +15,11 @@ const initialState: signupInitialState = {
 };
 
 export default function SignUpPage() {
+    const searchParams = useSearchParams();
+    const stage = searchParams.get("stage");
     const [state, signupAction] = useActionState(signup, initialState);
     const status = useFormStatus();
-    const [profileStage, setProfileStage] = useState<boolean>(false);
+    const [profileStage, setProfileStage] = useState<boolean>(stage ? true : false);
 
     useEffect(() => {
         if (state.success) {
