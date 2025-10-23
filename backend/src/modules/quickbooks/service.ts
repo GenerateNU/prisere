@@ -240,7 +240,7 @@ function getLineItems(invoice: QBInvoice) {
                     quickbooksId: parseInt(lineItem.Id),
                     amountCents: lineItem.Amount * 100,
                     description: lineItem.Description ?? "",
-                    category: "", // TODO: there is no category reported?,
+                    category: invoice.CustomerRef.name,
                 });
                 break;
             case "GroupLineDetail":
@@ -249,7 +249,7 @@ function getLineItems(invoice: QBInvoice) {
                         quickbooksId: parseInt(l.Id),
                         amountCents: l.Amount * 100,
                         description: l.Description ?? "",
-                        category: "",
+                        category: invoice.CustomerRef.name,
                     }))
                 );
                 break;

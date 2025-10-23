@@ -58,12 +58,15 @@ describe("inserting invoice data", () => {
 
         const now = new Date().toISOString();
 
-        mockQuerySuccessReturn(client, {
+        mockQuerySuccessReturn<{ Invoice: QBInvoice[] }>(client, {
             Invoice: [
                 {
                     Id: "1",
                     MetaData: { CreateTime: now, LastUpdatedTime: now },
                     TotalAmt: 10.5,
+                    CustomerRef: {
+                        name: "test-cust",
+                    },
                     Line: [
                         {
                             DetailType: "SalesLineItemDetail",
@@ -103,7 +106,7 @@ describe("inserting invoice data", () => {
             quickbooksId: 1,
             amountCents: 500,
             invoiceId: invoices[0].id,
-            category: "",
+            category: "test-cust",
             description: "Testing description",
             quickbooksDateCreated: null,
             id: expect.anything(),
@@ -114,7 +117,7 @@ describe("inserting invoice data", () => {
             quickbooksId: 2,
             amountCents: 550,
             invoiceId: invoices[0].id,
-            category: "",
+            category: "test-cust",
             description: "Testing description 2",
             quickbooksDateCreated: null,
             id: expect.anything(),
@@ -134,12 +137,15 @@ describe("inserting invoice data", () => {
 
         const oneDayAgo = dayjs().subtract(1, "day").toISOString();
 
-        mockQuerySuccessReturn(client, {
+        mockQuerySuccessReturn<{ Invoice: QBInvoice[] }>(client, {
             Invoice: [
                 {
                     Id: "1",
                     MetaData: { CreateTime: oneDayAgo, LastUpdatedTime: oneDayAgo },
                     TotalAmt: 10.5,
+                    CustomerRef: {
+                        name: "test-cust",
+                    },
                     Line: [
                         {
                             DetailType: "SalesLineItemDetail",
@@ -168,12 +174,15 @@ describe("inserting invoice data", () => {
         expect(lineItemsBefore).toBeArrayOfSize(2);
 
         const now = dayjs().toISOString();
-        mockQuerySuccessReturn(client, {
+        mockQuerySuccessReturn<{ Invoice: QBInvoice[] }>(client, {
             Invoice: [
                 {
                     Id: "1",
                     MetaData: { CreateTime: oneDayAgo, LastUpdatedTime: now },
                     TotalAmt: 15.5,
+                    CustomerRef: {
+                        name: "test-cust",
+                    },
                     Line: [
                         {
                             DetailType: "SalesLineItemDetail",
@@ -215,7 +224,7 @@ describe("inserting invoice data", () => {
             quickbooksId: 1,
             amountCents: 1000,
             invoiceId: invoicesAfter[0].id,
-            category: "",
+            category: "test-cust",
             description: "Testing description",
             quickbooksDateCreated: null,
             id: expect.anything(),
@@ -226,7 +235,7 @@ describe("inserting invoice data", () => {
             quickbooksId: 2,
             amountCents: 550,
             invoiceId: invoicesAfter[0].id,
-            category: "",
+            category: "test-cust",
             description: "Testing description 2",
             quickbooksDateCreated: null,
             id: expect.anything(),
@@ -252,6 +261,9 @@ describe("inserting invoice data", () => {
                     Id: "1",
                     MetaData: { CreateTime: now, LastUpdatedTime: now },
                     TotalAmt: 10.5,
+                    CustomerRef: {
+                        name: "test-cust",
+                    },
                     Line: [
                         {
                             DetailType: "GroupLineDetail",
@@ -300,7 +312,7 @@ describe("inserting invoice data", () => {
             quickbooksId: 1,
             amountCents: 500,
             invoiceId: invoices[0].id,
-            category: "",
+            category: "test-cust",
             description: "Testing description",
             quickbooksDateCreated: null,
             id: expect.anything(),
@@ -311,7 +323,7 @@ describe("inserting invoice data", () => {
             quickbooksId: 2,
             amountCents: 550,
             invoiceId: invoices[0].id,
-            category: "",
+            category: "test-cust",
             description: "Testing description 2",
             quickbooksDateCreated: null,
             id: expect.anything(),

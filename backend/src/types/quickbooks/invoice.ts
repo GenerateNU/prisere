@@ -12,6 +12,10 @@ export type QBInvoice = {
         CreateTime: string;
         LastUpdatedTime: string;
     };
+    CustomerRef: {
+        name: string;
+        value?: string;
+    };
 
     // There are a lot more fields, but for now we are not importing them and do not care
 };
