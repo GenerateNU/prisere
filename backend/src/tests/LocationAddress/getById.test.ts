@@ -6,7 +6,6 @@ import { TESTING_PREFIX } from "../../utilities/constants";
 import CompanySeeder from "../../database/seeds/company.seed";
 import { LocationAddressSeeder, seededLocationAddresses } from "../../database/seeds/locationAddress.seed";
 import { SeederFactoryManager } from "typeorm-extension";
-import { seededLocations } from "../../database/seeds/location.seed";
 
 describe("Location Address Controller Tests", () => {
     let app: Hono;
