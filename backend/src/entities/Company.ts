@@ -22,7 +22,10 @@ export class Company {
     businessOwnerFullName!: string;
 
     @Column({ type: "timestamptz", nullable: true })
-    lastQuickBooksImportTime?: Date;
+    lastQuickBooksInvoiceImportTime?: Date;
+
+    @Column({ type: "timestamptz", nullable: true })
+    lastQuickBooksPurchaseImportTime?: Date;
 
     @OneToMany("CompanyExternal", (external: CompanyExternal) => external.company)
     externals!: CompanyExternal[];

@@ -31,7 +31,7 @@ export class PurchaseLineItem {
 
     @ManyToOne(() => Purchase, (purchase) => purchase.lineItems)
     @JoinColumn({ name: "purchaseId" })
-    purchase!: Relation<Purchase>;
+    purchase?: Relation<Purchase>;
 
     @Column()
     purchaseId!: string;
@@ -40,7 +40,7 @@ export class PurchaseLineItem {
     amountCents!: number;
 
     @Column({ nullable: true, length: LINE_ITEM_CATEGORY_CHARS })
-    category?: string;
+    category?: string | null;
 
     @Column({ type: "enum", enum: PurchaseLineItemType })
     type!: PurchaseLineItemType;
@@ -52,5 +52,5 @@ export class PurchaseLineItem {
     lastUpdated!: Date;
 
     @Column({ type: "timestamptz", nullable: true })
-    quickbooksDateCreated?: Date;
+    quickbooksDateCreated?: Date | null;
 }

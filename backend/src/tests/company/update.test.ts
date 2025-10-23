@@ -28,9 +28,9 @@ describe("Company - Update lastQuickBooksImportTime", () => {
         backup.restore();
     });
 
-    test("PATCH /companies/:id/quickbooks-import-time - Valid date", async () => {
+    test("PATCH /companies/:id/quickbooks-invoice-import-time - Valid date", async () => {
         const newDate = new Date("2025-12-25T09:30:00.000Z");
-        const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-import-time`, {
+        const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-invoice-import-time`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -40,11 +40,11 @@ describe("Company - Update lastQuickBooksImportTime", () => {
         });
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(body.lastQuickBooksImportTime).toBe(newDate.toISOString());
+        expect(body.lastQuickBooksInvoiceImportTime).toBe(newDate.toISOString());
     });
 
-    test("PATCH /companies/:id/quickbooks-import-time - Invalid date string", async () => {
-        const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-import-time`, {
+    test("PATCH /companies/:id/quickbooks-invoice-import-time - Invalid date string", async () => {
+        const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-invoice-import-time`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -55,8 +55,8 @@ describe("Company - Update lastQuickBooksImportTime", () => {
         expect(response.status).toBe(400);
     });
 
-    test("PATCH /companies/:id/quickbooks-import-time - Missing date", async () => {
-        const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-import-time`, {
+    test("PATCH /companies/:id/quickbooks-invoice-import-time - Missing date", async () => {
+        const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-invoice-import-time`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -67,9 +67,9 @@ describe("Company - Update lastQuickBooksImportTime", () => {
         expect(response.status).toBe(400);
     });
 
-    test("PATCH /companies/:id/quickbooks-import-time - Non-existent company", async () => {
+    test("PATCH /companies/:id/quickbooks-invoice-import-time - Non-existent company", async () => {
         const newDate = new Date("2025-12-25T09:30:00.000Z");
-        const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-import-time`, {
+        const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-invoice-import-time`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",

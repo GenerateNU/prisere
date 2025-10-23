@@ -5,7 +5,8 @@ const CompanySchema = z.object({
     id: z.string(),
     name: z.string().nonempty(),
     businessOwnerFullName: z.string().nonempty(),
-    lastQuickBooksImportTime: z.string().optional(),
+    lastQuickBooksInvoiceImportTime: z.string().optional(),
+    lastQuickBooksPurchaseImportTime: z.string().optional(),
 });
 
 /* Zod schema for POST company */

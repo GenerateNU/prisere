@@ -21,7 +21,8 @@ export interface IQuickbooksTransaction {
         userId: string;
     }): Promise<{ session: QuickbooksSession | null; externalId: string | undefined }>;
     destroyQuickbooksSession(args: { externalId: string }): Promise<void>;
-    updateCompanyQuickbooksSync(args: { date: Date; companyId: string }): Promise<void>;
+    updateCompanyInvoiceQuickbooksSync(args: { date: Date; companyId: string }): Promise<void>;
+    updateCompanyPurchaseQuickbooksSync(args: { date: Date; companyId: string }): Promise<void>;
 }
 
 export class QuickbooksTransaction implements IQuickbooksTransaction {
@@ -162,7 +163,11 @@ export class QuickbooksTransaction implements IQuickbooksTransaction {
         ]);
     }
 
-    async updateCompanyQuickbooksSync({ date, companyId }: { date: Date; companyId: string }) {
-        await this.db.getRepository(Company).update({ id: companyId }, { lastQuickBooksImportTime: date });
+    async updateCompanyInvoiceQuickbooksSync({ date, companyId }: { date: Date; companyId: string }) {
+        await this.db.getRepository(Company).update({ id: companyId }, { lastQuickBooksInvoiceImportTime: date });
+    }
+
+    async updateCompanyPurchaseQuickbooksSync({ date, companyId }: { date: Date; companyId: string }) {
+        await this.db.getRepository(Company).update({ id: companyId }, { lastQuickBooksPurchaseImportTime: date });
     }
 }

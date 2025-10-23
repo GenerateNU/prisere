@@ -14,6 +14,8 @@ import { QBQueryResponse, QBSuccessfulQueryResponse } from "../../../external/qu
 import { QBInvoice } from "../../../types/quickbooks";
 import { InvoiceTransaction } from "../../../modules/invoice/transaction";
 import { InvoiceLineItemTransaction } from "../../../modules/invoiceLineItem/transaction";
+import { PurchaseTransaction } from "../../../modules/purchase/transaction";
+import { PurchaseLineItemTransaction } from "../../../modules/purchase-line-item/transaction";
 
 describe("requesting from api", () => {
     let app: Hono;
@@ -30,12 +32,16 @@ describe("requesting from api", () => {
         const userTransaction = new UserTransaction(db);
         const invoiceTransaction = new InvoiceTransaction(db);
         const invoiceLineItemTransaction = new InvoiceLineItemTransaction(db);
+        const purchaseTransaction = new PurchaseTransaction(db);
+        const purchaseLineItemTransaction = new PurchaseLineItemTransaction(db);
         client = new MockQBClient();
         service = new QuickbooksService(
             transaction,
             userTransaction,
             invoiceTransaction,
             invoiceLineItemTransaction,
+            purchaseTransaction,
+            purchaseLineItemTransaction,
             client
         );
     });

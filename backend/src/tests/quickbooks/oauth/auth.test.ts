@@ -15,6 +15,8 @@ import { UserTransaction } from "../../../modules/user/transaction";
 import { randomUUID } from "crypto";
 import { InvoiceTransaction } from "../../../modules/invoice/transaction";
 import { InvoiceLineItemTransaction } from "../../../modules/invoiceLineItem/transaction";
+import { PurchaseTransaction } from "../../../modules/purchase/transaction";
+import { PurchaseLineItemTransaction } from "../../../modules/purchase-line-item/transaction";
 
 describe("creating oauth connection", () => {
     let app: Hono;
@@ -30,12 +32,16 @@ describe("creating oauth connection", () => {
         const userTransaction = new UserTransaction(db);
         const invoiceTransaction = new InvoiceTransaction(db);
         const invoiceLineItemTransaction = new InvoiceLineItemTransaction(db);
+        const purchaseTransaction = new PurchaseTransaction(db);
+        const purchaseLineItemTransaction = new PurchaseLineItemTransaction(db);
         const mockClient = new MockQBClient();
         service = new QuickbooksService(
             transaction,
             userTransaction,
             invoiceTransaction,
             invoiceLineItemTransaction,
+            purchaseTransaction,
+            purchaseLineItemTransaction,
             mockClient
         );
     });
@@ -111,12 +117,16 @@ describe("integration with company", () => {
         const userTransaction = new UserTransaction(db);
         const invoiceTransaction = new InvoiceTransaction(db);
         const invoiceLineItemTransaction = new InvoiceLineItemTransaction(db);
+        const purchaseTransaction = new PurchaseTransaction(db);
+        const purchaseLineItemTransaction = new PurchaseLineItemTransaction(db);
         const mockClient = new MockQBClient();
         service = new QuickbooksService(
             transaction,
             userTransaction,
             invoiceTransaction,
             invoiceLineItemTransaction,
+            purchaseTransaction,
+            purchaseLineItemTransaction,
             mockClient
         );
     });
