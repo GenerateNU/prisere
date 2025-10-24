@@ -1,5 +1,5 @@
 import { DisasterNotification } from "../../entities/DisasterNotification";
-import { DataSource, InsertResult } from "typeorm";
+import { DataSource, In, InsertResult } from "typeorm";
 import Boom from "@hapi/boom";
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
@@ -54,6 +54,10 @@ export interface IDisasterNotificationTransaction {
      * @returns Promise resolving to a boolean indicating success.
      */
     deleteNotification(notificationId: string): Promise<boolean>;
+
+    getUnreadNotifications(): Promise<DisasterNotification[]>;
+
+    markNotificationsAsSent(notificationIds: string[]): Promise<DisasterNotification[]>;
 }
 
 export class DisasterNotificationTransaction implements IDisasterNotificationTransaction {
@@ -61,6 +65,21 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
 
     constructor(db: DataSource) {
         this.db = db;
+    }
+
+    async getUnreadNotifications(): Promise<DisasterNotification[]> {
+        const result = await this.db
+            .createQueryBuilder(DisasterNotification, "notifications")
+            .leftJoinAndSelect("notifications.femaDisaster", "disaster")
+            .leftJoinAndSelect("notifications.locationAddress", "location")
+            .leftJoinAndSelect("location.company", "company")
+            .where({
+            notificationStatus: 'unread',
+            notificationType: 'email'
+            })
+            .getMany();
+            
+        return result;
     }
 
     async getUserNotifications(
@@ -253,4 +272,43 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
 
         return result.affected || 0;
     }
+
+    async markNotificationsAsSent(notificationIds: string[]): Promise<DisasterNotification[]> {
+    if (notificationIds.length === 0) {
+        return [];
+    }
+
+    const now = new Date();
+
+    // Update notifications that already have firstSentAt (just update lastSentAt)
+    await this.db
+        .createQueryBuilder()
+        .update(DisasterNotification)
+        .set({
+            lastSentAt: now
+        })
+        .where("id IN (:...ids)", { ids: notificationIds })
+        .andWhere("firstSentAt IS NOT NULL")
+        .execute();
+
+    // Update notifications that DON'T have firstSentAt (set both)
+    await this.db
+        .createQueryBuilder()
+        .update(DisasterNotification)
+        .set({
+            firstSentAt: now,
+            lastSentAt: now
+        })
+        .where("id IN (:...ids)", { ids: notificationIds })
+        .andWhere("firstSentAt IS NULL")
+        .execute();
+
+    // Fetch and return the updated notifications
+    return await this.db
+        .getRepository(DisasterNotification)
+        .find({
+            where: { id: In(notificationIds) },
+            relations: ['user', 'femaDisaster', 'locationAddress']
+        });
+}
 }
