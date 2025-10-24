@@ -7,3 +7,11 @@ bun.lock
 log/
 *.log
 dist/
+terraform/terraform.tfstate
+terraform/terraform.tfstate.tfbackup
+terraform/.terraform
+terraform/.terraform.lock.hcl
+**/.terraform/
+**/.terraform.lock.hcl
+**/terraform.tfstate
+**/terraform.tfstate.backup
