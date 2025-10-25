@@ -3,8 +3,10 @@ import {
     CreateClaimDTO,
     CreateClaimResponse,
     DeleteClaimDTO,
-    DeleteClaimResponse,
+    DeleteClaimResponse, DeletePurchaseLineItemResponse,
     GetClaimsByCompanyIdResponse,
+    GetPurchaseLineItemsForClaimResponse, LinkClaimToLineItemDTO, LinkClaimToLineItemResponse, LinkClaimToPurchaseDTO,
+    LinkClaimToPurchaseResponse,
 } from "../../types/Claim";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { IClaimTransaction } from "./transaction";
@@ -13,6 +15,11 @@ export interface IClaimService {
     createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse>;
     getClaimsByCompanyId(companyId: string): Promise<GetClaimsByCompanyIdResponse>;
     deleteClaim(payload: DeleteClaimDTO, companyId: string): Promise<DeleteClaimResponse>;
+    linkClaimToLineItem(payload: LinkClaimToLineItemDTO): Promise<LinkClaimToLineItemResponse>;
+    linkClaimToPurchaseItems(payload: LinkClaimToPurchaseDTO): Promise<LinkClaimToPurchaseResponse>;
+    getLinkedPurchaseLineItems(claimId: string): Promise<GetPurchaseLineItemsForClaimResponse>;
+    deletePurchaseLineItem(claimId: string, lineItemId: string): Promise<DeletePurchaseLineItemResponse>;
+
 }
 
 export class ClaimService implements IClaimService {
@@ -59,11 +66,59 @@ export class ClaimService implements IClaimService {
                 },
                 companyId
             );
-            console.log(claim);
             if (!claim) {
                 throw new Error("Failed to delete claim");
             }
             return claim;
         }
     );
+
+    linkClaimToLineItem = withServiceErrorHandling(
+        async (payload: LinkClaimToLineItemDTO): Promise<LinkClaimToLineItemResponse> => {
+            const response = await this.claimTransaction.linkClaimToLineItem(
+                { ...payload });
+
+            if (!response) {
+                throw new Error("Failed to link claim and purchase line item")
+            }
+            return response;
+        }
+    );
+
+
+    linkClaimToPurchaseItems = withServiceErrorHandling(
+        async (payload: LinkClaimToPurchaseDTO): Promise<LinkClaimToPurchaseResponse> => {
+            const response = await this.claimTransaction.linkClaimToPurchaseItems(
+                { ...payload });
+
+            if (!response) {
+                throw new Error("Failed to link claim and purchase's line items")
+            }
+            return response;
+        }
+
+    );
+
+    getLinkedPurchaseLineItems = withServiceErrorHandling(
+        async (claimId: string): Promise<GetPurchaseLineItemsForClaimResponse> => {
+            const response = await this.claimTransaction.getLinkedPurchaseLineItems(claimId);
+
+            if (!response) {
+                throw new Error("Failed to get linked line items")
+            }
+            return response;
+        }
+    );
+
+    deletePurchaseLineItem = withServiceErrorHandling(
+        async (claimId: string, lineItemId: string): Promise<DeletePurchaseLineItemResponse> => {
+            const response = await this.claimTransaction.deletePurchaseLineItem(claimId, lineItemId);
+
+            if (!response) {
+                throw new Error("Failed to delete the link between claim and line item")
+            }
+            return response;
+        }
+    );
+
 }
