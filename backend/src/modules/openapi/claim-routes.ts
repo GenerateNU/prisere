@@ -175,7 +175,7 @@ const getPurchaseLineItemsForClaimRoute = createRoute({
     summary: "Gets all purchase line items linked to a claim",
     description: "Gets all purchase line items linked to a claim with a given id",
     request: {
-        params: z.object({ claimId: z.uuid()}),
+        params: z.object({ id: z.uuid()}),
     },
     responses: {
         200: {
@@ -202,7 +202,7 @@ const deletePurchaseLineItemLinkRoute = createRoute({
     description: "Deletes the link between a claim with a given claimId and a purchase line item" +
         "with a given purchaseLineItemId",
     request: {
-        params: z.object({ claimId: z.uuid(), lineItemId: z.uuid }),
+        params: z.object({ claimId: z.uuid(), lineItemId: z.uuid() }),
     },
     responses: {
         200: {
