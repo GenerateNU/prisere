@@ -79,7 +79,7 @@ export class ClaimService implements IClaimService {
                 { ...payload });
 
             if (!response) {
-                throw new Error("Failed to link claim and purchase line item")
+                throw Boom.notFound("Failed to link claim and purchase line item");
             }
             return response;
         }
@@ -92,7 +92,7 @@ export class ClaimService implements IClaimService {
                 { ...payload });
 
             if (!response) {
-                throw new Error("Failed to link claim and purchase's line items")
+                throw Boom.notFound("Failed to link claim and purchase's line items");
             }
             return response;
         }
@@ -104,7 +104,7 @@ export class ClaimService implements IClaimService {
             const response = await this.claimTransaction.getLinkedPurchaseLineItems(claimId);
 
             if (!response) {
-                throw new Error("Failed to get linked line items")
+                throw Boom.notFound("Failed to retrieve purchase line items for claim");
             }
             return response;
         }
@@ -115,7 +115,7 @@ export class ClaimService implements IClaimService {
             const response = await this.claimTransaction.deletePurchaseLineItem(claimId, lineItemId);
 
             if (!response) {
-                throw new Error("Failed to delete the link between claim and line item")
+                throw Boom.notFound('Failed to delete purchase line link to claim');
             }
             return response;
         }

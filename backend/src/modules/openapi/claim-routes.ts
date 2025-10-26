@@ -128,6 +128,9 @@ const createLinkClaimPurchaseLineItemRoute = createRoute({
             },
             description: "Link added successfully",
         },
+        404: {
+            description: "Claim or line item not found",
+        },
         ...openApiErrorCodes("Link Creation Errors"),
     },
     tags: ["Claims"],
@@ -157,6 +160,9 @@ const createLinkClaimPurchaseRoute = createRoute({
             },
             description: "Links added successfully",
         },
+        404: {
+            description: "Claim or purchase line items not found",
+        },
         ...openApiErrorCodes("Link Creation Errors"),
     },
     tags: ["Claims"],
@@ -179,6 +185,9 @@ const getPurchaseLineItemsForClaimRoute = createRoute({
                 },
             },
             description: "Line items retrieved successfully",
+        },
+        404: {
+            description: "Claim not found",
         },
         ...openApiErrorCodes("Line item retrieval errors"),
     },
@@ -203,6 +212,9 @@ const deletePurchaseLineItemLinkRoute = createRoute({
                 },
             },
             description: "Link deleted successfully",
+        },
+        404: {
+            description: "Claim or line item not found",
         },
         ...openApiErrorCodes("Link deletion Errors"),
     },

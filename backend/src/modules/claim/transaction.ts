@@ -16,8 +16,8 @@ import { logMessageToFile } from "../../utilities/logger";
 import { plainToClass } from "class-transformer";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
-import { Boom } from "@hapi/boom";
 import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
+import Boom from "@hapi/boom";
 
 export interface IClaimTransaction {
     /**
@@ -229,12 +229,18 @@ export class ClaimTransaction implements IClaimTransaction {
 
     async getLinkedPurchaseLineItems(claimId: string): Promise<GetPurchaseLineItemsForClaimResponse | null> {
         try {
+            const claim = await this.db.manager.findOne(Claim, {
+                where: { id: claimId }
+            });
+
+            if (!claim) return null;
+
             const lineItems = await this.db.manager
                 .createQueryBuilder(PurchaseLineItem, 'lineItem')
                 // this is needed because the claim-line item link is unilateral
                 .innerJoin('claim_purchase_line_items', 'bridge',
-                    'bridge.purchase_line_item_id = lineItem.id')
-                .where('bridge.claim_id = :claimId', { claimId })
+                    'bridge.purchaseLineItemId = lineItem.id')
+                .where('bridge.claimId = :claimId', { claimId })
                 .getMany();
 
             return lineItems.map(item => ({
@@ -252,6 +258,11 @@ export class ClaimTransaction implements IClaimTransaction {
 
     async deletePurchaseLineItem(claimId: string, lineItemId: string): Promise<DeletePurchaseLineItemResponse | null> {
         try {
+            const claim = await this.db.manager.findOne(Claim, { where: { id: claimId } });
+            const lineItem = await this.db.manager.findOne(PurchaseLineItem, { where: { id: lineItemId } });
+
+            if (!claim || !lineItem) return null;
+
             await this.db.manager
                 .createQueryBuilder()
                 .relation(Claim, 'purchaseLineItems')
@@ -261,10 +272,10 @@ export class ClaimTransaction implements IClaimTransaction {
             return { claimId: claimId, purchaseLineItemId : lineItemId };
 
         } catch (error) {
+            console.log(error)
             logMessageToFile(`Transaction error: ${error}`);
             return null;
         }
 
     }
-
 }
