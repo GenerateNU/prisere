@@ -78,7 +78,7 @@ export class ClaimService implements IClaimService {
 
     linkClaimToLineItem = withServiceErrorHandling(
         async (payload: LinkClaimToLineItemDTO): Promise<LinkClaimToLineItemResponse> => {
-            const response = await this.claimTransaction.linkClaimToLineItem({ ...payload });
+            const response = await this.claimTransaction.linkClaimToLineItem(payload);
 
             if (!response) {
                 throw Boom.notFound("Failed to link claim and purchase line item");
@@ -89,7 +89,7 @@ export class ClaimService implements IClaimService {
 
     linkClaimToPurchaseItems = withServiceErrorHandling(
         async (payload: LinkClaimToPurchaseDTO): Promise<LinkClaimToPurchaseResponse> => {
-            const response = await this.claimTransaction.linkClaimToPurchaseItems({ ...payload });
+            const response = await this.claimTransaction.linkClaimToPurchaseItems(payload);
 
             if (!response) {
                 throw Boom.notFound("Failed to link claim and purchase's line items");
