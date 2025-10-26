@@ -4,10 +4,13 @@ import {
     GetClaimsByCompanyIdResponse,
     CreateClaimResponse,
     CreateClaimDTOSchema,
-    DeleteClaimResponse, LinkClaimToLineItemResponse, LinkClaimToLineItemDTO,
+    DeleteClaimResponse,
+    LinkClaimToLineItemResponse,
     LinkClaimToLineItemDTOSchema,
     LinkClaimToPurchaseResponse,
-    LinkClaimToPurchaseDTOSchema, GetPurchaseLineItemsForClaimResponse, DeletePurchaseLineItemResponse,
+    LinkClaimToPurchaseDTOSchema,
+    GetPurchaseLineItemsForClaimResponse,
+    DeletePurchaseLineItemResponse,
 } from "../../types/Claim";
 import { withControllerErrorHandling } from "../../utilities/error";
 import { validate } from "uuid";
@@ -19,7 +22,9 @@ export interface IClaimController {
     deleteClaim(_ctx: Context): ControllerResponse<TypedResponse<DeleteClaimResponse, 200>>;
     linkClaimToLineItem(_ctx: Context): ControllerResponse<TypedResponse<LinkClaimToLineItemResponse, 201>>;
     linkClaimToPurchaseItems(_ctx: Context): ControllerResponse<TypedResponse<LinkClaimToPurchaseResponse, 201>>;
-    getLinkedPurchaseLineItems(_ctx: Context): ControllerResponse<TypedResponse<GetPurchaseLineItemsForClaimResponse, 200>>;
+    getLinkedPurchaseLineItems(
+        _ctx: Context
+    ): ControllerResponse<TypedResponse<GetPurchaseLineItemsForClaimResponse, 200>>;
     deletePurchaseLineItem(_ctx: Context): ControllerResponse<TypedResponse<DeletePurchaseLineItemResponse, 200>>;
 }
 
@@ -69,8 +74,7 @@ export class ClaimController {
         }
     );
 
-
-    linkClaimToLineItem =  withControllerErrorHandling(
+    linkClaimToLineItem = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<LinkClaimToLineItemResponse, 201>> => {
             const json = await ctx.req.json();
             const payload = LinkClaimToLineItemDTOSchema.parse(json);
@@ -79,11 +83,9 @@ export class ClaimController {
                 return ctx.json({ error: "Invalid claim or purchase line item Id format" }, 400);
             }
 
-            const linkedSuccess =
-                await this.claimService.linkClaimToLineItem(payload);
+            const linkedSuccess = await this.claimService.linkClaimToLineItem(payload);
 
             return ctx.json(linkedSuccess, 201);
-
         }
     );
 
@@ -96,8 +98,7 @@ export class ClaimController {
                 return ctx.json({ error: "Invalid claim or purchase Id format" }, 400);
             }
 
-            const linkedSuccess =
-                await this.claimService.linkClaimToPurchaseItems(payload);
+            const linkedSuccess = await this.claimService.linkClaimToPurchaseItems(payload);
 
             return ctx.json(linkedSuccess, 201);
         }
@@ -111,11 +112,9 @@ export class ClaimController {
                 return ctx.json({ error: "Invalid claim Id format" }, 400);
             }
 
-            const purchaseLineItems =
-                await this.claimService.getLinkedPurchaseLineItems(claimId);
+            const purchaseLineItems = await this.claimService.getLinkedPurchaseLineItems(claimId);
 
             return ctx.json(purchaseLineItems, 200);
-
         }
     );
 
@@ -128,11 +127,9 @@ export class ClaimController {
                 return ctx.json({ error: "Invalid claim or line item Id format" }, 400);
             }
 
-            const deletedLinks =
-                await this.claimService.deletePurchaseLineItem(claimId, lineItemId);
+            const deletedLinks = await this.claimService.deletePurchaseLineItem(claimId, lineItemId);
 
             return ctx.json(deletedLinks, 200);
         }
     );
-
 }

@@ -11,7 +11,6 @@ import { PurchaseSeeder, seededPurchases } from "../../database/seeds/purchase.s
 import { SeederFactoryManager } from "typeorm-extension";
 import { Purchase } from "../../entities/Purchase";
 
-
 describe("POST /claims/line-item/bulk - Link All Line Items from Purchase", () => {
     let app: Hono;
     let backup: IBackup;
@@ -56,12 +55,12 @@ describe("POST /claims/line-item/bulk - Link All Line Items from Purchase", () =
         // Verify exactly 2 line items were linked
         const linkedItems = await testAppDataSource
             .createQueryBuilder()
-            .relation(Claim, 'purchaseLineItems')
+            .relation(Claim, "purchaseLineItems")
             .of("0174375f-e7c4-4862-bb9f-f58318bb2e7d")
             .loadMany();
 
         expect(linkedItems.length).toBe(2);
-        const linkedIds = linkedItems.map(item => item.id);
+        const linkedIds = linkedItems.map((item) => item.id);
         expect(linkedIds).toContain(seededPurchaseLineItems[0].id);
         expect(linkedIds).toContain(seededPurchaseLineItems[1].id);
     });
@@ -178,7 +177,7 @@ describe("POST /claims/line-item/bulk - Link All Line Items from Purchase", () =
         // Verify still only 2 links (no duplicates created)
         const linkedItems = await testAppDataSource
             .createQueryBuilder()
-            .relation(Claim, 'purchaseLineItems')
+            .relation(Claim, "purchaseLineItems")
             .of("37d07be0-4e09-4e70-a395-c1464f408c1f")
             .loadMany();
 

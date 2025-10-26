@@ -9,7 +9,8 @@ import {
     LinkClaimToLineItemDTO,
     LinkClaimToLineItemResponse,
     LinkClaimToPurchaseDTO,
-    LinkClaimToPurchaseResponse, GetPurchaseLineItemsForClaimResponse,
+    LinkClaimToPurchaseResponse,
+    GetPurchaseLineItemsForClaimResponse,
     DeletePurchaseLineItemResponse,
 } from "../../types/Claim";
 import { logMessageToFile } from "../../utilities/logger";
@@ -17,7 +18,6 @@ import { plainToClass } from "class-transformer";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
-import Boom from "@hapi/boom";
 
 export interface IClaimTransaction {
     /**
@@ -41,7 +41,6 @@ export interface IClaimTransaction {
      */
     deleteClaim(payload: DeleteClaimDTO, companyId: string): Promise<DeleteClaimResponse | null>;
 
-
     /**
      * Adds a link (row in the bridge table) between a claim and a purchase line item
      *
@@ -49,7 +48,6 @@ export interface IClaimTransaction {
      * @returns Promise resolving to linked claim id and purchase line item id or null if either not found
      */
     linkClaimToLineItem(payload: LinkClaimToLineItemDTO): Promise<LinkClaimToLineItemResponse | null>;
-
 
     /**
      * Adds a link (row in the bridge table) between a claim and every line item for a purchase
@@ -60,7 +58,6 @@ export interface IClaimTransaction {
      */
     linkClaimToPurchaseItems(payload: LinkClaimToPurchaseDTO): Promise<LinkClaimToPurchaseResponse | null>;
 
-
     /**
      * Gets all the linked purchase line items to a claim
      *
@@ -69,7 +66,6 @@ export interface IClaimTransaction {
      */
     getLinkedPurchaseLineItems(claimId: string): Promise<GetPurchaseLineItemsForClaimResponse | null>;
 
-
     /**
      * Deletes the link between a purchase line item and a claim
      * @param claimId from the desired claim
@@ -77,8 +73,6 @@ export interface IClaimTransaction {
      * @returns Promise resolving to linked claim id and purchase line item id or null if either not found
      */
     deletePurchaseLineItem(claimId: string, lineItemId: string): Promise<DeletePurchaseLineItemResponse | null>;
-
-
 }
 
 export class ClaimTransaction implements IClaimTransaction {
@@ -183,16 +177,14 @@ export class ClaimTransaction implements IClaimTransaction {
         }
     }
 
-
     async linkClaimToLineItem(payload: LinkClaimToLineItemDTO): Promise<LinkClaimToLineItemResponse | null> {
         try {
             await this.db.manager
                 .createQueryBuilder()
-                .relation(Claim, 'purchaseLineItems')
+                .relation(Claim, "purchaseLineItems")
                 .of(payload.claimId)
                 .add(payload.purchaseLineItemId);
             return payload;
-
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
             return null;
@@ -202,54 +194,51 @@ export class ClaimTransaction implements IClaimTransaction {
     async linkClaimToPurchaseItems(payload: LinkClaimToPurchaseDTO): Promise<LinkClaimToPurchaseResponse | null> {
         const purchaseLineItemTransaction: IPurchaseLineItemTransaction = new PurchaseLineItemTransaction(this.db);
         try {
-            const lineItems =
-                await purchaseLineItemTransaction.getPurchaseLineItemsForPurchase(payload.purchaseId);
+            const lineItems = await purchaseLineItemTransaction.getPurchaseLineItemsForPurchase(payload.purchaseId);
 
-            const lineItemIds = lineItems.map(item => item.id);
+            const lineItemIds = lineItems.map((item) => item.id);
 
             await this.db.manager
                 .createQueryBuilder()
-                .relation(Claim, 'purchaseLineItems')
+                .relation(Claim, "purchaseLineItems")
                 .of(payload.claimId)
                 .add(lineItemIds);
 
-            const result = lineItemIds.map(id => ({
+            const result = lineItemIds.map((id) => ({
                 claimId: payload.claimId,
-                purchaseLineItemId: id
+                purchaseLineItemId: id,
             }));
 
             return result;
-
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
             return null;
         }
     }
 
-
     async getLinkedPurchaseLineItems(claimId: string): Promise<GetPurchaseLineItemsForClaimResponse | null> {
         try {
             const claim = await this.db.manager.findOne(Claim, {
-                where: { id: claimId }
+                where: { id: claimId },
             });
 
-            if (!claim) return null;
+            if (!claim) {
+                return null;
+            }
 
             const lineItems = await this.db.manager
-                .createQueryBuilder(PurchaseLineItem, 'lineItem')
+                .createQueryBuilder(PurchaseLineItem, "lineItem")
                 // this is needed because the claim-line item link is unilateral
-                .innerJoin('claim_purchase_line_items', 'bridge',
-                    'bridge.purchaseLineItemId = lineItem.id')
-                .where('bridge.claimId = :claimId', { claimId })
+                .innerJoin("claim_purchase_line_items", "bridge", "bridge.purchaseLineItemId = lineItem.id")
+                .where("bridge.claimId = :claimId", { claimId })
                 .getMany();
 
-            return lineItems.map(item => ({
+            return lineItems.map((item) => ({
                 ...item,
                 dateCreated: item.dateCreated.toISOString(),
                 lastUpdated: item.lastUpdated.toISOString(),
                 quickbooksDateCreated: item.quickbooksDateCreated?.toISOString(),
             }));
-
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
             return null;
@@ -261,21 +250,21 @@ export class ClaimTransaction implements IClaimTransaction {
             const claim = await this.db.manager.findOne(Claim, { where: { id: claimId } });
             const lineItem = await this.db.manager.findOne(PurchaseLineItem, { where: { id: lineItemId } });
 
-            if (!claim || !lineItem) return null;
+            if (!claim || !lineItem) {
+                return null;
+            }
 
             await this.db.manager
                 .createQueryBuilder()
-                .relation(Claim, 'purchaseLineItems')
+                .relation(Claim, "purchaseLineItems")
                 .of(claimId)
                 .remove(lineItemId);
 
-            return { claimId: claimId, purchaseLineItemId : lineItemId };
-
+            return { claimId: claimId, purchaseLineItemId: lineItemId };
         } catch (error) {
-            console.log(error)
+            console.log(error);
             logMessageToFile(`Transaction error: ${error}`);
             return null;
         }
-
     }
 }

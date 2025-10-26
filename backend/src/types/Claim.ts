@@ -62,20 +62,15 @@ export const LinkClaimToPurchaseDTOSchema = z.object({
     purchaseId: z.uuid(),
 });
 
-export const LinkClaimToPurchaseResponseSchema = z.array(
-    LinkClaimToLineItemResponseSchema,
-);
+export const LinkClaimToPurchaseResponseSchema = z.array(LinkClaimToLineItemResponseSchema);
 
 /* Getting all purchase line items linked to a claim */
 
-export const GetPurchaseLineItemsForClaimResponseSchema  = z.array(
-    GetPurchaseLineItemResponseSchema,
-);
+export const GetPurchaseLineItemsForClaimResponseSchema = z.array(GetPurchaseLineItemResponseSchema);
 
 /* Delete the link between a claim and line item */
 
 export const DeletePurchaseLineItemResponseSchema = LinkClaimToLineItemDTOSchema;
-
 
 /* Zod types for payload validation */
 export type Claim = z.infer<typeof ClaimSchema>;
@@ -97,5 +92,3 @@ export type LinkClaimToPurchaseResponse = z.infer<typeof LinkClaimToPurchaseResp
 
 export type GetPurchaseLineItemsForClaimResponse = z.infer<typeof GetPurchaseLineItemsForClaimResponseSchema>;
 export type DeletePurchaseLineItemResponse = z.infer<typeof DeletePurchaseLineItemResponseSchema>;
-
-

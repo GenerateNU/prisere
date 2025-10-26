@@ -11,7 +11,6 @@ import { PurchaseSeeder } from "../../database/seeds/purchase.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 
-
 describe("DELETE /claims/{claimId}/line-item/{lineItemId} - Remove Link", () => {
     let app: Hono;
     let backup: IBackup;
@@ -35,7 +34,7 @@ describe("DELETE /claims/{claimId}/line-item/{lineItemId} - Remove Link", () => 
 
         await testAppDataSource
             .createQueryBuilder()
-            .relation(Claim, 'purchaseLineItems')
+            .relation(Claim, "purchaseLineItems")
             .of("0174375f-e7c4-4862-bb9f-f58318bb2e7d")
             .add([seededPurchaseLineItems[0].id, seededPurchaseLineItems[1].id]);
     });
@@ -61,13 +60,13 @@ describe("DELETE /claims/{claimId}/line-item/{lineItemId} - Remove Link", () => 
         // Verify link was removed
         const linkedItems = await testAppDataSource
             .createQueryBuilder()
-            .relation(Claim, 'purchaseLineItems')
+            .relation(Claim, "purchaseLineItems")
             .of("0174375f-e7c4-4862-bb9f-f58318bb2e7d")
             .loadMany();
 
         expect(linkedItems.length).toBe(1);
         expect(linkedItems[0].id).toBe(seededPurchaseLineItems[1].id);
-        const linkedIds = linkedItems.map(item => item.id);
+        const linkedIds = linkedItems.map((item) => item.id);
         expect(linkedIds).not.toContain(seededPurchaseLineItems[0].id);
     });
 
@@ -98,7 +97,7 @@ describe("DELETE /claims/{claimId}/line-item/{lineItemId} - Remove Link", () => 
         // Verify no links remain
         const linkedItems = await testAppDataSource
             .createQueryBuilder()
-            .relation(Claim, 'purchaseLineItems')
+            .relation(Claim, "purchaseLineItems")
             .of("0174375f-e7c4-4862-bb9f-f58318bb2e7d")
             .loadMany();
 
@@ -134,7 +133,8 @@ describe("DELETE /claims/{claimId}/line-item/{lineItemId} - Remove Link", () => 
 
     test("DELETE /claims/{claimId}/line-item/{lineItemId} - Line item does not exist", async () => {
         const response = await app.request(
-            TESTING_PREFIX + "/claims/0174375f-e7c4-4862-bb9f-f58318bb2e7d/line-item/00000000-0000-0000-0000-000000000000",
+            TESTING_PREFIX +
+                "/claims/0174375f-e7c4-4862-bb9f-f58318bb2e7d/line-item/00000000-0000-0000-0000-000000000000",
             {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
@@ -195,7 +195,7 @@ describe("DELETE /claims/{claimId}/line-item/{lineItemId} - Remove Link", () => 
         // Verify still only 1 link remains
         const linkedItems = await testAppDataSource
             .createQueryBuilder()
-            .relation(Claim, 'purchaseLineItems')
+            .relation(Claim, "purchaseLineItems")
             .of("0174375f-e7c4-4862-bb9f-f58318bb2e7d")
             .loadMany();
 
@@ -216,7 +216,7 @@ describe("DELETE /claims/{claimId}/line-item/{lineItemId} - Remove Link", () => 
 
         // Verify the PurchaseLineItem entity itself still exists
         const lineItem = await testAppDataSource.getRepository(PurchaseLineItem).findOne({
-            where: { id: seededPurchaseLineItems[0].id }
+            where: { id: seededPurchaseLineItems[0].id },
         });
 
         expect(lineItem).not.toBeNull();
@@ -238,7 +238,7 @@ describe("DELETE /claims/{claimId}/line-item/{lineItemId} - Remove Link", () => 
         // Verify second link still exists
         const linkedItems = await testAppDataSource
             .createQueryBuilder()
-            .relation(Claim, 'purchaseLineItems')
+            .relation(Claim, "purchaseLineItems")
             .of("0174375f-e7c4-4862-bb9f-f58318bb2e7d")
             .loadMany();
 

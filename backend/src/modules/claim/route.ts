@@ -14,8 +14,8 @@ export const claimRoutes = (db: DataSource): Hono => {
     claim.get("/company", (ctx) => claimController.getClaimByCompanyId(ctx));
     claim.post("/", (ctx) => claimController.createClaim(ctx));
     claim.delete("/:id", (ctx) => claimController.deleteClaim(ctx));
-    claim.post("/line-item" , (ctx) => claimController.linkClaimToLineItem(ctx));
-    claim.post("/purchase" , (ctx) => claimController.linkClaimToPurchaseItems(ctx));
+    claim.post("/line-item", (ctx) => claimController.linkClaimToLineItem(ctx));
+    claim.post("/purchase", (ctx) => claimController.linkClaimToPurchaseItems(ctx));
     claim.get("/:id/line-item", (ctx) => claimController.getLinkedPurchaseLineItems(ctx));
     claim.delete("/:claimId/line-item/:lineItemId", (ctx) => claimController.deletePurchaseLineItem(ctx));
 

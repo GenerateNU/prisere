@@ -3,9 +3,13 @@ import {
     CreateClaimDTO,
     CreateClaimResponse,
     DeleteClaimDTO,
-    DeleteClaimResponse, DeletePurchaseLineItemResponse,
+    DeleteClaimResponse,
+    DeletePurchaseLineItemResponse,
     GetClaimsByCompanyIdResponse,
-    GetPurchaseLineItemsForClaimResponse, LinkClaimToLineItemDTO, LinkClaimToLineItemResponse, LinkClaimToPurchaseDTO,
+    GetPurchaseLineItemsForClaimResponse,
+    LinkClaimToLineItemDTO,
+    LinkClaimToLineItemResponse,
+    LinkClaimToPurchaseDTO,
     LinkClaimToPurchaseResponse,
 } from "../../types/Claim";
 import { withServiceErrorHandling } from "../../utilities/error";
@@ -19,7 +23,6 @@ export interface IClaimService {
     linkClaimToPurchaseItems(payload: LinkClaimToPurchaseDTO): Promise<LinkClaimToPurchaseResponse>;
     getLinkedPurchaseLineItems(claimId: string): Promise<GetPurchaseLineItemsForClaimResponse>;
     deletePurchaseLineItem(claimId: string, lineItemId: string): Promise<DeletePurchaseLineItemResponse>;
-
 }
 
 export class ClaimService implements IClaimService {
@@ -75,8 +78,7 @@ export class ClaimService implements IClaimService {
 
     linkClaimToLineItem = withServiceErrorHandling(
         async (payload: LinkClaimToLineItemDTO): Promise<LinkClaimToLineItemResponse> => {
-            const response = await this.claimTransaction.linkClaimToLineItem(
-                { ...payload });
+            const response = await this.claimTransaction.linkClaimToLineItem({ ...payload });
 
             if (!response) {
                 throw Boom.notFound("Failed to link claim and purchase line item");
@@ -85,18 +87,15 @@ export class ClaimService implements IClaimService {
         }
     );
 
-
     linkClaimToPurchaseItems = withServiceErrorHandling(
         async (payload: LinkClaimToPurchaseDTO): Promise<LinkClaimToPurchaseResponse> => {
-            const response = await this.claimTransaction.linkClaimToPurchaseItems(
-                { ...payload });
+            const response = await this.claimTransaction.linkClaimToPurchaseItems({ ...payload });
 
             if (!response) {
                 throw Boom.notFound("Failed to link claim and purchase's line items");
             }
             return response;
         }
-
     );
 
     getLinkedPurchaseLineItems = withServiceErrorHandling(
@@ -115,10 +114,9 @@ export class ClaimService implements IClaimService {
             const response = await this.claimTransaction.deletePurchaseLineItem(claimId, lineItemId);
 
             if (!response) {
-                throw Boom.notFound('Failed to delete purchase line link to claim');
+                throw Boom.notFound("Failed to delete purchase line link to claim");
             }
             return response;
         }
     );
-
 }

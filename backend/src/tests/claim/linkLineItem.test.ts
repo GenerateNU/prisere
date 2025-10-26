@@ -53,7 +53,7 @@ describe("POST /claims/line-item - Link Single Line Item", () => {
 
         const linkedItems = await testAppDataSource
             .createQueryBuilder()
-            .relation(Claim, 'purchaseLineItems')
+            .relation(Claim, "purchaseLineItems")
             .of("0174375f-e7c4-4862-bb9f-f58318bb2e7d")
             .loadMany();
 
@@ -85,12 +85,12 @@ describe("POST /claims/line-item - Link Single Line Item", () => {
         // Verify exactly these 2 items were linked
         const linkedItems = await testAppDataSource
             .createQueryBuilder()
-            .relation(Claim, 'purchaseLineItems')
+            .relation(Claim, "purchaseLineItems")
             .of("2c24c901-38e4-4a35-a1c6-140ce64edf2a")
             .loadMany();
 
         expect(linkedItems.length).toBe(2);
-        const linkedIds = linkedItems.map(item => item.id);
+        const linkedIds = linkedItems.map((item) => item.id);
         expect(linkedIds).toContain(seededPurchaseLineItems[0].id);
         expect(linkedIds).toContain(seededPurchaseLineItems[1].id);
     });
@@ -119,7 +119,7 @@ describe("POST /claims/line-item - Link Single Line Item", () => {
         // Verify only 1 link exists (not duplicated)
         const linkedItems = await testAppDataSource
             .createQueryBuilder()
-            .relation(Claim, 'purchaseLineItems')
+            .relation(Claim, "purchaseLineItems")
             .of("37d07be0-4e09-4e70-a395-c1464f408c1f")
             .loadMany();
 

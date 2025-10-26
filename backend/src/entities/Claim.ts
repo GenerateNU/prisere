@@ -67,9 +67,9 @@ export class Claim {
 
     @ManyToMany(() => PurchaseLineItem)
     @JoinTable({
-        name: 'claim_purchase_line_items',
-        joinColumn: { name: 'claimId' },
-        inverseJoinColumn: { name: 'purchaseLineItemId' }
+        name: "claim_purchase_line_items",
+        joinColumn: { name: "claimId" },
+        inverseJoinColumn: { name: "purchaseLineItemId" },
     })
-    purchaseLineItems!: PurchaseLineItem[]
+    purchaseLineItems!: PurchaseLineItem[];
 }

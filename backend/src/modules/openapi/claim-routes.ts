@@ -10,7 +10,8 @@ import {
     DeleteClaimResponseSchema,
     DeletePurchaseLineItemResponseSchema,
     GetClaimsByCompanyIdResponseSchema,
-    GetPurchaseLineItemsForClaimResponseSchema, LinkClaimToLineItemDTOSchema,
+    GetPurchaseLineItemsForClaimResponseSchema,
+    LinkClaimToLineItemDTOSchema,
     LinkClaimToLineItemResponseSchema,
     LinkClaimToPurchaseDTOSchema,
     LinkClaimToPurchaseResponseSchema,
@@ -104,7 +105,6 @@ const deleteClaimRoute = createRoute({
     tags: ["Claims"],
 });
 
-
 const createLinkClaimPurchaseLineItemRoute = createRoute({
     method: "post",
     path: "/claims/line-item",
@@ -135,7 +135,6 @@ const createLinkClaimPurchaseLineItemRoute = createRoute({
     },
     tags: ["Claims"],
 });
-
 
 const createLinkClaimPurchaseRoute = createRoute({
     method: "post",
@@ -168,14 +167,13 @@ const createLinkClaimPurchaseRoute = createRoute({
     tags: ["Claims"],
 });
 
-
 const getPurchaseLineItemsForClaimRoute = createRoute({
     method: "get",
     path: "/claims/{id}/line-item",
     summary: "Gets all purchase line items linked to a claim",
     description: "Gets all purchase line items linked to a claim with a given id",
     request: {
-        params: z.object({ id: z.uuid()}),
+        params: z.object({ id: z.uuid() }),
     },
     responses: {
         200: {
@@ -194,12 +192,12 @@ const getPurchaseLineItemsForClaimRoute = createRoute({
     tags: ["Claims"],
 });
 
-
 const deletePurchaseLineItemLinkRoute = createRoute({
     method: "delete",
     path: "/claims/{claimId}/line-item/{lineItemId}",
     summary: "Deletes the link between a claim and a purchase line item",
-    description: "Deletes the link between a claim with a given claimId and a purchase line item" +
+    description:
+        "Deletes the link between a claim with a given claimId and a purchase line item" +
         "with a given purchaseLineItemId",
     request: {
         params: z.object({ claimId: z.uuid(), lineItemId: z.uuid() }),
