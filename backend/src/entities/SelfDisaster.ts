@@ -16,6 +16,9 @@ export class SelfDeclaredDisaster {
     id!: string;
 
     @Column()
+    name!: string;
+
+    @Column()
     companyId!: string;
 
     @ManyToOne(() => Company)

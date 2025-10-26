@@ -19,8 +19,10 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
     const router = useRouter();
     const [companyPayload, setCompanyPayload] = useState<CreateCompanyRequest>({
         name: "",
+        businessOwnerFullName: "",
     });
     const [locationPayload, setLocationPayload] = useState<CreateLocationRequest>({
+        alias: "Main Location",
         country: "United States",
         stateProvince: "",
         city: "",
@@ -42,7 +44,7 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
     });
 
     const { isPending, error, mutate } = useMutation<Company, Error, CreateCompanyRequest>({
-        mutationFn: (payload: CreateCompanyRequest) => createCompany(payload),
+        mutationFn: (payload: CreateCompanyRequest) => createCompany({ ...payload, businessOwnerFullName: "Owner Name" }),
         onSuccess: async (data: Company) => {
             await setCompanyMetadata(data.id);
             mutateLocation(locationPayload);

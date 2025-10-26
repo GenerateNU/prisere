@@ -238,6 +238,7 @@ export interface paths {
                         "application/json": {
                             id: string;
                             name: string;
+                            businessOwnerFullName: string;
                             lastQuickBooksImportTime?: string;
                         };
                     };
@@ -289,6 +290,7 @@ export interface paths {
                 content: {
                     "application/json": {
                         name: string;
+                        businessOwnerFullName: string;
                     };
                 };
             };
@@ -302,6 +304,7 @@ export interface paths {
                         "application/json": {
                             id: string;
                             name: string;
+                            businessOwnerFullName: string;
                             lastQuickBooksImportTime?: string;
                         };
                     };
@@ -385,6 +388,7 @@ export interface paths {
                         "application/json": {
                             id: string;
                             name: string;
+                            businessOwnerFullName: string;
                             lastQuickBooksImportTime?: string;
                         };
                     };
@@ -442,6 +446,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
+                            id: string;
+                            alias: string;
                             country: string;
                             stateProvince: string;
                             city: string;
@@ -518,8 +524,8 @@ export interface paths {
                             fipsStateCode: number;
                             /** Format: date-time */
                             declarationDate: string;
-                            incidentBeginDate: string | null;
-                            incidentEndDate: string | null;
+                            incidentBeginDate?: string;
+                            incidentEndDate?: string;
                             fipsCountyCode: number;
                             declarationType: string;
                             designatedArea: string;
@@ -654,6 +660,7 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
+                        alias: string;
                         country: string;
                         stateProvince: string;
                         city: string;
@@ -672,6 +679,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             id: string;
+                            alias: string;
                             country: string;
                             stateProvince: string;
                             city: string;
@@ -741,6 +749,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             id: string;
+                            alias: string;
                             country: string;
                             stateProvince: string;
                             city: string;
@@ -827,6 +836,88 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/location-address/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create many addresses for locations of a company
+         * @description Creates new location addresses with the provided information
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        alias: string;
+                        country: string;
+                        stateProvince: string;
+                        city: string;
+                        streetAddress: string;
+                        postalCode: string;
+                        county?: string;
+                    }[];
+                };
+            };
+            responses: {
+                /** @description Create location addresses response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            alias: string;
+                            country: string;
+                            stateProvince: string;
+                            city: string;
+                            streetAddress: string;
+                            postalCode: string;
+                            county?: string;
+                        }[];
+                    };
+                };
+                /** @description Error Creating Location Address */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Error Creating Location Address */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/notifications": {
         parameters: {
             query?: never;
@@ -893,6 +984,7 @@ export interface paths {
                             };
                             locationAddress: {
                                 id: string;
+                                alias: string;
                                 country: string;
                                 stateProvince: string;
                                 city: string;
@@ -906,6 +998,7 @@ export interface paths {
                                 company: {
                                     id: string;
                                     name: string;
+                                    businessOwnerFullName: string;
                                     lastQuickBooksImportTime?: string;
                                 };
                             };
@@ -1762,7 +1855,7 @@ export interface paths {
                             amountCents: number;
                             category?: string;
                             /** Format: date-time */
-                            quickbooksDateCreated?: string;
+                            quickbooksDateCreated?: string | null;
                             /** Format: date-time */
                             dateCreated: string;
                             /** Format: date-time */
@@ -2291,7 +2384,8 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        disasterId: string;
+                        femaDisasterId?: string;
+                        selfDisasterId?: string;
                     };
                 };
             };
@@ -2313,8 +2407,33 @@ export interface paths {
                             createdAt: string;
                             /** Format: date-time */
                             updatedAt?: string;
-                            companyId: string;
-                            disasterId: string;
+                            femaDisaster?: {
+                                /** Format: uuid */
+                                id: string;
+                                disasterNumber: number;
+                                fipsStateCode: number;
+                                /** Format: date-time */
+                                declarationDate: string;
+                                incidentBeginDate?: string;
+                                incidentEndDate?: string;
+                                fipsCountyCode: number;
+                                declarationType: string;
+                                designatedArea: string;
+                                designatedIncidentTypes: string | null;
+                            };
+                            selfDisaster?: {
+                                id: string;
+                                name: string;
+                                description: string;
+                                /** Format: date */
+                                startDate: string;
+                                /** Format: date */
+                                endDate?: string;
+                                /** Format: date */
+                                createdAt: string;
+                                /** Format: date */
+                                updatedAt: string;
+                            };
                         };
                     };
                 };
@@ -2385,8 +2504,33 @@ export interface paths {
                             createdAt: string;
                             /** Format: date-time */
                             updatedAt?: string;
-                            companyId: string;
-                            disasterId: string;
+                            femaDisaster?: {
+                                /** Format: uuid */
+                                id: string;
+                                disasterNumber: number;
+                                fipsStateCode: number;
+                                /** Format: date-time */
+                                declarationDate: string;
+                                incidentBeginDate?: string;
+                                incidentEndDate?: string;
+                                fipsCountyCode: number;
+                                declarationType: string;
+                                designatedArea: string;
+                                designatedIncidentTypes: string | null;
+                            };
+                            selfDisaster?: {
+                                id: string;
+                                name: string;
+                                description: string;
+                                /** Format: date */
+                                startDate: string;
+                                /** Format: date */
+                                endDate?: string;
+                                /** Format: date */
+                                createdAt: string;
+                                /** Format: date */
+                                updatedAt: string;
+                            };
                         }[];
                     };
                 };
@@ -2599,6 +2743,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             id: string;
+                            alias: string;
                             country: string;
                             stateProvince: string;
                             city: string;
@@ -2887,7 +3032,7 @@ export interface paths {
                         amountCents: number;
                         category?: string;
                         /** Format: date-time */
-                        quickbooksDateCreated?: string;
+                        quickbooksDateCreated?: string | null;
                     }[];
                 };
             };
@@ -2906,7 +3051,7 @@ export interface paths {
                             amountCents: number;
                             category?: string;
                             /** Format: date-time */
-                            quickbooksDateCreated?: string;
+                            quickbooksDateCreated?: string | null;
                             /** Format: date-time */
                             dateCreated: string;
                             /** Format: date-time */
@@ -2980,7 +3125,7 @@ export interface paths {
                             amountCents: number;
                             category?: string;
                             /** Format: date-time */
-                            quickbooksDateCreated?: string;
+                            quickbooksDateCreated?: string | null;
                             /** Format: date-time */
                             dateCreated: string;
                             /** Format: date-time */
@@ -3287,6 +3432,152 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/disaster/self": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create a new self-reported disaster
+         * @description Creates a new self-reported disaster for a company with the provided information
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        name: string;
+                        description: string;
+                        /** Format: date */
+                        startDate: string;
+                        /** Format: date */
+                        endDate?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description A self-reported disaster was created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            name: string;
+                            description: string;
+                            /** Format: date */
+                            startDate: string;
+                            /** Format: date */
+                            endDate?: string;
+                            /** Format: date */
+                            createdAt: string;
+                            /** Format: date */
+                            updatedAt: string;
+                        };
+                    };
+                };
+                /** @description Creating Self Disaster Error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Creating Self Disaster Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/disaster/self/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete a self-reported disaster
+         * @description Deletes a self-reported disaster by its ID
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description The ID of the self-reported disaster to delete */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Self-reported disaster was successfully deleted */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Deleting Self Disaster Error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Deleting Self Disaster Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         options?: never;
         head?: never;
         patch?: never;

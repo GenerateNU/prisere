@@ -14,6 +14,7 @@ import { addOpenApiClaimLocationRoutes } from "./claim-location-routes";
 import { addOpenApiPreferenceRoutes } from "./preference-routes";
 import { addOpenApiInvoiceLineItemRoutes } from "./invoice-line-item-routes";
 import { addOpenApiPurchaseLineItemRoutes } from "./purchase-line-item";
+import { addOpenApiSelfDisasterRoutes } from "./self-declared-disasters";
 
 export const setUpOpenApiRoutes = (db: DataSource) => {
     const openApiApp = openApiRoutes(db);
@@ -51,6 +52,7 @@ const openApiRoutes = (db: DataSource): OpenAPIHono => {
     addOpenApiPreferenceRoutes(openApi, db);
     addOpenApiInvoiceLineItemRoutes(openApi, db);
     addOpenApiPurchaseLineItemRoutes(openApi, db);
+    addOpenApiSelfDisasterRoutes(openApi, db);
 
     return openApi;
 };

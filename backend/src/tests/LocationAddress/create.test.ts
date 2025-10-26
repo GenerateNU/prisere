@@ -38,6 +38,7 @@ describe("Location Address Controller Tests", () => {
     describe("POST /location-address - Create Location Address", () => {
         test("should successfully create a location address with all required fields", async () => {
             const requestBody = {
+                alias: "Test Location",
                 country: "United States",
                 stateProvince: "California",
                 city: "San Francisco",
@@ -69,6 +70,7 @@ describe("Location Address Controller Tests", () => {
 
         test("should successfully create a location address without optional county field", async () => {
             const requestBody = {
+                alias: "Test Location",
                 country: "United States",
                 stateProvince: "California",
                 city: "San Francisco",
@@ -93,6 +95,7 @@ describe("Location Address Controller Tests", () => {
 
         test("should fail with 400 when country is missing", async () => {
             const requestBody = {
+                alias: "Test Location",
                 stateProvince: "California",
                 city: "San Francisco",
                 streetAddress: "123 Main Street",
@@ -115,6 +118,7 @@ describe("Location Address Controller Tests", () => {
 
         test("should fail with 400 when country is empty string", async () => {
             const requestBody = {
+                alias: "Test Location",
                 country: "",
                 stateProvince: "California",
                 city: "San Francisco",
@@ -138,6 +142,7 @@ describe("Location Address Controller Tests", () => {
 
         test("should fail with 400 when postalCode is not a string", async () => {
             const requestBody = {
+                alias: "Test Location",
                 country: "United States",
                 stateProvince: "California",
                 city: "San Francisco",
@@ -161,6 +166,7 @@ describe("Location Address Controller Tests", () => {
 
         test("should fail with 400 when postalCode is negative", async () => {
             const requestBody = {
+                alias: "Test Location",
                 country: "United States",
                 stateProvince: "California",
                 city: "San Francisco",
@@ -184,6 +190,7 @@ describe("Location Address Controller Tests", () => {
 
         test("should fail with 400 when postalCode contains non-numeric characters", async () => {
             const requestBody = {
+                alias: "Test Location",
                 country: "United States",
                 stateProvince: "California",
                 city: "San Francisco",
@@ -233,6 +240,7 @@ describe("Location Address Controller Tests", () => {
 
         test("should return 400 if companyId not added", async () => {
             const requestBody = {
+                alias: "Test Location",
                 country: "United States",
                 stateProvince: "California",
                 city: "San Francisco",
@@ -257,6 +265,7 @@ describe("Location Address Controller Tests", () => {
 
         test("should fail with 400 for invalid company ID", async () => {
             const requestBody = {
+                alias: "Test Location",
                 country: "United States",
                 stateProvince: "California",
                 city: "San Francisco",

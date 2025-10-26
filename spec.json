@@ -292,10 +292,15 @@
                   "name": {
                     "type": "string",
                     "minLength": 1
+                  },
+                  "businessOwnerFullName": {
+                    "type": "string",
+                    "minLength": 1
                   }
                 },
                 "required": [
-                  "name"
+                  "name",
+                  "businessOwnerFullName"
                 ]
               }
             }
@@ -313,7 +318,12 @@
                       "type": "string"
                     },
                     "name": {
-                      "type": "string"
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "businessOwnerFullName": {
+                      "type": "string",
+                      "minLength": 1
                     },
                     "lastQuickBooksImportTime": {
                       "type": "string"
@@ -321,7 +331,8 @@
                   },
                   "required": [
                     "id",
-                    "name"
+                    "name",
+                    "businessOwnerFullName"
                   ]
                 }
               }
@@ -386,7 +397,12 @@
                       "type": "string"
                     },
                     "name": {
-                      "type": "string"
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "businessOwnerFullName": {
+                      "type": "string",
+                      "minLength": 1
                     },
                     "lastQuickBooksImportTime": {
                       "type": "string"
@@ -394,7 +410,8 @@
                   },
                   "required": [
                     "id",
-                    "name"
+                    "name",
+                    "businessOwnerFullName"
                   ]
                 }
               }
@@ -479,7 +496,12 @@
                       "type": "string"
                     },
                     "name": {
-                      "type": "string"
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "businessOwnerFullName": {
+                      "type": "string",
+                      "minLength": 1
                     },
                     "lastQuickBooksImportTime": {
                       "type": "string"
@@ -487,7 +509,8 @@
                   },
                   "required": [
                     "id",
-                    "name"
+                    "name",
+                    "businessOwnerFullName"
                   ]
                 }
               }
@@ -549,6 +572,12 @@
                   "items": {
                     "type": "object",
                     "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "alias": {
+                        "type": "string"
+                      },
                       "country": {
                         "type": "string",
                         "minLength": 1
@@ -580,6 +609,8 @@
                       }
                     },
                     "required": [
+                      "id",
+                      "alias",
                       "country",
                       "stateProvince",
                       "city",
@@ -822,12 +853,10 @@
                         "format": "date-time"
                       },
                       "incidentBeginDate": {
-                        "type": "string",
-                        "nullable": true
+                        "type": "string"
                       },
                       "incidentEndDate": {
-                        "type": "string",
-                        "nullable": true
+                        "type": "string"
                       },
                       "fipsCountyCode": {
                         "type": "number",
@@ -853,8 +882,6 @@
                       "disasterNumber",
                       "fipsStateCode",
                       "declarationDate",
-                      "incidentBeginDate",
-                      "incidentEndDate",
                       "fipsCountyCode",
                       "declarationType",
                       "designatedArea",
@@ -918,6 +945,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "alias": {
+                    "type": "string"
+                  },
                   "country": {
                     "type": "string",
                     "minLength": 1
@@ -945,6 +975,7 @@
                   }
                 },
                 "required": [
+                  "alias",
                   "country",
                   "stateProvince",
                   "city",
@@ -964,6 +995,9 @@
                   "type": "object",
                   "properties": {
                     "id": {
+                      "type": "string"
+                    },
+                    "alias": {
                       "type": "string"
                     },
                     "country": {
@@ -994,6 +1028,7 @@
                   },
                   "required": [
                     "id",
+                    "alias",
                     "country",
                     "stateProvince",
                     "city",
@@ -1071,6 +1106,9 @@
                     "id": {
                       "type": "string"
                     },
+                    "alias": {
+                      "type": "string"
+                    },
                     "country": {
                       "type": "string"
                     },
@@ -1104,6 +1142,7 @@
                   },
                   "required": [
                     "id",
+                    "alias",
                     "country",
                     "stateProvince",
                     "city",
@@ -1180,6 +1219,160 @@
           },
           "400": {
             "description": "Invalid location ID or no Company with that ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/location-address/bulk": {
+      "post": {
+        "summary": "Create many addresses for locations of a company",
+        "description": "Creates new location addresses with the provided information",
+        "tags": [
+          "Location Address"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "alias": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "stateProvince": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "city": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "streetAddress": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "postalCode": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^\\d+$"
+                    },
+                    "county": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "alias",
+                    "country",
+                    "stateProvince",
+                    "city",
+                    "streetAddress",
+                    "postalCode"
+                  ]
+                },
+                "minItems": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create location addresses response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "alias": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "stateProvince": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "city": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "streetAddress": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "postalCode": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "^\\d+$"
+                      },
+                      "county": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "alias",
+                      "country",
+                      "stateProvince",
+                      "city",
+                      "streetAddress",
+                      "postalCode"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error Creating Location Address",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error Creating Location Address",
             "content": {
               "application/json": {
                 "schema": {
@@ -1428,6 +1621,9 @@
                           "id": {
                             "type": "string"
                           },
+                          "alias": {
+                            "type": "string"
+                          },
                           "country": {
                             "type": "string"
                           },
@@ -1465,7 +1661,12 @@
                                 "type": "string"
                               },
                               "name": {
-                                "type": "string"
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "businessOwnerFullName": {
+                                "type": "string",
+                                "minLength": 1
                               },
                               "lastQuickBooksImportTime": {
                                 "type": "string"
@@ -1473,12 +1674,14 @@
                             },
                             "required": [
                               "id",
-                              "name"
+                              "name",
+                              "businessOwnerFullName"
                             ]
                           }
                         },
                         "required": [
                           "id",
+                          "alias",
                           "country",
                           "stateProvince",
                           "city",
@@ -2814,6 +3017,7 @@
                       },
                       "quickbooksDateCreated": {
                         "type": "string",
+                        "nullable": true,
                         "format": "date-time"
                       },
                       "dateCreated": {
@@ -3582,13 +3786,13 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "disasterId": {
+                  "femaDisasterId": {
+                    "type": "string"
+                  },
+                  "selfDisasterId": {
                     "type": "string"
                   }
-                },
-                "required": [
-                  "disasterId"
-                ]
+                }
               }
             }
           }
@@ -3621,18 +3825,105 @@
                       "type": "string",
                       "format": "date-time"
                     },
-                    "companyId": {
-                      "type": "string"
+                    "femaDisaster": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "disasterNumber": {
+                          "type": "number"
+                        },
+                        "fipsStateCode": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 56
+                        },
+                        "declarationDate": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "incidentBeginDate": {
+                          "type": "string"
+                        },
+                        "incidentEndDate": {
+                          "type": "string"
+                        },
+                        "fipsCountyCode": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1000,
+                          "exclusiveMaximum": true
+                        },
+                        "declarationType": {
+                          "type": "string",
+                          "minLength": 2,
+                          "maxLength": 2
+                        },
+                        "designatedArea": {
+                          "type": "string"
+                        },
+                        "designatedIncidentTypes": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "disasterNumber",
+                        "fipsStateCode",
+                        "declarationDate",
+                        "fipsCountyCode",
+                        "declarationType",
+                        "designatedArea",
+                        "designatedIncidentTypes"
+                      ]
                     },
-                    "disasterId": {
-                      "type": "string"
+                    "selfDisaster": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 250
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "startDate": {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        "endDate": {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "description",
+                        "startDate",
+                        "createdAt",
+                        "updatedAt"
+                      ]
                     }
                   },
                   "required": [
                     "id",
-                    "createdAt",
-                    "companyId",
-                    "disasterId"
+                    "createdAt"
                   ]
                 }
               }
@@ -3714,18 +4005,105 @@
                         "type": "string",
                         "format": "date-time"
                       },
-                      "companyId": {
-                        "type": "string"
+                      "femaDisaster": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "disasterNumber": {
+                            "type": "number"
+                          },
+                          "fipsStateCode": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 56
+                          },
+                          "declarationDate": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "incidentBeginDate": {
+                            "type": "string"
+                          },
+                          "incidentEndDate": {
+                            "type": "string"
+                          },
+                          "fipsCountyCode": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1000,
+                            "exclusiveMaximum": true
+                          },
+                          "declarationType": {
+                            "type": "string",
+                            "minLength": 2,
+                            "maxLength": 2
+                          },
+                          "designatedArea": {
+                            "type": "string"
+                          },
+                          "designatedIncidentTypes": {
+                            "type": "string",
+                            "nullable": true
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "disasterNumber",
+                          "fipsStateCode",
+                          "declarationDate",
+                          "fipsCountyCode",
+                          "declarationType",
+                          "designatedArea",
+                          "designatedIncidentTypes"
+                        ]
                       },
-                      "disasterId": {
-                        "type": "string"
+                      "selfDisaster": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 250
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "startDate": {
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "endDate": {
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "description",
+                          "startDate",
+                          "createdAt",
+                          "updatedAt"
+                        ]
                       }
                     },
                     "required": [
                       "id",
-                      "createdAt",
-                      "companyId",
-                      "disasterId"
+                      "createdAt"
                     ]
                   }
                 }
@@ -3970,6 +4348,9 @@
                       "id": {
                         "type": "string"
                       },
+                      "alias": {
+                        "type": "string"
+                      },
                       "country": {
                         "type": "string"
                       },
@@ -4003,6 +4384,7 @@
                     },
                     "required": [
                       "id",
+                      "alias",
                       "country",
                       "stateProvince",
                       "city",
@@ -4391,6 +4773,7 @@
                     },
                     "quickbooksDateCreated": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date-time"
                     }
                   },
@@ -4438,6 +4821,7 @@
                       },
                       "quickbooksDateCreated": {
                         "type": "string",
+                        "nullable": true,
                         "format": "date-time"
                       },
                       "dateCreated": {
@@ -4551,6 +4935,7 @@
                     },
                     "quickbooksDateCreated": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date-time"
                     },
                     "dateCreated": {
@@ -5010,6 +5395,195 @@
           },
           "500": {
             "description": "Get purchase line items for purchase error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/disaster/self": {
+      "post": {
+        "summary": "Create a new self-reported disaster",
+        "description": "Creates a new self-reported disaster for a company with the provided information",
+        "tags": [
+          "Self Disaster"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 250
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "startDate": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "endDate": {
+                    "type": "string",
+                    "format": "date"
+                  }
+                },
+                "required": [
+                  "name",
+                  "description",
+                  "startDate"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "A self-reported disaster was created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 250
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "startDate": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "endDate": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "startDate",
+                    "createdAt",
+                    "updatedAt"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Creating Self Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Creating Self Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/disaster/self/{id}": {
+      "delete": {
+        "summary": "Delete a self-reported disaster",
+        "description": "Deletes a self-reported disaster by its ID",
+        "tags": [
+          "Self Disaster"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "The ID of the self-reported disaster to delete",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            },
+            "required": true,
+            "description": "The ID of the self-reported disaster to delete",
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Self-reported disaster was successfully deleted"
+          },
+          "400": {
+            "description": "Deleting Self Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Deleting Self Disaster Error",
             "content": {
               "application/json": {
                 "schema": {
