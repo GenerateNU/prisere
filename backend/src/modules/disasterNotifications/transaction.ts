@@ -70,15 +70,14 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
     async getUnreadNotifications(): Promise<DisasterNotification[]> {
         const result = await this.db
             .createQueryBuilder(DisasterNotification, "notifications")
+            .leftJoinAndSelect("notifications.user", "user")
             .leftJoinAndSelect("notifications.femaDisaster", "disaster")
             .leftJoinAndSelect("notifications.locationAddress", "location")
             .leftJoinAndSelect("location.company", "company")
-            .where({
-            notificationStatus: 'unread',
-            notificationType: 'email'
-            })
+            .where("notifications.notificationStatus = :status", { status: 'unread' })
+            .andWhere("notifications.notificationType = :type", { type: 'email' })
             .getMany();
-            
+
         return result;
     }
 

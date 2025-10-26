@@ -67,15 +67,7 @@ describe('Email Notification Integration Test', () => {
     });
 
     test('Full flow: fetch disasters -> create notifications -> send SQS messages', async () => {
-        // 1. Create test user with email preferences enabled
-
-        // // 2. Create location address for the user
-
-
-        // // 3. Enable email notifications for user
-
-
-        // // 4. Fetch real FEMA disasters from yesterday
+        // Start testing at point after fetch real FEMA disasters from yesterday
         
 
         let newDisasters: FemaDisaster[] = [];

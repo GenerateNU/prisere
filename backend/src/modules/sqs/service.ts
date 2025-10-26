@@ -29,6 +29,9 @@ export class SQSService {
             return;
         }
 
+        console.log(`Got ${messages.length} messages to SQS Batch send`)
+        console.log(`Messages: \n${messages}`)
+
         // AWS SQS batch limit is 10 messages per request
         const BATCH_SIZE = 10;
         
@@ -54,6 +57,8 @@ export class SQSService {
                 }
             }));
 
+            console.log(`Entires: \n${entries}`)
+
             const command = new SendMessageBatchCommand({
                 QueueUrl: this.SQS_QUEUE_URL,
                 Entries: entries
@@ -61,9 +66,13 @@ export class SQSService {
 
             try {
                 const response = await this.client.send(command);
+
+                console.log(`Sending batch messages response: ${response}`)
                 
                 // Log successful and failed messages
                 if (response.Successful && response.Successful.length > 0) {
+                    console.log(`Successfully sent ${response.Successful.length} messages`);
+
                     logMessageToFile(`Successfully sent ${response.Successful.length} messages`);
                 }
                 

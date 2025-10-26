@@ -173,14 +173,22 @@ export class DisasterNotificationService implements IDisasterNotificationService
         } else {
             logMessageToFile(`Going to send ${unreadNotifications.length} disaster notification emails.`);
         }
-        
+        console.log("made it here")
         const notificationMessages: DisasterEmailMessage[] = [];
         
         for (let notif of unreadNotifications) {
+            console.log("made it here 2")
+            console.log(notif)
+            console.log(notif.user)
+            console.log('...')
             if (!notif.user.email) {
+                console.log("User has no email")
+                console.log(`${notif}`)
                 logMessageToFile(`Skipping notification ${notif.id} due to undefined email`);
                 continue;
             }
+            console.log("Made it")
+            console.log(`About to process notification ${notif}`)
             const message: DisasterEmailMessage = {
                 to: notif.user.email,
                 from: 'priseregenerate@gmail.com',
@@ -193,6 +201,7 @@ export class DisasterNotificationService implements IDisasterNotificationService
                 disasterId: notif.femaDisaster.id,
                 companyName: notif.user.company?.name 
             };
+            console.log(`Message to send:\n${message}`)
             notificationMessages.push(message); 
         }
         
