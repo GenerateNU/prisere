@@ -1,33 +1,37 @@
-'use client';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import NavBarCircle from '@/icons/NavBarCircle';
-import { GetCompanyLocationsResponse } from '@/types/company';
-import React from 'react';
+"use client";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import NavBarCircle from "@/icons/NavBarCircle";
+import { GetCompanyLocationsResponse } from "@/types/company";
+import React from "react";
 
 type DisasterInfo = {
-    name: string,
-    endDate: Date | null,
-    startDate: Date | null,
-    location: string, 
-    description: string,
-}
+    name: string;
+    endDate: Date | null;
+    startDate: Date | null;
+    location: string;
+    description: string;
+};
 
 type Props = {
-    disasterInfo: DisasterInfo,
-    setInfo: React.Dispatch<React.SetStateAction<DisasterInfo>>,
-    handleStepForward: () => void,
-    handleStepBack: () => void,
-    locations: GetCompanyLocationsResponse | undefined,
-}
+    disasterInfo: DisasterInfo;
+    setInfo: React.Dispatch<React.SetStateAction<DisasterInfo>>;
+    handleStepForward: () => void;
+    handleStepBack: () => void;
+    locations: GetCompanyLocationsResponse | undefined;
+};
 
-export default function DisasterInfoStep({ disasterInfo, setInfo, handleStepForward, handleStepBack, locations }: Props) {
-    const names = ["Claim type 1", "Claim type 2", "Claim type 3"];
-
+export default function DisasterInfoStep({
+    disasterInfo,
+    setInfo,
+    handleStepForward,
+    handleStepBack,
+    locations,
+}: Props) {
     const [name, setName] = React.useState(disasterInfo.name);
     const [locationId, setLocationId] = React.useState(disasterInfo.location);
     const [description, setDescription] = React.useState(disasterInfo.description);
@@ -63,13 +67,15 @@ export default function DisasterInfoStep({ disasterInfo, setInfo, handleStepForw
                     <Label className="text-[16px]">
                         Type of claim being filed <span className="text-red-500 ml-1">*</span>
                     </Label>
-                    <Input className={`h-[58px] rounded-[10px] text-[16px] ${errors.name ? 'border-red-500' : ''}`}
+                    <Input
+                        className={`h-[58px] rounded-[10px] text-[16px] ${errors.name ? "border-red-500" : ""}`}
                         value={name}
                         placeholder="Enter a disaster name"
                         onChange={(e) => {
                             setName(e.target.value);
-                            if (errors.name) setErrors({ ...errors, name: '' });
-                        }} />
+                            if (errors.name) setErrors({ ...errors, name: "" });
+                        }}
+                    />
                     {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                 </div>
                 <div className="flex flex-col gap-2">
@@ -80,23 +86,29 @@ export default function DisasterInfoStep({ disasterInfo, setInfo, handleStepForw
                         value={locationId}
                         onValueChange={(value) => {
                             setLocationId(value);
-                            if (errors.location) setErrors({ ...errors, location: '' });
+                            if (errors.location) setErrors({ ...errors, location: "" });
                         }}
                     >
-                        <SelectTrigger className={`rounded-full px-[20px] py-[8px] w-[175px] ${errors.location ? 'border-red-500' : ''}`}>
+                        <SelectTrigger
+                            className={`rounded-full px-[20px] py-[8px] w-[175px] ${errors.location ? "border-red-500" : ""}`}
+                        >
                             <SelectValue placeholder="Select location" />
                         </SelectTrigger>
                         <SelectContent>
-                            {locations?.map((l) =>
-                                <SelectItem key={l.id} value={l.id} className="text-[16px]" >{l.streetAddress}, {l.city}, {l.stateProvince} {l.postalCode} </SelectItem>
-                            )}
+                            {locations?.map((l) => (
+                                <SelectItem key={l.id} value={l.id} className="text-[16px]">
+                                    {l.streetAddress}, {l.city}, {l.stateProvince} {l.postalCode}{" "}
+                                </SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
                     {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
                 </div>
                 <div className="flex flex-col gap-2">
                     <Label className="text-[16px]">Description of the incident</Label>
-                    <Textarea className="min-h-64 text-[16px]" rows={5}
+                    <Textarea
+                        className="min-h-64 text-[16px]"
+                        rows={5}
                         placeholder="Begin typing or "
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
@@ -110,13 +122,13 @@ export default function DisasterInfoStep({ disasterInfo, setInfo, handleStepForw
             <Card className="p-[25px] border-[1px] flex flex-col gap-[10px]">
                 <h4 className="text-[24px] font-bold">Upload additional documents</h4>
                 <div className="flex flex-col gap-[16px]">
-                    <Button className='w-fit h-fit rounded-full py-[12px] px-[20px]'>
+                    <Button className="w-fit h-fit rounded-full py-[12px] px-[20px]">
                         <Label>
                             <NavBarCircle size={24} />
                             <p>Upload from computer</p>
                         </Label>
                     </Button>
-                    <Button className='w-fit h-fit rounded-full py-[12px] px-[20px]'>
+                    <Button className="w-fit h-fit rounded-full py-[12px] px-[20px]">
                         <Label>
                             <NavBarCircle size={24} />
                             <p>Select from business profile</p>
@@ -125,8 +137,7 @@ export default function DisasterInfoStep({ disasterInfo, setInfo, handleStepForw
                 </div>
             </Card>
             <div className="flex justify-end gap-1">
-                <Button className="px-[20px] py-[12px] w-fit h-fit rounded-50 text-[16px]"
-                    onClick={handleStepBack}>
+                <Button className="px-[20px] py-[12px] w-fit h-fit rounded-50 text-[16px]" onClick={handleStepBack}>
                     Back
                 </Button>
                 <Button

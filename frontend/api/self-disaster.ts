@@ -17,4 +17,4 @@ export const createSelfDisaster = async (payload: CreateSelfDisasterRequest): Pr
         }
     };
     return authWrapper<CreateSelfDisasterResponse>()(req);
-}
+};

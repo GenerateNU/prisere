@@ -47,13 +47,11 @@ export default function RevenueAndExpenses({ showLinks = true }: { showLinks?: b
                     </div>
                 </div>
             </CardContent>
-            {
-                showLinks && (
-                    <CardFooter className="p-0">
-                        <Button className="h-[32px] text-[10px] rounded-[10px] w-fit">View Expense Tracker</Button>
-                    </CardFooter>
-                )
-            }
+            {showLinks && (
+                <CardFooter className="p-0">
+                    <Button className="h-[32px] text-[10px] rounded-[10px] w-fit">View Expense Tracker</Button>
+                </CardFooter>
+            )}
         </Card>
     );
 }

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,14 +14,15 @@ import {
 import { useState } from "react";
 
 type insurerInfo = {
-}
+    name: string;
+};
 
 type Props = {
-    insurerInfo: insurerInfo,
-    setInfo: React.Dispatch<React.SetStateAction<insurerInfo>>,
-    handleStepForward: () => void,
-    handleStepBack: () => void,
-}
+    insurerInfo: insurerInfo;
+    setInfo: React.Dispatch<React.SetStateAction<insurerInfo>>;
+    handleStepForward: () => void;
+    handleStepBack: () => void;
+};
 
 export default function InsurerInfoStep({ insurerInfo, setInfo, handleStepForward, handleStepBack }: Props) {
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
@@ -32,6 +33,7 @@ export default function InsurerInfoStep({ insurerInfo, setInfo, handleStepForwar
 
     const handleConfirm = () => {
         setShowConfirmDialog(false);
+        setInfo(insurerInfo); // edit later
         handleStepForward();
     };
 
@@ -59,15 +61,13 @@ export default function InsurerInfoStep({ insurerInfo, setInfo, handleStepForwar
                     <AlertDialogHeader>
                         <AlertDialogTitle className="text-[24px]">Confirm and Save</AlertDialogTitle>
                         <AlertDialogDescription className="text-[18px]">
-                            Moving to the next step will create a claim with the provided information. You will not be able to edit previous steps after confirming. Do you wish to proceed?
+                            Moving to the next step will create a claim with the provided information. You will not be
+                            able to edit previous steps after confirming. Do you wish to proceed?
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel className="w-1/2 h-10">Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                            onClick={handleConfirm}
-                            className="bg-[#2e2f2d] text-white w-1/2 h-10"
-                        >
+                        <AlertDialogAction onClick={handleConfirm} className="bg-[#2e2f2d] text-white w-1/2 h-10">
                             Confirm & Save
                         </AlertDialogAction>
                     </AlertDialogFooter>

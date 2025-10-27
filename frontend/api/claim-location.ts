@@ -3,7 +3,9 @@
 import { authHeader, authWrapper, getClient } from "./client";
 import { CreateClaimLocationRequest, CreateClaimLocationResponse } from "@/types/claim-location";
 
-export const createClaimLocationLink = async (payload: CreateClaimLocationRequest): Promise<CreateClaimLocationResponse> => {
+export const createClaimLocationLink = async (
+    payload: CreateClaimLocationRequest
+): Promise<CreateClaimLocationResponse> => {
     const req = async (token: string): Promise<CreateClaimLocationResponse> => {
         const client = getClient();
         const { data, error, response } = await client.POST("/claim-locations", {
@@ -17,4 +19,4 @@ export const createClaimLocationLink = async (payload: CreateClaimLocationReques
         }
     };
     return authWrapper<CreateClaimLocationResponse>()(req);
-}
+};

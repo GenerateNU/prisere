@@ -16,4 +16,4 @@ export const createClaim = async (payload: CreateClaimRequest): Promise<CreateCl
         }
     };
     return authWrapper<CreateClaimResponse>()(req);
-}
+};

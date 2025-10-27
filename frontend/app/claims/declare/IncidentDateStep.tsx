@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import * as React from "react";
 import { Button } from "@/components/ui/button";
@@ -9,59 +9,66 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { CalendarIcon } from "lucide-react";
 
 type Props = {
-    incidentDate: Date | null,
-    setIncidentDate: (date: Date) => void,
-    incidentEndDate: Date | null,
-    setIncidentEndDate: (date: Date) => void,
-    handleStepForward: () => void
-    handleStepBack: () => void
-}
+    incidentDate: Date | null;
+    setIncidentDate: (date: Date) => void;
+    incidentEndDate: Date | null;
+    setIncidentEndDate: (date: Date) => void;
+    handleStepForward: () => void;
+    handleStepBack: () => void;
+};
 
 function formatDate(date: Date | undefined) {
     if (!date) {
-        return ""
+        return "";
     }
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const year = date.getFullYear()
-    return `${month}/${day}/${year}`
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
 }
 
-export default function IncidentDateStep({ incidentDate, setIncidentDate, incidentEndDate, setIncidentEndDate, handleStepForward, handleStepBack }: Props) {
+export default function IncidentDateStep({
+    incidentDate,
+    setIncidentDate,
+    incidentEndDate,
+    setIncidentEndDate,
+    handleStepForward,
+    handleStepBack,
+}: Props) {
     // Start date states
-    const [openStart, setOpenStart] = React.useState(false)
-    const [startDate, setStartDate] = React.useState<Date | undefined>(incidentDate ?? undefined)
-    const [startMonth, setStartMonth] = React.useState<Date>(incidentDate ?? new Date())
-    const [startValue, setStartValue] = React.useState(formatDate(incidentDate ?? undefined))
-    const [startError, setStartError] = React.useState<string>("")
+    const [openStart, setOpenStart] = React.useState(false);
+    const [startDate, setStartDate] = React.useState<Date | undefined>(incidentDate ?? undefined);
+    const [startMonth, setStartMonth] = React.useState<Date>(incidentDate ?? new Date());
+    const [startValue, setStartValue] = React.useState(formatDate(incidentDate ?? undefined));
+    const [startError, setStartError] = React.useState<string>("");
 
-    const [openEnd, setOpenEnd] = React.useState(false)
-    const [endDate, setEndDate] = React.useState<Date | undefined>(incidentEndDate ?? undefined)
-    const [endMonth, setEndMonth] = React.useState<Date>(incidentEndDate ?? new Date())
-    const [endValue, setEndValue] = React.useState(formatDate(incidentEndDate ?? undefined))
-    const [endError, setEndError] = React.useState<string>("")
+    const [openEnd, setOpenEnd] = React.useState(false);
+    const [endDate, setEndDate] = React.useState<Date | undefined>(incidentEndDate ?? undefined);
+    const [endMonth, setEndMonth] = React.useState<Date>(incidentEndDate ?? new Date());
+    const [endValue, setEndValue] = React.useState(formatDate(incidentEndDate ?? undefined));
+    const [endError, setEndError] = React.useState<string>("");
 
     const isValidDate = (dateString: string, dateObj: Date) => {
         // date is MM/DD/YYYY format
-        const regex = /^\d{2}\/\d{2}\/\d{4}$/
+        const regex = /^\d{2}\/\d{2}\/\d{4}$/;
         if (!regex.test(dateString)) {
-            return false
+            return false;
         }
 
         // date object is valid
         if (isNaN(dateObj.getTime())) {
-            return false
+            return false;
         }
 
         // date is not in the future
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
         if (dateObj > today) {
-            return false
+            return false;
         }
 
-        return true
-    }
+        return true;
+    };
 
     const validateAndSetStartDate = (inputValue: string) => {
         setStartValue(inputValue);
@@ -82,7 +89,7 @@ export default function IncidentDateStep({ incidentDate, setIncidentDate, incide
         }
 
         // Parse and validate date
-        const [monthStr, dayStr, yearStr] = inputValue.split('/');
+        const [monthStr, dayStr, yearStr] = inputValue.split("/");
         const parsedDate = new Date(parseInt(yearStr), parseInt(monthStr) - 1, parseInt(dayStr));
 
         if (isNaN(parsedDate.getTime())) {
@@ -116,7 +123,7 @@ export default function IncidentDateStep({ incidentDate, setIncidentDate, incide
         setEndValue(inputValue);
         setEndError("");
 
-    // End date is optional
+        // End date is optional
         if (!inputValue.trim()) {
             setEndDate(undefined);
             return;
@@ -131,7 +138,7 @@ export default function IncidentDateStep({ incidentDate, setIncidentDate, incide
         }
 
         // Parse and validate date
-        const [monthStr, dayStr, yearStr] = inputValue.split('/');
+        const [monthStr, dayStr, yearStr] = inputValue.split("/");
         const parsedDate = new Date(parseInt(yearStr), parseInt(monthStr) - 1, parseInt(dayStr));
 
         if (isNaN(parsedDate.getTime())) {
@@ -201,7 +208,7 @@ export default function IncidentDateStep({ incidentDate, setIncidentDate, incide
                             id="start-date"
                             value={startValue}
                             placeholder="MM/DD/YYYY"
-                            className={`bg-background rounded-[11px] h-[52px] ${startError ? 'border-red-500' : ''}`}
+                            className={`bg-background rounded-[11px] h-[52px] ${startError ? "border-red-500" : ""}`}
                             onChange={(e) => validateAndSetStartDate(e.target.value)}
                             onBlur={(e) => {
                                 if (e.target.value) {
@@ -210,12 +217,12 @@ export default function IncidentDateStep({ incidentDate, setIncidentDate, incide
                             }}
                             onKeyDown={(e) => {
                                 if (e.key === "ArrowDown") {
-                                    e.preventDefault()
-                                    setOpenStart(true)
+                                    e.preventDefault();
+                                    setOpenStart(true);
                                 }
                                 if (e.key === "Enter") {
-                                    e.preventDefault()
-                                    handleProceed()
+                                    e.preventDefault();
+                                    handleProceed();
                                 }
                             }}
                         />
@@ -245,10 +252,10 @@ export default function IncidentDateStep({ incidentDate, setIncidentDate, incide
                                     onMonthChange={setStartMonth}
                                     onSelect={(selectedDate: Date | undefined) => {
                                         if (selectedDate) {
-                                            setStartDate(selectedDate)
-                                            setStartValue(formatDate(selectedDate))
-                                            setStartError("")
-                                            setOpenStart(false)
+                                            setStartDate(selectedDate);
+                                            setStartValue(formatDate(selectedDate));
+                                            setStartError("");
+                                            setOpenStart(false);
                                         }
                                     }}
                                     disabled={(date) => {
@@ -263,9 +270,7 @@ export default function IncidentDateStep({ incidentDate, setIncidentDate, incide
                             </PopoverContent>
                         </Popover>
                     </div>
-                    {startError && (
-                        <p className="text-red-500 text-sm px-1">{startError}</p>
-                    )}
+                    {startError && <p className="text-red-500 text-sm px-1">{startError}</p>}
                 </div>
 
                 {/* End Date */}
@@ -278,7 +283,7 @@ export default function IncidentDateStep({ incidentDate, setIncidentDate, incide
                             id="end-date"
                             value={endValue}
                             placeholder="MM/DD/YYYY"
-                            className={`bg-background rounded-[11px] h-[52px] ${endError ? 'border-red-500' : ''}`}
+                            className={`bg-background rounded-[11px] h-[52px] ${endError ? "border-red-500" : ""}`}
                             onChange={(e) => validateAndSetEndDate(e.target.value)}
                             onBlur={(e) => {
                                 if (e.target.value) {
@@ -287,12 +292,12 @@ export default function IncidentDateStep({ incidentDate, setIncidentDate, incide
                             }}
                             onKeyDown={(e) => {
                                 if (e.key === "ArrowDown") {
-                                    e.preventDefault()
-                                    setOpenEnd(true)
+                                    e.preventDefault();
+                                    setOpenEnd(true);
                                 }
                                 if (e.key === "Enter") {
-                                    e.preventDefault()
-                                    handleProceed()
+                                    e.preventDefault();
+                                    handleProceed();
                                 }
                             }}
                         />
@@ -322,10 +327,10 @@ export default function IncidentDateStep({ incidentDate, setIncidentDate, incide
                                     onMonthChange={setEndMonth}
                                     onSelect={(selectedDate: Date | undefined) => {
                                         if (selectedDate) {
-                                            setEndDate(selectedDate)
-                                            setEndValue(formatDate(selectedDate))
-                                            setEndError("")
-                                            setOpenEnd(false)
+                                            setEndDate(selectedDate);
+                                            setEndValue(formatDate(selectedDate));
+                                            setEndError("");
+                                            setOpenEnd(false);
                                         }
                                     }}
                                     disabled={(date) => {
@@ -340,9 +345,7 @@ export default function IncidentDateStep({ incidentDate, setIncidentDate, incide
                             </PopoverContent>
                         </Popover>
                     </div>
-                    {endError && (
-                        <p className="text-red-500 text-sm px-1">{endError}</p>
-                    )}
+                    {endError && <p className="text-red-500 text-sm px-1">{endError}</p>}
                 </div>
             </div>
 
@@ -354,14 +357,10 @@ export default function IncidentDateStep({ incidentDate, setIncidentDate, incide
                 >
                     Next
                 </Button>
-                <Button
-                    onClick={handleStepBack}
-                    variant="link"
-                    className="text-base underline text-[19px] h-fit p-0"
-                >
+                <Button onClick={handleStepBack} variant="link" className="text-base underline text-[19px] h-fit p-0">
                     Previous
                 </Button>
             </div>
-        </div >
+        </div>
     );
 }

@@ -44,7 +44,8 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
     });
 
     const { isPending, error, mutate } = useMutation<Company, Error, CreateCompanyRequest>({
-        mutationFn: (payload: CreateCompanyRequest) => createCompany({ ...payload, businessOwnerFullName: "Owner Name" }),
+        mutationFn: (payload: CreateCompanyRequest) =>
+            createCompany({ ...payload, businessOwnerFullName: "Owner Name" }),
         onSuccess: async (data: Company) => {
             await setCompanyMetadata(data.id);
             mutateLocation(locationPayload);

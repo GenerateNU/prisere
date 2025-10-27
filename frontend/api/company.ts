@@ -33,4 +33,4 @@ export const getCompanyLocations = async (): Promise<GetCompanyLocationsResponse
         }
     };
     return authWrapper<GetCompanyLocationsResponse>()(req);
-}
+};
