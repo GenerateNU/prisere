@@ -11,7 +11,6 @@ export const createSelfDisaster = async (payload: CreateSelfDisasterRequest): Pr
             body: payload,
         });
         if (response.ok) {
-            console.log(data);
             return data!;
         } else {
             throw Error(error?.error);

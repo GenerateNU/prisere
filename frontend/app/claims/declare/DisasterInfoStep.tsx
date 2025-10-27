@@ -11,8 +11,9 @@ import React from 'react';
 
 type DisasterInfo = {
     name: string,
-    dateOfIncident: Date, // date
-    location: string, // from business locations (location id?)
+    endDate: Date | null,
+    startDate: Date | null,
+    location: string, 
     description: string,
 }
 

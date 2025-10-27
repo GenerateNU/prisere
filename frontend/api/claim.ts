@@ -10,7 +10,6 @@ export const createClaim = async (payload: CreateClaimRequest): Promise<CreateCl
             body: payload,
         });
         if (response.ok) {
-            console.log(data);
             return data!;
         } else {
             throw Error(error?.error);

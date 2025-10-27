@@ -2,20 +2,25 @@
 import { Button } from "@/components/ui/button";
 import NavBarCircle from "@/icons/NavBarCircle";
 import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type StartProps = {
     handleStepForward: () => void,
 }
 
 export default function StartStep({ handleStepForward }: StartProps) {
+    const router = useRouter();
     return (
         <div className="h-full">
-            <a href="/claims">
-                <div className="flex gap-2">
+            <div className="self-start">
+                <Button
+                    className="flex justify-start items-center "
+                    variant="link"
+                    onClick={() => router.push("/claims")}>
                     <ArrowLeft />
                     <p>Back to Reports</p>
-                </div>
-            </a>
+                </Button>
+            </div>
             <div className="flex justify-center items-center h-full mt-8">
                 <div className="flex flex-col items-center justify-center gap-[43px] w-[500px] h-full">
                     <h3 className="font-bold text-[40px] text-center">Build your claim report</h3>
