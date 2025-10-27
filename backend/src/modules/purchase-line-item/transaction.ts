@@ -9,6 +9,7 @@ export interface IPurchaseLineItemTransaction {
     createOrUpdatePurchaseLineItems(payload: CreateOrChangePurchaseLineItemsDTO): Promise<PurchaseLineItem[]>;
     getPurchaseLineItem(id: string): Promise<PurchaseLineItem | null>;
     getPurchaseLineItemsForPurchase(purchaseId: string): Promise<PurchaseLineItem[]>;
+    updatePurchaseLineItemCategory(id: string, category: string): Promise<PurchaseLineItem>; 
 }
 
 export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction {
@@ -63,5 +64,23 @@ export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction
 
         // asserting not null b/c we include it in above
         return givenPurchase.lineItems!;
+    }
+
+    async updatePurchaseLineItemCategory(id: string, category: string): Promise<PurchaseLineItem> {
+        const response = await this.db
+                    .createQueryBuilder()
+                    .update(PurchaseLineItem)
+                    .set({ category: category })
+                    .where({ id })
+                    .returning("*")
+                    .execute();
+
+
+        if (!response || response.affected == 0) {
+            throw Boom.notFound("Purchase line item not found")
+        }
+
+        return response.raw[0];
+        
     }
 }

@@ -7,6 +7,8 @@ import {
     CreateOrChangePurchaseLineItemsResponse,
     GetPurchaseLineItemsFromParentResponse,
     GetPurchaseLineItemResponse,
+    UpdatePurchaseLineItemResponse,
+    UpdatePurchaseLineItemDTOSchema,
 } from "./types";
 import { ControllerResponse } from "../../utilities/response";
 import { logObjectToFile } from "../../utilities/logger";
@@ -19,6 +21,8 @@ export interface IPurchaseLineItemController {
     getPurchaseLineItemsForPurchase(
         ctx: Context
     ): ControllerResponse<TypedResponse<GetPurchaseLineItemsFromParentResponse, 200>>;
+
+    updatePurchaseLineItemCategory(ctx: Context): ControllerResponse<TypedResponse<UpdatePurchaseLineItemResponse, 200>>;
 }
 
 export class PurchaseLineItemController implements IPurchaseLineItemController {
@@ -70,4 +74,20 @@ export class PurchaseLineItemController implements IPurchaseLineItemController {
             return ctx.json(fetchedPurchaseLineItem, 200);
         }
     );
+
+
+
+    updatePurchaseLineItemCategory = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<UpdatePurchaseLineItemResponse, 200>> => {
+            const json = await ctx.req.json();
+            const request = UpdatePurchaseLineItemDTOSchema.parse(json);
+
+            const updated = 
+            await this.purchaseLineItemService.updatePurchaseLineItemCategory(request.id, request.category);
+
+            return ctx.json(updated, 200);
+
+        }
+    );
+    
 }
