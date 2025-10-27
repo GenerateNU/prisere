@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import NavBarCircle from "@/icons/NavBarCircle";
 import { useQuery } from "@tanstack/react-query";
 
-export default function RevenueAndExpenses() {
+export default function RevenueAndExpenses({ showLinks = true }: { showLinks?: boolean }) {
     const getMonthStart = () => {
         const today = new Date();
         const currentYear = today.getFullYear();
@@ -47,9 +47,13 @@ export default function RevenueAndExpenses() {
                     </div>
                 </div>
             </CardContent>
-            <CardFooter className="p-0">
-                <Button className="h-[32px] text-[10px] rounded-[10px] w-fit">View Expense Tracker</Button>
-            </CardFooter>
+            {
+                showLinks && (
+                    <CardFooter className="p-0">
+                        <Button className="h-[32px] text-[10px] rounded-[10px] w-fit">View Expense Tracker</Button>
+                    </CardFooter>
+                )
+            }
         </Card>
     );
 }

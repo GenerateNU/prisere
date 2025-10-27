@@ -88,7 +88,7 @@ export default function DisasterInfoStep({ disasterInfo, setInfo, handleStepForw
                         </SelectTrigger>
                         <SelectContent>
                             {locations?.map((l) =>
-                                <SelectItem key={l.id} value={l.id} className="text-[16px]" >{l.streetAddress}</SelectItem>
+                                <SelectItem key={l.id} value={l.id} className="text-[16px]" >{l.streetAddress}, {l.city}, {l.stateProvince} {l.postalCode} </SelectItem>
                             )}
                         </SelectContent>
                     </Select>
@@ -133,7 +133,7 @@ export default function DisasterInfoStep({ disasterInfo, setInfo, handleStepForw
                     className="px-[20px] py-[12px] w-fit h-fit rounded-50 text-[16px] text-white bg-[#2e2f2d]"
                     onClick={handleProceed}
                 >
-                    Proceed to Business Information
+                    Proceed to Personal Information
                 </Button>
             </div>
         </div>

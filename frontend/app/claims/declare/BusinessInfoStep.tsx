@@ -115,7 +115,7 @@ export default function BusinessInfoStep({ businessInfo, setInfo, handleStepForw
                             locations?.map((location) =>
                                 <div key={location.id}>
                                     <div className="text-[18px]">
-                                        {location.id}
+                                        {location.alias}
                                     </div>
                                     <hr className="my-2" />
                                     <div className="text-[18px]">
@@ -130,7 +130,7 @@ export default function BusinessInfoStep({ businessInfo, setInfo, handleStepForw
                 <div className="flex flex-col gap-2">
                     <p className="font-semibold text-[16px]">Financial History</p>
                     <p className="text-[20px]">We will use a 3 years average of your revenues and expense data for the report.</p>
-                    <RevenueAndExpenses />
+                    <RevenueAndExpenses showLinks={false} />
                 </div>
             </Card>
             <div className="flex justify-end gap-[25px]">
