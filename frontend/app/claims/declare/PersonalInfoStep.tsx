@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React from "react";
+import { validatePersonalInfo } from "./utils/validationUtils";
 
 type PersonalInfo = {
     firstName: string;
@@ -27,31 +28,7 @@ export default function PersonalInfoStep({ personalInfo, setInfo, handleStepForw
     const [email, setEmail] = React.useState(personalInfo.email);
     const [errors, setErrors] = React.useState<{ [key: string]: string }>({});
 
-    const validateForm = () => {
-        const newErrors: { [key: string]: string } = {};
-
-        if (!firstName.trim()) {
-            newErrors.firstName = "First name is required";
-        }
-
-        if (!lastName.trim()) {
-            newErrors.lastName = "Last name is required";
-        }
-
-        if (!email.trim()) {
-            newErrors.email = "Email is required";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            newErrors.email = "Please enter a valid email";
-        }
-
-        // Phone is optional, but validate format if provided
-        if (phone && !/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(phone)) {
-            newErrors.phone = "Please enter a valid phone number";
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+    const validateForm = () => validatePersonalInfo(firstName, lastName, email, phone, setErrors);
 
     const handleProceed = () => {
         if (validateForm()) {

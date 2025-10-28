@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import NavBarCircle from "@/icons/NavBarCircle";
 import { GetCompanyLocationsResponse } from "@/types/company";
 import React from "react";
+import { validateDisasterInfo } from "./utils/validationUtils";
 
 type DisasterInfo = {
     name: string;
@@ -37,20 +38,7 @@ export default function DisasterInfoStep({
     const [description, setDescription] = React.useState(disasterInfo.description);
     const [errors, setErrors] = React.useState<{ [key: string]: string }>({});
 
-    const validateForm = () => {
-        const newErrors: { [key: string]: string } = {};
-
-        if (!name) {
-            newErrors.name = "Name is required";
-        }
-
-        if (!locationId) {
-            newErrors.location = "Location is required";
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+    const validateForm = () => validateDisasterInfo(name, locationId, setErrors);
 
     const handleProceed = () => {
         if (validateForm()) {

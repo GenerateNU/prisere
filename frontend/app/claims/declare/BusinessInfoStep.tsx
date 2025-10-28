@@ -8,6 +8,7 @@ import { SelectContent, SelectItem, SelectTrigger, SelectValue, Select } from "@
 import React from "react";
 import RevenueAndExpenses from "@/components/dashboard/RevenueAndExpenses";
 import { GetCompanyLocationsResponse } from "@/types/company";
+import { validateBusinessInfo } from "./utils/validationUtils";
 
 type BusinessInfo = {
     businessName: string;
@@ -36,24 +37,7 @@ export default function BusinessInfoStep({
     const [businessType, setBusinessType] = React.useState(businessInfo.businessType);
     const [errors, setErrors] = React.useState<{ [key: string]: string }>({});
 
-    const validateForm = () => {
-        const newErrors: { [key: string]: string } = {};
-
-        if (!businessName.trim()) {
-            newErrors.businessName = "Business name is required";
-        }
-
-        if (!businessOwner.trim()) {
-            newErrors.businessOwner = "Business owner is required";
-        }
-
-        if (!businessType) {
-            newErrors.businessType = "Business type is required";
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+    const validateForm = () => validateBusinessInfo(businessName, businessOwner, businessType, setErrors);
 
     const handleProceed = () => {
         if (validateForm()) {

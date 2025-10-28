@@ -7,6 +7,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
+import { isValidDate, validateAndSetDate } from "./utils/validationUtils";
 
 type Props = {
     incidentDate: Date | null;
@@ -41,134 +42,43 @@ export default function IncidentDateStep({
     const [startMonth, setStartMonth] = React.useState<Date>(incidentDate ?? new Date());
     const [startValue, setStartValue] = React.useState(formatDate(incidentDate ?? undefined));
     const [startError, setStartError] = React.useState<string>("");
+    const [startValid, setStartValid] = React.useState<boolean>(true);
 
     const [openEnd, setOpenEnd] = React.useState(false);
     const [endDate, setEndDate] = React.useState<Date | undefined>(incidentEndDate ?? undefined);
     const [endMonth, setEndMonth] = React.useState<Date>(incidentEndDate ?? new Date());
     const [endValue, setEndValue] = React.useState(formatDate(incidentEndDate ?? undefined));
     const [endError, setEndError] = React.useState<string>("");
+    const [endValid, setEndValid] = React.useState<boolean>(true);
 
-    const isValidDate = (dateString: string, dateObj: Date) => {
-        // date is MM/DD/YYYY format
-        const regex = /^\d{2}\/\d{2}\/\d{4}$/;
-        if (!regex.test(dateString)) {
-            return false;
-        }
+    const validateAndSetStartDate = (date: string) =>
+        validateAndSetDate({
+            date,
+            validate: setStartValid,
+            setDate: setStartDate,
+            setDateValue: setStartValue,
+            setMonth: setStartMonth,
+            setError: setStartError,
+            isStartDate: true,
+            otherDate: endDate,
+        });
 
-        // date object is valid
-        if (isNaN(dateObj.getTime())) {
-            return false;
-        }
-
-        // date is not in the future
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        if (dateObj > today) {
-            return false;
-        }
-
-        return true;
-    };
-
-    const validateAndSetStartDate = (inputValue: string) => {
-        setStartValue(inputValue);
-        setStartError("");
-
-        if (!inputValue.trim()) {
-            setStartError("Start date is required");
-            setStartDate(undefined);
-            return;
-        }
-
-        // Check format
-        const regex = /^\d{2}\/\d{2}\/\d{4}$/;
-        if (!regex.test(inputValue)) {
-            setStartError("Please use MM/DD/YYYY format");
-            setStartDate(undefined);
-            return;
-        }
-
-        // Parse and validate date
-        const [monthStr, dayStr, yearStr] = inputValue.split("/");
-        const parsedDate = new Date(parseInt(yearStr), parseInt(monthStr) - 1, parseInt(dayStr));
-
-        if (isNaN(parsedDate.getTime())) {
-            setStartError("Invalid date");
-            setStartDate(undefined);
-            return;
-        }
-
-        // Check if date is in the future
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        if (parsedDate > today) {
-            setStartError("Date cannot be in the future");
-            setStartDate(undefined);
-            return;
-        }
-
-        // Check if start date is after end date
-        if (endDate && parsedDate > endDate) {
-            setStartError("Start date cannot be after end date");
-            setStartDate(undefined);
-            return;
-        }
-
-        // Valid date
-        setStartDate(parsedDate);
-        setStartMonth(parsedDate);
-    };
-
-    const validateAndSetEndDate = (inputValue: string) => {
-        setEndValue(inputValue);
-        setEndError("");
-
-        // End date is optional
-        if (!inputValue.trim()) {
-            setEndDate(undefined);
-            return;
-        }
-
-        // Check format
-        const regex = /^\d{2}\/\d{2}\/\d{4}$/;
-        if (!regex.test(inputValue)) {
-            setEndError("Please use MM/DD/YYYY format");
-            setEndDate(undefined);
-            return;
-        }
-
-        // Parse and validate date
-        const [monthStr, dayStr, yearStr] = inputValue.split("/");
-        const parsedDate = new Date(parseInt(yearStr), parseInt(monthStr) - 1, parseInt(dayStr));
-
-        if (isNaN(parsedDate.getTime())) {
-            setEndError("Invalid date");
-            setEndDate(undefined);
-            return;
-        }
-
-        // Check if date is in the future
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        if (parsedDate > today) {
-            setEndError("Date cannot be in the future");
-            setEndDate(undefined);
-            return;
-        }
-
-        // Check if end date is before start date
-        if (startDate && parsedDate < startDate) {
-            setEndError("End date cannot be before start date");
-            setEndDate(undefined);
-            return;
-        }
-
-        // Valid date
-        setEndDate(parsedDate);
-        setEndMonth(parsedDate);
-    };
+    const validateAndSetEndDate = (date: string) =>
+        validateAndSetDate({
+            date,
+            validate: setEndValid,
+            setDate: setEndDate,
+            setDateValue: setEndValue,
+            setMonth: setEndMonth,
+            setError: setEndError,
+            isStartDate: false,
+            otherDate: startDate,
+        });
 
     const handleProceed = () => {
+        if (!endValid || !startValid) {
+            return;
+        }
         // Final validation before proceeding
         if (!startDate) {
             setStartError("Please select a valid start date");
