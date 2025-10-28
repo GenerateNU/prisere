@@ -56,14 +56,39 @@ export class PurchaseTransaction implements IPurchaseTransaction {
     }
 
     async getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<Purchase[]> {
-        const { companyId, pageNumber, resultsPerPage } = payload;
+        const { companyId, pageNumber, resultsPerPage, categories, type, 
+            dateFrom, dateTo, search, sortBy, sortOrder } = payload;
 
+        const queryBuilder = this.db.manager.createQueryBuilder(Purchase, 'p');
+        queryBuilder.leftJoinAndSelect('p.lineItems', 'li');
+        queryBuilder.where('p.companyId = :companyId', { companyId });
         const numToSkip = resultsPerPage * pageNumber;
-        return await this.db.manager.find(Purchase, {
-            where: { companyId: companyId },
-            skip: numToSkip,
-            take: resultsPerPage,
-        });
+
+        if (categories && categories.length > 0) {
+            queryBuilder.andWhere('li.category IN (:...categories)', { categories });
+        }
+
+        if (type) {
+            queryBuilder.andWhere('li.type = :type', { type });
+        }
+
+        if (dateFrom) {
+            queryBuilder.andWhere('p.dateCreated BETWEEN :dateFrom AND :dateTo', { dateFrom, dateTo });
+        }
+
+        if (sortBy) {
+            queryBuilder.orderBy(`p.${sortBy}`, sortOrder);
+        }
+
+        if (search) {
+            queryBuilder.andWhere('(li.description ILIKE :search OR li.category ILIKE :search)',
+                { search: `%${search}%`});
+        }
+
+        return await queryBuilder
+            .skip(numToSkip)
+            .take(resultsPerPage)
+            .getMany();
     }
 
     async sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number> {

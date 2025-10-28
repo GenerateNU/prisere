@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
 
 export const CreateOrChangePurchaseRequestSchema = z
     .array(
@@ -45,11 +46,26 @@ export const GetPurchasesResponseSchema = z.object({
     lastUpdated: z.string(),
 });
 
+enum SortByColumn {
+    DATE = "date",
+    AMOUNT = "totalAmountCents",
+}
+
 //Get a list of purchases given the company ID
+/**
+ * This was expanded to support server side sorting, filtering, and search. 
+ */
 export const GetCompanyPurchasesDTOSchema = z.object({
-    companyId: z.string().nonempty(),
+    companyId: z.uuid(),
     pageNumber: z.number().gte(0).optional().default(0),
     resultsPerPage: z.number().gt(0).optional().default(20),
+    sortBy: z.enum(SortByColumn).optional(),
+    sortOrder: z.enum(["ASC", "DESC"]).optional().default('DESC'),
+    categories: z.array(z.string().nonempty()).optional().default([]),
+    type: z.enum(PurchaseLineItemType).optional(),
+    dateFrom : z.iso.datetime().optional(),
+    dateTo : z.iso.datetime().optional().default(new Date().toISOString()),
+    search : z.string().optional(),
 });
 
 export const GetCompanyPurchasesQueryParams = z.object({
