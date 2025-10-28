@@ -73,11 +73,12 @@ export class PurchaseController implements IPurchaseController {
                 companyId: ctx.get("companyId"),
                 pageNumber: ctx.req.query("pageNumber") ? Number(ctx.req.query("pageNumber")) : undefined,
                 resultsPerPage: ctx.req.query("resultsPerPage") ? Number(ctx.req.query("resultsPerPage")) : undefined,
+                categories: ctx.req.query("categories") ? ctx.req.query("categories")!.split(',').filter(Boolean) : undefined,
+                type: ctx.req.query("type"), 
+                dateFrom: ctx.req.query("dateFrom") ? new Date(ctx.req.query("dateFrom")!) : undefined,
+                dateTo: ctx.req.query("dateTo") ? new Date(ctx.req.query("dateTo")!) : undefined,
+                search: ctx.req.query("search"),
             };
-
-            if (!validate(queryParams.companyId)) {
-                return ctx.json({ error: "Invalid company ID format" }, 400);
-            }
 
             const payload = GetCompanyPurchasesDTOSchema.parse(queryParams);
             const fetchedPurchases = await this.PurchaseService.getPurchasesForCompany(payload);
