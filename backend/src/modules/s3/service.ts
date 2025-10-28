@@ -70,7 +70,19 @@ export class S3Service implements IS3Service {
     private bucketName: string;
 
     constructor() {
-        this.client = new S3Client({});
+        const config: any = {
+            region: process.env.AWS_REGION || 'us-east-1',
+        };
+
+        // Provide fake credentials in test environment
+        if (process.env.NODE_ENV === 'test') {
+            config.credentials = {
+                accessKeyId: 'test-key',
+                secretAccessKey: 'test-secret',
+            };
+        }
+
+        this.client = new S3Client(config);
         this.bucketName = S3_BUCKET_NAME;
     }
 
