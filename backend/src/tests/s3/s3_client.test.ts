@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, mock, afterEach, beforeAll } from "bun:test";
+import { describe, test, expect, beforeEach, mock, afterEach } from "bun:test";
 import { DataSource } from "typeorm";
 import { S3Service } from "../../modules/s3/service";
 import sharp from "sharp";

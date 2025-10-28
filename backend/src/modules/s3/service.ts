@@ -71,14 +71,14 @@ export class S3Service implements IS3Service {
 
     constructor() {
         const config: any = {
-            region: process.env.AWS_REGION || 'us-east-1',
+            region: process.env.AWS_REGION || "us-east-1",
         };
 
         // Provide fake credentials in test environment
-        if (process.env.NODE_ENV === 'test') {
+        if (process.env.NODE_ENV === "test") {
             config.credentials = {
-                accessKeyId: 'test-key',
-                secretAccessKey: 'test-secret',
+                accessKeyId: "test-key",
+                secretAccessKey: "test-secret",
             };
         }
 
