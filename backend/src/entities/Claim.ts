@@ -9,6 +9,8 @@ import {
     UpdateDateColumn,
     OneToMany,
     Check,
+    JoinTable,
+    ManyToMany,
 } from "typeorm";
 import type { Relation } from "typeorm";
 import { Company } from "./Company.js";
@@ -16,6 +18,7 @@ import { FemaDisaster } from "./FemaDisaster.js";
 import { ClaimStatusType } from "../types/ClaimStatusType.js";
 import { ClaimLocation } from "./ClaimLocation.js";
 import { SelfDeclaredDisaster } from "./SelfDisaster.js";
+import { PurchaseLineItem } from "./PurchaseLineItem.js";
 
 @Unique(["companyId", "femaDisasterId", "selfDisasterId"])
 @Check(
@@ -61,4 +64,12 @@ export class Claim {
 
     @UpdateDateColumn()
     updatedAt?: Date;
+
+    @ManyToMany(() => PurchaseLineItem)
+    @JoinTable({
+        name: "claim_purchase_line_items",
+        joinColumn: { name: "claimId" },
+        inverseJoinColumn: { name: "purchaseLineItemId" },
+    })
+    purchaseLineItems!: PurchaseLineItem[];
 }

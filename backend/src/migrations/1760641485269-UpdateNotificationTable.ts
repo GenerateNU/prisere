@@ -4,8 +4,6 @@ export class UpdateNotificationTable1760641485269 implements MigrationInterface 
     name = 'UpdateNotificationTable1760641485269'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "disasterNotification" DROP COLUMN "acknowledgedAt"`);
-        await queryRunner.query(`ALTER TABLE "disasterNotification" ADD "readAt" TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "disasterNotification" ADD "createdAt" TIMESTAMP NOT NULL DEFAULT now()`);
         await queryRunner.query(`ALTER TABLE "disasterNotification" ADD "locationAddressId" uuid`);
         await queryRunner.query(`ALTER TYPE "public"."disasterNotification_notificationstatus_enum" RENAME TO "disasterNotification_notificationstatus_enum_old"`);
@@ -27,8 +25,6 @@ export class UpdateNotificationTable1760641485269 implements MigrationInterface 
         await queryRunner.query(`ALTER TYPE "public"."disasterNotification_notificationstatus_enum_old" RENAME TO "disasterNotification_notificationstatus_enum"`);
         await queryRunner.query(`ALTER TABLE "disasterNotification" DROP COLUMN "locationAddressId"`);
         await queryRunner.query(`ALTER TABLE "disasterNotification" DROP COLUMN "createdAt"`);
-        await queryRunner.query(`ALTER TABLE "disasterNotification" DROP COLUMN "readAt"`);
-        await queryRunner.query(`ALTER TABLE "disasterNotification" ADD "acknowledgedAt" TIMESTAMP`);
     }
 
 }
