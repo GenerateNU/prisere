@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, mock } from "bun:test";
+import { describe, test, expect, beforeEach, mock, afterEach } from "bun:test";
 import { DataSource } from "typeorm";
 import { S3Service } from "../../modules/s3/service";
 import sharp from "sharp";
@@ -105,6 +105,10 @@ describe("S3 Client", () => {
                 "408\n" +
                 "%%EOF"
         );
+    });
+
+    afterEach(() => {
+        mockSend.mockClear();
     });
 
     // const bucketName = OBJECTS_STORAGE_BUCKET_NAME ? OBJECTS_STORAGE_BUCKET_NAME : 'prisere-objects-storage';

@@ -1,6 +1,6 @@
 import { SQSEvent, SQSRecord, SQSBatchResponse, SQSBatchItemFailure } from "aws-lambda";
 import { SESEmailService } from "./ses-client";
-import { DisasterEmailMessage } from "./types/DisasterNotification";
+import { DisasterEmailMessage } from "../../../types/DisasterNotification";
 
 const sesService = new SESEmailService(
     process.env.SES_REGION || "us-east-1",

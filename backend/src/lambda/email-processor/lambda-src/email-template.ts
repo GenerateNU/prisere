@@ -1,4 +1,4 @@
-import { DisasterEmailMessage } from "./types/DisasterNotification";
+import { DisasterEmailMessage } from "../../../types/DisasterNotification";
 
 export function buildEmailHtml(message: DisasterEmailMessage): string {
     const declarationDate =
