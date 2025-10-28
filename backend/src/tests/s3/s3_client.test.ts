@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, mock, afterEach } from "bun:test";
+import { describe, test, expect, beforeEach, mock, afterEach, beforeAll } from "bun:test";
 import { DataSource } from "typeorm";
 import { S3Service } from "../../modules/s3/service";
 import sharp from "sharp";
@@ -17,11 +17,13 @@ describe("S3 Client", () => {
     let testPdfBuffer: Buffer;
     let testUsers: User[];
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         const testAppData = await startTestApp();
         dataSource = testAppData.dataSource;
         s3Service = new S3Service();
+    })
 
+    beforeEach(async () => {
         // Mock S3 send method to handle different commands
         mockSend = mock((command) => {
             if (command instanceof PutObjectCommand) {
