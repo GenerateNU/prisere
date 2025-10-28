@@ -17,13 +17,10 @@ describe("S3 Client", () => {
     let testPdfBuffer: Buffer;
     let testUsers: User[];
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         const testAppData = await startTestApp();
         dataSource = testAppData.dataSource;
         s3Service = new S3Service();
-    });
-
-    beforeEach(async () => {
         // Mock S3 send method to handle different commands
         mockSend = mock((command) => {
             if (command instanceof PutObjectCommand) {
