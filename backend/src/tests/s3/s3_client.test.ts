@@ -113,19 +113,16 @@ describe("S3 Client", () => {
     // const bucketName = OBJECTS_STORAGE_BUCKET_NAME ? OBJECTS_STORAGE_BUCKET_NAME : 'prisere-objects-storage';
 
     test("should upload profile image successfully", async () => {
-        // Arrange
         const testUser = testUsers[0];
         expect(testUser).toBeDefined();
         expect(testUser.id).toBeDefined();
 
-        // Act
         const result = await s3Service.uploadImage({
             userId: testUser.id,
             imageBuffer: testImageBuffer,
             imageType: "profile",
         });
 
-        // Assert
         expect(result).toBeDefined();
         expect(result.key).toBe(`images/${testUser.id}/profile.webp`);
         expect(result.url).toBeDefined();
@@ -143,11 +140,9 @@ describe("S3 Client", () => {
     });
 
     test("should upload custom image with custom imageId", async () => {
-        // Arrange
         const testUser = testUsers[0];
         const customImageId = "business-logo";
 
-        // Act
         const result = await s3Service.uploadImage({
             userId: testUser.id,
             imageBuffer: testImageBuffer,
@@ -155,25 +150,21 @@ describe("S3 Client", () => {
             imageId: customImageId,
         });
 
-        // Assert
         expect(result.key).toBe(`images/${testUser.id}/${customImageId}.webp`);
         expect(result.url).toBeDefined();
         expect(result.size).toBeGreaterThan(0);
     });
 
     test("should compress image to WebP format", async () => {
-        // Arrange
         const testUser = testUsers[0];
         const originalSize = testImageBuffer.length;
 
-        // Act
         const result = await s3Service.uploadImage({
             userId: testUser.id,
             imageBuffer: testImageBuffer,
             imageType: "profile",
         });
 
-        // Assert
         // WebP should be smaller than original PNG for most images
         expect(result.size).toBeLessThanOrEqual(originalSize);
 
@@ -182,7 +173,6 @@ describe("S3 Client", () => {
     });
 
     test("should detect duplicate images", async () => {
-        // Arrange
         const testUser = testUsers[0];
 
         // Mock finding a duplicate on second upload
@@ -218,30 +208,27 @@ describe("S3 Client", () => {
         });
         s3Service["client"].send = mockSend;
 
-        // Act - First upload
+        // First upload
         await s3Service.uploadImage({
             userId: testUser.id,
             imageBuffer: testImageBuffer,
             imageType: "profile",
         });
 
-        // Act - Second upload (duplicate)
+        // Second upload (duplicate)
         const result = await s3Service.uploadImage({
             userId: testUser.id,
             imageBuffer: testImageBuffer,
             imageType: "profile",
         });
 
-        // Assert
         expect(result.isDuplicate).toBe(true);
         expect(result.duplicateKey).toBeDefined();
     });
 
     test("should generate unique imageId when not provided", async () => {
-        // Arrange
         const testUser = testUsers[0];
 
-        // Act
         const result = await s3Service.uploadImage({
             userId: testUser.id,
             imageBuffer: testImageBuffer,
@@ -255,7 +242,7 @@ describe("S3 Client", () => {
     });
 
     // test('should handle upload errors gracefully', async () => {
-    //     // Arrange
+    //
     //     const testUser = testUsers[0];
 
     //     // Mock an S3 error
@@ -264,7 +251,6 @@ describe("S3 Client", () => {
     //     });
     //     s3Service['client'].send = mockSend;
 
-    //     // Act & Assert
     //     expect(s3Service.uploadImage({
     //         userId: testUser.id,
     //         imageBuffer: testImageBuffer,
@@ -273,18 +259,15 @@ describe("S3 Client", () => {
     // });
 
     test("should upload PDF for a claim successfully", async () => {
-        // Arrange
         const testClaimId = "claim-123";
         const testDocumentId = "damage-report";
 
-        // Act
         const result = await s3Service.uploadPdf({
             claimId: testClaimId,
             pdfBuffer: testPdfBuffer,
             documentId: testDocumentId,
         });
 
-        // Assert
         expect(result).toBeDefined();
         expect(result.key).toBe(`pdfs/${testClaimId}/${testDocumentId}.pdf`);
         expect(result.url).toBeDefined();
@@ -294,17 +277,14 @@ describe("S3 Client", () => {
     });
 
     test("should generate documentId when not provided for PDF", async () => {
-        // Arrange
         const testClaimId = "claim-456";
 
-        // Act
         const result = await s3Service.uploadPdf({
             claimId: testClaimId,
             pdfBuffer: testPdfBuffer,
             // documentId not provided
         });
 
-        // Assert
         expect(result.key).toMatch(/^pdfs\/claim-456\/\d+-[a-z0-9]+\.pdf$/);
     });
 });
