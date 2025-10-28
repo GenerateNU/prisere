@@ -21,7 +21,7 @@ describe("S3 Client", () => {
         const testAppData = await startTestApp();
         dataSource = testAppData.dataSource;
         s3Service = new S3Service();
-    })
+    });
 
     beforeEach(async () => {
         // Mock S3 send method to handle different commands
