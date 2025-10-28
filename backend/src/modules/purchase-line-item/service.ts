@@ -1,4 +1,4 @@
-import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
+import { PurchaseLineItem, PurchaseLineItemType } from "../../entities/PurchaseLineItem";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { IPurchaseLineItemTransaction } from "./transaction";
 import {
@@ -16,6 +16,7 @@ export interface IPurchaseLineItemService {
     getPurchaseLineItem(id: string): Promise<GetPurchaseLineItemResponse>;
     getPurchaseLineItemsForPurchase(parentPurchaseId: string): Promise<GetPurchaseLineItemsFromParentResponse>;
     updatePurchaseLineItemCategory(id: string, category: string): Promise<PurchaseLineItem>;
+    updatePurchaseLineItemType(id: string, type: PurchaseLineItemType): Promise<PurchaseLineItem>;
 
 }
 
@@ -61,8 +62,15 @@ export class PurchaseLineItemService implements IPurchaseLineItemService {
 
     updatePurchaseLineItemCategory = withServiceErrorHandling(
         async (id: string, category: string): Promise<PurchaseLineItem> => {
-            return this.updatePurchaseLineItemCategory(id, category);
+            return this.purchaseLineItemTransaction.updatePurchaseLineItemCategory(id, category);
         }
-    )
+    );
+
+
+    updatePurchaseLineItemType = withServiceErrorHandling(
+        async (id: string, type: PurchaseLineItemType): Promise<PurchaseLineItem> => {
+            return this.purchaseLineItemTransaction.updatePurchaseLineItemType(id, type);
+        }
+    );
     
 }
