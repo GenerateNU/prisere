@@ -2,7 +2,7 @@ import { DataSource, In } from "typeorm";
 import Boom from "@hapi/boom";
 import { CreateOrChangePurchaseLineItemsDTO } from "./types";
 import { Purchase } from "../../entities/Purchase";
-import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
+import { PurchaseLineItem, PurchaseLineItemType } from "../../entities/PurchaseLineItem";
 import { plainToInstance } from "class-transformer";
 
 export interface IPurchaseLineItemTransaction {
@@ -10,6 +10,7 @@ export interface IPurchaseLineItemTransaction {
     getPurchaseLineItem(id: string): Promise<PurchaseLineItem | null>;
     getPurchaseLineItemsForPurchase(purchaseId: string): Promise<PurchaseLineItem[]>;
     updatePurchaseLineItemCategory(id: string, category: string): Promise<PurchaseLineItem>; 
+    updatePurchaseLineItemType(id: string, type: PurchaseLineItemType): Promise<PurchaseLineItem>;
 }
 
 export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction {
@@ -71,6 +72,24 @@ export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction
                     .createQueryBuilder()
                     .update(PurchaseLineItem)
                     .set({ category: category })
+                    .where({ id })
+                    .returning("*")
+                    .execute();
+
+
+        if (!response || response.affected == 0) {
+            throw Boom.notFound("Purchase line item not found")
+        }
+
+        return response.raw[0];
+        
+    }
+
+    async updatePurchaseLineItemType(id: string, type: PurchaseLineItemType): Promise<PurchaseLineItem> {
+        const response = await this.db
+                    .createQueryBuilder()
+                    .update(PurchaseLineItem)
+                    .set({ type: type })
                     .where({ id })
                     .returning("*")
                     .execute();

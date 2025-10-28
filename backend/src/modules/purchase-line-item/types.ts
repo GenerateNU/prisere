@@ -25,9 +25,14 @@ export const CreateOrChangePurchaseLineItemsDTOSchema = z
     )
     .nonempty();
 
-export const UpdatePurchaseLineItemDTOSchema = z.object({
+export const UpdatePurchaseLineItemCategoryDTOSchema = z.object({
     id: z.uuid(),
-    category: z.string().max(LINE_ITEM_DESCRIPTION_CHARS),
+    category: z.string().nonempty().max(LINE_ITEM_CATEGORY_CHARS),
+});
+
+export const UpdatePurchaseLineItemTypeDTOSchema = z.object({
+    id: z.uuid(),
+    type: z.enum(PurchaseLineItemType),
 });
 
 export const CreateOrChangePurchaseLineItemsResponseSchema = z.array(
@@ -70,4 +75,3 @@ export type UpdatePurchaseLineItemResponse = z.infer<typeof UpdatePurchaseLineIt
 
 //Input types
 export type CreateOrChangePurchaseLineItemsDTO = z.infer<typeof CreateOrChangePurchaseLineItemsDTOSchema>;
-export type UpdatePurchaseLineItemDTO = z.infer<typeof UpdatePurchaseLineItemDTOSchema>;

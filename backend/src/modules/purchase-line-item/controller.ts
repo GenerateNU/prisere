@@ -8,7 +8,8 @@ import {
     GetPurchaseLineItemsFromParentResponse,
     GetPurchaseLineItemResponse,
     UpdatePurchaseLineItemResponse,
-    UpdatePurchaseLineItemDTOSchema,
+    UpdatePurchaseLineItemCategoryDTOSchema,
+    UpdatePurchaseLineItemTypeDTOSchema,
 } from "./types";
 import { ControllerResponse } from "../../utilities/response";
 import { logObjectToFile } from "../../utilities/logger";
@@ -23,6 +24,7 @@ export interface IPurchaseLineItemController {
     ): ControllerResponse<TypedResponse<GetPurchaseLineItemsFromParentResponse, 200>>;
 
     updatePurchaseLineItemCategory(ctx: Context): ControllerResponse<TypedResponse<UpdatePurchaseLineItemResponse, 200>>;
+    updatePurchaseLineItemType(ctx: Context): ControllerResponse<TypedResponse<UpdatePurchaseLineItemResponse, 200>>;
 }
 
 export class PurchaseLineItemController implements IPurchaseLineItemController {
@@ -80,10 +82,24 @@ export class PurchaseLineItemController implements IPurchaseLineItemController {
     updatePurchaseLineItemCategory = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<UpdatePurchaseLineItemResponse, 200>> => {
             const json = await ctx.req.json();
-            const request = UpdatePurchaseLineItemDTOSchema.parse(json);
+            const request = UpdatePurchaseLineItemCategoryDTOSchema.parse(json);
 
             const updated = 
             await this.purchaseLineItemService.updatePurchaseLineItemCategory(request.id, request.category);
+
+            return ctx.json(updated, 200);
+
+        }
+    );
+
+
+    updatePurchaseLineItemType = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<UpdatePurchaseLineItemResponse, 200>> => {
+            const json = await ctx.req.json();
+            const request = UpdatePurchaseLineItemTypeDTOSchema.parse(json);
+
+            const updated = 
+            await this.purchaseLineItemService.updatePurchaseLineItemType(request.id, request.type);
 
             return ctx.json(updated, 200);
 
