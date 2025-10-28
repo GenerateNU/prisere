@@ -33,7 +33,7 @@ export const createTestData = async (dataSource: DataSource, includeNotification
             id: "0199e585-a52b-7bcf-982d-a1c5230b3d40",
             firstName: "Jane",
             lastName: "Smith",
-            email: "jane@prisere.com",
+            email: "test@example.com",
         },
         {
             id: "0189e585-a52b-7bcf-982d-a1c5230b3d40",

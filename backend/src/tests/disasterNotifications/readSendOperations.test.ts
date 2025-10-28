@@ -1,42 +1,38 @@
-import { Hono } from "hono"
 import { IBackup } from "pg-mem";
 import { DataSource } from "typeorm";
 import { createTestData, TestDataSetup } from "./setup";
 import { startTestApp } from "../setup-tests";
 import { describe, beforeAll, beforeEach, test, expect } from "bun:test";
 import { DisasterNotificationTransaction } from "../../modules/disasterNotifications/transaction";
-import { DisasterNotification, DisasterNotificationType, DisasterNotificationWithRealtionsType } from "../../types/DisasterNotification";
 
 describe("Test get unread notifications (for email)", () => {
-    let app: Hono;
     let backup: IBackup;
     let dataSource: DataSource;
     let testData: TestDataSetup;
     let disasterNotificationTransaction: DisasterNotificationTransaction;
 
     beforeAll(async () => {
-        const testAppData = await startTestApp()
-        app = testAppData.app;
+        const testAppData = await startTestApp();
         backup = testAppData.backup;
         dataSource = testAppData.dataSource;
         disasterNotificationTransaction = new DisasterNotificationTransaction(dataSource);
-    })
+    });
 
     beforeEach(async () => {
-            backup.restore();
-            testData = await createTestData(dataSource, true); // true = include notifications
+        backup.restore();
+        testData = await createTestData(dataSource, true); // true = include notifications
     });
 
     test("GET all unread notifications for email", async () => {
-        let result = await disasterNotificationTransaction.getUnreadNotifications();
+        const result = await disasterNotificationTransaction.getUnreadNotifications();
         // console.log(result);
         expect(result.length).toBe(3);
-    })
+    });
 
     test("Mark notifications as sent (for second time)", async () => {
         // get the notifications to mark as sent (from test data)
-        let notifications = testData.notifications;
-        let notificationArray: string[] = [];
+        const notifications = testData.notifications;
+        const notificationArray: string[] = [];
         if (notifications?.notification1) {
             notificationArray.push(notifications?.notification1.id);
         }
@@ -45,17 +41,16 @@ describe("Test get unread notifications (for email)", () => {
         }
 
         // see the first/lastSentAt times are the same at first
-        expect(notifications?.notification1.firstSentAt?.getDate === notifications?.notification1.lastSentAt?.getDate)
-        expect(notifications?.notification2.firstSentAt?.getDate === notifications?.notification2.lastSentAt?.getDate)
-        let result = await disasterNotificationTransaction.markNotificationsAsSent(notificationArray);
+        expect(notifications?.notification1.firstSentAt?.getDate === notifications?.notification1.lastSentAt?.getDate);
+        expect(notifications?.notification2.firstSentAt?.getDate === notifications?.notification2.lastSentAt?.getDate);
+        const result = await disasterNotificationTransaction.markNotificationsAsSent(notificationArray);
         // console.log(testData);
         // console.log(result);
 
-        let result2 = await disasterNotificationTransaction.markNotificationsAsSent(notificationArray);
+        const result2 = await disasterNotificationTransaction.markNotificationsAsSent(notificationArray);
         // console.log(testData);
         // console.log(result2);
         expect(result);
         expect(result2);
-
-    })
-})
+    });
+});

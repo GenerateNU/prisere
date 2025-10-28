@@ -5,7 +5,7 @@
 terraform {
   backend "s3" {
     bucket         = "prisere-bucket"
-    # key            = "prisere/${var.environment}/terraform.tfstate"
+    # key            = NOTE: do not specify the key, as we will have two state files, one for dev and prod each.
     region         = "us-east-1"
     encrypt        = true
     use_lockfile = true  # We are able to lock the state directly in S3, so that state is not edited by two 

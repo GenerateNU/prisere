@@ -1,27 +1,24 @@
 import { DisasterEmailMessage } from "./types/DisasterNotification";
 
 export function buildEmailHtml(message: DisasterEmailMessage): string {
-  const declarationDate = typeof message.declarationDate === 'string' 
-    ? new Date(message.declarationDate).toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      })
-    : message.declarationDate.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      });
+    const declarationDate =
+        typeof message.declarationDate === "string"
+            ? new Date(message.declarationDate).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+              })
+            : message.declarationDate.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+              });
 
-  const locationText = message.city 
-    ? `Location: ${message.city}` 
-    : 'Location: Not specified';
+    const locationText = message.city ? `Location: ${message.city}` : "Location: Not specified";
 
-  const companyText = message.companyName 
-    ? `Company: ${message.companyName}` 
-    : '';
+    const companyText = message.companyName ? `Company: ${message.companyName}` : "";
 
-  return `
+    return `
 <!DOCTYPE html>
 <html>
 <head>
@@ -58,8 +55,8 @@ export function buildEmailHtml(message: DisasterEmailMessage): string {
                   <td style="font-size: 14px; color: #666666; line-height: 1.8;">
                     <strong style="color: #333333;">Declaration Date:</strong> ${declarationDate}<br>
                     <strong style="color: #333333;">Declaration Type:</strong> ${message.declarationType}<br>
-                    ${message.city ? `<strong style="color: #333333;">${locationText}</strong><br>` : ''}
-                    ${message.companyName ? `<strong style="color: #333333;">${companyText}</strong><br>` : ''}
+                    ${message.city ? `<strong style="color: #333333;">${locationText}</strong><br>` : ""}
+                    ${message.companyName ? `<strong style="color: #333333;">${companyText}</strong><br>` : ""}
                   </td>
                 </tr>
               </table>
@@ -78,10 +75,6 @@ export function buildEmailHtml(message: DisasterEmailMessage): string {
           <!-- Footer -->
           <tr>
             <td style="background-color: #f9f9f9; padding: 20px; text-align: center; border-top: 1px solid #e0e0e0;">
-              <p style="margin: 0; font-size: 12px; color: #999999;">
-                Notification ID: ${message.notificationId}<br>
-                Disaster ID: ${message.disasterId}
-              </p>
               <p style="margin: 10px 0 0 0; font-size: 12px; color: #999999;">
                 You received this email because you have registered for disaster alerts in your area.
               </p>
@@ -98,11 +91,12 @@ export function buildEmailHtml(message: DisasterEmailMessage): string {
 }
 
 export function buildEmailText(message: DisasterEmailMessage): string {
-  const declarationDate = typeof message.declarationDate === 'string' 
-    ? new Date(message.declarationDate).toLocaleDateString('en-US')
-    : message.declarationDate.toLocaleDateString('en-US');
+    const declarationDate =
+        typeof message.declarationDate === "string"
+            ? new Date(message.declarationDate).toLocaleDateString("en-US")
+            : message.declarationDate.toLocaleDateString("en-US");
 
-  return `
+    return `
 FEMA Disaster Alert
 
 Hello ${message.firstName},
@@ -111,8 +105,8 @@ A ${message.declarationType} disaster has been declared in your area.
 
 Declaration Date: ${declarationDate}
 Declaration Type: ${message.declarationType}
-${message.city ? `Location: ${message.city}` : ''}
-${message.companyName ? `Company: ${message.companyName}` : ''}
+${message.city ? `Location: ${message.city}` : ""}
+${message.companyName ? `Company: ${message.companyName}` : ""}
 
 Please review this alert and take necessary precautions. For more information about this disaster and available assistance, visit FEMA.gov.
 

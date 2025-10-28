@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-
 export const DisasterEmailMessageSchema = z.object({
     to: z.string(),
     from: z.string(),
@@ -11,6 +10,6 @@ export const DisasterEmailMessageSchema = z.object({
     city: z.string().optional(),
     notificationId: z.uuid(),
     disasterId: z.uuid(),
-    companyName: z.string().optional()
-})
+    companyName: z.string().optional(),
+});
 export type DisasterEmailMessage = z.infer<typeof DisasterEmailMessageSchema>;

@@ -2,14 +2,18 @@ import { DisasterNotification } from "../../entities/DisasterNotification";
 import { IDisasterNotificationTransaction } from "./transaction";
 import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
-import { DisasterEmailMessage, GetUsersDisasterNotificationsDTO, NotificationTypeFilter } from "../../types/DisasterNotification";
+import {
+    DisasterEmailMessage,
+    GetUsersDisasterNotificationsDTO,
+    NotificationTypeFilter,
+} from "../../types/DisasterNotification";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { ILocationAddressTransaction } from "../location-address/transaction";
 import { NotificationStatus, NotificationType } from "../../types/NotificationEnums";
 import { LocationAddress } from "../../entities/LocationAddress";
 import { logMessageToFile } from "../../utilities/logger";
 import { IPreferenceTransaction } from "../preferences/transaction";
-import { ISQSService, SQSService } from "../sqs/service";
+import { ISQSService } from "../sqs/service";
 
 export interface IDisasterNotificationService {
     getUserNotifications(
@@ -165,50 +169,42 @@ export class DisasterNotificationService implements IDisasterNotificationService
 
     sendEmailNotifications = withServiceErrorHandling(async (): Promise<DisasterNotification[]> => {
         const unreadNotifications = await this.notificationTransaction.getUnreadNotifications();
-        console.log(`Going to send ${unreadNotifications.length} disaster notification emails.`);
-        
-        if (unreadNotifications.length == 0) {
+        logMessageToFile(`Going to send ${unreadNotifications.length} disaster notification emails.`);
+
+        if (unreadNotifications.length === 0) {
             logMessageToFile(`There are no unread email notifications to send.`);
-            
         } else {
             logMessageToFile(`Going to send ${unreadNotifications.length} disaster notification emails.`);
         }
-        console.log("made it here")
         const notificationMessages: DisasterEmailMessage[] = [];
-        
-        for (let notif of unreadNotifications) {
-            console.log("made it here 2")
-            console.log(notif)
-            console.log(notif.user)
-            console.log('...')
+
+        for (const notif of unreadNotifications) {
             if (!notif.user.email) {
-                console.log("User has no email")
-                console.log(`${notif}`)
                 logMessageToFile(`Skipping notification ${notif.id} due to undefined email`);
                 continue;
             }
-            console.log("Made it")
-            console.log(`About to process notification ${notif}`)
+            logMessageToFile(`About to process notification ${notif}`);
             const message: DisasterEmailMessage = {
                 to: notif.user.email,
-                from: 'priseregenerate@gmail.com',
-                subject: 'FEMA Disaster Alert from Prisere',
+                from: "priseregenerate@gmail.com",
+                subject: "FEMA Disaster Alert from Prisere",
                 firstName: notif.user.firstName,
                 declarationDate: notif.femaDisaster.declarationDate,
                 declarationType: notif.femaDisaster.declarationType,
                 city: notif.locationAddress?.city,
                 notificationId: notif.id,
                 disasterId: notif.femaDisaster.id,
-                companyName: notif.user.company?.name 
+                companyName: notif.user.company?.name,
             };
-            console.log(`Message to send:\n${message}`)
-            notificationMessages.push(message); 
+            logMessageToFile(`Message to send:\n${message}`);
+            notificationMessages.push(message);
         }
-        
+
         await this.sqsService.sendBatchMessages(notificationMessages);
-        
-        const result = await this.notificationTransaction.markNotificationsAsSent(unreadNotifications.map(notification => notification.id));
+
+        const result = await this.notificationTransaction.markNotificationsAsSent(
+            unreadNotifications.map((notification) => notification.id)
+        );
         return result;
     });
-    
 }

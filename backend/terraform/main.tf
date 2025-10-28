@@ -1,11 +1,14 @@
 # To apply changes in specific environment
 # For dev
-# terraform init -backend-config=backend-dev.hcl
-# terraform apply -var-file="terraform.tfvars.dev"
+# terraform init -backend-config=backend-dev.hcl -reconfigure
+# (The plan will show what changes will be made, please review the plan and make sure changes seem expected)
+# terraform plan -var-file=terraform.tfvars.dev 
+# terraform apply -var-file=terraform.tfvars.dev
 
 # For prod
-# terraform init -backend-config=backend-prod.hcl
-# terraform apply -var-file="terraform.tfvars.prod"
+# terraform init -backend-config=backend-prod.hcl -reconfigure
+# terraform plan -var-file=terraform.tfvars.prod
+# terraform apply -var-file=terraform.tfvars.prod
 
 # 'terraform apply' will apply to the dev env by default
 
@@ -25,7 +28,7 @@ provider "aws" {
 }
 
 resource "aws_sqs_queue" "disaster_notifications" {
-  name = split("/", var.sqs_queue_url)[length(split("/", var.sqs_queue_url)) - 1]
+  name = "${var.project_name}-queue-${var.environment}"
   delay_seconds             = 90
   max_message_size          = 2048
   message_retention_seconds = 86400

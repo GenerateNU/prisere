@@ -74,8 +74,8 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
             .leftJoinAndSelect("notifications.femaDisaster", "disaster")
             .leftJoinAndSelect("notifications.locationAddress", "location")
             .leftJoinAndSelect("location.company", "company")
-            .where("notifications.notificationStatus = :status", { status: 'unread' })
-            .andWhere("notifications.notificationType = :type", { type: 'email' })
+            .where("notifications.notificationStatus = :status", { status: "unread" })
+            .andWhere("notifications.notificationType = :type", { type: "email" })
             .getMany();
 
         return result;
@@ -273,41 +273,39 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
     }
 
     async markNotificationsAsSent(notificationIds: string[]): Promise<DisasterNotification[]> {
-    if (notificationIds.length === 0) {
-        return [];
-    }
+        if (notificationIds.length === 0) {
+            return [];
+        }
 
-    const now = new Date();
+        const now = new Date();
 
-    // Update notifications that already have firstSentAt (just update lastSentAt)
-    await this.db
-        .createQueryBuilder()
-        .update(DisasterNotification)
-        .set({
-            lastSentAt: now
-        })
-        .where("id IN (:...ids)", { ids: notificationIds })
-        .andWhere("firstSentAt IS NOT NULL")
-        .execute();
+        // Update notifications that already have firstSentAt (just update lastSentAt)
+        await this.db
+            .createQueryBuilder()
+            .update(DisasterNotification)
+            .set({
+                lastSentAt: now,
+            })
+            .where("id IN (:...ids)", { ids: notificationIds })
+            .andWhere("firstSentAt IS NOT NULL")
+            .execute();
 
-    // Update notifications that DON'T have firstSentAt (set both)
-    await this.db
-        .createQueryBuilder()
-        .update(DisasterNotification)
-        .set({
-            firstSentAt: now,
-            lastSentAt: now
-        })
-        .where("id IN (:...ids)", { ids: notificationIds })
-        .andWhere("firstSentAt IS NULL")
-        .execute();
+        // Update notifications that DON'T have firstSentAt (set both)
+        await this.db
+            .createQueryBuilder()
+            .update(DisasterNotification)
+            .set({
+                firstSentAt: now,
+                lastSentAt: now,
+            })
+            .where("id IN (:...ids)", { ids: notificationIds })
+            .andWhere("firstSentAt IS NULL")
+            .execute();
 
-    // Fetch and return the updated notifications
-    return await this.db
-        .getRepository(DisasterNotification)
-        .find({
+        // Fetch and return the updated notifications
+        return await this.db.getRepository(DisasterNotification).find({
             where: { id: In(notificationIds) },
-            relations: ['user', 'femaDisaster', 'locationAddress']
+            relations: ["user", "femaDisaster", "locationAddress"],
         });
-}
+    }
 }

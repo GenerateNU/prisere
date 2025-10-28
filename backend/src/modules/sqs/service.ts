@@ -1,6 +1,12 @@
-import { SendMessageCommand, SQSClient, SendMessageBatchCommand, SendMessageBatchRequestEntry } from "@aws-sdk/client-sqs";
+import {
+    SendMessageCommand,
+    SQSClient,
+    SendMessageBatchCommand,
+    SendMessageBatchRequestEntry,
+} from "@aws-sdk/client-sqs";
 import { DisasterEmailMessage } from "../../types/DisasterNotification";
 import { logMessageToFile } from "../../utilities/logger";
+import { BATCH_SIZE, SQS_QUEUE_URL_PROD } from "../../utilities/constants";
 
 export interface ISQSService {
     sendMessage(message: DisasterEmailMessage): Promise<void>;
@@ -9,7 +15,7 @@ export interface ISQSService {
 
 export class SQSService {
     private client: SQSClient;
-    private SQS_QUEUE_URL = process.env.SQS_QUEUE_URL;
+    private SQS_QUEUE_URL = SQS_QUEUE_URL_PROD;
 
     constructor() {
         this.client = new SQSClient({});
@@ -17,8 +23,8 @@ export class SQSService {
 
     async sendMessage(message: DisasterEmailMessage): Promise<void> {
         const command = new SendMessageCommand({
-        QueueUrl: this.SQS_QUEUE_URL,
-        MessageBody: JSON.stringify(message),
+            QueueUrl: this.SQS_QUEUE_URL,
+            MessageBody: JSON.stringify(message),
         });
 
         await this.client.send(command);
@@ -29,58 +35,57 @@ export class SQSService {
             return;
         }
 
-        console.log(`Got ${messages.length} messages to SQS Batch send`)
-        console.log(`Messages: \n${messages}`)
-
-        // AWS SQS batch limit is 10 messages per request
-        const BATCH_SIZE = 10;
-        
+        logMessageToFile(`Got ${messages.length} messages to SQS Batch send`);
         for (let i = 0; i < messages.length; i += BATCH_SIZE) {
             const batch = messages.slice(i, i + BATCH_SIZE);
-            
+
             const entries: SendMessageBatchRequestEntry[] = batch.map((message, index) => ({
                 Id: `${i + index}`, // Unique ID for each message in the batch
                 MessageBody: JSON.stringify(message),
                 MessageAttributes: {
-                    'email': {
-                        DataType: 'String',
-                        StringValue: message.to
+                    email: {
+                        DataType: "String",
+                        StringValue: message.to,
                     },
-                    'notificationId': {
-                        DataType: 'String',
-                        StringValue: message.notificationId
+                    notificationId: {
+                        DataType: "String",
+                        StringValue: message.notificationId,
                     },
-                    'disasterId': {
-                        DataType: 'String',
-                        StringValue: message.disasterId
-                    }
-                }
+                    disasterId: {
+                        DataType: "String",
+                        StringValue: message.disasterId,
+                    },
+                },
             }));
 
-            console.log(`Entires: \n${entries}`)
+            logMessageToFile(`Entires: \n${entries}`);
 
             const command = new SendMessageBatchCommand({
                 QueueUrl: this.SQS_QUEUE_URL,
-                Entries: entries
+                Entries: entries,
             });
+
+            logMessageToFile(`COMMAND: \n\n\n${JSON.stringify(messages, null, 2)}\n\n\n`);
 
             try {
                 const response = await this.client.send(command);
 
-                console.log(`Sending batch messages response: ${response}`)
-                
+                logMessageToFile(`Sending batch messages response: ${JSON.stringify(response, null, 2)}`);
+                logMessageToFile(`Sending batch messages response: ${response.Failed}`);
+                logMessageToFile(`Sending batch messages response: ${response.Successful}`);
+
                 // Log successful and failed messages
                 if (response.Successful && response.Successful.length > 0) {
-                    console.log(`Successfully sent ${response.Successful.length} messages`);
+                    logMessageToFile(`Successfully sent ${response.Successful.length} messages`);
 
                     logMessageToFile(`Successfully sent ${response.Successful.length} messages`);
                 }
-                
+
                 if (response.Failed && response.Failed.length > 0) {
                     logMessageToFile(`Failed to send ${response.Failed.length} messages: ${response.Failed}`);
                 }
             } catch (error) {
-                console.error('Error sending batch messages:', error);
+                console.error("Error sending batch messages:", error);
                 throw error;
             }
         }
