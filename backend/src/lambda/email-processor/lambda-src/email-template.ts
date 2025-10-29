@@ -114,8 +114,6 @@ Stay safe,
 Prisere Team
 
 ---
-Notification ID: ${message.notificationId}
-Disaster ID: ${message.disasterId}
 
 You received this email because you have registered for disaster alerts in your area.
   `.trim();

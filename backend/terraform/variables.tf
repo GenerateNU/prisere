@@ -7,13 +7,11 @@ variable "aws_region" {
 variable "ses_from_email" {
   description = "Verified SES email address to send from"
   type        = string
-  default     = "priseregenerate@gmail.com"
 }
 
 variable "sqs_queue_url" {
   description = "URL of the existing SQS queue"
   type        = string
-  default = "https://sqs.us-east-1.amazonaws.com/478867930449/prisere-disaster-notifications-queue-prod"
 }
 
 variable "project_name" {

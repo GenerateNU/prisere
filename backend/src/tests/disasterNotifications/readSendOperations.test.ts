@@ -50,7 +50,23 @@ describe("Test get unread notifications (for email)", () => {
         const result2 = await disasterNotificationTransaction.markNotificationsAsSent(notificationArray);
         // console.log(testData);
         // console.log(result2);
+
         expect(result);
         expect(result2);
+        // First notification
+        expect(result2[0].id);
+        expect(result2[0].userId);
+        expect(result2[0].firstSentAt).toBeInstanceOf(Date);
+        expect(result2[0].lastSentAt).toBeInstanceOf(Date);
+        expect(result2[0].readAt).toBeNull();
+        expect(result2[0].createdAt).toBeInstanceOf(Date);
+
+        // Second notification
+        expect(result2[1].id);
+        expect(result2[1].userId);
+        expect(result2[1].firstSentAt).toBeInstanceOf(Date);
+        expect(result2[1].lastSentAt).toBeInstanceOf(Date);
+        expect(result2[1].readAt).toBeNull();
+        expect(result2[1].createdAt).toBeInstanceOf(Date);
     });
 });

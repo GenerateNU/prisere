@@ -2,7 +2,6 @@ import { describe, test, expect, beforeEach, mock } from "bun:test";
 import { SendMessageBatchCommand } from "@aws-sdk/client-sqs";
 import { SQSService } from "../../modules/sqs/service";
 import { DisasterEmailMessage } from "../../types/DisasterNotification";
-import { SQS_QUEUE_URL_PROD } from "../../utilities/constants";
 
 describe("SQSService", () => {
     let sqsService: SQSService;
@@ -23,9 +22,9 @@ describe("SQSService", () => {
         sqsService["client"].send = mockSend;
     });
 
-    const queueUrl = SQS_QUEUE_URL_PROD
-        ? SQS_QUEUE_URL_PROD
-        : "https://sqs.us-east-1.amazonaws.com/478867930449/prisere-disaster-notifications-queue-prod";
+    const queueUrl = process.env.SQS_QUEUE_URL_PROD
+        ? process.env.SQS_QUEUE_URL_PROD
+        : "https://sqs.us-east-1.amazonaws.com/1234/test";
 
     const createMockMessage = (id: string): DisasterEmailMessage => ({
         to: `test@example.com`,

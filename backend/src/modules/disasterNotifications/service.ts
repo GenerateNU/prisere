@@ -14,6 +14,7 @@ import { LocationAddress } from "../../entities/LocationAddress";
 import { logMessageToFile } from "../../utilities/logger";
 import { IPreferenceTransaction } from "../preferences/transaction";
 import { ISQSService } from "../sqs/service";
+import { getIncidentCodeMeaning } from "../../utilities/incident_code_meanings";
 
 export interface IDisasterNotificationService {
     getUserNotifications(
@@ -173,6 +174,7 @@ export class DisasterNotificationService implements IDisasterNotificationService
 
         if (unreadNotifications.length === 0) {
             logMessageToFile(`There are no unread email notifications to send.`);
+            return unreadNotifications;
         } else {
             logMessageToFile(`Going to send ${unreadNotifications.length} disaster notification emails.`);
         }
@@ -190,7 +192,7 @@ export class DisasterNotificationService implements IDisasterNotificationService
                 subject: "FEMA Disaster Alert from Prisere",
                 firstName: notif.user.firstName,
                 declarationDate: notif.femaDisaster.declarationDate,
-                declarationType: notif.femaDisaster.declarationType,
+                declarationType: getIncidentCodeMeaning(notif.femaDisaster.declarationType),
                 city: notif.locationAddress?.city,
                 notificationId: notif.id,
                 disasterId: notif.femaDisaster.id,

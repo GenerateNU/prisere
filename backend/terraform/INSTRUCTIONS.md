@@ -1,6 +1,15 @@
 ### Deploy AWS resources with Terraform
 To apply changes in specific environment
 
+# Set variables from .env
+
+(Change out with dev vars when needed)
+run:
+
+export TF_VAR_ses_from_email=$(grep SES_FROM_EMAIL ../.env | cut -d '=' -f2 | tr -d '"')
+export TF_VAR_sqs_queue_url=$(grep SQS_QUEUE_URL_PROD ../.env | cut -d '=' -f2 | tr -d '"')
+terraform apply
+
 # For dev
 
 terraform init -backend-config=backend-dev.hcl -reconfigure

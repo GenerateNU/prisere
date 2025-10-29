@@ -9,11 +9,10 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import sharp from "sharp";
 import { createHash } from "crypto";
-import { OBJECTS_STORAGE_BUCKET_NAME } from "../../utilities/constants";
 import { PdfListItem, UploadImageOptions, UploadPdfOptions, UploadResult } from "../../types/S3Types";
 import { logMessageToFile } from "../../utilities/logger";
 
-const S3_BUCKET_NAME = OBJECTS_STORAGE_BUCKET_NAME || "prisere-objects-storage";
+const S3_BUCKET_NAME = process.env.OBJECTS_STORAGE_BUCKET_NAME;
 const IMAGE_QUALITY = 85; // Compress the image at 85% quality
 const PRESIGNED_URL_EXPIRY = 3600; // 1 hour
 

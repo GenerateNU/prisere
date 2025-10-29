@@ -1,5 +1,3 @@
 aws_region      = "us-east-1"
-ses_from_email  = "priseregenerate@gmail.com"
-sqs_queue_url   = "https://sqs.us-east-1.amazonaws.com/478867930449/prisere-disaster-notifications-queue-prod"
 project_name    = "prisere-disaster-notifications"
 environment     = "dev"

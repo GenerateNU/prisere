@@ -1,10 +1,10 @@
 # Lambda Function
 resource "aws_lambda_function" "email_processor" {
-  filename         = "../lambda/email-processor/function.zip"
+  filename         = "../src/lambda/email-processor/function.zip"
   function_name    = "${var.project_name}-email-processor-${var.environment}"
   role            = aws_iam_role.lambda_role.arn
-  handler         = "index.handler"  # Change if using .mjs: "index.handler"
-  source_code_hash = filebase64sha256("../lambda/email-processor/function.zip")
+  handler         = "index.handler"
+  source_code_hash = filebase64sha256("../src/lambda/email-processor/function.zip")
   runtime         = "nodejs20.x"
   timeout         = 30
   memory_size     = 128

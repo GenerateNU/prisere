@@ -6,7 +6,7 @@ import {
 } from "@aws-sdk/client-sqs";
 import { DisasterEmailMessage } from "../../types/DisasterNotification";
 import { logMessageToFile } from "../../utilities/logger";
-import { BATCH_SIZE, SQS_QUEUE_URL_PROD } from "../../utilities/constants";
+import { BATCH_SIZE } from "../../utilities/constants";
 
 export interface ISQSService {
     sendMessage(message: DisasterEmailMessage): Promise<void>;
@@ -15,7 +15,7 @@ export interface ISQSService {
 
 export class SQSService {
     private client: SQSClient;
-    private SQS_QUEUE_URL = SQS_QUEUE_URL_PROD;
+    private SQS_QUEUE_URL = process.env.SQS_QUEUE_URL_PROD;
 
     constructor() {
         this.client = new SQSClient({});
@@ -71,13 +71,11 @@ export class SQSService {
                 const response = await this.client.send(command);
 
                 logMessageToFile(`Sending batch messages response: ${JSON.stringify(response, null, 2)}`);
-                logMessageToFile(`Sending batch messages response: ${response.Failed}`);
-                logMessageToFile(`Sending batch messages response: ${response.Successful}`);
+                logMessageToFile(`Response failed: ${response.Failed}`);
+                logMessageToFile(`Response successful: ${response.Successful}`);
 
                 // Log successful and failed messages
                 if (response.Successful && response.Successful.length > 0) {
-                    logMessageToFile(`Successfully sent ${response.Successful.length} messages`);
-
                     logMessageToFile(`Successfully sent ${response.Successful.length} messages`);
                 }
 

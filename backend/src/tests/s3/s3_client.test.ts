@@ -110,8 +110,6 @@ describe("S3 Client", () => {
         mockSend.mockClear();
     });
 
-    // const bucketName = OBJECTS_STORAGE_BUCKET_NAME ? OBJECTS_STORAGE_BUCKET_NAME : 'prisere-objects-storage';
-
     test("should upload profile image successfully", async () => {
         const testUser = testUsers[0];
         expect(testUser).toBeDefined();

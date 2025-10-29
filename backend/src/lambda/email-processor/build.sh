@@ -14,7 +14,7 @@ bun install --production
 
 # Create dist and build
 mkdir -p dist
-bun build src/index.ts \
+bun build lambda-src/index.ts \
   --target=node \
   --outfile=dist/index.mjs \
   --format=esm
