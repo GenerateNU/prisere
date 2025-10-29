@@ -34,3 +34,18 @@ export const getCompanyLocations = async (): Promise<GetCompanyLocationsResponse
     };
     return authWrapper<GetCompanyLocationsResponse>()(req);
 };
+
+export const getCompany = async (): Promise<Company> => {
+    const req = async (token: string): Promise<Company> => {
+        const client = getClient();
+        const { data, error, response } = await client.GET("/companies", {
+            headers: authHeader(token),
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<Company>()(req);
+};

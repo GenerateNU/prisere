@@ -9,11 +9,12 @@ import PersonalInfoStep from "./PersonalInfoStep";
 import ProgressBar from "./ProgressBar";
 import StartStep from "./StartStep";
 import IncidentDateStep from "./IncidentDateStep";
-import { getCompanyLocations } from "@/api/company";
+import { getCompany, getCompanyLocations } from "@/api/company";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createSelfDisaster } from "@/api/self-disaster";
 import { createClaim } from "@/api/claim";
 import { createClaimLocationLink } from "@/api/claim-location";
+import { getUser } from "@/api/user";
 
 export default function DeclareDisaster() {
     const [step, setStep] = React.useState(0);
@@ -38,6 +39,34 @@ export default function DeclareDisaster() {
     const [insurerInfo, setInsurerInfo] = React.useState({
         name: "test",
     });
+
+    const { data: businessInfoData, isSuccess: businessInfoSuccess } = useQuery({
+        queryKey: ["businessInfo"],
+        queryFn: getCompany,
+    });
+
+    const { data: userInfoData, isSuccess: userInfoSuccess } = useQuery({
+        queryKey: ["userInfo"],
+        queryFn: getUser,
+    });
+
+    React.useEffect(() => {
+        if (businessInfoSuccess) {
+            setBusinessInfo({
+                businessName: businessInfoData.name,
+                businessOwner: businessInfoData.businessOwnerFullName,
+                businessType: "",
+            });
+        }
+        if (userInfoSuccess) {
+            setPersonalInfo({
+                firstName: userInfoData.firstName,
+                lastName: userInfoData.lastName,
+                email: userInfoData.email ?? "",
+                phone: "",
+            });
+        }
+    }, [businessInfoSuccess, userInfoSuccess, businessInfoData, userInfoData]);
 
     const { mutate: createClaimLocationMutation } = useMutation({
         mutationFn: (claimId: string) =>
