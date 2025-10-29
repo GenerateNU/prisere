@@ -9,7 +9,7 @@ export class SESEmailService {
 
     constructor(region: string = "us-east-1", fromEmail: string) {
         const config: any = {
-            region: process.env.AWS_REGION || "us-east-1",
+            region: process.env.AWS_REGION || region,
         };
 
         // Provide fake credentials in test environment
