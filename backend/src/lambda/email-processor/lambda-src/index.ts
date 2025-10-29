@@ -1,5 +1,5 @@
 import { SQSEvent, SQSRecord, SQSBatchResponse, SQSBatchItemFailure } from "aws-lambda";
-import { SESEmailService } from "./ses-client"
+import { SESEmailService } from "./ses-client";
 import { DisasterEmailMessage } from "../../../types/DisasterNotification";
 
 const sesService = new SESEmailService(

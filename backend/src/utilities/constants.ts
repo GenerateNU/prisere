@@ -5,4 +5,3 @@ export const TESTING_PREFIX = "/api/prisere";
 
 // AWS SQS batch limit is 10 messages per request
 export const BATCH_SIZE = 10;
-

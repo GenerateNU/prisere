@@ -55,6 +55,13 @@ export default defineConfig([
         },
     },
     {
-        ignores: ["node_modules/", "dist/", "build/", "*.config.js", "*.config.ts"],
+        ignores: [
+            "node_modules/",
+            "dist/",
+            "build/",
+            "*.config.js",
+            "*.config.ts",
+            "src/lambda/email-processor/dist/index.mjs",
+        ],
     },
 ]);

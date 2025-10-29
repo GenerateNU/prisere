@@ -85,9 +85,8 @@ export class S3Service implements IS3Service {
         if (S3_BUCKET_NAME) {
             this.bucketName = S3_BUCKET_NAME;
         } else {
-            console.error("Please define OBJECTS_STORAGE_BUCKET_NAME in .env")
+            console.error("Please define OBJECTS_STORAGE_BUCKET_NAME in .env");
         }
-        
     }
 
     async uploadImage(options: UploadImageOptions): Promise<UploadResult> {

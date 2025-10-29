@@ -304,7 +304,7 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
 
         // Fetch and return the updated notifications
         return await this.db.getRepository(DisasterNotification).find({
-            where: { id: In(notificationIds) }
+            where: { id: In(notificationIds) },
         });
     }
 }
