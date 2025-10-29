@@ -66,7 +66,7 @@ export interface IS3Service {
 
 export class S3Service implements IS3Service {
     private client: S3Client;
-    private bucketName: string;
+    private bucketName: string | undefined; // Would only be undefined in not in .env
 
     constructor() {
         const config: any = {
@@ -82,7 +82,12 @@ export class S3Service implements IS3Service {
         }
 
         this.client = new S3Client(config);
-        this.bucketName = S3_BUCKET_NAME;
+        if (S3_BUCKET_NAME) {
+            this.bucketName = S3_BUCKET_NAME;
+        } else {
+            console.error("Please define OBJECTS_STORAGE_BUCKET_NAME in .env")
+        }
+        
     }
 
     async uploadImage(options: UploadImageOptions): Promise<UploadResult> {

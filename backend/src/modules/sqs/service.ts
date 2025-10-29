@@ -18,7 +18,19 @@ export class SQSService {
     private SQS_QUEUE_URL = process.env.SQS_QUEUE_URL_PROD;
 
     constructor() {
-        this.client = new SQSClient({});
+        const config: any = {
+            region: process.env.AWS_REGION || "us-east-1",
+        };
+
+        // Provide fake credentials in test environment
+        if (process.env.NODE_ENV === "test") {
+            config.credentials = {
+                accessKeyId: "test-key",
+                secretAccessKey: "test-secret",
+            };
+        }
+
+        this.client = new SQSClient(config);
     }
 
     async sendMessage(message: DisasterEmailMessage): Promise<void> {
