@@ -84,7 +84,7 @@ describe("Email Notification Integration Test", () => {
 
             // Verify message body has correct structure
             const firstMessage = JSON.parse(command.input.Entries[0].MessageBody);
-            expect(firstMessage.to).toBe("test@example.com");
+            expect(firstMessage.to).toBe("example@test.com");
             expect(firstMessage.from).toBe("priseregenerate@gmail.com");
             expect(firstMessage.firstName).toBe("Jane");
             expect(firstMessage.disasterId).toBeDefined();

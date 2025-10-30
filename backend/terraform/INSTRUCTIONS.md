@@ -2,6 +2,8 @@
 To apply changes in specific environment
 
 ### Authenticating to AWS
+Note: before any of this, you will need to create an AWS access key (under the Prisere IAM user). Make sure you have the AWS CLI installed and run ```aws configure``` to set your aws access key ID and aws secret access key.
+
 # Locally
 You will need to set the access key ID and secret vars in your .env file:
 AWS_ACCESS_KEY_ID=...
@@ -37,7 +39,6 @@ Once your .env is updated, run:
 ```bash
 export TF_VAR_ses_from_email=$(grep SES_FROM_EMAIL ../.env | cut -d '=' -f2 | tr -d '"')
 export TF_VAR_sqs_queue_url=$(grep SQS_QUEUE_URL_PROD ../.env | cut -d '=' -f2 | tr -d '"')
-terraform apply
 ```
 ## Deploying the resources
 - Only necesarry to do when the resources:

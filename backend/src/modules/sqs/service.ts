@@ -31,6 +31,9 @@ export class SQSService {
         }
 
         this.client = new SQSClient(config);
+        // Comment out the client creation above, and uncomment this to test locally:
+        // AWS access and secret key from .env will automatically be used instead of test creds then
+        // this.client = new SQSClient({}); // <- Uncomment this to test locally
     }
 
     async sendMessage(message: DisasterEmailMessage): Promise<void> {
