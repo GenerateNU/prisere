@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "bun build src/index.ts --target=node --outdir=dist && cd dist && zip -r ../function.zip .",
-    "test:local": "bun run src/index.ts"
+    "build": "./build.sh"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.621.0",
