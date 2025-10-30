@@ -25,7 +25,7 @@ export const seededPurchases = [
     {
         id: "840b4c83-f46b-4774-96c1-2f11959d45eb",
         companyId: seededCompanies[0].id,
-        quickbooksId: 2108346,
+        quickBooksId: 2108346,
         totalAmountCents: 456,
         isRefund: false,
         dateCreated: new Date("2025-01-09T12:00:00Z"),
@@ -34,7 +34,7 @@ export const seededPurchases = [
     {
         id: "013417a7-f85c-4440-b171-b461227446e5",
         companyId: seededCompanies[0].id,
-        quickbooksId: 2108344,
+        quickBooksId: 2108344,
         totalAmountCents: 50,
         isRefund: false,
         dateCreated: new Date("2024-04-11T12:00:00Z"),
