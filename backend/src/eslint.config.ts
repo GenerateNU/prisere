@@ -61,7 +61,7 @@ export default defineConfig([
             "build/",
             "*.config.js",
             "*.config.ts",
-            "src/lambda/email-processor/dist/index.mjs",
+            "src/lambda/email-processor/dist/*",
         ],
     },
 ]);

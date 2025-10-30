@@ -14,7 +14,7 @@ import { LocationAddress } from "../../entities/LocationAddress";
 import { logMessageToFile } from "../../utilities/logger";
 import { IPreferenceTransaction } from "../preferences/transaction";
 import { ISQSService } from "../sqs/service";
-import { getIncidentCodeMeaning } from "../../utilities/incident_code_meanings";
+import { getDeclarationTypeMeanings, getIncidentTypeMeanings } from "../../utilities/incident_code_meanings";
 
 export interface IDisasterNotificationService {
     getUserNotifications(
@@ -192,7 +192,10 @@ export class DisasterNotificationService implements IDisasterNotificationService
                 subject: "FEMA Disaster Alert from Prisere",
                 firstName: notif.user.firstName,
                 declarationDate: notif.femaDisaster.declarationDate,
-                declarationType: getIncidentCodeMeaning(notif.femaDisaster.declarationType),
+                declarationType: notif.femaDisaster.declarationType,
+                declarationTypeMeaning: getDeclarationTypeMeanings(notif.femaDisaster.declarationType),
+                incidentTypes: notif.femaDisaster.designatedIncidentTypes,
+                incidentTypeMeanings: getIncidentTypeMeanings(notif.femaDisaster.designatedIncidentTypes),
                 city: notif.locationAddress?.city,
                 notificationId: notif.id,
                 disasterId: notif.femaDisaster.id,
