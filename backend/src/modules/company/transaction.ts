@@ -34,15 +34,6 @@ export interface ICompanyTransaction {
      * @returns Promise resolving to fetched Company locations or null if company was not found
      */
     getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]>;
-
-    /**
-     * Validates that all the passed company IDs exist in the database
-     * @param companyIds the company ids to make sure exist in the DB
-     *
-     * Will return a list of all company ids not present in the DB
-     * So an empty list means all are valid
-     */
-    validateCompaniesExist(companyIds: string[]): Promise<string[]>;
 }
 
 export class CompanyTransaction implements ICompanyTransaction {
@@ -124,15 +115,5 @@ export class CompanyTransaction implements ICompanyTransaction {
             companyId: payload.id,
         });
         return locations;
-    }
-
-    async validateCompaniesExist(companyIds: string[]): Promise<string[]> {
-        const companies = await this.db.getRepository(Company).findBy({ id: In(companyIds) });
-        if (companies.length !== companyIds.length) {
-            const foundIds = companies.map((c) => c.id);
-            const missing = companyIds.filter((id) => !foundIds.includes(id));
-            return missing;
-        }
-        return [];
     }
 }
