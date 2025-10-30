@@ -10,7 +10,7 @@ export class UserPreferences {
     @PrimaryColumn()
     userId!: string;
 
-    @OneToOne(() => User, (user) => user.preferences)
+    @OneToOne(() => User, (user) => user.preferences, {onDelete: "CASCADE"})
     @JoinColumn({ name: "userId" })
     user!: Relation<User>;
 
