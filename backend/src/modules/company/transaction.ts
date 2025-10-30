@@ -1,6 +1,6 @@
 import { Company } from "../../entities/Company";
 import { CreateCompanyDTO, GetCompanyByIdDTO, UpdateQuickBooksImportTimeDTO } from "../../types/Company";
-import { DataSource, In } from "typeorm";
+import { DataSource } from "typeorm";
 import Boom from "@hapi/boom";
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
