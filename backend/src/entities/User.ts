@@ -28,6 +28,6 @@ export class User {
     @OneToMany(() => DisasterNotification, (notifications) => notifications.user)
     disasterNotifications!: Relation<DisasterNotification[]>;
 
-    @OneToOne(() => UserPreferences, (pref) => pref.user)
+    @OneToOne(() => UserPreferences, (pref) => pref.user, { onDelete: "CASCADE" })
     preferences!: Relation<UserPreferences>;
 }
