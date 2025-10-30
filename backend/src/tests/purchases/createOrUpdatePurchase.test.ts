@@ -444,7 +444,6 @@ describe("POST /purchase", () => {
         expect(body[2].quickBooksId).toBe(11111);
     });
 
-    
     test("POST /purchase Update Multiple Purchases in Batch", async () => {
         const requestBodies = [
             {
@@ -468,7 +467,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId":  seededPurchases[0].companyId
+                companyId: seededPurchases[0].companyId,
             },
             body: JSON.stringify(requestBodies),
         });
@@ -486,7 +485,6 @@ describe("POST /purchase", () => {
         expect(body[2].isRefund).toBe(true);
     });
 
-    
     test("POST /purchase Mixed Create and Update in Batch", async () => {
         const requestBodies = [
             {
@@ -510,7 +508,7 @@ describe("POST /purchase", () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "companyId": seededPurchases[0].companyId
+                companyId: seededPurchases[0].companyId,
             },
             body: JSON.stringify(requestBodies),
         });
