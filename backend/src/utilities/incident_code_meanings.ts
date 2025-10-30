@@ -2,19 +2,19 @@ import { INCIDENT_MAPPING } from "../types/fema-disaster";
 
 export function getDeclarationTypeMeanings(declarationType: string): string {
     switch (declarationType) {
-        case 'EM':
-            return 'Emergency declaration';
-        case 'DR':
-            return 'Major disaster';
-        case 'FM':
-            return 'Fire management';
+        case "EM":
+            return "Emergency declaration";
+        case "DR":
+            return "Major disaster";
+        case "FM":
+            return "Fire management";
         default:
             return declarationType;
     }
 }
 
 export function getIncidentTypeMeanings(designatedIncidentTypes: string): string[] {
-    let incidentMeanings: string[] = [];
+    const incidentMeanings: string[] = [];
     const incidentTypes = designatedIncidentTypes.split(/\s*,\s*/); // Split by commas and any white space between
     for (const type of incidentTypes) {
         if (type in INCIDENT_MAPPING) {
