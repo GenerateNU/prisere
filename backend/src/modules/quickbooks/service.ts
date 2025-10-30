@@ -5,10 +5,13 @@ import { IQuickbooksTransaction } from "./transaction";
 import { QuickbooksSession } from "../../entities/QuickbookSession";
 import Boom from "@hapi/boom";
 import { QBQueryResponse } from "../../external/quickbooks/types";
-import { QBInvoice } from "../../types/quickbooks";
+import { QBInvoice, QBPurchase } from "../../types/quickbooks";
 import { IUserTransaction } from "../user/transaction";
 import { IInvoiceTransaction } from "../invoice/transaction";
 import { IInvoiceLineItemTransaction } from "../invoiceLineItem/transaction";
+import { IPurchaseTransaction } from "../purchase/transaction";
+import { IPurchaseLineItemTransaction } from "../purchase-line-item/transaction";
+import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
 
 export interface IQuickbooksService {
     generateAuthUrl(args: { userId: string }): Promise<{ state: string; url: string }>;
@@ -16,6 +19,7 @@ export interface IQuickbooksService {
     refreshQuickbooksSession(args: { refreshToken: string; companyId: string }): Promise<QuickbooksSession>;
     consumeOAuthState(args: { state: string }): Promise<void>;
     updateUnprocessedInvoices(args: { userId: string }): Promise<void>;
+    updateUnprocessedPurchases(args: { userId: string }): Promise<void>;
 }
 
 export class QuickbooksService implements IQuickbooksService {
@@ -24,6 +28,8 @@ export class QuickbooksService implements IQuickbooksService {
         private userTransaction: IUserTransaction,
         private invoiceTransaction: IInvoiceTransaction,
         private invoiceLineItemTransaction: IInvoiceLineItemTransaction,
+        private purchaseTransaction: IPurchaseTransaction,
+        private purchaseLineItemTransaction: IPurchaseLineItemTransaction,
         private qbClient: IQuickbooksClient
     ) {}
 
@@ -186,7 +192,7 @@ export class QuickbooksService implements IQuickbooksService {
         if (!user) {
             throw Boom.internal("No user found");
         }
-        const lastImport = user.company.lastQuickBooksImportTime;
+        const lastImport = user.company.lastQuickBooksInvoiceImportTime;
         const lastImportDate = lastImport ? dayjs(lastImport) : null;
 
         const {
@@ -214,18 +220,67 @@ export class QuickbooksService implements IQuickbooksService {
 
         const lineItemData = invoices.flatMap((i) => {
             const dbInvoice = createdInvoices.find((di) => di.quickbooksId === parseInt(i.Id))!;
-            return getLineItems(i).map((l) => ({ ...l, invoiceId: dbInvoice.id }));
+            return getInvoiceLineItems(i).map((l) => ({ ...l, invoiceId: dbInvoice.id }));
         });
 
         await this.invoiceLineItemTransaction.createOrUpdateInvoiceLineItems(lineItemData);
 
-        await this.transaction.updateCompanyQuickbooksSync({ date: new Date(), companyId: user.companyId });
+        await this.transaction.updateCompanyInvoiceQuickbooksSync({ date: new Date(), companyId: user.companyId });
+    });
+
+    updateUnprocessedPurchases = withServiceErrorHandling(async ({ userId }: { userId: string }) => {
+        const user = await this.userTransaction.getCompany({ id: userId });
+        if (!user) {
+            throw Boom.internal("No user found");
+        }
+        const lastImport = user.company.lastQuickBooksPurchaseImportTime;
+        const lastImportDate = lastImport ? dayjs(lastImport) : null;
+
+        const {
+            QueryResponse: { Purchase: purchases },
+        } = await this.makeRequestToQB({
+            userId,
+            request: (session) =>
+                this.qbClient.query<{ Purchase: QBPurchase[] }>({
+                    qbRealm: session.externalId,
+                    accessToken: session.session.accessToken,
+                    query: lastImportDate
+                        ? `SELECT * FROM Purchase WHERE Metadata.LastUpdatedTime > '${lastImportDate.format("YYYY-MM-DDTHH:mm:ss")}'`
+                        : `SELECT * FROM Purchase`,
+                }),
+        });
+
+        const createdPurchases = await this.purchaseTransaction.createOrUpdatePurchase(
+            purchases.map((p) => ({
+                isRefund: p.Credit !== undefined ? p.Credit : false,
+                companyId: user.companyId,
+                totalAmountCents: p.TotalAmt * 100,
+                quickbooksDateCreated: p.MetaData.CreateTime,
+                quickBooksId: parseInt(p.Id),
+            }))
+        );
+
+        const lineItemData = purchases.flatMap((i) => {
+            const dbPurchase = createdPurchases.find((di) => di.quickBooksId === parseInt(i.Id))!;
+            if (!dbPurchase) {
+                throw new Error(`Missing created purchase in db for quickbooks id ${i.Id}`);
+            }
+            return getPurchaseLineItems(i).map((l) => ({
+                ...l,
+                purchaseId: dbPurchase.id,
+                quickbooksDateCreated: i.MetaData.CreateTime,
+            }));
+        });
+
+        await this.purchaseLineItemTransaction.createOrUpdatePurchaseLineItems(lineItemData);
+
+        await this.transaction.updateCompanyPurchaseQuickbooksSync({ date: new Date(), companyId: user.companyId });
     });
 }
 
 type ClientRequest<T> = (input: { session: QuickbooksSession; externalId: string }) => Promise<QBQueryResponse<T>>;
 
-function getLineItems(invoice: QBInvoice) {
+function getInvoiceLineItems(invoice: QBInvoice) {
     const out = [] as {
         amountCents: number;
         quickbooksId: number | undefined;
@@ -257,6 +312,39 @@ function getLineItems(invoice: QBInvoice) {
             case "DiscountLineDetail":
             case "SubTotalLineDetail":
                 break;
+        }
+    }
+
+    return out;
+}
+
+function getPurchaseLineItems(purchase: QBPurchase) {
+    const out = [] as {
+        description?: string;
+        quickBooksId: number;
+        amountCents: number;
+        category?: string;
+        type: PurchaseLineItemType;
+    }[];
+
+    for (const lineItem of purchase.Line) {
+        switch (lineItem.DetailType) {
+            case "ItemBasedExpenseLineDetail":
+                out.push({
+                    amountCents: lineItem.ItemBasedExpenseLineDetail.TaxInclusiveAmt * 100,
+                    quickBooksId: parseInt(lineItem.Id),
+                    type: PurchaseLineItemType.TYPICAL, // when importing, for now we mark everything as typical
+                    description: lineItem.Description,
+                });
+                break;
+            case "AccountBasedExpenseLineDetail":
+                out.push({
+                    amountCents: lineItem.Amount * 100,
+                    quickBooksId: parseInt(lineItem.Id),
+                    type: PurchaseLineItemType.TYPICAL, // when importing, for now we mark everything as typical
+                    description: lineItem.Description,
+                    category: lineItem.AccountBasedExpenseLineDetail.AccountRef.value,
+                });
         }
     }
 

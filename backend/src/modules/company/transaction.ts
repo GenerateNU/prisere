@@ -23,10 +23,16 @@ export interface ICompanyTransaction {
     getCompanyById(payload: GetCompanyByIdDTO): Promise<Company | null>;
 
     /**
-     * Updates a company's last quickbooks import time
+     * Updates a company's last quickbooks invoice import time
      * @param payload ID of company import time to update, Last quickbooks import time, Date
      */
-    updateLastQuickBooksImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company | null>;
+    updateLastQuickBooksInvoiceImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company | null>;
+
+    /**
+     * Updates a company's last quickbooks purchase import time
+     * @param payload ID of company import time to update, Last quickbooks import time, Date
+     */
+    updateLastQuickBooksPurchaseImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company | null>;
 
     /**
      * Gets a Company's locations by company ID
@@ -78,11 +84,6 @@ export class CompanyTransaction implements ICompanyTransaction {
         try {
             const result: Company | null = await this.db.getRepository(Company).findOneBy({ id: payload.id });
 
-            // Transform the date field to Date type, if it exists and is a string
-            if (result && result.lastQuickBooksImportTime && typeof result.lastQuickBooksImportTime === "string") {
-                result.lastQuickBooksImportTime = new Date(result.lastQuickBooksImportTime);
-            }
-
             return result;
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
@@ -97,26 +98,28 @@ export class CompanyTransaction implements ICompanyTransaction {
         }
     }
 
-    async updateLastQuickBooksImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company | null> {
+    async updateLastQuickBooksInvoiceImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company | null> {
         const result = await this.db
             .createQueryBuilder()
             .update(Company)
-            .set({ lastQuickBooksImportTime: payload.importTime })
+            .set({ lastQuickBooksInvoiceImportTime: payload.importTime })
             .where("id = :id", { id: payload.companyId })
             .returning("*")
             .execute();
 
-        const updatedCompany = result.raw[0];
-        if (!updatedCompany) {
-            return null;
-        }
+        return result.raw[0] as Company | null;
+    }
 
-        // Ensure the date is a Date object
-        if (updatedCompany.lastQuickBooksImportTime && typeof updatedCompany.lastQuickBooksImportTime === "string") {
-            updatedCompany.lastQuickBooksImportTime = new Date(updatedCompany.lastQuickBooksImportTime);
-        }
+    async updateLastQuickBooksPurchaseImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company | null> {
+        const result = await this.db
+            .createQueryBuilder()
+            .update(Company)
+            .set({ lastQuickBooksPurchaseImportTime: payload.importTime })
+            .where("id = :id", { id: payload.companyId })
+            .returning("*")
+            .execute();
 
-        return updatedCompany;
+        return result.raw[0] as Company | null;
     }
 
     async getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]> {
