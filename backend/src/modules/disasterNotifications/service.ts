@@ -2,13 +2,19 @@ import { DisasterNotification } from "../../entities/DisasterNotification";
 import { IDisasterNotificationTransaction } from "./transaction";
 import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
-import { GetUsersDisasterNotificationsDTO, NotificationTypeFilter } from "../../types/DisasterNotification";
+import {
+    DisasterEmailMessage,
+    GetUsersDisasterNotificationsDTO,
+    NotificationTypeFilter,
+} from "../../types/DisasterNotification";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { ILocationAddressTransaction } from "../location-address/transaction";
 import { NotificationStatus, NotificationType } from "../../types/NotificationEnums";
 import { LocationAddress } from "../../entities/LocationAddress";
 import { logMessageToFile } from "../../utilities/logger";
 import { IPreferenceTransaction } from "../preferences/transaction";
+import { ISQSService } from "../sqs/service";
+import { getDeclarationTypeMeanings, getIncidentTypeMeanings } from "../../utilities/incident_code_meanings";
 
 export interface IDisasterNotificationService {
     getUserNotifications(
@@ -24,21 +30,25 @@ export interface IDisasterNotificationService {
     deleteNotification(notificationId: string): Promise<boolean>;
     processNewDisasters(newDisasters: FemaDisaster[]): Promise<boolean>;
     markAllAsRead(userId: string): Promise<number>;
+    sendEmailNotifications(): Promise<DisasterNotification[]>;
 }
 
 export class DisasterNotificationService implements IDisasterNotificationService {
     private notificationTransaction: IDisasterNotificationTransaction;
     private locationTransaction: ILocationAddressTransaction;
     private userPreferences: IPreferenceTransaction;
+    private sqsService: ISQSService;
 
     constructor(
         notificationTransaction: IDisasterNotificationTransaction,
         locationTransaction: ILocationAddressTransaction,
-        userPreferences: IPreferenceTransaction
+        userPreferences: IPreferenceTransaction,
+        sqsService: ISQSService
     ) {
         this.notificationTransaction = notificationTransaction;
         this.locationTransaction = locationTransaction;
         this.userPreferences = userPreferences;
+        this.sqsService = sqsService;
     }
 
     getUserNotifications = withServiceErrorHandling(
@@ -144,6 +154,9 @@ export class DisasterNotificationService implements IDisasterNotificationService
                 logMessageToFile("No users affected by new disasters");
             }
 
+            // Send the email after creating all notifications
+            await this.sendEmailNotifications();
+
             return true;
         } catch (error) {
             logMessageToFile(`Error processing new disasters: ${error}`);
@@ -153,5 +166,50 @@ export class DisasterNotificationService implements IDisasterNotificationService
 
     markAllAsRead = withServiceErrorHandling(async (userId: string): Promise<number> => {
         return await this.notificationTransaction.markAllAsRead(userId);
+    });
+
+    sendEmailNotifications = withServiceErrorHandling(async (): Promise<DisasterNotification[]> => {
+        const unreadNotifications = await this.notificationTransaction.getUnreadNotifications();
+        logMessageToFile(`Going to send ${unreadNotifications.length} disaster notification emails.`);
+
+        if (unreadNotifications.length === 0) {
+            logMessageToFile(`There are no unread email notifications to send.`);
+            return unreadNotifications;
+        } else {
+            logMessageToFile(`Going to send ${unreadNotifications.length} disaster notification emails.`);
+        }
+        const notificationMessages: DisasterEmailMessage[] = [];
+
+        for (const notif of unreadNotifications) {
+            if (!notif.user.email) {
+                logMessageToFile(`Skipping notification ${notif.id} due to undefined email`);
+                continue;
+            }
+            logMessageToFile(`About to process notification ${notif}`);
+            const message: DisasterEmailMessage = {
+                to: notif.user.email,
+                from: "priseregenerate@gmail.com",
+                subject: "FEMA Disaster Alert from Prisere",
+                firstName: notif.user.firstName,
+                declarationDate: notif.femaDisaster.declarationDate,
+                declarationType: notif.femaDisaster.declarationType,
+                declarationTypeMeaning: getDeclarationTypeMeanings(notif.femaDisaster.declarationType),
+                incidentTypes: notif.femaDisaster.designatedIncidentTypes,
+                incidentTypeMeanings: getIncidentTypeMeanings(notif.femaDisaster.designatedIncidentTypes),
+                city: notif.locationAddress?.city,
+                notificationId: notif.id,
+                disasterId: notif.femaDisaster.id,
+                companyName: notif.user.company?.name,
+            };
+            logMessageToFile(`Message to send:\n${message}`);
+            notificationMessages.push(message);
+        }
+
+        await this.sqsService.sendBatchMessages(notificationMessages);
+
+        const result = await this.notificationTransaction.markNotificationsAsSent(
+            unreadNotifications.map((notification) => notification.id)
+        );
+        return result;
     });
 }

@@ -238,6 +238,7 @@ export interface paths {
                         "application/json": {
                             id: string;
                             name: string;
+                            businessOwnerFullName: string;
                             lastQuickBooksImportTime?: string;
                         };
                     };
@@ -289,6 +290,7 @@ export interface paths {
                 content: {
                     "application/json": {
                         name: string;
+                        businessOwnerFullName: string;
                     };
                 };
             };
@@ -302,6 +304,7 @@ export interface paths {
                         "application/json": {
                             id: string;
                             name: string;
+                            businessOwnerFullName: string;
                             lastQuickBooksImportTime?: string;
                         };
                     };
@@ -385,6 +388,7 @@ export interface paths {
                         "application/json": {
                             id: string;
                             name: string;
+                            businessOwnerFullName: string;
                             lastQuickBooksImportTime?: string;
                         };
                     };
@@ -518,8 +522,8 @@ export interface paths {
                             fipsStateCode: number;
                             /** Format: date-time */
                             declarationDate: string;
-                            incidentBeginDate: string | null;
-                            incidentEndDate: string | null;
+                            incidentBeginDate?: string;
+                            incidentEndDate?: string;
                             fipsCountyCode: number;
                             declarationType: string;
                             designatedArea: string;
@@ -827,6 +831,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/location-address/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create many addresses for locations of a company
+         * @description Creates new location addresses with the provided information
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        country: string;
+                        stateProvince: string;
+                        city: string;
+                        streetAddress: string;
+                        postalCode: string;
+                        county?: string;
+                    }[];
+                };
+            };
+            responses: {
+                /** @description Create location addresses response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            country: string;
+                            stateProvince: string;
+                            city: string;
+                            streetAddress: string;
+                            postalCode: string;
+                            county?: string;
+                        }[];
+                    };
+                };
+                /** @description Error Creating Location Address */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Error Creating Location Address */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/notifications": {
         parameters: {
             query?: never;
@@ -906,6 +990,7 @@ export interface paths {
                                 company: {
                                     id: string;
                                     name: string;
+                                    businessOwnerFullName: string;
                                     lastQuickBooksImportTime?: string;
                                 };
                             };
@@ -1762,7 +1847,7 @@ export interface paths {
                             amountCents: number;
                             category?: string;
                             /** Format: date-time */
-                            quickbooksDateCreated?: string;
+                            quickbooksDateCreated?: string | null;
                             /** Format: date-time */
                             dateCreated: string;
                             /** Format: date-time */
@@ -2291,7 +2376,8 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        disasterId: string;
+                        femaDisasterId?: string;
+                        selfDisasterId?: string;
                     };
                 };
             };
@@ -2313,8 +2399,32 @@ export interface paths {
                             createdAt: string;
                             /** Format: date-time */
                             updatedAt?: string;
-                            companyId: string;
-                            disasterId: string;
+                            femaDisaster?: {
+                                /** Format: uuid */
+                                id: string;
+                                disasterNumber: number;
+                                fipsStateCode: number;
+                                /** Format: date-time */
+                                declarationDate: string;
+                                incidentBeginDate?: string;
+                                incidentEndDate?: string;
+                                fipsCountyCode: number;
+                                declarationType: string;
+                                designatedArea: string;
+                                designatedIncidentTypes: string | null;
+                            };
+                            selfDisaster?: {
+                                id: string;
+                                description: string;
+                                /** Format: date */
+                                startDate: string;
+                                /** Format: date */
+                                endDate?: string;
+                                /** Format: date */
+                                createdAt: string;
+                                /** Format: date */
+                                updatedAt: string;
+                            };
                         };
                     };
                 };
@@ -2385,8 +2495,32 @@ export interface paths {
                             createdAt: string;
                             /** Format: date-time */
                             updatedAt?: string;
-                            companyId: string;
-                            disasterId: string;
+                            femaDisaster?: {
+                                /** Format: uuid */
+                                id: string;
+                                disasterNumber: number;
+                                fipsStateCode: number;
+                                /** Format: date-time */
+                                declarationDate: string;
+                                incidentBeginDate?: string;
+                                incidentEndDate?: string;
+                                fipsCountyCode: number;
+                                declarationType: string;
+                                designatedArea: string;
+                                designatedIncidentTypes: string | null;
+                            };
+                            selfDisaster?: {
+                                id: string;
+                                description: string;
+                                /** Format: date */
+                                startDate: string;
+                                /** Format: date */
+                                endDate?: string;
+                                /** Format: date */
+                                createdAt: string;
+                                /** Format: date */
+                                updatedAt: string;
+                            };
                         }[];
                     };
                 };
@@ -2477,6 +2611,329 @@ export interface paths {
                     };
                 };
                 /** @description Create Claims Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/claims/line-item": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Creates a link between a claim and a purchase line item
+         * @description Creates a link between a claim with a given id and a purchase line item with a given id
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        claimId: string;
+                        /** Format: uuid */
+                        purchaseLineItemId: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Link added successfully */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** Format: uuid */
+                            claimId: string;
+                            /** Format: uuid */
+                            purchaseLineItemId: string;
+                        };
+                    };
+                };
+                /** @description Link Creation Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Claim or line item not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Link Creation Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/claims/purchase": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Creates a link between a claim and a purchase's line items
+         * @description Creates a link between a claim with a given id and a purchase's line items with a given id
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        claimId: string;
+                        /** Format: uuid */
+                        purchaseId: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Links added successfully */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** Format: uuid */
+                            claimId: string;
+                            /** Format: uuid */
+                            purchaseLineItemId: string;
+                        }[];
+                    };
+                };
+                /** @description Link Creation Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Claim or purchase line items not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Link Creation Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/claims/{id}/line-item": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Gets all purchase line items linked to a claim
+         * @description Gets all purchase line items linked to a claim with a given id
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Line items retrieved successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            description?: string;
+                            quickBooksId?: number;
+                            purchaseId: string;
+                            amountCents: number;
+                            category?: string;
+                            /** @enum {string} */
+                            type: "extraneous" | "typical";
+                            dateCreated: string;
+                            lastUpdated: string;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string;
+                        }[];
+                    };
+                };
+                /** @description Line item retrieval errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Claim not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Line item retrieval errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/claims/{claimId}/line-item/{lineItemId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Deletes the link between a claim and a purchase line item
+         * @description Deletes the link between a claim with a given claimId and a purchase line itemwith a given purchaseLineItemId
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    claimId: string;
+                    lineItemId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Link deleted successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** Format: uuid */
+                            claimId: string;
+                            /** Format: uuid */
+                            purchaseLineItemId: string;
+                        };
+                    };
+                };
+                /** @description Link deletion Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Claim or line item not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Link deletion Errors */
                 500: {
                     headers: {
                         [name: string]: unknown;
@@ -2887,7 +3344,7 @@ export interface paths {
                         amountCents: number;
                         category?: string;
                         /** Format: date-time */
-                        quickbooksDateCreated?: string;
+                        quickbooksDateCreated?: string | null;
                     }[];
                 };
             };
@@ -2906,7 +3363,7 @@ export interface paths {
                             amountCents: number;
                             category?: string;
                             /** Format: date-time */
-                            quickbooksDateCreated?: string;
+                            quickbooksDateCreated?: string | null;
                             /** Format: date-time */
                             dateCreated: string;
                             /** Format: date-time */
@@ -2980,7 +3437,7 @@ export interface paths {
                             amountCents: number;
                             category?: string;
                             /** Format: date-time */
-                            quickbooksDateCreated?: string;
+                            quickbooksDateCreated?: string | null;
                             /** Format: date-time */
                             dateCreated: string;
                             /** Format: date-time */

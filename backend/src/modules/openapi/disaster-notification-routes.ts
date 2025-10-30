@@ -14,6 +14,7 @@ import {
 import { z } from "zod";
 import { ILocationAddressTransaction, LocationAddressTransactions } from "../location-address/transaction";
 import { IPreferenceTransaction, PreferenceTransaction } from "../preferences/transaction";
+import { ISQSService, SQSService } from "../sqs/service";
 
 export const getUserNotificationsRoute = createRoute({
     method: "get",
@@ -320,10 +321,12 @@ export const addOpenApiDisasterNotificationRoutes = (openApi: OpenAPIHono, db: D
     const notificationTransaction = new DisasterNotificationTransaction(db);
     const locationTransaction: ILocationAddressTransaction = new LocationAddressTransactions(db);
     const userPreferencesTransaction: IPreferenceTransaction = new PreferenceTransaction(db);
+    const sqsService: ISQSService = new SQSService();
     const notificationService = new DisasterNotificationService(
         notificationTransaction,
         locationTransaction,
-        userPreferencesTransaction
+        userPreferencesTransaction,
+        sqsService
     );
     const notificationController = new DisasterNotificationController(notificationService);
 

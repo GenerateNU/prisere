@@ -5,6 +5,7 @@ import { DisasterNotificationService, IDisasterNotificationService } from "./ser
 import { DisasterNotificationController, IDisasterNotificationController } from "./controller";
 import { ILocationAddressTransaction, LocationAddressTransactions } from "../location-address/transaction";
 import { IPreferenceTransaction, PreferenceTransaction } from "../preferences/transaction";
+import { ISQSService, SQSService } from "../sqs/service";
 
 export const disasterNotificationRoutes = (db: DataSource): Hono => {
     const notifications = new Hono();
@@ -12,10 +13,12 @@ export const disasterNotificationRoutes = (db: DataSource): Hono => {
     const disasterNotificationTransaction: IDisasterNotificationTransaction = new DisasterNotificationTransaction(db);
     const locationTransaction: ILocationAddressTransaction = new LocationAddressTransactions(db);
     const userPreferencesTransaction: IPreferenceTransaction = new PreferenceTransaction(db);
+    const sqsService: ISQSService = new SQSService();
     const disasterNotificationService: IDisasterNotificationService = new DisasterNotificationService(
         disasterNotificationTransaction,
         locationTransaction,
-        userPreferencesTransaction
+        userPreferencesTransaction,
+        sqsService
     );
     const disasterNotificationController: IDisasterNotificationController = new DisasterNotificationController(
         disasterNotificationService

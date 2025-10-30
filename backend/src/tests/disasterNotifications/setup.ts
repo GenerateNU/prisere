@@ -33,7 +33,7 @@ export const createTestData = async (dataSource: DataSource, includeNotification
             id: "0199e585-a52b-7bcf-982d-a1c5230b3d40",
             firstName: "Jane",
             lastName: "Smith",
-            email: "jane@prisere.com",
+            email: "example@test.com",
         },
         {
             id: "0189e585-a52b-7bcf-982d-a1c5230b3d40",
@@ -54,11 +54,11 @@ export const createTestData = async (dataSource: DataSource, includeNotification
             declarationDate: new Date("2025-09-28T00:00:00.000Z"),
             incidentBeginDate: new Date("2025-09-29T00:00:00.000Z"),
             incidentEndDate: new Date("2025-10-05T00:00:00.000Z"),
-            incidentType: "bad",
+            incidentType: "??",
             fipsCountyCode: 999,
-            declarationType: "11",
+            declarationType: "EM",
             designatedArea: "County A",
-            designatedIncidentTypes: "1",
+            designatedIncidentTypes: "1,Z",
         },
         {
             id: "0199e585-ef55-7ea5-beec-f786e389d967",
@@ -67,11 +67,11 @@ export const createTestData = async (dataSource: DataSource, includeNotification
             declarationDate: new Date("2025-09-28T00:00:00.000Z"),
             incidentBeginDate: new Date("2025-09-29T00:00:00.000Z"),
             incidentEndDate: new Date("2025-10-05T00:00:00.000Z"),
-            incidentType: "worse",
+            incidentType: "??",
             fipsCountyCode: 888,
-            declarationType: "12",
+            declarationType: "DR",
             designatedArea: "County B",
-            designatedIncidentTypes: "2",
+            designatedIncidentTypes: "2,W",
         },
     ];
 
