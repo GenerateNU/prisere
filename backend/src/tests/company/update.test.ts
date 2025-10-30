@@ -79,4 +79,56 @@ describe("Company - Update lastQuickBooksImportTime", () => {
         });
         expect(response.status).toBe(500);
     });
+
+    test("PATCH /companies/:id/quickbooks-purchase-import-time - Valid date", async () => {
+        const newDate = new Date("2025-12-25T09:30:00.000Z");
+        const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-purchase-import-time`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+            },
+            body: JSON.stringify({ importTime: newDate.toISOString() }), // <-- use importTime
+        });
+        expect(response.status).toBe(200);
+        const body = await response.json();
+        expect(body.lastQuickBooksPurchaseImportTime).toBe(newDate.toISOString());
+    });
+
+    test("PATCH /companies/:id/quickbooks-purchase-import-time - Invalid date string", async () => {
+        const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-purchase-import-time`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+            },
+            body: JSON.stringify({ importTime: "not-a-date" }), // <-- use importTime
+        });
+        expect(response.status).toBe(400);
+    });
+
+    test("PATCH /companies/:id/quickbooks-purchase-import-time - Missing date", async () => {
+        const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-purchase-import-time`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+            },
+            body: JSON.stringify({}),
+        });
+        expect(response.status).toBe(400);
+    });
+
+    test("PATCH /companies/:id/quickbooks-purchase-import-time - Non-existent company", async () => {
+        const newDate = new Date("2025-12-25T09:30:00.000Z");
+        const response = await app.request(TESTING_PREFIX + `/companies/quickbooks-purchase-import-time`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: "nonexistent-id",
+            },
+            body: JSON.stringify({ importTime: newDate.toISOString() }), // <-- use importTime
+        });
+        expect(response.status).toBe(500);
+    });
 });

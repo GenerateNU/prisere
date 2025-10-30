@@ -107,7 +107,7 @@ export class CompanyTransaction implements ICompanyTransaction {
             .returning("*")
             .execute();
 
-        return result.raw[0];
+        return result.raw[0] as Company | null;
     }
 
     async updateLastQuickBooksPurchaseImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company | null> {

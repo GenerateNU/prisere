@@ -263,7 +263,7 @@ export class QuickbooksService implements IQuickbooksService {
         const lineItemData = purchases.flatMap((i) => {
             const dbPurchase = createdPurchases.find((di) => di.quickBooksId === parseInt(i.Id))!;
             if (!dbPurchase) {
-                console.log(createdPurchases, i.Id);
+                throw new Error(`Missing created purchase in db for quickbooks id ${i.Id}`);
             }
             return getPurchaseLineItems(i).map((l) => ({
                 ...l,
