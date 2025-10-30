@@ -47,7 +47,10 @@ export function buildEmailHtml(message: DisasterEmailMessage): string {
               </p>
               
               <p style="margin: 0 0 20px 0; font-size: 16px; color: #333333; line-height: 1.6;">
-                A <strong>${message.declarationType}</strong> disaster has been declared in your area.
+                A <strong>${message.declarationTypeMeaning}</strong> disaster has been declared in your area. (FEMA Declaration Type: ${message.declarationType})
+                This disaster falls under the incident types: 
+                <strong>${Array.isArray(message.incidentTypeMeanings) ? message.incidentTypeMeanings.join(', ') : message.incidentTypeMeanings}</strong>
+                which correspond to the FEMA incident types: ${message.incidentTypes}.
               </p>
               
               <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f9f9f9; border-radius: 4px; padding: 20px; margin: 20px 0;">
