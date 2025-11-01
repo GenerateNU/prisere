@@ -325,7 +325,10 @@
                       "type": "string",
                       "minLength": 1
                     },
-                    "lastQuickBooksImportTime": {
+                    "lastQuickBooksInvoiceImportTime": {
+                      "type": "string"
+                    },
+                    "lastQuickBooksPurchaseImportTime": {
                       "type": "string"
                     }
                   },
@@ -404,7 +407,10 @@
                       "type": "string",
                       "minLength": 1
                     },
-                    "lastQuickBooksImportTime": {
+                    "lastQuickBooksInvoiceImportTime": {
+                      "type": "string"
+                    },
+                    "lastQuickBooksPurchaseImportTime": {
                       "type": "string"
                     }
                   },
@@ -459,10 +465,10 @@
         }
       }
     },
-    "/companies/quickbooks-import-time": {
+    "/companies/quickbooks-invoice-import-time": {
       "patch": {
-        "summary": "Update a company's lastQuickBooksImportTime",
-        "description": "Updates the lastQuickBooksImportTime for a company by ID",
+        "summary": "Update a company's lastQuickBooksInvoiceImportTime",
+        "description": "Updates the lastQuickBooksInvoiceImportTime for a company by ID",
         "tags": [
           "Companies"
         ],
@@ -503,7 +509,109 @@
                       "type": "string",
                       "minLength": 1
                     },
-                    "lastQuickBooksImportTime": {
+                    "lastQuickBooksInvoiceImportTime": {
+                      "type": "string"
+                    },
+                    "lastQuickBooksPurchaseImportTime": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "businessOwnerFullName"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Create Company Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Create Company Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/companies/quickbooks-purchase-import-time": {
+      "patch": {
+        "summary": "Update a company's lastQuickBooksPurcahseImportTime",
+        "description": "Updates the lastQuickBooksPurcahseImportTime for a company by ID",
+        "tags": [
+          "Companies"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "importTime": {
+                    "type": "string",
+                    "format": "date"
+                  }
+                },
+                "required": [
+                  "importTime"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Company updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "businessOwnerFullName": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "lastQuickBooksInvoiceImportTime": {
+                      "type": "string"
+                    },
+                    "lastQuickBooksPurchaseImportTime": {
                       "type": "string"
                     }
                   },
@@ -1668,7 +1776,10 @@
                                 "type": "string",
                                 "minLength": 1
                               },
-                              "lastQuickBooksImportTime": {
+                              "lastQuickBooksInvoiceImportTime": {
+                                "type": "string"
+                              },
+                              "lastQuickBooksPurchaseImportTime": {
                                 "type": "string"
                               }
                             },
@@ -2477,6 +2588,92 @@
           },
           "400": {
             "description": "Did not grant permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/importQuickbooksData": {
+      "post": {
+        "summary": "Import quickbooks (invoice and purchase) data for a company, based off of the userId/user owner of the company",
+        "description": "mport quickbooks (invoice and purchase) data for a company, based off of the userId/user owner of the company",
+        "tags": [
+          "quickbooks"
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully imported new QuickBooks data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, invalid user ID or inputs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Could not authenticate to QuickBooks session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "QuickBooks data not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -4472,6 +4669,7 @@
                       },
                       "category": {
                         "type": "string",
+                        "nullable": true,
                         "minLength": 1
                       },
                       "type": {
@@ -5459,6 +5657,7 @@
                     },
                     "category": {
                       "type": "string",
+                      "nullable": true,
                       "maxLength": 100
                     },
                     "type": {
@@ -5512,6 +5711,7 @@
                       },
                       "category": {
                         "type": "string",
+                        "nullable": true,
                         "minLength": 1
                       },
                       "type": {
@@ -5631,6 +5831,7 @@
                     },
                     "category": {
                       "type": "string",
+                      "nullable": true,
                       "minLength": 1
                     },
                     "type": {
@@ -5751,6 +5952,7 @@
                       },
                       "category": {
                         "type": "string",
+                        "nullable": true,
                         "minLength": 1
                       },
                       "type": {

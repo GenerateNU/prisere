@@ -20,6 +20,7 @@ export interface IQuickbooksService {
     consumeOAuthState(args: { state: string }): Promise<void>;
     updateUnprocessedInvoices(args: { userId: string }): Promise<void>;
     updateUnprocessedPurchases(args: { userId: string }): Promise<void>;
+    importQuickbooksData(args: { userId: string }): Promise<void>;
 }
 
 export class QuickbooksService implements IQuickbooksService {
@@ -275,6 +276,32 @@ export class QuickbooksService implements IQuickbooksService {
         await this.purchaseLineItemTransaction.createOrUpdatePurchaseLineItems(lineItemData);
 
         await this.transaction.updateCompanyPurchaseQuickbooksSync({ date: new Date(), companyId: user.companyId });
+    });
+
+    importQuickbooksData = withServiceErrorHandling(async ({ userId }: { userId: string }) => {
+            // First check if the user has a Quickbooks session going/one to refresh
+            const sessionInfo = await this.transaction.getSessionForUser({userId});
+            let session = sessionInfo.session;
+            const externalId = sessionInfo.externalId;
+
+            const now = dayjs();
+
+            if (!session || !externalId || now.isSameOrAfter(session.refreshExpiryTimestamp)) {
+                // How can I redirect to quickbooks auth
+                throw Boom.unauthorized("Quickbooks session is expired");
+            }
+
+            if (now.isSameOrAfter(session.accessExpiryTimestamp)) {
+                session = await this.refreshQuickbooksSession({
+                    refreshToken: session.refreshToken,
+                    companyId: session.companyId,
+                });
+            }
+
+            // Now update unprocessed invoices and purchases
+            await this.updateUnprocessedInvoices({userId})
+            await this.updateUnprocessedPurchases({userId})
+
     });
 }
 

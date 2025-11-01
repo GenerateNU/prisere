@@ -38,6 +38,7 @@ export const addOpenApiQBRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAP
 
     openApi.openapi(generateAuthRoute, (ctx) => controller.redirectToAuthorization(ctx));
     openApi.openapi(generateSessionRoute, (ctx) => controller.generateSession(ctx));
+    openApi.openapi(importQuickbooksData, (ctx) => controller.importQuickbooksData(ctx));
     return openApi;
 };
 
@@ -86,3 +87,53 @@ const generateSessionRoute = createRoute({
         },
     },
 });
+
+const importQuickbooksData = createRoute({
+    method: "post",
+    path: "importQuickbooksData",
+    summary: "Import quickbooks (invoice and purchase) data for a company, based off of the userId/user owner of the company",
+    description: "mport quickbooks (invoice and purchase) data for a company, based off of the userId/user owner of the company",
+    tags: ["quickbooks"],
+    responses: {
+        201: {
+            description: "Successfully imported new QuickBooks data",
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        success: z.literal(true),
+                    }),
+                },
+            },
+        },
+        401: {
+            description: "Could not authenticate to QuickBooks session",
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        error: z.string(),
+                    }),
+                },
+            },
+        },
+        404: {
+            description: "QuickBooks data not found",
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        error: z.string(),
+                    }),
+                },
+            },
+        },
+        400: {
+            description: "Bad request, invalid user ID or inputs",
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        error: z.string(),
+                    }),
+                },
+            },
+        },
+    },
+})
