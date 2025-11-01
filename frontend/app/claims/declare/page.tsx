@@ -6,7 +6,6 @@ import DisasterInfoStep from "./DisasterInfoStep";
 import ExportStep from "./ExportStep";
 import InsurerInfoStep from "./InsurerInfoStep";
 import PersonalInfoStep from "./PersonalInfoStep";
-import ProgressBar from "./ProgressBar";
 import StartStep from "./StartStep";
 import IncidentDateStep from "./IncidentDateStep";
 import { getCompany, getCompanyLocations } from "@/api/company";
@@ -15,9 +14,10 @@ import { createSelfDisaster } from "@/api/self-disaster";
 import { createClaim } from "@/api/claim";
 import { createClaimLocationLink } from "@/api/claim-location";
 import { getUser } from "@/api/user";
+import Progress from "@/components/progress";
 
 export default function DeclareDisaster() {
-    const [step, setStep] = React.useState(0);
+    const [step, setStep] = React.useState(-2);
     const [disasterInfo, setDisasterInfo] = React.useState({
         name: "",
         startDate: null as Date | null,
@@ -130,11 +130,11 @@ export default function DeclareDisaster() {
 
     const steps = [
         {
-            step: 0,
+            step: -2,
             render: <StartStep handleStepForward={handleStepForward} />,
         },
         {
-            step: 1,
+            step: -1,
             render: (
                 <IncidentDateStep
                     incidentDate={disasterInfo.startDate}
@@ -149,7 +149,7 @@ export default function DeclareDisaster() {
             ),
         },
         {
-            step: 2,
+            step: 0,
             render: (
                 <DisasterInfoStep
                     disasterInfo={disasterInfo}
@@ -161,7 +161,7 @@ export default function DeclareDisaster() {
             ),
         },
         {
-            step: 3,
+            step: 1,
             render: (
                 <PersonalInfoStep
                     personalInfo={personalInfo}
@@ -172,7 +172,7 @@ export default function DeclareDisaster() {
             ),
         },
         {
-            step: 4,
+            step: 2,
             render: (
                 <BusinessInfoStep
                     businessInfo={businessInfo}
@@ -184,7 +184,7 @@ export default function DeclareDisaster() {
             ),
         },
         {
-            step: 5,
+            step: 3,
             render: (
                 <InsurerInfoStep
                     insurerInfo={insurerInfo}
@@ -195,7 +195,7 @@ export default function DeclareDisaster() {
             ),
         },
         {
-            step: 6,
+            step: 4,
             render: <ExportStep />,
         },
     ];
@@ -204,11 +204,14 @@ export default function DeclareDisaster() {
 
     return (
         <div className={`flex flex-col px-[20%] pt-[70px] min-h-screen pb-8 ${step === 1 && "justify-center"}`}>
-            {step > 1 && step !== 7 && (
-                <>
+            {step > -1 && step !== 5 && (
+                <div className="">
                     <h2 className="text-[40px] font-bold ">Declare Disaster</h2>
-                    <ProgressBar step={step} />
-                </>
+                    <Progress
+                        progress={step}
+                        items={["Disaster Info", "Business Info", "Personal Info", "Insurer Info", "Export Report"]}
+                    />
+                </div>
             )}
             {currentStep?.render}
         </div>
