@@ -1,5 +1,4 @@
-import { Hono } from "hono";
-import { afterEach, beforeAll, describe, expect, it } from "bun:test";
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from "bun:test";
 import { IBackup } from "pg-mem";
 import { DataSource } from "typeorm";
 import { QuickbooksService } from "../../../modules/quickbooks/service";
@@ -7,8 +6,6 @@ import { startTestApp } from "../../setup-tests";
 import { QuickbooksTransaction } from "../../../modules/quickbooks/transaction";
 import { UserTransaction } from "../../../modules/user/transaction";
 import { MockQBClient } from "../oauth/mock-client";
-import { createUserWithCompany, setupQuickbooksSession } from "../../utils";
-import { randomUUID } from "crypto";
 import { IQuickbooksClient } from "../../../external/quickbooks/client";
 import { mockQuerySuccessReturn } from "../utis";
 import { Invoice } from "../../../entities/Invoice";
@@ -17,28 +14,40 @@ import { InvoiceLineItem } from "../../../entities/InvoiceLineItem";
 import { InvoiceTransaction } from "../../../modules/invoice/transaction";
 import { InvoiceLineItemTransaction } from "../../../modules/invoiceLineItem/transaction";
 import { QBInvoice } from "../../../types/quickbooks";
+import { PurchaseTransaction } from "../../../modules/purchase/transaction";
+import { PurchaseLineItemTransaction } from "../../../modules/purchase-line-item/transaction";
+import QuickbooksSeeder from "../../../database/seeds/quickbooks.seed";
+import { SeederFactoryManager } from "typeorm-extension";
+import CompanySeeder from "../../../database/seeds/company.seed";
+import UserSeeder from "../../../database/seeds/user.seed";
 
 describe("inserting invoice data", () => {
-    let app: Hono;
     let db: DataSource;
     let backup: IBackup;
 
     let client: IQuickbooksClient;
     let service: QuickbooksService;
 
+    const companyId = QuickbooksSeeder.COMPANY_ID;
+    const userId = QuickbooksSeeder.USER_ID;
+
     beforeAll(async () => {
-        ({ app, backup, dataSource: db } = await startTestApp());
+        ({ backup, dataSource: db } = await startTestApp());
 
         const transaction = new QuickbooksTransaction(db);
         const userTransaction = new UserTransaction(db);
         const invoiceTransaction = new InvoiceTransaction(db);
         const invoiceLineItemTransaction = new InvoiceLineItemTransaction(db);
+        const purchaseTransaction = new PurchaseTransaction(db);
+        const purchaseLineItemTransaction = new PurchaseLineItemTransaction(db);
         client = new MockQBClient();
         service = new QuickbooksService(
             transaction,
             userTransaction,
             invoiceTransaction,
             invoiceLineItemTransaction,
+            purchaseTransaction,
+            purchaseLineItemTransaction,
             client
         );
     });
@@ -47,15 +56,16 @@ describe("inserting invoice data", () => {
         backup.restore();
     });
 
+    beforeEach(async () => {
+        const companySeeder = new CompanySeeder();
+        await companySeeder.run(db, {} as SeederFactoryManager);
+        const qbSeeder = new QuickbooksSeeder();
+        await qbSeeder.run(db, {} as SeederFactoryManager);
+        const userSeeder = new UserSeeder();
+        await userSeeder.run(db, {} as SeederFactoryManager);
+    });
+
     it("should create a new invoice", async () => {
-        const { data } = await createUserWithCompany(app, {
-            firstName: "test",
-            lastName: "user",
-            id: randomUUID(),
-        });
-
-        await setupQuickbooksSession(db, { companyId: data.companyId! });
-
         const now = new Date().toISOString();
 
         mockQuerySuccessReturn<{ Invoice: QBInvoice[] }>(client, {
@@ -85,12 +95,12 @@ describe("inserting invoice data", () => {
             ],
         });
 
-        await service.updateUnprocessedInvoices({ userId: data.id });
+        await service.updateUnprocessedInvoices({ userId });
 
-        const invoices = await db.getRepository(Invoice).find({ where: { companyId: data.companyId! } });
+        const invoices = await db.getRepository(Invoice).find({ where: { companyId } });
         expect(invoices).toBeArrayOfSize(1);
         expect(invoices[0]).toEqual({
-            companyId: data.companyId!,
+            companyId,
             quickbooksId: 1,
             quickbooksDateCreated: new Date(now),
             totalAmountCents: 1050,
@@ -127,14 +137,6 @@ describe("inserting invoice data", () => {
     });
 
     it("should update an existing invoice when it changes", async () => {
-        const { data } = await createUserWithCompany(app, {
-            firstName: "test",
-            lastName: "user",
-            id: randomUUID(),
-        });
-
-        await setupQuickbooksSession(db, { companyId: data.companyId! });
-
         const oneDayAgo = dayjs().subtract(1, "day").toISOString();
 
         mockQuerySuccessReturn<{ Invoice: QBInvoice[] }>(client, {
@@ -164,9 +166,9 @@ describe("inserting invoice data", () => {
             ],
         });
 
-        await service.updateUnprocessedInvoices({ userId: data.id });
+        await service.updateUnprocessedInvoices({ userId });
 
-        const invoicesBefore = await db.getRepository(Invoice).find({ where: { companyId: data.companyId! } });
+        const invoicesBefore = await db.getRepository(Invoice).find({ where: { companyId: companyId } });
         expect(invoicesBefore).toBeArrayOfSize(1);
         const lineItemsBefore = await db
             .getRepository(InvoiceLineItem)
@@ -201,12 +203,12 @@ describe("inserting invoice data", () => {
             ],
         });
 
-        await service.updateUnprocessedInvoices({ userId: data.id });
+        await service.updateUnprocessedInvoices({ userId });
 
-        const invoicesAfter = await db.getRepository(Invoice).find({ where: { companyId: data.companyId! } });
+        const invoicesAfter = await db.getRepository(Invoice).find({ where: { companyId } });
         expect(invoicesAfter).toBeArrayOfSize(1);
         expect(invoicesAfter[0]).toEqual({
-            companyId: data.companyId!,
+            companyId,
             quickbooksId: 1,
             quickbooksDateCreated: new Date(oneDayAgo),
             totalAmountCents: 1550,
@@ -245,14 +247,6 @@ describe("inserting invoice data", () => {
     });
 
     it("should destructure a grouped line item", async () => {
-        const { data } = await createUserWithCompany(app, {
-            firstName: "test",
-            lastName: "user",
-            id: randomUUID(),
-        });
-
-        await setupQuickbooksSession(db, { companyId: data.companyId! });
-
         const now = new Date().toISOString();
 
         mockQuerySuccessReturn<{ Invoice: QBInvoice[] }>(client, {
@@ -291,12 +285,12 @@ describe("inserting invoice data", () => {
             ],
         });
 
-        await service.updateUnprocessedInvoices({ userId: data.id });
+        await service.updateUnprocessedInvoices({ userId });
 
-        const invoices = await db.getRepository(Invoice).find({ where: { companyId: data.companyId! } });
+        const invoices = await db.getRepository(Invoice).find({ where: { companyId } });
         expect(invoices).toBeArrayOfSize(1);
         expect(invoices[0]).toEqual({
-            companyId: data.companyId!,
+            companyId,
             quickbooksId: 1,
             quickbooksDateCreated: new Date(now),
             totalAmountCents: 1050,

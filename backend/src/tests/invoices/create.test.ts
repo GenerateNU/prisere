@@ -216,10 +216,9 @@ describe("POST /quickbooks/invoice/bulk", () => {
             body: JSON.stringify(requestBody),
         });
 
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(500);
         const body = await response.json();
         expect(body).toHaveProperty("error");
-        expect(body.error).toBe("Companies not found: " + "ffc8243b-9999-4999-9999-ffc73522a838");
     });
 
     test("POST /quickbooks/invoice/bulk - Bad quickbooks ID", async () => {

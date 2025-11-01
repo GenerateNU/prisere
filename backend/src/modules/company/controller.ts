@@ -15,7 +15,8 @@ import { GetLocationAddressResponse } from "../../types/Location";
 export interface ICompanyController {
     getCompanyById(_ctx: Context): ControllerResponse<TypedResponse<GetCompanyByIdResponse, 200>>;
     createCompany(_ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 201>>;
-    updateQuickbooksImportTime(ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 200>>;
+    updateQuickbooksInvoiceImportTime(ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 200>>;
+    updateQuickbooksPurchaseImportTime(ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 200>>;
     getCompanyLocationsById(ctx: Context): ControllerResponse<TypedResponse<GetLocationAddressResponse[], 200>>;
 }
 
@@ -47,7 +48,7 @@ export class CompanyController implements ICompanyController {
         }
     );
 
-    updateQuickbooksImportTime = withControllerErrorHandling(
+    updateQuickbooksInvoiceImportTime = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 200>> => {
             const companyId = ctx.get("companyId");
             const body = await ctx.req.json();
@@ -61,7 +62,7 @@ export class CompanyController implements ICompanyController {
                 return ctx.json({ error: "Invalid request body: ", body }, 400);
             }
 
-            const updated = await this.companyService.updateLastQuickBooksImportTime(parseResult.data);
+            const updated = await this.companyService.updateLastQuickBooksInvoiceImportTime(parseResult.data);
             if (!updated) {
                 logMessageToFile("Company not found");
             }
@@ -69,8 +70,61 @@ export class CompanyController implements ICompanyController {
             return ctx.json(
                 {
                     ...updated,
-                    ...(updated.lastQuickBooksImportTime
-                        ? { lastQuickBooksImportTime: new Date(updated.lastQuickBooksImportTime).toISOString() }
+                    ...(updated.lastQuickBooksInvoiceImportTime
+                        ? {
+                              lastQuickBooksInvoiceImportTime: new Date(
+                                  updated.lastQuickBooksInvoiceImportTime
+                              ).toISOString(),
+                          }
+                        : {}),
+                    ...(updated.lastQuickBooksPurchaseImportTime
+                        ? {
+                              lastQuickBooksPurchaseImportTime: new Date(
+                                  updated.lastQuickBooksPurchaseImportTime
+                              ).toISOString(),
+                          }
+                        : {}),
+                },
+                200
+            );
+        }
+    );
+
+    updateQuickbooksPurchaseImportTime = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 200>> => {
+            const companyId = ctx.get("companyId");
+            const body = await ctx.req.json();
+
+            const parseResult = UpdateQuickBooksImportTimeDTOSchema.safeParse({
+                companyId,
+                importTime: body.importTime ? new Date(body.importTime) : undefined,
+            });
+
+            if (!parseResult.success) {
+                return ctx.json({ error: "Invalid request body: ", body }, 400);
+            }
+
+            const updated = await this.companyService.updateLastQuickBooksPurchaseImportTime(parseResult.data);
+            if (!updated) {
+                logMessageToFile("Company not found");
+            }
+
+            return ctx.json(
+                {
+                    ...updated,
+                    ...(updated.lastQuickBooksInvoiceImportTime
+                        ? {
+                              lastQuickBooksInvoiceImportTime: new Date(
+                                  updated.lastQuickBooksInvoiceImportTime
+                              ).toISOString(),
+                          }
+                        : {}),
+                    ...(updated.lastQuickBooksPurchaseImportTime
+                        ? {
+                              lastQuickBooksPurchaseImportTime: new Date(
+                                  updated.lastQuickBooksPurchaseImportTime
+                              ).toISOString(),
+                          }
                         : {}),
                 },
                 200

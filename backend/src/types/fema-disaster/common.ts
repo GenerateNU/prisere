@@ -3,7 +3,7 @@ import z from "zod";
 export const FIPSState = z.number().gte(0).lte(56);
 export const FIPSCounty = z.number().gte(0).lt(1000);
 
-const INCIDENT_MAPPING = {
+export const INCIDENT_MAPPING = {
     "0": "Not applicable",
     "1": "Explosion",
     "2": "Straight-Line Winds",

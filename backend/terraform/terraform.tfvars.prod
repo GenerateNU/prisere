@@ -1,0 +1,3 @@
+project_name = "prisere-disaster-notifications"
+environment  = "prod"
+aws_region   = "us-east-1"

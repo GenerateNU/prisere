@@ -8,7 +8,8 @@ import { LocationAddress } from "../../entities/LocationAddress";
 export interface ICompanyService {
     createCompany(payload: CreateCompanyDTO, userId: string): Promise<Company>;
     getCompanyById(payload: GetCompanyByIdDTO): Promise<Company>;
-    updateLastQuickBooksImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company>;
+    updateLastQuickBooksInvoiceImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company>;
+    updateLastQuickBooksPurchaseImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company>;
     getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]>;
 }
 
@@ -35,9 +36,19 @@ export class CompanyService implements CompanyService {
         return company;
     });
 
-    updateLastQuickBooksImportTime = withServiceErrorHandling(
+    updateLastQuickBooksInvoiceImportTime = withServiceErrorHandling(
         async (payload: UpdateQuickBooksImportTimeDTO): Promise<Company> => {
-            const company = await this.companyTransaction.updateLastQuickBooksImportTime(payload);
+            const company = await this.companyTransaction.updateLastQuickBooksInvoiceImportTime(payload);
+            if (!company) {
+                throw Boom.notFound("Company Not Found");
+            }
+            return company;
+        }
+    );
+
+    updateLastQuickBooksPurchaseImportTime = withServiceErrorHandling(
+        async (payload: UpdateQuickBooksImportTimeDTO): Promise<Company> => {
+            const company = await this.companyTransaction.updateLastQuickBooksPurchaseImportTime(payload);
             if (!company) {
                 throw Boom.notFound("Company Not Found");
             }

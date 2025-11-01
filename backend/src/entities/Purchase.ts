@@ -21,7 +21,7 @@ export class Purchase {
 
     @ManyToOne(() => Company, { nullable: true })
     @JoinColumn({ name: "companyId" })
-    company!: Relation<Company>;
+    company?: Relation<Company>;
 
     @Column()
     companyId!: string;
@@ -38,7 +38,7 @@ export class Purchase {
     isRefund!: boolean;
 
     @OneToMany(() => PurchaseLineItem, (purchaseLineItem) => purchaseLineItem.purchase)
-    lineItems!: Relation<PurchaseLineItem[]>;
+    lineItems?: Relation<PurchaseLineItem[]>;
 
     @Column({ type: "timestamptz", nullable: true })
     quickbooksDateCreated?: Date;

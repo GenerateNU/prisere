@@ -14,7 +14,6 @@ import {
     GetCompanyInvoicesParams,
     GetCompanyInvoicesInMonthBinsResponseSchema,
 } from "../../types/Invoice";
-import { CompanyTransaction } from "../company/transaction";
 import { z } from "zod";
 import { IInvoiceLineItemController, InvoiceLineItemController } from "../invoiceLineItem/controller";
 import { IInvoiceLineItemService, InvoiceLineItemService } from "../invoiceLineItem/service";
@@ -26,8 +25,7 @@ import {
 
 export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const invoiceTransaction = new InvoiceTransaction(db);
-    const companyTransaction = new CompanyTransaction(db);
-    const invoiceService = new InvoiceService(invoiceTransaction, companyTransaction);
+    const invoiceService = new InvoiceService(invoiceTransaction);
     const invoiceController = new InvoiceController(invoiceService);
 
     const invoiceLineItemTransaction: IInvoiceLineItemTransaction = new InvoiceLineItemTransaction(db);

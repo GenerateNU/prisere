@@ -23,3 +23,7 @@ jobs:
 
       - name: Run Tests
         run: bun test
+        env:
+          NODE_ENV: test
+          OBJECTS_STORAGE_BUCKET_NAME: dummy-storage
+          SQS_QUEUE_URL_PROD: https://sqs.us-east-1.amazonaws.com/1234/test
