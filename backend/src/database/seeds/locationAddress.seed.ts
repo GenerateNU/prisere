@@ -6,6 +6,7 @@ export const seededLocationAddresses = [
     {
         // Business Location 1
         id: "5e6f7a8b-9c0d-4e2f-8a4b-5c6d7e8f9a0b",
+        alias: "Business Location 1",
         country: "USA",
         stateProvince: "CA",
         city: "Los Angeles",
@@ -19,6 +20,7 @@ export const seededLocationAddresses = [
     {
         // NEU Location 1
         id: "8c9d0e1f-2a3b-4c5d-6e7f-8a9b0c1d2e3f",
+        alias: "NEU Location 1",
         country: "USA",
         stateProvince: "CA",
         city: "Los Angeles",
@@ -32,6 +34,7 @@ export const seededLocationAddresses = [
     {
         // NEU Location 2
         id: "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+        alias: "NEU Location 2",
         country: "USA",
         stateProvince: "CA",
         city: "Los Angeles",
@@ -45,6 +48,7 @@ export const seededLocationAddresses = [
     {
         // Big Corp Location 1
         id: "b4c5d6e7-f8a9-4b0c-1d2e-3f4a5b6c7d8e",
+        alias: "Big Corp Location 1",
         country: "USA",
         stateProvince: "CA",
         city: "Los Angeles",
@@ -58,6 +62,7 @@ export const seededLocationAddresses = [
     {
         // Small LLC Location 1
         id: "e7f8a9b0-c1d2-4e3f-5a6b-7c8d9e0f1a2b",
+        alias: "Small LLC Location 1",
         country: "USA",
         stateProvince: "CA",
         city: "Los Angeles",
@@ -71,6 +76,7 @@ export const seededLocationAddresses = [
     {
         // Big Corp Location 2
         id: "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f",
+        alias: "Big Corp Location 2",
         country: "USA",
         stateProvince: "CA",
         city: "Los Angeles",

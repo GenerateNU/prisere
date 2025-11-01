@@ -8,6 +8,7 @@ export const seededLocations = [
     // Added the same company under multiple locations, and one to one
     {
         id: "11111111-1111-1111-1111-111111111111",
+        alias: "Miami Office",
         country: "United States",
         stateProvince: "Florida",
         city: "Miami",
@@ -20,6 +21,7 @@ export const seededLocations = [
     },
     {
         id: "22222222-2222-2222-2222-222222222222",
+        alias: "Houston Office",
         country: "United States",
         stateProvince: "Texas",
         city: "Houston",
@@ -32,6 +34,7 @@ export const seededLocations = [
     },
     {
         id: "33333333-3333-3333-3333-333333333333",
+        alias: "Los Angeles Office",
         country: "United States",
         stateProvince: "California",
         city: "Los Angeles",
@@ -44,6 +47,7 @@ export const seededLocations = [
     },
     {
         id: "44444444-4444-4444-4444-444444444444",
+        alias: "New York Headquarters",
         country: "United States",
         stateProvince: "New York",
         city: "New York",

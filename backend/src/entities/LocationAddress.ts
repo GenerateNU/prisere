@@ -10,6 +10,9 @@ export class LocationAddress {
     id!: string;
 
     @Column()
+    alias!: string;
+
+    @Column()
     country!: string;
 
     @Column()

@@ -31,3 +31,18 @@ export const createUser = async (payload: CreateUserRequest): Promise<User> => {
     };
     return authWrapper<User>()(req);
 };
+
+export const getUser = async (): Promise<User> => {
+    const req = async (token: string): Promise<User> => {
+        const client = getClient();
+        const { data, error, response } = await client.GET("/users", {
+            headers: authHeader(token),
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<User>()(req);
+};

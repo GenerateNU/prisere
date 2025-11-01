@@ -38,6 +38,7 @@ describe("Location Address Controller Tests", () => {
     test("should successfully create locations address with all required fields", async () => {
         const requestBody = [
             {
+                alias: "Test Location",
                 country: "United States",
                 stateProvince: "California",
                 city: "San Francisco",
@@ -46,6 +47,7 @@ describe("Location Address Controller Tests", () => {
                 county: "San Francisco County",
             },
             {
+                alias: "Test Location",
                 country: "United States",
                 stateProvince: "California",
                 city: "San Francisco",
@@ -78,6 +80,7 @@ describe("Location Address Controller Tests", () => {
     test("should successfully create a location address with all required fields", async () => {
         const requestBody = [
             {
+                alias: "Test Location",
                 country: "United States",
                 stateProvince: "California",
                 city: "San Francisco",
@@ -122,6 +125,7 @@ describe("Location Address Controller Tests", () => {
     test("should fail if any one element has a missing field - streetAddress", async () => {
         const requestBody = [
             {
+                alias: "Test Location",
                 country: "United States",
                 stateProvince: "California",
                 city: "San Francisco",
@@ -129,6 +133,7 @@ describe("Location Address Controller Tests", () => {
                 county: "San Francisco County",
             },
             {
+                alias: "Test Location",
                 country: "United States",
                 stateProvince: "California",
                 city: "San Francisco",
@@ -153,6 +158,7 @@ describe("Location Address Controller Tests", () => {
     test("should fail if any one element has a missing field - postalCode", async () => {
         const requestBody = [
             {
+                alias: "Test Location",
                 country: "United States",
                 stateProvince: "California",
                 city: "San Francisco",
@@ -161,6 +167,7 @@ describe("Location Address Controller Tests", () => {
                 county: "San Francisco County",
             },
             {
+                alias: "Test Location",
                 country: "United States",
                 stateProvince: "California",
                 city: "San Francisco",

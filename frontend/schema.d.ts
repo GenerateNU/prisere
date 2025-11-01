@@ -446,6 +446,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
+                            id: string;
+                            alias: string;
                             country: string;
                             stateProvince: string;
                             city: string;
@@ -658,6 +660,7 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
+                        alias: string;
                         country: string;
                         stateProvince: string;
                         city: string;
@@ -676,6 +679,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             id: string;
+                            alias: string;
                             country: string;
                             stateProvince: string;
                             city: string;
@@ -745,6 +749,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             id: string;
+                            alias: string;
                             country: string;
                             stateProvince: string;
                             city: string;
@@ -854,6 +859,7 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
+                        alias: string;
                         country: string;
                         stateProvince: string;
                         city: string;
@@ -872,6 +878,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             id: string;
+                            alias: string;
                             country: string;
                             stateProvince: string;
                             city: string;
@@ -977,6 +984,7 @@ export interface paths {
                             };
                             locationAddress: {
                                 id: string;
+                                alias: string;
                                 country: string;
                                 stateProvince: string;
                                 city: string;
@@ -2415,6 +2423,7 @@ export interface paths {
                             };
                             selfDisaster?: {
                                 id: string;
+                                name: string;
                                 description: string;
                                 /** Format: date */
                                 startDate: string;
@@ -2511,6 +2520,7 @@ export interface paths {
                             };
                             selfDisaster?: {
                                 id: string;
+                                name: string;
                                 description: string;
                                 /** Format: date */
                                 startDate: string;
@@ -3056,6 +3066,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             id: string;
+                            alias: string;
                             country: string;
                             stateProvince: string;
                             city: string;
@@ -3744,6 +3755,152 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/disaster/self": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create a new self-reported disaster
+         * @description Creates a new self-reported disaster for a company with the provided information
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        name: string;
+                        description: string;
+                        /** Format: date */
+                        startDate: string;
+                        /** Format: date */
+                        endDate?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description A self-reported disaster was created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            name: string;
+                            description: string;
+                            /** Format: date */
+                            startDate: string;
+                            /** Format: date */
+                            endDate?: string;
+                            /** Format: date */
+                            createdAt: string;
+                            /** Format: date */
+                            updatedAt: string;
+                        };
+                    };
+                };
+                /** @description Creating Self Disaster Error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Creating Self Disaster Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/disaster/self/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete a self-reported disaster
+         * @description Deletes a self-reported disaster by its ID
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description The ID of the self-reported disaster to delete */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Self-reported disaster was successfully deleted */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Deleting Self Disaster Error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Deleting Self Disaster Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         options?: never;
         head?: never;
         patch?: never;

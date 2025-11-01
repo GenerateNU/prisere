@@ -46,6 +46,7 @@ describe("Remove Address Tests", () => {
 
     test("properly removed the location with given id", async () => {
         const requestBody = {
+            alias: "Test Location",
             country: "United States",
             stateProvince: "California",
             city: "San Francisco",
@@ -99,6 +100,7 @@ describe("Remove Address Tests", () => {
 
     test("should return 204 with no content body", async () => {
         const createBody = {
+            alias: "Test Location",
             country: "United States",
             stateProvince: "California",
             city: "San Francisco",

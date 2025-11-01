@@ -6,19 +6,25 @@ interface ProgressProps {
 }
 const Progress = ({ progress, items }: ProgressProps) => {
     return (
-        <div className="flex flex-row">
+        <div className="h-[84px] flex items-center justify-center self-center justify-self-center my-[40px] w-full gap-[30px]">
             {items.map((item, index) => (
-                <div key={index} className="flex flex-row items-center">
+                <div
+                    key={index}
+                    className={`flex items-center w-full gap-[30px] ${index === items.length - 1 && "max-w-[96px]"}`}
+                >
                     <div className="flex flex-col items-center gap-2 ${}">
                         <div
-                            className={`h-[3vh] w-[3vh] rounded-full text-2xl flex items-center justify-center text-white ${progress === index ? "bg-stone-800" : "bg-stone-500"}`}
+                            className={`rounded-[100px] w-[36px] h-[36px] ${index <= progress ? "bg-[#646464]" : "bg-[#8d8d8d99]"} text-white flex items-center justify-center`}
                         >
-                            {index + 1}
+                            <p className="text-[20px] font-semibold">{index + 1}</p>
                         </div>
                         <p className="text-base text-center"> {item} </p>
                     </div>
-
-                    {index !== items.length - 1 && <hr className="border-1 border-stone-500 w-[5vw]" />}
+                    {index !== items.length - 1 && (
+                        <hr
+                            className={`flex-grow ${index < progress ? " bg-[#646464]" : "bg-[#8d8d8d99]"} h-[1px] w-full border-none`}
+                        />
+                    )}
                 </div>
             ))}
         </div>

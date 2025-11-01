@@ -572,6 +572,12 @@
                   "items": {
                     "type": "object",
                     "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "alias": {
+                        "type": "string"
+                      },
                       "country": {
                         "type": "string",
                         "minLength": 1
@@ -603,6 +609,8 @@
                       }
                     },
                     "required": [
+                      "id",
+                      "alias",
                       "country",
                       "stateProvince",
                       "city",
@@ -937,6 +945,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "alias": {
+                    "type": "string"
+                  },
                   "country": {
                     "type": "string",
                     "minLength": 1
@@ -964,6 +975,7 @@
                   }
                 },
                 "required": [
+                  "alias",
                   "country",
                   "stateProvince",
                   "city",
@@ -983,6 +995,9 @@
                   "type": "object",
                   "properties": {
                     "id": {
+                      "type": "string"
+                    },
+                    "alias": {
                       "type": "string"
                     },
                     "country": {
@@ -1013,6 +1028,7 @@
                   },
                   "required": [
                     "id",
+                    "alias",
                     "country",
                     "stateProvince",
                     "city",
@@ -1090,6 +1106,9 @@
                     "id": {
                       "type": "string"
                     },
+                    "alias": {
+                      "type": "string"
+                    },
                     "country": {
                       "type": "string"
                     },
@@ -1123,6 +1142,7 @@
                   },
                   "required": [
                     "id",
+                    "alias",
                     "country",
                     "stateProvince",
                     "city",
@@ -1234,6 +1254,9 @@
                 "items": {
                   "type": "object",
                   "properties": {
+                    "alias": {
+                      "type": "string"
+                    },
                     "country": {
                       "type": "string",
                       "minLength": 1
@@ -1261,6 +1284,7 @@
                     }
                   },
                   "required": [
+                    "alias",
                     "country",
                     "stateProvince",
                     "city",
@@ -1284,6 +1308,9 @@
                     "type": "object",
                     "properties": {
                       "id": {
+                        "type": "string"
+                      },
+                      "alias": {
                         "type": "string"
                       },
                       "country": {
@@ -1314,6 +1341,7 @@
                     },
                     "required": [
                       "id",
+                      "alias",
                       "country",
                       "stateProvince",
                       "city",
@@ -1593,6 +1621,9 @@
                           "id": {
                             "type": "string"
                           },
+                          "alias": {
+                            "type": "string"
+                          },
                           "country": {
                             "type": "string"
                           },
@@ -1650,6 +1681,7 @@
                         },
                         "required": [
                           "id",
+                          "alias",
                           "country",
                           "stateProvince",
                           "city",
@@ -3854,6 +3886,11 @@
                         "id": {
                           "type": "string"
                         },
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 250
+                        },
                         "description": {
                           "type": "string"
                         },
@@ -3876,6 +3913,7 @@
                       },
                       "required": [
                         "id",
+                        "name",
                         "description",
                         "startDate",
                         "createdAt",
@@ -4028,6 +4066,11 @@
                           "id": {
                             "type": "string"
                           },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 250
+                          },
                           "description": {
                             "type": "string"
                           },
@@ -4050,6 +4093,7 @@
                         },
                         "required": [
                           "id",
+                          "name",
                           "description",
                           "startDate",
                           "createdAt",
@@ -4716,6 +4760,9 @@
                       "id": {
                         "type": "string"
                       },
+                      "alias": {
+                        "type": "string"
+                      },
                       "country": {
                         "type": "string"
                       },
@@ -4749,6 +4796,7 @@
                     },
                     "required": [
                       "id",
+                      "alias",
                       "country",
                       "stateProvince",
                       "city",
@@ -5759,6 +5807,195 @@
           },
           "500": {
             "description": "Get purchase line items for purchase error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/disaster/self": {
+      "post": {
+        "summary": "Create a new self-reported disaster",
+        "description": "Creates a new self-reported disaster for a company with the provided information",
+        "tags": [
+          "Self Disaster"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 250
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "startDate": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "endDate": {
+                    "type": "string",
+                    "format": "date"
+                  }
+                },
+                "required": [
+                  "name",
+                  "description",
+                  "startDate"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "A self-reported disaster was created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 250
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "startDate": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "endDate": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "startDate",
+                    "createdAt",
+                    "updatedAt"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Creating Self Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Creating Self Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/disaster/self/{id}": {
+      "delete": {
+        "summary": "Delete a self-reported disaster",
+        "description": "Deletes a self-reported disaster by its ID",
+        "tags": [
+          "Self Disaster"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "The ID of the self-reported disaster to delete",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            },
+            "required": true,
+            "description": "The ID of the self-reported disaster to delete",
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Self-reported disaster was successfully deleted"
+          },
+          "400": {
+            "description": "Deleting Self Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Deleting Self Disaster Error",
             "content": {
               "application/json": {
                 "schema": {

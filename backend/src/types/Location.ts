@@ -5,6 +5,7 @@ import { CreateCompanyResponseSchema } from "./Company";
 // If you have different fields in your LocationAddress entity, adjust accordingly
 export const LocationAddressSchema = z.object({
     id: z.string(),
+    alias: z.string(),
     country: z.string(),
     stateProvince: z.string(),
     city: z.string(),
@@ -20,6 +21,7 @@ export const LocationAddressSchema = z.object({
 
 export const LocationAddressSchemaType = z.object({
     id: z.string(),
+    alias: z.string(),
     country: z.string(),
     stateProvince: z.string(),
     city: z.string(),
@@ -35,6 +37,7 @@ export const LocationAddressSchemaType = z.object({
 });
 
 export const CreateLocationAddressSchema = z.object({
+    alias: z.string(),
     country: z.string().nonempty(),
     stateProvince: z.string().nonempty(),
     city: z.string().nonempty(),
@@ -60,6 +63,8 @@ export const GetLocationAddressSchema = z.object({
 
 export const GetAllLocationAddressesSchema = z.array(
     z.object({
+        id: z.string(),
+        alias: z.string(),
         country: z.string().nonempty(),
         stateProvince: z.string().nonempty(),
         city: z.string().nonempty(),

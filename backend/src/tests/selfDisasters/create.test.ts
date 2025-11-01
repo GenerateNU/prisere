@@ -31,6 +31,7 @@ describe("POST /disasters/self", () => {
 
     test("POST /disaster/self - Success", async () => {
         const requestBody = {
+            name: "Test Disaster",
             description: "This is my desc.",
             startDate: new Date().toISOString().split("T")[0],
             endDate: undefined,
@@ -47,6 +48,7 @@ describe("POST /disasters/self", () => {
 
         expect(response.status).toBe(201);
         const body = await response.json();
+        expect(body.name).toBe(requestBody.name);
         expect(body.description).toBe(requestBody.description);
         expect(body.companyId).toBe(seededCompanies[0].id);
         expect(body.createdAt).toBeDefined();
@@ -66,6 +68,7 @@ describe("POST /disasters/self", () => {
 
     test("POST /disaster/self - Bad company id", async () => {
         const requestBody = {
+            name: "Test Disaster",
             description: "This is my desc.",
             startDate: new Date().toISOString().split("T")[0],
             endDate: undefined,
@@ -85,6 +88,7 @@ describe("POST /disasters/self", () => {
 
     test("POST /disaster/self - Missing description", async () => {
         const requestBody = {
+            name: "Test Disaster",
             description: undefined,
             startDate: new Date().toISOString().split("T")[0],
             endDate: undefined,
@@ -104,6 +108,7 @@ describe("POST /disasters/self", () => {
 
     test("POST /disaster/self - Success with non open end", async () => {
         const requestBody = {
+            name: "Test Disaster",
             description: "This is my desc.",
             startDate: new Date().toISOString().split("T")[0],
             endDate: new Date("10/20/2026").toISOString().split("T")[0],
