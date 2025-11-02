@@ -1,9 +1,7 @@
 "use client";
 
-import { getAllPurchasesForCompany } from "@/api/purchase";
+import { FilteredPurchases, getAllPurchasesForCompany, SortByColumn } from "@/api/purchase";
 import { useQuery } from "@tanstack/react-query";
-import { Purchase } from "../../types/purchase";
-import { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
 import BasicTable from "./BasicTable";
 import PaginationControls from "./PaginationControls";
@@ -18,50 +16,46 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Filter, Printer } from "lucide-react";
-
-export const columns: ColumnDef<Purchase>[] = [
-    {
-        id: "type",
-        header: "Type",
-    },
-    {
-        accessorKey: "totalAmountCents",
-        header: "Amount",
-    },
-    {
-        accessorKey: "dateCreated",
-        header: "Date",
-    },
-    {
-        id: "category",
-        header: "Category",
-    },
-    {
-        id: "disaster",
-        header: "Disaster",
-    },
-];
+import Filters from "./filters";
 
 export default function ExpenseTable() {
-    const [page, setPage] = useState(0);
-    const [resultsPerPage, setResultsPerPage] = useState(5);
+    const initialFilters: FilteredPurchases = { pageNumber: 0, resultsPerPage : 5}
+    const [filters, setFilters] = useState(initialFilters);
+
+    const updateFilter = (field: string) => (value:any) => {
+        setFilters(prev => ({ ...prev, [field]: value }));
+    };
 
     const purchases = useQuery({
-        queryKey: ["purchases-for-company", page, resultsPerPage],
-        queryFn: () => getAllPurchasesForCompany(page, resultsPerPage),
+        queryKey: ["purchases-for-company", filters],
+        queryFn: () => getAllPurchasesForCompany(filters),
     });
 
     if (purchases.isPending) return <div>Loading expenses...</div>;
 
     if (purchases.error) return <div>Error loading expenses</div>;
 
-    const isLastPage = purchases.data.length < resultsPerPage;
+
+    const isLastPage = purchases.data.length < filters.resultsPerPage;
+
+    const changeSorting = (col: SortByColumn) => {
+        if (filters.sortBy === col && filters.sortOrder === "ASC") {
+            filters.sortOrder = "DESC";
+        } else if (filters.sortBy === col) {
+            filters.sortOrder = "ASC"
+        } else {
+            filters.sortBy = col;
+            filters.sortOrder = undefined;
+        }
+    }
+
+    const sortingState = () => filters.sortOrder || "";
 
     return (
         <Card>
             <CardHeader>
                 <CardTitle className="text-2xl font-bold">Business Transactions</CardTitle>
-                <CardDescription>Description</CardDescription>
+                <Filters onFilterChange={updateFilter}></Filters>
                 <CardAction>
                     <div className="flex gap-2">
                         <Filter></Filter>
@@ -70,13 +64,18 @@ export default function ExpenseTable() {
                 </CardAction>
             </CardHeader>
             <CardContent>
-                <BasicTable purchases={purchases.data} />
+                <BasicTable purchases={purchases.data}
+                            changeSorting={changeSorting}
+                            sortingState={sortingState} />
             </CardContent>
             <CardFooter>
-                <PaginationControls page={page} onPageChange={setPage} isLastPage={isLastPage} />
+                <PaginationControls
+                    page={filters.pageNumber}
+                    onPageChange={updateFilter("pageNumber")}
+                    isLastPage={isLastPage} />
                 <ResultsPerPageSelect
-                    value={resultsPerPage}
-                    onValueChange={(results: number) => setResultsPerPage(results)}
+                    value={filters.resultsPerPage}
+                    onValueChange={updateFilter("resultsPerPage")}
                 />
             </CardFooter>
         </Card>

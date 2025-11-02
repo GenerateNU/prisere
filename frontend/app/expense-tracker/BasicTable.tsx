@@ -1,57 +1,56 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Purchase } from "../../types/purchase";
-
 import {
-    flexRender,
-    getCoreRowModel,
-    getSortedRowModel,
-    Header,
-    SortingState,
-    useReactTable,
-} from "@tanstack/react-table";
-import { useState } from "react";
-import { columns } from "./expense-table";
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import { Purchases } from "@/types/purchase";
+import { SortByColumn } from "@/api/purchase";
 
-export default function BasicTable({ purchases }: { purchases: Purchase[] }) {
-    const [sorting, setSorting] = useState<SortingState>([]);
-    const table = useReactTable({
-        data: purchases,
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        manualPagination: true,
-        onSortingChange: setSorting,
-        state: { sorting },
-    });
-    const sortedRows = table.getRowModel().rows;
+const columns = ["Merchant", "Amount", "Category", "Date", "Disaster Related"];
+const columnsToDBColumns = new Map<string, SortByColumn>([
+    ["Date", SortByColumn.DATE],
+    ["Amount", SortByColumn.AMOUNT]
+]);
+type Purchase = Purchases[number];
+
+
+export default function BasicTable(
+    { purchases, changeSorting, sortingState }: {
+        purchases: Purchases;
+        changeSorting: (column: SortByColumn) => void;
+        sortingState: () => string;
+    }) {
     return (
         <>
             <Table>
                 <TableHeader>
                     <TableRow>
-                        {table.getHeaderGroups()[0].headers.map((header: Header<Purchase, unknown>) => (
-                            <TableHead
-                                key={header.id}
-                                onClick={header.column.getToggleSortingHandler()}
-                                className="cursor-pointer"
-                            >
-                                {flexRender(header.column.columnDef.header, header.getContext())}
-                                {header.column.getIsSorted() === "asc" && " ↑"}
-                                {header.column.getIsSorted() === "desc" && " ↓"}
-                            </TableHead>
+                        {columns.map((col: string) => (
+                            (col === "Date" || col === "Amount") ? (
+                                <TableHead
+                                    className={"cursor-pointer"}
+                                    onClick={() => changeSorting(columnsToDBColumns.get("Date")!)}
+                                >
+                                    {col + sortingState()}
+                                </TableHead>
+                            ) : (
+                                    <TableHead>
+                                        {col}
+                                    </TableHead>
+                                )
                         ))}
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {sortedRows.map((row) => {
-                        const item = row.original;
+                    {purchases.map((row) => {
                         return (
-                            <TableRow key={item.id}>
-                                <TableCell>{item.isRefund ? "Refund" : "Purchase"}</TableCell>
-                                <TableCell>${(item.totalAmountCents / 100).toFixed(2)}</TableCell>
-                                <TableCell>{new Date(item.dateCreated).toLocaleDateString()}</TableCell>
-                                <TableCell>WIP</TableCell>
-                                <TableCell>WIP</TableCell>
+                            <TableRow key={row.id}>
+                                <TableCell>{getPurchaseInfo(row, "merchant")}</TableCell>
+                                <TableCell>${(row.totalAmountCents / 100).toFixed(2)}</TableCell>
+                                <TableCell>{new Date(row.dateCreated).toLocaleDateString()}</TableCell>
+                                <TableCell>{getPurchaseInfo(row, "category")}</TableCell>
+                                <TableCell>{getPurchaseInfo(row, "type")}</TableCell>
                             </TableRow>
                         );
                     })}
@@ -59,4 +58,20 @@ export default function BasicTable({ purchases }: { purchases: Purchase[] }) {
             </Table>
         </>
     );
+}
+
+
+
+function getPurchaseInfo(purchase: Purchase, field: string) {
+    switch(field) {
+        case "merchant":
+            // provisional, which description are we using?
+            return purchase.lineItems[0].description;
+        case "category":
+            // provisional, which category
+            return purchase.lineItems[0].category;
+        default:
+            // provisional, this must be if any line item is disaster, then this is disaster related
+            return purchase.lineItems[0].type;
+    }
 }

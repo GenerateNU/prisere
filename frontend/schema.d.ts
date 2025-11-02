@@ -2171,6 +2171,13 @@ export interface paths {
                 query?: {
                     pageNumber?: number;
                     resultsPerPage?: number;
+                    sortBy?: "date" | "totalAmountCents";
+                    sortOrder?: "ASC" | "DESC";
+                    categories?: string[];
+                    type?: "extraneous" | "typical";
+                    dateFrom?: string;
+                    dateTo?: string;
+                    search?: string;
                 };
                 header?: never;
                 path?: never;
@@ -2193,6 +2200,20 @@ export interface paths {
                             isRefund: boolean;
                             dateCreated: string;
                             lastUpdated: string;
+                            lineItems: {
+                                id: string;
+                                description?: string;
+                                quickBooksId?: number;
+                                purchaseId: string;
+                                amountCents: number;
+                                category?: string;
+                                /** @enum {string} */
+                                type: "extraneous" | "typical";
+                                dateCreated: string;
+                                lastUpdated: string;
+                                /** Format: date-time */
+                                quickbooksDateCreated?: string;
+                            }[];
                         }[];
                     };
                 };
