@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
+import { GetPurchaseLineItemResponseSchema } from "../purchase-line-item/types";
 
 export const CreateOrChangePurchaseRequestSchema = z
     .array(
@@ -46,31 +47,34 @@ export const GetPurchasesResponseSchema = z.object({
     lastUpdated: z.string(),
 });
 
+export const GetPurchaseWithLineItems = GetPurchasesResponseSchema.extend({
+    lineItems : z.array(GetPurchaseLineItemResponseSchema)
+});
+
+
 enum SortByColumn {
     DATE = "date",
     AMOUNT = "totalAmountCents",
 }
 
-//Get a list of purchases given the company ID
-/**
- * This was expanded to support server side sorting, filtering, and search. 
- */
-export const GetCompanyPurchasesDTOSchema = z.object({
-    companyId: z.uuid(),
+
+export const GetCompanyPurchasesQueryParams = z.object({
     pageNumber: z.number().gte(0).optional().default(0),
     resultsPerPage: z.number().gt(0).optional().default(20),
     sortBy: z.enum(SortByColumn).optional(),
     sortOrder: z.enum(["ASC", "DESC"]).optional().default('DESC'),
     categories: z.array(z.string().nonempty()).optional().default([]),
     type: z.enum(PurchaseLineItemType).optional(),
-    dateFrom : z.iso.datetime().optional(),
-    dateTo : z.iso.datetime().optional().default(new Date().toISOString()),
+    dateFrom : z.string().datetime().optional(),
+    dateTo : z.string().datetime().optional().default(new Date().toISOString()),
     search : z.string().optional(),
 });
 
-export const GetCompanyPurchasesQueryParams = z.object({
-    pageNumber: z.number().gte(0).optional().default(0),
-    resultsPerPage: z.number().gt(0).optional().default(20),
+/**
+ * This was expanded to support server side sorting, filtering, and search.
+ */
+export const GetCompanyPurchasesDTOSchema = GetCompanyPurchasesQueryParams.extend({
+    companyId: z.uuid(),
 });
 
 export const GetPurchaseDTOSchema = z.object({
@@ -83,7 +87,7 @@ export const GetCompanyPurchasesByDateDTOSchema = z.object({
     endDate: z.iso.datetime(),
 });
 
-export const GetCompanyPurchasesResponseSchema = z.array(GetPurchasesResponseSchema);
+export const GetCompanyPurchasesResponseSchema = z.array(GetPurchaseWithLineItems);
 
 export const GetCompanyPurchasesSummationResponseSchema = z.object({
     total: z.number().nonnegative(),

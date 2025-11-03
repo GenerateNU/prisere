@@ -8,7 +8,7 @@ import {
     GetCompanyPurchasesSummationResponseSchema,
     CreateOrChangePurchaseRequestSchema,
     GetCompanyPurchasesQueryParams,
-    GetCompanyPurchasesInMonthBinsResponseSchema,
+    GetCompanyPurchasesInMonthBinsResponseSchema, GetCompanyPurchasesDTOSchema,
 } from "../../modules/purchase/types";
 import { IPurchaseController, PurchaseController } from "../purchase/controller";
 import { IPurchaseService, PurchaseService } from "../purchase/service";
@@ -101,7 +101,7 @@ const getPurchasesForCompanyRoute = createRoute({
     method: "get",
     path: "/purchase",
     summary: "Fetches all purchases for a company",
-    description: "Retrieves a paginated list of purchases for the specified company",
+    description: "Retrieves a paginated, sorted and filtered list of purchases for the specified company",
     request: {
         query: GetCompanyPurchasesQueryParams,
     },

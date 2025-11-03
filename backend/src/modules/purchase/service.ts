@@ -5,7 +5,7 @@ import {
     CreateOrChangePurchaseResponse,
     GetCompanyPurchasesByDateDTO,
     GetCompanyPurchasesDTO,
-    GetCompanyPurchasesInMonthBinsResponse,
+    GetCompanyPurchasesInMonthBinsResponse, GetCompanyPurchasesQueryParams,
     GetCompanyPurchasesResponse,
     GetPurchaseResponse,
 } from "./types";
@@ -43,9 +43,11 @@ export class PurchaseService implements IPurchaseService {
     getPurchase = withServiceErrorHandling(async (id: string): Promise<GetPurchaseResponse> => {
         const qbPurchase = await this.PurchaseTransaction.getPurchase(id);
 
+        console.log(qbPurchase);
+
         return {
             dateCreated: qbPurchase.dateCreated.toUTCString(),
-            lastUpdated: qbPurchase.dateCreated.toUTCString(),
+            lastUpdated: qbPurchase.lastUpdated.toUTCString(),
             companyId: qbPurchase.companyId,
             id: qbPurchase.id,
             isRefund: qbPurchase.isRefund,
@@ -68,6 +70,12 @@ export class PurchaseService implements IPurchaseService {
                 totalAmountCents: qbPurchase.totalAmountCents,
                 quickbooksDateCreated: qbPurchase.quickbooksDateCreated?.toUTCString(),
                 lastUpdated: qbPurchase.lastUpdated.toUTCString(),
+                lineItems : qbPurchase.lineItems.map(item => ({
+                    ...item,
+                    dateCreated: item.dateCreated.toISOString(),
+                    lastUpdated: item.lastUpdated.toISOString(),
+                    quickbooksDateCreated: item.quickbooksDateCreated?.toISOString(),
+                }))
             }));
         }
     );

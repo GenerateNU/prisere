@@ -76,8 +76,13 @@ export class PurchaseTransaction implements IPurchaseTransaction {
             queryBuilder.andWhere('p.dateCreated BETWEEN :dateFrom AND :dateTo', { dateFrom, dateTo });
         }
 
-        if (sortBy) {
-            queryBuilder.orderBy(`p.${sortBy}`, sortOrder);
+        const sortColumnMap: Record<string, string> = {
+            'date': 'p.dateCreated',
+            'totalAmountCents': 'p.totalAmountCents'
+        };
+
+        if (sortBy && sortOrder && sortColumnMap[sortBy]) {
+            queryBuilder.orderBy(sortColumnMap[sortBy], sortOrder);
         }
 
         if (search) {
@@ -85,7 +90,11 @@ export class PurchaseTransaction implements IPurchaseTransaction {
                 { search: `%${search}%`});
         }
 
+        console.log('=== getPurchasesForCompany called ===');
+        console.log('Payload:', JSON.stringify(payload, null, 2));
+
         return await queryBuilder
+            .distinct(true)
             .skip(numToSkip)
             .take(resultsPerPage)
             .getMany();

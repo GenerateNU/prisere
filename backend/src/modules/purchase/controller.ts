@@ -11,7 +11,7 @@ import {
     CreateOrChangePurchaseRequest,
     GetCompanyPurchasesSummationResponse,
     GetCompanyPurchasesByDateDTOSchema,
-    GetCompanyPurchasesInMonthBinsResponse,
+    GetCompanyPurchasesInMonthBinsResponse, GetCompanyPurchasesQueryParams, GetCompanyPurchasesDTO,
 } from "./types";
 import { ControllerResponse } from "../../utilities/response";
 
@@ -73,12 +73,19 @@ export class PurchaseController implements IPurchaseController {
                 companyId: ctx.get("companyId"),
                 pageNumber: ctx.req.query("pageNumber") ? Number(ctx.req.query("pageNumber")) : undefined,
                 resultsPerPage: ctx.req.query("resultsPerPage") ? Number(ctx.req.query("resultsPerPage")) : undefined,
-                categories: ctx.req.query("categories") ? ctx.req.query("categories")!.split(',').filter(Boolean) : undefined,
+                categories: ctx.req.queries("categories"),
                 type: ctx.req.query("type"), 
-                dateFrom: ctx.req.query("dateFrom") ? new Date(ctx.req.query("dateFrom")!) : undefined,
-                dateTo: ctx.req.query("dateTo") ? new Date(ctx.req.query("dateTo")!) : undefined,
+                dateFrom: ctx.req.query("dateFrom"),
+                dateTo: ctx.req.query("dateTo"),
                 search: ctx.req.query("search"),
+                sortBy: ctx.req.query("sortBy"),
+                sortOrder: ctx.req.query("sortOrder"),
             };
+
+            console.log('=== RAW QUERY PARAMS ===');
+            console.log('dateFrom raw:', ctx.req.query("dateFrom"));
+            console.log('dateTo raw:', ctx.req.query("dateTo"));
+            console.log('queryParams:', JSON.stringify(queryParams, null, 2));
 
             const payload = GetCompanyPurchasesDTOSchema.parse(queryParams);
             const fetchedPurchases = await this.PurchaseService.getPurchasesForCompany(payload);
