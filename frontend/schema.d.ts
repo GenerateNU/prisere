@@ -239,7 +239,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string;
+                            lastQuickBooksPurchaseImportTime?: string;
                         };
                     };
                 };
@@ -305,7 +306,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string;
+                            lastQuickBooksPurchaseImportTime?: string;
                         };
                     };
                 };
@@ -346,7 +348,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/companies/quickbooks-import-time": {
+    "/companies/quickbooks-invoice-import-time": {
         parameters: {
             query?: never;
             header?: never;
@@ -360,8 +362,8 @@ export interface paths {
         options?: never;
         head?: never;
         /**
-         * Update a company's lastQuickBooksImportTime
-         * @description Updates the lastQuickBooksImportTime for a company by ID
+         * Update a company's lastQuickBooksInvoiceImportTime
+         * @description Updates the lastQuickBooksInvoiceImportTime for a company by ID
          */
         patch: {
             parameters: {
@@ -389,7 +391,82 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string;
+                            lastQuickBooksPurchaseImportTime?: string;
+                        };
+                    };
+                };
+                /** @description Create Company Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Create Company Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/companies/quickbooks-purchase-import-time": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update a company's lastQuickBooksPurcahseImportTime
+         * @description Updates the lastQuickBooksPurcahseImportTime for a company by ID
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        importTime: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Company updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            name: string;
+                            businessOwnerFullName: string;
+                            lastQuickBooksInvoiceImportTime?: string;
+                            lastQuickBooksPurchaseImportTime?: string;
                         };
                     };
                 };
@@ -999,7 +1076,8 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksImportTime?: string;
+                                    lastQuickBooksInvoiceImportTime?: string;
+                                    lastQuickBooksPurchaseImportTime?: string;
                                 };
                             };
                         }[];
@@ -2836,7 +2914,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;
@@ -3526,7 +3604,7 @@ export interface paths {
                         quickBooksId?: number;
                         purchaseId: string;
                         amountCents: number;
-                        category?: string;
+                        category?: string | null;
                         /** @enum {string} */
                         type: "extraneous" | "typical";
                         /** Format: date-time */
@@ -3547,7 +3625,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;
@@ -3628,7 +3706,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;
@@ -3711,7 +3789,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;
@@ -3901,6 +3979,231 @@ export interface paths {
                 };
             };
         };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/insurance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Gets all of the insurance policies for a company
+         * @description Will get all of the insurance policies that have been created for a Company
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Result includes all of the insurance policies for the user's company */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            policyName: string;
+                            policyHolderFirstName: string;
+                            policyHolderLastName: string;
+                            insuranceCompanyName: string;
+                            policyNumber: string;
+                            insuranceType: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                    };
+                };
+                /** @description Error Getting insurance policies for the company */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Error Getting insurance policies for the company */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Create data about the company's insurance policy
+         * @description Creates a new entity with data about the company's insurance policy
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        policyName: string;
+                        policyHolderFirstName: string;
+                        policyHolderLastName: string;
+                        insuranceCompanyName: string;
+                        policyNumber: string;
+                        insuranceType: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Create insurance policy response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            policyName: string;
+                            policyHolderFirstName: string;
+                            policyHolderLastName: string;
+                            insuranceCompanyName: string;
+                            policyNumber: string;
+                            insuranceType: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        };
+                    };
+                };
+                /** @description Error Creating an insurance policy */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Error Creating an insurance policy */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/insurance/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Creates data about the company's insurance policy
+         * @description Can create many new entities with data about the company's insurance policy
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        policyName: string;
+                        policyHolderFirstName: string;
+                        policyHolderLastName: string;
+                        insuranceCompanyName: string;
+                        policyNumber: string;
+                        insuranceType: string;
+                    }[];
+                };
+            };
+            responses: {
+                /** @description Create bulk insurance policy response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            policyName: string;
+                            policyHolderFirstName: string;
+                            policyHolderLastName: string;
+                            insuranceCompanyName: string;
+                            policyNumber: string;
+                            insuranceType: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                    };
+                };
+                /** @description Error Creating insurance policies in bulk */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Error Creating insurance policies in bulk */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;

@@ -1,14 +1,18 @@
 import { setCompanyMetadata } from "@/actions/auth";
 import { createCompany } from "@/api/company";
-import { createLocation } from "@/api/location";
+import { createLocationBulk } from "@/api/location";
+import LocationEditor from "@/components/LocationEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { type Company, CreateCompanyRequest } from "@/types/company";
-import { CreateLocationRequest } from "@/types/location";
+import { CreateLocationBulkRequest, CreateLocationRequest } from "@/types/location";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Dispatch, SetStateAction } from "react";
+import { is } from "date-fns/locale";
+import { Spinner } from "@/components/ui/spinner";
 
 interface CompanyInfoProps {
     progress: number;
@@ -16,116 +20,186 @@ interface CompanyInfoProps {
 }
 
 export default function Company({ progress, setProgress }: CompanyInfoProps) {
-    const router = useRouter();
+    const [companyError, setCompanyError] = useState<string | null>(null);
+    const [locError, setLocError] = useState<string | null>(null);
+
     const [companyPayload, setCompanyPayload] = useState<CreateCompanyRequest>({
         name: "",
         businessOwnerFullName: "",
-    });
-    const [locationPayload, setLocationPayload] = useState<CreateLocationRequest>({
-        alias: "Main Location",
-        country: "United States",
-        stateProvince: "",
-        city: "",
-        streetAddress: "",
-        postalCode: "",
-        county: "Roxbury",
-    });
+    }); // add businessType fields
+
+    const businessTypes = ["LLC", "Sole Proprietorship", "Corporation", "Partnership"];
+    const [locationPayloads, setLocationPayloads] = useState<CreateLocationBulkRequest>([
+        {
+            alias: "",
+            streetAddress: "",
+            city: "",
+            stateProvince: "",
+            postalCode: "",
+            country: "",
+        },
+    ]);
+    const [editingLocationIndex, setEditingLocationIndex] = useState<number | null>(0);
+
+    const updateLocation = (index: number, location: CreateLocationRequest) => {
+        const newLocations = [...locationPayloads];
+        newLocations[index] = location;
+        setLocationPayloads(newLocations);
+    };
+
+    const addLocation = () => {
+        setLocationPayloads([
+            ...locationPayloads,
+            {
+                alias: "",
+                streetAddress: "",
+                city: "",
+                stateProvince: "",
+                postalCode: "",
+                country: "",
+            },
+        ]);
+        setEditingLocationIndex(locationPayloads.length);
+    };
+
+    const removeLocation = (index: number) => {
+        setLocationPayloads((prev) => prev.filter((_, i) => i !== index));
+        setEditingLocationIndex(null);
+    };
 
     const {
         isPending: isLocationPending,
         error: locationError,
         mutate: mutateLocation,
     } = useMutation({
-        mutationFn: (payload: CreateLocationRequest) => createLocation(payload),
+        mutationFn: (payload: CreateLocationBulkRequest) => createLocationBulk(payload),
         onSuccess: () => {
-            setProgress(progress);
-            router.push("/");
+            setProgress(progress + 1);
+        },
+        onError: (error: Error) => {
+            console.error("Error creating locations:", error);
         },
     });
 
     const { isPending, error, mutate } = useMutation<Company, Error, CreateCompanyRequest>({
         mutationFn: (payload: CreateCompanyRequest) =>
             createCompany({ ...payload, businessOwnerFullName: "Owner Name" }),
+        onError: (error: Error) => {
+            console.error("Error creating company:", error);
+        },
         onSuccess: async (data: Company) => {
             await setCompanyMetadata(data.id);
-            mutateLocation(locationPayload);
+            mutateLocation(locationPayloads);
         },
     });
 
+    const handleNext = () => {
+        if (
+            companyPayload.name === "" ||
+            companyPayload.businessOwnerFullName === "" /* || companyPayload.businessType === "" */
+        ) {
+            setCompanyError("Please fill in all required fields.");
+            return;
+        }
+        if (locationPayloads.length === 0) {
+            setLocError("Please add at least one location.");
+            return;
+        }
+        setEditingLocationIndex(null);
+        setCompanyError(null);
+        setLocError(null);
+        mutate(companyPayload);
+    };
+
     return (
-        <div className="max-w-lg w-full space-y-8">
+        <div className="max-w-lg w-full space-y-[30px]">
             <div className="flex justify-center">
-                <label className="block text-4xl text-black font-bold"> Business Information </label>
+                <label className="block text-[30px] text-black font-bold my-[30px]"> Business Information </label>
             </div>
-            <div className="w-full flex flex-col items-center space-y-4">
-                <div className="flex flex-col items-center gap-4 w-full">
-                    <label className="whitespace-nowrap self-start">
-                        Business Name<span className="text-red-500 ml-1">*</span>
-                    </label>
+            <div className="w-full flex flex-col items-center space-y-[16px]">
+                <div className="flex flex-col gap-[16px] w-full">
+                    <Label htmlFor="name" className="text-[20px]">
+                        Business Name<span className="text-red-500 text-[20px]">*</span>
+                    </Label>
                     <Input
                         id="name"
                         name="name"
                         type="text"
-                        placeholder="Business Name"
                         required
+                        className="h-[85px]"
                         onChange={(e) => setCompanyPayload({ ...companyPayload, name: e.target.value })}
                     />
                 </div>
-                <div className="flex flex-col items-center gap-4 w-full">
-                    <label className="whitespace-nowrap self-start">
-                        Address Line 1<span className="text-red-500 ml-1">*</span>
-                    </label>
+                <div className="flex flex-col gap-[16px] w-full">
+                    <Label htmlFor="owner" className="text-[20px]">
+                        Business Owner<span className="text-red-500 text-[20px]">*</span>
+                    </Label>
                     <Input
-                        id="name"
-                        name="streetAddress"
-                        type="name"
+                        id="owner"
+                        name="owner"
+                        type="text"
                         required
-                        onChange={(e) => setLocationPayload({ ...locationPayload, streetAddress: e.target.value })}
+                        className="h-[85px]"
+                        onChange={(e) =>
+                            setCompanyPayload({ ...companyPayload, businessOwnerFullName: e.target.value })
+                        }
                     />
                 </div>
-                <div className="flex flex-col items-center gap-4 w-full">
-                    <label className="whitespace-nowrap self-start">
-                        City <span className="text-red-500 ml-1">*</span>
-                    </label>
-                    <Input
-                        id="name"
-                        name="city"
-                        type="name"
-                        required
-                        onChange={(e) => setLocationPayload({ ...locationPayload, city: e.target.value })}
-                    />
+                <div className="flex flex-col gap-[16px] w-full  pb-[16px]">
+                    <Label htmlFor="businessType" className="text-[20px]">
+                        Business Type<span className="text-red-500 text-[20px]">*</span>
+                    </Label>
+                    <Select>
+                        <SelectTrigger
+                            id="businessType"
+                            className="w-full rounded-full text-[16px] bg-stone-100"
+                            style={{ height: "85px" }}
+                        >
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {businessTypes.map((type) => (
+                                <SelectItem key={type} value={type} className="text-[16px]">
+                                    {type}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    {/*  add ^ onChange={(e) => setCompanyPayload({ ...companyPayload, businessType: e.target.value })} */}
                 </div>
+                {locationPayloads.map((location, index) => (
+                    <LocationEditor
+                        key={index}
+                        location={location}
+                        setLocation={(loc) => updateLocation(index, loc)}
+                        removeLocation={() => removeLocation(index)}
+                        isExpanded={editingLocationIndex === index}
+                        onExpand={() => setEditingLocationIndex(index)}
+                        onCollapse={() => setEditingLocationIndex(null)}
+                    />
+                ))}
 
-                <div className="flex flex-col items-center gap-4 w-full">
-                    <label className="whitespace-nowrap self-start">
-                        State <span className="text-red-500 ml-1">*</span>
-                    </label>
-                    <Input
-                        id="name"
-                        name="stateProvince"
-                        type="name"
-                        required
-                        onChange={(e) => setLocationPayload({ ...locationPayload, stateProvince: e.target.value })}
-                    />
-                </div>
-
-                <div className="flex flex-col items-center gap-4 w-full">
-                    <label className="whitespace-nowrap self-start">
-                        Zip Code <span className="text-red-500 ml-1">*</span>
-                    </label>
-                    <Input
-                        id="name"
-                        name="postalCode"
-                        type="name"
-                        required
-                        onChange={(e) => setLocationPayload({ ...locationPayload, postalCode: e.target.value })}
-                    />
-                </div>
+                <Button
+                    variant="link"
+                    className="w-fit h-fit self-start px-0 font-bold underline hover:text-gray-600"
+                    onClick={addLocation}
+                >
+                    + Add a location
+                </Button>
             </div>
             <div className="w-full flex flex-col gap-2 items-center">
-                <Button type="button" onClick={() => mutate(companyPayload)} disabled={isPending || isLocationPending}>
+                <Button
+                    type="button"
+                    onClick={handleNext}
+                    disabled={isPending || isLocationPending}
+                    className="bg-[var(--teal)] text-white"
+                >
+                    {isPending || isLocationPending ? <Spinner /> : <></>}
                     Next
                 </Button>
+                {(locError || companyError) && (
+                    <p className="text-red-500 text-sm"> {companyError || locError} </p>
+                )}
                 {(error || locationError) && <p> {error?.message || locationError?.message} </p>}
             </div>
         </div>

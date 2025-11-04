@@ -20,7 +20,7 @@ export default function LoginPage() {
         <div className="min-h-screen flex items-center justify-center bg-stone">
             <div className="max-w-lg w-full space-y-8">
                 <div className="flex justify-center">
-                    <label className="block text-4xl text-black font-bold"> Log In </label>
+                    <label className="block text-4xl text-black font-bold"> Welcome back!</label>
                 </div>
                 <form className="mt-8 space-y-6 bg-white p-8">
                     <div className="w-full flex flex-col items-center space-y-4">

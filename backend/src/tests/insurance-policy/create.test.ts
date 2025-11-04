@@ -40,6 +40,7 @@ describe("POST /insurance", () => {
                 companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
             },
             body: JSON.stringify({
+                policyName: "Policy A",
                 policyHolderFirstName: "Gusto",
                 policyHolderLastName: "Torres",
                 insuranceCompanyName: "State Farm",
@@ -49,6 +50,7 @@ describe("POST /insurance", () => {
         });
         expect(response.status).toBe(201);
         const responseBody = await response.json();
+        expect(responseBody.policyName).toBe("Policy A");
         expect(responseBody.policyHolderFirstName).toBe("Gusto");
         expect(responseBody.policyHolderLastName).toBe("Torres");
         expect(responseBody.insuranceCompanyName).toBe("State Farm");
@@ -64,6 +66,7 @@ describe("POST /insurance", () => {
                 companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
             },
             body: JSON.stringify({
+                policyName: "Policy A",
                 policyHolderFirstName: "Gusto",
                 policyHolderLastName: "Torres",
                 insuranceCompanyName: "State Farm",
@@ -85,6 +88,7 @@ describe("POST /insurance", () => {
                 companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
             },
             body: JSON.stringify({
+                policyName: "Policy A",
                 policyHolderFirstName: "",
                 policyHolderLastName: "Torres",
                 insuranceCompanyName: "State Farm",
@@ -104,6 +108,7 @@ describe("POST /insurance", () => {
                 companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
             },
             body: JSON.stringify({
+                policyName: "Policy A",
                 policyHolderLastName: "Torres",
                 insuranceCompanyName: "State Farm",
                 policyNumber: "SF-VEH-67",
@@ -122,6 +127,7 @@ describe("POST /insurance", () => {
                 companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
             },
             body: JSON.stringify({
+                policyName: "Policy A",
                 policyHolderFirstName: "Gusto",
                 policyHolderLastName: "",
                 insuranceCompanyName: "State Farm",
@@ -141,6 +147,7 @@ describe("POST /insurance", () => {
                 companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
             },
             body: JSON.stringify({
+                policyName: "Policy A",
                 policyHolderFirstName: "Gusto",
                 insuranceCompanyName: "State Farm",
                 policyNumber: "SF-VEH-67",
@@ -159,6 +166,7 @@ describe("POST /insurance", () => {
                 companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
             },
             body: JSON.stringify({
+                policyName: "Policy A",
                 policyHolderFirstName: "Gusto",
                 policyHolderLastName: "Torres",
                 insuranceCompanyName: "",
@@ -178,6 +186,7 @@ describe("POST /insurance", () => {
                 companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
             },
             body: JSON.stringify({
+                policyName: "Policy A",
                 policyHolderFirstName: "Gusto",
                 policyHolderLastName: "Torres",
                 policyNumber: "SF-VEH-67",

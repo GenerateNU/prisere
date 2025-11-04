@@ -7,6 +7,7 @@ import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { signupInitialState } from "@/types/user";
 import Onboarding from "./onboarding";
+import { Label } from "@/components/ui/label";
 
 const initialState: signupInitialState = {
     success: false,
@@ -28,38 +29,77 @@ export default function SignUpPage() {
     }, [state]);
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-stone">
+        <div className="min-h-screen flex items-center justify-center bg-stone mx-8">
             {profileStage ? (
                 <Onboarding email={state.email!} />
             ) : (
-                <div className="max-w-lg w-full space-y-8">
-                    <div className="flex justify-center">
-                        <label className="block text-4xl text-black font-bold"> Sign Up </label>
+                <div className="flex w-full justify-center items-center max-w-[70%] max-h-[500px]">
+                    <div className="w-1/2 flex-shrink-0 self-stretch pr-[125px] flex flex-col justify-center">
+                        <img className="" src="PrisereLogo.png" alt="Prisere" />
+                        <h2 className="font-bold text-[40px] mt-[40px] mb-[20px]">Stay prepared with Prisere.</h2>
+                        <p className="text-[18px]">
+                            Experience business continuity even amidst global disasters. With partnerships from esteemed
+                            institutions and a track record recognized globally, Prisere offers unrivaled expertise in
+                            disaster risk reduction and resilience.
+                        </p>
                     </div>
-                    <form className="mt-8 space-y-6 bg-white p-8">
-                        <div className="w-full flex flex-col items-center space-y-4">
-                            <Input id="email" name="email" type="email" placeholder="Email" required />
-                            <Input id="password" name="password" type="password" placeholder="Password" required />
-                            {!state?.success && <p className="text-red-500 text-sm"> {state.message}</p>}
+                    <div className="w-1/2 flex-shrink-0 max-w-1/2 space-y-8 border-l border-gray-300 self-stretch pl-[125px] flex flex-col justify-center items-center">
+                        <div className="flex justify-center">
+                            <h2 className="text-[30px] text-black font-bold"> Get Started with Prisere </h2>
                         </div>
-
-                        <div className="w-full flex flex-col gap-2 items-center">
-                            <Button formAction={signupAction} variant="secondary" disabled={status.pending}>
-                                SIGN UP
-                            </Button>
-                            <Button
-                                type="button"
-                                variant="default"
-                                onClick={() => {
-                                    redirect("/login");
-                                }}
-                                disabled={status.pending}
-                            >
-                                Log In
-                            </Button>
-                            <p> Forgot Password?</p>
-                        </div>
-                    </form>
+                        <form className="space-y-[30px] bg-white w-full">
+                            <div className="w-full flex flex-col items-center">
+                                <div className="w-full flex flex-col gap-[16px] mb-[16px]">
+                                    <Label htmlFor="email" className="text-[20px]">
+                                        Email
+                                    </Label>
+                                    <Input
+                                        id="email"
+                                        name="email"
+                                        type="email"
+                                        placeholder="exampleemail@gmail.com"
+                                        required
+                                        className="px-[25px] h-[85px] placeholder:text-gray-400"
+                                    />
+                                </div>
+                                <div className="w-full flex flex-col gap-[16px]">
+                                    <Label htmlFor="password" className="text-[20px]">
+                                        Password
+                                    </Label>
+                                    <Input
+                                        id="password"
+                                        name="password"
+                                        type="password"
+                                        placeholder="password"
+                                        required
+                                        className="px-[25px] h-[85px] placeholder:text-gray-400"
+                                    />
+                                </div>
+                                {!state?.success && <p className="text-red-500 text-sm"> {state.message}</p>}
+                            </div>
+                            <div className="w-full flex flex-col gap-[30px] items-center">
+                                <Button
+                                    formAction={signupAction}
+                                    variant="secondary"
+                                    disabled={status.pending}
+                                    className="max-h-[45px] w-[126px]"
+                                >
+                                    Sign Up
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="link"
+                                    onClick={() => {
+                                        redirect("/login");
+                                    }}
+                                    disabled={status.pending}
+                                    className="underline text-[20px] decoration-1 hover:text-gray-400 h-fit"
+                                >
+                                    Already have an account? Log In
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             )}
         </div>
