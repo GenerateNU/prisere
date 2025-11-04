@@ -1,10 +1,10 @@
 import NotificationsPage from "./notifications-page";
 
 export default async function Page() {
-    // Middleware would redirect to /login page
-    //   if (!user) {
-    //     throw new Error("User not found");
-    //   }
+    return (
+        <div className="">
+            <h1 className = "text-charcoal text-3xl font-bold"> Notifications </h1>
 
-    return <NotificationsPage />;
+        </div>
+    )
 }
