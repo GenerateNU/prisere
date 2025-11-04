@@ -17,6 +17,7 @@ export interface IPurchaseTransaction {
     sumPurchasesByCompanyInMonthBins(
         payload: GetCompanyPurchasesByDateDTO
     ): Promise<GetCompanyPurchasesInMonthBinsResponse>;
+    getPurchaseCategoriesForCompany(companyId: string): Promise<string[]>;
 }
 
 export class PurchaseTransaction implements IPurchaseTransaction {
@@ -90,9 +91,6 @@ export class PurchaseTransaction implements IPurchaseTransaction {
                 { search: `%${search}%`});
         }
 
-        console.log('=== getPurchasesForCompany called ===');
-        console.log('Payload:', JSON.stringify(payload, null, 2));
-
         return await queryBuilder
             .distinct(true)
             .skip(numToSkip)
@@ -158,5 +156,19 @@ export class PurchaseTransaction implements IPurchaseTransaction {
             month: `${row.year}-${String(row.month).padStart(2, "0")}`,
             total: parseInt(row.total) || 0,
         }));
+    }
+
+
+    async getPurchaseCategoriesForCompany(companyId: string): Promise<string[]> {
+        const categories = await this.db
+            .createQueryBuilder(Purchase, "purchase")
+            .where("purchase.companyId = :companyId", { companyId})
+            .select("purchase.lineItems")
+            .getMany()
+            .then(purchases =>
+                purchases.flatMap(p => p.lineItems.map(lineItem => lineItem.category ?? null))
+            );
+
+        return [... new Set(categories.filter((cat) => cat != null))];
     }
 }

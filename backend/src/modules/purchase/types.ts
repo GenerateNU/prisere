@@ -77,6 +77,10 @@ export const GetCompanyPurchasesDTOSchema = GetCompanyPurchasesQueryParams.exten
     companyId: z.uuid(),
 });
 
+export const GetPurchaseCategoriesForCompanyDTOSchema = z.object({
+    companyId: z.uuid(),
+})
+
 export const GetPurchaseDTOSchema = z.object({
     id: z.string().nonempty(),
 });
@@ -100,12 +104,17 @@ export const GetCompanyPurchasesInMonthBinsResponseSchema = z.array(
     })
 );
 
+export const GetPurchaseCategoriesForCompanyResponseSchema = z.array(
+    z.string().nonempty(),
+)
+
 //Controller Responses
 export type CreateOrChangePurchaseResponse = z.infer<typeof CreateOrChangePurchasesResponseSchema>;
 export type GetPurchaseResponse = z.infer<typeof GetPurchasesResponseSchema>;
 export type GetCompanyPurchasesResponse = z.infer<typeof GetCompanyPurchasesResponseSchema>;
 export type GetCompanyPurchasesSummationResponse = z.infer<typeof GetCompanyPurchasesSummationResponseSchema>;
 export type GetCompanyPurchasesInMonthBinsResponse = z.infer<typeof GetCompanyPurchasesInMonthBinsResponseSchema>;
+export type GetPurchaseCategoriesForCompanyResponse = z.infer<typeof GetPurchaseCategoriesForCompanyResponseSchema>;
 
 //Input types
 export type CreateOrChangePurchaseRequest = z.infer<typeof CreateOrChangePurchaseRequestSchema>;

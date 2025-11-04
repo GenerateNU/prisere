@@ -8,7 +8,8 @@ import {
     GetCompanyPurchasesSummationResponseSchema,
     CreateOrChangePurchaseRequestSchema,
     GetCompanyPurchasesQueryParams,
-    GetCompanyPurchasesInMonthBinsResponseSchema, GetCompanyPurchasesDTOSchema,
+    GetCompanyPurchasesInMonthBinsResponseSchema, GetCompanyPurchasesDTOSchema, GetPurchaseCategoriesForCompanyResponse,
+    GetPurchaseCategoriesForCompanyResponseSchema,
 } from "../../modules/purchase/types";
 import { IPurchaseController, PurchaseController } from "../purchase/controller";
 import { IPurchaseService, PurchaseService } from "../purchase/service";
@@ -25,6 +26,7 @@ export const addOpenApiPurchaseRoutes = (openApi: OpenAPIHono, db: DataSource): 
     openApi.openapi(getPurchasesForCompanyRoute, (ctx) => controller.getPurchasesForCompany(ctx));
     openApi.openapi(sumPurchasesByCompanyAndDateRange, (ctx) => controller.sumPurchasesByCompanyAndDateRange(ctx));
     openApi.openapi(sumPurchasesByCompanyInMonthBins, (ctx) => controller.sumPurchasesByCompanyInMonthBins(ctx));
+    openApi.openapi(getPurchaseCategoriesForCompanyRoute, (ctx) => controller.getPurchaseCategoriesForCompany(ctx))
 
     return openApi;
 };
@@ -161,6 +163,25 @@ const sumPurchasesByCompanyInMonthBins = createRoute({
             description: "Found summation successfully",
         },
         ...openApiErrorCodes("Getting Purchase Error"),
+    },
+    tags: ["Purchases"],
+});
+
+const getPurchaseCategoriesForCompanyRoute = createRoute({
+    method: "get",
+    path: "/categories",
+    summary: "Fetches all the categories of a company's purchase line items",
+    description: "Retrieves an array of categories that contain the categories of all purchase line items linked to a company",
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetPurchaseCategoriesForCompanyResponseSchema,
+                },
+            },
+            description: "Successful fetch of categories",
+        },
+        ...openApiErrorCodes("Get company purchases error"),
     },
     tags: ["Purchases"],
 });

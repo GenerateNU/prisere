@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import { Filter, Printer } from "lucide-react";
 import Filters from "./filters";
+import { getAllPurchaseCategories } from "../../api/purchase";
 
 export default function ExpenseTable() {
     const initialFilters: FilteredPurchases = { pageNumber: 0, resultsPerPage : 5}
@@ -31,9 +32,14 @@ export default function ExpenseTable() {
         queryFn: () => getAllPurchasesForCompany(filters),
     });
 
-    if (purchases.isPending) return <div>Loading expenses...</div>;
+    const categories = useQuery({
+        queryKey: ["categories-for-purchases"],
+        queryFn: getAllPurchaseCategories,
+    });
 
-    if (purchases.error) return <div>Error loading expenses</div>;
+    if (purchases.isPending || categories.isPending) return <div>Loading expenses...</div>;
+
+    if (purchases.error || categories.error) return <div>Error loading expenses</div>;
 
 
     const isLastPage = purchases.data.length < filters.resultsPerPage;
@@ -55,7 +61,7 @@ export default function ExpenseTable() {
         <Card>
             <CardHeader>
                 <CardTitle className="text-2xl font-bold">Business Transactions</CardTitle>
-                <Filters onFilterChange={updateFilter}></Filters>
+                <Filters onFilterChange={updateFilter} categories={categories.data}></Filters>
                 <CardAction>
                     <div className="flex gap-2">
                         <Filter></Filter>

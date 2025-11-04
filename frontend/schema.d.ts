@@ -2164,7 +2164,7 @@ export interface paths {
         };
         /**
          * Fetches all purchases for a company
-         * @description Retrieves a paginated list of purchases for the specified company
+         * @description Retrieves a paginated, sorted and filtered list of purchases for the specified company
          */
         get: {
             parameters: {
@@ -2362,6 +2362,67 @@ export interface paths {
                     };
                 };
                 /** @description Getting Purchase Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Fetches all the categories of a company's purchase line items
+         * @description Retrieves an array of categories that contain the categories of all purchase line items linked to a company
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful fetch of categories */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string[];
+                    };
+                };
+                /** @description Get company purchases error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Get company purchases error */
                 500: {
                     headers: {
                         [name: string]: unknown;

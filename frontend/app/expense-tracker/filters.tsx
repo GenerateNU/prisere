@@ -2,6 +2,7 @@ import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
 import { PurchaseLineItemType } from "../../api/purchase";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { Input } from "@/components/ui/input"
 import { useState } from "react";
 
 const dateOptions = ["Today", "Yesterday", "This Week", "This Month"];
@@ -12,8 +13,8 @@ const dateMap = new Map<string, Date>([
     ["This Month", new Date(new Date().getFullYear(), new Date().getMonth(), 1)],
 ]);
 
-export default function Filters({ onFilterChange }: {
-    onFilterChange: (field: string) => (value: any) => void }) {
+export default function Filters({ onFilterChange , categories }: {
+    onFilterChange: (field: string) => (value: any) => void , categories: string[]}) {
 
     const onDateChange =
         (startDate: Date) => onFilterChange("dateFrom")(startDate.toISOString());
@@ -21,14 +22,20 @@ export default function Filters({ onFilterChange }: {
     const onTypeChange =
         (type: PurchaseLineItemType) => onFilterChange("type")(type);
 
+    const onCategoryChange =
+        (categories: string[])=> onFilterChange("categories")(categories)
+
+    const onSearchChange
+        = (search: string) => onFilterChange("search")(search);
 
 
     return (
         // missing the flex-box part to make it pretty
         <>
             <DateFilter onDateChange={onDateChange}></DateFilter>
-            <CategoryFilter></CategoryFilter>
+            <CategoryFilter onCategoryChange={onCategoryChange} possibleCategories={categories} ></CategoryFilter>
             <DisasterRelatedFilter onTypeChange={onTypeChange}></DisasterRelatedFilter>
+            <SearchBy onSearchChange={onSearchChange}></SearchBy>
         </>
 
     );
@@ -108,5 +115,14 @@ function CategoryFilter({ onCategoryChange, possibleCategories }: {
                 ))}
             </DropdownMenuContent>
         </DropdownMenu>
+    );
+}
+
+
+function SearchBy({ onSearchChange }: {
+    onSearchChange: (search: string) => void }) {
+    return (
+        <Input type="search" placeholder="Search By..."
+               onChange={(e) => onSearchChange(e.target.value)}/>
     );
 }

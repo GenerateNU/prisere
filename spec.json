@@ -3183,7 +3183,7 @@
             "schema": {
               "type": "string",
               "format": "date-time",
-              "default": "2025-11-02T02:19:44.605Z"
+              "default": "2025-11-04T06:00:53.721Z"
             },
             "required": false,
             "name": "dateTo",
@@ -3473,6 +3473,61 @@
           },
           "500": {
             "description": "Getting Purchase Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "summary": "Fetches all the categories of a company's purchase line items",
+        "description": "Retrieves an array of categories that contain the categories of all purchase line items linked to a company",
+        "tags": ["Purchases"],
+        "responses": {
+          "200": {
+            "description": "Successful fetch of categories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get company purchases error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Get company purchases error",
             "content": {
               "application/json": {
                 "schema": {

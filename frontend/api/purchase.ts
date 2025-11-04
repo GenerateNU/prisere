@@ -55,6 +55,23 @@ export const getAllPurchasesForCompany =
     return authWrapper<Purchases>()(req);
 };
 
+export const getAllPurchaseCategories =
+    async ():Promise<string[]> => {
+        const req = async (token: string): Promise<string[]> => {
+            const client = getClient();
+            const { data, error, response } = await client.GET("/categories", {
+                headers: authHeader(token),
+            });
+            if (response.ok) {
+                return data!;
+            } else {
+                throw Error(error?.error);
+            }
+        };
+
+        return authWrapper<string[]>()(req);
+};
+
 export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate: Date): Promise<{ total: number }> => {
     const req = async (token: string): Promise<{ total: number }> => {
         const client = getClient();

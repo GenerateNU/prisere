@@ -18,6 +18,7 @@ export interface IPurchaseService {
     sumPurchasesByCompanyInMonthBins(
         payload: GetCompanyPurchasesByDateDTO
     ): Promise<GetCompanyPurchasesInMonthBinsResponse>;
+    getPurchaseCategoriesForCompany(companyId: string): Promise<string[]>;
 }
 
 export class PurchaseService implements IPurchaseService {
@@ -42,8 +43,6 @@ export class PurchaseService implements IPurchaseService {
 
     getPurchase = withServiceErrorHandling(async (id: string): Promise<GetPurchaseResponse> => {
         const qbPurchase = await this.PurchaseTransaction.getPurchase(id);
-
-        console.log(qbPurchase);
 
         return {
             dateCreated: qbPurchase.dateCreated.toUTCString(),
@@ -95,4 +94,11 @@ export class PurchaseService implements IPurchaseService {
             return perMonthSums;
         }
     );
+
+    getPurchaseCategoriesForCompany = withServiceErrorHandling(
+        async (companyId: string): Promise<string[]> => {
+            const categories = this.PurchaseTransaction.getPurchaseCategoriesForCompany(companyId);
+            return categories;
+        });
+
 }

@@ -11,7 +11,8 @@ import {
     CreateOrChangePurchaseRequest,
     GetCompanyPurchasesSummationResponse,
     GetCompanyPurchasesByDateDTOSchema,
-    GetCompanyPurchasesInMonthBinsResponse, GetCompanyPurchasesQueryParams, GetCompanyPurchasesDTO,
+    GetCompanyPurchasesInMonthBinsResponse,
+    GetPurchaseCategoriesForCompanyResponse,
 } from "./types";
 import { ControllerResponse } from "../../utilities/response";
 
@@ -25,6 +26,8 @@ export interface IPurchaseController {
     sumPurchasesByCompanyInMonthBins(
         ctx: Context
     ): ControllerResponse<TypedResponse<GetCompanyPurchasesInMonthBinsResponse, 200>>;
+    getPurchaseCategoriesForCompany(ctx: Context):
+        ControllerResponse<TypedResponse<GetPurchaseCategoriesForCompanyResponse, 200>>;
 }
 
 export class PurchaseController implements IPurchaseController {
@@ -82,12 +85,14 @@ export class PurchaseController implements IPurchaseController {
                 sortOrder: ctx.req.query("sortOrder"),
             };
 
-            console.log('=== RAW QUERY PARAMS ===');
-            console.log('dateFrom raw:', ctx.req.query("dateFrom"));
-            console.log('dateTo raw:', ctx.req.query("dateTo"));
-            console.log('queryParams:', JSON.stringify(queryParams, null, 2));
-
             const payload = GetCompanyPurchasesDTOSchema.parse(queryParams);
+
+            if (!validate(payload.companyId)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            } else if (payload.dateFrom && new Date(payload.dateFrom) >= new Date(payload.dateTo)) {
+                return ctx.json({ error: "Start date must be before End date" }, 400);
+            }
+
             const fetchedPurchases = await this.PurchaseService.getPurchasesForCompany(payload);
             return ctx.json(fetchedPurchases, 200);
         }
@@ -130,6 +135,17 @@ export class PurchaseController implements IPurchaseController {
 
             const perMonthSums = await this.PurchaseService.sumPurchasesByCompanyInMonthBins(payload);
             return ctx.json(perMonthSums, 200);
+        }
+    );
+
+    getPurchaseCategoriesForCompany = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<GetPurchaseCategoriesForCompanyResponse, 200>> => {
+            const companyId = ctx.get("companyId");
+            if (!validate(companyId)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
+            const categories = await this.PurchaseService.getPurchaseCategoriesForCompany(companyId);
+            return ctx.json(categories, 200);
         }
     );
 }
