@@ -3,3 +3,5 @@ bun.lock
 .idea/
 log
 .DS_Store
+
+.vscode/
