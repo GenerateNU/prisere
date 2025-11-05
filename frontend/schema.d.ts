@@ -2460,7 +2460,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/categories": {
+    "/purchase/categories": {
         parameters: {
             query?: never;
             header?: never;

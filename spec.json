@@ -3677,7 +3677,7 @@
             "schema": {
               "type": "string",
               "format": "date-time",
-              "default": "2025-11-05T19:13:54.175Z"
+              "default": "2025-11-05T19:57:05.795Z"
             },
             "required": false,
             "name": "dateTo",
@@ -4016,7 +4016,7 @@
         }
       }
     },
-    "/categories": {
+    "/purchase/categories": {
       "get": {
         "summary": "Fetches all the categories of a company's purchase line items",
         "description": "Retrieves an array of categories that contain the categories of all purchase line items linked to a company",

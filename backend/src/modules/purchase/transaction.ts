@@ -1,13 +1,13 @@
-import { Brackets, DataSource } from "typeorm";
 import Boom from "@hapi/boom";
+import { plainToInstance } from "class-transformer";
+import { Brackets, DataSource } from "typeorm";
+import { Purchase } from "../../entities/Purchase";
 import {
     CreateOrChangePurchaseDTO,
     GetCompanyPurchasesByDateDTO,
     GetCompanyPurchasesDTO,
     GetCompanyPurchasesInMonthBinsResponse,
 } from "./types";
-import { Purchase } from "../../entities/Purchase";
-import { plainToInstance } from "class-transformer";
 
 export interface IPurchaseTransaction {
     createOrUpdatePurchase(payload: CreateOrChangePurchaseDTO): Promise<Purchase[]>;
@@ -57,29 +57,29 @@ export class PurchaseTransaction implements IPurchaseTransaction {
     }
 
     async getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<Purchase[]> {
-        const { companyId, pageNumber, resultsPerPage, categories, type, 
-            dateFrom, dateTo, search, sortBy, sortOrder } = payload;
+        const { companyId, pageNumber, resultsPerPage, categories, type, dateFrom, dateTo, search, sortBy, sortOrder } =
+            payload;
 
-        const queryBuilder = this.db.manager.createQueryBuilder(Purchase, 'p');
-        queryBuilder.leftJoinAndSelect('p.lineItems', 'li');
-        queryBuilder.where('p.companyId = :companyId', { companyId });
+        const queryBuilder = this.db.manager.createQueryBuilder(Purchase, "p");
+        queryBuilder.leftJoinAndSelect("p.lineItems", "li");
+        queryBuilder.where("p.companyId = :companyId", { companyId });
         const numToSkip = resultsPerPage * pageNumber;
 
         if (categories && categories.length > 0) {
-            queryBuilder.andWhere('li.category IN (:...categories)', { categories });
+            queryBuilder.andWhere("li.category IN (:...categories)", { categories });
         }
 
         if (type) {
-            queryBuilder.andWhere('li.type = :type', { type });
+            queryBuilder.andWhere("li.type = :type", { type });
         }
 
         if (dateFrom) {
-            queryBuilder.andWhere('p.dateCreated BETWEEN :dateFrom AND :dateTo', { dateFrom, dateTo });
+            queryBuilder.andWhere("p.dateCreated BETWEEN :dateFrom AND :dateTo", { dateFrom, dateTo });
         }
 
         const sortColumnMap: Record<string, string> = {
-            'date': 'p.dateCreated',
-            'totalAmountCents': 'p.totalAmountCents'
+            date: "p.dateCreated",
+            totalAmountCents: "p.totalAmountCents",
         };
 
         if (sortBy && sortOrder && sortColumnMap[sortBy]) {
@@ -87,15 +87,12 @@ export class PurchaseTransaction implements IPurchaseTransaction {
         }
 
         if (search) {
-            queryBuilder.andWhere('(li.description ILIKE :search OR li.category ILIKE :search)',
-                { search: `%${search}%`});
+            queryBuilder.andWhere("(li.description ILIKE :search OR li.category ILIKE :search)", {
+                search: `%${search}%`,
+            });
         }
 
-        return await queryBuilder
-            .distinct(true)
-            .skip(numToSkip)
-            .take(resultsPerPage)
-            .getMany();
+        return await queryBuilder.distinct(true).skip(numToSkip).take(resultsPerPage).getMany();
     }
 
     async sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number> {
@@ -158,17 +155,16 @@ export class PurchaseTransaction implements IPurchaseTransaction {
         }));
     }
 
-
     async getPurchaseCategoriesForCompany(companyId: string): Promise<string[]> {
         const categories = await this.db
             .createQueryBuilder(Purchase, "purchase")
-            .where("purchase.companyId = :companyId", { companyId})
-            .select("purchase.lineItems")
+            .where("purchase.companyId = :companyId", { companyId })
+            .leftJoinAndSelect("purchase.lineItems", "lineItems")
             .getMany()
-            .then(purchases =>
-                purchases.flatMap(p => p.lineItems.map(lineItem => lineItem.category ?? null))
+            .then((purchases) =>
+                purchases.flatMap((p) => p.lineItems?.map((lineItem) => lineItem.category ?? null) ?? [])
             );
 
-        return [... new Set(categories.filter((cat) => cat != null))];
+        return [...new Set(categories.filter((cat) => cat !== null))];
     }
 }

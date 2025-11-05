@@ -1,9 +1,8 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { PurchaseLineItem, Purchases } from "@/types/purchase";
-import { SortByColumn } from "@/api/purchase";
-import { useState } from "react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { PurchaseLineItem, Purchases, SortByColumn } from "@/types/purchase";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { useState } from "react";
 
 const columns = ["Merchant", "Amount", "Category", "Date", "Disaster Related"];
 const columnsToDBColumns = new Map<string, SortByColumn>([
@@ -12,13 +11,15 @@ const columnsToDBColumns = new Map<string, SortByColumn>([
 ]);
 type Purchase = Purchases[number];
 
-
-export default function BasicTable(
-    { purchases, changeSorting, sortingState }: {
-        purchases: Purchases;
-        changeSorting: (column: SortByColumn) => void;
-        sortingState: () => string;
-    }) {
+export default function BasicTable({
+    purchases,
+    changeSorting,
+    sortingState,
+}: {
+    purchases: Purchases;
+    changeSorting: (column: SortByColumn) => void;
+    sortingState: () => string;
+}) {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -39,8 +40,8 @@ export default function BasicTable(
                 <TableBody>
                     {purchases.map((row) => {
                         return (
-                            <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-                                <TableRow key={row.id}>
+                            <Collapsible key={row.id} open={isOpen} onOpenChange={setIsOpen}>
+                                <TableRow>
                                     <TableCell>
                                         <div className="flex items-center gap-2">
                                             <CollapsibleArrow hasItems={row.lineItems?.length > 0} isOpen={isOpen} />
@@ -75,10 +76,7 @@ function ColumnHeader({ column, onSort, getSortingState }: ColumnHeaderProps) {
 
     if (isSortable) {
         return (
-            <TableHead
-                className="cursor-pointer"
-                onClick={() => onSort(columnsToDBColumns.get(column)!)}
-            >
+            <TableHead className="cursor-pointer" onClick={() => onSort(columnsToDBColumns.get(column)!)}>
                 {column + getSortingState()}
             </TableHead>
         );
@@ -106,8 +104,7 @@ function PurchaseLineItems({ lineItems }: { lineItems: PurchaseLineItem[] }) {
     );
 }
 
-
-function CollapsibleArrow({ hasItems, isOpen }: { hasItems: boolean, isOpen: boolean }) {
+function CollapsibleArrow({ hasItems, isOpen }: { hasItems: boolean; isOpen: boolean }) {
     if (!hasItems) {
         return null;
     }
@@ -119,7 +116,6 @@ function CollapsibleArrow({ hasItems, isOpen }: { hasItems: boolean, isOpen: boo
         </CollapsibleTrigger>
     );
 }
-
 
 function getPurchaseInfo(purchase: Purchase, field: string) {
     switch (field) {

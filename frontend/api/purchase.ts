@@ -1,32 +1,8 @@
 "use server";
-import { Purchases } from "../types/purchase";
+import { FilteredPurchases, Purchases } from "../types/purchase";
 import { authHeader, authWrapper, getClient } from "./client";
 
-export enum PurchaseLineItemType {
-    EXTRANEOUS = "extraneous",
-    TYPICAL = "typical",
-}
-
-export enum SortByColumn {
-    DATE = "date",
-    AMOUNT = "totalAmountCents",
-}
-
-export type FilteredPurchases = {
-    pageNumber: number,
-    resultsPerPage: number,
-    sortBy?: SortByColumn,
-    sortOrder?: "ASC" | "DESC",
-    categories?: string[],
-    type?: PurchaseLineItemType,
-    dateFrom?: string,
-    dateTo?: string,
-    search?: string,
-};
-
-
-export const getAllPurchasesForCompany =
-    async (filters: FilteredPurchases):Promise<Purchases> => {
+export const getAllPurchasesForCompany = async (filters: FilteredPurchases): Promise<Purchases> => {
     const req = async (token: string): Promise<Purchases> => {
         const client = getClient();
         const { data, error, response } = await client.GET("/purchase", {
@@ -40,7 +16,7 @@ export const getAllPurchasesForCompany =
                     dateTo: filters.dateTo,
                     search: filters.search,
                     sortBy: filters.sortBy,
-                    sortOrder: filters.sortOrder
+                    sortOrder: filters.sortOrder,
                 },
             },
             headers: authHeader(token),
@@ -55,21 +31,20 @@ export const getAllPurchasesForCompany =
     return authWrapper<Purchases>()(req);
 };
 
-export const getAllPurchaseCategories =
-    async ():Promise<string[]> => {
-        const req = async (token: string): Promise<string[]> => {
-            const client = getClient();
-            const { data, error, response } = await client.GET("/categories", {
-                headers: authHeader(token),
-            });
-            if (response.ok) {
-                return data!;
-            } else {
-                throw Error(error?.error);
-            }
-        };
+export const getAllPurchaseCategories = async (): Promise<string[]> => {
+    const req = async (token: string): Promise<string[]> => {
+        const client = getClient();
+        const { data, error, response } = await client.GET("/purchase/categories", {
+            headers: authHeader(token),
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
 
-        return authWrapper<string[]>()(req);
+    return authWrapper<string[]>()(req);
 };
 
 export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate: Date): Promise<{ total: number }> => {

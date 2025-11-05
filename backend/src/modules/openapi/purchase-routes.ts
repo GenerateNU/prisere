@@ -1,20 +1,20 @@
-import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
+import { DataSource } from "typeorm";
 import { z } from "zod";
 import {
-    GetPurchasesResponseSchema,
-    GetCompanyPurchasesResponseSchema,
-    CreateOrChangePurchasesResponseSchema,
-    GetCompanyPurchasesSummationResponseSchema,
     CreateOrChangePurchaseRequestSchema,
+    CreateOrChangePurchasesResponseSchema,
+    GetCompanyPurchasesInMonthBinsResponseSchema,
     GetCompanyPurchasesQueryParams,
-    GetCompanyPurchasesInMonthBinsResponseSchema, GetCompanyPurchasesDTOSchema, GetPurchaseCategoriesForCompanyResponse,
+    GetCompanyPurchasesResponseSchema,
+    GetCompanyPurchasesSummationResponseSchema,
     GetPurchaseCategoriesForCompanyResponseSchema,
+    GetPurchasesResponseSchema,
 } from "../../modules/purchase/types";
+import { openApiErrorCodes } from "../../utilities/error";
 import { IPurchaseController, PurchaseController } from "../purchase/controller";
 import { IPurchaseService, PurchaseService } from "../purchase/service";
 import { IPurchaseTransaction, PurchaseTransaction } from "../purchase/transaction";
-import { openApiErrorCodes } from "../../utilities/error";
 
 export const addOpenApiPurchaseRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const transaction: IPurchaseTransaction = new PurchaseTransaction(db);
@@ -26,7 +26,7 @@ export const addOpenApiPurchaseRoutes = (openApi: OpenAPIHono, db: DataSource): 
     openApi.openapi(getPurchasesForCompanyRoute, (ctx) => controller.getPurchasesForCompany(ctx));
     openApi.openapi(sumPurchasesByCompanyAndDateRange, (ctx) => controller.sumPurchasesByCompanyAndDateRange(ctx));
     openApi.openapi(sumPurchasesByCompanyInMonthBins, (ctx) => controller.sumPurchasesByCompanyInMonthBins(ctx));
-    openApi.openapi(getPurchaseCategoriesForCompanyRoute, (ctx) => controller.getPurchaseCategoriesForCompany(ctx))
+    openApi.openapi(getPurchaseCategoriesForCompanyRoute, (ctx) => controller.getPurchaseCategoriesForCompany(ctx));
 
     return openApi;
 };
@@ -169,9 +169,10 @@ const sumPurchasesByCompanyInMonthBins = createRoute({
 
 const getPurchaseCategoriesForCompanyRoute = createRoute({
     method: "get",
-    path: "/categories",
+    path: "/purchase/categories",
     summary: "Fetches all the categories of a company's purchase line items",
-    description: "Retrieves an array of categories that contain the categories of all purchase line items linked to a company",
+    description:
+        "Retrieves an array of categories that contain the categories of all purchase line items linked to a company",
     responses: {
         200: {
             content: {
