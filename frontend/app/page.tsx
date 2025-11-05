@@ -4,8 +4,14 @@ import RevenueAndExpenses from "@/components/dashboard/RevenueAndExpenses";
 import NextSteps from "@/components/dashboard/NextSteps";
 import LocationRisk from "@/components/dashboard/LocationRisk";
 import NetDisasterExpenses from "@/components/dashboard/NetDisasterExpenses";
+import { importQuickbooksData } from "@/api/quickbooks";
+import { useEffect } from "react";
 
 export default function Dashboard() {
+    useEffect(() => {
+        importQuickbooksData();
+    }, []);
+    
     return (
         <div className={"flex flex-col gap-[32px] px-[70px] pt-[72px] mb-4 justify-center"}>
             <div className="flex justify-between items-center">

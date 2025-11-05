@@ -9,6 +9,15 @@ import { createTestData, TestDataSetup } from "../disasterNotifications/setup";
 import { IBackup } from "pg-mem";
 import { startTestApp } from "../setup-tests";
 import { FemaDisaster } from "../../entities/FemaDisaster";
+import { QuickbooksTransaction } from "../../modules/quickbooks/transaction";
+import { UserTransaction } from "../../modules/user/transaction";
+import { InvoiceTransaction } from "../../modules/invoice/transaction";
+import { InvoiceLineItemTransaction } from "../../modules/invoiceLineItem/transaction";
+import { PurchaseTransaction } from "../../modules/purchase/transaction";
+import { PurchaseLineItemTransaction } from "../../modules/purchase-line-item/transaction";
+import { MockQBClient } from "../quickbooks/oauth/mock-client";
+import { IQuickbooksService, QuickbooksService } from "../../modules/quickbooks/service";
+
 
 describe("Email Notification Integration Test", () => {
     let backup: IBackup;
@@ -17,6 +26,8 @@ describe("Email Notification Integration Test", () => {
     let sqsService: SQSService;
     let disasterNotificationService: DisasterNotificationService;
     let mockSend: ReturnType<typeof mock>;
+    let client: MockQBClient;
+    let service: IQuickbooksService;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
@@ -35,6 +46,23 @@ describe("Email Notification Integration Test", () => {
             locationTransaction,
             userPreferencesTransaction,
             sqsService
+        );
+
+        const transaction = new QuickbooksTransaction(dataSource);
+        const userTransaction = new UserTransaction(dataSource);
+        const invoiceTransaction = new InvoiceTransaction(dataSource);
+        const invoiceLineItemTransaction = new InvoiceLineItemTransaction(dataSource);
+        const purchaseTransaction = new PurchaseTransaction(dataSource);
+        const purchaseLineItemTransaction = new PurchaseLineItemTransaction(dataSource);
+        client = new MockQBClient();
+        service = new QuickbooksService(
+            transaction,
+            userTransaction,
+            invoiceTransaction,
+            invoiceLineItemTransaction,
+            purchaseTransaction,
+            purchaseLineItemTransaction,
+            client
         );
     });
 
@@ -66,7 +94,7 @@ describe("Email Notification Integration Test", () => {
         newDisasters.push(testData.disasters.disaster2);
 
         // Process disasters (this triggers the whole flow)
-        const result = await disasterNotificationService.processNewDisasters(newDisasters);
+        const result = await disasterNotificationService.processNewDisasters(newDisasters, service);
 
         // erify the flow worked
         expect(result).toBe(true);

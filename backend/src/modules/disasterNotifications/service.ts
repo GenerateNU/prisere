@@ -15,6 +15,13 @@ import { logMessageToFile } from "../../utilities/logger";
 import { IPreferenceTransaction } from "../preferences/transaction";
 import { ISQSService } from "../sqs/service";
 import { getDeclarationTypeMeanings, getIncidentTypeMeanings } from "../../utilities/incident_code_meanings";
+import { IQuickbooksService, QuickbooksService } from "../quickbooks/service";
+import { IQuickbooksTransaction } from "../quickbooks/transaction";
+import { IUserTransaction } from "../user/transaction";
+import { IInvoiceTransaction } from "../invoice/transaction";
+import { IInvoiceLineItemTransaction } from "../invoiceLineItem/transaction";
+import { IPurchaseTransaction } from "../purchase/transaction";
+import { IPurchaseLineItemTransaction } from "../purchase-line-item/transaction";
 
 export interface IDisasterNotificationService {
     getUserNotifications(
@@ -28,7 +35,7 @@ export interface IDisasterNotificationService {
     markUnreadNotification(notificationId: string): Promise<DisasterNotification>;
     bulkCreateNotifications(notifications: Partial<DisasterNotification>[]): Promise<DisasterNotification[]>;
     deleteNotification(notificationId: string): Promise<boolean>;
-    processNewDisasters(newDisasters: FemaDisaster[]): Promise<boolean>;
+    processNewDisasters(newDisasters: FemaDisaster[], quickbooksService: IQuickbooksService): Promise<boolean>;
     markAllAsRead(userId: string): Promise<number>;
     sendEmailNotifications(): Promise<DisasterNotification[]>;
 }
@@ -105,9 +112,10 @@ export class DisasterNotificationService implements IDisasterNotificationService
         );
     }
 
-    processNewDisasters = withServiceErrorHandling(async (newDisasters: FemaDisaster[]): Promise<boolean> => {
+    processNewDisasters = withServiceErrorHandling(async (newDisasters: FemaDisaster[], quickbooksService: IQuickbooksService): Promise<boolean> => {
         try {
             const notificationsToCreate: Partial<DisasterNotification>[] = [];
+            const quickbookImportJobs: Promise<any>[] = [];
 
             // Get user-disaster pairs directly
             const userDisasterPairs = await this.locationTransaction.getUsersAffectedByDisasters(newDisasters);
@@ -115,6 +123,12 @@ export class DisasterNotificationService implements IDisasterNotificationService
             logMessageToFile(
                 `Found ${userDisasterPairs.length} user-disaster combinations to create notifications for`
             );
+
+            // Run QuickBooks imports in parallel and wait for all to finish
+            const qbImportPromises = userDisasterPairs.map(({ user }) =>
+                quickbooksService.importQuickbooksData({ userId: user.id })
+            );
+            await Promise.allSettled(qbImportPromises);
 
             for (const { user, disaster, location } of userDisasterPairs) {
                 const preferences = await this.userPreferences.getOrCreateUserPreferences(user.id);
@@ -154,7 +168,7 @@ export class DisasterNotificationService implements IDisasterNotificationService
                 logMessageToFile("No users affected by new disasters");
             }
 
-            // Send the email after creating all notifications
+            // Send the email after creating all notifications and all imports are done
             await this.sendEmailNotifications();
 
             return true;

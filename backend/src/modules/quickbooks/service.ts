@@ -279,28 +279,32 @@ export class QuickbooksService implements IQuickbooksService {
     });
 
     importQuickbooksData = withServiceErrorHandling(async ({ userId }: { userId: string }) => {
-            // First check if the user has a Quickbooks session going/one to refresh
-            const sessionInfo = await this.transaction.getSessionForUser({userId});
-            let session = sessionInfo.session;
-            const externalId = sessionInfo.externalId;
+            try {
+                // First check if the user has a Quickbooks session going/one to refresh
+                const sessionInfo = await this.transaction.getSessionForUser({userId});
+                let session = sessionInfo.session;
+                const externalId = sessionInfo.externalId;
 
-            const now = dayjs();
+                const now = dayjs();
 
-            if (!session || !externalId || now.isSameOrAfter(session.refreshExpiryTimestamp)) {
-                // How can I redirect to quickbooks auth
-                throw Boom.unauthorized("Quickbooks session is expired");
+                if (!session || !externalId || now.isSameOrAfter(session.refreshExpiryTimestamp)) {
+                    // How can I redirect to quickbooks auth
+                    throw Boom.unauthorized("Quickbooks session is expired");
+                }
+
+                if (now.isSameOrAfter(session.accessExpiryTimestamp)) {
+                    session = await this.refreshQuickbooksSession({
+                        refreshToken: session.refreshToken,
+                        companyId: session.companyId,
+                    });
+                }
+
+                // Now update unprocessed invoices and purchases
+                await this.updateUnprocessedInvoices({userId})
+                await this.updateUnprocessedPurchases({userId})
+            } catch (error) {
+                console.error(error)
             }
-
-            if (now.isSameOrAfter(session.accessExpiryTimestamp)) {
-                session = await this.refreshQuickbooksSession({
-                    refreshToken: session.refreshToken,
-                    companyId: session.companyId,
-                });
-            }
-
-            // Now update unprocessed invoices and purchases
-            await this.updateUnprocessedInvoices({userId})
-            await this.updateUnprocessedPurchases({userId})
 
     });
 }

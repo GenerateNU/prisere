@@ -11,13 +11,13 @@ export const importQuickbooksData = async (): Promise<{ success: true } | { erro
         if (response.ok) {
             return data!;
         } else if (response.status === 401) {
-            return data!;
+            // throw Error(error?.error);
+            console.log("Warning: No quickbooks client")
             // Redirect to quickhooks Oatuh
         } else {
-            return data!;
-            throw Error(error?.error);
+            // throw Error(error?.error);
+            console.log("No quickbooks client")
         }
     };
-    // To do: create typed response of importing QB data?
     return authWrapper<{ success: true } | { error: string }>()(req);
 };
