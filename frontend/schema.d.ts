@@ -239,7 +239,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string;
+                            lastQuickBooksPurchaseImportTime?: string;
                         };
                     };
                 };
@@ -305,7 +306,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string;
+                            lastQuickBooksPurchaseImportTime?: string;
                         };
                     };
                 };
@@ -346,7 +348,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/companies/quickbooks-import-time": {
+    "/companies/quickbooks-invoice-import-time": {
         parameters: {
             query?: never;
             header?: never;
@@ -360,8 +362,8 @@ export interface paths {
         options?: never;
         head?: never;
         /**
-         * Update a company's lastQuickBooksImportTime
-         * @description Updates the lastQuickBooksImportTime for a company by ID
+         * Update a company's lastQuickBooksInvoiceImportTime
+         * @description Updates the lastQuickBooksInvoiceImportTime for a company by ID
          */
         patch: {
             parameters: {
@@ -389,7 +391,82 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string;
+                            lastQuickBooksPurchaseImportTime?: string;
+                        };
+                    };
+                };
+                /** @description Create Company Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Create Company Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/companies/quickbooks-purchase-import-time": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update a company's lastQuickBooksPurcahseImportTime
+         * @description Updates the lastQuickBooksPurcahseImportTime for a company by ID
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        importTime: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Company updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            name: string;
+                            businessOwnerFullName: string;
+                            lastQuickBooksInvoiceImportTime?: string;
+                            lastQuickBooksPurchaseImportTime?: string;
                         };
                     };
                 };
@@ -999,7 +1076,8 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksImportTime?: string;
+                                    lastQuickBooksInvoiceImportTime?: string;
+                                    lastQuickBooksPurchaseImportTime?: string;
                                 };
                             };
                         }[];
@@ -2206,7 +2284,7 @@ export interface paths {
                                 quickBooksId?: number;
                                 purchaseId: string;
                                 amountCents: number;
-                                category?: string;
+                                category?: string | null;
                                 /** @enum {string} */
                                 type: "extraneous" | "typical";
                                 dateCreated: string;
@@ -2918,7 +2996,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;
@@ -3608,7 +3686,7 @@ export interface paths {
                         quickBooksId?: number;
                         purchaseId: string;
                         amountCents: number;
-                        category?: string;
+                        category?: string | null;
                         /** @enum {string} */
                         type: "extraneous" | "typical";
                         /** Format: date-time */
@@ -3629,7 +3707,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;
@@ -3710,7 +3788,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;
@@ -3793,7 +3871,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;
@@ -3840,6 +3918,174 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/purchase/category": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Updates a purchase line item's category
+         * @description Updates the category of the purchase line item with the given Id to the given category
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    category: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successfully updated the line item's category */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            description?: string;
+                            quickBooksId?: number;
+                            purchaseId: string;
+                            amountCents: number;
+                            category?: string | null;
+                            /** @enum {string} */
+                            type: "extraneous" | "typical";
+                            dateCreated: string;
+                            lastUpdated: string;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string;
+                        };
+                    };
+                };
+                /** @description Error modifying purchase line item */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description There does not exist any purchase line item the given id */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Error modifying purchase line item */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/purchase/type": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Updates a purchase line item's type
+         * @description Updates the type of the purchase line item with the given Id to the given type
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                    type: "extraneous" | "typical";
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successfully updated the line item's type */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            description?: string;
+                            quickBooksId?: number;
+                            purchaseId: string;
+                            amountCents: number;
+                            category?: string | null;
+                            /** @enum {string} */
+                            type: "extraneous" | "typical";
+                            dateCreated: string;
+                            lastUpdated: string;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string;
+                        };
+                    };
+                };
+                /** @description Error modifying purchase line item */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description There does not exist any purchase line item the given id */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Error modifying purchase line item */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/disaster/self": {
