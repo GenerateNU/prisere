@@ -1,26 +1,34 @@
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { PurchaseLineItemType } from "@/types/purchase";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import dayjs from "dayjs";
 import { useState } from "react";
+import { DateRange } from "react-day-picker";
 
-const dateOptions = ["Today", "Yesterday", "This Week", "This Month"];
-const dateMap = new Map<string, Date>([
-    ["Today", new Date()],
-    ["Yesterday", new Date(new Date().setDate(new Date().getDate() - 1))],
-    ["This Week", new Date(new Date().setDate(new Date().getDate() - new Date().getDay()))],
-    ["This Month", new Date(new Date().getFullYear(), new Date().getMonth(), 1)],
-]);
-
-export default function Filters({
+export function Filters({
     onFilterChange,
     categories,
 }: {
-    onFilterChange: (field: string) => (value: any) => void;
+    onFilterChange: (field: string) => (value: unknown) => void;
     categories: string[];
 }) {
-    const onDateChange = (startDate: Date) => onFilterChange("dateFrom")(startDate.toISOString());
+    const onDateRangeChange = (range: DateRange | undefined) => {
+        if (range?.from) {
+            onFilterChange("dateFrom")(range.from.toISOString());
+        } else {
+            onFilterChange("dateFrom")(undefined);
+        }
+        if (range?.to) {
+            onFilterChange("dateTo")(range.to.toISOString());
+        } else {
+            onFilterChange("dateTo")(undefined);
+        }
+    };
 
     const onTypeChange = (type: PurchaseLineItemType) => onFilterChange("type")(type);
 
@@ -30,31 +38,54 @@ export default function Filters({
 
     return (
         // missing the flex-box part to make it pretty
-        <>
-            <DateFilter onDateChange={onDateChange}></DateFilter>
-            <CategoryFilter onCategoryChange={onCategoryChange} possibleCategories={categories}></CategoryFilter>
-            <DisasterRelatedFilter onTypeChange={onTypeChange}></DisasterRelatedFilter>
-            <SearchBy onSearchChange={onSearchChange}></SearchBy>
-        </>
+        <div className="grid grid-cols-4">
+            <DateFilter onDateRangeChange={onDateRangeChange} />
+            <CategoryFilter onCategoryChange={onCategoryChange} possibleCategories={categories} />
+            <DisasterRelatedFilter onTypeChange={onTypeChange} />
+            <SearchBy onSearchChange={onSearchChange} />
+        </div>
     );
 }
 
-function DateFilter({ onDateChange }: { onDateChange: (dateFrom: Date) => void }) {
+function DateFilter({ onDateRangeChange }: { onDateRangeChange: (range: DateRange | undefined) => void }) {
+    const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleDateRangeSelect = (range: DateRange | undefined) => {
+        setDateRange(range);
+        onDateRangeChange(range);
+        // Close popover when both dates are selected
+        if (range?.from && range?.to) {
+            setIsOpen(false);
+        }
+    };
+
+    const formatDateRange = () => {
+        if (!dateRange?.from) {
+            return "Select date range";
+        }
+        if (dateRange.from && !dateRange.to) {
+            return `${dayjs(dateRange.from).format("MMM D, YYYY")} - ...`;
+        }
+        if (dateRange.from && dateRange.to) {
+            return `${dayjs(dateRange.from).format("MMM D, YYYY")} - ${dayjs(dateRange.to).format("MMM D, YYYY")}`;
+        }
+        return "Select date range";
+    };
+
     return (
-        <>
-            <NativeSelect>
-                {dateOptions.map((val) => (
-                    <NativeSelectOption
-                        key={val}
-                        // for all dates where dateTo is the present
-                        onClick={() => onDateChange(dateMap.get(val)!)}
-                    >
-                        {val}
-                    </NativeSelectOption>
-                ))}
-                <NativeSelectOption>Custom - need to implement date selection</NativeSelectOption>
-            </NativeSelect>
-        </>
+        <div>
+            <Popover open={isOpen} onOpenChange={setIsOpen}>
+                <PopoverTrigger asChild>
+                    <Button variant="outline" size={"sm"} className="w-full justify-start text-left font-normal">
+                        {formatDateRange()}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar mode="range" selected={dateRange} onSelect={handleDateRangeSelect} numberOfMonths={2} />
+                </PopoverContent>
+            </Popover>
+        </div>
     );
 }
 
@@ -92,7 +123,9 @@ function CategoryFilter({
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button>All Categories</button>
+                <Button size={"sm"} variant={"outline"}>
+                    All Categories
+                </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 {possibleCategories.map((category) => (
@@ -113,5 +146,12 @@ function CategoryFilter({
 }
 
 function SearchBy({ onSearchChange }: { onSearchChange: (search: string) => void }) {
-    return <Input type="search" placeholder="Search By..." onChange={(e) => onSearchChange(e.target.value)} />;
+    return (
+        <Input
+            className="h-8"
+            type="search"
+            placeholder="Search By..."
+            onChange={(e) => onSearchChange(e.target.value)}
+        />
+    );
 }
