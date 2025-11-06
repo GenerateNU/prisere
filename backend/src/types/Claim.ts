@@ -16,6 +16,12 @@ export const ClaimSchema = z.object({
     selfDisaster: GetSelfDisasterForCompanyResponseSchema.optional(),
 });
 
+// A company might not have a claim in progress
+export const GetClaimInProgressForCompanySchema = z.union([
+    ClaimSchema,
+    z.null()
+]);
+
 const stringClaimSchema = z.object({
     id: z.string().nonempty(),
     status: z.nativeEnum(ClaimStatusType).default(ClaimStatusType.ACTIVE),
@@ -92,3 +98,5 @@ export type LinkClaimToPurchaseResponse = z.infer<typeof LinkClaimToPurchaseResp
 
 export type GetPurchaseLineItemsForClaimResponse = z.infer<typeof GetPurchaseLineItemsForClaimResponseSchema>;
 export type DeletePurchaseLineItemResponse = z.infer<typeof DeletePurchaseLineItemResponseSchema>;
+
+export type GetClaimInProgressForCompanyResponse = z.infer<typeof GetClaimInProgressForCompanySchema>;

@@ -11,10 +11,13 @@ import {
 } from "../../types/Company";
 import { openApiErrorCodes } from "../../utilities/error";
 import { GetAllLocationAddressesSchema } from "../../types/Location";
+import { ClaimTransaction, IClaimTransaction } from "../claim/transaction";
+import { GetClaimInProgressForCompanySchema } from "../../types/Claim";
 
 export const addOpenApiCompanyRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const companyTransaction: ICompanyTransaction = new CompanyTransaction(db);
-    const companyService: ICompanyService = new CompanyService(companyTransaction);
+    const claimTransaction: IClaimTransaction = new ClaimTransaction(db);
+    const companyService: ICompanyService = new CompanyService(companyTransaction, claimTransaction);
     const companyController: ICompanyController = new CompanyController(companyService);
 
     openApi.openapi(createCompanyRoute, (ctx) => companyController.createCompany(ctx));
@@ -26,6 +29,7 @@ export const addOpenApiCompanyRoutes = (openApi: OpenAPIHono, db: DataSource): O
         companyController.updateQuickbooksPurchaseImportTime(ctx)
     );
     openApi.openapi(getCompanyLocationsByIdRoute, (ctx) => companyController.getCompanyLocationsById(ctx));
+    openApi.openapi(getCompanyClaimInProgress, (ctx) => companyController.getClaimInProgress(ctx));
     return openApi;
 };
 
@@ -154,6 +158,25 @@ const getCompanyLocationsByIdRoute = createRoute({
             description: "Company locations fetched successfully",
         },
         ...openApiErrorCodes("Get Company Locations Errors"),
+    },
+    tags: ["Companies"],
+});
+
+const getCompanyClaimInProgress = createRoute({
+    method: "get",
+    path: "/companies/claim-in-progress",
+    summary: "Get a company's claim in progress, if one exists",
+    description: "Gets the company's current claim in progress. Companies can only have up to one claim in progress at a time.",
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetClaimInProgressForCompanySchema
+                }
+            },
+            description: "Claim fetched successfully"
+        },
+        ...openApiErrorCodes("Get Claim in Progress Errors"),
     },
     tags: ["Companies"],
 });

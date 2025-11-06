@@ -73,6 +73,16 @@ export interface IClaimTransaction {
      * @returns Promise resolving to linked claim id and purchase line item id or null if either not found
      */
     deletePurchaseLineItem(claimId: string, lineItemId: string): Promise<DeletePurchaseLineItemResponse | null>;
+    
+
+    /**
+     * Gets the most recent Claim that is in progress, if there is one
+     * If there are more than one, gets the most recently created one
+     * If there are none, returns NULL
+     * @param companyId the id of the company to look for
+     * @returns either the found Claim or null if none found
+     */
+    getClaimInProgressForCompany(companyId: string): Promise<Claim | null>;
 }
 
 export class ClaimTransaction implements IClaimTransaction {
@@ -266,5 +276,17 @@ export class ClaimTransaction implements IClaimTransaction {
             logMessageToFile(`Transaction error: ${error}`);
             return null;
         }
+    }
+
+    async getClaimInProgressForCompany(companyId: string): Promise<Claim | null> {
+        const claim: Claim | null = await this.db
+            .getRepository(Claim)
+            .findOne(
+                {
+                    where: {companyId},
+                    order: { createdAt : "DESC" }
+                }
+            )
+        return claim;
     }
 }

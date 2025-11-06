@@ -4,6 +4,8 @@ import { ICompanyTransaction } from "./transaction";
 import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { LocationAddress } from "../../entities/LocationAddress";
+import { IClaimTransaction } from "../claim/transaction";
+import { Claim } from "../../entities/Claim";
 
 export interface ICompanyService {
     createCompany(payload: CreateCompanyDTO, userId: string): Promise<Company>;
@@ -11,13 +13,16 @@ export interface ICompanyService {
     updateLastQuickBooksInvoiceImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company>;
     updateLastQuickBooksPurchaseImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company>;
     getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]>;
+    getClaimInProgress(companyId: string): Promise<Claim | undefined>;
 }
 
 export class CompanyService implements CompanyService {
     private companyTransaction: ICompanyTransaction;
+    private claimTransaction: IClaimTransaction;
 
-    constructor(CompanyTransaction: ICompanyTransaction) {
+    constructor(CompanyTransaction: ICompanyTransaction, ClaimTransaction: IClaimTransaction) {
         this.companyTransaction = CompanyTransaction;
+        this.claimTransaction = ClaimTransaction;
     }
 
     createCompany = withServiceErrorHandling(async (payload: CreateCompanyDTO, userId: string): Promise<Company> => {
@@ -63,4 +68,12 @@ export class CompanyService implements CompanyService {
             return locations;
         }
     );
+
+    getClaimInProgress = withServiceErrorHandling(
+        async (companyId: string): Promise<Claim | undefined> => {
+            const claim = await this.claimTransaction.getClaimInProgressForCompany(companyId);
+
+            return claim ?? undefined;
+        }
+    )
 }
