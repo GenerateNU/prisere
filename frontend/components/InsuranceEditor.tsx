@@ -51,11 +51,11 @@ export default function InsuranceEditor({
     };
 
     return (
-        <div className="w-full">
+        <div className="w-full mb-[16px]">
             <div className="flex justify-between items-center">
                 <div className="flex gap-[10px] items-center">
                     {!isExpanded ? (
-                        <p className="text-[24px] font-bold">
+                        <p className="text-[16px] font-bold">
                             {insurance.policyName !== "" ? insurance.policyName : "Insurance Name"}
                         </p>
                     ) : (
@@ -66,7 +66,7 @@ export default function InsuranceEditor({
                             placeholder="Insurance Name"
                             value={insurance.policyName}
                             required
-                            className="bg-transparent placeholder:text-gray-400 rounded-sm h-[35px]"
+                            className="bg-transparent placeholder:text-gray-400 placeholder:text-[16px] rounded-sm h-[35px]"
                             onChange={(e) => setInsurance({ ...insurance, policyName: e.target.value })}
                         />
                     )}
@@ -80,7 +80,7 @@ export default function InsuranceEditor({
                             className="p-0 text-[14px] w-fit h-fit underline"
                             onClick={handleCollapse}
                         >
-                            Collapse
+                            Save
                         </Button>
                     )}
                 </div>
@@ -92,9 +92,9 @@ export default function InsuranceEditor({
             {error ? <p className="text-red-400 mb-[16px]">{error}</p> : ""}
             {isExpanded ? (
                 <div className="flex flex-col gap-[16px]">
-                    <div className="flex flex-col gap-[16px] w-full">
-                        <Label htmlFor="insuranceType" className="text-[20px]">
-                            Insurance Type<span className="text-red-500 text-[20px]">*</span>
+                    <div className="flex flex-col gap-[8px] w-full">
+                        <Label htmlFor="insuranceType" className="text-[16px]">
+                            Insurance Type<span className="text-red-500 text-[16px]">*</span>
                         </Label>
                         <Select
                             onValueChange={(value) => setInsurance({ ...insurance, insuranceType: value })}
@@ -102,8 +102,14 @@ export default function InsuranceEditor({
                         >
                             <SelectTrigger
                                 id="insuranceType"
-                                className="w-full rounded-full text-[16px] bg-stone-100"
-                                style={{ height: "85px" }}
+                                style={{
+                                    height: "45px",
+                                    width: "100%",
+                                    padding: "16px 28px",
+                                    fontSize: "16px",
+                                    borderRadius: "10px",
+                                    backgroundColor: "transparent",
+                                }}
                             >
                                 <SelectValue placeholder="Select insurance type" />
                             </SelectTrigger>
@@ -116,35 +122,39 @@ export default function InsuranceEditor({
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="flex flex-col gap-[16px] w-full">
-                        <Label htmlFor="policyHolderLastName" className="text-[20px]">
-                            Insured First Name<span className="text-red-500 text-[20px]">*</span>
-                        </Label>
-                        <Input
-                            id="policyHolderLastName"
-                            name="policyHolderLastName"
-                            type="text"
-                            required
-                            value={insurance.policyHolderFirstName ?? ""}
-                            onChange={(e) => setInsurance({ ...insurance, policyHolderFirstName: e.target.value })}
-                        />
+                    <div className="flex gap-[16px]">
+                        <div className="flex flex-col gap-[8px] w-full">
+                            <Label htmlFor="policyHolderLastName" className="text-[16px]">
+                                Insured First Name<span className="text-red-500 text-[16px]">*</span>
+                            </Label>
+                            <Input
+                                id="policyHolderLastName"
+                                name="policyHolderLastName"
+                                type="text"
+                                required
+                                value={insurance.policyHolderFirstName ?? ""}
+                                onChange={(e) => setInsurance({ ...insurance, policyHolderFirstName: e.target.value })}
+                                className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-[8px] w-full">
+                            <Label htmlFor="policyHolderLastName" className="text-[16px]">
+                                Insured Last Name<span className="text-red-500 text-[16px]">*</span>
+                            </Label>
+                            <Input
+                                id="policyHolderLastName"
+                                name="policyHolderLastName"
+                                type="text"
+                                required
+                                value={insurance.policyHolderLastName ?? ""}
+                                onChange={(e) => setInsurance({ ...insurance, policyHolderLastName: e.target.value })}
+                                className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
+                            />
+                        </div>
                     </div>
-                    <div className="flex flex-col gap-[16px] w-full">
-                        <Label htmlFor="policyHolderLastName" className="text-[20px]">
-                            Insured Last Name<span className="text-red-500 text-[20px]">*</span>
-                        </Label>
-                        <Input
-                            id="policyHolderLastName"
-                            name="policyHolderLastName"
-                            type="text"
-                            required
-                            value={insurance.policyHolderLastName ?? ""}
-                            onChange={(e) => setInsurance({ ...insurance, policyHolderLastName: e.target.value })}
-                        />
-                    </div>
-                    <div className="flex flex-col gap-[16px] w-full">
-                        <Label htmlFor="insuranceCompanyName" className="text-[20px]">
-                            Insurance Company<span className="text-red-500 text-[20px]">*</span>
+                    <div className="flex flex-col gap-[8px] w-full">
+                        <Label htmlFor="insuranceCompanyName" className="text-[16px]">
+                            Insurance Company<span className="text-red-500 text-[16px]">*</span>
                         </Label>
                         <Input
                             id="insuranceCompanyName"
@@ -153,11 +163,12 @@ export default function InsuranceEditor({
                             required
                             value={insurance.insuranceCompanyName ?? ""}
                             onChange={(e) => setInsurance({ ...insurance, insuranceCompanyName: e.target.value })}
+                            className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
                         />
                     </div>
-                    <div className="flex flex-col gap-[16px] w-full">
-                        <Label htmlFor="state" className="text-[20px]">
-                            Policy Number<span className="text-red-500 text-[20px]">*</span>
+                    <div className="flex flex-col gap-[8px] w-full">
+                        <Label htmlFor="state" className="text-[16px]">
+                            Policy Number<span className="text-red-500 text-[16px]">*</span>
                         </Label>
                         <Input
                             id="state"
@@ -166,11 +177,12 @@ export default function InsuranceEditor({
                             required
                             value={insurance.policyNumber ?? ""}
                             onChange={(e) => setInsurance({ ...insurance, policyNumber: e.target.value })}
+                            className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
                         />
                     </div>
                 </div>
             ) : (
-                <div>
+                <div className="mb-[16px]">
                     <p>
                         {insurance.policyHolderFirstName} {insurance.policyHolderLastName}
                     </p>

@@ -1,7 +1,9 @@
 import { createInsurancePolicyBulk } from "@/api/insurance";
 import InsuranceEditor from "@/components/InsuranceEditor";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import AddCircle from "@/icons/AddCircle";
 import { CreateInsurancePolicyBulkRequest, CreateInsurancePolicyRequest } from "@/types/insurance-policy";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
@@ -75,9 +77,12 @@ export default function Insurance({ progress, setProgress }: InsuranceInfoProps)
     };
 
     return (
-        <div className="max-w-lg w-full space-y-[30px]">
-            <div className="flex justify-center">
-                <label className="block text-[30px] text-black font-bold my-[30px]"> Insurance Information </label>
+        <Card className="w-full px-[163px] py-[127px] gap-0">
+            <div className="flex justify-center items-center flex-col gap-[10px]">
+                <div className="w-fit h-fit text-[12px] px-[8px] py-[4px] font-bold rounded-[4px] text-[var(--teal)] bg-[var(--light-teal)]">
+                    OPTIONAL
+                </div>
+                <label className="block text-[30px] text-black font-bold mb-[60px]"> Insurance Information </label>
             </div>
             {insurancePayload.map((insurance, index) => (
                 <InsuranceEditor
@@ -92,28 +97,35 @@ export default function Insurance({ progress, setProgress }: InsuranceInfoProps)
             ))}
             <Button
                 variant="link"
-                className="w-fit h-fit self-start px-0 font-bold underline hover:text-gray-600"
+                className="w-fit self-start flex items-center text-[16px] h-[24px] p-0 underline hover:text-gray-600"
+                style={{ paddingInline: 0 }}
                 onClick={addInsurance}
             >
-                + Add Insurance
+                <AddCircle /> Add Insurance
             </Button>
-            <div className="w-full flex flex-col gap-2 items-center">
-                <Button type="button" onClick={handleNext} className="bg-[var(--teal)] text-white">
-                    {createInsurancePending ? <Spinner /> : <></>}
-                    Next
-                </Button>
-                {error && <p className="text-red-500 text-sm"> {error} </p>}
+            <div>
+                <div className="w-full flex flex-col items-center gap-2 mb-[20px]">
+                    <Button
+                        type="button"
+                        onClick={handleNext}
+                        className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white px-[20px] py-[12px] text-[16px]"
+                    >
+                        {createInsurancePending ? <Spinner /> : <></>}
+                        Next
+                    </Button>
+                    {error && <p className="text-red-500 text-sm"> {error} </p>}
+                </div>
+                <div className="w-full flex flex-col items-center">
+                    <Button
+                        type="button"
+                        variant="link"
+                        onClick={() => setProgress(progress + 1)}
+                        className="underline hover:text-stone-200 h-fit w-fit text-[12px] font-bold p-0"
+                    >
+                        Skip for now
+                    </Button>
+                </div>
             </div>
-            <div className="w-full flex flex-col items-center">
-                <Button
-                    type="button"
-                    variant="link"
-                    onClick={() => setProgress(progress + 1)}
-                    className="underline hover:text-stone-200 h-fit font-[16px]"
-                >
-                    I&apos;ll add later
-                </Button>
-            </div>
-        </div>
+        </Card>
     );
 }

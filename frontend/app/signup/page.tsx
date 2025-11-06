@@ -8,6 +8,8 @@ import { useFormStatus } from "react-dom";
 import { signupInitialState } from "@/types/user";
 import Onboarding from "./onboarding";
 import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 
 const initialState: signupInitialState = {
     success: false,
@@ -28,29 +30,57 @@ export default function SignUpPage() {
         }
     }, [state]);
 
+    const signupCards = [
+        {
+            icon: <div className="bg-[var(--ochre)] h-[41px] w-[41px] rounded-full" />,
+            title: "Notifications From FEMA",
+        },
+        {
+            icon: <div className="bg-[var(--ochre)] h-[41px] w-[41px] rounded-full" />,
+            title: "Filing disaster-related claim reports",
+        },
+        {
+            icon: <div className="bg-[var(--ochre)] h-[41px] w-[41px] rounded-full" />,
+            title: "Updated Expense Trackers",
+        },
+    ];
+
     return (
-        <div className="min-h-screen flex items-center justify-center bg-stone mx-8">
+        <div className="min-h-screen w-full flex items-center justify-center bg-stone mx-8">
             {profileStage ? (
                 <Onboarding email={state.email!} />
             ) : (
-                <div className="flex w-full justify-center items-center max-w-[70%] max-h-[500px]">
-                    <div className="w-1/2 flex-shrink-0 self-stretch pr-[125px] flex flex-col justify-center">
-                        <img className="" src="PrisereLogo.png" alt="Prisere" />
-                        <h2 className="font-bold text-[40px] mt-[40px] mb-[20px]">Stay prepared with Prisere.</h2>
-                        <p className="text-[18px]">
-                            Experience business continuity even amidst global disasters. With partnerships from esteemed
-                            institutions and a track record recognized globally, Prisere offers unrivaled expertise in
-                            disaster risk reduction and resilience.
-                        </p>
-                    </div>
-                    <div className="w-1/2 flex-shrink-0 max-w-1/2 space-y-8 border-l border-gray-300 self-stretch pl-[125px] flex flex-col justify-center items-center">
+                <div className="flex justify-center items-center max-w-[1162px] gap-[30px]">
+                    <Card className="w-1/2 flex-shrink-0 self-stretch p-[52px] flex flex-col justify-center gap-[40px]">
+                        <div className="w-[131px] h-[131px] rounded-full bg-stone-200 self-start"></div>
+                        <div className="flex flex-col gap-[20px]">
+                            <h2 className="font-bold text-[35px]">Stay prepared with Prisere.</h2>
+                            <p className="text-[16px]">
+                                Experience business continuity even amidst global disasters. With partnerships from
+                                esteemed institutions and a track record recognized globally, Prisere offers unrivaled
+                                expertise in disaster risk reduction and resilience.
+                            </p>
+                        </div>
+                        <div className="flex flex-col gap-[20px]">
+                            {signupCards.map((card, index) => (
+                                <div
+                                    key={index}
+                                    className="border border-1 border-stone-200 rounded-[20px] p-[10px] flex items-center gap-[10px]"
+                                >
+                                    {card.icon}
+                                    <p className="text-[16px]">{card.title}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </Card>
+                    <Card className="w-1/2 p-[52px] flex-shrink-0 max-w-1/2 gap-[60px] self-stretch flex flex-col justify-center items-center">
                         <div className="flex justify-center">
-                            <h2 className="text-[30px] text-black font-bold"> Get Started with Prisere </h2>
+                            <h2 className="text-[30px] text-black font-bold"> Get Started </h2>
                         </div>
                         <form className="space-y-[30px] bg-white w-full">
                             <div className="w-full flex flex-col items-center">
-                                <div className="w-full flex flex-col gap-[16px] mb-[16px]">
-                                    <Label htmlFor="email" className="text-[20px]">
+                                <div className="w-full flex flex-col gap-[8px] mb-[16px]">
+                                    <Label htmlFor="email" className="text-[16px]">
                                         Email
                                     </Label>
                                     <Input
@@ -59,11 +89,11 @@ export default function SignUpPage() {
                                         type="email"
                                         placeholder="exampleemail@gmail.com"
                                         required
-                                        className="px-[25px] h-[85px] placeholder:text-gray-400"
+                                        className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
                                     />
                                 </div>
-                                <div className="w-full flex flex-col gap-[16px]">
-                                    <Label htmlFor="password" className="text-[20px]">
+                                <div className="w-full flex flex-col gap-[8px]">
+                                    <Label htmlFor="password" className="text-[16px]">
                                         Password
                                     </Label>
                                     <Input
@@ -72,17 +102,17 @@ export default function SignUpPage() {
                                         type="password"
                                         placeholder="password"
                                         required
-                                        className="px-[25px] h-[85px] placeholder:text-gray-400"
+                                        className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px]  bg-transparent text-[16px]"
                                     />
                                 </div>
                                 {!state?.success && <p className="text-red-500 text-sm"> {state.message}</p>}
                             </div>
-                            <div className="w-full flex flex-col gap-[30px] items-center">
+                            <div className="w-full flex flex-col gap-[12px] items-center">
                                 <Button
                                     formAction={signupAction}
                                     variant="secondary"
                                     disabled={status.pending}
-                                    className="max-h-[45px] w-[126px]"
+                                    className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white px-[20px] py-[12px] text-[16px]"
                                 >
                                     Sign Up
                                 </Button>
@@ -93,13 +123,14 @@ export default function SignUpPage() {
                                         redirect("/login");
                                     }}
                                     disabled={status.pending}
-                                    className="underline text-[20px] decoration-1 hover:text-gray-400 h-fit"
+                                    className="underline text-[12px] decoration-1 hover:text-gray-400 h-fit text-bold"
                                 >
+                                    {status.pending ? <Spinner /> : <></>}
                                     Already have an account? Log In
                                 </Button>
                             </div>
                         </form>
-                    </div>
+                    </Card>
                 </div>
             )}
         </div>

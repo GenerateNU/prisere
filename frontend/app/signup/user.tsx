@@ -1,6 +1,7 @@
 "use client";
 import { createUser } from "@/api/user";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
@@ -42,13 +43,13 @@ export default function UserInfoPage({ email, progress, setProgress }: UserInfoP
     };
 
     return (
-        <div className="max-w-lg w-full space-y-[30px]">
+        <Card className="flex flex-col h-[706px] justify-center items-center w-full space-y-[30px] px-[163px] py-[127px]">
             <div className="flex justify-center">
-                <label className="block text-[30px] text-black font-bold mb-[30px]"> Profile Information </label>
+                <label className="block text-[30px] text-black font-bold"> Profile Information </label>
             </div>
-            <div className="w-full flex flex-col items-center space-y-[16px]">
-                <div className="flex flex-col gap-[16px] w-full">
-                    <Label htmlFor="name" className="text-[20px]">
+            <div className="w-full flex flex-col items-center">
+                <div className="flex flex-col gap-[8px] w-full mb-[16px]">
+                    <Label htmlFor="name" className="text-[16px]">
                         First Name<span className="text-red-500 text-[20px]">*</span>
                     </Label>
                     <Input
@@ -56,12 +57,12 @@ export default function UserInfoPage({ email, progress, setProgress }: UserInfoP
                         name="firstName"
                         type="name"
                         required
-                        className="h-[85px]"
+                        className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
                         onChange={(e) => setPayload({ ...payload, firstName: e.target.value })}
                     />
                 </div>
-                <div className="flex flex-col gap-[16px] w-full">
-                    <Label htmlFor="name" className="text-[20px]">
+                <div className="flex flex-col gap-[8px] w-full mb-[16px]">
+                    <Label htmlFor="name" className="text-[16px]">
                         Last Name<span className="text-red-500 text-[20px]">*</span>
                     </Label>
                     <Input
@@ -69,12 +70,12 @@ export default function UserInfoPage({ email, progress, setProgress }: UserInfoP
                         name="lastName"
                         type="name"
                         required
-                        className="h-[85px]"
+                        className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
                         onChange={(e) => setPayload({ ...payload, lastName: e.target.value })}
                     />
                 </div>
-                <div className="flex flex-col gap-[16px] w-full">
-                    <Label htmlFor="phone" className="text-[20px]">
+                <div className="flex flex-col gap-[8px] w-full">
+                    <Label htmlFor="phone" className="text-[16px]">
                         Phone Number<span className="text-red-500 text-[20px]">*</span>
                     </Label>
                     <Input
@@ -82,7 +83,7 @@ export default function UserInfoPage({ email, progress, setProgress }: UserInfoP
                         name="phone"
                         type="phone"
                         required
-                        className="h-[85px]"
+                        className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
                         onChange={(e) => setPayload({ ...payload, lastName: e.target.value })}
                     />
                 </div>
@@ -92,13 +93,13 @@ export default function UserInfoPage({ email, progress, setProgress }: UserInfoP
                     type="button"
                     onClick={handleSubmit}
                     disabled={isPending}
-                    className="h-[85px] bg-[var(--teal)] text-white"
+                    className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white px-[20px] py-[12px] text-[16px]"
                 >
                     {isPending ? <Spinner /> : <></>}
                     Next
                 </Button>
                 {fieldError && <p className="text-red-500 text-sm">{fieldError}</p>}
             </div>
-        </div>
+        </Card>
     );
 }

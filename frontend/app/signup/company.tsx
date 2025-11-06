@@ -11,8 +11,9 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { Dispatch, SetStateAction } from "react";
-import { is } from "date-fns/locale";
 import { Spinner } from "@/components/ui/spinner";
+import { Card } from "@/components/ui/card";
+import AddCircle from "@/icons/AddCircle";
 
 interface CompanyInfoProps {
     progress: number;
@@ -22,6 +23,7 @@ interface CompanyInfoProps {
 export default function Company({ progress, setProgress }: CompanyInfoProps) {
     const [companyError, setCompanyError] = useState<string | null>(null);
     const [locError, setLocError] = useState<string | null>(null);
+    const [step, setStep] = useState<number>(0);
 
     const [companyPayload, setCompanyPayload] = useState<CreateCompanyRequest>({
         name: "",
@@ -112,96 +114,115 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
     };
 
     return (
-        <div className="max-w-lg w-full space-y-[30px]">
+        <Card className="w-full px-[163px] py-[127px]">
             <div className="flex justify-center">
                 <label className="block text-[30px] text-black font-bold my-[30px]"> Business Information </label>
             </div>
-            <div className="w-full flex flex-col items-center space-y-[16px]">
-                <div className="flex flex-col gap-[16px] w-full">
-                    <Label htmlFor="name" className="text-[20px]">
-                        Business Name<span className="text-red-500 text-[20px]">*</span>
-                    </Label>
-                    <Input
-                        id="name"
-                        name="name"
-                        type="text"
-                        required
-                        className="h-[85px]"
-                        onChange={(e) => setCompanyPayload({ ...companyPayload, name: e.target.value })}
-                    />
-                </div>
-                <div className="flex flex-col gap-[16px] w-full">
-                    <Label htmlFor="owner" className="text-[20px]">
-                        Business Owner<span className="text-red-500 text-[20px]">*</span>
-                    </Label>
-                    <Input
-                        id="owner"
-                        name="owner"
-                        type="text"
-                        required
-                        className="h-[85px]"
-                        onChange={(e) =>
-                            setCompanyPayload({ ...companyPayload, businessOwnerFullName: e.target.value })
-                        }
-                    />
-                </div>
-                <div className="flex flex-col gap-[16px] w-full  pb-[16px]">
-                    <Label htmlFor="businessType" className="text-[20px]">
-                        Business Type<span className="text-red-500 text-[20px]">*</span>
-                    </Label>
-                    <Select>
-                        <SelectTrigger
-                            id="businessType"
-                            className="w-full rounded-full text-[16px] bg-stone-100"
-                            style={{ height: "85px" }}
+            <div className="w-full flex flex-col items-center">
+                {step === 0 && (
+                    <>
+                        <div className="w-full flex gap-[16px]">
+                            <div className="flex flex-col gap-[8px] w-full">
+                                <Label htmlFor="name" className="text-[16px]">
+                                    Business Owner<span className="text-red-500 text-[16px]">*</span>
+                                </Label>
+                                <Input
+                                    id="name"
+                                    name="name"
+                                    type="text"
+                                    required
+                                    className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
+                                    onChange={(e) =>
+                                        setCompanyPayload({ ...companyPayload, businessOwnerFullName: e.target.value })
+                                    }
+                                />
+                            </div>
+                            <div className="flex flex-col gap-[8px] w-full pb-[16px]">
+                                <Label htmlFor="businessType" className="text-[16px]">
+                                    Business Type<span className="text-red-500 text-[16px]">*</span>
+                                </Label>
+                                <Select>
+                                    <SelectTrigger
+                                        id="businessType"
+                                        //className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
+                                        style={{
+                                            height: "45px",
+                                            width: "100%",
+                                            padding: "16px 28px",
+                                            fontSize: "16px",
+                                            borderRadius: "10px",
+                                            backgroundColor: "transparent",
+                                        }}
+                                    >
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {businessTypes.map((type) => (
+                                            <SelectItem key={type} value={type} className="text-[16px]">
+                                                {type}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {/*  add ^ onChange={(e) => setCompanyPayload({ ...companyPayload, businessType: e.target.value })} */}
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-[8px] w-full mb-[16px]">
+                            <Label htmlFor="owner" className="text-[16px]">
+                                Business Name<span className="text-red-500 text-[16px]">*</span>
+                            </Label>
+                            <Input
+                                id="owner"
+                                name="owner"
+                                type="text"
+                                required
+                                className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
+                                onChange={(e) => setCompanyPayload({ ...companyPayload, name: e.target.value })}
+                            />
+                        </div>
+                    </>
+                )}
+                {step === 1 && (
+                    <>
+                        {locationPayloads.map((location, index) => (
+                            <LocationEditor
+                                key={index}
+                                location={location}
+                                setLocation={(loc) => updateLocation(index, loc)}
+                                removeLocation={() => removeLocation(index)}
+                                isExpanded={editingLocationIndex === index}
+                                onExpand={() => setEditingLocationIndex(index)}
+                                onCollapse={() => setEditingLocationIndex(null)}
+                            />
+                        ))}
+                        <Button
+                            variant="link"
+                            className="w-fit flex items-center text-[16px] h-[24px] self-start p-0 underline hover:text-gray-600"
+                            style={{ paddingInline: 0 }}
+                            onClick={addLocation}
                         >
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {businessTypes.map((type) => (
-                                <SelectItem key={type} value={type} className="text-[16px]">
-                                    {type}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    {/*  add ^ onChange={(e) => setCompanyPayload({ ...companyPayload, businessType: e.target.value })} */}
-                </div>
-                {locationPayloads.map((location, index) => (
-                    <LocationEditor
-                        key={index}
-                        location={location}
-                        setLocation={(loc) => updateLocation(index, loc)}
-                        removeLocation={() => removeLocation(index)}
-                        isExpanded={editingLocationIndex === index}
-                        onExpand={() => setEditingLocationIndex(index)}
-                        onCollapse={() => setEditingLocationIndex(null)}
-                    />
-                ))}
-
-                <Button
-                    variant="link"
-                    className="w-fit h-fit self-start px-0 font-bold underline hover:text-gray-600"
-                    onClick={addLocation}
-                >
-                    + Add a location
-                </Button>
+                            <AddCircle /> Add a location
+                        </Button>
+                    </>
+                )}
             </div>
             <div className="w-full flex flex-col gap-2 items-center">
                 <Button
                     type="button"
-                    onClick={handleNext}
+                    onClick={() => {
+                        step == 0 ? setStep(1) : handleNext();
+                    }}
                     disabled={isPending || isLocationPending}
-                    className="bg-[var(--teal)] text-white"
+                    className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white px-[20px] py-[12px] text-[16px]"
                 >
                     {isPending || isLocationPending ? <Spinner /> : <></>}
                     Next
                 </Button>
-                {(locError || companyError) && (
-                    <p className="text-red-500 text-sm"> {companyError || locError} </p>
+                {(locError || companyError) && <p className="text-red-500 text-sm"> {companyError || locError} </p>}
+                {(error || locationError) && (
+                    <p className="text-red-500 text-sm"> {error?.message || locationError?.message} </p>
                 )}
-                {(error || locationError) && <p> {error?.message || locationError?.message} </p>}
             </div>
-        </div>
+        </Card>
     );
 }
