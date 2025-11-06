@@ -22,16 +22,16 @@ export default function NavBar() {
 
     return (
         <nav className="flex flex-col w-[300px] p-10 bg-white h-screen fixed">
-            <div className="w-[140px] h-[50px] relative">
+             <div className="relative mb-[50px] ">
                 <Image src="/logo.png" width={140} height={50} style={{ objectFit: 'fill' }} alt="logo"/>
             </div>
             <ul className="flex flex-col flex-1">
                 <div className="flex flex-col gap-5">
                     {navigationItems.map((item) => (
                         <li className="flex flex-col gap-5" key={item.name}>
-                            <Link href={item.href}>
+                            <Link href={item.href} className={`rounded-lg ${pathname === item.href && "bg-[#F7DCE5]"}`}>
                                 <div
-                                    className={`flex text-lg items-center gap-3 ${pathname === item.href && "text-fuchsia"}`}
+                                    className={`flex text-lg m-1 items-center gap-3 ${pathname === item.href && "text-fuchsia"}`}
                                 >
                                     {item.icon}
                                     {item.name}
