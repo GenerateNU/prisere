@@ -3941,13 +3941,18 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: never;
-                path: {
-                    id: string;
-                    category: string;
-                };
+                path?: never;
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        category: string;
+                    };
+                };
+            };
             responses: {
                 /** @description Successfully updated the line item's category */
                 200: {

@@ -127,7 +127,13 @@ const updatePurchaseLineItemCategoryRoute = createRoute({
     description:
         "Updates the category of the purchase line item with the given Id to the given category",
     request: {
-        params: UpdatePurchaseLineItemCategoryDTOSchema,
+        body: {
+            content: {
+                'application/json': {
+                    schema: UpdatePurchaseLineItemCategoryDTOSchema,
+                }
+            }
+        }
     },
     responses: {
         200: {

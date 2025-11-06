@@ -5,14 +5,15 @@ import { Table } from "@/components/table";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { FilteredPurchases, Purchases } from "@/types/purchase";
-import { useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/react-table";
 import { ChevronDown, ChevronRight, Filter, Printer } from "lucide-react";
 import { useMemo, useState } from "react";
-import { getAllPurchaseCategories } from "../../api/purchase";
+import { addCategory, getAllPurchaseCategories } from "../../api/purchase";
 import { Filters } from "./filters";
 import PaginationControls from "./PaginationControls";
 import ResultsPerPageSelect from "./ResultsPerPageSelect";
+import CategoryLabel from "./category-options";
 
 export default function ExpenseTable() {
     const [filters, setFilters] = useState<FilteredPurchases>({ pageNumber: 0, resultsPerPage: 5 });
@@ -90,12 +91,14 @@ function TableContent({ purchases }: { purchases: UseQueryResult<Purchases | und
             purchases.data?.map((purchase) => {
                 const firstLineItem = purchase.lineItems?.[0];
                 return {
+                    id: purchase.id,
                     amount: purchase.totalAmountCents,
                     date: new Date(purchase.dateCreated),
                     description: firstLineItem?.description ?? "",
-                    category: firstLineItem?.category ?? "",
+                    category: getCategoriesString(purchase.lineItems),
                     disasterRelated: firstLineItem?.type === "extraneous" ? "Disaster" : "Non-disaster",
                     lineItems: purchase.lineItems.map((lineItem) => ({
+                        id: lineItem.id,
                         description: lineItem.description ?? "",
                         amount: lineItem.amountCents,
                         category: lineItem.category ?? "",
@@ -107,6 +110,12 @@ function TableContent({ purchases }: { purchases: UseQueryResult<Purchases | und
             }) ?? [],
         [purchases.data]
     );
+
+    const queryClient = useQueryClient();
+
+    const refetchCategories = () => {
+        queryClient.invalidateQueries({ queryKey: ["categories-for-purchases"] });
+    };
 
     const table = useReactTable({
         getCoreRowModel: getCoreRowModel(),
@@ -142,6 +151,19 @@ function TableContent({ purchases }: { purchases: UseQueryResult<Purchases | und
                 id: "category",
                 header: "Category",
                 accessorFn: (row) => row.category,
+                cell: (ctx) => {
+                    const row = ctx.row.original;
+                    const lineItemIds = ctx.row.depth > 0
+                        ? [row.id]
+                        : row.lineItems?.map(li => li.id) ?? [];
+                    return (
+                        <CategoryLabel
+                        category={ctx.getValue() as string}
+                        onCategoryChange={refetchCategories}
+                        addCategory={addCategory}
+                        lineItemIds={lineItemIds}  />
+                        );
+                }
             },
             { id: "date", header: "Date", accessorFn: (row) => row.date.toLocaleDateString() },
             {
@@ -171,4 +193,11 @@ function CollapsibleArrow({ isOpen, onClick }: { isOpen: boolean; onClick: () =>
             {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
         </button>
     );
+}
+
+function getCategoriesString(lineItems: { category?: string | null }[]): string {
+    return lineItems
+        .map(li => li.category)
+        .filter(Boolean)
+        .join(", ");
 }

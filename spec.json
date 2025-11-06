@@ -3677,7 +3677,7 @@
             "schema": {
               "type": "string",
               "format": "date-time",
-              "default": "2025-11-05T19:57:05.795Z"
+              "default": "2025-11-06T18:13:07.589Z"
             },
             "required": false,
             "name": "dateTo",
@@ -6142,27 +6142,30 @@
         "tags": [
           "Purchase Line Items"
         ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "required": true,
-            "name": "id",
-            "in": "path"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 100
-            },
-            "required": true,
-            "name": "category",
-            "in": "path"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "category": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  }
+                },
+                "required": [
+                  "id",
+                  "category"
+                ]
+              }
+            }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Successfully updated the line item's category",

@@ -1,5 +1,5 @@
 "use server";
-import { FilteredPurchases, Purchases } from "../types/purchase";
+import { FilteredPurchases, PurchaseLineItem, Purchases } from "../types/purchase";
 import { authHeader, authWrapper, getClient } from "./client";
 
 export const getAllPurchasesForCompany = async (filters: FilteredPurchases): Promise<Purchases> => {
@@ -69,3 +69,22 @@ export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate
 
     return authWrapper<{ total: number }>()(req);
 };
+
+export const addCategory = async(category: string, purchaseLineIds: string[])=> {
+    const req = async (token: string) => {
+        const client = getClient();
+        for (let i = 0; i < purchaseLineIds.length; i++) {
+            const { error, response } = await client.PATCH("/purchase/category", {
+                headers: authHeader(token),
+                body: {
+                    id: purchaseLineIds[i],
+                    category: category,
+                },
+            });
+
+            if (!response.ok) {
+                throw Error(error?.error);
+            }
+        }
+    };
+}
