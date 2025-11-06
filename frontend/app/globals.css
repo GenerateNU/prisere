@@ -41,6 +41,12 @@
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
     --radius-xl: calc(var(--radius) + 4px);
+    --color-fuchsia: var(--fuchsia);
+    --color-pink: var(--pink);
+    --color-ochre: var(--ochre);
+    --color-seafoam: var(--seafoam);
+    --color-teal: var(--teal);
+    --color-charcoal: var(--charcoal);
 }
 
 :root {
@@ -79,7 +85,7 @@
     --fuchsia: #9e2450;
     --pink: #edc3d2;
     --ochre: #a8d4d7;
-    --seafoam: #4caf50;
+    --seafoam: #a8d4d7;
     --teal: #448e93;
     --charcoal: #2e2f2d;
 }
