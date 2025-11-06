@@ -166,15 +166,16 @@ const getCompanyClaimInProgress = createRoute({
     method: "get",
     path: "/companies/claim-in-progress",
     summary: "Get a company's claim in progress, if one exists",
-    description: "Gets the company's current claim in progress. Companies can only have up to one claim in progress at a time.",
+    description:
+        "Gets the company's current claim in progress. Companies can only have up to one claim in progress at a time.",
     responses: {
         200: {
             content: {
                 "application/json": {
-                    schema: GetClaimInProgressForCompanySchema
-                }
+                    schema: GetClaimInProgressForCompanySchema,
+                },
             },
-            description: "Claim fetched successfully"
+            description: "Claim fetched successfully",
         },
         ...openApiErrorCodes("Get Claim in Progress Errors"),
     },

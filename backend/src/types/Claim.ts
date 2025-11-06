@@ -17,10 +17,7 @@ export const ClaimSchema = z.object({
 });
 
 // A company might not have a claim in progress
-export const GetClaimInProgressForCompanySchema = z.union([
-    ClaimSchema,
-    z.null()
-]);
+export const GetClaimInProgressForCompanySchema = z.union([ClaimSchema, z.null()]);
 
 const stringClaimSchema = z.object({
     id: z.string().nonempty(),

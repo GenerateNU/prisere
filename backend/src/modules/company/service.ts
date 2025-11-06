@@ -69,11 +69,9 @@ export class CompanyService implements CompanyService {
         }
     );
 
-    getClaimInProgress = withServiceErrorHandling(
-        async (companyId: string): Promise<Claim | undefined> => {
-            const claim = await this.claimTransaction.getClaimInProgressForCompany(companyId);
+    getClaimInProgress = withServiceErrorHandling(async (companyId: string): Promise<Claim | undefined> => {
+        const claim = await this.claimTransaction.getClaimInProgressForCompany(companyId);
 
-            return claim ?? undefined;
-        }
-    )
+        return claim ?? undefined;
+    });
 }

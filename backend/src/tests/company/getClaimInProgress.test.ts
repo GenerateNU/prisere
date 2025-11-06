@@ -46,7 +46,7 @@ describe("Get Company's Claim in Progress", () => {
         });
         expect(response.status).toBe(200);
         // returned a null body
-        expect(response.bodyUsed).not
+        expect(response.bodyUsed).not;
     });
 
     test("GET /companies/claim-in-progress - error response structure", async () => {
@@ -74,10 +74,9 @@ describe("Get Company's Claim in Progress", () => {
     });
 });
 
-
 // Compare the ids, companyIds, disaster ids, and status
 function CompareRequestToExpected(expected: any, response: any) {
-    expect(expected.id).toBe(response.id)
+    expect(expected.id).toBe(response.id);
     expect(expected.companyId).toBe(response.companyId);
     expect(expected.status).toBe(response.status);
 

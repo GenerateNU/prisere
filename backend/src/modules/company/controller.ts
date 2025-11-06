@@ -149,7 +149,7 @@ export class CompanyController implements ICompanyController {
         async (ctx: Context): ControllerResponse<TypedResponse<GetClaimInProgressForCompanyResponse, 200>> => {
             const companyId = ctx.get("companyId");
             if (!validate(companyId)) {
-                return ctx.json({error: "Invalid company ID format"}, 400);
+                return ctx.json({ error: "Invalid company ID format" }, 400);
             }
 
             const claim = await this.companyService.getClaimInProgress(companyId);
@@ -157,5 +157,5 @@ export class CompanyController implements ICompanyController {
             // handles null claim as well
             return ctx.json(claim, 200);
         }
-    )
+    );
 }
