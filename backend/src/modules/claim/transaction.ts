@@ -12,6 +12,7 @@ import {
     LinkClaimToPurchaseResponse,
     GetPurchaseLineItemsForClaimResponse,
     DeletePurchaseLineItemResponse,
+    GetClaimInProgressForCompanyResponse,
 } from "../../types/Claim";
 import { logMessageToFile } from "../../utilities/logger";
 import { plainToClass } from "class-transformer";
@@ -81,7 +82,7 @@ export interface IClaimTransaction {
      * @param companyId the id of the company to look for
      * @returns either the found Claim or null if none found
      */
-    getClaimInProgressForCompany(companyId: string): Promise<Claim | null>;
+    getClaimInProgressForCompany(companyId: string): Promise<GetClaimInProgressForCompanyResponse>;
 }
 
 export class ClaimTransaction implements IClaimTransaction {
@@ -292,11 +293,48 @@ export class ClaimTransaction implements IClaimTransaction {
         }
     }
 
-    async getClaimInProgressForCompany(companyId: string): Promise<Claim | null> {
+    async getClaimInProgressForCompany(companyId: string): Promise<GetClaimInProgressForCompanyResponse> {
         const claim: Claim | null = await this.db.getRepository(Claim).findOne({
             where: { companyId },
             order: { createdAt: "DESC" },
+            relations: {
+                femaDisaster: true,
+                selfDisaster: true,
+                insurancePolicy: true,
+            },
         });
-        return claim;
+        if (claim) {
+            return {
+                ...claim,
+                status: claim.status as ClaimStatusType,
+                createdAt: claim.createdAt.toISOString(),
+                updatedAt: claim.updatedAt?.toISOString(),
+                femaDisaster: claim.femaDisaster
+                    ? {
+                          ...claim.femaDisaster,
+                          declarationDate: claim.femaDisaster.declarationDate.toISOString(),
+                          incidentBeginDate: claim.femaDisaster.incidentBeginDate?.toISOString(),
+                          incidentEndDate: claim.femaDisaster.incidentEndDate?.toISOString(),
+                      }
+                    : undefined,
+                selfDisaster: claim.selfDisaster
+                    ? {
+                          ...claim.selfDisaster,
+                          startDate: claim.selfDisaster.startDate.toISOString(),
+                          endDate: claim.selfDisaster.endDate?.toISOString(),
+                          createdAt: claim.selfDisaster.createdAt.toISOString(),
+                          updatedAt: claim.selfDisaster.updatedAt.toISOString(),
+                      }
+                    : undefined,
+                insurancePolicy: claim.insurancePolicy
+                    ? {
+                          ...claim.insurancePolicy,
+                          updatedAt: claim.insurancePolicy.updatedAt.toISOString(),
+                          createdAt: claim.insurancePolicy.createdAt.toISOString(),
+                      }
+                    : undefined,
+            };
+        }
+        return null;
     }
 }

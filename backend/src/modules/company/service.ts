@@ -6,6 +6,7 @@ import { withServiceErrorHandling } from "../../utilities/error";
 import { LocationAddress } from "../../entities/LocationAddress";
 import { IClaimTransaction } from "../claim/transaction";
 import { Claim } from "../../entities/Claim";
+import { GetClaimInProgressForCompanyResponse } from "../../types/Claim";
 
 export interface ICompanyService {
     createCompany(payload: CreateCompanyDTO, userId: string): Promise<Company>;
@@ -13,7 +14,7 @@ export interface ICompanyService {
     updateLastQuickBooksInvoiceImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company>;
     updateLastQuickBooksPurchaseImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company>;
     getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]>;
-    getClaimInProgress(companyId: string): Promise<Claim | undefined>;
+    getClaimInProgress(companyId: string): Promise<GetClaimInProgressForCompanyResponse>;
 }
 
 export class CompanyService implements CompanyService {
@@ -69,9 +70,11 @@ export class CompanyService implements CompanyService {
         }
     );
 
-    getClaimInProgress = withServiceErrorHandling(async (companyId: string): Promise<Claim | undefined> => {
-        const claim = await this.claimTransaction.getClaimInProgressForCompany(companyId);
+    getClaimInProgress = withServiceErrorHandling(
+        async (companyId: string): Promise<GetClaimInProgressForCompanyResponse> => {
+            const claim = await this.claimTransaction.getClaimInProgressForCompany(companyId);
 
-        return claim ?? undefined;
-    });
+            return claim;
+        }
+    );
 }
