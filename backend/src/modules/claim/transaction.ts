@@ -1,4 +1,4 @@
-import { DataSource } from "typeorm";
+import { DataSource, In } from "typeorm";
 import { Claim } from "../../entities/Claim";
 import {
     CreateClaimDTO,
@@ -16,9 +16,10 @@ import {
 } from "../../types/Claim";
 import { logMessageToFile } from "../../utilities/logger";
 import { plainToClass } from "class-transformer";
-import { ClaimStatusType } from "../../types/ClaimStatusType";
+import { ClaimStatusInProgressTypes, ClaimStatusType } from "../../types/ClaimStatusType";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
+import Boom from "@hapi/boom";
 
 export interface IClaimTransaction {
     /**
@@ -93,10 +94,15 @@ export class ClaimTransaction implements IClaimTransaction {
     }
 
     async createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse | null> {
+        if (ClaimStatusInProgressTypes.includes(payload.status)) {
+            const exists = await this.getClaimInProgressForCompany(companyId);
+            if (exists !== null) {
+                throw Boom.badRequest("Cannot have more than one claim in progress per company");
+            }
+        }
         try {
             const claim: Claim = plainToClass(Claim, {
                 ...payload,
-                status: ClaimStatusType.ACTIVE,
                 companyId: companyId,
             });
 
@@ -295,7 +301,10 @@ export class ClaimTransaction implements IClaimTransaction {
 
     async getClaimInProgressForCompany(companyId: string): Promise<GetClaimInProgressForCompanyResponse> {
         const claim: Claim | null = await this.db.getRepository(Claim).findOne({
-            where: { companyId },
+            where: {
+                companyId,
+                status: In(ClaimStatusInProgressTypes),
+            },
             order: { createdAt: "DESC" },
             relations: {
                 femaDisaster: true,

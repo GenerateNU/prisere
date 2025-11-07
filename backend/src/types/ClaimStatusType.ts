@@ -7,3 +7,7 @@ export enum ClaimStatusType {
     IN_PROGRESS_INSURANCE = "IN_PROGRESS_INSURANCE",
     IN_PROGRESS_EXPORT = "IN_PROGRESS_EXPORT",
 }
+
+export const ClaimStatusInProgressTypes = Object.values(ClaimStatusType).filter((status) =>
+    status.startsWith("IN_PROGRESS_")
+) as ClaimStatusType[];

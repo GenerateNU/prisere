@@ -36,6 +36,7 @@ export const CreateClaimDTOSchema = z.object({
     femaDisasterId: z.string().optional(),
     selfDisasterId: z.string().optional(),
     insurancePolicyId: z.string().optional(),
+    status: z.enum(ClaimStatusType).default(ClaimStatusType.ACTIVE),
 });
 
 export const CreateClaimResponseSchema = stringClaimSchema;

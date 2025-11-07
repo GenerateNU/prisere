@@ -114,6 +114,48 @@ describe("POST /claims", () => {
         expect(fetchBody[0].companyId).toBe(companyId);
     });
 
+    test("POST /claims - Multiple in progress claims fail", async () => {
+        const requestBody = {
+            selfDisasterId: "ba5735c4-fbd1-4f7d-97c1-bf5af2a3f533",
+            status: ClaimStatusType.IN_PROGRESS_BUSINESS,
+        };
+        const companyId = seededCompanies[0].id;
+
+        const response = await app.request(TESTING_PREFIX + "/claims", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: companyId,
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        expect(response.status).toBe(201);
+        const body = await response.json();
+        expect(body.femaDisasterId).toBe(null);
+        expect(body.selfDisasterId).toBe(requestBody.selfDisasterId);
+        expect(body.companyId).toBe(companyId);
+        expect(body.status).toBe(ClaimStatusType.IN_PROGRESS_BUSINESS);
+        expect(body.createdAt).toBeDefined();
+        expect(body.updatedAt).toBeDefined();
+
+        const requestBody2 = {
+            femaDisasterId: "47f0c515-2efc-49c3-abb8-623f48817950",
+            status: ClaimStatusType.IN_PROGRESS_INSURANCE,
+        };
+
+        const response2 = await app.request(TESTING_PREFIX + "/claims", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                companyId: companyId,
+            },
+            body: JSON.stringify(requestBody2),
+        });
+
+        expect(response2.status).toBe(400);
+    });
+
     test("POST /claims - Company with multiple claims", async () => {
         const companyId = "a1a542da-0abe-4531-9386-8919c9f86369";
         const requestBody2 = {
