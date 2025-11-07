@@ -5,7 +5,6 @@ import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { LocationAddress } from "../../entities/LocationAddress";
 import { IClaimTransaction } from "../claim/transaction";
-import { Claim } from "../../entities/Claim";
 import { GetClaimInProgressForCompanyResponse } from "../../types/Claim";
 
 export interface ICompanyService {
