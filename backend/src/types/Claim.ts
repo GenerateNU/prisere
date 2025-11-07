@@ -3,6 +3,7 @@ import { ClaimStatusType } from "./ClaimStatusType";
 import { GetAllDisastersResponseSchema } from "./fema-disaster";
 import { GetSelfDisasterForCompanyResponseSchema } from "../modules/self-disaster/types";
 import { GetPurchaseLineItemResponseSchema } from "../modules/purchase-line-item/types";
+import { SingleInsurancePolicyResponseSchema } from "../modules/insurance-policy/types";
 /* Zod schemas for OpenAPI docs */
 
 /* Claim Schema */
@@ -14,6 +15,7 @@ export const ClaimSchema = z.object({
     updatedAt: z.iso.datetime().optional(),
     femaDisaster: GetAllDisastersResponseSchema.element.optional(), // .element extracts the item schema
     selfDisaster: GetSelfDisasterForCompanyResponseSchema.optional(),
+    insurancePolicy: SingleInsurancePolicyResponseSchema.optional(),
 });
 
 // A company might not have a claim in progress
@@ -26,12 +28,14 @@ const stringClaimSchema = z.object({
     updatedAt: z.iso.datetime().optional(),
     femaDisaster: GetAllDisastersResponseSchema.element.optional(),
     selfDisaster: GetSelfDisasterForCompanyResponseSchema.optional(),
+    insurancePolicy: SingleInsurancePolicyResponseSchema.optional(),
 });
 
 /* POST */
 export const CreateClaimDTOSchema = z.object({
     femaDisasterId: z.string().optional(),
     selfDisasterId: z.string().optional(),
+    insurancePolicyId: z.string().optional()
 });
 
 export const CreateClaimResponseSchema = stringClaimSchema;

@@ -11,6 +11,7 @@ import {
     Check,
     JoinTable,
     ManyToMany,
+    OneToOne,
 } from "typeorm";
 import type { Relation } from "typeorm";
 import { Company } from "./Company.js";
@@ -19,6 +20,7 @@ import { ClaimStatusType } from "../types/ClaimStatusType.js";
 import { ClaimLocation } from "./ClaimLocation.js";
 import { SelfDeclaredDisaster } from "./SelfDisaster.js";
 import { PurchaseLineItem } from "./PurchaseLineItem.js";
+import { InsurancePolicy } from "./InsurancePolicy.js";
 
 @Unique(["companyId", "femaDisasterId", "selfDisasterId"])
 @Check(
@@ -72,4 +74,11 @@ export class Claim {
         inverseJoinColumn: { name: "purchaseLineItemId" },
     })
     purchaseLineItems!: PurchaseLineItem[];
+
+    @Column({ nullable: true })
+    insurancePolicyId?: string;
+
+    @ManyToOne(() => InsurancePolicy, (ip) => ip.id)
+    @JoinColumn({ name: "insurancePolicyId" })
+    insurancePolicy!: InsurancePolicy;
 }

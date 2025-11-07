@@ -123,6 +123,13 @@ export class ClaimTransaction implements IClaimTransaction {
                           updatedAt: claim.selfDisaster.updatedAt.toISOString(),
                       }
                     : undefined,
+                insurancePolicy: result.insurancePolicy
+                      ? {
+                        ...result.insurancePolicy,
+                        updatedAt: result.insurancePolicy.updatedAt.toISOString(),
+                        createdAt: result.insurancePolicy.createdAt.toISOString(),
+                      }
+                      : undefined,
             };
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
@@ -163,6 +170,13 @@ export class ClaimTransaction implements IClaimTransaction {
                           updatedAt: claim.selfDisaster.updatedAt.toISOString(),
                       }
                     : undefined,
+                insurancePolicy: claim.insurancePolicy
+                      ? {
+                        ...claim.insurancePolicy,
+                        updatedAt: claim.insurancePolicy.updatedAt.toISOString(),
+                        createdAt: claim.insurancePolicy.createdAt.toISOString(),
+                      }
+                      : undefined,
             }));
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
