@@ -11,7 +11,6 @@ import {
     Check,
     JoinTable,
     ManyToMany,
-    OneToOne,
 } from "typeorm";
 import type { Relation } from "typeorm";
 import { Company } from "./Company.js";

@@ -35,7 +35,7 @@ const stringClaimSchema = z.object({
 export const CreateClaimDTOSchema = z.object({
     femaDisasterId: z.string().optional(),
     selfDisasterId: z.string().optional(),
-    insurancePolicyId: z.string().optional()
+    insurancePolicyId: z.string().optional(),
 });
 
 export const CreateClaimResponseSchema = stringClaimSchema;

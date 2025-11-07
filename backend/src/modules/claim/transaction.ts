@@ -124,12 +124,12 @@ export class ClaimTransaction implements IClaimTransaction {
                       }
                     : undefined,
                 insurancePolicy: result.insurancePolicy
-                      ? {
-                        ...result.insurancePolicy,
-                        updatedAt: result.insurancePolicy.updatedAt.toISOString(),
-                        createdAt: result.insurancePolicy.createdAt.toISOString(),
+                    ? {
+                          ...result.insurancePolicy,
+                          updatedAt: result.insurancePolicy.updatedAt.toISOString(),
+                          createdAt: result.insurancePolicy.createdAt.toISOString(),
                       }
-                      : undefined,
+                    : undefined,
             };
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
@@ -144,6 +144,7 @@ export class ClaimTransaction implements IClaimTransaction {
                 relations: {
                     femaDisaster: true,
                     selfDisaster: true,
+                    insurancePolicy: true,
                 },
             });
 
@@ -171,12 +172,12 @@ export class ClaimTransaction implements IClaimTransaction {
                       }
                     : undefined,
                 insurancePolicy: claim.insurancePolicy
-                      ? {
-                        ...claim.insurancePolicy,
-                        updatedAt: claim.insurancePolicy.updatedAt.toISOString(),
-                        createdAt: claim.insurancePolicy.createdAt.toISOString(),
+                    ? {
+                          ...claim.insurancePolicy,
+                          updatedAt: claim.insurancePolicy.updatedAt.toISOString(),
+                          createdAt: claim.insurancePolicy.createdAt.toISOString(),
                       }
-                      : undefined,
+                    : undefined,
             }));
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
