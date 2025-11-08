@@ -12,6 +12,7 @@ import { IInvoiceLineItemTransaction } from "../invoiceLineItem/transaction";
 import { IPurchaseTransaction } from "../purchase/transaction";
 import { IPurchaseLineItemTransaction } from "../purchase-line-item/transaction";
 import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
+import { Company } from "../../entities/Company";
 
 export interface IQuickbooksService {
     generateAuthUrl(args: { userId: string }): Promise<{ state: string; url: string }>;
@@ -193,8 +194,12 @@ export class QuickbooksService implements IQuickbooksService {
         if (!user) {
             throw Boom.internal("No user found");
         }
+        console.log(`Got user: ${user.id}`)
+        console.log(`Company: ${user.company}`)
         const lastImport = user.company.lastQuickBooksInvoiceImportTime;
-        const lastImportDate = lastImport ? dayjs(lastImport) : null;
+        let lastImportDate = lastImport ? dayjs(lastImport) : null;
+
+        lastImportDate = null;
 
         const {
             QueryResponse: { Invoice: invoices },
@@ -210,10 +215,16 @@ export class QuickbooksService implements IQuickbooksService {
                 }),
         });
 
+        console.log(`INVOICES: ${invoices}`)
+        if (invoices === undefined) {
+            console.log("No new invoices to import");
+            return;
+        }
+
         const createdInvoices = await this.invoiceTransaction.createOrUpdateInvoices(
             invoices.map((i) => ({
                 companyId: user.companyId,
-                totalAmountCents: i.TotalAmt * 100,
+                totalAmountCents: Math.round(i.TotalAmt * 100),
                 quickbooksDateCreated: i.MetaData.CreateTime,
                 quickbooksId: parseInt(i.Id),
             }))
@@ -250,12 +261,17 @@ export class QuickbooksService implements IQuickbooksService {
                         : `SELECT * FROM Purchase`,
                 }),
         });
+        if (purchases === undefined) {
+                console.log("No new purchases to import");
+                return;
+        }
+        console.log(`Purchses to import: ${purchases}`)
 
         const createdPurchases = await this.purchaseTransaction.createOrUpdatePurchase(
             purchases.map((p) => ({
                 isRefund: p.Credit !== undefined ? p.Credit : false,
                 companyId: user.companyId,
-                totalAmountCents: p.TotalAmt * 100,
+                totalAmountCents: Math.round(p.TotalAmt * 100),
                 quickbooksDateCreated: p.MetaData.CreateTime,
                 quickBooksId: parseInt(p.Id),
             }))
@@ -281,13 +297,19 @@ export class QuickbooksService implements IQuickbooksService {
     importQuickbooksData = withServiceErrorHandling(async ({ userId }: { userId: string }) => {
             try {
                 // First check if the user has a Quickbooks session going/one to refresh
+                // userId = '422992d5-9ed6-4093-b52b-e076f5dd7aeb'
+                console.log("Getting session info for user: ", userId)
                 const sessionInfo = await this.transaction.getSessionForUser({userId});
+                console.log(`Got QB Session: ${sessionInfo.session}`)
                 let session = sessionInfo.session;
+                console.log(`Got session: ${session}`)
                 const externalId = sessionInfo.externalId;
+                // const externalId 
 
                 const now = dayjs();
 
-                if (!session || !externalId || now.isSameOrAfter(session.refreshExpiryTimestamp)) {
+                // if (!session || !externalId || now.isSameOrAfter(session.refreshExpiryTimestamp)) {
+                if (!session ||  now.isSameOrAfter(session.refreshExpiryTimestamp)) {
                     // How can I redirect to quickbooks auth
                     throw Boom.unauthorized("Quickbooks session is expired");
                 }
@@ -300,6 +322,7 @@ export class QuickbooksService implements IQuickbooksService {
                 }
 
                 // Now update unprocessed invoices and purchases
+                console.log(`Updating invoices for user ${userId}`)
                 await this.updateUnprocessedInvoices({userId})
                 await this.updateUnprocessedPurchases({userId})
             } catch (error) {
@@ -324,7 +347,7 @@ function getInvoiceLineItems(invoice: QBInvoice) {
             case "SalesLineItemDetail":
                 out.push({
                     quickbooksId: parseInt(lineItem.Id),
-                    amountCents: lineItem.Amount * 100,
+                    amountCents: Math.round(lineItem.Amount * 100),
                     description: lineItem.Description ?? "",
                     category: invoice.CustomerRef.name,
                 });
@@ -333,7 +356,7 @@ function getInvoiceLineItems(invoice: QBInvoice) {
                 out.push(
                     ...lineItem.GroupLineDetail.Line.map((l) => ({
                         quickbooksId: parseInt(l.Id),
-                        amountCents: l.Amount * 100,
+                        amountCents: Math.round(l.Amount * 100),
                         description: l.Description ?? "",
                         category: invoice.CustomerRef.name,
                     }))
@@ -362,7 +385,7 @@ function getPurchaseLineItems(purchase: QBPurchase) {
         switch (lineItem.DetailType) {
             case "ItemBasedExpenseLineDetail":
                 out.push({
-                    amountCents: lineItem.ItemBasedExpenseLineDetail.TaxInclusiveAmt * 100,
+                    amountCents: isNaN(lineItem.ItemBasedExpenseLineDetail.TaxInclusiveAmt) ? 0 : Math.round(lineItem.ItemBasedExpenseLineDetail.TaxInclusiveAmt * 100),
                     quickBooksId: parseInt(lineItem.Id),
                     type: PurchaseLineItemType.TYPICAL, // when importing, for now we mark everything as typical
                     description: lineItem.Description,
@@ -370,7 +393,7 @@ function getPurchaseLineItems(purchase: QBPurchase) {
                 break;
             case "AccountBasedExpenseLineDetail":
                 out.push({
-                    amountCents: lineItem.Amount * 100,
+                    amountCents: isNaN(lineItem.Amount) ? 0 : Math.round(lineItem.Amount * 100),
                     quickBooksId: parseInt(lineItem.Id),
                     type: PurchaseLineItemType.TYPICAL, // when importing, for now we mark everything as typical
                     description: lineItem.Description,

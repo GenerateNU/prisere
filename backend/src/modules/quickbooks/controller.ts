@@ -46,10 +46,13 @@ export class QuickbooksController implements IQuickbooksController {
     }
 
     async importQuickbooksData(ctx: Context) {
-        const userId = ctx.get("userId");
+        let userId = ctx.get("userId");
+        userId = '422992d5-9ed6-4093-b52b-e076f5dd7aeb'
+        console.log(`Got user ID ${userId} to import QK data from`)
         if (!userId || typeof userId !== "string" || userId.trim() === "") {
             throw Boom.badRequest("Invalid or missing userId");
         }
+        console.log("About to import QB data")
         await this.service.importQuickbooksData({ userId });
         return ctx.json({ success: true }, 201);
     }

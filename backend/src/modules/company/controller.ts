@@ -41,7 +41,8 @@ export class CompanyController implements ICompanyController {
     createCompany = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 201>> => {
             const json = await ctx.req.json();
-            const payload = CreateCompanyDTOSchema.parse(json);
+            // const payload = CreateCompanyDTOSchema.parse(json);
+            const payload = CreateCompanyDTOSchema.parse({...json, businessOwnerFullName: "default name"});
             const userId = ctx.get("userId");
             const company = await this.companyService.createCompany(payload, userId);
             return ctx.json(company, 201);
