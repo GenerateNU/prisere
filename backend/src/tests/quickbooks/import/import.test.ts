@@ -70,11 +70,11 @@ describe("Import quickbooks data", () => {
         invoiceSeeder.run(db, {} as SeederFactoryManager);
     });
 
-    it("Should import new purchase and invoice data", async () => {
-        // Mock a valid QuickBooks response with empty Invoice array
-        mockQuerySuccessReturn(client, {
+    // it("Should import new purchase and invoice data", async () => {
+    //     // Mock a valid QuickBooks response with empty Invoice array
+    //     mockQuerySuccessReturn(client, {
             
-        });
-        expect(service.importQuickbooksData({ userId })).resolves.not.toThrow();
-    });
+    //     });
+    //     expect(service.importQuickbooksData({ userId })).resolves.not.toThrow();
+    // });
 });

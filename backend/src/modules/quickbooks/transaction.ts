@@ -124,7 +124,6 @@ export class QuickbooksTransaction implements IQuickbooksTransaction {
     }
 
     async getSessionForUser({ userId }: { userId: string }) {
-        console.log(`Getting session for user: ${userId}`)
         const session = await this.db
             .getRepository(QuickbooksSession)
             .createQueryBuilder("qs")

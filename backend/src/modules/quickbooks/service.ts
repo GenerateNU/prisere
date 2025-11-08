@@ -13,6 +13,7 @@ import { IPurchaseTransaction } from "../purchase/transaction";
 import { IPurchaseLineItemTransaction } from "../purchase-line-item/transaction";
 import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
 import { Company } from "../../entities/Company";
+import { logMessageToFile } from "../../utilities/logger";
 
 export interface IQuickbooksService {
     generateAuthUrl(args: { userId: string }): Promise<{ state: string; url: string }>;
@@ -194,12 +195,8 @@ export class QuickbooksService implements IQuickbooksService {
         if (!user) {
             throw Boom.internal("No user found");
         }
-        console.log(`Got user: ${user.id}`)
-        console.log(`Company: ${user.company}`)
         const lastImport = user.company.lastQuickBooksInvoiceImportTime;
-        let lastImportDate = lastImport ? dayjs(lastImport) : null;
-
-        lastImportDate = null;
+        const lastImportDate = lastImport ? dayjs(lastImport) : null;
 
         const {
             QueryResponse: { Invoice: invoices },
@@ -214,10 +211,8 @@ export class QuickbooksService implements IQuickbooksService {
                         : `SELECT * FROM Invoice`,
                 }),
         });
-
-        console.log(`INVOICES: ${invoices}`)
         if (invoices === undefined) {
-            console.log("No new invoices to import");
+            logMessageToFile("No new invoices to import");
             return;
         }
 
@@ -262,10 +257,9 @@ export class QuickbooksService implements IQuickbooksService {
                 }),
         });
         if (purchases === undefined) {
-                console.log("No new purchases to import");
+                logMessageToFile("No new purchases to import");
                 return;
         }
-        console.log(`Purchses to import: ${purchases}`)
 
         const createdPurchases = await this.purchaseTransaction.createOrUpdatePurchase(
             purchases.map((p) => ({
@@ -297,20 +291,13 @@ export class QuickbooksService implements IQuickbooksService {
     importQuickbooksData = withServiceErrorHandling(async ({ userId }: { userId: string }) => {
             try {
                 // First check if the user has a Quickbooks session going/one to refresh
-                // userId = '422992d5-9ed6-4093-b52b-e076f5dd7aeb'
-                console.log("Getting session info for user: ", userId)
                 const sessionInfo = await this.transaction.getSessionForUser({userId});
-                console.log(`Got QB Session: ${sessionInfo.session}`)
                 let session = sessionInfo.session;
-                console.log(`Got session: ${session}`)
                 const externalId = sessionInfo.externalId;
-                // const externalId 
-
                 const now = dayjs();
 
-                // if (!session || !externalId || now.isSameOrAfter(session.refreshExpiryTimestamp)) {
-                if (!session ||  now.isSameOrAfter(session.refreshExpiryTimestamp)) {
-                    // How can I redirect to quickbooks auth
+                if (!session || !externalId || now.isSameOrAfter(session.refreshExpiryTimestamp)) {
+                    // Redirect to quickbooks auth?
                     throw Boom.unauthorized("Quickbooks session is expired");
                 }
 
@@ -322,7 +309,6 @@ export class QuickbooksService implements IQuickbooksService {
                 }
 
                 // Now update unprocessed invoices and purchases
-                console.log(`Updating invoices for user ${userId}`)
                 await this.updateUnprocessedInvoices({userId})
                 await this.updateUnprocessedPurchases({userId})
             } catch (error) {
