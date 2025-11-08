@@ -18,8 +18,8 @@ export const purchaseLineItemsRoutes = (db: DataSource, PurchaseRoutes: Hono): H
     PurchaseRoutes.post("/line/bulk", (ctx) => controller.createOrUpdatePurchaseLineItems(ctx));
     PurchaseRoutes.get("/line/:id", (ctx) => controller.getPurchaseLineItem(ctx));
     PurchaseRoutes.get("/:id/lines", (ctx) => controller.getPurchaseLineItemsForPurchase(ctx));
-    PurchaseRoutes.patch("/category", (ctx) => controller.updatePurchaseLineItemCategory(ctx));
-    PurchaseRoutes.patch("/type", (ctx) => controller.updatePurchaseLineItemType(ctx));
+    PurchaseRoutes.patch("/line/category", (ctx) => controller.updatePurchaseLineItemCategory(ctx));
+    PurchaseRoutes.patch("/line/type", (ctx) => controller.updatePurchaseLineItemType(ctx));
 
     return PurchaseRoutes;
 };

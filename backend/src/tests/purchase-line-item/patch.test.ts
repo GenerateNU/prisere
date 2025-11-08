@@ -37,12 +37,13 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
     });
 
     test("PATCH /purchase/category - Successfully updates category", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/category", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/category", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 id: seededPurchaseLineItems[0].id,
                 category: "Office Supplies",
+                removeCategory: false,
             }),
         });
 
@@ -58,12 +59,13 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
     });
 
     test("PATCH /purchase/category - Tries to update category to empty string", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/category", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/category", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 id: seededPurchaseLineItems[0].id,
                 category: "",
+                removeCategory: false,
             }),
         });
 
@@ -71,12 +73,13 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
     });
 
     test("PATCH /purchase/category - Purchase line item does not exist", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/category", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/category", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 id: "00000000-0000-0000-0000-000000000000",
                 category: "New Category",
+                removeCategory: false,
             }),
         });
 
@@ -84,12 +87,13 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
     });
 
     test("PATCH /purchase/category - Invalid UUID format", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/category", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/category", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 id: "invalid-uuid",
                 category: "New Category",
+                removeCategory: false,
             }),
         });
 
@@ -97,11 +101,12 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
     });
 
     test("PATCH /purchase/category - Missing id", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/category", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/category", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 category: "New Category",
+                removeCategory: false,
             }),
         });
 
@@ -109,11 +114,12 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
     });
 
     test("PATCH /purchase/category - Missing category", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/category", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/category", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 id: seededPurchaseLineItems[0].id,
+                removeCategory: false,
             }),
         });
 
@@ -122,12 +128,13 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
 
     test("PATCH /purchase/category - Category exceeds max length", async () => {
         const longCategory = "a".repeat(300);
-        const response = await app.request(TESTING_PREFIX + "/purchase/category", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/category", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 id: seededPurchaseLineItems[0].id,
                 category: longCategory,
+                removeCategory: false,
             }),
         });
 
@@ -135,7 +142,7 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
     });
 
     test("PATCH /purchase/category - Empty body", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/category", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/category", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({}),
@@ -145,12 +152,13 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
     });
 
     test("PATCH /purchase/category - Category with special characters", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/category", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/category", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 id: seededPurchaseLineItems[0].id,
                 category: "Office & Supplies - 2024 (Q1)",
+                removeCategory: false,
             }),
         });
 
@@ -166,15 +174,17 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
             body: JSON.stringify({
                 id: seededPurchaseLineItems[0].id,
                 category: "First Category",
+                removeCategory: false,
             }),
         });
 
-        const response = await app.request(TESTING_PREFIX + "/purchase/category", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/category", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 id: seededPurchaseLineItems[0].id,
                 category: "Second Category",
+                removeCategory: false,
             }),
         });
 
@@ -211,7 +221,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
     });
 
     test("PATCH /purchase/type - Successfully updates type to EXTRANEOUS", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/type", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/type", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -232,7 +242,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
     });
 
     test("PATCH /purchase/type - Successfully updates type to TYPICAL", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/type", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/type", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -253,7 +263,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
     });
 
     test("PATCH /purchase/type - Purchase line item does not exist", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/type", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/type", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -266,7 +276,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
     });
 
     test("PATCH /purchase/type - Invalid UUID format", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/type", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/type", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -279,7 +289,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
     });
 
     test("PATCH /purchase/type - Invalid type value", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/type", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/type", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -292,7 +302,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
     });
 
     test("PATCH /purchase/type - Missing id", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/type", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/type", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -304,7 +314,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
     });
 
     test("PATCH /purchase/type - Missing type", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/type", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/type", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -316,7 +326,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
     });
 
     test("PATCH /purchase/type - Empty body", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/type", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/type", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({}),
@@ -326,7 +336,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
     });
 
     test("PATCH /purchase/type - Type as null", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/type", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/type", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -339,7 +349,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
     });
 
     test("PATCH /purchase/type - Type as number", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/type", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/type", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -361,7 +371,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
             }),
         });
 
-        const response = await app.request(TESTING_PREFIX + "/purchase/type", {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/type", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -376,7 +386,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
     });
 
     test("PATCH /purchase/type - Update different items", async () => {
-        const response1 = await app.request(TESTING_PREFIX + "/purchase/type", {
+        const response1 = await app.request(TESTING_PREFIX + "/purchase/line/type", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -385,7 +395,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
             }),
         });
 
-        const response2 = await app.request(TESTING_PREFIX + "/purchase/type", {
+        const response2 = await app.request(TESTING_PREFIX + "/purchase/line/type", {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

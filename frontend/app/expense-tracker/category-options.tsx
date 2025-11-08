@@ -1,76 +1,157 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { X } from "lucide-react";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+
+interface CategoryLabelProps {
+    category: string;
+    updateCategory: (category: string, lineItems: string[], removeCategory: boolean) => void;
+    lineItemIds: string[];
+}
+
+interface CategoryBadgeProps extends CategoryLabelProps {
+    allCategories: string[];
+}
+
+interface CreateCategoryProps {
+    searchValue: string;
+    setSearchValue: (value: string) => void;
+    updateCategory: (category: string, lineItems: string[], removeCategory: boolean) => void;
+    lineItemIds: string[];
+}
 
 
-export default function CategoryLabel(
-    {
-        category,
-        onCategoryChange,
-        addCategory,
-        lineItemIds,
-    }: {
-        category: string;
-        onCategoryChange: () => void;
-        addCategory: (category: string, lineItems: string[]) => Promise<void>;
-        lineItemIds: string[];
-    }) {
-    const categories = category.split(",").map(c => c.trim()).filter(Boolean);
+export default function CategoryLabel({ category, updateCategory, lineItemIds }: CategoryLabelProps) {
+    const categories = category.length > 0 ? category.split(",") : [];
+
+    if (categories.length === 0) {
+        return <AddCategoryButton />;
+    }
 
     return (
         <>
-            {categories.slice(0, 3).map((catToLabel, index) => {
-                const color = "red"; // tailwind is not working for me
-                return (
-                    <Popover key={index}>
-                        <PopoverTrigger asChild>
-                            <span
-                                className="px-3 py-1 rounded-full text-sm font-medium cursor-pointer"
-                                style={{ backgroundColor: color }}
-                            >
-                                {catToLabel}
-                            </span>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[200px] p-0">
-                            <div className="flex items-center justify-between p-2 border-b">
-                                <span className="font-medium">{catToLabel}</span>
-                                <button
-                                    onClick={async () => {
-                                        // make this patch caller
-                                        // await patch endpoint does not have option to remove category FIX
-                                        onCategoryChange();
-                                    }}
-                                    className="hover:bg-gray-100 rounded-full p-1"
-                                >
-                                    <X className="h-4 w-4" />
-                                </button>
-                            </div>
-                            <Command>
-                                <CommandInput placeholder="Select or create..." />
-                                <CommandEmpty>Create new</CommandEmpty>
-                                <CommandGroup>
-                                    {categories.map((cat) => (
-                                        <CommandItem
-                                            key={cat}
-                                            onSelect={async () => {
-                                                await addCategory(cat, lineItemIds);
-                                                onCategoryChange();
-                                            }}
-                                        >
-                                            {cat}
-                                        </CommandItem>
-                                    ))}
-                                </CommandGroup>
-                            </Command>
-                        </PopoverContent>
-                    </Popover>
-                );
-            })}
-            {categories.length > 3 && (
-                <span className="px-3 py-1 rounded-full text-sm font-medium">
-                    ...
-                </span>
-            )}
+            {categories.slice(0, 3).map((cat, index) => (
+                <CategoryBadge
+                    key={index}
+                    category={cat}
+                    allCategories={categories}
+                    updateCategory={updateCategory}
+                    lineItemIds={lineItemIds}
+                />
+            ))}
+            {categories.length > 3 && <span className="px-3 py-1 text-sm">...</span>}
         </>
+    );
+
+
+    function AddCategoryButton() {
+        const [searchValue, setSearchValue] = useState("");
+        return (
+            <Popover>
+                <PopoverTrigger asChild>
+                    <button className="text-gray-400 text-sm hover:text-gray-600 underline">
+                        + Add category
+                    </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-4">
+                    <div className="space-y-2">
+                        <Input
+                            type="text"
+                            placeholder="Enter category name..."
+                            value={searchValue}
+                            onChange={(e) => setSearchValue(e.target.value)}
+                            maxLength={100}
+                            className="overflow-hidden text-ellipsis"
+                        />
+                        <Create
+                            searchValue={searchValue}
+                            setSearchValue={setSearchValue}
+                            updateCategory={updateCategory}
+                            lineItemIds={lineItemIds}
+                        />
+                    </div>
+                </PopoverContent>
+            </Popover>
+        );
+    }
+}
+
+function CategoryBadge(
+    { category, allCategories, updateCategory, lineItemIds }: CategoryBadgeProps) {
+    const [searchValue, setSearchValue] = useState("");
+    const displayCategory = category.length > 20 ? `${category.substring(0, 20)}...` : category;
+
+    return (
+        <Popover>
+            <PopoverTrigger asChild>
+                <span className="px-3 py-1 rounded-full text-sm font-medium cursor-pointer"
+                      style={{ backgroundColor: "red" }}>
+                    {displayCategory}
+                </span>
+            </PopoverTrigger>
+            <PopoverContent className="w-[200px] p-0">
+                <Command>
+                    <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
+                        <span
+                            className="flex items-center gap-1 px-2 py-1 bg-red-500 text-white rounded-full text-xs mr-2 flex-shrink-0">
+                           {category}
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    updateCategory(category, lineItemIds, true);
+                                }}
+                                className="hover:bg-gray-100 hover:bg-opacity-20 rounded-full p-0.5"
+                            >
+                             <X className="h-3 w-3" />
+                             </button>
+                            </span>
+                        <CommandInput
+                            placeholder="Select or create..."
+                            value={searchValue}
+                            onValueChange={(value) => {
+                                if (value.length <= 100) {
+                                    setSearchValue(value);
+                                }
+                            }}
+                            className="overflow-hidden border-0 px-0 flex-1"
+                        />
+                    </div>
+                    <CommandEmpty>
+                        <Create searchValue={searchValue}
+                                setSearchValue={setSearchValue}
+                                updateCategory={updateCategory}
+                                lineItemIds={lineItemIds} />
+                    </CommandEmpty>
+                    <CommandGroup>
+                        {allCategories.map((cat) => (
+                            <CommandItem key={cat} onSelect={() => updateCategory(cat, lineItemIds, false)}>
+                                {cat}
+                            </CommandItem>
+                        ))}
+                    </CommandGroup>
+                </Command>
+            </PopoverContent>
+        </Popover>
+    );
+}
+
+function Create({ searchValue, updateCategory, lineItemIds, setSearchValue }: CreateCategoryProps) {
+    const displayText = searchValue.length > 15 ? `${searchValue.substring(0, 15)}...` : searchValue;
+
+    return (
+        <button
+            type="button"
+            className="relative mt-2 flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+            onClick={() => {
+                const name = searchValue.trim();
+                if (name) {
+                    updateCategory(name, lineItemIds, false);
+                    setSearchValue("");
+                }
+            }}
+        >
+            Create {displayText}
+        </button>
     );
 }

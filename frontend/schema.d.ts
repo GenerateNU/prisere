@@ -3920,7 +3920,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/purchase/category": {
+    "/purchase/line/category": {
         parameters: {
             query?: never;
             header?: never;
@@ -3950,6 +3950,7 @@ export interface paths {
                         /** Format: uuid */
                         id: string;
                         category: string;
+                        removeCategory: boolean;
                     };
                 };
             };
@@ -3972,7 +3973,7 @@ export interface paths {
                             dateCreated: string;
                             lastUpdated: string;
                             /** Format: date-time */
-                            quickbooksDateCreated?: string;
+                            quickbooksDateCreated?: string | null;
                         };
                     };
                 };
@@ -4009,7 +4010,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/purchase/type": {
+    "/purchase/line/type": {
         parameters: {
             query?: never;
             header?: never;
@@ -4030,13 +4031,19 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: never;
-                path: {
-                    id: string;
-                    type: "extraneous" | "typical";
-                };
+                path?: never;
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        type: "extraneous" | "typical";
+                    };
+                };
+            };
             responses: {
                 /** @description Successfully updated the line item's type */
                 200: {
@@ -4056,7 +4063,7 @@ export interface paths {
                             dateCreated: string;
                             lastUpdated: string;
                             /** Format: date-time */
-                            quickbooksDateCreated?: string;
+                            quickbooksDateCreated?: string | null;
                         };
                     };
                 };

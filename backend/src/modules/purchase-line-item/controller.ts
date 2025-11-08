@@ -85,7 +85,7 @@ export class PurchaseLineItemController implements IPurchaseLineItemController {
             const request = UpdatePurchaseLineItemCategoryDTOSchema.parse(json);
 
             const updated = 
-            await this.purchaseLineItemService.updatePurchaseLineItemCategory(request.id, request.category);
+            await this.purchaseLineItemService.updatePurchaseLineItemCategory(request.id, request.category, request.removeCategory);
 
             return ctx.json(updated, 200);
 

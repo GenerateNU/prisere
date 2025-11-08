@@ -15,7 +15,7 @@ export interface IPurchaseLineItemService {
     ): Promise<CreateOrChangePurchaseLineItemsResponse>;
     getPurchaseLineItem(id: string): Promise<GetPurchaseLineItemResponse>;
     getPurchaseLineItemsForPurchase(parentPurchaseId: string): Promise<GetPurchaseLineItemsFromParentResponse>;
-    updatePurchaseLineItemCategory(id: string, category: string): Promise<PurchaseLineItem>;
+    updatePurchaseLineItemCategory(id: string, category: string, removeCategory: boolean): Promise<PurchaseLineItem>;
     updatePurchaseLineItemType(id: string, type: PurchaseLineItemType): Promise<PurchaseLineItem>;
 
 }
@@ -61,8 +61,8 @@ export class PurchaseLineItemService implements IPurchaseLineItemService {
     };
 
     updatePurchaseLineItemCategory = withServiceErrorHandling(
-        async (id: string, category: string): Promise<PurchaseLineItem> => {
-            return this.purchaseLineItemTransaction.updatePurchaseLineItemCategory(id, category);
+        async (id: string, category: string, removeCategory: boolean): Promise<PurchaseLineItem> => {
+            return this.purchaseLineItemTransaction.updatePurchaseLineItemCategory(id, category, removeCategory);
         }
     );
 

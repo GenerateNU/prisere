@@ -5,15 +5,16 @@ import { Table } from "@/components/table";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { FilteredPurchases, Purchases } from "@/types/purchase";
-import { useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/react-table";
 import { ChevronDown, ChevronRight, Filter, Printer } from "lucide-react";
 import { useMemo, useState } from "react";
-import { addCategory, getAllPurchaseCategories } from "../../api/purchase";
+import { updateCategory, getAllPurchaseCategories, updateType } from "../../api/purchase";
 import { Filters } from "./filters";
 import PaginationControls from "./PaginationControls";
 import ResultsPerPageSelect from "./ResultsPerPageSelect";
 import CategoryLabel from "./category-options";
+import DisasterLabel, { DisasterType } from "./disaster-options";
 
 export default function ExpenseTable() {
     const [filters, setFilters] = useState<FilteredPurchases>({ pageNumber: 0, resultsPerPage: 5 });
@@ -91,19 +92,19 @@ function TableContent({ purchases }: { purchases: UseQueryResult<Purchases | und
             purchases.data?.map((purchase) => {
                 const firstLineItem = purchase.lineItems?.[0];
                 return {
-                    id: purchase.id,
                     amount: purchase.totalAmountCents,
                     date: new Date(purchase.dateCreated),
                     description: firstLineItem?.description ?? "",
                     category: getCategoriesString(purchase.lineItems),
-                    disasterRelated: firstLineItem?.type === "extraneous" ? "Disaster" : "Non-disaster",
-                    lineItems: purchase.lineItems.map((lineItem) => ({
-                        id: lineItem.id,
+                    disasterRelated: getPurchaseTypeString(purchase.lineItems),
+                    lineItemIds: purchase.lineItems.map((li) => li.id),
+                    lineItems: purchase.lineItems.map((lineItem, index) => ({
                         description: lineItem.description ?? "",
                         amount: lineItem.amountCents,
                         category: lineItem.category ?? "",
                         date: new Date(lineItem.dateCreated),
-                        disasterRelated: lineItem.type === "extraneous" ? "Disaster" : "Non-disaster",
+                        disasterRelated: lineItem.type || "pending",
+                        lineItemIds: [purchase.lineItems[index].id],
                         lineItems: [],
                     })),
                 };
@@ -112,10 +113,24 @@ function TableContent({ purchases }: { purchases: UseQueryResult<Purchases | und
     );
 
     const queryClient = useQueryClient();
+    const categoryMutation = useMutation({
+        mutationFn: ({ lineItemIds, category , removeCategory }: { category: string, lineItemIds: string[], removeCategory: boolean}) => {
+            return updateCategory(category, lineItemIds, removeCategory);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["categories-for-purchases"] });
+            queryClient.invalidateQueries({ queryKey: ["purchases-for-company"] });
+        },
+    });
 
-    const refetchCategories = () => {
-        queryClient.invalidateQueries({ queryKey: ["categories-for-purchases"] });
-    };
+    const typeMutation = useMutation({
+        mutationFn: ({ lineItemIds, type }: { type: DisasterType, lineItemIds: string[]}) => {
+            return updateType(type, lineItemIds);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["purchases-for-company"] });
+        },
+    });
 
     const table = useReactTable({
         getCoreRowModel: getCoreRowModel(),
@@ -153,15 +168,13 @@ function TableContent({ purchases }: { purchases: UseQueryResult<Purchases | und
                 accessorFn: (row) => row.category,
                 cell: (ctx) => {
                     const row = ctx.row.original;
-                    const lineItemIds = ctx.row.depth > 0
-                        ? [row.id]
-                        : row.lineItems?.map(li => li.id) ?? [];
                     return (
                         <CategoryLabel
                         category={ctx.getValue() as string}
-                        onCategoryChange={refetchCategories}
-                        addCategory={addCategory}
-                        lineItemIds={lineItemIds}  />
+                        updateCategory={( category, lineItemIds,  removeCategory) => {
+                            categoryMutation.mutate({ category, lineItemIds, removeCategory });
+                        }}
+                        lineItemIds={row.lineItemIds}  />
                         );
                 }
             },
@@ -170,6 +183,17 @@ function TableContent({ purchases }: { purchases: UseQueryResult<Purchases | und
                 id: "disasterRelated",
                 header: "Disaster Related",
                 accessorFn: (row) => row.disasterRelated,
+                cell: (ctx) => {
+                    const row = ctx.row.original;
+                    return (
+                        <DisasterLabel
+                            disasterType={ctx.getValue()}
+                            updateDisasterType={( type, lineItemIds) => {
+                                typeMutation.mutate({ type, lineItemIds});
+                            }}
+                            lineItemIds={row.lineItemIds}  />
+                    );
+                }
             },
         ],
     });
@@ -199,5 +223,18 @@ function getCategoriesString(lineItems: { category?: string | null }[]): string 
     return lineItems
         .map(li => li.category)
         .filter(Boolean)
-        .join(", ");
+        .filter((value, index, self) => self.indexOf(value) === index)
+        .join(",");
+}
+
+function getPurchaseTypeString(lineItems: { type?: string | null }[]): DisasterType | null {
+    const types = lineItems
+        .map(li => li.type)
+        .filter(Boolean)
+
+    if (types.length === 0) {
+        return "typical";
+    } else {
+        return types.includes("extraneous") ? "extraneous" : "typical";
+    }
 }

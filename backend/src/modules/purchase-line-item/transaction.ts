@@ -9,7 +9,7 @@ export interface IPurchaseLineItemTransaction {
     createOrUpdatePurchaseLineItems(payload: CreateOrChangePurchaseLineItemsDTO): Promise<PurchaseLineItem[]>;
     getPurchaseLineItem(id: string): Promise<PurchaseLineItem | null>;
     getPurchaseLineItemsForPurchase(purchaseId: string): Promise<PurchaseLineItem[]>;
-    updatePurchaseLineItemCategory(id: string, category: string): Promise<PurchaseLineItem>; 
+    updatePurchaseLineItemCategory(id: string, category: string, removeCategory: boolean): Promise<PurchaseLineItem>;
     updatePurchaseLineItemType(id: string, type: PurchaseLineItemType): Promise<PurchaseLineItem>;
 }
 
@@ -67,14 +67,16 @@ export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction
         return givenPurchase.lineItems!;
     }
 
-    async updatePurchaseLineItemCategory(id: string, category: string): Promise<PurchaseLineItem> {
+    async updatePurchaseLineItemCategory(id: string, category: string, removeCategory: boolean): Promise<PurchaseLineItem> {
         const response = await this.db
-                    .createQueryBuilder()
-                    .update(PurchaseLineItem)
-                    .set({ category: category })
-                    .where({ id })
-                    .returning("*")
-                    .execute();
+            .createQueryBuilder()
+            .update(PurchaseLineItem)
+            .set({
+                category: removeCategory ? null : category
+            })
+            .where({ id })
+            .returning("*")
+            .execute();
 
 
         if (!response || response.affected == 0) {
@@ -82,7 +84,6 @@ export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction
         }
 
         return response.raw[0];
-        
     }
 
     async updatePurchaseLineItemType(id: string, type: PurchaseLineItemType): Promise<PurchaseLineItem> {

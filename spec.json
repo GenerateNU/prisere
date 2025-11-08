@@ -3677,7 +3677,7 @@
             "schema": {
               "type": "string",
               "format": "date-time",
-              "default": "2025-11-06T18:13:07.589Z"
+              "default": "2025-11-08T22:26:03.355Z"
             },
             "required": false,
             "name": "dateTo",
@@ -6135,7 +6135,7 @@
         }
       }
     },
-    "/purchase/category": {
+    "/purchase/line/category": {
       "patch": {
         "summary": "Updates a purchase line item's category",
         "description": "Updates the category of the purchase line item with the given Id to the given category",
@@ -6156,11 +6156,15 @@
                     "type": "string",
                     "minLength": 1,
                     "maxLength": 100
+                  },
+                  "removeCategory": {
+                    "type": "boolean"
                   }
                 },
                 "required": [
                   "id",
-                  "category"
+                  "category",
+                  "removeCategory"
                 ]
               }
             }
@@ -6210,6 +6214,7 @@
                     },
                     "quickbooksDateCreated": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date-time"
                     }
                   },
@@ -6267,36 +6272,39 @@
         }
       }
     },
-    "/purchase/type": {
+    "/purchase/line/type": {
       "patch": {
         "summary": "Updates a purchase line item's type",
         "description": "Updates the type of the purchase line item with the given Id to the given type",
         "tags": [
           "Purchase Line Items"
         ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "required": true,
-            "name": "id",
-            "in": "path"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": [
-                "extraneous",
-                "typical"
-              ]
-            },
-            "required": true,
-            "name": "type",
-            "in": "path"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "extraneous",
+                      "typical"
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "type"
+                ]
+              }
+            }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Successfully updated the line item's type",
@@ -6341,6 +6349,7 @@
                     },
                     "quickbooksDateCreated": {
                       "type": "string",
+                      "nullable": true,
                       "format": "date-time"
                     }
                   },

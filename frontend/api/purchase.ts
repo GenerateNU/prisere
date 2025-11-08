@@ -1,5 +1,5 @@
 "use server";
-import { FilteredPurchases, PurchaseLineItem, Purchases } from "../types/purchase";
+import { FilteredPurchases, PurchaseLineItem, PurchaseLineItemType, Purchases } from "../types/purchase";
 import { authHeader, authWrapper, getClient } from "./client";
 
 export const getAllPurchasesForCompany = async (filters: FilteredPurchases): Promise<Purchases> => {
@@ -70,15 +70,16 @@ export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate
     return authWrapper<{ total: number }>()(req);
 };
 
-export const addCategory = async(category: string, purchaseLineIds: string[])=> {
+export const updateCategory = async(category: string, purchaseLineIds: string[], removeCategory: boolean)=> {
     const req = async (token: string) => {
         const client = getClient();
         for (let i = 0; i < purchaseLineIds.length; i++) {
-            const { error, response } = await client.PATCH("/purchase/category", {
+            const { error, response } = await client.PATCH("/purchase/line/category", {
                 headers: authHeader(token),
                 body: {
                     id: purchaseLineIds[i],
                     category: category,
+                    removeCategory: removeCategory,
                 },
             });
 
@@ -87,4 +88,34 @@ export const addCategory = async(category: string, purchaseLineIds: string[])=> 
             }
         }
     };
+
+    return authWrapper<void>()(req);
+}
+
+const typeMap: Record<string, PurchaseLineItemType> = {
+    'typical': PurchaseLineItemType.TYPICAL,
+    'extraneous': PurchaseLineItemType.EXTRANEOUS,
+};
+
+type typeString = 'typical' | 'extraneous';
+
+export const updateType = async(type: typeString, purchaseLineIds: string[])=> {
+    const req = async (token: string) => {
+        const client = getClient();
+        for (let i = 0; i < purchaseLineIds.length; i++) {
+            const { error, response } = await client.PATCH("/purchase/line/type", {
+                headers: authHeader(token),
+                body: {
+                    id: purchaseLineIds[i],
+                    type: typeMap[type],
+                },
+            });
+
+            if (!response.ok) {
+                throw Error(error?.error);
+            }
+        }
+    };
+
+    return authWrapper<void>()(req);
 }

@@ -122,7 +122,7 @@ const getPurchaseLineItemsForPurchaseRoute = createRoute({
 
 const updatePurchaseLineItemCategoryRoute = createRoute({
     method: "patch",
-    path: "/purchase/category",
+    path: "/purchase/line/category",
     summary: "Updates a purchase line item's category",
     description:
         "Updates the category of the purchase line item with the given Id to the given category",
@@ -153,15 +153,20 @@ const updatePurchaseLineItemCategoryRoute = createRoute({
 });
 
 
-
 const updatePurchaseLineItemTypeRoute = createRoute({
     method: "patch",
-    path: "/purchase/type",
+    path: "/purchase/line/type",
     summary: "Updates a purchase line item's type",
     description:
         "Updates the type of the purchase line item with the given Id to the given type",
     request: {
-        params: UpdatePurchaseLineItemTypeDTOSchema,
+        body: {
+            content: {
+                'application/json': {
+                    schema: UpdatePurchaseLineItemTypeDTOSchema,
+                }
+            }
+        }
     },
     responses: {
         200: {

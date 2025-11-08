@@ -19,7 +19,7 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
     const router = useRouter();
     const [companyPayload, setCompanyPayload] = useState<CreateCompanyRequest>({
         name: "",
-        businessOwnerFullName: "",
+        businessOwnerFullName: "Manuel Torres",
     });
     const [locationPayload, setLocationPayload] = useState<CreateLocationRequest>({
         alias: "Main Location",
