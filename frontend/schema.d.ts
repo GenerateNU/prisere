@@ -1579,7 +1579,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/importQuickbooksData": {
+    "/quickbooks/importQuickbooksData": {
         parameters: {
             query?: never;
             header?: never;

@@ -18,7 +18,6 @@ import { PurchaseLineItemTransaction } from "../../modules/purchase-line-item/tr
 import { MockQBClient } from "../quickbooks/oauth/mock-client";
 import { IQuickbooksService, QuickbooksService } from "../../modules/quickbooks/service";
 
-
 describe("Email Notification Integration Test", () => {
     let backup: IBackup;
     let dataSource: DataSource;

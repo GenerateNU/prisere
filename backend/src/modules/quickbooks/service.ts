@@ -12,7 +12,6 @@ import { IInvoiceLineItemTransaction } from "../invoiceLineItem/transaction";
 import { IPurchaseTransaction } from "../purchase/transaction";
 import { IPurchaseLineItemTransaction } from "../purchase-line-item/transaction";
 import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
-import { Company } from "../../entities/Company";
 import { logMessageToFile } from "../../utilities/logger";
 
 export interface IQuickbooksService {
@@ -257,8 +256,8 @@ export class QuickbooksService implements IQuickbooksService {
                 }),
         });
         if (purchases === undefined) {
-                logMessageToFile("No new purchases to import");
-                return;
+            logMessageToFile("No new purchases to import");
+            return;
         }
 
         const createdPurchases = await this.purchaseTransaction.createOrUpdatePurchase(
@@ -289,32 +288,31 @@ export class QuickbooksService implements IQuickbooksService {
     });
 
     importQuickbooksData = withServiceErrorHandling(async ({ userId }: { userId: string }) => {
-            try {
-                // First check if the user has a Quickbooks session going/one to refresh
-                const sessionInfo = await this.transaction.getSessionForUser({userId});
-                let session = sessionInfo.session;
-                const externalId = sessionInfo.externalId;
-                const now = dayjs();
+        try {
+            // First check if the user has a Quickbooks session going/one to refresh
+            const sessionInfo = await this.transaction.getSessionForUser({ userId });
+            let session = sessionInfo.session;
+            const externalId = sessionInfo.externalId;
+            const now = dayjs();
 
-                if (!session || !externalId || now.isSameOrAfter(session.refreshExpiryTimestamp)) {
-                    // Redirect to quickbooks auth?
-                    throw Boom.unauthorized("Quickbooks session is expired");
-                }
-
-                if (now.isSameOrAfter(session.accessExpiryTimestamp)) {
-                    session = await this.refreshQuickbooksSession({
-                        refreshToken: session.refreshToken,
-                        companyId: session.companyId,
-                    });
-                }
-
-                // Now update unprocessed invoices and purchases
-                await this.updateUnprocessedInvoices({userId})
-                await this.updateUnprocessedPurchases({userId})
-            } catch (error) {
-                console.error(error)
+            if (!session || !externalId || now.isSameOrAfter(session.refreshExpiryTimestamp)) {
+                // Redirect to quickbooks auth?
+                throw Boom.unauthorized("Quickbooks session is expired");
             }
 
+            if (now.isSameOrAfter(session.accessExpiryTimestamp)) {
+                session = await this.refreshQuickbooksSession({
+                    refreshToken: session.refreshToken,
+                    companyId: session.companyId,
+                });
+            }
+
+            // Now update unprocessed invoices and purchases
+            await this.updateUnprocessedInvoices({ userId });
+            await this.updateUnprocessedPurchases({ userId });
+        } catch (error) {
+            console.error(error);
+        }
     });
 }
 
@@ -371,7 +369,9 @@ function getPurchaseLineItems(purchase: QBPurchase) {
         switch (lineItem.DetailType) {
             case "ItemBasedExpenseLineDetail":
                 out.push({
-                    amountCents: isNaN(lineItem.ItemBasedExpenseLineDetail.TaxInclusiveAmt) ? 0 : Math.round(lineItem.ItemBasedExpenseLineDetail.TaxInclusiveAmt * 100),
+                    amountCents: isNaN(lineItem.ItemBasedExpenseLineDetail.TaxInclusiveAmt)
+                        ? 0
+                        : Math.round(lineItem.ItemBasedExpenseLineDetail.TaxInclusiveAmt * 100),
                     quickBooksId: parseInt(lineItem.Id),
                     type: PurchaseLineItemType.TYPICAL, // when importing, for now we mark everything as typical
                     description: lineItem.Description,

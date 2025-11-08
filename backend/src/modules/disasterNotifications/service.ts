@@ -15,13 +15,7 @@ import { logMessageToFile } from "../../utilities/logger";
 import { IPreferenceTransaction } from "../preferences/transaction";
 import { ISQSService } from "../sqs/service";
 import { getDeclarationTypeMeanings, getIncidentTypeMeanings } from "../../utilities/incident_code_meanings";
-import { IQuickbooksService, QuickbooksService } from "../quickbooks/service";
-import { IQuickbooksTransaction } from "../quickbooks/transaction";
-import { IUserTransaction } from "../user/transaction";
-import { IInvoiceTransaction } from "../invoice/transaction";
-import { IInvoiceLineItemTransaction } from "../invoiceLineItem/transaction";
-import { IPurchaseTransaction } from "../purchase/transaction";
-import { IPurchaseLineItemTransaction } from "../purchase-line-item/transaction";
+import { IQuickbooksService } from "../quickbooks/service";
 
 export interface IDisasterNotificationService {
     getUserNotifications(
@@ -112,71 +106,72 @@ export class DisasterNotificationService implements IDisasterNotificationService
         );
     }
 
-    processNewDisasters = withServiceErrorHandling(async (newDisasters: FemaDisaster[], quickbooksService: IQuickbooksService): Promise<boolean> => {
-        try {
-            const notificationsToCreate: Partial<DisasterNotification>[] = [];
-            const quickbookImportJobs: Promise<any>[] = [];
+    processNewDisasters = withServiceErrorHandling(
+        async (newDisasters: FemaDisaster[], quickbooksService: IQuickbooksService): Promise<boolean> => {
+            try {
+                const notificationsToCreate: Partial<DisasterNotification>[] = [];
 
-            // Get user-disaster pairs directly
-            const userDisasterPairs = await this.locationTransaction.getUsersAffectedByDisasters(newDisasters);
+                // Get user-disaster pairs directly
+                const userDisasterPairs = await this.locationTransaction.getUsersAffectedByDisasters(newDisasters);
 
-            logMessageToFile(
-                `Found ${userDisasterPairs.length} user-disaster combinations to create notifications for`
-            );
+                logMessageToFile(
+                    `Found ${userDisasterPairs.length} user-disaster combinations to create notifications for`
+                );
 
-            // Run QuickBooks imports in parallel and wait for all to finish
-            const qbImportPromises = userDisasterPairs.map(({ user }) =>
-                quickbooksService.importQuickbooksData({ userId: user.id })
-            );
-            await Promise.allSettled(qbImportPromises);
+                // Run QuickBooks imports in parallel and wait for all to finish
+                const qbImportPromises = userDisasterPairs.map(({ user }) =>
+                    quickbooksService.importQuickbooksData({ userId: user.id })
+                );
+                await Promise.allSettled(qbImportPromises);
 
-            for (const { user, disaster, location } of userDisasterPairs) {
-                const preferences = await this.userPreferences.getOrCreateUserPreferences(user.id);
-                // Check web notification preferences
-                if (preferences?.webNotificationsEnabled) {
-                    notificationsToCreate.push({
-                        userId: user.id,
-                        femaDisasterId: disaster.id,
-                        locationAddressId: location.id,
-                        notificationType: NotificationType.WEB,
-                        notificationStatus: NotificationStatus.UNREAD,
-                        user: user,
-                        femaDisaster: disaster,
-                    });
+                for (const { user, disaster, location } of userDisasterPairs) {
+                    const preferences = await this.userPreferences.getOrCreateUserPreferences(user.id);
+                    // Check web notification preferences
+                    if (preferences?.webNotificationsEnabled) {
+                        notificationsToCreate.push({
+                            userId: user.id,
+                            femaDisasterId: disaster.id,
+                            locationAddressId: location.id,
+                            notificationType: NotificationType.WEB,
+                            notificationStatus: NotificationStatus.UNREAD,
+                            user: user,
+                            femaDisaster: disaster,
+                        });
+                    }
+
+                    // Check email notification preferences
+                    if (preferences?.emailEnabled) {
+                        notificationsToCreate.push({
+                            userId: user.id,
+                            femaDisasterId: disaster.id,
+                            locationAddressId: location.id,
+                            notificationType: NotificationType.EMAIL,
+                            notificationStatus: NotificationStatus.UNREAD,
+                            user: user,
+                            femaDisaster: disaster,
+                        });
+                    }
                 }
 
-                // Check email notification preferences
-                if (preferences?.emailEnabled) {
-                    notificationsToCreate.push({
-                        userId: user.id,
-                        femaDisasterId: disaster.id,
-                        locationAddressId: location.id,
-                        notificationType: NotificationType.EMAIL,
-                        notificationStatus: NotificationStatus.UNREAD,
-                        user: user,
-                        femaDisaster: disaster,
-                    });
+                // Bulk create all notifications
+                if (notificationsToCreate.length > 0) {
+                    logMessageToFile(`Creating ${notificationsToCreate.length} notifications`);
+                    await this.bulkCreateNotifications(notificationsToCreate);
+                    logMessageToFile("Successfully created all notifications");
+                } else {
+                    logMessageToFile("No users affected by new disasters");
                 }
+
+                // Send the email after creating all notifications and all imports are done
+                await this.sendEmailNotifications();
+
+                return true;
+            } catch (error) {
+                logMessageToFile(`Error processing new disasters: ${error}`);
+                return false;
             }
-
-            // Bulk create all notifications
-            if (notificationsToCreate.length > 0) {
-                logMessageToFile(`Creating ${notificationsToCreate.length} notifications`);
-                await this.bulkCreateNotifications(notificationsToCreate);
-                logMessageToFile("Successfully created all notifications");
-            } else {
-                logMessageToFile("No users affected by new disasters");
-            }
-
-            // Send the email after creating all notifications and all imports are done
-            await this.sendEmailNotifications();
-
-            return true;
-        } catch (error) {
-            logMessageToFile(`Error processing new disasters: ${error}`);
-            return false;
         }
-    });
+    );
 
     markAllAsRead = withServiceErrorHandling(async (userId: string): Promise<number> => {
         return await this.notificationTransaction.markAllAsRead(userId);

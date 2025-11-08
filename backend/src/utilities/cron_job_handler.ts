@@ -32,7 +32,7 @@ export class FemaFetching implements CronJobHandler {
     private sqsService: ISQSService;
     private quickbooksTransaction: IQuickbooksTransaction;
     private userTransaction: IUserTransaction;
-    private invoiceTransaction: IInvoiceTransaction
+    private invoiceTransaction: IInvoiceTransaction;
     private invoiceLineItemTransaction: IInvoiceLineItemTransaction;
     private purchaseTransaction: IPurchaseTransaction;
     private purchaseLineItemTransaction: IPurchaseLineItemTransaction;
@@ -54,17 +54,18 @@ export class FemaFetching implements CronJobHandler {
         this.qbClient = new QuickbooksClient({
             clientId: process.env.QUICKBOOKS_CLIENT_ID!,
             clientSecret: process.env.QUICKBOOKS_CLIENT_SECRET!,
-            environment: process.env.NODE_ENV == 'dev' ? "sandbox" : "production",
+            environment: process.env.NODE_ENV === "dev" ? "sandbox" : "production",
         });
-        
-        this.quickbooksService = new QuickbooksService(this.quickbooksTransaction,
+
+        this.quickbooksService = new QuickbooksService(
+            this.quickbooksTransaction,
             this.userTransaction,
             this.invoiceTransaction,
             this.invoiceLineItemTransaction,
             this.purchaseTransaction,
             this.purchaseLineItemTransaction,
             this.qbClient
-        )
+        );
 
         this.disasterNotificationService = new DisasterNotificationService(
             this.disasterNotificationTransaction,
