@@ -4,6 +4,7 @@ import RevenueAndExpenses from "@/components/dashboard/RevenueAndExpenses";
 import NextSteps from "@/components/dashboard/NextSteps";
 import LocationRisk from "@/components/dashboard/LocationRisk";
 import NetDisasterExpenses from "@/components/dashboard/NetDisasterExpenses";
+import DisasterStatusBanner from "@/components/dashboard/DisasterStatusBanner";
 
 export default function Dashboard() {
     return (
@@ -12,21 +13,8 @@ export default function Dashboard() {
                 <h2 className="text-[40px] font-bold">Dashboard</h2>
                 <NavBarCircle size={43} />
             </div>
-            <div className="flex gap-[28px]">
-                <div className="basis-2/3">
-                    <RevenueAndExpenses />
-                </div>
-                <div className="basis-1/3">
-                    <NextSteps />
-                </div>
-            </div>
-            <div className="flex gap-[28px]">
-                <div className="flex-2/5">
-                    <LocationRisk />
-                </div>
-                <div className="flex-3/5">
-                    <NetDisasterExpenses />
-                </div>
+            <div>
+                <DisasterStatusBanner/>
             </div>
         </div>
     );
