@@ -2,12 +2,13 @@ import { User } from "../../entities/User";
 import { IUserTransaction } from "./transaction";
 import Boom from "@hapi/boom";
 import { withServiceErrorHandling } from "../../utilities/error";
-import { GetUserDTO, CreateUserDTO, GetUserCompanyDTO, GetUserCompanyResponse } from "../../types/User";
+import { GetUserDTO, CreateUserDTO, GetUserCompanyDTO, GetUserCompanyResponse, GetDisastersAffectingUserDTO, GetDisastersAffectingUseResponse } from "../../types/User";
 
 export interface IUserService {
     createUser(payload: CreateUserDTO): Promise<User>;
     getUser(payload: GetUserDTO): Promise<User>;
     getCompany(payload: GetUserCompanyDTO): Promise<GetUserCompanyResponse>;
+    getDisastersAffectingUser(payload: GetDisastersAffectingUserDTO): Promise<GetDisastersAffectingUseResponse>;
 }
 
 export class UserService implements UserService {
@@ -43,4 +44,9 @@ export class UserService implements UserService {
 
         return { companyId: user.company.id, companyName: user.company.name };
     });
+
+    getDisastersAffectingUser = withServiceErrorHandling(async (paylaod: GetDisastersAffectingUserDTO): Promise<GetDisastersAffectingUseResponse> => {
+        const companyDisasterPairs = await this.userTransaction.getDisastersAffectingUser(paylaod);
+        return JSON.parse(JSON.stringify(companyDisasterPairs));
+    })
 }

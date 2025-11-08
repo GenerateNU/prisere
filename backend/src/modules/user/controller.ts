@@ -1,7 +1,7 @@
 import { Context, TypedResponse } from "hono";
 import { IUserService } from "./service";
 import { withControllerErrorHandling } from "../../utilities/error";
-import { CreateUserDTOSchema, CreateUserResponse, GetUserResponse, GetUserCompanyResponse } from "../../types/User";
+import { CreateUserDTOSchema, CreateUserResponse, GetUserResponse, GetUserCompanyResponse, GetDisastersAffectingUseResponse } from "../../types/User";
 import { validate } from "uuid";
 import { ControllerResponse } from "../../utilities/response";
 
@@ -9,6 +9,7 @@ export interface IUserController {
     createUser(_ctx: Context): ControllerResponse<TypedResponse<CreateUserResponse, 201>>;
     getUser(_ctx: Context): ControllerResponse<TypedResponse<GetUserResponse, 200>>;
     getCompany(_ctx: Context): ControllerResponse<TypedResponse<GetUserCompanyResponse, 200>>;
+    getDisastersAffectingUser(_ctx: Context): ControllerResponse<TypedResponse<GetDisastersAffectingUseResponse, 200>>;
 }
 
 export class UserController implements IUserController {
@@ -56,4 +57,18 @@ export class UserController implements IUserController {
             return ctx.json(company, 200);
         }
     );
+
+    getDisastersAffectingUser = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<GetDisastersAffectingUseResponse, 200>> => {
+            const userId = ctx.get("userId");
+            if (!validate(userId)) {
+                return ctx.json(
+                    { error: "The given ID must be well formed and present to get the company of a user." },
+                    400
+                );
+            }
+            const companyDisasterPairs = await this.userService.getDisastersAffectingUser({ id: userId });
+            return ctx.json(companyDisasterPairs, 200);
+        }
+    )
 }

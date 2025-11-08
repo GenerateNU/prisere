@@ -5,6 +5,7 @@ import {
     GetUserResponseSchema,
     GetUserCompanyResponseSchema,
     createUserRequestBody,
+    GetDisastersAffectingUserResponseSchema,
 } from "../../types/User";
 import { IUserController, UserController } from "../user/controller";
 import { IUserService, UserService } from "../user/service";
@@ -19,6 +20,7 @@ export const addOpenApiUserRoutes = (openApi: OpenAPIHono, db: DataSource): Open
     openApi.openapi(createUserRoute, (ctx) => userController.createUser(ctx));
     openApi.openapi(getUserCompanyRoute, (ctx) => userController.getCompany(ctx));
     openApi.openapi(getUserRoute, (ctx) => userController.getUser(ctx));
+    openApi.openapi(getDisastersAffectingUserRoute, (ctx) => userController.getDisastersAffectingUser(ctx));
     return openApi;
 };
 
@@ -97,3 +99,27 @@ const getUserCompanyRoute = createRoute({
 
     tags: ["Users"],
 });
+
+const getDisastersAffectingUserRoute = createRoute({
+    method: "get",
+    path: "/users/getDisastersAffectingUser",
+    summary: "Fetches a user's associated company/disaster pair, for disasters that affect their company",
+    description: "Fetches a user's associated company/disaster pair, for disasters that affect their company",
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetDisastersAffectingUserResponseSchema,
+                },
+            },
+            description: "Successfull fetch of a user's companies affected by disasters",
+        },
+        404: {
+            description:
+                "There does not exist any user in the database such that the given id matches their id OR there is no such user with the given ID that has a non-null company",
+        },
+        ...openApiErrorCodes("Get Disasters + Companies affecting User"),
+    },
+
+    tags: ["Users"],
+})

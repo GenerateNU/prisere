@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /* Zod schemas for OpenAPI docs */
-const CompanySchema = z.object({
+export const CompanySchema = z.object({
     id: z.string(),
     name: z.string().nonempty(),
     businessOwnerFullName: z.string().nonempty(),
