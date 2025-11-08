@@ -39,6 +39,7 @@ export default function ExpenseTable() {
                         sortOrder: filters.sortOrder,
                         pageNumber: filters.pageNumber,
                         resultsPerPage: filters.resultsPerPage,
+                        type: filters.type,
                     },
                 },
                 headers: authHeader(token),
@@ -90,11 +91,10 @@ function TableContent({ purchases }: { purchases: UseQueryResult<Purchases | und
     const standardizedData = useMemo(
         () =>
             purchases.data?.map((purchase) => {
-                const firstLineItem = purchase.lineItems?.[0];
                 return {
                     amount: purchase.totalAmountCents,
                     date: new Date(purchase.dateCreated),
-                    description: firstLineItem?.description ?? "",
+                    description: getMerchant(purchase.lineItems),
                     category: getCategoriesString(purchase.lineItems),
                     disasterRelated: getPurchaseTypeString(purchase.lineItems),
                     lineItemIds: purchase.lineItems.map((li) => li.id),
@@ -103,7 +103,7 @@ function TableContent({ purchases }: { purchases: UseQueryResult<Purchases | und
                         amount: lineItem.amountCents,
                         category: lineItem.category ?? "",
                         date: new Date(lineItem.dateCreated),
-                        disasterRelated: lineItem.type || "pending",
+                        disasterRelated: lineItem.type,
                         lineItemIds: [purchase.lineItems[index].id],
                         lineItems: [],
                     })),
@@ -146,12 +146,14 @@ function TableContent({ purchases }: { purchases: UseQueryResult<Purchases | und
                 header: "Merchant",
                 accessorFn: (row) => row.description,
                 cell: ({ row, cell }) => {
+                    const cellVal = cell.getValue();
+                    const displayMerchant = cellVal.length > 20 ? `${cellVal.substring(0, 20)}...` : cellVal;
                     return (
                         <div className={cn(row.depth > 0 && "pl-8")}>
                             {row.getCanExpand() ? (
                                 <CollapsibleArrow onClick={() => row.toggleExpanded()} isOpen={row.getIsExpanded()} />
                             ) : null}
-                            {cell.getValue()}
+                            {displayMerchant}
                         </div>
                     );
                 },
@@ -237,4 +239,11 @@ function getPurchaseTypeString(lineItems: { type?: string | null }[]): DisasterT
     } else {
         return types.includes("extraneous") ? "extraneous" : "typical";
     }
+}
+
+function getMerchant(lineItems: { description?: string | null }[]): string {
+    return lineItems
+        .map(li => li.description)
+        .filter(Boolean)
+        .join(", ");
 }
