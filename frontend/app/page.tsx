@@ -11,7 +11,7 @@ export default function Dashboard() {
     useEffect(() => {
         importQuickbooksData();
     }, []);
-    
+
     return (
         <div className={"flex flex-col gap-[32px] px-[70px] pt-[72px] mb-4 justify-center"}>
             <div className="flex justify-between items-center">
