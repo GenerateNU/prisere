@@ -239,8 +239,18 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string;
-                            lastQuickBooksPurchaseImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
+                            externals?: {
+                                id: string;
+                                source: string;
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            createdAt: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -306,8 +316,18 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string;
-                            lastQuickBooksPurchaseImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
+                            externals?: {
+                                id: string;
+                                source: string;
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            createdAt: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -391,8 +411,18 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string;
-                            lastQuickBooksPurchaseImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
+                            externals?: {
+                                id: string;
+                                source: string;
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            createdAt: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -465,8 +495,18 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string;
-                            lastQuickBooksPurchaseImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
+                            externals?: {
+                                id: string;
+                                source: string;
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            createdAt: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -1076,8 +1116,18 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksInvoiceImportTime?: string;
-                                    lastQuickBooksPurchaseImportTime?: string;
+                                    lastQuickBooksInvoiceImportTime?: string | null;
+                                    lastQuickBooksPurchaseImportTime?: string | null;
+                                    externals?: {
+                                        id: string;
+                                        source: string;
+                                        externalId: string;
+                                        companyId: string;
+                                        createdAt: string;
+                                        updatedAt: string;
+                                    }[];
+                                    createdAt: string;
+                                    updatedAt: string;
                                 };
                             };
                         }[];
@@ -1579,7 +1629,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/importQuickbooksData": {
+    "/quickbooks/importQuickbooksData": {
         parameters: {
             query?: never;
             header?: never;

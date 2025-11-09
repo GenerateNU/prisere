@@ -326,16 +326,60 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string"
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "externals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string"
+                          },
+                          "externalId": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
                       "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "name",
-                    "businessOwnerFullName"
+                    "businessOwnerFullName",
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -408,16 +452,60 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string"
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "externals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string"
+                          },
+                          "externalId": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
                       "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "name",
-                    "businessOwnerFullName"
+                    "businessOwnerFullName",
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -510,16 +598,60 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string"
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "externals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string"
+                          },
+                          "externalId": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
                       "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "name",
-                    "businessOwnerFullName"
+                    "businessOwnerFullName",
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -609,16 +741,60 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string"
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "externals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string"
+                          },
+                          "externalId": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
                       "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "name",
-                    "businessOwnerFullName"
+                    "businessOwnerFullName",
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -1777,16 +1953,60 @@
                                 "minLength": 1
                               },
                               "lastQuickBooksInvoiceImportTime": {
-                                "type": "string"
+                                "type": "string",
+                                "nullable": true
                               },
                               "lastQuickBooksPurchaseImportTime": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "externals": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "source": {
+                                      "type": "string"
+                                    },
+                                    "externalId": {
+                                      "type": "string"
+                                    },
+                                    "companyId": {
+                                      "type": "string"
+                                    },
+                                    "createdAt": {
+                                      "type": "string"
+                                    },
+                                    "updatedAt": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "source",
+                                    "externalId",
+                                    "companyId",
+                                    "createdAt",
+                                    "updatedAt"
+                                  ]
+                                }
+                              },
+                              "createdAt": {
+                                "type": "string"
+                              },
+                              "updatedAt": {
                                 "type": "string"
                               }
                             },
                             "required": [
                               "id",
                               "name",
-                              "businessOwnerFullName"
+                              "businessOwnerFullName",
+                              "createdAt",
+                              "updatedAt"
                             ]
                           }
                         },
@@ -2607,7 +2827,7 @@
         }
       }
     },
-    "/importQuickbooksData": {
+    "/quickbooks/importQuickbooksData": {
       "post": {
         "summary": "Import quickbooks (invoice and purchase) data for a company, based off of the userId/user owner of the company",
         "description": "mport quickbooks (invoice and purchase) data for a company, based off of the userId/user owner of the company",

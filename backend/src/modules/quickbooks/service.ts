@@ -295,7 +295,10 @@ export class QuickbooksService implements IQuickbooksService {
             const externalId = sessionInfo.externalId;
             const now = dayjs();
 
-            if (!session || !externalId || now.isSameOrAfter(session.refreshExpiryTimestamp)) {
+            if (!session || !externalId) {
+                throw Boom.unauthorized("Quickbooks session not found");
+            }
+            if (now.isSameOrAfter(session.refreshExpiryTimestamp)) {
                 // Redirect to quickbooks auth?
                 throw Boom.unauthorized("Quickbooks session is expired");
             }

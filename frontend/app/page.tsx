@@ -6,10 +6,19 @@ import LocationRisk from "@/components/dashboard/LocationRisk";
 import NetDisasterExpenses from "@/components/dashboard/NetDisasterExpenses";
 import { importQuickbooksData } from "@/api/quickbooks";
 import { useEffect } from "react";
+import { getUser } from "@/api/user";
+import { getCompany } from "@/api/company";
 
 export default function Dashboard() {
     useEffect(() => {
-        importQuickbooksData();
+        async function maybeImportQuickbooks() {
+            const user = await getUser();
+            const company = await getCompany();
+            if (company?.externals) {
+                await importQuickbooksData();
+            }
+        }
+        maybeImportQuickbooks();
     }, []);
 
     return (

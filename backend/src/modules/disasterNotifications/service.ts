@@ -118,12 +118,6 @@ export class DisasterNotificationService implements IDisasterNotificationService
                     `Found ${userDisasterPairs.length} user-disaster combinations to create notifications for`
                 );
 
-                // Run QuickBooks imports in parallel and wait for all to finish
-                const qbImportPromises = userDisasterPairs.map(({ user }) =>
-                    quickbooksService.importQuickbooksData({ userId: user.id })
-                );
-                await Promise.allSettled(qbImportPromises);
-
                 for (const { user, disaster, location } of userDisasterPairs) {
                     const preferences = await this.userPreferences.getOrCreateUserPreferences(user.id);
                     // Check web notification preferences
@@ -164,6 +158,12 @@ export class DisasterNotificationService implements IDisasterNotificationService
 
                 // Send the email after creating all notifications and all imports are done
                 await this.sendEmailNotifications();
+
+                // Run QuickBooks imports in parallel and wait for all to finish
+                const qbImportPromises = userDisasterPairs.map(({ user }) =>
+                    quickbooksService.importQuickbooksData({ userId: user.id })
+                );
+                await Promise.allSettled(qbImportPromises);
 
                 return true;
             } catch (error) {

@@ -3,9 +3,9 @@
 import { authHeader, authWrapper, getClient } from "./client";
 
 export const importQuickbooksData = async (): Promise<{ success: true } | undefined> => {
+    
     const req = async (token: string): Promise<{ success: true } | undefined> => {
         const client = getClient();
-        console.log("About to post import request");
         const { data, response } = await client.POST("/quickbooks/importQuickbooksData", {
             headers: authHeader(token),
         });

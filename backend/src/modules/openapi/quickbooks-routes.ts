@@ -90,7 +90,7 @@ const generateSessionRoute = createRoute({
 
 const importQuickbooksData = createRoute({
     method: "post",
-    path: "importQuickbooksData",
+    path: "/quickbooks/importQuickbooksData",
     summary:
         "Import quickbooks (invoice and purchase) data for a company, based off of the userId/user owner of the company",
     description:
