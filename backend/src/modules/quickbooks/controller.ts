@@ -47,7 +47,7 @@ export class QuickbooksController implements IQuickbooksController {
     }
 
     async importQuickbooksData(ctx: Context) {
-        let userId = ctx.get("userId");
+        const userId = ctx.get("userId");
         if (!userId || typeof userId !== "string" || userId.trim() === "" || !validate(userId)) {
             throw Boom.badRequest("Invalid or missing userId");
         }
