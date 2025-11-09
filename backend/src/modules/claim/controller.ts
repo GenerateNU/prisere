@@ -15,6 +15,7 @@ import {
 import { withControllerErrorHandling } from "../../utilities/error";
 import { validate } from "uuid";
 import { IClaimService } from "./service";
+import { ClaimPDFGenerationResponse } from "./types";
 
 export interface IClaimController {
     getClaimByCompanyId(_ctx: Context): ControllerResponse<TypedResponse<GetClaimsByCompanyIdResponse, 200>>;
@@ -26,6 +27,7 @@ export interface IClaimController {
         _ctx: Context
     ): ControllerResponse<TypedResponse<GetPurchaseLineItemsForClaimResponse, 200>>;
     deletePurchaseLineItem(_ctx: Context): ControllerResponse<TypedResponse<DeletePurchaseLineItemResponse, 200>>;
+    createClaimPDF(_ctx: Context): ControllerResponse<TypedResponse<ClaimPDFGenerationResponse, 200>>;
 }
 
 export class ClaimController {
@@ -132,4 +134,19 @@ export class ClaimController {
             return ctx.json(deletedLinks, 200);
         }
     );
+
+    createClaimPDF = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<ClaimPDFGenerationResponse, 200>> => {
+            const userId = ctx.get("userId");
+            const claimId = ctx.req.param("claimId");
+
+            if (!validate(claimId)) {
+                return ctx.json({ error: "Invalid claim Id format" }, 400);
+            }
+
+            const pdfUrl = await this.claimService.createClaimPDF(claimId, userId);
+
+            return ctx.json(pdfUrl, 200);
+        }
+        );
 }

@@ -19,17 +19,11 @@ import { ClaimStatusType } from "../../types/ClaimStatusType";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
 import {
-    ClaimData,
-    ClaimWithSelectedRelations,
-    FemaDisaster,
-    FemaDisasterSchema,
-    ImpactedLocation,
-    ImpactedLocationSchema,
-    RelevantExpenseSchema,
-    SelfDisaster,
-    SelfDisasterSchema,
+    ClaimDataForPDF,
 } from "./types";
-import { ClaimLocation } from "../../entities/ClaimLocation";
+import Boom from "@hapi/boom";
+import { UserTransaction } from "../user/transaction";
+import { InvoiceTransaction } from "../invoice/transaction";
 
 
 export interface IClaimTransaction {
@@ -91,8 +85,10 @@ export interface IClaimTransaction {
     /**
      * To retrieve and package the relevant information to generate a pdf for a claim.
      * @param claimId from the desired claim.
+     * @param userId for the user who is making the claim
+     * @returns the necessary claim, user, and invoice data to make the pdf
      */
-    retrieveDataForPDF(claimId: string): Promise<ClaimData>;
+    retrieveDataForPDF(claimId: string, userId: string): Promise<ClaimDataForPDF>;
 
 }
 
@@ -289,8 +285,8 @@ export class ClaimTransaction implements IClaimTransaction {
         }
     }
 
-    async retrieveDataForPDF(claimId: string): Promise<ClaimData> {
-        const claimInfo: ClaimWithSelectedRelations | null = await this.db.manager
+    async retrieveDataForPDF(claimId: string, userId: string): Promise<ClaimDataForPDF> {
+        const claimInfo = await this.db.manager
             .createQueryBuilder(Claim, 'claim')
             .leftJoin('claim.company', 'company')
             .leftJoin('claim.femaDisaster', 'fema')
@@ -313,55 +309,26 @@ export class ClaimTransaction implements IClaimTransaction {
             .where('claim.id = :id', { id: claimId })
             .getOne();
 
-        if (!claimInfo || !claimInfo.company) {
-            throw new Error("Error finding the necessary data for the PDF.")
+        const userTransaction = new UserTransaction(this.db);
+        const invoiceTransaction = new InvoiceTransaction(this.db)
+        const user =  await userTransaction.getUser({id: userId});
+
+        if (!claimInfo || !user) {
+            throw Boom.notFound("Could not find the necessary data");
         }
 
-        const info = {
-            user: {
-                firstName: "fix this",
-                lastName: "also this",
-                email: "and this",
-            },
-            company: { name: claimInfo.company.name},
-            disaster: this.parseDisasterInfo(claimInfo.femaDisaster, claimInfo.selfDisaster),
-            // not sure what to do if claim locations is undef?? throws error rn
-            impactedLocations: this.parseImpactedLocations(claimInfo.claimLocations),
-            relevantExpenses: claimInfo.purchaseLineItems ?
-                claimInfo.purchaseLineItems.map(li => RelevantExpenseSchema.parse(li)) : [],
-            averageIncome: 4.0, // actually calculate this with endpoint
-            dateGenerated: new Date(),
-        }
+        const incomeLastThreeYears = await invoiceTransaction.sumInvoicesByCompanyAndDateRange({
+            companyId: claimInfo.companyId,
+            startDate: new Date(new Date().setFullYear(new Date().getFullYear() - 4)).toISOString(),
+            endDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString(),
+        })
 
-        return info;
-
-    }
-
-    parseImpactedLocations(claimLocations?: ClaimLocation[]): ImpactedLocation[] {
-        if (!claimLocations) {
-            throw new Error("No associated claim locations that were affected");
-        }
-
-        const addresses =
-            claimLocations.filter(Boolean).map(claimLoc => claimLoc.locationAddress);
-
-        return addresses
-            .filter((item) => item !== undefined)
-            .map(a => ImpactedLocationSchema.parse(a))
+        return {
+            ...claimInfo,
+            user: user,
+            averageIncome: incomeLastThreeYears / 3,
+        };
     }
 
 
-    parseDisasterInfo(femaDisaster?: FemaDisaster, selfDisaster?: SelfDisaster) {
-        type BothDisasters = FemaDisaster | SelfDisaster;
-        const result: BothDisasters[] = [];
-        if (femaDisaster) {
-            const fema = FemaDisasterSchema.parse(femaDisaster);
-            result.push(fema);
-        }
-        if (selfDisaster) {
-            const self = SelfDisasterSchema.parse(selfDisaster);
-            result.push(self);
-        }
-        return result;
-    }
 }

@@ -1,23 +1,28 @@
 import { z } from 'zod';
 import { ClaimLocation } from "../../entities/ClaimLocation";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
-import { LocationAddress } from "../../entities/LocationAddress";
-import { GetPurchaseLineItemResponseSchema } from "../purchase-line-item/types";
+import { User } from "../../entities/User";
 
-export type ClaimWithSelectedRelations = {
+
+export const ClaimPDFGenerationResponseSchema= z.object({
+    url: z.url(),
+})
+
+export type ClaimDataForPDF = {
     id: string;
     companyId: string;
     femaDisasterId?: string;
     selfDisasterId?: string;
-    createdAt: Date;
     company?: CompanyInfo;
-    femaDisaster?: FemaDisaster;
-    selfDisaster?: SelfDisaster;
+    femaDisaster?: FemaDisasterInfo;
+    selfDisaster?: SelfDisasterInfo;
     claimLocations?: ClaimLocation[];
     purchaseLineItems?: PurchaseLineItem[];
+    user: User;
+    averageIncome: number;
 };
 
-const UserSchema = z.object({
+export const UserInfoSchema = z.object({
     firstName: z.string(),
     lastName: z.string(),
     email: z.string().optional()
@@ -27,7 +32,7 @@ const CompanySchema = z.object({
     name: z.string(),
 });
 
-export const FemaDisasterSchema = z.object({
+export const FemaDisasterInfoSchema = z.object({
     id: z.string(),
     designatedIncidentTypes: z.string(),
     declarationDate: z.date(),
@@ -35,7 +40,7 @@ export const FemaDisasterSchema = z.object({
     incidentEndDate: z.date().nullable().optional(),
 });
 
-export const SelfDisasterSchema = z.object({
+export const SelfDisasterInfoSchema = z.object({
     description: z.string(),
     startDate: z.date(),
     endDate: z.date().optional()
@@ -56,20 +61,20 @@ export const RelevantExpenseSchema = z.object({
 });
 
 const ClaimDataSchema = z.object({
-    user: UserSchema,
+    user: UserInfoSchema,
     company: CompanySchema,
-    disaster: z.array(z.union([FemaDisasterSchema, SelfDisasterSchema])),
+    disaster: z.array(z.union([FemaDisasterInfoSchema, SelfDisasterInfoSchema])),
     impactedLocations: z.array(ImpactedLocationSchema),
     relevantExpenses: z.array(RelevantExpenseSchema),
     averageIncome: z.number().gte(0),
     dateGenerated: z.date(),
 });
 
-// Export types inferred from schemas
-export type UserInfo = z.infer<typeof UserSchema>;
+export type ClaimPDFGenerationResponse = z.infer<typeof ClaimPDFGenerationResponseSchema>;
+export type UserInfo = z.infer<typeof UserInfoSchema>;
 export type CompanyInfo = z.infer<typeof CompanySchema>;
-export type FemaDisaster = z.infer<typeof FemaDisasterSchema>;
-export type SelfDisaster = z.infer<typeof SelfDisasterSchema>;
+export type FemaDisasterInfo = z.infer<typeof FemaDisasterInfoSchema>;
+export type SelfDisasterInfo = z.infer<typeof SelfDisasterInfoSchema>;
 export type ImpactedLocation = z.infer<typeof ImpactedLocationSchema>;
 export type RelevantExpense = z.infer<typeof RelevantExpenseSchema>;
 export type ClaimData = z.infer<typeof ClaimDataSchema>;
