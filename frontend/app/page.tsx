@@ -4,23 +4,8 @@ import RevenueAndExpenses from "@/components/dashboard/RevenueAndExpenses";
 import NextSteps from "@/components/dashboard/NextSteps";
 import LocationRisk from "@/components/dashboard/LocationRisk";
 import NetDisasterExpenses from "@/components/dashboard/NetDisasterExpenses";
-import { importQuickbooksData } from "@/api/quickbooks";
-import { useEffect } from "react";
-import { getUser } from "@/api/user";
-import { getCompany } from "@/api/company";
 
 export default function Dashboard() {
-    useEffect(() => {
-        async function maybeImportQuickbooks() {
-            const user = await getUser();
-            const company = await getCompany();
-            if (company?.externals) {
-                await importQuickbooksData();
-            }
-        }
-        maybeImportQuickbooks();
-    }, []);
-
     return (
         <div className={"flex flex-col gap-[32px] px-[70px] pt-[72px] mb-4 justify-center"}>
             <div className="flex justify-between items-center">

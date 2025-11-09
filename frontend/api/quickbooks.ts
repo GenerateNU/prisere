@@ -3,7 +3,6 @@
 import { authHeader, authWrapper, getClient } from "./client";
 
 export const importQuickbooksData = async (): Promise<{ success: true } | undefined> => {
-    
     const req = async (token: string): Promise<{ success: true } | undefined> => {
         const client = getClient();
         const { data, response } = await client.POST("/quickbooks/importQuickbooksData", {

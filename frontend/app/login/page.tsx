@@ -2,7 +2,6 @@
 import { login } from "@/actions/auth";
 import { getCompany } from "@/api/company";
 import { importQuickbooksData } from "@/api/quickbooks";
-import { getUser } from "@/api/user";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { loginInitialState } from "@/types/user";
@@ -23,10 +22,9 @@ export default function LoginPage() {
         if (state?.success) {
             // Start import in the background, do not wait before redirect happens
             (async () => {
-                const user = await getUser();
                 const company = await getCompany();
                 if (company?.externals) {
-                    importQuickbooksData()
+                    importQuickbooksData();
                 }
             })();
             redirect("/");
