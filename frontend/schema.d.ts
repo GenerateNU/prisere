@@ -239,7 +239,18 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
+                            externals?: {
+                                id: string;
+                                source: string;
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            createdAt: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -305,7 +316,18 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
+                            externals?: {
+                                id: string;
+                                source: string;
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            createdAt: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -346,7 +368,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/companies/quickbooks-import-time": {
+    "/companies/quickbooks-invoice-import-time": {
         parameters: {
             query?: never;
             header?: never;
@@ -360,8 +382,8 @@ export interface paths {
         options?: never;
         head?: never;
         /**
-         * Update a company's lastQuickBooksImportTime
-         * @description Updates the lastQuickBooksImportTime for a company by ID
+         * Update a company's lastQuickBooksInvoiceImportTime
+         * @description Updates the lastQuickBooksInvoiceImportTime for a company by ID
          */
         patch: {
             parameters: {
@@ -389,7 +411,102 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
+                            externals?: {
+                                id: string;
+                                source: string;
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            createdAt: string;
+                            updatedAt: string;
+                        };
+                    };
+                };
+                /** @description Create Company Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Create Company Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/companies/quickbooks-purchase-import-time": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update a company's lastQuickBooksPurcahseImportTime
+         * @description Updates the lastQuickBooksPurcahseImportTime for a company by ID
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        importTime: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Company updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            name: string;
+                            businessOwnerFullName: string;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
+                            externals?: {
+                                id: string;
+                                source: string;
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            createdAt: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -999,7 +1116,18 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksImportTime?: string;
+                                    lastQuickBooksInvoiceImportTime?: string | null;
+                                    lastQuickBooksPurchaseImportTime?: string | null;
+                                    externals?: {
+                                        id: string;
+                                        source: string;
+                                        externalId: string;
+                                        companyId: string;
+                                        createdAt: string;
+                                        updatedAt: string;
+                                    }[];
+                                    createdAt: string;
+                                    updatedAt: string;
                                 };
                             };
                         }[];
@@ -1495,6 +1623,81 @@ export interface paths {
         };
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/quickbooks/importQuickbooksData": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import quickbooks (invoice and purchase) data for a company, based off of the userId/user owner of the company
+         * @description mport quickbooks (invoice and purchase) data for a company, based off of the userId/user owner of the company
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successfully imported new QuickBooks data */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                        };
+                    };
+                };
+                /** @description Bad request, invalid user ID or inputs */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Could not authenticate to QuickBooks session */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description QuickBooks data not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -2836,7 +3039,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;
@@ -3526,7 +3729,7 @@ export interface paths {
                         quickBooksId?: number;
                         purchaseId: string;
                         amountCents: number;
-                        category?: string;
+                        category?: string | null;
                         /** @enum {string} */
                         type: "extraneous" | "typical";
                         /** Format: date-time */
@@ -3547,7 +3750,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;
@@ -3628,7 +3831,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;
@@ -3711,7 +3914,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;

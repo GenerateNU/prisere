@@ -9,6 +9,8 @@ import { createTestData, TestDataSetup } from "../disasterNotifications/setup";
 import { IBackup } from "pg-mem";
 import { startTestApp } from "../setup-tests";
 import { FemaDisaster } from "../../entities/FemaDisaster";
+import { IQuickbooksService } from "../../modules/quickbooks/service";
+import { createTestQuickbooksService } from "./create-qb-service";
 
 describe("Email Notification Integration Test", () => {
     let backup: IBackup;
@@ -17,6 +19,7 @@ describe("Email Notification Integration Test", () => {
     let sqsService: SQSService;
     let disasterNotificationService: DisasterNotificationService;
     let mockSend: ReturnType<typeof mock>;
+    let service: IQuickbooksService;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
@@ -36,6 +39,8 @@ describe("Email Notification Integration Test", () => {
             userPreferencesTransaction,
             sqsService
         );
+
+        service = createTestQuickbooksService(dataSource);
     });
 
     beforeEach(async () => {
@@ -66,7 +71,7 @@ describe("Email Notification Integration Test", () => {
         newDisasters.push(testData.disasters.disaster2);
 
         // Process disasters (this triggers the whole flow)
-        const result = await disasterNotificationService.processNewDisasters(newDisasters);
+        const result = await disasterNotificationService.processNewDisasters(newDisasters, service);
 
         // erify the flow worked
         expect(result).toBe(true);

@@ -1,10 +1,12 @@
 "use client";
 import { login } from "@/actions/auth";
+import { getCompany } from "@/api/company";
+import { importQuickbooksData } from "@/api/quickbooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { loginInitialState } from "@/types/user";
 import { redirect } from "next/navigation";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 
 const initialState: loginInitialState = {
@@ -15,6 +17,19 @@ const initialState: loginInitialState = {
 export default function LoginPage() {
     const [state, loginAction] = useActionState(login, initialState);
     const status = useFormStatus();
+
+    useEffect(() => {
+        if (state?.success) {
+            // Start import in the background, do not wait before redirect happens
+            (async () => {
+                const company = await getCompany();
+                if (company?.externals) {
+                    importQuickbooksData();
+                }
+            })();
+            redirect("/");
+        }
+    }, [state?.success]);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-stone">
