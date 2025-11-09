@@ -18,6 +18,19 @@ import { plainToClass } from "class-transformer";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
+import {
+    ClaimData,
+    ClaimWithSelectedRelations,
+    FemaDisaster,
+    FemaDisasterSchema,
+    ImpactedLocation,
+    ImpactedLocationSchema,
+    RelevantExpenseSchema,
+    SelfDisaster,
+    SelfDisasterSchema,
+} from "./types";
+import { ClaimLocation } from "../../entities/ClaimLocation";
+
 
 export interface IClaimTransaction {
     /**
@@ -73,6 +86,14 @@ export interface IClaimTransaction {
      * @returns Promise resolving to linked claim id and purchase line item id or null if either not found
      */
     deletePurchaseLineItem(claimId: string, lineItemId: string): Promise<DeletePurchaseLineItemResponse | null>;
+
+
+    /**
+     * To retrieve and package the relevant information to generate a pdf for a claim.
+     * @param claimId from the desired claim.
+     */
+    retrieveDataForPDF(claimId: string): Promise<ClaimData>;
+
 }
 
 export class ClaimTransaction implements IClaimTransaction {
@@ -266,5 +287,81 @@ export class ClaimTransaction implements IClaimTransaction {
             logMessageToFile(`Transaction error: ${error}`);
             return null;
         }
+    }
+
+    async retrieveDataForPDF(claimId: string): Promise<ClaimData> {
+        const claimInfo: ClaimWithSelectedRelations | null = await this.db.manager
+            .createQueryBuilder(Claim, 'claim')
+            .leftJoin('claim.company', 'company')
+            .leftJoin('claim.femaDisaster', 'fema')
+            .leftJoin('claim.selfDisaster', 'self')
+            .leftJoinAndSelect('claim.claimLocations', 'locations')
+            .leftJoinAndSelect('claim.purchaseLineItems', 'lineItems')
+            .select([
+                'claim.id',
+                'claim.companyId',
+                'company.name',
+                'fema.id',
+                'fema.declarationDate',
+                'fema.designatedIncidentTypes',
+                'fema.incidentBeginDate',
+                'fema.incidentEndDate',
+                'self.description',
+                'self.startDate',
+                'self.endDate'
+            ])
+            .where('claim.id = :id', { id: claimId })
+            .getOne();
+
+        if (!claimInfo || !claimInfo.company) {
+            throw new Error("Error finding the necessary data for the PDF.")
+        }
+
+        const info = {
+            user: {
+                firstName: "fix this",
+                lastName: "also this",
+                email: "and this",
+            },
+            company: { name: claimInfo.company.name},
+            disaster: this.parseDisasterInfo(claimInfo.femaDisaster, claimInfo.selfDisaster),
+            // not sure what to do if claim locations is undef?? throws error rn
+            impactedLocations: this.parseImpactedLocations(claimInfo.claimLocations),
+            relevantExpenses: claimInfo.purchaseLineItems ?
+                claimInfo.purchaseLineItems.map(li => RelevantExpenseSchema.parse(li)) : [],
+            averageIncome: 4.0, // actually calculate this with endpoint
+            dateGenerated: new Date(),
+        }
+
+        return info;
+
+    }
+
+    parseImpactedLocations(claimLocations?: ClaimLocation[]): ImpactedLocation[] {
+        if (!claimLocations) {
+            throw new Error("No associated claim locations that were affected");
+        }
+
+        const addresses =
+            claimLocations.filter(Boolean).map(claimLoc => claimLoc.locationAddress);
+
+        return addresses
+            .filter((item) => item !== undefined)
+            .map(a => ImpactedLocationSchema.parse(a))
+    }
+
+
+    parseDisasterInfo(femaDisaster?: FemaDisaster, selfDisaster?: SelfDisaster) {
+        type BothDisasters = FemaDisaster | SelfDisaster;
+        const result: BothDisasters[] = [];
+        if (femaDisaster) {
+            const fema = FemaDisasterSchema.parse(femaDisaster);
+            result.push(fema);
+        }
+        if (selfDisaster) {
+            const self = SelfDisasterSchema.parse(selfDisaster);
+            result.push(self);
+        }
+        return result;
     }
 }
