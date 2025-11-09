@@ -239,8 +239,18 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string;
-                            lastQuickBooksPurchaseImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
+                            externals?: {
+                                id: string;
+                                source: string;
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            createdAt: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -306,8 +316,18 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string;
-                            lastQuickBooksPurchaseImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
+                            externals?: {
+                                id: string;
+                                source: string;
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            createdAt: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -391,8 +411,18 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string;
-                            lastQuickBooksPurchaseImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
+                            externals?: {
+                                id: string;
+                                source: string;
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            createdAt: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -465,8 +495,18 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string;
-                            lastQuickBooksPurchaseImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
+                            externals?: {
+                                id: string;
+                                source: string;
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            createdAt: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -1076,8 +1116,18 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksInvoiceImportTime?: string;
-                                    lastQuickBooksPurchaseImportTime?: string;
+                                    lastQuickBooksInvoiceImportTime?: string | null;
+                                    lastQuickBooksPurchaseImportTime?: string | null;
+                                    externals?: {
+                                        id: string;
+                                        source: string;
+                                        externalId: string;
+                                        companyId: string;
+                                        createdAt: string;
+                                        updatedAt: string;
+                                    }[];
+                                    createdAt: string;
+                                    updatedAt: string;
                                 };
                             };
                         }[];
@@ -1573,6 +1623,81 @@ export interface paths {
         };
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/quickbooks/importQuickbooksData": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import quickbooks (invoice and purchase) data for a company, based off of the userId/user owner of the company
+         * @description mport quickbooks (invoice and purchase) data for a company, based off of the userId/user owner of the company
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successfully imported new QuickBooks data */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @enum {boolean} */
+                            success: true;
+                        };
+                    };
+                };
+                /** @description Bad request, invalid user ID or inputs */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Could not authenticate to QuickBooks session */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description QuickBooks data not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
