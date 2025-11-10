@@ -7,21 +7,29 @@ import { cn } from "@/lib/utils";
 import { FilteredPurchases, Purchases } from "@/types/purchase";
 import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/react-table";
-import { ChevronDown, ChevronRight, Filter, Printer } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, Filter, Printer } from "lucide-react";
 import { useMemo, useState } from "react";
-import { updateCategory, getAllPurchaseCategories, updateType } from "../../api/purchase";
+import { getAllPurchaseCategories, updateCategory, updateType } from "../../api/purchase";
 import { Filters } from "./filters";
 import PaginationControls from "./PaginationControls";
 import ResultsPerPageSelect from "./ResultsPerPageSelect";
 import CategoryLabel from "./category-options";
 import DisasterLabel, { DisasterType } from "./disaster-options";
+import { Button } from "@/components/ui/button";
+import { SortByColumn } from "../../types/purchase";
 
 export default function ExpenseTable() {
     const [filters, setFilters] = useState<FilteredPurchases>({ pageNumber: 0, resultsPerPage: 5 });
+    const [showFilters, setShowFilters] = useState(false);
 
     const updateFilter = (field: string) => (value: unknown) => {
         setFilters((prev) => ({ ...prev, [field]: value }));
     };
+
+    const setSort = (column : SortByColumn, order?: 'ASC' | 'DESC') => {
+        updateFilter("sortBy")(column);
+        updateFilter("sortOrder")(order);
+    }
 
     const purchases = useQuery({
         queryKey: ["purchases-for-company", filters],
@@ -66,14 +74,21 @@ export default function ExpenseTable() {
                 <CardTitle className="text-2xl font-bold">Business Transactions</CardTitle>
                 <CardAction>
                     <div className="flex gap-2">
-                        <Filter />
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setShowFilters(!showFilters)}
+                            className={showFilters ? 'bg-accent' : ''}
+                        >
+                            <Filter className={showFilters ? 'fill-current' : ''} />
+                        </Button>
                         <Printer />
                     </div>
                 </CardAction>
             </CardHeader>
             <CardContent>
-                <Filters onFilterChange={updateFilter} categories={categories.data ?? []}></Filters>
-                <TableContent purchases={purchases} />
+                {showFilters && <Filters onFilterChange={updateFilter} categories={categories.data ?? []}></Filters>}
+                <TableContent purchases={purchases} filters={filters} setSort={setSort} />
             </CardContent>
             <CardFooter>
                 <PaginationControls
@@ -87,7 +102,11 @@ export default function ExpenseTable() {
     );
 }
 
-function TableContent({ purchases }: { purchases: UseQueryResult<Purchases | undefined> }) {
+function TableContent({ purchases, filters, setSort }:
+                      { purchases: UseQueryResult<Purchases | undefined>,
+                          filters: FilteredPurchases;
+                          setSort: (column: SortByColumn, sortOrder?: 'ASC' | 'DESC') => void;
+                      }) {
     const standardizedData = useMemo(
         () =>
             purchases.data?.map((purchase) => {
@@ -139,7 +158,9 @@ function TableContent({ purchases }: { purchases: UseQueryResult<Purchases | und
         getSubRows: (row) => row.lineItems ?? [],
         enableSubRowSelection(row) {
             return row.original.lineItems.length > 0;
+
         },
+        manualSorting: true,
         columns: [
             {
                 id: "merchant",
@@ -160,7 +181,8 @@ function TableContent({ purchases }: { purchases: UseQueryResult<Purchases | und
             },
             {
                 id: "amount",
-                header: "Amount",
+                header: () => <SortableHeader column={SortByColumn.AMOUNT} filters={filters} setSort={setSort} />,
+                enableSorting: true,
                 accessorFn: (row) => row.amount / 100,
                 cell: (ctx) => `$${(ctx.getValue() as number).toFixed(2)}`,
             },
@@ -180,7 +202,11 @@ function TableContent({ purchases }: { purchases: UseQueryResult<Purchases | und
                         );
                 }
             },
-            { id: "date", header: "Date", accessorFn: (row) => row.date.toLocaleDateString() },
+            {
+                id: "date",
+                header: () => <SortableHeader column={SortByColumn.DATE} filters={filters} setSort={setSort} />,
+                enableSorting: true,
+                accessorFn: (row) => row.date.toLocaleDateString() },
             {
                 id: "disasterRelated",
                 header: "Disaster Related",
@@ -246,4 +272,40 @@ function getMerchant(lineItems: { description?: string | null }[]): string {
         .map(li => li.description)
         .filter(Boolean)
         .join(", ");
+}
+
+
+interface SortableHeaderProps {
+    column : SortByColumn,
+    filters: FilteredPurchases,
+    setSort : (column: SortByColumn, sortOrder?: 'ASC' | 'DESC') => void,
+}
+
+
+
+function SortableHeader({ column, filters, setSort } : SortableHeaderProps) {
+    const sortColumnLabels: Record<SortByColumn, string> = {
+        [SortByColumn.DATE]: "Date",
+        [SortByColumn.AMOUNT]: "Amount"
+    };
+    const handleClick = () => {
+            if (filters.sortBy === column && filters.sortOrder === 'ASC') {
+                setSort(column, 'DESC');
+            } else if (filters.sortBy === column && filters.sortOrder === 'DESC') {
+                setSort(column, undefined);
+            } else {
+                setSort(column, 'ASC');
+            }
+        };
+    return (
+        <button
+            className="flex items-center gap-2 font-medium hover:text-foreground"
+            onClick={handleClick}
+        >
+            {sortColumnLabels[column]}
+            {filters.sortBy === column && filters.sortOrder && (
+                filters.sortOrder === 'ASC' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />
+            )}
+        </button>
+    );
 }
