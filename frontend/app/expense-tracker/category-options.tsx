@@ -86,7 +86,7 @@ function CategoryBadge(
         <Popover>
             <PopoverTrigger asChild>
                 <span className="px-3 py-1 rounded-full text-sm font-medium cursor-pointer"
-                      style={{ backgroundColor: "red" }}>
+                      style={{ backgroundColor: getTagColor(category).backgroundColor }}>
                     {displayCategory}
                 </span>
             </PopoverTrigger>
@@ -94,7 +94,8 @@ function CategoryBadge(
                 <Command>
                     <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
                         <span
-                            className="flex items-center gap-1 px-2 py-1 bg-red-500 text-white rounded-full text-xs mr-2 flex-shrink-0">
+                            className="flex items-center gap-1 px-2 py-1 text-black rounded-full text-xs mr-2 flex-shrink-0"
+                            style={getTagColor(category)}>
                            {category}
                             <button
                                 onClick={(e) => {
@@ -155,3 +156,18 @@ function Create({ searchValue, updateCategory, lineItemIds, setSearchValue }: Cr
         </button>
     );
 }
+
+const getTagColor = (tag: string) => {
+    let hash = 0;
+    for (let i = 0; i < tag.length; i++) {
+        hash = tag.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    const hue = hash % 60;
+
+    return {
+        backgroundColor: `hsl(${hue}, 60%, 85%)`,
+        color: '#000000',
+        borderColor: `hsl(${hue}, 60%, 70%)`
+    };
+};

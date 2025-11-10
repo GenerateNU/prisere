@@ -16,8 +16,9 @@ import ResultsPerPageSelect from "./ResultsPerPageSelect";
 import CategoryLabel from "./category-options";
 import DisasterLabel, { DisasterType } from "./disaster-options";
 import { Button } from "@/components/ui/button";
-import { PurchaseLineItemType, SortByColumn } from "../../types/purchase";
+import { SortByColumn } from "../../types/purchase";
 import { Badge } from "@/components/ui/badge";
+import dayjs from "dayjs";
 
 export default function ExpenseTable() {
     const [filters, setFilters] = useState<FilteredPurchases>({ pageNumber: 0, resultsPerPage: 5 });
@@ -38,6 +39,17 @@ export default function ExpenseTable() {
 
     const removeCategory = (category: string) => {
         updateFilter("categories")(filters.categories!.filter(cat => cat !== category))
+    }
+
+    const removeDate = () => {
+        updateFilter("dateFrom")(undefined);
+        updateFilter("dateTo")(undefined);
+    }
+
+    const clearFilters = () => {
+        removeDate();
+        removeType();
+        updateFilter("categories")([]);
     }
 
     const purchases = useQuery({
@@ -96,8 +108,17 @@ export default function ExpenseTable() {
                 </CardAction>
             </CardHeader>
             <CardContent>
-                {showFilters && <Filters onFilterChange={updateFilter} categories={categories.data ?? []}></Filters>}
-                <FilterDisplay filters={filters} removeCategory={removeCategory} removeType={removeType} />
+                {showFilters && <Filters onFilterChange={updateFilter}
+                                         allCategories={categories.data ?? []}
+                                         selectedCategories={filters.categories ?? []}
+                ></Filters>}
+                <FilterDisplay
+                    filters={filters}
+                    removeCategory={removeCategory}
+                    removeType={removeType}
+                    removeDate={removeDate}
+                    clearFilters={clearFilters}
+                />
                 <TableContent purchases={purchases} filters={filters} setSort={setSort} />
             </CardContent>
             <CardFooter>
@@ -184,7 +205,7 @@ function TableContent({ purchases, filters, setSort }:
                             {row.getCanExpand() ? (
                                 <CollapsibleArrow onClick={() => row.toggleExpanded()} isOpen={row.getIsExpanded()} />
                             ) : null}
-                            {displayMerchant}
+                            {displayMerchant.length > 0 ? displayMerchant : "Unknown Merchant"}
                         </div>
                     );
                 },
@@ -321,22 +342,33 @@ function SortableHeader({ column, filters, setSort } : SortableHeaderProps) {
 }
 
 
-function FilterDisplay({ filters, removeCategory, removeType } : {
+function FilterDisplay({ filters, removeCategory, removeType , removeDate, clearFilters } : {
     filters : FilteredPurchases,
     removeCategory : (category: string) => void;
-    removeType: (type: PurchaseLineItemType) => void;
-                       }) {
+    removeType: () => void;
+    removeDate: () => void;
+    clearFilters: () => void;
+}) {
     return (
         <div>
             {filters.categories?.map(cat =>
                 <AppliedFilter
                     key={cat}
-                    label={cat}
+                    label={"Category Included: " + cat}
                     onClear={() => removeCategory(cat)}
                 />
             )}
-            {filters.type && <AppliedFilter label={filters.type} onClear={() => removeType(filters.type!)} />}
-            {/* MISSING DATES */}
+            {filters.type && <AppliedFilter label={"Disaster Related: " + filters.type}
+                                            onClear={() => removeType()} />}
+            {filters.dateTo && filters.dateFrom && <AppliedFilter
+                label={`Date: ${dayjs(filters.dateFrom).format("MMM D, YYYY")} -
+                 ${dayjs(filters.dateTo).format("MMM D, YYYY")}`}
+                onClear={() => removeDate()}
+            />}
+            {(filters.type || filters.dateFrom || (filters.categories && filters.categories.length > 0)) &&
+                <Button variant="link" size="sm" onClick={clearFilters} className="text-muted-foreground">
+                Clear Filter
+            </Button>}
         </div>
     );
 }

@@ -17,10 +17,12 @@ import { Cloud } from "lucide-react";
 
 export function Filters({
     onFilterChange,
-    categories,
+    allCategories,
+    selectedCategories,
 }: {
     onFilterChange: (field: string) => (value: unknown) => void;
-    categories: string[];
+    allCategories: string[];
+    selectedCategories: string[];
 }) {
     const onDateRangeChange = (range: DateRange | undefined) => {
         if (range?.from) {
@@ -46,7 +48,7 @@ export function Filters({
     return (
         <div className="grid grid-cols-4">
             <DateFilter onDateRangeChange={onDateRangeChange} />
-            <CategoryFilter onCategoryChange={onCategoryChange} possibleCategories={categories} />
+            <CategoryFilter onCategoryChange={onCategoryChange} possibleCategories={allCategories} selectedCategories={selectedCategories} />
             <DisasterRelatedFilter onTypeChange={onTypeChange} />
             <SearchBy onSearchChange={onSearchChange} />
         </div>
@@ -99,16 +101,12 @@ function DateFilter({ onDateRangeChange }: { onDateRangeChange: (range: DateRang
         }
     };
 
-    const label = selected === "Custom" && dateRange?.from
-        ? `${dayjs(dateRange.from).format("MMM D")}${dateRange.to ? ` - ${dayjs(dateRange.to).format("MMM D")}` : " - ..."}`
-        : selected || "Select date range";
-
     return (
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="w-full justify-start">
-                        {label}
+                        All Dates
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
@@ -150,11 +148,6 @@ function DisasterRelatedFilter({ onTypeChange }: { onTypeChange: (type: Purchase
         onTypeChange(type);
     };
 
-    const getLabel = () => {
-        if (selected === PurchaseLineItemType.EXTRANEOUS) return "Disaster";
-        if (selected === PurchaseLineItemType.TYPICAL) return "Non-Disaster";
-        return "Disaster Related";
-    };
 
     return (
         <DropdownMenu>
@@ -162,7 +155,7 @@ function DisasterRelatedFilter({ onTypeChange }: { onTypeChange: (type: Purchase
                 <Button variant="outline" size="sm" className="w-full justify-between">
                     <div className="flex items-center gap-2">
                         <Cloud className="h-4 w-4" />
-                        {getLabel()}
+                        Disaster Related
                     </div>
                 </Button>
             </DropdownMenuTrigger>
@@ -184,22 +177,18 @@ function DisasterRelatedFilter({ onTypeChange }: { onTypeChange: (type: Purchase
 function CategoryFilter({
     onCategoryChange,
     possibleCategories,
+    selectedCategories,
 }: {
     onCategoryChange: (categories: string[]) => void;
     possibleCategories: string[];
+    selectedCategories: string[];
 }) {
-    const initialCategories: string[] = [];
-    const [selectedCategories, setCategories] = useState(initialCategories);
-
     const toggleCategory = (category: string) => {
-        let newCategories: string[];
         if (selectedCategories.includes(category)) {
-            newCategories = selectedCategories.filter((c: string) => c !== category);
+            onCategoryChange(selectedCategories.filter((c: string) => c !== category));
         } else {
-            newCategories = [...selectedCategories, category];
+            onCategoryChange([...selectedCategories, category]);
         }
-        setCategories(newCategories);
-        onCategoryChange(newCategories);
     };
 
     return (
