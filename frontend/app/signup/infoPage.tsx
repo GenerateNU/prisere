@@ -7,7 +7,7 @@ type infoPageProps = {
     title: string;
     description: string;
     buttonText?: string;
-    image: React.ReactNode;
+    image?: React.ReactNode;
     optional?: boolean;
 };
 
@@ -20,17 +20,17 @@ export default function InfoPage({
     image,
 }: infoPageProps) {
     return (
-        <Card className="w-full max-w-[801px] px-[80px] py-[127px] items-center gap-[36px]">
+        <Card className="w-full w-[801px] h-[706px] px-[80px] py-[127px] items-center justify-center gap-[36px]">
             <div className="flex flex-col items-center">
                 {optional && (
                     <div className="w-fit h-fit text-[12px] px-[8px] py-[4px] font-bold rounded-[4px] text-[var(--teal)] bg-[var(--light-teal)] mb-[12px]">
                         OPTIONAL
                     </div>
                 )}
-                <p className="font-bold text-[30px] mb-[14px] text-center">{title}</p>
+                <p className="font-bold text-[30px] mb-[14px] text-center whitespace-pre-line">{title}</p>
                 <p className="text-center text-[16px]">{description}</p>
             </div>
-            {image}
+            {image && <div>{image}</div>}
             <div className="flex flex-col justify-center items-center">
                 <Button
                     onClick={handleNext}

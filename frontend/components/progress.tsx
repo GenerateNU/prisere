@@ -1,5 +1,5 @@
-import Checkmark from "@/icons/Checkmark";
 import React from "react";
+import { IoCheckmark } from "react-icons/io5";
 
 type Step = {
     label: string;
@@ -22,7 +22,7 @@ const Progress = ({ progress, items }: ProgressProps) => {
                                 ${progress < item.step ? "border-1 border-[var(--fuchsia)] bg-transparent" : ""}`}
                         >
                             {progress > item.step ? (
-                                <Checkmark />
+                                <IoCheckmark className="text-[24px]" />
                             ) : (
                                 <p className="text-[20px] text-[var(--fuchsia)]">{index + 1}</p>
                             )}

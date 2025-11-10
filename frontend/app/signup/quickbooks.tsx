@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dispatch, SetStateAction } from "react";
+import { GoSync } from "react-icons/go";
+import { FiUpload } from "react-icons/fi";
 
 interface QuickbooksInfoProps {
     progress: number;
@@ -25,17 +27,19 @@ export default function Quickbooks({ progress, setProgress }: QuickbooksInfoProp
                 <div className="w-full flex flex-col items-center">
                     <Button
                         type="button"
-                        className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white px-[20px] py-[12px] text-[16px]"
+                        className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white py-[12px] text-[16px]"
+                        style={{ paddingInline: "20px" }}
                     >
-                        Sign in with Quickbooks
+                        <GoSync /> Sync Quickbooks
                     </Button>
                 </div>
                 <div className="w-full flex flex-col items-center">
                     <Button
                         type="button"
-                        className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white px-[20px] py-[12px] text-[16px]"
+                        className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white py-[12px] text-[16px]"
+                        style={{ paddingInline: "20px" }}
                     >
-                        Upload a CSV File
+                        <FiUpload /> Upload CSV
                     </Button>
                 </div>
                 <div className="w-full flex flex-col items-center">

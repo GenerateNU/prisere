@@ -29,10 +29,9 @@ export default function Onboarding({ email }: OnboardingProps) {
         <InfoPage
             key={0}
             handleNext={incrementProgress}
-            title={"First we'll need some basic information to set up your account."}
+            title={"First we'll need some basic\ninformation to set up your account."}
             description="This information will help set up your profile."
-            image={<Card className="h-[220px] w-[362px]"></Card>}
-        />, //placeholder image for now
+        />,
         <UserInfoPage key={1} email={email} progress={progress} setProgress={setProgress} />,
         <InfoPage
             key={2}
@@ -41,7 +40,7 @@ export default function Onboarding({ email }: OnboardingProps) {
             description="Your business name, owner, business type, and business location(s) help allow 
                             Prisere to personalize your experience. If you file a claim report, 
                             it will allow us to autofill fields for a smooth filing process."
-            image={<Card className="h-[220px] w-[362px]"></Card>}
+            image={<img src="/BusinessInfoOnboarding.png" alt="Business Location Editors" className="max-w-none" />}
         />,
         <Company key={3} progress={progress} setProgress={setProgress} />,
         <InfoPage
@@ -49,7 +48,6 @@ export default function Onboarding({ email }: OnboardingProps) {
             handleNext={incrementProgress}
             title={"Enter insurance information."}
             description="This is an optional step but will be helpful if you choose to file a claim report."
-            image={<Card className="h-[220px] w-[362px]"></Card>}
             optional={true}
         />,
         <Insurance key={5} progress={progress} setProgress={setProgress} />,

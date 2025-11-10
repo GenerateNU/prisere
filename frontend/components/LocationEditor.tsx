@@ -1,10 +1,12 @@
-import EditPencil from "@/icons/EditPencil";
-import TrashCan from "@/icons/TrashCan";
 import { CreateLocationRequest } from "@/types/location";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import React from "react";
+import { Card } from "./ui/card";
+import { IoCheckmark } from "react-icons/io5";
+import { FiEdit } from "react-icons/fi";
+import { HiOutlineTrash } from "react-icons/hi2";
 
 interface LocationEditorProps {
     location: CreateLocationRequest;
@@ -41,45 +43,48 @@ export default function LocationEditor({
     };
 
     return (
-        <div className="w-full mb-[16px]">
-            <div className="flex justify-between items-center">
-                <div className="flex gap-[10px] items-center">
+        <Card className="w-full mb-[16px] px-[28px] py-[20px]">
+            <div className="flex items-center justify-between">
+                <div className="flex gap-[10px] items-center w-3/4">
                     {!isExpanded ? (
                         <p className="text-[16px] font-bold">
                             {location.alias !== "" ? location.alias : "Location Name"}
                         </p>
                     ) : (
-                        <Input
-                            id="alias"
-                            name="alias"
-                            type="text"
-                            placeholder="Location Name"
-                            value={location.alias}
-                            required
-                            className="bg-transparent placeholder:text-gray-400 placeholder:text-[16px] rounded-sm h-[35px]"
-                            onChange={(e) => setLocation({ ...location, alias: e.target.value })}
-                        />
-                    )}
-                    {!isExpanded ? (
-                        <span onClick={onExpand}>
-                            <EditPencil />
-                        </span>
-                    ) : (
-                        <Button
-                            variant="link"
-                            className="p-0 text-[14px] w-fit h-fit underline"
-                            onClick={handleCollapse}
-                        >
-                            Save
-                        </Button>
+                        <div className="w-full">
+                            <Label htmlFor="alias" className="text-[16px] mb-[8px]">
+                                Title <span className="text-red-500 text-[16px]">*</span>
+                            </Label>
+                            <Input
+                                id="alias"
+                                name="alias"
+                                type="text"
+                                value={location.alias}
+                                required
+                                className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
+                                onChange={(e) => setLocation({ ...location, alias: e.target.value })}
+                            />
+                        </div>
                     )}
                 </div>
-                <span onClick={removeLocation}>
-                    <TrashCan />
-                </span>
+                <div className="flex gap-[8px] self-start">
+                    <Button
+                        onClick={onExpand}
+                        style={{ paddingInline: 0 }}
+                        className={`p-0 flex items-center justify-center h-[35px] w-[35px] ${isExpanded ? "bg-[var(--fuchsia)]" : "bg-[var(--slate)]"}`}
+                    >
+                        <FiEdit className={`${isExpanded ? "text-white" : "text-black"} text-[20px]`} />
+                    </Button>
+                    <Button
+                        onClick={removeLocation}
+                        style={{ paddingInline: 0 }}
+                        className="p-0 flex items-center justify-center h-[35px] w-[35px]"
+                    >
+                        <HiOutlineTrash className="" />
+                    </Button>
+                </div>
             </div>
-            <hr className="my-[8px]" />
-            {error ? <p className="text-red-400 mb-[16px]">{error}</p> : ""}
+            {!isExpanded && <hr className="mt-[-16px] mb-[-16px]" />}
             {isExpanded ? (
                 <div className="flex flex-col gap-[16px]">
                     <div className="flex flex-col gap-[8px] w-full">
@@ -156,16 +161,26 @@ export default function LocationEditor({
                             />
                         </div>
                     </div>
+                    {error ? <p className="text-red-400 text-[14px] self-center">{error}</p> : ""}
+                    <Button
+                        className="text-[14px] py-[7px] bg-[var(--pink)] text-[var(--fuchsia)] self-end w-fit h-fit flex justify-center items-center gap-[8px] hover:text-[white]"
+                        onClick={handleCollapse}
+                        style={{ paddingInline: "25px" }}
+                    >
+                        Save and close <IoCheckmark className="text-[24px] mb-[2px]" />
+                    </Button>
                 </div>
             ) : (
                 <div className="mb-[16px]">
                     <p>{location.streetAddress}</p>
                     <p>
-                        {location.city}, {location.stateProvince} {location.postalCode}
+                        {location.city}
+                        {location.city !== "" && location.stateProvince !== "" && ","} {location.stateProvince}{" "}
+                        {location.postalCode}
                     </p>
                     <p>{location.country}</p>
                 </div>
             )}
-        </div>
+        </Card>
     );
 }

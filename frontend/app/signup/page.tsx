@@ -10,6 +10,9 @@ import Onboarding from "./onboarding";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import { HiOutlineTableCells } from "react-icons/hi2";
+import { RiFilePaperLine } from "react-icons/ri";
+import { WiRainMix } from "react-icons/wi";
 
 const initialState: signupInitialState = {
     success: false,
@@ -32,21 +35,33 @@ export default function SignUpPage() {
 
     const signupCards = [
         {
-            icon: <div className="bg-[var(--ochre)] h-[41px] w-[41px] rounded-full" />,
+            icon: (
+                <div className="bg-[var(--light-teal)] h-[41px] w-[41px] rounded-full flex justify-center items-center">
+                    <WiRainMix className="text-[29px] text-[var(--teal)]" />
+                </div>
+            ),
             title: "Notifications From FEMA",
         },
         {
-            icon: <div className="bg-[var(--ochre)] h-[41px] w-[41px] rounded-full" />,
+            icon: (
+                <div className="bg-[var(--light-teal)] h-[41px] w-[41px] rounded-full flex justify-center items-center">
+                    <RiFilePaperLine className="text-[20px] text-[var(--teal)]" />
+                </div>
+            ),
             title: "Filing disaster-related claim reports",
         },
         {
-            icon: <div className="bg-[var(--ochre)] h-[41px] w-[41px] rounded-full" />,
+            icon: (
+                <div className="bg-[var(--light-teal)] h-[41px] w-[41px] rounded-full flex justify-center items-center">
+                    <HiOutlineTableCells className="text-[22px] text-[var(--teal)]" />
+                </div>
+            ),
             title: "Updated Expense Trackers",
         },
     ];
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-stone mx-8">
+        <div className="min-h-screen flex items-center justify-center bg-stone mx-8">
             {profileStage ? (
                 <Onboarding email={state.email!} />
             ) : (

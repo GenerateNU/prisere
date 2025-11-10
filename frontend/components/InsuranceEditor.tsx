@@ -1,11 +1,11 @@
-import EditPencil from "@/icons/EditPencil";
-import TrashCan from "@/icons/TrashCan";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import React from "react";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { CreateInsurancePolicyRequest } from "@/types/insurance-policy";
+import { HiOutlineTrash } from "react-icons/hi2";
+import { FiEdit } from "react-icons/fi";
 
 interface InsuranceEditorProps {
     insurance: CreateInsurancePolicyRequest;
@@ -71,9 +71,13 @@ export default function InsuranceEditor({
                         />
                     )}
                     {!isExpanded ? (
-                        <span onClick={onExpand}>
-                            <EditPencil />
-                        </span>
+                        <Button
+                            onClick={onExpand}
+                            style={{ paddingInline: 0 }}
+                            className={`p-0 flex items-center justify-center h-[35px] w-[35px] ${isExpanded ? "bg-[var(--fuchsia)]" : "bg-[var(--slate)]"}`}
+                        >
+                            <FiEdit className={`${isExpanded ? "text-white" : "text-black"} text-[20px]`} />
+                        </Button>
                     ) : (
                         <Button
                             variant="link"
@@ -84,9 +88,13 @@ export default function InsuranceEditor({
                         </Button>
                     )}
                 </div>
-                <span onClick={removeInsurance}>
-                    <TrashCan />
-                </span>
+                <Button
+                    onClick={removeInsurance}
+                    style={{ paddingInline: 0 }}
+                    className="p-0 flex items-center justify-center h-[35px] w-[35px]"
+                >
+                    <HiOutlineTrash className="" />
+                </Button>
             </div>
             <hr className="mt-[16px] mb-[16px]" />
             {error ? <p className="text-red-400 mb-[16px]">{error}</p> : ""}

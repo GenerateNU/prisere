@@ -3,12 +3,12 @@ import InsuranceEditor from "@/components/InsuranceEditor";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
-import AddCircle from "@/icons/AddCircle";
 import { CreateInsurancePolicyBulkRequest, CreateInsurancePolicyRequest } from "@/types/insurance-policy";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { Dispatch } from "react";
 import { SetStateAction } from "react";
+import { IoAddCircleOutline } from "react-icons/io5";
 
 interface InsuranceInfoProps {
     progress: number;
@@ -47,7 +47,25 @@ export default function Insurance({ progress, setProgress }: InsuranceInfoProps)
         setInsurancePayload(newInsurances);
     };
 
+    const isInsuranceInProgress = () => {
+        return insurancePayload.some((insurance) => {
+            return (
+                insurance.policyName === "" ||
+                insurance.insuranceType === "" ||
+                insurance.policyHolderFirstName === "" ||
+                insurance.policyHolderLastName === "" ||
+                insurance.insuranceCompanyName === "" ||
+                insurance.policyNumber === ""
+            );
+        });
+    };
+
     const addInsurance = () => {
+        if (isInsuranceInProgress()) {
+            setError("Please complete the current insurance policy before adding a new one.");
+            return;
+        }
+
         setInsurancePayload([
             ...insurancePayload,
             {
@@ -72,13 +90,17 @@ export default function Insurance({ progress, setProgress }: InsuranceInfoProps)
             setError("Please add at least one insurance policy or choose to add later.");
             return;
         }
+        if (isInsuranceInProgress()) {
+            setError("Please complete all insurance policies before proceeding.");
+            return;
+        }
         setEditingInsuranceIndex(null);
         bulkCreateInsurance();
     };
 
     return (
-        <Card className="w-full px-[163px] py-[127px] gap-0">
-            <div className="flex justify-center items-center flex-col gap-[10px]">
+        <Card className="w-full px-[163px] py-[127px] gap-0 ">
+            <div className="flex justify-center items-center flex-col gap-[10px] w-[492px]">
                 <div className="w-fit h-fit text-[12px] px-[8px] py-[4px] font-bold rounded-[4px] text-[var(--teal)] bg-[var(--light-teal)]">
                     OPTIONAL
                 </div>
@@ -96,15 +118,14 @@ export default function Insurance({ progress, setProgress }: InsuranceInfoProps)
                 />
             ))}
             <Button
-                variant="link"
-                className="w-fit self-start flex items-center text-[16px] h-[24px] p-0 underline hover:text-gray-600"
-                style={{ paddingInline: 0 }}
+                className="w-[150px] mb-[20px] flex items-center text-[16px] h-[34px] self-start px-[12px] py-[4px] underline bg-slate hover:text-gray-600"
                 onClick={addInsurance}
             >
-                <AddCircle /> Add Insurance
+                <IoAddCircleOutline /> Add a Policy
             </Button>
             <div>
                 <div className="w-full flex flex-col items-center gap-2 mb-[20px]">
+                    {error && <p className="text-red-500 text-sm"> {error} </p>}
                     <Button
                         type="button"
                         onClick={handleNext}
@@ -113,7 +134,6 @@ export default function Insurance({ progress, setProgress }: InsuranceInfoProps)
                         {createInsurancePending ? <Spinner /> : <></>}
                         Next
                     </Button>
-                    {error && <p className="text-red-500 text-sm"> {error} </p>}
                 </div>
                 <div className="w-full flex flex-col items-center">
                     <Button

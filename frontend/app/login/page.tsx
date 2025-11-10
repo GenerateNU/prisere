@@ -11,6 +11,9 @@ import { Label } from "@radix-ui/react-label";
 import { redirect } from "next/navigation";
 import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
+import { HiOutlineTableCells } from "react-icons/hi2";
+import { RiFilePaperLine } from "react-icons/ri";
+import { WiRainMix } from "react-icons/wi";
 
 const initialState: loginInitialState = {
     success: false,
@@ -23,15 +26,27 @@ export default function LoginPage() {
 
     const signupCards = [
         {
-            icon: <div className="bg-[var(--ochre)] h-[41px] w-[41px] rounded-full" />,
+            icon: (
+                <div className="bg-[var(--light-teal)] h-[41px] w-[41px] rounded-full flex justify-center items-center">
+                    <WiRainMix className="text-[29px] text-[var(--teal)]" />
+                </div>
+            ),
             title: "Notifications From FEMA",
         },
         {
-            icon: <div className="bg-[var(--ochre)] h-[41px] w-[41px] rounded-full" />,
+            icon: (
+                <div className="bg-[var(--light-teal)] h-[41px] w-[41px] rounded-full flex justify-center items-center">
+                    <RiFilePaperLine className="text-[20px] text-[var(--teal)]" />
+                </div>
+            ),
             title: "Filing disaster-related claim reports",
         },
         {
-            icon: <div className="bg-[var(--ochre)] h-[41px] w-[41px] rounded-full" />,
+            icon: (
+                <div className="bg-[var(--light-teal)] h-[41px] w-[41px] rounded-full flex justify-center items-center">
+                    <HiOutlineTableCells className="text-[22px] text-[var(--teal)]" />
+                </div>
+            ),
             title: "Updated Expense Trackers",
         },
     ];
@@ -124,7 +139,7 @@ export default function LoginPage() {
                                     redirect("/signup");
                                 }}
                                 disabled={status.pending}
-                                className="underline text-[12px] decoration-1 hover:text-gray-400 h-fit text-bold"
+                                className="underline text-[12px] decoration-1 hover:text-gray-400 h-fit font-bold"
                             >
                                 {status.pending ? <Spinner /> : <></>}
                                 New User? Sign up
