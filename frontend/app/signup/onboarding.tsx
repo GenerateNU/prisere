@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Quickbooks from "./quickbooks";
 import InfoPage from "./infoPage";
 import { Card } from "@/components/ui/card";
+import Image from "next/image";
 
 interface OnboardingProps {
     email: string;
@@ -40,7 +41,15 @@ export default function Onboarding({ email }: OnboardingProps) {
             description="Your business name, owner, business type, and business location(s) help allow 
                             Prisere to personalize your experience. If you file a claim report, 
                             it will allow us to autofill fields for a smooth filing process."
-            image={<img src="/BusinessInfoOnboarding.png" alt="Business Location Editors" className="max-w-none" />}
+            image={
+                <Image
+                    src="/BusinessInfoOnboarding.png"
+                    alt="Business Location Editors"
+                    className="max-w-none"
+                    width={640}
+                    height={265}
+                />
+            }
         />,
         <Company key={3} progress={progress} setProgress={setProgress} />,
         <InfoPage

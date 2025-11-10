@@ -6,6 +6,8 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { CreateInsurancePolicyRequest } from "@/types/insurance-policy";
 import { HiOutlineTrash } from "react-icons/hi2";
 import { FiEdit } from "react-icons/fi";
+import { Card } from "./ui/card";
+import { IoCheckmark } from "react-icons/io5";
 
 interface InsuranceEditorProps {
     insurance: CreateInsurancePolicyRequest;
@@ -43,7 +45,7 @@ export default function InsuranceEditor({
             !insurance.insuranceCompanyName ||
             !insurance.policyNumber
         ) {
-            setError("Please fill in all required fields before saving.");
+            setError("Please fill in all required fields before saving an insurance.");
             return;
         }
         setError(null);
@@ -51,53 +53,48 @@ export default function InsuranceEditor({
     };
 
     return (
-        <div className="w-full mb-[16px]">
+        <Card className="w-full mb-[16px] px-[28px] py-[20px] gap-[16px]">
             <div className="flex justify-between items-center">
-                <div className="flex gap-[10px] items-center">
+                <div className="w-3/4 flex gap-[10px] items-center">
                     {!isExpanded ? (
                         <p className="text-[16px] font-bold">
                             {insurance.policyName !== "" ? insurance.policyName : "Insurance Name"}
                         </p>
                     ) : (
-                        <Input
-                            id="policyName"
-                            name="policyName"
-                            type="text"
-                            placeholder="Insurance Name"
-                            value={insurance.policyName}
-                            required
-                            className="bg-transparent placeholder:text-gray-400 placeholder:text-[16px] rounded-sm h-[35px]"
-                            onChange={(e) => setInsurance({ ...insurance, policyName: e.target.value })}
-                        />
-                    )}
-                    {!isExpanded ? (
-                        <Button
-                            onClick={onExpand}
-                            style={{ paddingInline: 0 }}
-                            className={`p-0 flex items-center justify-center h-[35px] w-[35px] ${isExpanded ? "bg-[var(--fuchsia)]" : "bg-[var(--slate)]"}`}
-                        >
-                            <FiEdit className={`${isExpanded ? "text-white" : "text-black"} text-[20px]`} />
-                        </Button>
-                    ) : (
-                        <Button
-                            variant="link"
-                            className="p-0 text-[14px] w-fit h-fit underline"
-                            onClick={handleCollapse}
-                        >
-                            Save
-                        </Button>
+                        <div className="w-full">
+                            <Label htmlFor="alias" className="text-[16px] mb-[8px]">
+                                Title <span className="text-red-500 text-[16px]">*</span>
+                            </Label>
+                            <Input
+                                id="policyName"
+                                name="policyName"
+                                type="text"
+                                value={insurance.policyName}
+                                required
+                                className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
+                                onChange={(e) => setInsurance({ ...insurance, policyName: e.target.value })}
+                            />
+                        </div>
                     )}
                 </div>
-                <Button
-                    onClick={removeInsurance}
-                    style={{ paddingInline: 0 }}
-                    className="p-0 flex items-center justify-center h-[35px] w-[35px]"
-                >
-                    <HiOutlineTrash className="" />
-                </Button>
+                <div className="flex gap-[8px] self-start">
+                    <Button
+                        onClick={onExpand}
+                        style={{ paddingInline: 0 }}
+                        className={`p-0 flex items-center justify-center h-[35px] w-[35px] ${isExpanded ? "bg-[var(--fuchsia)]" : "bg-[var(--slate)]"}`}
+                    >
+                        <FiEdit className={`${isExpanded ? "text-white" : "text-black"} text-[20px]`} />
+                    </Button>
+                    <Button
+                        onClick={removeInsurance}
+                        style={{ paddingInline: 0 }}
+                        className="p-0 flex items-center justify-center h-[35px] w-[35px]"
+                    >
+                        <HiOutlineTrash className="" />
+                    </Button>
+                </div>
             </div>
-            <hr className="mt-[16px] mb-[16px]" />
-            {error ? <p className="text-red-400 mb-[16px]">{error}</p> : ""}
+            {!isExpanded && <hr />}
             {isExpanded ? (
                 <div className="flex flex-col gap-[16px]">
                     <div className="flex flex-col gap-[8px] w-full">
@@ -188,16 +185,41 @@ export default function InsuranceEditor({
                             className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
                         />
                     </div>
+                    {error ? <p className="text-red-400 text-[14px] self-center">{error}</p> : ""}
+                    <Button
+                        className="text-[14px] py-[7px] bg-[var(--pink)] text-[var(--fuchsia)] self-end w-fit h-fit flex justify-center items-center gap-[8px] hover:text-[white]"
+                        onClick={handleCollapse}
+                        style={{ paddingInline: "25px" }}
+                    >
+                        Save and close <IoCheckmark className="text-[24px] mb-[2px]" />
+                    </Button>
                 </div>
             ) : (
-                <div className="mb-[16px]">
-                    <p>
-                        {insurance.policyHolderFirstName} {insurance.policyHolderLastName}
-                    </p>
-                    <p>{insurance.insuranceType}</p>
-                    <p>{insurance.policyNumber}</p>
+                <div className="flex gap-[40px]">
+                    <div className="flex flex-col gap-[20px] max-w-1/2">
+                        <div className="flex flex-col gap-[4px] overflow-hidden truncate text-ellipsis">
+                            <p className="font-bold text-[16px]">Insurance Company</p>
+                            <p>{insurance.insuranceCompanyName}</p>
+                        </div>
+                        <div className="flex flex-col gap-[4px]">
+                            <p className="font-bold text-[16px]">Insured Name</p>
+                            <p>
+                                {insurance.policyHolderFirstName} {insurance.policyHolderLastName}
+                            </p>
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-[20px] max-w-1/2">
+                        <div className="flex flex-col gap-[4px]">
+                            <p className="font-bold text-[16px]">Insurance Type</p>
+                            <p>{insurance.insuranceType}</p>
+                        </div>
+                        <div className="flex flex-col gap-[4px]">
+                            <p className="font-bold text-[16px]">Policy Number</p>
+                            <p>{insurance.policyNumber}</p>
+                        </div>
+                    </div>
                 </div>
             )}
-        </div>
+        </Card>
     );
 }

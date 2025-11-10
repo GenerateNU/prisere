@@ -80,7 +80,11 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
         },
     });
 
-    const { isPending, error: companyMutateError, mutate } = useMutation<Company, Error, CreateCompanyRequest>({
+    const {
+        isPending,
+        error: companyMutateError,
+        mutate,
+    } = useMutation<Company, Error, CreateCompanyRequest>({
         mutationFn: (payload: CreateCompanyRequest) =>
             createCompany({ ...payload, businessOwnerFullName: "Owner Name" }),
         onError: (error: Error) => {
@@ -226,7 +230,9 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
             </div>
             <div className="w-full flex flex-col gap-2 items-center">
                 {(locError || companyError || companyMutateError) && (
-                    <p className="text-red-500 text-sm mt-[-16px]"> {companyError || locError || companyMutateError?.message} </p>
+                    <p className="text-red-500 text-sm mt-[-16px]">
+                        {companyError || locError || companyMutateError?.message}{" "}
+                    </p>
                 )}
                 <Button
                     type="button"

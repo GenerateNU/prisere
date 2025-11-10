@@ -113,15 +113,21 @@ export default function Insurance({ progress, setProgress }: InsuranceInfoProps)
                     setInsurance={(i) => updateInsurance(index, i)}
                     removeInsurance={() => removeInsurance(index)}
                     isExpanded={editingInsuranceIndex === index}
-                    onExpand={() => setEditingInsuranceIndex(index)}
+                    onExpand={() =>
+                        editingInsuranceIndex === index
+                            ? setEditingInsuranceIndex(null)
+                            : setEditingInsuranceIndex(index)
+                    }
                     onCollapse={() => setEditingInsuranceIndex(null)}
                 />
             ))}
             <Button
-                className="w-[150px] mb-[20px] flex items-center text-[16px] h-[34px] self-start px-[12px] py-[4px] underline bg-slate hover:text-gray-600"
+                className={`w-[250px] mb-[20px] flex items-center text-[16px] h-[34px] 
+                    self-start px-[12px] py-[4px] underline bg-slate hover:text-gray-600 
+                    ${insurancePayload.length == 0 ? "self-center" : ""}`}
                 onClick={addInsurance}
             >
-                <IoAddCircleOutline /> Add a Policy
+                <IoAddCircleOutline /> {insurancePayload.length == 0 ? "Add Insurance" : "Add Another Insurance"}
             </Button>
             <div>
                 <div className="w-full flex flex-col items-center gap-2 mb-[20px]">
