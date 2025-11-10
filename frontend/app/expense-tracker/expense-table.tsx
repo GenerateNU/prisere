@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { FilteredPurchases, Purchases } from "@/types/purchase";
 import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, Filter, Printer } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, Filter, Printer, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { getAllPurchaseCategories, updateCategory, updateType } from "../../api/purchase";
 import { Filters } from "./filters";
@@ -16,7 +16,8 @@ import ResultsPerPageSelect from "./ResultsPerPageSelect";
 import CategoryLabel from "./category-options";
 import DisasterLabel, { DisasterType } from "./disaster-options";
 import { Button } from "@/components/ui/button";
-import { SortByColumn } from "../../types/purchase";
+import { PurchaseLineItemType, SortByColumn } from "../../types/purchase";
+import { Badge } from "@/components/ui/badge";
 
 export default function ExpenseTable() {
     const [filters, setFilters] = useState<FilteredPurchases>({ pageNumber: 0, resultsPerPage: 5 });
@@ -29,6 +30,14 @@ export default function ExpenseTable() {
     const setSort = (column : SortByColumn, order?: 'ASC' | 'DESC') => {
         updateFilter("sortBy")(column);
         updateFilter("sortOrder")(order);
+    }
+
+    const removeType = () => {
+        updateFilter("type")(undefined)
+    }
+
+    const removeCategory = (category: string) => {
+        updateFilter("categories")(filters.categories!.filter(cat => cat !== category))
     }
 
     const purchases = useQuery({
@@ -88,6 +97,7 @@ export default function ExpenseTable() {
             </CardHeader>
             <CardContent>
                 {showFilters && <Filters onFilterChange={updateFilter} categories={categories.data ?? []}></Filters>}
+                <FilterDisplay filters={filters} removeCategory={removeCategory} removeType={removeType} />
                 <TableContent purchases={purchases} filters={filters} setSort={setSort} />
             </CardContent>
             <CardFooter>
@@ -307,5 +317,41 @@ function SortableHeader({ column, filters, setSort } : SortableHeaderProps) {
                 filters.sortOrder === 'ASC' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />
             )}
         </button>
+    );
+}
+
+
+function FilterDisplay({ filters, removeCategory, removeType } : {
+    filters : FilteredPurchases,
+    removeCategory : (category: string) => void;
+    removeType: (type: PurchaseLineItemType) => void;
+                       }) {
+    return (
+        <div>
+            {filters.categories?.map(cat =>
+                <AppliedFilter
+                    key={cat}
+                    label={cat}
+                    onClear={() => removeCategory(cat)}
+                />
+            )}
+            {filters.type && <AppliedFilter label={filters.type} onClear={() => removeType(filters.type!)} />}
+            {/* MISSING DATES */}
+        </div>
+    );
+}
+
+
+function AppliedFilter({ label, onClear }: { label: string; onClear: () => void }) {
+    return (
+        <Badge variant="secondary" className="gap-2 pr-1">
+            {label}
+            <button
+                onClick={onClear}
+                className="rounded-sm hover:bg-muted p-0.5"
+            >
+                <X className="h-3 w-3" />
+            </button>
+        </Badge>
     );
 }

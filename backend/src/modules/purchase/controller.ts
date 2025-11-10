@@ -89,7 +89,7 @@ export class PurchaseController implements IPurchaseController {
 
             if (!validate(payload.companyId)) {
                 return ctx.json({ error: "Invalid company ID format" }, 400);
-            } else if (payload.dateFrom && new Date(payload.dateFrom) >= new Date(payload.dateTo)) {
+            } else if (payload.dateFrom && payload.dateTo && new Date(payload.dateFrom) >= new Date(payload.dateTo)) {
                 return ctx.json({ error: "Start date must be before End date" }, 400);
             }
 

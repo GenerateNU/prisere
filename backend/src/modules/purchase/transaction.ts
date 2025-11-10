@@ -63,17 +63,44 @@ export class PurchaseTransaction implements IPurchaseTransaction {
         const queryBuilder = this.db.manager.createQueryBuilder(Purchase, "p");
         queryBuilder.leftJoinAndSelect("p.lineItems", "li");
         queryBuilder.where("p.companyId = :companyId", { companyId });
+
         const numToSkip = resultsPerPage * pageNumber;
 
         if (categories && categories.length > 0) {
-            queryBuilder.andWhere("li.category IN (:...categories)", { categories });
+            queryBuilder.andWhere((qb) => {
+                const subQuery = qb
+                    .subQuery()
+                    .select("li_sub.purchaseId")
+                    .from("purchase_line_item", "li_sub")
+                    .where("li_sub.category IN (:...categories)", { categories })
+                    .getQuery();
+                return `p.id IN ${subQuery}`;
+            });
         }
 
-        if (type) {
-            queryBuilder.andWhere("li.type = :type", { type });
+        if (type === "extraneous") {
+            queryBuilder.andWhere((qb) => {
+                const subQuery = qb
+                    .subQuery()
+                    .select("li_sub.purchaseId")
+                    .from("purchase_line_item", "li_sub")
+                    .where("li_sub.type = 'extraneous'")
+                    .getQuery();
+                return `p.id IN ${subQuery}`;
+            });
+        } else if (type === "typical") {
+            queryBuilder.andWhere((qb) => {
+                const subQuery = qb
+                    .subQuery()
+                    .select("li_sub.purchaseId")
+                    .from("purchase_line_item", "li_sub")
+                    .where("li_sub.type = 'extraneous'")
+                    .getQuery();
+                return `p.id NOT IN ${subQuery}`;
+            });
         }
 
-        if (dateFrom) {
+        if (dateFrom && dateTo) {
             queryBuilder.andWhere("p.dateCreated BETWEEN :dateFrom AND :dateTo", { dateFrom, dateTo });
         }
 
@@ -87,12 +114,20 @@ export class PurchaseTransaction implements IPurchaseTransaction {
         }
 
         if (search) {
-            queryBuilder.andWhere("(li.description ILIKE :search OR li.category ILIKE :search)", {
-                search: `%${search}%`,
+            queryBuilder.andWhere((qb) => {
+                const subQuery = qb
+                    .subQuery()
+                    .select("li_sub.purchaseId")
+                    .from("purchase_line_item", "li_sub")
+                    .where("(li_sub.description ILIKE :search OR li_sub.category ILIKE :search)", {
+                        search: `%${search}%`,
+                    })
+                    .getQuery();
+                return `p.id IN ${subQuery}`;
             });
         }
 
-        return await queryBuilder.distinct(true).skip(numToSkip).take(resultsPerPage).getMany();
+        return await queryBuilder.skip(numToSkip).take(resultsPerPage).getMany();
     }
 
     async sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number> {

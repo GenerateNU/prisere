@@ -66,7 +66,7 @@ export const GetCompanyPurchasesQueryParams = z.object({
     categories: z.array(z.string().nonempty()).optional().default([]),
     type: z.enum(PurchaseLineItemType).optional(),
     dateFrom : z.string().datetime().optional(),
-    dateTo : z.string().datetime().optional().default(new Date().toISOString()),
+    dateTo : z.string().datetime().optional(),
     search : z.string().optional(),
 });
 
