@@ -60,11 +60,14 @@ export class PurchaseTransaction implements IPurchaseTransaction {
         const { companyId, pageNumber, resultsPerPage, categories, type, dateFrom, dateTo, search, sortBy, sortOrder } =
             payload;
 
-        const queryBuilder = this.db.manager.createQueryBuilder(Purchase, "p");
-        queryBuilder.leftJoinAndSelect("p.lineItems", "li");
-        queryBuilder.where("p.companyId = :companyId", { companyId });
-
         const numToSkip = resultsPerPage * pageNumber;
+        const sortColumnMap: Record<string, string> = {
+            date: "p.dateCreated",
+            totalAmountCents: "p.totalAmountCents",
+        };
+
+        const queryBuilder = this.db.manager.createQueryBuilder(Purchase, "p");
+        queryBuilder.where("p.companyId = :companyId", { companyId });
 
         if (categories && categories.length > 0) {
             queryBuilder.andWhere((qb) => {
@@ -104,17 +107,6 @@ export class PurchaseTransaction implements IPurchaseTransaction {
             queryBuilder.andWhere("p.dateCreated BETWEEN :dateFrom AND :dateTo", { dateFrom, dateTo });
         }
 
-        const sortColumnMap: Record<string, string> = {
-            date: "p.dateCreated",
-            totalAmountCents: "p.totalAmountCents",
-        };
-
-        if (sortBy && sortOrder && sortColumnMap[sortBy]) {
-            queryBuilder.orderBy(sortColumnMap[sortBy], sortOrder);
-        }
-
-        queryBuilder.addOrderBy("li.dateCreated", "ASC");
-
         if (search) {
             queryBuilder.andWhere((qb) => {
                 const subQuery = qb
@@ -129,7 +121,28 @@ export class PurchaseTransaction implements IPurchaseTransaction {
             });
         }
 
-        return await queryBuilder.skip(numToSkip).take(resultsPerPage).getMany();
+        if (sortBy && sortOrder && sortColumnMap[sortBy]) {
+            queryBuilder.orderBy(sortColumnMap[sortBy], sortOrder);
+        }
+
+
+        const idRows = await queryBuilder.skip(numToSkip).take(resultsPerPage).getMany();
+        const ids = idRows.map((row) => row.id);
+        if (ids.length === 0) {
+            return [];
+        }
+
+        const queryBuilderForIds = this.db.manager
+            .createQueryBuilder(Purchase, "p")
+            .leftJoinAndSelect("p.lineItems", "li")
+            .where("p.id IN (:...ids)", { ids })
+
+        if (sortBy && sortOrder && sortColumnMap[sortBy]) {
+            queryBuilderForIds.orderBy(sortColumnMap[sortBy], sortOrder);
+        }
+        // to guarantee that line items do not move in the table rows
+        queryBuilderForIds.addOrderBy("li.dateCreated", "ASC");
+        return await queryBuilderForIds.getMany();
     }
 
     async sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number> {

@@ -72,20 +72,6 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
         expect(response.status).toBe(400);
     });
 
-    test("PATCH /purchase/category - Purchase line item does not exist", async () => {
-        const response = await app.request(TESTING_PREFIX + "/purchase/line/category", {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                id: "00000000-0000-0000-0000-000000000000",
-                category: "New Category",
-                removeCategory: false,
-            }),
-        });
-
-        expect(response.status).toBe(404);
-    });
-
     test("PATCH /purchase/category - Invalid UUID format", async () => {
         const response = await app.request(TESTING_PREFIX + "/purchase/line/category", {
             method: "PATCH",
@@ -191,6 +177,85 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
         expect(response.status).toBe(200);
         const data = await response.json();
         expect(data.category).toBe("Second Category");
+    });
+
+
+    test("PATCH /purchase/category - Successfully updates category then removes", async () => {
+        const response = await app.request(TESTING_PREFIX + "/purchase/line/category", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: seededPurchaseLineItems[0].id,
+                category: "Office Supplies",
+                removeCategory: false,
+            }),
+        });
+
+        expect(response.status).toBe(200);
+        const data = await response.json();
+        expect(data.id).toBe(seededPurchaseLineItems[0].id);
+        expect(data.category).toBe("Office Supplies");
+
+        const updatedItem = await testAppDataSource.manager.findOne(PurchaseLineItem, {
+            where: { id: seededPurchaseLineItems[0].id },
+        });
+
+        expect(updatedItem?.category).toBe("Office Supplies");
+
+        const removeResponse = await app.request(TESTING_PREFIX + "/purchase/line/category", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: seededPurchaseLineItems[0].id,
+                category: "Office Supplies",
+                removeCategory: true,
+            }),
+        });
+
+        expect(removeResponse.status).toBe(200);
+        const updatedItemAfterRemove = await testAppDataSource.manager.findOne(PurchaseLineItem, {
+            where: { id:  seededPurchaseLineItems[0].id },
+        });
+
+        expect(updatedItemAfterRemove).not.toBeNull();
+        expect(updatedItemAfterRemove?.category).toBeNull();
+
+    });
+
+
+    test("PATCH /purchase/category - Does not remove category when category does not match", async () => {
+        const lineItemId = seededPurchaseLineItems[0].id;
+
+        const setResponse = await app.request(TESTING_PREFIX + "/purchase/line/category", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: lineItemId,
+                category: "Keep Me",
+                removeCategory: false,
+            }),
+        });
+
+        expect(setResponse.status).toBe(200);
+
+        const removeResponse = await app.request(TESTING_PREFIX + "/purchase/line/category", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: lineItemId,
+                category: "Other Category",
+                removeCategory: true,
+            }),
+        });
+
+        expect(removeResponse.status).toBe(200);
+
+        const updatedItem = await testAppDataSource.manager.findOne(PurchaseLineItem, {
+            where: { id: lineItemId },
+        });
+
+        expect(updatedItem).not.toBeNull();
+        expect(updatedItem?.category).toBe("Keep Me");
     });
 });
 

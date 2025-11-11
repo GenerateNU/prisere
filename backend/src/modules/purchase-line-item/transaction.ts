@@ -81,7 +81,7 @@ export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction
         const response = await qb.returning("*").execute();
 
         if (!response) {
-            throw Boom.notFound("Purchase line item not found")
+            throw Boom.notFound("Error updating the purchase line item category")
         }
         return response.raw[0];
     }
@@ -97,7 +97,7 @@ export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction
 
 
         if (!response || response.affected == 0) {
-            throw Boom.notFound("Purchase line item not found")
+            throw Boom.notFound("Error updating the purchase line item type")
         }
 
         return response.raw[0];

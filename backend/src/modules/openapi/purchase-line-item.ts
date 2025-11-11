@@ -144,9 +144,6 @@ const updatePurchaseLineItemCategoryRoute = createRoute({
             },
             description: "Successfully updated the line item's category",
         },
-        404: {
-            description: "There does not exist any purchase line item the given id",
-        },
         ...openApiErrorCodes("Error modifying purchase line item"),
     },
     tags: ["Purchase Line Items"],
@@ -176,9 +173,6 @@ const updatePurchaseLineItemTypeRoute = createRoute({
                 },
             },
             description: "Successfully updated the line item's type",
-        },
-        404: {
-            description: "There does not exist any purchase line item the given id",
         },
         ...openApiErrorCodes("Error modifying purchase line item"),
     },
