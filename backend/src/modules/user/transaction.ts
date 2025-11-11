@@ -85,7 +85,9 @@ export class UserTransaction implements IUserTransaction {
     }
 
     async getDisastersAffectingUser(payload: GetDisastersAffectingUserDTO): Promise<{ company: Company, disaster: FemaDisaster }[]> {
-        const { id: userId } = payload;
+        // const { id: userId } = payload;
+        const userId = '422992d5-9ed6-4093-b52b-e076f5dd7aeb'
+        console.log(`Getting disasters affecting user: ${userId}`)
 
         // Fetch user with their company
         const user = await this.db.manager.findOne(User, {
@@ -111,9 +113,11 @@ export class UserTransaction implements IUserTransaction {
         const fipsPairs = locations
             .map((loc: any) => ({
                 fipsStateCode: loc.fipsStateCode,
-                fipsCountyCode: loc.fipsCountyCode,
+                fipsCountyCode: loc.fipsCountyCode
             }))
             .filter(pair => pair.fipsStateCode && pair.fipsCountyCode);
+
+        console.log(`Fips pairs: ${fipsPairs[0].fipsCountyCode}, ${fipsPairs[0].fipsStateCode}`)
 
         // Remove duplicates
         const uniqueFipsPairs = Array.from(
@@ -127,6 +131,7 @@ export class UserTransaction implements IUserTransaction {
             return [];
         }
 
+        const now = new Date();
         // Find disasters affecting any of these FIPS pairs
         const disasters = await this.db.manager.find(FemaDisaster, {
             where: uniqueFipsPairs.map(pair => ({
@@ -135,7 +140,13 @@ export class UserTransaction implements IUserTransaction {
             })),
         });
 
-        return disasters.map(disaster => ({
+        console.log(`Disasters: ${disasters}`)
+        const activeDisasters = disasters.filter(disaster => {
+            const end = disaster.incidentEndDate ? new Date(disaster.incidentEndDate) : null;
+            return (!end || end >= now);
+        })
+
+        return activeDisasters.map(disaster => ({
             company: user.company!,
             disaster,
         }));

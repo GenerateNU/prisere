@@ -17,7 +17,7 @@ export default function NavBar() {
     ];
 
     return (
-        <nav className="w-[300px] bg-[#d9d9d9] justify-center px-[27px] min-h-screen fixed">
+        <nav className="w-[300px] bg-[#d9d9d0] justify-center px-[27px] min-h-screen fixed">
             <ul className="flex flex-col justify-between h-screen pt-[152px] pb-[54px]">
                 <div className="space-y-[30px]">
                     {navigationItems.map((item) => (

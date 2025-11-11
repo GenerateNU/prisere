@@ -275,6 +275,239 @@
         }
       }
     },
+    "/users/getDisastersAffectingUser": {
+      "get": {
+        "summary": "Fetches a user's associated company/disaster pair, for disasters that affect their company",
+        "description": "Fetches a user's associated company/disaster pair, for disasters that affect their company",
+        "tags": [
+          "Users"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfull fetch of a user's companies affected by disasters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "company": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "businessOwnerFullName": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "lastQuickBooksInvoiceImportTime": {
+                            "type": "string"
+                          },
+                          "lastQuickBooksPurchaseImportTime": {
+                            "type": "string"
+                          },
+                          "externals": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "source": {
+                                  "type": "string",
+                                  "enum": [
+                                    "quickbooks"
+                                  ]
+                                },
+                                "externalId": {
+                                  "type": "string"
+                                },
+                                "companyId": {
+                                  "type": "string"
+                                },
+                                "createdAt": {
+                                  "type": "string"
+                                },
+                                "updatedAt": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "source",
+                                "externalId",
+                                "companyId",
+                                "createdAt",
+                                "updatedAt"
+                              ]
+                            }
+                          },
+                          "user": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "firstName": {
+                                "type": "string"
+                              },
+                              "lastName": {
+                                "type": "string"
+                              },
+                              "email": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "email"
+                              },
+                              "companyId": {
+                                "type": "string",
+                                "nullable": true
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "firstName",
+                              "lastName"
+                            ]
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "businessOwnerFullName",
+                          "externals",
+                          "user",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      },
+                      "disaster": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "disasterNumber": {
+                              "type": "number"
+                            },
+                            "fipsStateCode": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 56
+                            },
+                            "declarationDate": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "incidentBeginDate": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "incidentEndDate": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "fipsCountyCode": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000,
+                              "exclusiveMaximum": true
+                            },
+                            "declarationType": {
+                              "type": "string",
+                              "minLength": 2,
+                              "maxLength": 2
+                            },
+                            "designatedArea": {
+                              "type": "string"
+                            },
+                            "designatedIncidentTypes": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "disasterNumber",
+                            "fipsStateCode",
+                            "declarationDate",
+                            "incidentBeginDate",
+                            "incidentEndDate",
+                            "fipsCountyCode",
+                            "declarationType",
+                            "designatedArea",
+                            "designatedIncidentTypes"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "company",
+                      "disaster"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get Disasters + Companies affecting User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "There does not exist any user in the database such that the given id matches their id OR there is no such user with the given ID that has a non-null company"
+          },
+          "500": {
+            "description": "Get Disasters + Companies affecting User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/companies": {
       "post": {
         "summary": "Create a new company",
@@ -325,14 +558,92 @@
                       "type": "string",
                       "minLength": 1
                     },
-                    "lastQuickBooksImportTime": {
+                    "lastQuickBooksInvoiceImportTime": {
+                      "type": "string"
+                    },
+                    "lastQuickBooksPurchaseImportTime": {
+                      "type": "string"
+                    },
+                    "externals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string",
+                            "enum": [
+                              "quickbooks"
+                            ]
+                          },
+                          "externalId": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "firstName": {
+                          "type": "string"
+                        },
+                        "lastName": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "email"
+                        },
+                        "companyId": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "firstName",
+                        "lastName"
+                      ]
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
                       "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "name",
-                    "businessOwnerFullName"
+                    "businessOwnerFullName",
+                    "externals",
+                    "user",
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -404,14 +715,92 @@
                       "type": "string",
                       "minLength": 1
                     },
-                    "lastQuickBooksImportTime": {
+                    "lastQuickBooksInvoiceImportTime": {
+                      "type": "string"
+                    },
+                    "lastQuickBooksPurchaseImportTime": {
+                      "type": "string"
+                    },
+                    "externals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string",
+                            "enum": [
+                              "quickbooks"
+                            ]
+                          },
+                          "externalId": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "firstName": {
+                          "type": "string"
+                        },
+                        "lastName": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "email"
+                        },
+                        "companyId": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "firstName",
+                        "lastName"
+                      ]
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
                       "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "name",
-                    "businessOwnerFullName"
+                    "businessOwnerFullName",
+                    "externals",
+                    "user",
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -459,10 +848,10 @@
         }
       }
     },
-    "/companies/quickbooks-import-time": {
+    "/companies/quickbooks-invoice-import-time": {
       "patch": {
-        "summary": "Update a company's lastQuickBooksImportTime",
-        "description": "Updates the lastQuickBooksImportTime for a company by ID",
+        "summary": "Update a company's lastQuickBooksInvoiceImportTime",
+        "description": "Updates the lastQuickBooksInvoiceImportTime for a company by ID",
         "tags": [
           "Companies"
         ],
@@ -503,14 +892,266 @@
                       "type": "string",
                       "minLength": 1
                     },
-                    "lastQuickBooksImportTime": {
+                    "lastQuickBooksInvoiceImportTime": {
+                      "type": "string"
+                    },
+                    "lastQuickBooksPurchaseImportTime": {
+                      "type": "string"
+                    },
+                    "externals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string",
+                            "enum": [
+                              "quickbooks"
+                            ]
+                          },
+                          "externalId": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "firstName": {
+                          "type": "string"
+                        },
+                        "lastName": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "email"
+                        },
+                        "companyId": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "firstName",
+                        "lastName"
+                      ]
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
                       "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "name",
-                    "businessOwnerFullName"
+                    "businessOwnerFullName",
+                    "externals",
+                    "user",
+                    "createdAt",
+                    "updatedAt"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Create Company Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Create Company Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/companies/quickbooks-purchase-import-time": {
+      "patch": {
+        "summary": "Update a company's lastQuickBooksPurcahseImportTime",
+        "description": "Updates the lastQuickBooksPurcahseImportTime for a company by ID",
+        "tags": [
+          "Companies"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "importTime": {
+                    "type": "string",
+                    "format": "date"
+                  }
+                },
+                "required": [
+                  "importTime"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Company updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "businessOwnerFullName": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "lastQuickBooksInvoiceImportTime": {
+                      "type": "string"
+                    },
+                    "lastQuickBooksPurchaseImportTime": {
+                      "type": "string"
+                    },
+                    "externals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string",
+                            "enum": [
+                              "quickbooks"
+                            ]
+                          },
+                          "externalId": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "firstName": {
+                          "type": "string"
+                        },
+                        "lastName": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "email"
+                        },
+                        "companyId": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "firstName",
+                        "lastName"
+                      ]
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "businessOwnerFullName",
+                    "externals",
+                    "user",
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -1668,14 +2309,92 @@
                                 "type": "string",
                                 "minLength": 1
                               },
-                              "lastQuickBooksImportTime": {
+                              "lastQuickBooksInvoiceImportTime": {
+                                "type": "string"
+                              },
+                              "lastQuickBooksPurchaseImportTime": {
+                                "type": "string"
+                              },
+                              "externals": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "source": {
+                                      "type": "string",
+                                      "enum": [
+                                        "quickbooks"
+                                      ]
+                                    },
+                                    "externalId": {
+                                      "type": "string"
+                                    },
+                                    "companyId": {
+                                      "type": "string"
+                                    },
+                                    "createdAt": {
+                                      "type": "string"
+                                    },
+                                    "updatedAt": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "source",
+                                    "externalId",
+                                    "companyId",
+                                    "createdAt",
+                                    "updatedAt"
+                                  ]
+                                }
+                              },
+                              "user": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "firstName": {
+                                    "type": "string"
+                                  },
+                                  "lastName": {
+                                    "type": "string"
+                                  },
+                                  "email": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "format": "email"
+                                  },
+                                  "companyId": {
+                                    "type": "string",
+                                    "nullable": true
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "firstName",
+                                  "lastName"
+                                ]
+                              },
+                              "createdAt": {
+                                "type": "string"
+                              },
+                              "updatedAt": {
                                 "type": "string"
                               }
                             },
                             "required": [
                               "id",
                               "name",
-                              "businessOwnerFullName"
+                              "businessOwnerFullName",
+                              "externals",
+                              "user",
+                              "createdAt",
+                              "updatedAt"
                             ]
                           }
                         },
@@ -4472,6 +5191,7 @@
                       },
                       "category": {
                         "type": "string",
+                        "nullable": true,
                         "minLength": 1
                       },
                       "type": {
@@ -5459,6 +6179,7 @@
                     },
                     "category": {
                       "type": "string",
+                      "nullable": true,
                       "maxLength": 100
                     },
                     "type": {
@@ -5512,6 +6233,7 @@
                       },
                       "category": {
                         "type": "string",
+                        "nullable": true,
                         "minLength": 1
                       },
                       "type": {
@@ -5631,6 +6353,7 @@
                     },
                     "category": {
                       "type": "string",
+                      "nullable": true,
                       "minLength": 1
                     },
                     "type": {
@@ -5751,6 +6474,7 @@
                       },
                       "category": {
                         "type": "string",
+                        "nullable": true,
                         "minLength": 1
                       },
                       "type": {

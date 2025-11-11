@@ -18,6 +18,7 @@ import { plainToClass } from "class-transformer";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
+import { Purchase } from "../../entities/Purchase";
 
 export interface IClaimTransaction {
     /**
@@ -123,6 +124,8 @@ export class ClaimTransaction implements IClaimTransaction {
 
     async getClaimsByCompanyId(companyId: string): Promise<GetClaimsByCompanyIdResponse | null> {
         try {
+            const companyId = '40fcc7c3-892c-44c9-bc79-0aebb1dd94a0'
+            console.log(`Comp ID: ${companyId}`)
             const result: Claim[] = await this.db.getRepository(Claim).find({
                 where: { companyId: companyId },
                 relations: {

@@ -76,7 +76,7 @@ describe("GET /users/company", () => {
         });
         await locationRepo.save(location);
 
-        // Create a disaster with matching FIPS codes
+        // Create a disaster with matching FIPS codes - this one already ended
         const disaster = disasterRepo.create({
             id: "11111111-1111-1111-1111-111111111111",
             fipsStateCode: 25,
@@ -91,7 +91,7 @@ describe("GET /users/company", () => {
         });
         await disasterRepo.save(disaster);
 
-        // Optionally, seed other disasters that should NOT match
+        // This disaster did not end yet
         const otherDisaster = disasterRepo.create({
             id: "22222222-2222-2222-2222-222222222222",
             fipsStateCode: 25,
@@ -102,9 +102,23 @@ describe("GET /users/company", () => {
             disasterNumber: 1,
             fipsCountyCode: 25,
             incidentBeginDate: new Date("2025-01-08T00:00:00.000Z"),
-            incidentEndDate: new Date("2025-02-08T00:00:00.000Z"),
+            incidentEndDate: new Date("5000-02-08T00:00:00.000Z"),
         });
         await disasterRepo.save(otherDisaster);
+
+        const notMatchingDisaster = disasterRepo.create({
+            id: "22222222-2222-2222-2222-222222222233",
+            fipsStateCode: 4,
+            declarationDate: new Date("2025-01-08T00:00:00.000Z"),
+            declarationType: "FM",
+            designatedIncidentTypes: "Z",
+            designatedArea: "Boston (County)",
+            disasterNumber: 1,
+            fipsCountyCode: 25,
+            incidentBeginDate: new Date("2025-01-08T00:00:00.000Z"),
+            incidentEndDate: new Date("5000-02-08T00:00:00.000Z"),
+        });
+        await disasterRepo.save(notMatchingDisaster);
     });
 
     test("should return 200 and company data when user exists and has a company", async () => {
@@ -116,10 +130,10 @@ describe("GET /users/company", () => {
         });
 
         const responseBody = await response.json();
-        // console.log(responseBody.length); 
+        // console.log(responseBody); 
 
         expect(response.status).toBe(200);
-        expect(responseBody.length).toBe(2);
+        expect(responseBody.length).toBe(1);
 
         expect(responseBody[0]).toHaveProperty("company");
         expect(responseBody[0]).toHaveProperty("disaster");

@@ -6,6 +6,8 @@ export type CreateUserResponse = paths["/users"]["post"]["responses"];
 
 export type User = paths["/users"]["post"]["responses"][201]["content"]["application/json"];
 
+export type GetDisastersAffectingUseResponse = paths["/users/getDisastersAffectingUser"]["get"]["responses"][200]["content"]["application/json"]
+
 export type loginInitialState = {
     success: boolean;
     message: string;
@@ -28,3 +30,8 @@ export const progressToNumber: Record<requiredOnboardingProgress, number> = {
     [requiredOnboardingProgress.COMPANY]: 1,
     [requiredOnboardingProgress.FINISHED]: 2,
 };
+
+export type BannerData =
+  | { status: "no-disaster" }
+  | { status: "no-claim"; disaster: any }
+  | { status: "has-claim"; disaster: any; claim: any };

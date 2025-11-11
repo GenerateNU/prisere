@@ -84,7 +84,7 @@
     --sidebar-ring: oklch(0.708 0 0);
     --fuchsia: #9e2450;
     --pink: #edc3d2;
-    --ochre: #a8d4d7;
+    --ochre: #EDCE8E;
     --seafoam: #a8d4d7;
     --teal: #448e93;
     --charcoal: #2e2f2d;
@@ -122,6 +122,82 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+}
+
+.bg-fuchsia {
+  background-color: var(--fuchsia);
+}
+
+.bg-pink {
+  background-color: var(--pink);
+}
+
+.bg-ochre {
+  background-color: var(--ochre);
+}
+
+.bg-seafoam {
+  background-color: var(--seafoam);
+}
+
+.bg-teal {
+  background-color: var(--teal);
+}
+
+.bg-charcoal {
+  background-color: var(--charcoal);
+}
+
+.hover\:bg-pink:hover {
+  background-color: var(--pink);
+}
+
+.text-fuchsia {
+  color: var(--fuchsia);
+}
+
+.text-pink {
+  color: var(--pink);
+}
+
+.text-ochre {
+  color: var(--ochre);
+}
+
+.text-seafoam {
+  color: var(--seafoam);
+}
+
+.text-teal {
+  color: var(--teal);
+}
+
+.text-charcoal {
+  color: var(--charcoal);
+}
+
+.border-fuchsia {
+  border-color: var(--fuchsia);
+}
+
+.border-pink {
+  border-color: var(--pink);
+}
+
+.border-ochre {
+  border-color: var(--ochre);
+}
+
+.border-seafoam {
+  border-color: var(--seafoam);
+}
+
+.border-teal {
+  border-color: var(--teal);
+}
+
+.border-charcoal {
+  border-color: var(--charcoal);
 }
 
 @layer base {

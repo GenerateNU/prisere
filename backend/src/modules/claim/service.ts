@@ -14,6 +14,7 @@ import {
 } from "../../types/Claim";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { IClaimTransaction } from "./transaction";
+import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 
 export interface IClaimService {
     createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse>;

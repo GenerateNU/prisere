@@ -209,6 +209,115 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/getDisastersAffectingUser": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Fetches a user's associated company/disaster pair, for disasters that affect their company
+         * @description Fetches a user's associated company/disaster pair, for disasters that affect their company
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successfull fetch of a user's companies affected by disasters */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            company: {
+                                id: string;
+                                name: string;
+                                businessOwnerFullName: string;
+                                lastQuickBooksInvoiceImportTime?: string;
+                                lastQuickBooksPurchaseImportTime?: string;
+                                externals: {
+                                    id: string;
+                                    /** @enum {string} */
+                                    source: "quickbooks";
+                                    externalId: string;
+                                    companyId: string;
+                                    createdAt: string;
+                                    updatedAt: string;
+                                }[];
+                                user: {
+                                    id: string;
+                                    firstName: string;
+                                    lastName: string;
+                                    /** Format: email */
+                                    email?: string | null;
+                                    companyId?: string | null;
+                                };
+                                createdAt: string;
+                                updatedAt: string;
+                            };
+                            disaster: {
+                                /** Format: uuid */
+                                id: string;
+                                disasterNumber: number;
+                                fipsStateCode: number;
+                                /** Format: date-time */
+                                declarationDate: string;
+                                incidentBeginDate: string | null;
+                                incidentEndDate: string | null;
+                                fipsCountyCode: number;
+                                declarationType: string;
+                                designatedArea: string;
+                                designatedIncidentTypes: string | null;
+                            }[];
+                        }[];
+                    };
+                };
+                /** @description Get Disasters + Companies affecting User */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description There does not exist any user in the database such that the given id matches their id OR there is no such user with the given ID that has a non-null company */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Get Disasters + Companies affecting User */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/companies": {
         parameters: {
             query?: never;
@@ -239,7 +348,27 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string;
+                            lastQuickBooksPurchaseImportTime?: string;
+                            externals: {
+                                id: string;
+                                /** @enum {string} */
+                                source: "quickbooks";
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            user: {
+                                id: string;
+                                firstName: string;
+                                lastName: string;
+                                /** Format: email */
+                                email?: string | null;
+                                companyId?: string | null;
+                            };
+                            createdAt: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -305,7 +434,27 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string;
+                            lastQuickBooksPurchaseImportTime?: string;
+                            externals: {
+                                id: string;
+                                /** @enum {string} */
+                                source: "quickbooks";
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            user: {
+                                id: string;
+                                firstName: string;
+                                lastName: string;
+                                /** Format: email */
+                                email?: string | null;
+                                companyId?: string | null;
+                            };
+                            createdAt: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -346,7 +495,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/companies/quickbooks-import-time": {
+    "/companies/quickbooks-invoice-import-time": {
         parameters: {
             query?: never;
             header?: never;
@@ -360,8 +509,8 @@ export interface paths {
         options?: never;
         head?: never;
         /**
-         * Update a company's lastQuickBooksImportTime
-         * @description Updates the lastQuickBooksImportTime for a company by ID
+         * Update a company's lastQuickBooksInvoiceImportTime
+         * @description Updates the lastQuickBooksInvoiceImportTime for a company by ID
          */
         patch: {
             parameters: {
@@ -389,7 +538,120 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksImportTime?: string;
+                            lastQuickBooksInvoiceImportTime?: string;
+                            lastQuickBooksPurchaseImportTime?: string;
+                            externals: {
+                                id: string;
+                                /** @enum {string} */
+                                source: "quickbooks";
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            user: {
+                                id: string;
+                                firstName: string;
+                                lastName: string;
+                                /** Format: email */
+                                email?: string | null;
+                                companyId?: string | null;
+                            };
+                            createdAt: string;
+                            updatedAt: string;
+                        };
+                    };
+                };
+                /** @description Create Company Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Create Company Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/companies/quickbooks-purchase-import-time": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update a company's lastQuickBooksPurcahseImportTime
+         * @description Updates the lastQuickBooksPurcahseImportTime for a company by ID
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        importTime: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Company updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            name: string;
+                            businessOwnerFullName: string;
+                            lastQuickBooksInvoiceImportTime?: string;
+                            lastQuickBooksPurchaseImportTime?: string;
+                            externals: {
+                                id: string;
+                                /** @enum {string} */
+                                source: "quickbooks";
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                            }[];
+                            user: {
+                                id: string;
+                                firstName: string;
+                                lastName: string;
+                                /** Format: email */
+                                email?: string | null;
+                                companyId?: string | null;
+                            };
+                            createdAt: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -999,7 +1261,27 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksImportTime?: string;
+                                    lastQuickBooksInvoiceImportTime?: string;
+                                    lastQuickBooksPurchaseImportTime?: string;
+                                    externals: {
+                                        id: string;
+                                        /** @enum {string} */
+                                        source: "quickbooks";
+                                        externalId: string;
+                                        companyId: string;
+                                        createdAt: string;
+                                        updatedAt: string;
+                                    }[];
+                                    user: {
+                                        id: string;
+                                        firstName: string;
+                                        lastName: string;
+                                        /** Format: email */
+                                        email?: string | null;
+                                        companyId?: string | null;
+                                    };
+                                    createdAt: string;
+                                    updatedAt: string;
                                 };
                             };
                         }[];
@@ -2836,7 +3118,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;
@@ -3526,7 +3808,7 @@ export interface paths {
                         quickBooksId?: number;
                         purchaseId: string;
                         amountCents: number;
-                        category?: string;
+                        category?: string | null;
                         /** @enum {string} */
                         type: "extraneous" | "typical";
                         /** Format: date-time */
@@ -3547,7 +3829,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;
@@ -3628,7 +3910,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;
@@ -3711,7 +3993,7 @@ export interface paths {
                             quickBooksId?: number;
                             purchaseId: string;
                             amountCents: number;
-                            category?: string;
+                            category?: string | null;
                             /** @enum {string} */
                             type: "extraneous" | "typical";
                             dateCreated: string;
