@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { FilteredPurchases, Purchases } from "@/types/purchase";
 import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, Filter, Printer, X } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, FileUp, Filter, Printer, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { getAllPurchaseCategories, updateCategory, updateType } from "../../api/purchase";
 import { Filters } from "./filters";
@@ -19,6 +19,9 @@ import { Button } from "@/components/ui/button";
 import { SortByColumn } from "../../types/purchase";
 import { Badge } from "@/components/ui/badge";
 import dayjs from "dayjs";
+import { Calendar, Cloud, Layers, Search } from "lucide-react";
+
+
 
 export default function ExpenseTable() {
     const [filters, setFilters] = useState<FilteredPurchases>({ pageNumber: 0, resultsPerPage: 5 });
@@ -94,16 +97,30 @@ export default function ExpenseTable() {
             <CardHeader>
                 <CardTitle className="text-2xl font-bold">Business Transactions</CardTitle>
                 <CardAction>
-                    <div className="flex gap-2">
+                    <div className="flex items-center justify-end gap-2">
                         <Button
-                            variant="ghost"
-                            size="icon"
+                            variant={showFilters ? "secondary" : "default"}
+                            size="sm"
                             onClick={() => setShowFilters(!showFilters)}
-                            className={showFilters ? 'bg-accent' : ''}
+                            className="h-8 rounded-full px-3 flex items-center gap-2 text-sm"
                         >
-                            <Filter className={showFilters ? 'fill-current' : ''} />
+                            <Filter className="h-4 w-4" />
+                            <span>Filters</span>
                         </Button>
-                        <Printer />
+                        <Button
+                            variant="default"
+                            size="icon"
+                            className="h-8 w-8 rounded-full border-0"
+                        >
+                            <Printer className="h-4 w-4" />
+                        </Button>
+                        <Button
+                            variant="default"
+                            size="icon"
+                            className="h-8 w-8 rounded-full border-0"
+                        >
+                            <FileUp className="h-4 w-4" />
+                        </Button>
                     </div>
                 </CardAction>
             </CardHeader>
@@ -112,6 +129,7 @@ export default function ExpenseTable() {
                                          allCategories={categories.data ?? []}
                                          selectedCategories={filters.categories ?? []}
                 ></Filters>}
+                <div className="py-2">
                 <FilterDisplay
                     filters={filters}
                     removeCategory={removeCategory}
@@ -119,6 +137,7 @@ export default function ExpenseTable() {
                     removeDate={removeDate}
                     clearFilters={clearFilters}
                 />
+                </div>
                 <TableContent purchases={purchases} filters={filters} setSort={setSort} />
             </CardContent>
             <CardFooter>
@@ -195,7 +214,7 @@ function TableContent({ purchases, filters, setSort }:
         columns: [
             {
                 id: "merchant",
-                header: "Merchant",
+                header: () => "Merchant",
                 accessorFn: (row) => row.description,
                 cell: ({ row, cell }) => {
                     const cellVal = cell.getValue();
@@ -330,7 +349,7 @@ function SortableHeader({ column, filters, setSort } : SortableHeaderProps) {
         };
     return (
         <button
-            className="flex items-center gap-2 font-medium hover:text-foreground"
+            className="flex w-full gap-2 font-medium hover:text-foreground"
             onClick={handleClick}
         >
             {sortColumnLabels[column]}
@@ -350,25 +369,31 @@ function FilterDisplay({ filters, removeCategory, removeType , removeDate, clear
     clearFilters: () => void;
 }) {
     return (
-        <div>
-            {filters.categories?.map(cat =>
+        <div className="inline-flex flex-wrap items-center gap-2">
+            {filters.categories?.map(cat => (
                 <AppliedFilter
                     key={cat}
                     label={"Category Included: " + cat}
                     onClear={() => removeCategory(cat)}
                 />
+            ))}
+            {filters.type && (
+                <AppliedFilter label={"Disaster Related: " + filters.type} onClear={() => removeType()} />
             )}
-            {filters.type && <AppliedFilter label={"Disaster Related: " + filters.type}
-                                            onClear={() => removeType()} />}
-            {filters.dateTo && filters.dateFrom && <AppliedFilter
-                label={`Date: ${dayjs(filters.dateFrom).format("MMM D, YYYY")} -
-                 ${dayjs(filters.dateTo).format("MMM D, YYYY")}`}
-                onClear={() => removeDate()}
-            />}
-            {(filters.type || filters.dateFrom || (filters.categories && filters.categories.length > 0)) &&
-                <Button variant="link" size="sm" onClick={clearFilters} className="text-muted-foreground">
-                Clear Filter
-            </Button>}
+            {filters.dateTo && filters.dateFrom && (
+                <AppliedFilter
+                    label={`Date: ${dayjs(filters.dateFrom).format("MMM D, YYYY")} - ${dayjs(filters.dateTo).format("MMM D, YYYY")}`}
+                    onClear={() => removeDate()}
+                />
+            )}
+            {(filters.type || filters.dateFrom || (filters.categories && filters.categories.length > 0)) && (
+                <button
+                    onClick={clearFilters}
+                    className="text-blue-500 hover:text-blue-600 text-sm font-medium underline-offset-2 ml-1"
+                >
+                    Clear Filter
+                </button>
+            )}
         </div>
     );
 }
@@ -376,14 +401,13 @@ function FilterDisplay({ filters, removeCategory, removeType , removeDate, clear
 
 function AppliedFilter({ label, onClear }: { label: string; onClear: () => void }) {
     return (
-        <Badge variant="secondary" className="gap-2 pr-1">
-            {label}
+        <Badge variant="outline" className="gap-2 pr-1 text-sm px-2">
             <button
                 onClick={onClear}
                 className="rounded-sm hover:bg-muted p-0.5"
-            >
-                <X className="h-3 w-3" />
+            > <X className="h-3 w-3" />
             </button>
+            {label}
         </Badge>
     );
 }

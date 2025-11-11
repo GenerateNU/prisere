@@ -1,6 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -12,14 +17,14 @@ import { DateRange } from "react-day-picker";
 import {
     ToggleGroup,
     ToggleGroupItem,
-} from "@/components/ui/toggle-group"
-import { Cloud } from "lucide-react";
+} from "@/components/ui/toggle-group";
+import { Calendar as CalendarIcon, Zap, Tags, Search, ChevronDown } from "lucide-react";
 
 export function Filters({
-    onFilterChange,
-    allCategories,
-    selectedCategories,
-}: {
+                            onFilterChange,
+                            allCategories,
+                            selectedCategories,
+                        }: {
     onFilterChange: (field: string) => (value: unknown) => void;
     allCategories: string[];
     selectedCategories: string[];
@@ -41,16 +46,28 @@ export function Filters({
 
     const onCategoryChange = (categories: string[]) => {
         onFilterChange("categories")(categories);
-    }
+    };
 
     const onSearchChange = (search: string) => onFilterChange("search")(search);
 
     return (
-        <div className="grid grid-cols-4">
-            <DateFilter onDateRangeChange={onDateRangeChange} />
-            <CategoryFilter onCategoryChange={onCategoryChange} possibleCategories={allCategories} selectedCategories={selectedCategories} />
-            <DisasterRelatedFilter onTypeChange={onTypeChange} />
-            <SearchBy onSearchChange={onSearchChange} />
+        <div className="flex w-full flex-wrap gap-3 mb-4">
+            <div className="flex-1 min-w-[150px]">
+                <DateFilter onDateRangeChange={onDateRangeChange} />
+            </div>
+            <div className="flex-1 min-w-[150px]">
+                <CategoryFilter
+                    onCategoryChange={onCategoryChange}
+                    possibleCategories={allCategories}
+                    selectedCategories={selectedCategories}
+                />
+            </div>
+            <div className="flex-1 min-w-[150px]">
+                <DisasterRelatedFilter onTypeChange={onTypeChange} />
+            </div>
+            <div className="flex-[2.5] min-w-[250px]">
+                <SearchBy onSearchChange={onSearchChange} />
+            </div>
         </div>
     );
 }
@@ -105,8 +122,16 @@ function DateFilter({ onDateRangeChange }: { onDateRangeChange: (range: DateRang
         <>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="w-full justify-start">
-                        All Dates
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 w-full justify-start gap-2 rounded-full bg-muted text-black text-sm border border-border/40 hover:bg-muted/80"
+                    >
+                        <div className="flex items-center gap-1">
+                            <CalendarIcon className="h-4 w-4" />
+                            <span className="truncate">All Dates</span>
+                        </div>
+                        <ChevronDown className="h-4 w-4 opacity-70" />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
@@ -132,7 +157,8 @@ function DateFilter({ onDateRangeChange }: { onDateRangeChange: (range: DateRang
                                     return date <= dateRange.from;
                                 }
                                 return false;
-                            }}/>
+                            }}
+                        />
                     </div>
                 </div>
             )}
@@ -148,15 +174,19 @@ function DisasterRelatedFilter({ onTypeChange }: { onTypeChange: (type: Purchase
         onTypeChange(type);
     };
 
-
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="w-full justify-between">
-                    <div className="flex items-center gap-2">
-                        <Cloud className="h-4 w-4" />
-                        Disaster Related
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 w-full justify-start gap-2 rounded-full bg-muted text-black text-sm border border-border/40 hover:bg-muted/80"
+                >
+                    <div className="flex items-center gap-1">
+                        <Zap className="h-4 w-4" />
+                        <span className="truncate">Disaster Related</span>
                     </div>
+                    <ChevronDown className="h-4 w-4 opacity-70" />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
@@ -175,10 +205,10 @@ function DisasterRelatedFilter({ onTypeChange }: { onTypeChange: (type: Purchase
 }
 
 function CategoryFilter({
-    onCategoryChange,
-    possibleCategories,
-    selectedCategories,
-}: {
+                            onCategoryChange,
+                            possibleCategories,
+                            selectedCategories,
+                        }: {
     onCategoryChange: (categories: string[]) => void;
     possibleCategories: string[];
     selectedCategories: string[];
@@ -194,8 +224,16 @@ function CategoryFilter({
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button size={"sm"} variant={"outline"}>
-                    All Categories
+                <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 w-full justify-start gap-2 rounded-full bg-muted text-black text-sm border border-border/40 hover:bg-muted/80"
+                >
+                    <div className="flex items-center gap-1">
+                        <Tags className="h-4 w-4" />
+                        <span className="truncate">All Categories</span>
+                    </div>
+                    <ChevronDown className="h-4 w-4 opacity-70" />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -215,13 +253,24 @@ function CategoryFilter({
     );
 }
 
+
 function SearchBy({ onSearchChange }: { onSearchChange: (search: string) => void }) {
     return (
-        <Input
-            className="h-8"
-            type="search"
-            placeholder="Search By..."
-            onChange={(e) => onSearchChange(e.target.value)}
-        />
+        <div className="relative w-full">
+            <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-600" />
+            <Input
+                className="
+          !h-8
+          !pl-8 !pr-3
+          !rounded-full
+          !bg-muted
+          !text-black !text-sm
+          placeholder:!text-sm placeholder:text-black
+        "
+                type="search"
+                placeholder="Search By..."
+                onChange={(e) => onSearchChange(e.target.value)}
+            />
+        </div>
     );
 }

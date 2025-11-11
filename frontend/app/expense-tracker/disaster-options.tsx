@@ -15,8 +15,8 @@ const DISASTER_TYPE_LABELS = new Map<DisasterType, string>([
 ]);
 
 const DISASTER_TYPE_COLORS = new Map([
-    ["typical", "bg-green-500 text-white"],
-    ["extraneous", "bg-red-500 text-white"],
+    ["typical", "bg-teal-100 text-teal-800 border border-teal-200"],
+    ["extraneous", "bg-pink-100 text-pink-800 border border-pink-200"],
 ]);
 
 export default function DisasterLabel({ disasterType, updateDisasterType, lineItemIds }: DisasterLabelProps) {
@@ -24,14 +24,14 @@ export default function DisasterLabel({ disasterType, updateDisasterType, lineIt
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium cursor-pointer ${DISASTER_TYPE_COLORS.get(disasterType)}`}>
+                <span className={`px-3 py-1 rounded-md text-sm font-semibold cursor-pointer ${DISASTER_TYPE_COLORS.get(disasterType)}`}>
                     {displayType}
                 </span>
             </PopoverTrigger>
             <PopoverContent className="w-[250px] p-0">
                 <Command>
                     <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
-                        <span className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs mr-2 flex-shrink-0 ${DISASTER_TYPE_COLORS.get(disasterType)}`}>
+                        <span className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold mr-2 flex-shrink-0 ${DISASTER_TYPE_COLORS.get(disasterType)}`}>
                             {displayType}
                         </span>
                         <div className="flex-1 text-sm text-gray-500 py-3">
@@ -41,7 +41,7 @@ export default function DisasterLabel({ disasterType, updateDisasterType, lineIt
                     <CommandGroup>
                         {Array.from(DISASTER_TYPE_LABELS.keys()).map((type) => (
                             <CommandItem key={type} onSelect={() => updateDisasterType(type, lineItemIds)}>
-                                <span className={`px-2 py-1 rounded text-xs ${DISASTER_TYPE_COLORS.get(type)}`}>
+                                <span className={`px-3 py-1 rounded-md text-xs font-semibold ${DISASTER_TYPE_COLORS.get(type)}`}>
                                     {DISASTER_TYPE_LABELS.get(type)}
                                 </span>
                             </CommandItem>

@@ -113,6 +113,8 @@ export class PurchaseTransaction implements IPurchaseTransaction {
             queryBuilder.orderBy(sortColumnMap[sortBy], sortOrder);
         }
 
+        queryBuilder.addOrderBy("li.dateCreated", "ASC");
+
         if (search) {
             queryBuilder.andWhere((qb) => {
                 const subQuery = qb
