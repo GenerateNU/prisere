@@ -7,8 +7,9 @@ import NavBarCircle from "@/icons/NavBarCircle";
 import { useQuery } from "@tanstack/react-query";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 import { ChartContainer, ChartTooltipContent, ChartTooltip, ChartConfig } from "@/components/ui/chart"
+import Link from "next/link";
 
-export default function RevenueAndExpenses({ showLinks = true }: { showLinks?: boolean }) {
+export default function RevenueAndExpenses() {
     const today = new Date();
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth();
@@ -141,11 +142,11 @@ export default function RevenueAndExpenses({ showLinks = true }: { showLinks?: b
                         </div>
                     </div>
 
-                    {showLinks && (
+                    <Link href={"/expense-tracker"} className="text-sm font-semibold underline no-underline">
                         <Button className="h-10 text-sm text-white rounded-full w-fit px-6 mt-6 bg-fuchsia">
                             See Expense Tracker
                         </Button>
-                    )}
+                    </Link>
                 </div>
 
                 {/* Right side - Chart with legend */}

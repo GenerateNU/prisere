@@ -111,7 +111,7 @@ export default function DisasterStatusBanner({ bannerData }: Props) {
                             ))}
                         </div>
                     </div>
-                    <Link href={"/expense-tracker"} className="text-sm font-semibold underline no-underline">
+                    <Link href={"/claims"} className="text-sm font-semibold underline no-underline">
                         <BannerAction className="max-w-xs rounded-lg hover:bg-pink bg-fuchsia text-white">
                             Continue filing claim report
                         </BannerAction>
