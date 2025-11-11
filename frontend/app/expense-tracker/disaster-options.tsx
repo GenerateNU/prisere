@@ -7,6 +7,7 @@ interface DisasterLabelProps {
     disasterType: DisasterType;
     updateDisasterType: (type: DisasterType, lineItems: string[]) => void;
     lineItemIds: string[];
+    editableTags: boolean
 }
 
 const DISASTER_TYPE_LABELS = new Map<DisasterType, string>([
@@ -19,8 +20,17 @@ const DISASTER_TYPE_COLORS = new Map([
     ["extraneous", "bg-pink-100 text-pink-800 border border-pink-200"],
 ]);
 
-export default function DisasterLabel({ disasterType, updateDisasterType, lineItemIds }: DisasterLabelProps) {
+export default function DisasterLabel({ disasterType, updateDisasterType, lineItemIds, editableTags }: DisasterLabelProps) {
     const displayType = DISASTER_TYPE_LABELS.get(disasterType);
+
+    if (!editableTags) {
+        return (
+            <span className={`px-3 py-1 rounded-md text-sm font-semibold ${DISASTER_TYPE_COLORS.get(disasterType)}`}>
+                {displayType}
+            </span>
+        );
+    }
+
     return (
         <Popover>
             <PopoverTrigger asChild>

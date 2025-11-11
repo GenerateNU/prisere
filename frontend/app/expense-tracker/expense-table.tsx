@@ -19,11 +19,16 @@ import { Button } from "@/components/ui/button";
 import { SortByColumn } from "../../types/purchase";
 import { Badge } from "@/components/ui/badge";
 import dayjs from "dayjs";
-import { Calendar, Cloud, Layers, Search } from "lucide-react";
 
 
+interface ExpenseTableConfig {
+    title: string,
+    editableTags: boolean;
+    rowOption: 'collapsible' | 'checkbox';
+}
 
-export default function ExpenseTable() {
+
+export default function ExpenseTable({title, editableTags, rowOption} : ExpenseTableConfig) {
     const [filters, setFilters] = useState<FilteredPurchases>({ pageNumber: 0, resultsPerPage: 5 });
     const [showFilters, setShowFilters] = useState(false);
 
@@ -95,7 +100,7 @@ export default function ExpenseTable() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle className="text-2xl font-bold">Business Transactions</CardTitle>
+                <CardTitle className="text-2xl font-bold">{title}</CardTitle>
                 <CardAction>
                     <div className="flex items-center justify-end gap-2">
                         <Button
@@ -138,7 +143,8 @@ export default function ExpenseTable() {
                     clearFilters={clearFilters}
                 />
                 </div>
-                <TableContent purchases={purchases} filters={filters} setSort={setSort} />
+                <TableContent purchases={purchases} filters={filters} setSort={setSort} rowOption={rowOption}
+                editableTags={editableTags}/>
             </CardContent>
             <CardFooter>
                 <PaginationControls
@@ -152,10 +158,12 @@ export default function ExpenseTable() {
     );
 }
 
-function TableContent({ purchases, filters, setSort }:
+function TableContent({ purchases, filters, setSort, rowOption, editableTags }:
                       { purchases: UseQueryResult<Purchases | undefined>,
                           filters: FilteredPurchases;
                           setSort: (column: SortByColumn, sortOrder?: 'ASC' | 'DESC') => void;
+                          rowOption: 'collapsible' | 'checkbox',
+                          editableTags: boolean,
                       }) {
     const standardizedData = useMemo(
         () =>
@@ -220,11 +228,24 @@ function TableContent({ purchases, filters, setSort }:
                     const cellVal = cell.getValue();
                     const displayMerchant = cellVal.length > 20 ? `${cellVal.substring(0, 20)}...` : cellVal;
                     return (
-                        <div className={cn(row.depth > 0 && "pl-8")}>
-                            {row.getCanExpand() ? (
-                                <CollapsibleArrow onClick={() => row.toggleExpanded()} isOpen={row.getIsExpanded()} />
-                            ) : null}
-                            {displayMerchant.length > 0 ? displayMerchant : "Unknown Merchant"}
+                        <div className={cn("flex items-center", row.depth > 0 && "pl-8")}>
+                            {rowOption === 'collapsible' ? (
+                                row.getCanExpand() ? (
+                                    <CollapsibleArrow onClick={() => row.toggleExpanded()} isOpen={row.getIsExpanded()} />
+                                ) : null
+                            ) : (
+                                <input
+                                    type="checkbox"
+                                    className="w-4 h-4 cursor-pointer mr-2 accent-black align-middle"
+                                    onChange={(e) => {
+                                        // Handle checkbox selection
+                                        e.stopPropagation();
+                                    }}
+                                />
+                            )}
+                            <span className="align-middle">
+                                {displayMerchant.length > 0 ? displayMerchant : "Unknown Merchant"}
+                            </span>
                         </div>
                     );
                 },
@@ -248,7 +269,8 @@ function TableContent({ purchases, filters, setSort }:
                         updateCategory={( category, lineItemIds,  removeCategory) => {
                             categoryMutation.mutate({ category, lineItemIds, removeCategory });
                         }}
-                        lineItemIds={row.lineItemIds}  />
+                        lineItemIds={row.lineItemIds}
+                        editableTags={editableTags}/>
                         );
                 }
             },
@@ -269,7 +291,9 @@ function TableContent({ purchases, filters, setSort }:
                             updateDisasterType={( type, lineItemIds) => {
                                 typeMutation.mutate({ type, lineItemIds});
                             }}
-                            lineItemIds={row.lineItemIds}  />
+                            lineItemIds={row.lineItemIds}
+                            editableTags={editableTags}
+                        />
                     );
                 }
             },

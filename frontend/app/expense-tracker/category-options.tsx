@@ -8,6 +8,7 @@ interface CategoryLabelProps {
     category: string;
     updateCategory: (category: string, lineItems: string[], removeCategory: boolean) => void;
     lineItemIds: string[];
+    editableTags: boolean
 }
 
 interface CategoryBadgeProps extends CategoryLabelProps {
@@ -22,10 +23,10 @@ interface CreateCategoryProps {
 }
 
 
-export default function CategoryLabel({ category, updateCategory, lineItemIds }: CategoryLabelProps) {
+export default function CategoryLabel({ category, updateCategory, lineItemIds, editableTags}: CategoryLabelProps) {
     const categories = category.length > 0 ? category.split(",") : [];
 
-    if (categories.length === 0) {
+    if (editableTags && categories.length === 0) {
         return <AddCategoryButton />;
     }
 
@@ -38,6 +39,7 @@ export default function CategoryLabel({ category, updateCategory, lineItemIds }:
                     allCategories={categories}
                     updateCategory={updateCategory}
                     lineItemIds={lineItemIds}
+                    editableTags={editableTags}
                 />
             ))}
             {categories.length > 3 && <span className="px-3 py-1 text-sm">...</span>}
@@ -82,9 +84,18 @@ export default function CategoryLabel({ category, updateCategory, lineItemIds }:
 }
 
 function CategoryBadge(
-    { category, allCategories, updateCategory, lineItemIds }: CategoryBadgeProps) {
+    { category, allCategories, updateCategory, lineItemIds , editableTags}: CategoryBadgeProps) {
     const [searchValue, setSearchValue] = useState("");
     const displayCategory = category.length > 20 ? `${category.substring(0, 20)}...` : category;
+
+    if (!editableTags) {
+        return (
+            <span className="px-3 py-1 mr-1 mb-1 rounded-md text-sm font-semibold inline-block"
+                  style={{ backgroundColor: getTagColor(category).backgroundColor }}>
+                {displayCategory}
+            </span>
+        );
+    }
 
     return (
         <Popover>

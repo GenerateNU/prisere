@@ -7,17 +7,10 @@ import {
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { PurchaseLineItemType } from "@/types/purchase";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
-import dayjs from "dayjs";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
-import {
-    ToggleGroup,
-    ToggleGroupItem,
-} from "@/components/ui/toggle-group";
 import { Calendar as CalendarIcon, Zap, Tags, Search, ChevronDown } from "lucide-react";
 
 export function Filters({
@@ -167,10 +160,7 @@ function DateFilter({ onDateRangeChange }: { onDateRangeChange: (range: DateRang
 }
 
 function DisasterRelatedFilter({ onTypeChange }: { onTypeChange: (type: PurchaseLineItemType | undefined) => void }) {
-    const [selected, setSelected] = useState<PurchaseLineItemType | undefined>(undefined);
-
     const handleSelect = (type: PurchaseLineItemType | undefined) => {
-        setSelected(type);
         onTypeChange(type);
     };
 

@@ -1,5 +1,5 @@
 "use server";
-import { FilteredPurchases, PurchaseLineItem, PurchaseLineItemType, Purchases } from "../types/purchase";
+import { FilteredPurchases, PurchaseLineItemType, Purchases } from "../types/purchase";
 import { authHeader, authWrapper, getClient } from "./client";
 
 export const getAllPurchasesForCompany = async (filters: FilteredPurchases): Promise<Purchases> => {
