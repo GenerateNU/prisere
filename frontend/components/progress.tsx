@@ -1,28 +1,42 @@
 import React from "react";
+import { IoCheckmark } from "react-icons/io5";
+
+type Step = {
+    label: string;
+    step: number;
+};
 
 interface ProgressProps {
     progress: number;
-    items: string[];
+    items: Step[];
 }
 const Progress = ({ progress, items }: ProgressProps) => {
     return (
-        <div className="h-[84px] flex items-center justify-center self-center justify-self-center my-[40px] w-full gap-[30px]">
+        <div className="h-[84px] flex items-center justify-center self-center justify-self-center mb-[40px] w-full gap-[30px]">
             {items.map((item, index) => (
-                <div
-                    key={index}
-                    className={`flex items-center w-full gap-[30px] ${index === items.length - 1 && "max-w-[96px]"}`}
-                >
-                    <div className="flex flex-col items-center gap-2 ${}">
+                <div key={index} className="flex flex-row items-center justify-center gap-[30px]">
+                    <div className={`flex flex-col items-center gap-2 w-fit `}>
                         <div
-                            className={`rounded-[100px] w-[36px] h-[36px] ${index <= progress ? "bg-[#646464]" : "bg-[#8d8d8d99]"} text-white flex items-center justify-center`}
+                            className={`h-[36px] w-[36px] rounded-full text-[20px] flex items-center justify-center text-white 
+                                ${progress > item.step ? "bg-[var(--fuchsia)]" : "bg-[var(--pink)]"}
+                                ${progress < item.step ? "border-1 border-[var(--fuchsia)] bg-transparent" : ""}`}
                         >
-                            <p className="text-[20px] font-semibold">{index + 1}</p>
+                            {progress > item.step ? (
+                                <IoCheckmark className="text-[24px]" />
+                            ) : (
+                                <p className="text-[20px] text-[var(--fuchsia)]">{index + 1}</p>
+                            )}
                         </div>
-                        <p className="text-base text-center"> {item} </p>
+                        <p
+                            className={`text-[16px] ${progress === item.step && "font-bold"} text-center whitespace-nowrap`}
+                        >
+                            {" "}
+                            {item.label}{" "}
+                        </p>
                     </div>
                     {index !== items.length - 1 && (
                         <hr
-                            className={`flex-grow ${index < progress ? " bg-[#646464]" : "bg-[#8d8d8d99]"} h-[1px] w-full border-none`}
+                            className={`flex-grow bg-[var(--fuchsia)] mb-[30px] h-[3px] min-w-[70px] rounded-full ${item.step >= progress ? "opacity-50" : ""} h-[1px] w-full border-none`}
                         />
                     )}
                 </div>

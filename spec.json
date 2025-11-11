@@ -6436,6 +6436,400 @@
           }
         }
       }
+    },
+    "/insurance": {
+      "post": {
+        "summary": "Create data about the company's insurance policy",
+        "description": "Creates a new entity with data about the company's insurance policy",
+        "tags": [
+          "Insurance Policy"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "policyName": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "policyHolderFirstName": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "policyHolderLastName": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "insuranceCompanyName": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "policyNumber": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "insuranceType": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "policyName",
+                  "policyHolderFirstName",
+                  "policyHolderLastName",
+                  "insuranceCompanyName",
+                  "policyNumber",
+                  "insuranceType"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create insurance policy response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "policyName": {
+                      "type": "string"
+                    },
+                    "policyHolderFirstName": {
+                      "type": "string"
+                    },
+                    "policyHolderLastName": {
+                      "type": "string"
+                    },
+                    "insuranceCompanyName": {
+                      "type": "string"
+                    },
+                    "policyNumber": {
+                      "type": "string"
+                    },
+                    "insuranceType": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "policyName",
+                    "policyHolderFirstName",
+                    "policyHolderLastName",
+                    "insuranceCompanyName",
+                    "policyNumber",
+                    "insuranceType",
+                    "updatedAt",
+                    "createdAt"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error Creating an insurance policy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error Creating an insurance policy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Gets all of the insurance policies for a company",
+        "description": "Will get all of the insurance policies that have been created for a Company",
+        "tags": [
+          "Insurance Policy"
+        ],
+        "responses": {
+          "200": {
+            "description": "Result includes all of the insurance policies for the user's company",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "policyName": {
+                        "type": "string"
+                      },
+                      "policyHolderFirstName": {
+                        "type": "string"
+                      },
+                      "policyHolderLastName": {
+                        "type": "string"
+                      },
+                      "insuranceCompanyName": {
+                        "type": "string"
+                      },
+                      "policyNumber": {
+                        "type": "string"
+                      },
+                      "insuranceType": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "policyName",
+                      "policyHolderFirstName",
+                      "policyHolderLastName",
+                      "insuranceCompanyName",
+                      "policyNumber",
+                      "insuranceType",
+                      "updatedAt",
+                      "createdAt"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error Getting insurance policies for the company",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error Getting insurance policies for the company",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/insurance/bulk": {
+      "post": {
+        "summary": "Creates data about the company's insurance policy",
+        "description": "Can create many new entities with data about the company's insurance policy",
+        "tags": [
+          "Insurance Policy"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "policyName": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "policyHolderFirstName": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "policyHolderLastName": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "insuranceCompanyName": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "policyNumber": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "insuranceType": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "policyName",
+                    "policyHolderFirstName",
+                    "policyHolderLastName",
+                    "insuranceCompanyName",
+                    "policyNumber",
+                    "insuranceType"
+                  ]
+                },
+                "minItems": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create bulk insurance policy response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "policyName": {
+                        "type": "string"
+                      },
+                      "policyHolderFirstName": {
+                        "type": "string"
+                      },
+                      "policyHolderLastName": {
+                        "type": "string"
+                      },
+                      "insuranceCompanyName": {
+                        "type": "string"
+                      },
+                      "policyNumber": {
+                        "type": "string"
+                      },
+                      "insuranceType": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "policyName",
+                      "policyHolderFirstName",
+                      "policyHolderLastName",
+                      "insuranceCompanyName",
+                      "policyNumber",
+                      "insuranceType",
+                      "updatedAt",
+                      "createdAt"
+                    ]
+                  },
+                  "minItems": 1
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error Creating insurance policies in bulk",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error Creating insurance policies in bulk",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

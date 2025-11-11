@@ -41,6 +41,7 @@ describe("POST /insurance/bulk", () => {
             },
             body: JSON.stringify([
                 {
+                    policyName: "Policy A",
                     policyHolderFirstName: "Gusto",
                     policyHolderLastName: "Torres",
                     insuranceCompanyName: "State Farm",
@@ -48,6 +49,7 @@ describe("POST /insurance/bulk", () => {
                     insuranceType: "Auto",
                 },
                 {
+                    policyName: "Policy A",
                     policyHolderFirstName: "Brusto",
                     policyHolderLastName: "Fortune",
                     insuranceCompanyName: "UHC",
@@ -60,12 +62,14 @@ describe("POST /insurance/bulk", () => {
         const responseBody = await response.json();
 
         expect(responseBody.length).toBe(2);
+        expect(responseBody[0].policyName).toBe("Policy A");
         expect(responseBody[0].policyHolderFirstName).toBe("Gusto");
         expect(responseBody[0].policyHolderLastName).toBe("Torres");
         expect(responseBody[0].insuranceCompanyName).toBe("State Farm");
         expect(responseBody[0].policyNumber).toBe("SF-VEH-67");
         expect(responseBody[0].insuranceType).toBe("Auto");
 
+        expect(responseBody[1].policyName).toBe("Policy A");
         expect(responseBody[1].policyHolderFirstName).toBe("Brusto");
         expect(responseBody[1].policyHolderLastName).toBe("Fortune");
         expect(responseBody[1].insuranceCompanyName).toBe("UHC");
@@ -82,12 +86,14 @@ describe("POST /insurance/bulk", () => {
             },
             body: JSON.stringify([
                 {
+                    policyName: "Policy A",
                     policyHolderFirstName: "Gusto",
                     policyHolderLastName: "Torres",
                     insuranceCompanyName: "State Farm",
                     policyNumber: "SF-VEH-67",
                 },
                 {
+                    policyName: "Policy A",
                     policyHolderFirstName: "Brusto",
                     policyHolderLastName: "Fortune",
                     insuranceCompanyName: "UHC",

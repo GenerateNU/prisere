@@ -4109,6 +4109,231 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/insurance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Gets all of the insurance policies for a company
+         * @description Will get all of the insurance policies that have been created for a Company
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Result includes all of the insurance policies for the user's company */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            policyName: string;
+                            policyHolderFirstName: string;
+                            policyHolderLastName: string;
+                            insuranceCompanyName: string;
+                            policyNumber: string;
+                            insuranceType: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                    };
+                };
+                /** @description Error Getting insurance policies for the company */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Error Getting insurance policies for the company */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Create data about the company's insurance policy
+         * @description Creates a new entity with data about the company's insurance policy
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        policyName: string;
+                        policyHolderFirstName: string;
+                        policyHolderLastName: string;
+                        insuranceCompanyName: string;
+                        policyNumber: string;
+                        insuranceType: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Create insurance policy response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            policyName: string;
+                            policyHolderFirstName: string;
+                            policyHolderLastName: string;
+                            insuranceCompanyName: string;
+                            policyNumber: string;
+                            insuranceType: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        };
+                    };
+                };
+                /** @description Error Creating an insurance policy */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Error Creating an insurance policy */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/insurance/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Creates data about the company's insurance policy
+         * @description Can create many new entities with data about the company's insurance policy
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        policyName: string;
+                        policyHolderFirstName: string;
+                        policyHolderLastName: string;
+                        insuranceCompanyName: string;
+                        policyNumber: string;
+                        insuranceType: string;
+                    }[];
+                };
+            };
+            responses: {
+                /** @description Create bulk insurance policy response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            policyName: string;
+                            policyHolderFirstName: string;
+                            policyHolderLastName: string;
+                            insuranceCompanyName: string;
+                            policyNumber: string;
+                            insuranceType: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                    };
+                };
+                /** @description Error Creating insurance policies in bulk */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Error Creating insurance policies in bulk */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {

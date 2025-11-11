@@ -46,6 +46,9 @@ describe("POST /insurance/bulk", () => {
         expect(JSON.stringify(responseBody.map((element: any) => element?.id))).toBe(
             JSON.stringify(seededForCompany.map((element) => element.id))
         );
+        expect(JSON.stringify(responseBody.map((element: any) => element?.policyName))).toBe(
+            JSON.stringify(seededForCompany.map((element) => element.policyName))
+        );
         expect(JSON.stringify(responseBody.map((element: any) => element?.policyHolderFirstName))).toBe(
             JSON.stringify(seededForCompany.map((element) => element.policyHolderFirstName))
         );

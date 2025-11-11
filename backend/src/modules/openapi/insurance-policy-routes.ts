@@ -74,7 +74,7 @@ const getInsurancePolicyRoute = createRoute({
 
 const createInsurancePolicyBulkRoute = createRoute({
     method: "post",
-    path: "/insurance",
+    path: "/insurance/bulk",
     summary: "Creates data about the company's insurance policy",
     description: "Can create many new entities with data about the company's insurance policy",
     request: {
