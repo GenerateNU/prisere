@@ -104,7 +104,7 @@ export const updateType = async (type: typeString, purchaseLineIds: string[]) =>
     return authWrapper<void>()(req);
 };
 
-export function fetchPurchases(filters: FilteredPurchases) {
+export function useFetchPurchases(filters: FilteredPurchases) {
     return useQuery({
         queryKey: ["purchases-for-company", filters],
         queryFn: async ({ signal }) => {
@@ -136,7 +136,7 @@ export function fetchPurchases(filters: FilteredPurchases) {
     });
 }
 
-export function fetchAllCategories() {
+export function useFetchAllCategories() {
     return useQuery({
         queryKey: ["categories-for-purchases"],
         queryFn: async (): Promise<string[]> => {

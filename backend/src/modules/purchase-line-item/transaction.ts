@@ -67,40 +67,40 @@ export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction
         return givenPurchase.lineItems!;
     }
 
-    async updatePurchaseLineItemCategory(id: string, category: string, removeCategory: boolean): Promise<PurchaseLineItem> {
+    async updatePurchaseLineItemCategory(
+        id: string,
+        category: string,
+        removeCategory: boolean
+    ): Promise<PurchaseLineItem> {
         const qb = this.db.createQueryBuilder().update(PurchaseLineItem);
 
         if (removeCategory) {
-            qb.set({ category: null })
-                .where("id = :id AND category = :category", { id, category });
+            qb.set({ category: null }).where("id = :id AND category = :category", { id, category });
         } else {
-            qb.set({ category })
-                .where("id = :id", { id });
+            qb.set({ category }).where("id = :id", { id });
         }
 
         const response = await qb.returning("*").execute();
 
         if (!response) {
-            throw Boom.notFound("Error updating the purchase line item category")
+            throw Boom.notFound("Error updating the purchase line item category");
         }
         return response.raw[0];
     }
 
     async updatePurchaseLineItemType(id: string, type: PurchaseLineItemType): Promise<PurchaseLineItem> {
         const response = await this.db
-                    .createQueryBuilder()
-                    .update(PurchaseLineItem)
-                    .set({ type: type })
-                    .where({ id })
-                    .returning("*")
-                    .execute();
+            .createQueryBuilder()
+            .update(PurchaseLineItem)
+            .set({ type: type })
+            .where({ id })
+            .returning("*")
+            .execute();
 
-
-        if (!response || response.affected == 0) {
-            throw Boom.notFound("Error updating the purchase line item type")
+        if (!response || response.affected === 0) {
+            throw Boom.notFound("Error updating the purchase line item type");
         }
 
         return response.raw[0];
-        
     }
 }

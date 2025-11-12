@@ -125,7 +125,6 @@ export class PurchaseTransaction implements IPurchaseTransaction {
             queryBuilder.orderBy(sortColumnMap[sortBy], sortOrder);
         }
 
-
         const idRows = await queryBuilder.skip(numToSkip).take(resultsPerPage).getMany();
         const ids = idRows.map((row) => row.id);
         if (ids.length === 0) {
@@ -135,7 +134,7 @@ export class PurchaseTransaction implements IPurchaseTransaction {
         const queryBuilderForIds = this.db.manager
             .createQueryBuilder(Purchase, "p")
             .leftJoinAndSelect("p.lineItems", "li")
-            .where("p.id IN (:...ids)", { ids })
+            .where("p.id IN (:...ids)", { ids });
 
         if (sortBy && sortOrder && sortColumnMap[sortBy]) {
             queryBuilderForIds.orderBy(sortColumnMap[sortBy], sortOrder);

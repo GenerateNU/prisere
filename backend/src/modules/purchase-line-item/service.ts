@@ -17,7 +17,6 @@ export interface IPurchaseLineItemService {
     getPurchaseLineItemsForPurchase(parentPurchaseId: string): Promise<GetPurchaseLineItemsFromParentResponse>;
     updatePurchaseLineItemCategory(id: string, category: string, removeCategory: boolean): Promise<PurchaseLineItem>;
     updatePurchaseLineItemType(id: string, type: PurchaseLineItemType): Promise<PurchaseLineItem>;
-
 }
 
 export class PurchaseLineItemService implements IPurchaseLineItemService {
@@ -66,11 +65,9 @@ export class PurchaseLineItemService implements IPurchaseLineItemService {
         }
     );
 
-
     updatePurchaseLineItemType = withServiceErrorHandling(
         async (id: string, type: PurchaseLineItemType): Promise<PurchaseLineItem> => {
             return this.purchaseLineItemTransaction.updatePurchaseLineItemType(id, type);
         }
     );
-    
 }

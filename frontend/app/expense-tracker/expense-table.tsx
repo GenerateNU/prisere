@@ -1,6 +1,5 @@
 "use client";
 
-
 import { Table } from "@/components/table";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -9,7 +8,7 @@ import { useMutation, useQueryClient, UseQueryResult } from "@tanstack/react-que
 import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/react-table";
 import { ChevronDown, ChevronRight, FileUp, Filter, Printer } from "lucide-react";
 import { useMemo, useState } from "react";
-import { fetchAllCategories, fetchPurchases, updateCategory, updateType } from "../../api/purchase";
+import { useFetchPurchases, useFetchAllCategories, updateCategory, updateType } from "../../api/purchase";
 import { Filters } from "./filters";
 import PaginationControls from "./PaginationControls";
 import ResultsPerPageSelect from "./ResultsPerPageSelect";
@@ -21,15 +20,13 @@ import { FilterDisplay } from "./filter-display-bar";
 import { getCategoriesString, getMerchant, getPurchaseTypeString } from "./utility-functions";
 import { SortableHeader } from "./sortable-header";
 
-
 interface ExpenseTableConfig {
-    title: string,
+    title: string;
     editableTags: boolean;
-    rowOption: 'collapsible' | 'checkbox';
+    rowOption: "collapsible" | "checkbox";
 }
 
-
-export default function ExpenseTable({title, editableTags, rowOption} : ExpenseTableConfig) {
+export default function ExpenseTable({ title, editableTags, rowOption }: ExpenseTableConfig) {
     const [filters, setFilters] = useState<FilteredPurchases>({ pageNumber: 0, resultsPerPage: 5 });
     const [showFilters, setShowFilters] = useState(false);
 
@@ -37,33 +34,33 @@ export default function ExpenseTable({title, editableTags, rowOption} : ExpenseT
         setFilters((prev) => ({ ...prev, [field]: value }));
     };
 
-    const setSort = (column : SortByColumn, order?: 'ASC' | 'DESC') => {
+    const setSort = (column: SortByColumn, order?: "ASC" | "DESC") => {
         updateFilter("sortBy")(column);
         updateFilter("sortOrder")(order);
-    }
+    };
 
     const removeType = () => {
-        updateFilter("type")(undefined)
-    }
+        updateFilter("type")(undefined);
+    };
 
     const removeCategory = (category: string) => {
-        updateFilter("categories")(filters.categories!.filter(cat => cat !== category))
-    }
+        updateFilter("categories")(filters.categories!.filter((cat) => cat !== category));
+    };
 
     const removeDate = () => {
         updateFilter("dateFrom")(undefined);
         updateFilter("dateTo")(undefined);
-    }
+    };
 
     const clearFilters = () => {
         removeDate();
         removeType();
         updateFilter("categories")([]);
-    }
+    };
 
-    const purchases = fetchPurchases(filters);
+    const purchases = useFetchPurchases(filters);
 
-    const categories = fetchAllCategories();
+    const categories = useFetchAllCategories();
 
     const isLastPage = (purchases.data?.length ?? 0) < filters.resultsPerPage;
 
@@ -82,39 +79,39 @@ export default function ExpenseTable({title, editableTags, rowOption} : ExpenseT
                             <Filter className="h-4 w-4" />
                             <span>Filters</span>
                         </Button>
-                        <Button
-                            variant="default"
-                            size="icon"
-                            className="h-8 w-8 rounded-full border-0"
-                        >
+                        <Button variant="default" size="icon" className="h-8 w-8 rounded-full border-0">
                             <Printer className="h-4 w-4" />
                         </Button>
-                        <Button
-                            variant="default"
-                            size="icon"
-                            className="h-8 w-8 rounded-full border-0"
-                        >
+                        <Button variant="default" size="icon" className="h-8 w-8 rounded-full border-0">
                             <FileUp className="h-4 w-4" />
                         </Button>
                     </div>
                 </CardAction>
             </CardHeader>
             <CardContent>
-                {showFilters && <Filters onFilterChange={updateFilter}
-                                         allCategories={categories.data ?? []}
-                                         selectedCategories={filters.categories ?? []}
-                ></Filters>}
+                {showFilters && (
+                    <Filters
+                        onFilterChange={updateFilter}
+                        allCategories={categories.data ?? []}
+                        selectedCategories={filters.categories ?? []}
+                    ></Filters>
+                )}
                 <div className="py-2">
-                <FilterDisplay
-                    filters={filters}
-                    removeCategory={removeCategory}
-                    removeType={removeType}
-                    removeDate={removeDate}
-                    clearFilters={clearFilters}
-                />
+                    <FilterDisplay
+                        filters={filters}
+                        removeCategory={removeCategory}
+                        removeType={removeType}
+                        removeDate={removeDate}
+                        clearFilters={clearFilters}
+                    />
                 </div>
-                <TableContent purchases={purchases} filters={filters} setSort={setSort} rowOption={rowOption}
-                editableTags={editableTags}/>
+                <TableContent
+                    purchases={purchases}
+                    filters={filters}
+                    setSort={setSort}
+                    rowOption={rowOption}
+                    editableTags={editableTags}
+                />
             </CardContent>
             <CardFooter>
                 <PaginationControls
@@ -128,13 +125,19 @@ export default function ExpenseTable({title, editableTags, rowOption} : ExpenseT
     );
 }
 
-function TableContent({ purchases, filters, setSort, rowOption, editableTags }:
-                      { purchases: UseQueryResult<Purchases | undefined>,
-                          filters: FilteredPurchases;
-                          setSort: (column: SortByColumn, sortOrder?: 'ASC' | 'DESC') => void;
-                          rowOption: 'collapsible' | 'checkbox',
-                          editableTags: boolean,
-                      }) {
+function TableContent({
+    purchases,
+    filters,
+    setSort,
+    rowOption,
+    editableTags,
+}: {
+    purchases: UseQueryResult<Purchases | undefined>;
+    filters: FilteredPurchases;
+    setSort: (column: SortByColumn, sortOrder?: "ASC" | "DESC") => void;
+    rowOption: "collapsible" | "checkbox";
+    editableTags: boolean;
+}) {
     const standardizedData = useMemo(
         () =>
             purchases.data?.map((purchase) => {
@@ -161,7 +164,15 @@ function TableContent({ purchases, filters, setSort, rowOption, editableTags }:
 
     const queryClient = useQueryClient();
     const categoryMutation = useMutation({
-        mutationFn: ({ lineItemIds, category , removeCategory }: { category: string, lineItemIds: string[], removeCategory: boolean}) => {
+        mutationFn: ({
+            lineItemIds,
+            category,
+            removeCategory,
+        }: {
+            category: string;
+            lineItemIds: string[];
+            removeCategory: boolean;
+        }) => {
             return updateCategory(category, lineItemIds, removeCategory);
         },
         onSuccess: () => {
@@ -171,7 +182,7 @@ function TableContent({ purchases, filters, setSort, rowOption, editableTags }:
     });
 
     const typeMutation = useMutation({
-        mutationFn: ({ lineItemIds, type }: { type: DisasterType, lineItemIds: string[]}) => {
+        mutationFn: ({ lineItemIds, type }: { type: DisasterType; lineItemIds: string[] }) => {
             return updateType(type, lineItemIds);
         },
         onSuccess: () => {
@@ -186,7 +197,6 @@ function TableContent({ purchases, filters, setSort, rowOption, editableTags }:
         getSubRows: (row) => row.lineItems ?? [],
         enableSubRowSelection(row) {
             return row.original.lineItems.length > 0;
-
         },
         manualSorting: true,
         columns: [
@@ -199,9 +209,12 @@ function TableContent({ purchases, filters, setSort, rowOption, editableTags }:
                     const displayMerchant = cellVal.length > 20 ? `${cellVal.substring(0, 20)}...` : cellVal;
                     return (
                         <div className={cn("flex items-center", row.depth > 0 && "pl-8")}>
-                            {rowOption === 'collapsible' ? (
+                            {rowOption === "collapsible" ? (
                                 row.getCanExpand() ? (
-                                    <CollapsibleArrow onClick={() => row.toggleExpanded()} isOpen={row.getIsExpanded()} />
+                                    <CollapsibleArrow
+                                        onClick={() => row.toggleExpanded()}
+                                        isOpen={row.getIsExpanded()}
+                                    />
                                 ) : null
                             ) : (
                                 <input
@@ -235,20 +248,22 @@ function TableContent({ purchases, filters, setSort, rowOption, editableTags }:
                     const row = ctx.row.original;
                     return (
                         <CategoryLabel
-                        category={ctx.getValue() as string}
-                        updateCategory={( category, lineItemIds,  removeCategory) => {
-                            categoryMutation.mutate({ category, lineItemIds, removeCategory });
-                        }}
-                        lineItemIds={row.lineItemIds}
-                        editableTags={editableTags}/>
-                        );
-                }
+                            category={ctx.getValue() as string}
+                            updateCategory={(category, lineItemIds, removeCategory) => {
+                                categoryMutation.mutate({ category, lineItemIds, removeCategory });
+                            }}
+                            lineItemIds={row.lineItemIds}
+                            editableTags={editableTags}
+                        />
+                    );
+                },
             },
             {
                 id: "date",
                 header: () => <SortableHeader column={SortByColumn.DATE} filters={filters} setSort={setSort} />,
                 enableSorting: true,
-                accessorFn: (row) => row.date.toLocaleDateString() },
+                accessorFn: (row) => row.date.toLocaleDateString(),
+            },
             {
                 id: "disasterRelated",
                 header: "Disaster Related",
@@ -258,14 +273,14 @@ function TableContent({ purchases, filters, setSort, rowOption, editableTags }:
                     return (
                         <DisasterLabel
                             disasterType={ctx.getValue()}
-                            updateDisasterType={( type, lineItemIds) => {
-                                typeMutation.mutate({ type, lineItemIds});
+                            updateDisasterType={(type, lineItemIds) => {
+                                typeMutation.mutate({ type, lineItemIds });
                             }}
                             lineItemIds={row.lineItemIds}
                             editableTags={editableTags}
                         />
                     );
-                }
+                },
             },
         ],
     });

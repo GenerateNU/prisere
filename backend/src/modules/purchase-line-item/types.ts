@@ -67,7 +67,7 @@ export const GetPurchaseLineItemResponseSchema = z.object({
 export const GetPurchaseLineItemsFromParentResponseSchema = z.array(GetPurchaseLineItemResponseSchema);
 
 export const UpdatePurchaseLineItemResponseSchema = GetPurchaseLineItemResponseSchema.extend({
-    quickbooksDateCreated : z.iso.datetime().nullable().optional(),
+    quickbooksDateCreated: z.iso.datetime().nullable().optional(),
 });
 
 //Controller Responses

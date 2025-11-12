@@ -388,10 +388,10 @@ describe("GET /purchase - Filtered and Sorted", () => {
         });
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
         expect(body.length).toBe(6);
 
-        const purchaseIds = body.map(p => p.id);
+        const purchaseIds = body.map((p) => p.id);
         expect(purchaseIds).toContain(seededPurchases[0].id);
         expect(purchaseIds).toContain(seededPurchases[1].id);
         expect(purchaseIds).toContain(seededPurchases[2].id);
@@ -415,10 +415,8 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(body[0].id).toBe(seededPurchases[0].id);
         expect(body[1].id).toBe(seededPurchases[4].id);
 
-        expect(body[0].lineItems.some(
-            (li) => li.category === "Supplies")).toBe(true);
-        expect(body[1].lineItems.some(
-            (li) => li.category === "Supplies")).toBe(true);
+        expect(body[0].lineItems.some((li) => li.category === "Supplies")).toBe(true);
+        expect(body[1].lineItems.some((li) => li.category === "Supplies")).toBe(true);
     });
 
     test("GET /purchase - Filter by Technology category ", async () => {
@@ -436,23 +434,17 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(body[0].id).toBe(seededPurchases[0].id);
         expect(body[1].id).toBe(seededPurchases[5].id);
 
-        expect(body[0].lineItems.some(
-            (li) => li.category === "Technology")).toBe(true);
-        expect(body[1].lineItems.some(
-            (li) => li.category === "Technology")).toBe(true);
+        expect(body[0].lineItems.some((li) => li.category === "Technology")).toBe(true);
+        expect(body[1].lineItems.some((li) => li.category === "Technology")).toBe(true);
     });
 
-
     test("GET /purchase - Filter by multiple categories ", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?categories=Supplies&categories=Technology`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
+        const response = await app.request(TESTING_PREFIX + `/purchase?categories=Supplies&categories=Technology`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
             },
-        );
+        });
 
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
@@ -465,115 +457,93 @@ describe("GET /purchase - Filtered and Sorted", () => {
                 seededPurchases[0].id,
                 "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
                 "b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e",
-            ].sort(),
+            ].sort()
         );
 
         body.forEach((purchase) => {
             const hasMatchingCategory = purchase.lineItems.some(
-                (li) => li.category === "Supplies" || li.category === "Technology",
+                (li) => li.category === "Supplies" || li.category === "Technology"
             );
             expect(hasMatchingCategory).toBe(true);
         });
 
-        const purchase0 = body.find(
-            (p) => p.id === seededPurchases[0].id);
-        expect(purchase0?.lineItems.some(
-            (li) => li.category === "Supplies")).toBe(true);
-        expect(purchase0?.lineItems.some(
-            (li) => li.category === "Technology")).toBe(true);
+        const purchase0 = body.find((p) => p.id === seededPurchases[0].id);
+        expect(purchase0?.lineItems.some((li) => li.category === "Supplies")).toBe(true);
+        expect(purchase0?.lineItems.some((li) => li.category === "Technology")).toBe(true);
 
-        const suppliesOnly = body.find(
-            (p) => p.id === "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
-        );
-        expect(suppliesOnly?.lineItems.some(
-            (li) => li.category === "Supplies")).toBe(true);
-        expect(suppliesOnly?.lineItems.every(
-            (li) => li.category !== "Technology")).toBe(true);
+        const suppliesOnly = body.find((p) => p.id === "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d");
+        expect(suppliesOnly?.lineItems.some((li) => li.category === "Supplies")).toBe(true);
+        expect(suppliesOnly?.lineItems.every((li) => li.category !== "Technology")).toBe(true);
 
-        const technologyOnly = body.find(
-            (p) => p.id === "b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e",
-        );
-        expect(technologyOnly?.lineItems.some(
-            (li) => li.category === "Technology")).toBe(true);
-        expect(technologyOnly?.lineItems.every(
-            (li) => li.category !== "Supplies")).toBe(true);
+        const technologyOnly = body.find((p) => p.id === "b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e");
+        expect(technologyOnly?.lineItems.some((li) => li.category === "Technology")).toBe(true);
+        expect(technologyOnly?.lineItems.every((li) => li.category !== "Supplies")).toBe(true);
     });
 
     test("GET /purchase - Filter by non-existent category", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?categories=NonExistent`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?categories=NonExistent`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
         expect(body.length).toBe(0);
     });
 
     test("GET /purchase - Filter by type typical", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?type=typical`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?type=typical`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
-
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
 
         expect(body.length).toBe(5);
-        const returnedIds = body.map(p => p.id).sort();
-        expect(returnedIds).toEqual([
-            seededPurchases[1].id, seededPurchases[2].id, seededPurchases[3].id, seededPurchases[4].id,
-            seededPurchases[5].id,
-        ].sort());
+        const returnedIds = body.map((p) => p.id).sort();
+        expect(returnedIds).toEqual(
+            [
+                seededPurchases[1].id,
+                seededPurchases[2].id,
+                seededPurchases[3].id,
+                seededPurchases[4].id,
+                seededPurchases[5].id,
+            ].sort()
+        );
 
-        body.forEach(purchase => {
-            expect(purchase.lineItems.every(
-                li => li.type === "typical")).toBe(true);
+        body.forEach((purchase) => {
+            expect(purchase.lineItems.every((li) => li.type === "typical")).toBe(true);
         });
     });
 
     test("GET /purchase - Filter by type extraneous", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?type=extraneous`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?type=extraneous`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
-
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
 
         expect(body.length).toBe(1);
         expect(body[0].id).toBe(seededPurchases[0].id);
-        expect(body[0].lineItems.some(
-            li => li.type === "extraneous")).toBe(true);
+        expect(body[0].lineItems.some((li) => li.type === "extraneous")).toBe(true);
     });
 
     test("GET /purchase - Invalid type returns 400", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?type=invalid`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?type=invalid`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
 
         expect(response.status).toBe(400);
     });
@@ -590,10 +560,10 @@ describe("GET /purchase - Filtered and Sorted", () => {
         );
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
         // Should return all seeded purchases since dateFrom is missing
         expect(body.length).toBe(6);
-        const returnedIds = body.map(p => p.id).sort();
+        const returnedIds = body.map((p) => p.id).sort();
         expect(returnedIds).toEqual(
             [
                 seededPurchases[0].id,
@@ -618,10 +588,10 @@ describe("GET /purchase - Filtered and Sorted", () => {
         );
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
         // Should return all seeded purchases since dateTo is missing
         expect(body.length).toBe(6);
-        const returnedIds = body.map(p => p.id).sort();
+        const returnedIds = body.map((p) => p.id).sort();
         expect(returnedIds).toEqual(
             [
                 seededPurchases[0].id,
@@ -637,7 +607,8 @@ describe("GET /purchase - Filtered and Sorted", () => {
     test("GET /purchase - dateFrom equals dateTo should return 400", async () => {
         const sameDate = new Date("2025-01-01T00:00:00Z").toISOString();
         const response = await app.request(
-            TESTING_PREFIX + `/purchase?dateFrom=${encodeURIComponent(sameDate)}&dateTo=${encodeURIComponent(sameDate)}`,
+            TESTING_PREFIX +
+                `/purchase?dateFrom=${encodeURIComponent(sameDate)}&dateTo=${encodeURIComponent(sameDate)}`,
             {
                 method: "GET",
                 headers: {
@@ -680,33 +651,27 @@ describe("GET /purchase - Filtered and Sorted", () => {
         );
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
 
         expect(body.length).toBe(2);
-        expect(body.map(p => p.id).sort()).toEqual([
-            seededPurchases[1].id,
-            seededPurchases[2].id,
-        ].sort());
+        expect(body.map((p) => p.id).sort()).toEqual([seededPurchases[1].id, seededPurchases[2].id].sort());
     });
 
     test("GET /purchase - dateFrom undefined should not filter", async () => {
         const dateTo = new Date("2025-12-31T23:59:59Z").toISOString();
 
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?dateTo=${encodeURIComponent(dateTo)}`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?dateTo=${encodeURIComponent(dateTo)}`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
 
         expect(body.length).toBe(6);
-        const returnedIds = body.map(p => p.id).sort();
+        const returnedIds = body.map((p) => p.id).sort();
         expect(returnedIds).toEqual(
             [
                 seededPurchases[0].id,
@@ -722,21 +687,18 @@ describe("GET /purchase - Filtered and Sorted", () => {
     test("GET /purchase - dateTo undefined should not filter", async () => {
         const dateFrom = new Date("2024-01-01T00:00:00Z").toISOString();
 
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?dateFrom=${encodeURIComponent(dateFrom)}`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?dateFrom=${encodeURIComponent(dateFrom)}`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
 
         expect(body.length).toBe(6);
-        const returnedIds = body.map(p => p.id).sort();
+        const returnedIds = body.map((p) => p.id).sort();
         expect(returnedIds).toEqual(
             [
                 seededPurchases[0].id,
@@ -750,101 +712,80 @@ describe("GET /purchase - Filtered and Sorted", () => {
     });
 
     test("GET /purchase - Invalid dateFrom format returns 400", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?dateFrom=invalid-date`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?dateFrom=invalid-date`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
         expect(response.status).toBe(400);
     });
 
     test("GET /purchase - Invalid dateTo format returns 400", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?dateTo=not-a-date`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?dateTo=not-a-date`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
         expect(response.status).toBe(400);
     });
 
-
     test("GET /purchase - Search by 'Office' in description", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?search=Office`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?search=Office`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
-
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
 
         expect(body.length).toBe(1);
         expect(body[0].id).toBe(seededPurchases[0].id);
-        expect(body[0].lineItems.some(li => li.description?.includes("Office"))).toBe(true);
+        expect(body[0].lineItems.some((li) => li.description?.includes("Office"))).toBe(true);
     });
 
     test("GET /purchase - Search by 'Software' in description", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?search=Software`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?search=Software`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
-
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
 
         expect(body.length).toBe(1);
         expect(body[0].id).toBe(seededPurchases[0].id);
-        expect(body[0].lineItems.some(li => li.description?.includes("Software"))).toBe(true);
+        expect(body[0].lineItems.some((li) => li.description?.includes("Software"))).toBe(true);
     });
 
     test("GET /purchase - Search with no results", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?search=NonExistentSearch`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?search=NonExistentSearch`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
         expect(body.length).toBe(0);
     });
 
     test("GET /purchase - Sort by date DESC", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?sortBy=date&sortOrder=DESC`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?sortBy=date&sortOrder=DESC`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
 
         expect(body.length).toBe(6);
         expect(body[0].id).toBe("b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e"); // 2025-03-02
@@ -860,18 +801,15 @@ describe("GET /purchase - Filtered and Sorted", () => {
     });
 
     test("GET /purchase - Sort by date ASC", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?sortBy=date&sortOrder=ASC`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?sortBy=date&sortOrder=ASC`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
 
         expect(body.length).toBe(6);
         expect(body[0].id).toBe(seededPurchases[3].id); // 2024-04-11
@@ -887,19 +825,15 @@ describe("GET /purchase - Filtered and Sorted", () => {
     });
 
     test("GET /purchase - Sort by totalAmountCents ASC", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?sortBy=totalAmountCents&sortOrder=ASC`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?sortBy=totalAmountCents&sortOrder=ASC`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
-
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
 
         expect(body.length).toBe(6);
         expect(body[0].id).toBe(seededPurchases[3].id);
@@ -921,19 +855,15 @@ describe("GET /purchase - Filtered and Sorted", () => {
     });
 
     test("GET /purchase - Sort by totalAmountCents DESC", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?sortBy=totalAmountCents&sortOrder=DESC`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?sortBy=totalAmountCents&sortOrder=DESC`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
-
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
 
         expect(body.length).toBe(6);
         expect(body[0].id).toBe(seededPurchases[1].id);
@@ -949,36 +879,29 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(body[5].id).toBe(seededPurchases[3].id);
         expect(body[5].totalAmountCents).toBe(50);
 
-
         for (let i = 1; i < body.length; i++) {
             expect(body[i - 1].totalAmountCents >= body[i].totalAmountCents).toBe(true);
         }
     });
 
     test("GET /purchase - Invalid sortBy returns 400", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?sortBy=invalid`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?sortBy=invalid`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
 
         expect(response.status).toBe(400);
     });
 
     test("GET /purchase - Invalid sortOrder returns 400", async () => {
-        const response = await app.request(
-            TESTING_PREFIX + `/purchase?sortBy=date&sortOrder=INVALID`,
-            {
-                method: "GET",
-                headers: {
-                    companyId: seededCompanies[0].id,
-                },
-            }
-        );
+        const response = await app.request(TESTING_PREFIX + `/purchase?sortBy=date&sortOrder=INVALID`, {
+            method: "GET",
+            headers: {
+                companyId: seededCompanies[0].id,
+            },
+        });
 
         expect(response.status).toBe(400);
     });
@@ -995,8 +918,7 @@ describe("GET /purchase - Filtered and Sorted", () => {
         );
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
-
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
 
         expect(body.length).toBe(2);
         expect(body[0].id).toBe("b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e");
@@ -1014,7 +936,7 @@ describe("GET /purchase - Filtered and Sorted", () => {
         );
 
         expect(responsePage0.status).toBe(200);
-        const bodyPage0 = await responsePage0.json() as GetCompanyPurchasesResponse;
+        const bodyPage0 = (await responsePage0.json()) as GetCompanyPurchasesResponse;
 
         expect(Array.isArray(bodyPage0)).toBe(true);
         expect(bodyPage0.length).toBe(2);
@@ -1031,16 +953,16 @@ describe("GET /purchase - Filtered and Sorted", () => {
         );
 
         expect(responsePage1.status).toBe(200);
-        const bodyPage1 = await responsePage1.json() as GetCompanyPurchasesResponse;
+        const bodyPage1 = (await responsePage1.json()) as GetCompanyPurchasesResponse;
 
         expect(Array.isArray(bodyPage1)).toBe(true);
         expect(bodyPage1.length).toBe(2);
         expect(bodyPage1[0].id).toBe(seededPurchases[0].id);
         expect(bodyPage1[1].id).toBe(seededPurchases[1].id);
 
-        const page0Ids = bodyPage0.map(p => p.id);
-        const page1Ids = bodyPage1.map(p => p.id);
-        page1Ids.forEach(id => expect(page0Ids).not.toContain(id));
+        const page0Ids = bodyPage0.map((p) => p.id);
+        const page1Ids = bodyPage1.map((p) => p.id);
+        page1Ids.forEach((id) => expect(page0Ids).not.toContain(id));
 
         // PAGE 2
         const responsePage2 = await app.request(
@@ -1052,7 +974,7 @@ describe("GET /purchase - Filtered and Sorted", () => {
         );
 
         expect(responsePage2.status).toBe(200);
-        const bodyPage2 = await responsePage2.json() as GetCompanyPurchasesResponse;
+        const bodyPage2 = (await responsePage2.json()) as GetCompanyPurchasesResponse;
 
         expect(Array.isArray(bodyPage2)).toBe(true);
         expect(bodyPage2.length).toBe(2);
@@ -1069,21 +991,21 @@ describe("GET /purchase - Filtered and Sorted", () => {
         );
 
         expect(responsePage3.status).toBe(200);
-        const bodyPage3 = await responsePage3.json() as GetCompanyPurchasesResponse;
+        const bodyPage3 = (await responsePage3.json()) as GetCompanyPurchasesResponse;
 
         expect(Array.isArray(bodyPage3)).toBe(true);
         expect(bodyPage3.length).toBe(0);
     });
-
-
 
     test("GET /purchase - Combined: category + type + dateRange + sort", async () => {
         const dateFrom = new Date("2024-01-01T00:00:00Z").toISOString();
         const dateTo = new Date("2025-12-31T23:59:59Z").toISOString();
 
         const response = await app.request(
-            TESTING_PREFIX + `/purchase?categories=Supplies&type=typical&dateFrom=${encodeURIComponent(dateFrom)
-            }&dateTo=${encodeURIComponent(dateTo)}&sortBy=date&sortOrder=DESC`,
+            TESTING_PREFIX +
+                `/purchase?categories=Supplies&type=typical&dateFrom=${encodeURIComponent(
+                    dateFrom
+                )}&dateTo=${encodeURIComponent(dateTo)}&sortBy=date&sortOrder=DESC`,
             {
                 method: "GET",
                 headers: {
@@ -1093,16 +1015,12 @@ describe("GET /purchase - Filtered and Sorted", () => {
         );
 
         expect(response.status).toBe(200);
-        const body = await response.json() as GetCompanyPurchasesResponse;
-
+        const body = (await response.json()) as GetCompanyPurchasesResponse;
 
         expect(body.length).toBe(1);
-        const returnedIds = body.map(p => p.id).sort();
-        expect(returnedIds).toEqual([
-            seededPurchases[4].id,
-        ].sort());
+        const returnedIds = body.map((p) => p.id).sort();
+        expect(returnedIds).toEqual([seededPurchases[4].id].sort());
     });
-
 
     test("GET /purchase - Combined filters use AND logic (not OR)", async () => {
         const dateFrom = new Date("2024-01-01T00:00:00Z").toISOString();
@@ -1110,9 +1028,9 @@ describe("GET /purchase - Filtered and Sorted", () => {
 
         const response = await app.request(
             TESTING_PREFIX +
-            `/purchase?categories=Technology&type=typical&search=Office&dateFrom=${encodeURIComponent(
-                dateFrom
-            )}&dateTo=${encodeURIComponent(dateTo)}&sortBy=date&sortOrder=DESC`,
+                `/purchase?categories=Technology&type=typical&search=Office&dateFrom=${encodeURIComponent(
+                    dateFrom
+                )}&dateTo=${encodeURIComponent(dateTo)}&sortBy=date&sortOrder=DESC`,
             {
                 method: "GET",
                 headers: {
@@ -1127,5 +1045,4 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(Array.isArray(body)).toBe(true);
         expect(body.length).toBe(0);
     });
-
 });

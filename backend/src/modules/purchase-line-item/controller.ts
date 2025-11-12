@@ -23,7 +23,9 @@ export interface IPurchaseLineItemController {
         ctx: Context
     ): ControllerResponse<TypedResponse<GetPurchaseLineItemsFromParentResponse, 200>>;
 
-    updatePurchaseLineItemCategory(ctx: Context): ControllerResponse<TypedResponse<UpdatePurchaseLineItemResponse, 200>>;
+    updatePurchaseLineItemCategory(
+        ctx: Context
+    ): ControllerResponse<TypedResponse<UpdatePurchaseLineItemResponse, 200>>;
     updatePurchaseLineItemType(ctx: Context): ControllerResponse<TypedResponse<UpdatePurchaseLineItemResponse, 200>>;
 }
 
@@ -77,33 +79,29 @@ export class PurchaseLineItemController implements IPurchaseLineItemController {
         }
     );
 
-
-
     updatePurchaseLineItemCategory = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<UpdatePurchaseLineItemResponse, 200>> => {
             const json = await ctx.req.json();
             const request = UpdatePurchaseLineItemCategoryDTOSchema.parse(json);
 
-            const updated = 
-            await this.purchaseLineItemService.updatePurchaseLineItemCategory(request.id, request.category, request.removeCategory);
+            const updated = await this.purchaseLineItemService.updatePurchaseLineItemCategory(
+                request.id,
+                request.category,
+                request.removeCategory
+            );
 
             return ctx.json(updated, 200);
-
         }
     );
-
 
     updatePurchaseLineItemType = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<UpdatePurchaseLineItemResponse, 200>> => {
             const json = await ctx.req.json();
             const request = UpdatePurchaseLineItemTypeDTOSchema.parse(json);
 
-            const updated = 
-            await this.purchaseLineItemService.updatePurchaseLineItemType(request.id, request.type);
+            const updated = await this.purchaseLineItemService.updatePurchaseLineItemType(request.id, request.type);
 
             return ctx.json(updated, 200);
-
         }
     );
-    
 }

@@ -179,7 +179,6 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
         expect(data.category).toBe("Second Category");
     });
 
-
     test("PATCH /purchase/category - Successfully updates category then removes", async () => {
         const response = await app.request(TESTING_PREFIX + "/purchase/line/category", {
             method: "PATCH",
@@ -214,14 +213,12 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
 
         expect(removeResponse.status).toBe(200);
         const updatedItemAfterRemove = await testAppDataSource.manager.findOne(PurchaseLineItem, {
-            where: { id:  seededPurchaseLineItems[0].id },
+            where: { id: seededPurchaseLineItems[0].id },
         });
 
         expect(updatedItemAfterRemove).not.toBeNull();
         expect(updatedItemAfterRemove?.category).toBeNull();
-
     });
-
 
     test("PATCH /purchase/category - Does not remove category when category does not match", async () => {
         const lineItemId = seededPurchaseLineItems[0].id;
@@ -441,7 +438,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 id: seededPurchaseLineItems[0].id,
-                type:PurchaseLineItemType.EXTRANEOUS,
+                type: PurchaseLineItemType.EXTRANEOUS,
             }),
         });
 

@@ -40,7 +40,8 @@ interface ColumnHeaderProps {
 }
 
 // TODO: reimplement in table
-function ColumnHeader({ column, onSort, getSortingState }: ColumnHeaderProps) {
+// eslint-disable-next-line
+function ColumnHeader({ column }: ColumnHeaderProps) {
     const isSortable = column === "Date" || column === "Amount";
 
     if (isSortable) {

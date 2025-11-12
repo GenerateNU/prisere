@@ -124,16 +124,15 @@ const updatePurchaseLineItemCategoryRoute = createRoute({
     method: "patch",
     path: "/purchase/line/category",
     summary: "Updates a purchase line item's category",
-    description:
-        "Updates the category of the purchase line item with the given Id to the given category",
+    description: "Updates the category of the purchase line item with the given Id to the given category",
     request: {
         body: {
             content: {
-                'application/json': {
+                "application/json": {
                     schema: UpdatePurchaseLineItemCategoryDTOSchema,
-                }
-            }
-        }
+                },
+            },
+        },
     },
     responses: {
         200: {
@@ -149,21 +148,19 @@ const updatePurchaseLineItemCategoryRoute = createRoute({
     tags: ["Purchase Line Items"],
 });
 
-
 const updatePurchaseLineItemTypeRoute = createRoute({
     method: "patch",
     path: "/purchase/line/type",
     summary: "Updates a purchase line item's type",
-    description:
-        "Updates the type of the purchase line item with the given Id to the given type",
+    description: "Updates the type of the purchase line item with the given Id to the given type",
     request: {
         body: {
             content: {
-                'application/json': {
+                "application/json": {
                     schema: UpdatePurchaseLineItemTypeDTOSchema,
-                }
-            }
-        }
+                },
+            },
+        },
     },
     responses: {
         200: {
@@ -178,4 +175,3 @@ const updatePurchaseLineItemTypeRoute = createRoute({
     },
     tags: ["Purchase Line Items"],
 });
-

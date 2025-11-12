@@ -26,8 +26,9 @@ export interface IPurchaseController {
     sumPurchasesByCompanyInMonthBins(
         ctx: Context
     ): ControllerResponse<TypedResponse<GetCompanyPurchasesInMonthBinsResponse, 200>>;
-    getPurchaseCategoriesForCompany(ctx: Context):
-        ControllerResponse<TypedResponse<GetPurchaseCategoriesForCompanyResponse, 200>>;
+    getPurchaseCategoriesForCompany(
+        ctx: Context
+    ): ControllerResponse<TypedResponse<GetPurchaseCategoriesForCompanyResponse, 200>>;
 }
 
 export class PurchaseController implements IPurchaseController {
@@ -77,7 +78,7 @@ export class PurchaseController implements IPurchaseController {
                 pageNumber: ctx.req.query("pageNumber") ? Number(ctx.req.query("pageNumber")) : undefined,
                 resultsPerPage: ctx.req.query("resultsPerPage") ? Number(ctx.req.query("resultsPerPage")) : undefined,
                 categories: ctx.req.queries("categories"),
-                type: ctx.req.query("type"), 
+                type: ctx.req.query("type"),
                 dateFrom: ctx.req.query("dateFrom"),
                 dateTo: ctx.req.query("dateTo"),
                 search: ctx.req.query("search"),
