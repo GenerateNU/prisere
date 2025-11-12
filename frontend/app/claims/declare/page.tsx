@@ -214,6 +214,10 @@ export default function DeclareDisaster() {
                 </div>
             )}
             {currentStep?.render}
+            {/**
+             * WHEN ADDING THE TABLE TO LINK PURCHASES TO CLAIMS USE THIS:
+             * <ExpenseTable title={"Select Relevant Transactions"} rowOption={'checkbox'} editableTags={false}/>;
+             */}
         </div>
     );
 }

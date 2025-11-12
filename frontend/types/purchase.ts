@@ -12,6 +12,8 @@ export enum SortByColumn {
     AMOUNT = "totalAmountCents",
 }
 
+export type DisasterType = "typical" | "extraneous";
+
 export type FilteredPurchases = {
     pageNumber: number;
     resultsPerPage: number;

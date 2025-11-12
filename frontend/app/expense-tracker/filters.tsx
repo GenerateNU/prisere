@@ -14,10 +14,10 @@ import { DateRange } from "react-day-picker";
 import { Calendar as CalendarIcon, Zap, Tags, Search, ChevronDown } from "lucide-react";
 
 export function Filters({
-                            onFilterChange,
-                            allCategories,
-                            selectedCategories,
-                        }: {
+    onFilterChange,
+    allCategories,
+    selectedCategories,
+}: {
     onFilterChange: (field: string) => (value: unknown) => void;
     allCategories: string[];
     selectedCategories: string[];
@@ -180,9 +180,7 @@ function DisasterRelatedFilter({ onTypeChange }: { onTypeChange: (type: Purchase
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-                <DropdownMenuItem onClick={() => handleSelect(undefined)}>
-                    All
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleSelect(undefined)}>All</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleSelect(PurchaseLineItemType.EXTRANEOUS)}>
                     Disaster
                 </DropdownMenuItem>
@@ -195,10 +193,10 @@ function DisasterRelatedFilter({ onTypeChange }: { onTypeChange: (type: Purchase
 }
 
 function CategoryFilter({
-                            onCategoryChange,
-                            possibleCategories,
-                            selectedCategories,
-                        }: {
+    onCategoryChange,
+    possibleCategories,
+    selectedCategories,
+}: {
     onCategoryChange: (categories: string[]) => void;
     possibleCategories: string[];
     selectedCategories: string[];
@@ -242,7 +240,6 @@ function CategoryFilter({
         </DropdownMenu>
     );
 }
-
 
 function SearchBy({ onSearchChange }: { onSearchChange: (search: string) => void }) {
     return (

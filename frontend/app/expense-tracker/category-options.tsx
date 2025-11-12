@@ -8,7 +8,7 @@ interface CategoryLabelProps {
     category: string;
     updateCategory: (category: string, lineItems: string[], removeCategory: boolean) => void;
     lineItemIds: string[];
-    editableTags: boolean
+    editableTags: boolean;
 }
 
 interface CategoryBadgeProps extends CategoryLabelProps {
@@ -22,8 +22,7 @@ interface CreateCategoryProps {
     lineItemIds: string[];
 }
 
-
-export default function CategoryLabel({ category, updateCategory, lineItemIds, editableTags}: CategoryLabelProps) {
+export default function CategoryLabel({ category, updateCategory, lineItemIds, editableTags }: CategoryLabelProps) {
     const categories = category.length > 0 ? category.split(",") : [];
 
     if (editableTags && categories.length === 0) {
@@ -46,15 +45,12 @@ export default function CategoryLabel({ category, updateCategory, lineItemIds, e
         </>
     );
 
-
     function AddCategoryButton() {
         const [searchValue, setSearchValue] = useState("");
         return (
             <Popover>
                 <PopoverTrigger asChild>
-                    <button className="text-gray-400 text-sm hover:text-gray-600 underline">
-                        + Add category
-                    </button>
+                    <button className="text-gray-400 text-sm hover:text-gray-600 underline">+ Add category</button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[200px] p-4">
                     <div className="space-y-2">
@@ -83,15 +79,16 @@ export default function CategoryLabel({ category, updateCategory, lineItemIds, e
     }
 }
 
-function CategoryBadge(
-    { category, allCategories, updateCategory, lineItemIds , editableTags}: CategoryBadgeProps) {
+function CategoryBadge({ category, allCategories, updateCategory, lineItemIds, editableTags }: CategoryBadgeProps) {
     const [searchValue, setSearchValue] = useState("");
     const displayCategory = category.length > 20 ? `${category.substring(0, 20)}...` : category;
 
     if (!editableTags) {
         return (
-            <span className="px-3 py-1 mr-1 mb-1 rounded-md text-sm font-semibold inline-block"
-                  style={{ backgroundColor: getTagColor(category).backgroundColor }}>
+            <span
+                className="px-3 py-1 mr-1 mb-1 rounded-md text-sm font-semibold inline-block"
+                style={{ backgroundColor: getTagColor(category).backgroundColor }}
+            >
                 {displayCategory}
             </span>
         );
@@ -100,19 +97,21 @@ function CategoryBadge(
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <span className="px-3 py-1 mr-1 mb-1 rounded-md text-sm font-semibold cursor-pointer inline-block"
-                      style={{ backgroundColor: getTagColor(category).backgroundColor }}>
+                <span
+                    className="px-3 py-1 mr-1 mb-1 rounded-md text-sm font-semibold cursor-pointer inline-block"
+                    style={{ backgroundColor: getTagColor(category).backgroundColor }}
+                >
                     {displayCategory}
                 </span>
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0">
                 <Command>
-                    <div
-                        className="flex items-center gap-2 border-b bg-muted/60 px-2 py-0" cmdk-input-wrapper="">
+                    <div className="flex items-center gap-2 border-b bg-muted/60 px-2 py-0" cmdk-input-wrapper="">
                         <span
                             className="flex items-center gap-1 px-3 py-1 mr-1 mb-1 rounded-md text-xs font-semibold text-black flex-shrink-0"
-                            style={getTagColor(category)}>
-                           {category}
+                            style={getTagColor(category)}
+                        >
+                            {category}
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -120,9 +119,9 @@ function CategoryBadge(
                                 }}
                                 className="hover:bg-gray-100 hover:bg-opacity-20 rounded-full p-0.5"
                             >
-                             <X className="h-3 w-3" />
-                             </button>
-                            </span>
+                                <X className="h-3 w-3" />
+                            </button>
+                        </span>
                         <div
                             className="flex-1
                             [&_[data-slot=command-input-wrapper]]:border-0
@@ -146,10 +145,12 @@ function CategoryBadge(
                         Select an option or create one
                     </div>
                     <CommandEmpty>
-                        <Create searchValue={searchValue}
-                                setSearchValue={setSearchValue}
-                                updateCategory={updateCategory}
-                                lineItemIds={lineItemIds} />
+                        <Create
+                            searchValue={searchValue}
+                            setSearchValue={setSearchValue}
+                            updateCategory={updateCategory}
+                            lineItemIds={lineItemIds}
+                        />
                     </CommandEmpty>
                     <CommandGroup>
                         {allCategories.map((cat) => (
@@ -160,7 +161,8 @@ function CategoryBadge(
                             >
                                 <span
                                     className="px-3 py-1 rounded-md text-xs font-semibold text-black"
-                                    style={getTagColor(cat)}>
+                                    style={getTagColor(cat)}
+                                >
                                     {cat}
                                 </span>
                             </CommandItem>

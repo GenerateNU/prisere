@@ -1,24 +1,25 @@
 "use client";
 
-import { authHeader, getClient, getClientAuthToken } from "@/api/client";
+
 import { Table } from "@/components/table";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { FilteredPurchases, Purchases } from "@/types/purchase";
-import { useMutation, useQuery, useQueryClient, UseQueryResult } from "@tanstack/react-query";
+import { DisasterType, FilteredPurchases, Purchases } from "@/types/purchase";
+import { useMutation, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, FileUp, Filter, Printer, X } from "lucide-react";
+import { ChevronDown, ChevronRight, FileUp, Filter, Printer } from "lucide-react";
 import { useMemo, useState } from "react";
-import { getAllPurchaseCategories, updateCategory, updateType } from "../../api/purchase";
+import { fetchAllCategories, fetchPurchases, updateCategory, updateType } from "../../api/purchase";
 import { Filters } from "./filters";
 import PaginationControls from "./PaginationControls";
 import ResultsPerPageSelect from "./ResultsPerPageSelect";
 import CategoryLabel from "./category-options";
-import DisasterLabel, { DisasterType } from "./disaster-options";
+import DisasterLabel from "./disaster-options";
 import { Button } from "@/components/ui/button";
 import { SortByColumn } from "../../types/purchase";
-import { Badge } from "@/components/ui/badge";
-import dayjs from "dayjs";
+import { FilterDisplay } from "./filter-display-bar";
+import { getCategoriesString, getMerchant, getPurchaseTypeString } from "./utility-functions";
+import { SortableHeader } from "./sortable-header";
 
 
 interface ExpenseTableConfig {
@@ -60,40 +61,9 @@ export default function ExpenseTable({title, editableTags, rowOption} : ExpenseT
         updateFilter("categories")([]);
     }
 
-    const purchases = useQuery({
-        queryKey: ["purchases-for-company", filters],
-        queryFn: async ({ signal }) => {
-            const token = await getClientAuthToken();
-            const client = getClient();
-            const { data, error, response } = await client.GET("/purchase", {
-                params: {
-                    query: {
-                        categories: filters.categories,
-                        dateFrom: filters.dateFrom,
-                        dateTo: filters.dateTo,
-                        search: filters.search,
-                        sortBy: filters.sortBy,
-                        sortOrder: filters.sortOrder,
-                        pageNumber: filters.pageNumber,
-                        resultsPerPage: filters.resultsPerPage,
-                        type: filters.type,
-                    },
-                },
-                headers: authHeader(token),
-                signal,
-            });
-            if (response.ok) {
-                return data;
-            } else {
-                throw Error(error?.error);
-            }
-        },
-    });
+    const purchases = fetchPurchases(filters);
 
-    const categories = useQuery({
-        queryKey: ["categories-for-purchases"],
-        queryFn: getAllPurchaseCategories,
-    });
+    const categories = fetchAllCategories();
 
     const isLastPage = (purchases.data?.length ?? 0) < filters.resultsPerPage;
 
@@ -318,120 +288,5 @@ function CollapsibleArrow({ isOpen, onClick }: { isOpen: boolean; onClick: () =>
         >
             {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
         </button>
-    );
-}
-
-function getCategoriesString(lineItems: { category?: string | null }[]): string {
-    return lineItems
-        .map(li => li.category)
-        .filter(Boolean)
-        .filter((value, index, self) => self.indexOf(value) === index)
-        .join(",");
-}
-
-function getPurchaseTypeString(lineItems: { type?: string | null }[]): DisasterType | null {
-    const types = lineItems
-        .map(li => li.type)
-        .filter(Boolean)
-
-    if (types.length === 0) {
-        return "typical";
-    } else {
-        return types.includes("extraneous") ? "extraneous" : "typical";
-    }
-}
-
-function getMerchant(lineItems: { description?: string | null }[]): string {
-    return lineItems
-        .map(li => li.description)
-        .filter(Boolean)
-        .join(", ");
-}
-
-
-interface SortableHeaderProps {
-    column : SortByColumn,
-    filters: FilteredPurchases,
-    setSort : (column: SortByColumn, sortOrder?: 'ASC' | 'DESC') => void,
-}
-
-
-
-function SortableHeader({ column, filters, setSort } : SortableHeaderProps) {
-    const sortColumnLabels: Record<SortByColumn, string> = {
-        [SortByColumn.DATE]: "Date",
-        [SortByColumn.AMOUNT]: "Amount"
-    };
-    const handleClick = () => {
-            if (filters.sortBy === column && filters.sortOrder === 'ASC') {
-                setSort(column, 'DESC');
-            } else if (filters.sortBy === column && filters.sortOrder === 'DESC') {
-                setSort(column, undefined);
-            } else {
-                setSort(column, 'ASC');
-            }
-        };
-    return (
-        <button
-            className="flex w-full gap-2 font-medium hover:text-foreground"
-            onClick={handleClick}
-        >
-            {sortColumnLabels[column]}
-            {filters.sortBy === column && filters.sortOrder && (
-                filters.sortOrder === 'ASC' ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />
-            )}
-        </button>
-    );
-}
-
-
-function FilterDisplay({ filters, removeCategory, removeType , removeDate, clearFilters } : {
-    filters : FilteredPurchases,
-    removeCategory : (category: string) => void;
-    removeType: () => void;
-    removeDate: () => void;
-    clearFilters: () => void;
-}) {
-    return (
-        <div className="inline-flex flex-wrap items-center gap-2">
-            {filters.categories?.map(cat => (
-                <AppliedFilter
-                    key={cat}
-                    label={"Category Included: " + cat}
-                    onClear={() => removeCategory(cat)}
-                />
-            ))}
-            {filters.type && (
-                <AppliedFilter label={"Disaster Related: " + filters.type} onClear={() => removeType()} />
-            )}
-            {filters.dateTo && filters.dateFrom && (
-                <AppliedFilter
-                    label={`Date: ${dayjs(filters.dateFrom).format("MMM D, YYYY")} - ${dayjs(filters.dateTo).format("MMM D, YYYY")}`}
-                    onClear={() => removeDate()}
-                />
-            )}
-            {(filters.type || filters.dateFrom || (filters.categories && filters.categories.length > 0)) && (
-                <button
-                    onClick={clearFilters}
-                    className="text-blue-500 hover:text-blue-600 text-sm font-medium underline-offset-2 ml-1"
-                >
-                    Clear Filter
-                </button>
-            )}
-        </div>
-    );
-}
-
-
-function AppliedFilter({ label, onClear }: { label: string; onClear: () => void }) {
-    return (
-        <Badge variant="outline" className="gap-2 pr-1 text-sm px-2">
-            <button
-                onClick={onClear}
-                className="rounded-sm hover:bg-muted p-0.5"
-            > <X className="h-3 w-3" />
-            </button>
-            {label}
-        </Badge>
     );
 }
