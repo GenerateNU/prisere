@@ -28,13 +28,13 @@ const buttonVariants = cva(
             },
             rounded: {
                 default: "rounded-full",
-                icon: "rounded-xl"
-            }
+                icon: "rounded-xl",
+            },
         },
         defaultVariants: {
             variant: "default",
             size: "default",
-            rounded: "default"
+            rounded: "default",
         },
     }
 );

@@ -4,8 +4,7 @@ export const ErrorResponseSchema = z.object({
     error: z.string(),
 });
 
-
 export type paginationParams = {
-    page: number
-    limit: number
-}
+    page: number;
+    limit: number;
+};
