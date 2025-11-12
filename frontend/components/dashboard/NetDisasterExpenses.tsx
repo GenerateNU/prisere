@@ -5,7 +5,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BannerData } from "@/types/user";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useState } from "react";
 
 type Props = {
   bannerData: BannerData | null;
@@ -25,23 +24,14 @@ export default function NetDisasterExpense({ bannerData }: Props) {
         "var(--teal)"
     ];
 
-    let claimStatus = '';
     let claimId = '';
     if (bannerData.status === 'has-claim') {
         // If claim is an array, use [0] to get the first claim
-        claimId = Array.isArray(bannerData.claim)
-            ? bannerData.claim[0]?.id
-            : bannerData.claim.id;
-        claimStatus = Array.isArray(bannerData.claim)
-            ? bannerData.claim[0]?.status
-            : bannerData.claim.status;
+        claimId = bannerData.claim.id;
     }
 
     console.log(`CLAIM ID: ${claimId}`)
     console.log(`CLAIM: ${bannerData}`)
-
-    const [page, setPage] = useState(0);
-    const [resultsPerPage, setResultsPerPage] = useState(5);
 
     const purchaseLineItems = useQuery({
         queryKey: ["purchaseLineItems-for-company", claimId],
@@ -51,7 +41,7 @@ export default function NetDisasterExpense({ bannerData }: Props) {
 
     const expenses = purchaseLineItems.data
         ? purchaseLineItems.data.map(purchase => ({
-            name: purchase.description, // or use another property for a better label
+            name: purchase.description,
             amount: purchase.amountCents / 100.0, // convert cents to dollars
             }))
         : [];

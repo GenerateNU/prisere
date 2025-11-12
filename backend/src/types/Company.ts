@@ -3,15 +3,6 @@ import { z } from "zod";
 export const COMPANY_EXTERNAL_SOURCES = ["quickbooks"] as const;
 export type CompanyExternalSource = (typeof COMPANY_EXTERNAL_SOURCES)[number];
 
-export const CompanyExternalSchema = z.object({
-    id: z.string(),
-    source: z.enum(COMPANY_EXTERNAL_SOURCES),
-    externalId: z.string(),
-    companyId: z.string(),
-    createdAt: z.string(),
-    updatedAt: z.string(),
-});
-
 export const UserSchema = z.object({
     id: z.string(),
     firstName: z.string(),

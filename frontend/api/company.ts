@@ -1,5 +1,5 @@
 "use server";
-import { Company, CreateCompanyRequest, GetCompanyLocationsResponse } from "@/types/company";
+import { Company, CreateCompanyRequest, GetClaimInProgressForCompanyResponse, GetCompanyLocationsResponse } from "@/types/company";
 import { authHeader, authWrapper, getClient } from "./client";
 
 export const createCompany = async (payload: CreateCompanyRequest): Promise<Company> => {
@@ -48,4 +48,19 @@ export const getCompany = async (): Promise<Company> => {
         }
     };
     return authWrapper<Company>()(req);
+};
+
+export const getClaimInProgress = async (): Promise<GetClaimInProgressForCompanyResponse> => {
+    const req = async (token: string): Promise<GetClaimInProgressForCompanyResponse> => {
+        const client = getClient();
+        const { data, error, response } = await client.GET("/companies/claim-in-progress", {
+            headers: authHeader(token),
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<GetClaimInProgressForCompanyResponse>()(req);
 };
