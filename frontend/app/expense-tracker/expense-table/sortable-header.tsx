@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
-import { FilteredPurchases, SortByColumn } from "../../types/purchase";
+import { FilteredPurchases, SortByColumn } from "../../../types/purchase";
 
 interface SortableHeaderProps {
     column: SortByColumn;

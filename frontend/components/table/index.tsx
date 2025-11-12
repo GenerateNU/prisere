@@ -1,4 +1,3 @@
-import { SortByColumn } from "@/types/purchase";
 import { flexRender, Table as ReactTable } from "@tanstack/react-table";
 import { Table as CTable, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
@@ -31,26 +30,4 @@ export function Table<T>({ table }: { table: ReactTable<T> }) {
             </TableBody>
         </CTable>
     );
-}
-
-interface ColumnHeaderProps {
-    column: string;
-    onSort: (column: SortByColumn) => void;
-    getSortingState: () => string;
-}
-
-// TODO: reimplement in table
-// eslint-disable-next-line
-function ColumnHeader({ column }: ColumnHeaderProps) {
-    const isSortable = column === "Date" || column === "Amount";
-
-    if (isSortable) {
-        return (
-            // <TableHead className="cursor-pointer" onClick={() => onSort(columnsToDBColumns.get(column)!)}>
-            //     {column + getSortingState()}
-            // </TableHead>
-            <></>
-        );
-    }
-    return <TableHead>{column}</TableHead>;
 }

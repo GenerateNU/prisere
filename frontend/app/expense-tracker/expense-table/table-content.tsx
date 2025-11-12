@@ -1,131 +1,19 @@
-"use client";
-
 import { Table } from "@/components/table";
-import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { DisasterType, FilteredPurchases, Purchases } from "@/types/purchase";
 import { useMutation, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/react-table";
-import { ChevronDown, ChevronRight, FileUp, Filter, Printer } from "lucide-react";
-import { useMemo, useState } from "react";
-import { useFetchPurchases, useFetchAllCategories, updateCategory, updateType } from "../../api/purchase";
-import { Filters } from "./filters";
-import PaginationControls from "./PaginationControls";
-import ResultsPerPageSelect from "./ResultsPerPageSelect";
+import { useMemo} from "react";
+import { updateCategory, updateType } from "../../../api/purchase";
 import CategoryLabel from "./category-options";
 import DisasterLabel from "./disaster-options";
-import { Button } from "@/components/ui/button";
-import { SortByColumn } from "../../types/purchase";
-import { FilterDisplay } from "./filter-display-bar";
-import { getCategoriesString, getMerchant, getPurchaseTypeString } from "./utility-functions";
+import { SortByColumn } from "../../../types/purchase";
+import { getCategoriesString, getMerchant, getPurchaseTypeString } from "../utility-functions";
 import { SortableHeader } from "./sortable-header";
+import { CollapsibleArrow } from "@/components/table/collapsibleArrow";
 
-interface ExpenseTableConfig {
-    title: string;
-    editableTags: boolean;
-    rowOption: "collapsible" | "checkbox";
-}
 
-export default function ExpenseTable({ title, editableTags, rowOption }: ExpenseTableConfig) {
-    const [filters, setFilters] = useState<FilteredPurchases>({ pageNumber: 0, resultsPerPage: 5 });
-    const [showFilters, setShowFilters] = useState(false);
-
-    const updateFilter = (field: string) => (value: unknown) => {
-        setFilters((prev) => ({ ...prev, [field]: value }));
-    };
-
-    const setSort = (column: SortByColumn, order?: "ASC" | "DESC") => {
-        updateFilter("sortBy")(column);
-        updateFilter("sortOrder")(order);
-    };
-
-    const removeType = () => {
-        updateFilter("type")(undefined);
-    };
-
-    const removeCategory = (category: string) => {
-        updateFilter("categories")(filters.categories!.filter((cat) => cat !== category));
-    };
-
-    const removeDate = () => {
-        updateFilter("dateFrom")(undefined);
-        updateFilter("dateTo")(undefined);
-    };
-
-    const clearFilters = () => {
-        removeDate();
-        removeType();
-        updateFilter("categories")([]);
-    };
-
-    const purchases = useFetchPurchases(filters);
-
-    const categories = useFetchAllCategories();
-
-    const isLastPage = (purchases.data?.length ?? 0) < filters.resultsPerPage;
-
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="text-2xl font-bold">{title}</CardTitle>
-                <CardAction>
-                    <div className="flex items-center justify-end gap-2">
-                        <Button
-                            variant={showFilters ? "secondary" : "default"}
-                            size="sm"
-                            onClick={() => setShowFilters(!showFilters)}
-                            className="h-8 rounded-full px-3 flex items-center gap-2 text-sm"
-                        >
-                            <Filter className="h-4 w-4" />
-                            <span>Filters</span>
-                        </Button>
-                        <Button variant="default" size="icon" className="h-8 w-8 rounded-full border-0">
-                            <Printer className="h-4 w-4" />
-                        </Button>
-                        <Button variant="default" size="icon" className="h-8 w-8 rounded-full border-0">
-                            <FileUp className="h-4 w-4" />
-                        </Button>
-                    </div>
-                </CardAction>
-            </CardHeader>
-            <CardContent>
-                {showFilters && (
-                    <Filters
-                        onFilterChange={updateFilter}
-                        allCategories={categories.data ?? []}
-                        selectedCategories={filters.categories ?? []}
-                    ></Filters>
-                )}
-                <div className="py-2">
-                    <FilterDisplay
-                        filters={filters}
-                        removeCategory={removeCategory}
-                        removeType={removeType}
-                        removeDate={removeDate}
-                        clearFilters={clearFilters}
-                    />
-                </div>
-                <TableContent
-                    purchases={purchases}
-                    filters={filters}
-                    setSort={setSort}
-                    rowOption={rowOption}
-                    editableTags={editableTags}
-                />
-            </CardContent>
-            <CardFooter>
-                <PaginationControls
-                    page={filters.pageNumber}
-                    onPageChange={updateFilter("pageNumber")}
-                    isLastPage={isLastPage}
-                />
-                <ResultsPerPageSelect value={filters.resultsPerPage} onValueChange={updateFilter("resultsPerPage")} />
-            </CardFooter>
-        </Card>
-    );
-}
-
-function TableContent({
+export default function TableContent({
     purchases,
     filters,
     setSort,
@@ -161,7 +49,6 @@ function TableContent({
             }) ?? [],
         [purchases.data]
     );
-
     const queryClient = useQueryClient();
     const categoryMutation = useMutation({
         mutationFn: ({
@@ -180,7 +67,6 @@ function TableContent({
             queryClient.invalidateQueries({ queryKey: ["purchases-for-company"] });
         },
     });
-
     const typeMutation = useMutation({
         mutationFn: ({ lineItemIds, type }: { type: DisasterType; lineItemIds: string[] }) => {
             return updateType(type, lineItemIds);
@@ -221,7 +107,6 @@ function TableContent({
                                     type="checkbox"
                                     className="w-4 h-4 cursor-pointer mr-2 accent-black align-middle"
                                     onChange={(e) => {
-                                        // Handle checkbox selection
                                         e.stopPropagation();
                                     }}
                                 />
@@ -292,16 +177,3 @@ function TableContent({
     return <Table table={table} />;
 }
 
-function CollapsibleArrow({ isOpen, onClick }: { isOpen: boolean; onClick: () => void }) {
-    return (
-        <button
-            className="p-1 hover:bg-muted rounded"
-            onClick={(e) => {
-                e.stopPropagation();
-                onClick();
-            }}
-        >
-            {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-        </button>
-    );
-}
