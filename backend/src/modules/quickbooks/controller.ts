@@ -2,6 +2,8 @@ import { Context, TypedResponse } from "hono";
 import { IQuickbooksService } from "./service";
 import { RedirectEndpointParams } from "../../types/quickbooks";
 import { ControllerResponse } from "../../utilities/response";
+import Boom from "@hapi/boom";
+import { validate } from "uuid";
 
 export interface IQuickbooksController {
     redirectToAuthorization(ctx: Context): ControllerResponse<TypedResponse<undefined, 302>>;
@@ -9,6 +11,7 @@ export interface IQuickbooksController {
         ctx: Context
     ): ControllerResponse<TypedResponse<{ success: true }, 200> | TypedResponse<{ error: string }, 400>>;
     updateUnprocessedInvoices(ctx: Context): ControllerResponse<TypedResponse<{ success: true }, 200>>;
+    importQuickbooksData(ctx: Context): ControllerResponse<TypedResponse<{ success: true }, 201>>;
 }
 
 export class QuickbooksController implements IQuickbooksController {
@@ -41,5 +44,14 @@ export class QuickbooksController implements IQuickbooksController {
         await this.service.updateUnprocessedInvoices({ userId });
 
         return ctx.json({ success: true }, 200);
+    }
+
+    async importQuickbooksData(ctx: Context) {
+        const userId = ctx.get("userId");
+        if (!userId || typeof userId !== "string" || userId.trim() === "" || !validate(userId)) {
+            throw Boom.badRequest("Invalid or missing userId");
+        }
+        await this.service.importQuickbooksData({ userId });
+        return ctx.json({ success: true }, 201);
     }
 }

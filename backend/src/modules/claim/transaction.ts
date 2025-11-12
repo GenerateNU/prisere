@@ -1,4 +1,4 @@
-import { DataSource } from "typeorm";
+import { DataSource, In } from "typeorm";
 import { Claim } from "../../entities/Claim";
 import {
     CreateClaimDTO,
@@ -12,13 +12,15 @@ import {
     LinkClaimToPurchaseResponse,
     GetPurchaseLineItemsForClaimResponse,
     DeletePurchaseLineItemResponse,
+    GetClaimInProgressForCompanyResponse,
 } from "../../types/Claim";
 import { logMessageToFile } from "../../utilities/logger";
 import { plainToClass } from "class-transformer";
-import { ClaimStatusType } from "../../types/ClaimStatusType";
+import { ClaimStatusInProgressTypes, ClaimStatusType } from "../../types/ClaimStatusType";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
 import { Purchase } from "../../entities/Purchase";
+import Boom from "@hapi/boom";
 
 export interface IClaimTransaction {
     /**
@@ -74,6 +76,15 @@ export interface IClaimTransaction {
      * @returns Promise resolving to linked claim id and purchase line item id or null if either not found
      */
     deletePurchaseLineItem(claimId: string, lineItemId: string): Promise<DeletePurchaseLineItemResponse | null>;
+
+    /**
+     * Gets the most recent Claim that is in progress, if there is one
+     * If there are more than one, gets the most recently created one
+     * If there are none, returns NULL
+     * @param companyId the id of the company to look for
+     * @returns either the found Claim or null if none found
+     */
+    getClaimInProgressForCompany(companyId: string): Promise<GetClaimInProgressForCompanyResponse>;
 }
 
 export class ClaimTransaction implements IClaimTransaction {
@@ -84,10 +95,15 @@ export class ClaimTransaction implements IClaimTransaction {
     }
 
     async createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse | null> {
+        if (ClaimStatusInProgressTypes.includes(payload.status)) {
+            const exists = await this.getClaimInProgressForCompany(companyId);
+            if (exists !== null) {
+                throw Boom.badRequest("Cannot have more than one claim in progress per company");
+            }
+        }
         try {
             const claim: Claim = plainToClass(Claim, {
                 ...payload,
-                status: ClaimStatusType.ACTIVE,
                 companyId: companyId,
             });
 
@@ -115,6 +131,13 @@ export class ClaimTransaction implements IClaimTransaction {
                           updatedAt: claim.selfDisaster.updatedAt.toISOString(),
                       }
                     : undefined,
+                insurancePolicy: result.insurancePolicy
+                    ? {
+                          ...result.insurancePolicy,
+                          updatedAt: result.insurancePolicy.updatedAt.toISOString(),
+                          createdAt: result.insurancePolicy.createdAt.toISOString(),
+                      }
+                    : undefined,
             };
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
@@ -131,6 +154,7 @@ export class ClaimTransaction implements IClaimTransaction {
                 relations: {
                     femaDisaster: true,
                     selfDisaster: true,
+                    insurancePolicy: true,
                 },
             });
 
@@ -155,6 +179,13 @@ export class ClaimTransaction implements IClaimTransaction {
                           endDate: claim.selfDisaster.endDate?.toISOString(),
                           createdAt: claim.selfDisaster.createdAt.toISOString(),
                           updatedAt: claim.selfDisaster.updatedAt.toISOString(),
+                      }
+                    : undefined,
+                insurancePolicy: claim.insurancePolicy
+                    ? {
+                          ...claim.insurancePolicy,
+                          updatedAt: claim.insurancePolicy.updatedAt.toISOString(),
+                          createdAt: claim.insurancePolicy.createdAt.toISOString(),
                       }
                     : undefined,
             }));
@@ -269,5 +300,53 @@ export class ClaimTransaction implements IClaimTransaction {
             logMessageToFile(`Transaction error: ${error}`);
             return null;
         }
+    }
+
+    async getClaimInProgressForCompany(companyId: string): Promise<GetClaimInProgressForCompanyResponse> {
+        const claim: Claim | null = await this.db.getRepository(Claim).findOne({
+            where: {
+                companyId,
+                status: In(ClaimStatusInProgressTypes),
+            },
+            order: { createdAt: "DESC" },
+            relations: {
+                femaDisaster: true,
+                selfDisaster: true,
+                insurancePolicy: true,
+            },
+        });
+        if (claim) {
+            return {
+                ...claim,
+                status: claim.status as ClaimStatusType,
+                createdAt: claim.createdAt.toISOString(),
+                updatedAt: claim.updatedAt?.toISOString(),
+                femaDisaster: claim.femaDisaster
+                    ? {
+                          ...claim.femaDisaster,
+                          declarationDate: claim.femaDisaster.declarationDate.toISOString(),
+                          incidentBeginDate: claim.femaDisaster.incidentBeginDate?.toISOString(),
+                          incidentEndDate: claim.femaDisaster.incidentEndDate?.toISOString(),
+                      }
+                    : undefined,
+                selfDisaster: claim.selfDisaster
+                    ? {
+                          ...claim.selfDisaster,
+                          startDate: claim.selfDisaster.startDate.toISOString(),
+                          endDate: claim.selfDisaster.endDate?.toISOString(),
+                          createdAt: claim.selfDisaster.createdAt.toISOString(),
+                          updatedAt: claim.selfDisaster.updatedAt.toISOString(),
+                      }
+                    : undefined,
+                insurancePolicy: claim.insurancePolicy
+                    ? {
+                          ...claim.insurancePolicy,
+                          updatedAt: claim.insurancePolicy.updatedAt.toISOString(),
+                          createdAt: claim.insurancePolicy.createdAt.toISOString(),
+                      }
+                    : undefined,
+            };
+        }
+        return null;
     }
 }

@@ -8,6 +8,41 @@ import { SeederFactoryManager } from "typeorm-extension";
 import { DisasterSeeder } from "../../database/seeds/disaster.seed";
 import { seededDisasters } from "../../database/seeds/disaster.seed"; // Change this import
 
+export const insertedClaims = [
+    {
+        id: "0174375f-e7c4-4862-bb9f-f58318bb2e7d",
+        selfDisasterId: seededSelfDisasters[0].id,
+        companyId: "5667a729-f000-4190-b4ee-7957badca27b",
+        status: ClaimStatusType.ACTIVE,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    },
+    {
+        id: "5efc380b-e527-4b8d-a784-5c2cc68eba87",
+        selfDisasterId: "bf2b32dd-c927-440b-8002-84906db3c783",
+        companyId: "c0ce685a-27d8-4183-90ff-31f294b2c6da",
+        status: ClaimStatusType.ACTIVE,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    },
+    {
+        id: "37d07be0-4e09-4e70-a395-c1464f408c1f",
+        femaDisasterId: seededDisasters[0].id,
+        companyId: "5667a729-f000-4190-b4ee-7957badca27b",
+        status: ClaimStatusType.ACTIVE,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    },
+    {
+        id: "2c24c901-38e4-4a35-a1c6-140ce64edf2a",
+        femaDisasterId: seededDisasters[1].id,
+        companyId: "a1a542da-0abe-4531-9386-8919c9f86369",
+        status: ClaimStatusType.IN_PROGRESS_BUSINESS,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    },
+];
+
 export const initTestData = async (dataSource: DataSource) => {
     const companyRepository = dataSource.getRepository(Company);
     await companyRepository.insert([
@@ -69,38 +104,5 @@ export const initTestData = async (dataSource: DataSource) => {
     await femaDisasterSeeder.run(dataSource, {} as SeederFactoryManager);
 
     const claimRepository = dataSource.getRepository("Claim");
-    await claimRepository.insert([
-        {
-            id: "0174375f-e7c4-4862-bb9f-f58318bb2e7d",
-            selfDisasterId: seededSelfDisasters[0].id,
-            companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-            status: ClaimStatusType.ACTIVE,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-        {
-            id: "5efc380b-e527-4b8d-a784-5c2cc68eba87",
-            selfDisasterId: "bf2b32dd-c927-440b-8002-84906db3c783",
-            companyId: "c0ce685a-27d8-4183-90ff-31f294b2c6da",
-            status: ClaimStatusType.ACTIVE,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-        {
-            id: "37d07be0-4e09-4e70-a395-c1464f408c1f",
-            femaDisasterId: seededDisasters[0].id,
-            companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-            status: ClaimStatusType.ACTIVE,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-        {
-            id: "2c24c901-38e4-4a35-a1c6-140ce64edf2a",
-            femaDisasterId: seededDisasters[1].id,
-            companyId: "a1a542da-0abe-4531-9386-8919c9f86369",
-            status: ClaimStatusType.ACTIVE,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-    ]);
+    await claimRepository.insert(insertedClaims);
 };

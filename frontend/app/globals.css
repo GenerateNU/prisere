@@ -47,6 +47,8 @@
     --color-seafoam: var(--seafoam);
     --color-teal: var(--teal);
     --color-charcoal: var(--charcoal);
+    --color-light-teal: var(--light-teal);
+    --color-slate: var(--slate);
 }
 
 :root {
@@ -88,6 +90,8 @@
     --seafoam: #a8d4d7;
     --teal: #448e93;
     --charcoal: #2e2f2d;
+    --light-teal: #ddeff1;
+    --slate: #f5f5f5;
 }
 
 .dark {

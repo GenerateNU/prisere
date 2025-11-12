@@ -21,16 +21,24 @@ export const UserSchema = z.object({
 });
 
 /* Zod schemas for OpenAPI docs */
+export const CompanyExternalSchema = z.object({
+    id: z.string(),
+    source: z.string(),
+    externalId: z.string(),
+    companyId: z.string(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+});
+
 export const CompanySchema = z.object({
     id: z.string(),
     name: z.string().nonempty(),
     businessOwnerFullName: z.string().nonempty(),
-    lastQuickBooksInvoiceImportTime: z.string().optional(),
-    lastQuickBooksPurchaseImportTime: z.string().optional(),
-    externals: z.array(CompanyExternalSchema),
-    user: UserSchema,
+    lastQuickBooksInvoiceImportTime: z.string().optional().nullable(),
+    lastQuickBooksPurchaseImportTime: z.string().optional().nullable(),
+    externals: z.array(CompanyExternalSchema).optional(),
     createdAt: z.string(),
-    updatedAt: z.string()
+    updatedAt: z.string(),
 });
 
 /* Zod schema for POST company */
