@@ -11,7 +11,7 @@ export function buildClaimPdfHtml(data: ClaimData): string {
 </head>
 <body>
   <h1>Claim Report</h1>
-  <p>Date Generated:${new Date(data.dateGenerated).toLocaleDateString()}</p>
+  <p>Date Generated: ${new Date(data.dateGenerated).toLocaleDateString()}</p>
 
   <h2>Company Information</h2>
   <p>Name: ${data.company.name}</p>
@@ -26,7 +26,7 @@ export function buildClaimPdfHtml(data: ClaimData): string {
     <p><strong>Disaster ${i + 1}</strong></p>
     ${"designatedIncidentTypes" in d ? `
       <p>Type: FEMA</p>
-      <p>Disaster ID : {d.id}</p>
+      <p>Disaster ID: ${d.id}</p>
       <p>Designated Incident Types: ${getIncidentTypeMeanings(d.designatedIncidentTypes)}</p>
       <p>Declaration Date: ${new Date(d.declarationDate).toLocaleDateString()}</p>
       <p>Incident Start: ${d.incidentBeginDate ? new Date(d.incidentBeginDate).toLocaleDateString() : "N/A"}</p>
@@ -60,14 +60,13 @@ export function buildClaimPdfHtml(data: ClaimData): string {
       <tr>
         <th>Description</th>
         <th>Amount (USD)</th>
-        <th>Date</th>
       </tr>
     </thead>
     <tbody>
       ${data.relevantExpenses.map(exp => `
         <tr>
           <td>${exp.description}</td>
-          <td>$${exp.amount.toFixed(2)}</td>
+          <td>$${exp.amountCents.toFixed(2)}</td>
         </tr>
       `).join("")}
     </tbody>

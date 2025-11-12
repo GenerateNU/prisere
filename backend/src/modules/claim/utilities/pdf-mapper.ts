@@ -20,7 +20,7 @@ export function restructureClaimDataForPdf(data: ClaimDataForPDF): ClaimData {
 }
 
 function parseImpactedLocations(claimLocations?: ClaimLocation[]): ImpactedLocation[] {
-    if (!claimLocations) {
+    if (!claimLocations || claimLocations.length === 0) {
         throw new Error("No associated claim locations that were affected");
     }
 

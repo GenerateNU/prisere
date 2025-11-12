@@ -56,7 +56,7 @@ export const ImpactedLocationSchema = z.object({
 });
 
 export const RelevantExpenseSchema = z.object({
-    amount: z.number().gte(0),
+    amountCents: z.number().gte(0),
     description: z.string(),
 });
 
