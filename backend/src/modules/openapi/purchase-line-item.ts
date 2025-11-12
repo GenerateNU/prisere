@@ -10,6 +10,9 @@ import {
     CreateOrChangePurchaseLineItemsResponseSchema,
     GetPurchaseLineItemResponseSchema,
     GetPurchaseLineItemsFromParentResponseSchema,
+    UpdatePurchaseLineItemCategoryDTOSchema,
+    UpdatePurchaseLineItemResponseSchema,
+    UpdatePurchaseLineItemTypeDTOSchema,
 } from "../purchase-line-item/types";
 
 export const addOpenApiPurchaseLineItemRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
@@ -20,6 +23,8 @@ export const addOpenApiPurchaseLineItemRoutes = (openApi: OpenAPIHono, db: DataS
     openApi.openapi(createOrUpdatePurchaseLineItemsRoute, (ctx) => controller.createOrUpdatePurchaseLineItems(ctx));
     openApi.openapi(getPurchaseLineItemRoute, (ctx) => controller.getPurchaseLineItem(ctx));
     openApi.openapi(getPurchaseLineItemsForPurchaseRoute, (ctx) => controller.getPurchaseLineItemsForPurchase(ctx));
+    openApi.openapi(updatePurchaseLineItemCategoryRoute, (ctx) => controller.updatePurchaseLineItemCategory(ctx));
+    openApi.openapi(updatePurchaseLineItemTypeRoute, (ctx) => controller.updatePurchaseLineItemType(ctx));
 
     return openApi;
 };
@@ -111,6 +116,62 @@ const getPurchaseLineItemsForPurchaseRoute = createRoute({
             description: "There does not exist any purchase in the database with the given id",
         },
         ...openApiErrorCodes("Get purchase line items for purchase error"),
+    },
+    tags: ["Purchase Line Items"],
+});
+
+const updatePurchaseLineItemCategoryRoute = createRoute({
+    method: "patch",
+    path: "/purchase/line/category",
+    summary: "Updates a purchase line item's category",
+    description: "Updates the category of the purchase line item with the given Id to the given category",
+    request: {
+        body: {
+            content: {
+                "application/json": {
+                    schema: UpdatePurchaseLineItemCategoryDTOSchema,
+                },
+            },
+        },
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: UpdatePurchaseLineItemResponseSchema,
+                },
+            },
+            description: "Successfully updated the line item's category",
+        },
+        ...openApiErrorCodes("Error modifying purchase line item"),
+    },
+    tags: ["Purchase Line Items"],
+});
+
+const updatePurchaseLineItemTypeRoute = createRoute({
+    method: "patch",
+    path: "/purchase/line/type",
+    summary: "Updates a purchase line item's type",
+    description: "Updates the type of the purchase line item with the given Id to the given type",
+    request: {
+        body: {
+            content: {
+                "application/json": {
+                    schema: UpdatePurchaseLineItemTypeDTOSchema,
+                },
+            },
+        },
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: UpdatePurchaseLineItemResponseSchema,
+                },
+            },
+            description: "Successfully updated the line item's type",
+        },
+        ...openApiErrorCodes("Error modifying purchase line item"),
     },
     tags: ["Purchase Line Items"],
 });
