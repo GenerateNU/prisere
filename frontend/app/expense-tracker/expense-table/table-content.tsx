@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { DisasterType, FilteredPurchases, Purchases } from "@/types/purchase";
 import { useMutation, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/react-table";
-import { useMemo} from "react";
+import { useMemo } from "react";
 import { updateCategory, updateType } from "../../../api/purchase";
 import CategoryLabel from "./category-options";
 import DisasterLabel from "./disaster-options";
@@ -11,7 +11,6 @@ import { SortByColumn } from "../../../types/purchase";
 import { getCategoriesString, getMerchant, getPurchaseTypeString } from "../utility-functions";
 import { SortableHeader } from "./sortable-header";
 import { CollapsibleArrow } from "@/components/table/collapsibleArrow";
-
 
 export default function TableContent({
     purchases,
@@ -176,4 +175,3 @@ export default function TableContent({
 
     return <Table table={table} />;
 }
-

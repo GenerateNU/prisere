@@ -1,9 +1,9 @@
 "use client";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { FilteredPurchases} from "@/types/purchase";
+import { FilteredPurchases } from "@/types/purchase";
 import { FileUp, Filter, Printer } from "lucide-react";
 import { useState } from "react";
-import { useFetchPurchases, useFetchAllCategories, updateCategory, updateType } from "../../../api/purchase";
+import { useFetchPurchases, useFetchAllCategories } from "../../../api/purchase";
 import { Filters } from "./filters";
 import PaginationControls from "./PaginationControls";
 import ResultsPerPageSelect from "./ResultsPerPageSelect";
