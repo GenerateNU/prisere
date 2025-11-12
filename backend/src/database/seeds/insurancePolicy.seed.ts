@@ -5,6 +5,7 @@ import { InsurancePolicy } from "../../entities/InsurancePolicy";
 export const insurancePolicySeedData = [
     {
         id: "a9847596-eb93-4026-8ad1-62ada283e0b6",
+        policyName: "Policy A",
         policyHolderFirstName: "Sarah",
         policyHolderLastName: "Johnson",
         insuranceCompanyName: "Blue Cross Blue Shield",
@@ -14,6 +15,7 @@ export const insurancePolicySeedData = [
     },
     {
         id: "d2320343-e464-47c4-97a6-6b5ea795e095",
+        policyName: "Policy A",
         policyHolderFirstName: "Michael",
         policyHolderLastName: "Chen",
         insuranceCompanyName: "Allstate",
@@ -23,6 +25,7 @@ export const insurancePolicySeedData = [
     },
     {
         id: "fe313539-91f6-4964-9638-ca0ae119da98",
+        policyName: "Policy A",
         policyHolderFirstName: "Jessica",
         policyHolderLastName: "Taylor",
         insuranceCompanyName: "Liberty Mutual",
@@ -32,6 +35,7 @@ export const insurancePolicySeedData = [
     },
     {
         id: "b66e671e-3f68-4c67-aee9-20cdf7250326",
+        policyName: "Policy A",
         policyHolderFirstName: "Amanda",
         policyHolderLastName: "Brown",
         insuranceCompanyName: "Geico",

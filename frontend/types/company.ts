@@ -8,3 +8,5 @@ export type GetCompanyLocationsResponse =
     paths["/companies/location-address"]["get"]["responses"][200]["content"]["application/json"];
 
 export type Company = paths["/companies"]["post"]["responses"][201]["content"]["application/json"];
+
+export const businessTypes = ["LLC", "Sole Proprietorship", "Corporation", "Partnership"];

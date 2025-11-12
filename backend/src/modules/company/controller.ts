@@ -11,6 +11,7 @@ import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
 import { ControllerResponse } from "../../utilities/response";
 import { GetLocationAddressResponse } from "../../types/Location";
+import { GetClaimInProgressForCompanyResponse } from "../../types/Claim";
 
 export interface ICompanyController {
     getCompanyById(_ctx: Context): ControllerResponse<TypedResponse<GetCompanyByIdResponse, 200>>;
@@ -18,6 +19,7 @@ export interface ICompanyController {
     updateQuickbooksInvoiceImportTime(ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 200>>;
     updateQuickbooksPurchaseImportTime(ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 200>>;
     getCompanyLocationsById(ctx: Context): ControllerResponse<TypedResponse<GetLocationAddressResponse[], 200>>;
+    getClaimInProgress(ctx: Context): ControllerResponse<TypedResponse<GetClaimInProgressForCompanyResponse, 200>>;
 }
 
 export class CompanyController implements ICompanyController {
@@ -140,6 +142,20 @@ export class CompanyController implements ICompanyController {
             }
             const locations = await this.companyService.getCompanyLocationsById({ id: id });
             return ctx.json(locations, 200);
+        }
+    );
+
+    getClaimInProgress = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<GetClaimInProgressForCompanyResponse, 200>> => {
+            const companyId = ctx.get("companyId");
+            if (!validate(companyId)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
+
+            const claim = await this.companyService.getClaimInProgress(companyId);
+
+            // handles null claim as well
+            return ctx.json(claim, 200);
         }
     );
 }
