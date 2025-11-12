@@ -326,16 +326,60 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string"
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "externals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string"
+                          },
+                          "externalId": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
                       "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "name",
-                    "businessOwnerFullName"
+                    "businessOwnerFullName",
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -408,16 +452,60 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string"
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "externals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string"
+                          },
+                          "externalId": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
                       "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "name",
-                    "businessOwnerFullName"
+                    "businessOwnerFullName",
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -510,16 +598,60 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string"
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "externals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string"
+                          },
+                          "externalId": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
                       "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "name",
-                    "businessOwnerFullName"
+                    "businessOwnerFullName",
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -609,16 +741,60 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string"
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "externals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string"
+                          },
+                          "externalId": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
                       "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "name",
-                    "businessOwnerFullName"
+                    "businessOwnerFullName",
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -1777,16 +1953,60 @@
                                 "minLength": 1
                               },
                               "lastQuickBooksInvoiceImportTime": {
-                                "type": "string"
+                                "type": "string",
+                                "nullable": true
                               },
                               "lastQuickBooksPurchaseImportTime": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "externals": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "source": {
+                                      "type": "string"
+                                    },
+                                    "externalId": {
+                                      "type": "string"
+                                    },
+                                    "companyId": {
+                                      "type": "string"
+                                    },
+                                    "createdAt": {
+                                      "type": "string"
+                                    },
+                                    "updatedAt": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "source",
+                                    "externalId",
+                                    "companyId",
+                                    "createdAt",
+                                    "updatedAt"
+                                  ]
+                                }
+                              },
+                              "createdAt": {
+                                "type": "string"
+                              },
+                              "updatedAt": {
                                 "type": "string"
                               }
                             },
                             "required": [
                               "id",
                               "name",
-                              "businessOwnerFullName"
+                              "businessOwnerFullName",
+                              "createdAt",
+                              "updatedAt"
                             ]
                           }
                         },
@@ -2588,6 +2808,92 @@
           },
           "400": {
             "description": "Did not grant permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/quickbooks/importQuickbooksData": {
+      "post": {
+        "summary": "Import quickbooks (invoice and purchase) data for a company, based off of the userId/user owner of the company",
+        "description": "mport quickbooks (invoice and purchase) data for a company, based off of the userId/user owner of the company",
+        "tags": [
+          "quickbooks"
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfully imported new QuickBooks data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, invalid user ID or inputs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Could not authenticate to QuickBooks session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "QuickBooks data not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -6577,6 +6883,400 @@
           },
           "500": {
             "description": "Deleting Self Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/insurance": {
+      "post": {
+        "summary": "Create data about the company's insurance policy",
+        "description": "Creates a new entity with data about the company's insurance policy",
+        "tags": [
+          "Insurance Policy"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "policyName": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "policyHolderFirstName": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "policyHolderLastName": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "insuranceCompanyName": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "policyNumber": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "insuranceType": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "policyName",
+                  "policyHolderFirstName",
+                  "policyHolderLastName",
+                  "insuranceCompanyName",
+                  "policyNumber",
+                  "insuranceType"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create insurance policy response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "policyName": {
+                      "type": "string"
+                    },
+                    "policyHolderFirstName": {
+                      "type": "string"
+                    },
+                    "policyHolderLastName": {
+                      "type": "string"
+                    },
+                    "insuranceCompanyName": {
+                      "type": "string"
+                    },
+                    "policyNumber": {
+                      "type": "string"
+                    },
+                    "insuranceType": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "policyName",
+                    "policyHolderFirstName",
+                    "policyHolderLastName",
+                    "insuranceCompanyName",
+                    "policyNumber",
+                    "insuranceType",
+                    "updatedAt",
+                    "createdAt"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error Creating an insurance policy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error Creating an insurance policy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Gets all of the insurance policies for a company",
+        "description": "Will get all of the insurance policies that have been created for a Company",
+        "tags": [
+          "Insurance Policy"
+        ],
+        "responses": {
+          "200": {
+            "description": "Result includes all of the insurance policies for the user's company",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "policyName": {
+                        "type": "string"
+                      },
+                      "policyHolderFirstName": {
+                        "type": "string"
+                      },
+                      "policyHolderLastName": {
+                        "type": "string"
+                      },
+                      "insuranceCompanyName": {
+                        "type": "string"
+                      },
+                      "policyNumber": {
+                        "type": "string"
+                      },
+                      "insuranceType": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "policyName",
+                      "policyHolderFirstName",
+                      "policyHolderLastName",
+                      "insuranceCompanyName",
+                      "policyNumber",
+                      "insuranceType",
+                      "updatedAt",
+                      "createdAt"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error Getting insurance policies for the company",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error Getting insurance policies for the company",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/insurance/bulk": {
+      "post": {
+        "summary": "Creates data about the company's insurance policy",
+        "description": "Can create many new entities with data about the company's insurance policy",
+        "tags": [
+          "Insurance Policy"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "policyName": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "policyHolderFirstName": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "policyHolderLastName": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "insuranceCompanyName": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "policyNumber": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "insuranceType": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "policyName",
+                    "policyHolderFirstName",
+                    "policyHolderLastName",
+                    "insuranceCompanyName",
+                    "policyNumber",
+                    "insuranceType"
+                  ]
+                },
+                "minItems": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create bulk insurance policy response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "policyName": {
+                        "type": "string"
+                      },
+                      "policyHolderFirstName": {
+                        "type": "string"
+                      },
+                      "policyHolderLastName": {
+                        "type": "string"
+                      },
+                      "insuranceCompanyName": {
+                        "type": "string"
+                      },
+                      "policyNumber": {
+                        "type": "string"
+                      },
+                      "insuranceType": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "policyName",
+                      "policyHolderFirstName",
+                      "policyHolderLastName",
+                      "insuranceCompanyName",
+                      "policyNumber",
+                      "insuranceType",
+                      "updatedAt",
+                      "createdAt"
+                    ]
+                  },
+                  "minItems": 1
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error Creating insurance policies in bulk",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error Creating insurance policies in bulk",
             "content": {
               "application/json": {
                 "schema": {

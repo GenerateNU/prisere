@@ -3,6 +3,7 @@ import { ClaimStatusType } from "./ClaimStatusType";
 import { GetAllDisastersResponseSchema } from "./fema-disaster";
 import { GetSelfDisasterForCompanyResponseSchema } from "../modules/self-disaster/types";
 import { GetPurchaseLineItemResponseSchema } from "../modules/purchase-line-item/types";
+import { SingleInsurancePolicyResponseSchema } from "../modules/insurance-policy/types";
 /* Zod schemas for OpenAPI docs */
 
 /* Claim Schema */
@@ -14,7 +15,11 @@ export const ClaimSchema = z.object({
     updatedAt: z.iso.datetime().optional(),
     femaDisaster: GetAllDisastersResponseSchema.element.optional(), // .element extracts the item schema
     selfDisaster: GetSelfDisasterForCompanyResponseSchema.optional(),
+    insurancePolicy: SingleInsurancePolicyResponseSchema.optional(),
 });
+
+// A company might not have a claim in progress
+export const GetClaimInProgressForCompanySchema = z.union([ClaimSchema, z.null()]);
 
 const stringClaimSchema = z.object({
     id: z.string().nonempty(),
@@ -23,12 +28,15 @@ const stringClaimSchema = z.object({
     updatedAt: z.iso.datetime().optional(),
     femaDisaster: GetAllDisastersResponseSchema.element.optional(),
     selfDisaster: GetSelfDisasterForCompanyResponseSchema.optional(),
+    insurancePolicy: SingleInsurancePolicyResponseSchema.optional(),
 });
 
 /* POST */
 export const CreateClaimDTOSchema = z.object({
     femaDisasterId: z.string().optional(),
     selfDisasterId: z.string().optional(),
+    insurancePolicyId: z.string().optional(),
+    status: z.enum(ClaimStatusType).default(ClaimStatusType.ACTIVE),
 });
 
 export const CreateClaimResponseSchema = stringClaimSchema;
@@ -92,3 +100,5 @@ export type LinkClaimToPurchaseResponse = z.infer<typeof LinkClaimToPurchaseResp
 
 export type GetPurchaseLineItemsForClaimResponse = z.infer<typeof GetPurchaseLineItemsForClaimResponseSchema>;
 export type DeletePurchaseLineItemResponse = z.infer<typeof DeletePurchaseLineItemResponseSchema>;
+
+export type GetClaimInProgressForCompanyResponse = z.infer<typeof GetClaimInProgressForCompanySchema>;

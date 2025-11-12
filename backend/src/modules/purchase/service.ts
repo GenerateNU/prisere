@@ -31,7 +31,6 @@ export class PurchaseService implements IPurchaseService {
     createOrUpdatePurchase = withServiceErrorHandling(
         async (payload: CreateOrChangePurchaseDTO): Promise<CreateOrChangePurchaseResponse> => {
             const newPurchases = await this.PurchaseTransaction.createOrUpdatePurchase(payload);
-
             return newPurchases.map((newPurchase) => ({
                 ...newPurchase,
                 dateCreated: newPurchase.dateCreated.toUTCString(),
@@ -52,7 +51,7 @@ export class PurchaseService implements IPurchaseService {
             isRefund: qbPurchase.isRefund,
             quickBooksId: qbPurchase.quickBooksId,
             quickbooksDateCreated: qbPurchase.quickbooksDateCreated?.toUTCString(),
-            totalAmountCents: qbPurchase.totalAmountCents,
+            totalAmountCents: Math.round(qbPurchase.totalAmountCents),
         };
     });
 
@@ -66,7 +65,7 @@ export class PurchaseService implements IPurchaseService {
                 id: qbPurchase.id,
                 isRefund: qbPurchase.isRefund,
                 quickBooksId: qbPurchase.quickBooksId,
-                totalAmountCents: qbPurchase.totalAmountCents,
+                totalAmountCents: Math.round(qbPurchase.totalAmountCents),
                 quickbooksDateCreated: qbPurchase.quickbooksDateCreated?.toUTCString(),
                 lastUpdated: qbPurchase.lastUpdated.toUTCString(),
                 lineItems : qbPurchase.lineItems.map(item => ({

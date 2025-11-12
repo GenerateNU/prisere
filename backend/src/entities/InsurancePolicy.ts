@@ -15,6 +15,9 @@ export class InsurancePolicy {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
 
+    @Column({ length: 200 })
+    policyName!: string;
+
     @Column({ length: 100 })
     policyHolderFirstName!: string;
 
