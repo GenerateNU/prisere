@@ -5,7 +5,11 @@ import { ClaimData } from "../../../modules/claim/types";
 import { buildClaimPdfHtml } from "../../../modules/claim/utilities/claim-pdf-html";
 
 function normalizeHtml(html: string): string {
-    return html.trim().replace(/>\s+</g, "><").replace(/\s+/g, " ");
+    return html
+        .replace(/<!doctype/gi, "<!DOCTYPE")
+        .replace(/\s*\/>/g, ">")
+        .replace(/\s+/g, " ")
+        .trim();
 }
 
 describe("buildClaimPdfHtml", () => {
