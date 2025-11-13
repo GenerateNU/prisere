@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const CreateInsurancePolicyDTOSchema = z.object({
+    policyName: z.string().nonempty(),
     policyHolderFirstName: z.string().nonempty(),
     policyHolderLastName: z.string().nonempty(),
     insuranceCompanyName: z.string().nonempty(),
@@ -12,6 +13,7 @@ export const CreateInsurancePolicyBulkDTOSchema = z.array(CreateInsurancePolicyD
 
 export const SingleInsurancePolicyResponseSchema = z.object({
     id: z.string(),
+    policyName: z.string(),
     policyHolderFirstName: z.string(),
     policyHolderLastName: z.string(),
     insuranceCompanyName: z.string(),

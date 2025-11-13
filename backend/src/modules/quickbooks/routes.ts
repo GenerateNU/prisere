@@ -38,6 +38,7 @@ export function quickbooksRoutes(db: DataSource) {
 
     router.get("/", (ctx) => controller.redirectToAuthorization(ctx));
     router.get("/redirect", async (ctx) => controller.generateSession(ctx));
+    router.post("/importQuickbooksData", async (ctx) => controller.importQuickbooksData(ctx));
 
     return router;
 }
