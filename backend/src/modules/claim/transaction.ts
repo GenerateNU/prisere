@@ -288,24 +288,12 @@ export class ClaimTransaction implements IClaimTransaction {
     async retrieveDataForPDF(claimId: string, userId: string): Promise<ClaimDataForPDF> {
         const claimInfo = await this.db.manager
             .createQueryBuilder(Claim, 'claim')
-            .leftJoin('claim.company', 'company')
-            .leftJoin('claim.femaDisaster', 'fema')
-            .leftJoin('claim.selfDisaster', 'self')
+            .leftJoinAndSelect('claim.company', 'company')
+            .leftJoinAndSelect('claim.femaDisaster', 'fema')
+            .leftJoinAndSelect('claim.selfDisaster', 'self')
             .leftJoinAndSelect('claim.claimLocations', 'locations')
+            .leftJoinAndSelect('locations.locationAddress', 'locationAddress')
             .leftJoinAndSelect('claim.purchaseLineItems', 'lineItems')
-            .select([
-                'claim.id',
-                'claim.companyId',
-                'company.name',
-                'fema.id',
-                'fema.declarationDate',
-                'fema.designatedIncidentTypes',
-                'fema.incidentBeginDate',
-                'fema.incidentEndDate',
-                'self.description',
-                'self.startDate',
-                'self.endDate'
-            ])
             .where('claim.id = :id', { id: claimId })
             .getOne();
 
@@ -313,8 +301,13 @@ export class ClaimTransaction implements IClaimTransaction {
         const invoiceTransaction = new InvoiceTransaction(this.db)
         const user =  await userTransaction.getUser({id: userId});
 
-        if (!claimInfo || !user) {
-            throw Boom.notFound("Could not find the necessary data");
+
+        if (!claimInfo) {
+            throw Boom.notFound("Could not find the claim");
+        }
+
+        if (!user) {
+            throw Boom.notFound("Could not find the associated user");
         }
 
         const incomeLastThreeYears = await invoiceTransaction.sumInvoicesByCompanyAndDateRange({

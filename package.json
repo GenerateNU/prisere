@@ -8,7 +8,8 @@
   },
   "private": true,
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/jest": "^30.0.0"
   },
   "peerDependencies": {
     "typescript": "^5"

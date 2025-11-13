@@ -129,16 +129,16 @@ export class ClaimService implements IClaimService {
 
     createClaimPDF = withServiceErrorHandling(
         async (claimId: string, userId: string): Promise<ClaimPDFGenerationResponse> => {
-            const pdfData: ClaimDataForPDF = await this.claimTransaction.retrieveDataForPDF(claimId, userId);
-            if (!pdfData.company) {
-                throw Boom.notFound("Claim does not have an associated company");
-            }
-            const claimData: ClaimData = restructureClaimDataForPdf(pdfData);
-            const claimHtml = buildClaimPdfHtml(claimData);
-            const pdfBuffer = await generatePDFfromHTML(claimHtml);
-            const s3 = new S3Service();
-            const uploadResponse = await s3.uploadPdf({claimId, pdfBuffer});
-            return { url: uploadResponse.url };
+                const pdfData: ClaimDataForPDF = await this.claimTransaction.retrieveDataForPDF(claimId, userId);
+                if (!pdfData.company) {
+                    throw Boom.notFound("Claim does not have an associated company");
+                }
+                const claimData: ClaimData = restructureClaimDataForPdf(pdfData);
+                const claimHtml = buildClaimPdfHtml(claimData);
+                const pdfBuffer = await generatePDFfromHTML(claimHtml);
+                const s3 = new S3Service();
+                const uploadResponse = await s3.uploadPdf({ claimId, pdfBuffer });
+                return { url: uploadResponse.url };
         }
-    )
+    );
 }

@@ -66,7 +66,7 @@ export function buildClaimPdfHtml(data: ClaimData): string {
       ${data.relevantExpenses.map(exp => `
         <tr>
           <td>${exp.description}</td>
-          <td>$${exp.amountCents.toFixed(2)}</td>
+          <td>$${(exp.amountCents / 100).toFixed(2)}</td>
         </tr>
       `).join("")}
     </tbody>
