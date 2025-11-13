@@ -608,6 +608,118 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/companies/claim-in-progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a company's claim in progress, if one exists
+         * @description Gets the company's current claim in progress. Companies can only have up to one claim in progress at a time.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Claim fetched successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            /**
+                             * @default ACTIVE
+                             * @enum {string}
+                             */
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt?: string;
+                            femaDisaster?: {
+                                /** Format: uuid */
+                                id: string;
+                                disasterNumber: number;
+                                fipsStateCode: number;
+                                /** Format: date-time */
+                                declarationDate: string;
+                                incidentBeginDate?: string;
+                                incidentEndDate?: string;
+                                fipsCountyCode: number;
+                                declarationType: string;
+                                designatedArea: string;
+                                designatedIncidentTypes: string | null;
+                            };
+                            selfDisaster?: {
+                                id: string;
+                                name: string;
+                                description: string;
+                                /** Format: date */
+                                startDate: string;
+                                /** Format: date */
+                                endDate?: string;
+                                /** Format: date */
+                                createdAt: string;
+                                /** Format: date */
+                                updatedAt: string;
+                            };
+                            insurancePolicy?: {
+                                id: string;
+                                policyName: string;
+                                policyHolderFirstName: string;
+                                policyHolderLastName: string;
+                                insuranceCompanyName: string;
+                                policyNumber: string;
+                                insuranceType: string;
+                                /** Format: date-time */
+                                updatedAt: string;
+                                /** Format: date-time */
+                                createdAt: string;
+                            };
+                        } | unknown | unknown;
+                    };
+                };
+                /** @description Get Claim in Progress Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Get Claim in Progress Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/disaster": {
         parameters: {
             query?: never;
@@ -2589,6 +2701,12 @@ export interface paths {
                     "application/json": {
                         femaDisasterId?: string;
                         selfDisasterId?: string;
+                        insurancePolicyId?: string;
+                        /**
+                         * @default ACTIVE
+                         * @enum {string}
+                         */
+                        status?: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                     };
                 };
             };
@@ -2605,7 +2723,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status: "ACTIVE" | "FILED";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -2636,6 +2754,19 @@ export interface paths {
                                 createdAt: string;
                                 /** Format: date */
                                 updatedAt: string;
+                            };
+                            insurancePolicy?: {
+                                id: string;
+                                policyName: string;
+                                policyHolderFirstName: string;
+                                policyHolderLastName: string;
+                                insuranceCompanyName: string;
+                                policyNumber: string;
+                                insuranceType: string;
+                                /** Format: date-time */
+                                updatedAt: string;
+                                /** Format: date-time */
+                                createdAt: string;
                             };
                         };
                     };
@@ -2702,7 +2833,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status: "ACTIVE" | "FILED";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -2733,6 +2864,19 @@ export interface paths {
                                 createdAt: string;
                                 /** Format: date */
                                 updatedAt: string;
+                            };
+                            insurancePolicy?: {
+                                id: string;
+                                policyName: string;
+                                policyHolderFirstName: string;
+                                policyHolderLastName: string;
+                                insuranceCompanyName: string;
+                                policyNumber: string;
+                                insuranceType: string;
+                                /** Format: date-time */
+                                updatedAt: string;
+                                /** Format: date-time */
+                                createdAt: string;
                             };
                         }[];
                     };

@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Notification as NotificationType } from "@/types/notifications";
+import { getDeclarationTypeMeanings } from "@/utils/formatting";
 import { RiMore2Fill } from "react-icons/ri";
+import formatDescription, { dateFormatter } from "./utils";
 
 interface NotificationProps {
     notification: NotificationType;
@@ -8,12 +10,8 @@ interface NotificationProps {
 export default function Notification({ notification }: NotificationProps) {
     return (
         <div className="rounded-2xl p-6 max-w-full bg-white">
-            <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3">
-                    {true && (
-                        <span className="bg-[#DDEFF1] text-teal text-xs font-semibold px-3 py-1 rounded">New</span>
-                    )}
-                </div>
+            <div className="w-full flex justify-between">
+                <h2 className="text-2xl font-bold text-charcoal-900 mb-2">{getDeclarationTypeMeanings(notification.femaDisaster.declarationType)}</h2>
                 <Button
                     rounded="icon"
                     variant="secondary"
@@ -25,12 +23,9 @@ export default function Notification({ notification }: NotificationProps) {
                     <RiMore2Fill />
                 </Button>
             </div>
-
-            <h2 className="text-2xl font-bold text-charcoal-900 mb-2">Disaster Alert</h2>
-
-            <p className="text-sm text-fuchsia font-medium mb-4">Updated Time</p>
-
-            <p className="text-charcoal leading-relaxed">{notification.femaDisasterId}</p>
+            <p className="text-sm text-fuchsia font-medium mb-4">{dateFormatter.format(new Date(notification.femaDisaster.declarationDate))}</p>
+            <p className="text-charcoal leading-relaxed">{formatDescription(notification)}</p>
+            <p className="text-[#8E8E8E] text-sm"> FEMA-ID:{notification.femaDisaster.id}</p>
         </div>
     );
 }

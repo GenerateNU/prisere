@@ -946,6 +946,244 @@
         }
       }
     },
+    "/companies/claim-in-progress": {
+      "get": {
+        "summary": "Get a company's claim in progress, if one exists",
+        "description": "Gets the company's current claim in progress. Companies can only have up to one claim in progress at a time.",
+        "tags": [
+          "Companies"
+        ],
+        "responses": {
+          "200": {
+            "description": "Claim fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "ACTIVE",
+                            "FILED",
+                            "IN_PROGRESS_DISASTER",
+                            "IN_PROGRESS_PERSONAL",
+                            "IN_PROGRESS_BUSINESS",
+                            "IN_PROGRESS_INSURANCE",
+                            "IN_PROGRESS_EXPORT"
+                          ],
+                          "default": "ACTIVE"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "femaDisaster": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "disasterNumber": {
+                              "type": "number"
+                            },
+                            "fipsStateCode": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 56
+                            },
+                            "declarationDate": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "incidentBeginDate": {
+                              "type": "string"
+                            },
+                            "incidentEndDate": {
+                              "type": "string"
+                            },
+                            "fipsCountyCode": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000,
+                              "exclusiveMaximum": true
+                            },
+                            "declarationType": {
+                              "type": "string",
+                              "minLength": 2,
+                              "maxLength": 2
+                            },
+                            "designatedArea": {
+                              "type": "string"
+                            },
+                            "designatedIncidentTypes": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "disasterNumber",
+                            "fipsStateCode",
+                            "declarationDate",
+                            "fipsCountyCode",
+                            "declarationType",
+                            "designatedArea",
+                            "designatedIncidentTypes"
+                          ]
+                        },
+                        "selfDisaster": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 250
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "startDate": {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            "endDate": {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "description",
+                            "startDate",
+                            "createdAt",
+                            "updatedAt"
+                          ]
+                        },
+                        "insurancePolicy": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "policyName": {
+                              "type": "string"
+                            },
+                            "policyHolderFirstName": {
+                              "type": "string"
+                            },
+                            "policyHolderLastName": {
+                              "type": "string"
+                            },
+                            "insuranceCompanyName": {
+                              "type": "string"
+                            },
+                            "policyNumber": {
+                              "type": "string"
+                            },
+                            "insuranceType": {
+                              "type": "string"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "policyName",
+                            "policyHolderFirstName",
+                            "policyHolderLastName",
+                            "insuranceCompanyName",
+                            "policyNumber",
+                            "insuranceType",
+                            "updatedAt",
+                            "createdAt"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "createdAt"
+                      ]
+                    },
+                    {
+                      "nullable": true
+                    },
+                    {
+                      "nullable": true
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get Claim in Progress Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Get Claim in Progress Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/disaster": {
       "post": {
         "summary": "Create a new disaster",
@@ -4208,6 +4446,22 @@
                   },
                   "selfDisasterId": {
                     "type": "string"
+                  },
+                  "insurancePolicyId": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "ACTIVE",
+                      "FILED",
+                      "IN_PROGRESS_DISASTER",
+                      "IN_PROGRESS_PERSONAL",
+                      "IN_PROGRESS_BUSINESS",
+                      "IN_PROGRESS_INSURANCE",
+                      "IN_PROGRESS_EXPORT"
+                    ],
+                    "default": "ACTIVE"
                   }
                 }
               }
@@ -4230,7 +4484,12 @@
                       "type": "string",
                       "enum": [
                         "ACTIVE",
-                        "FILED"
+                        "FILED",
+                        "IN_PROGRESS_DISASTER",
+                        "IN_PROGRESS_PERSONAL",
+                        "IN_PROGRESS_BUSINESS",
+                        "IN_PROGRESS_INSURANCE",
+                        "IN_PROGRESS_EXPORT"
                       ],
                       "default": "ACTIVE"
                     },
@@ -4336,6 +4595,51 @@
                         "createdAt",
                         "updatedAt"
                       ]
+                    },
+                    "insurancePolicy": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "policyName": {
+                          "type": "string"
+                        },
+                        "policyHolderFirstName": {
+                          "type": "string"
+                        },
+                        "policyHolderLastName": {
+                          "type": "string"
+                        },
+                        "insuranceCompanyName": {
+                          "type": "string"
+                        },
+                        "policyNumber": {
+                          "type": "string"
+                        },
+                        "insuranceType": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "policyName",
+                        "policyHolderFirstName",
+                        "policyHolderLastName",
+                        "insuranceCompanyName",
+                        "policyNumber",
+                        "insuranceType",
+                        "updatedAt",
+                        "createdAt"
+                      ]
                     }
                   },
                   "required": [
@@ -4410,7 +4714,12 @@
                         "type": "string",
                         "enum": [
                           "ACTIVE",
-                          "FILED"
+                          "FILED",
+                          "IN_PROGRESS_DISASTER",
+                          "IN_PROGRESS_PERSONAL",
+                          "IN_PROGRESS_BUSINESS",
+                          "IN_PROGRESS_INSURANCE",
+                          "IN_PROGRESS_EXPORT"
                         ],
                         "default": "ACTIVE"
                       },
@@ -4515,6 +4824,51 @@
                           "startDate",
                           "createdAt",
                           "updatedAt"
+                        ]
+                      },
+                      "insurancePolicy": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "policyName": {
+                            "type": "string"
+                          },
+                          "policyHolderFirstName": {
+                            "type": "string"
+                          },
+                          "policyHolderLastName": {
+                            "type": "string"
+                          },
+                          "insuranceCompanyName": {
+                            "type": "string"
+                          },
+                          "policyNumber": {
+                            "type": "string"
+                          },
+                          "insuranceType": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "policyName",
+                          "policyHolderFirstName",
+                          "policyHolderLastName",
+                          "insuranceCompanyName",
+                          "policyNumber",
+                          "insuranceType",
+                          "updatedAt",
+                          "createdAt"
                         ]
                       }
                     },
