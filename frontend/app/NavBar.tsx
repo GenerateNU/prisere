@@ -1,12 +1,24 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import NavBarCircle from "../icons/NavBarCircle";
 import Link from "next/link";
 import Chevron from "@/icons/Chevron";
+import { UserIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function NavBar() {
     const pathname = usePathname();
+    const nextRouter = useRouter();
+    const clearAuthCookies = () => {
+        document.cookie
+            .split(";")
+            .map((cookie) => cookie.trim())
+            .filter((cookie) => cookie.substring(0, 3) === "sb-")
+            .forEach((authCookie) => {
+                document.cookie = authCookie + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+            });
+    };
 
     const navigationItems = [
         { name: "Dashboard", href: "/", icon: "" },
@@ -37,12 +49,25 @@ export default function NavBar() {
                     ))}
                 </div>
                 <li>
-                    <Link href="/profile">
-                        <div className="flex nav-bar-item gap-[25px] text-[20px] px-[20px] py-[15px] items-center">
-                            <NavBarCircle /> {/* Placeholder for icons */}
-                            Prisere
-                        </div>
-                    </Link>
+                    <div>
+                        <Link href="/profile">
+                            <div className="flex nav-bar-item gap-[25px] text-[20px] px-[20px] py-[15px] items-center">
+                                <NavBarCircle /> {/* Placeholder for icons */}
+                                Prisere
+                            </div>
+                        </Link>
+                        <Button
+                            onClick={() => {
+                                clearAuthCookies();
+                                nextRouter.push("/");
+                            }}
+                            className="h-[40px] flex justify-start gap-[25px] px-[20px] py-[15px]"
+                            variant="outline"
+                        >
+                            <UserIcon />
+                            <p>Logout</p>
+                        </Button>
+                    </div>
                 </li>
             </ul>
         </nav>
