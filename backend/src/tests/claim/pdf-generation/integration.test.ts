@@ -6,10 +6,8 @@ import { PDFParse } from "pdf-parse";
 import { startTestApp } from "../../setup-tests";
 import { TESTING_PREFIX } from "../../../utilities/constants";
 import { S3Service } from "../../../modules/s3/service";
-import { SeederFactoryManager } from "typeorm-extension";
 import { initPdfTestData } from "./setup";
 import { Claim } from "../../../entities/Claim";
-import { Company } from "../../../entities/Company";
 
 describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
     let app: Hono;
@@ -23,7 +21,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
         app = testAppData.app;
         backup = testAppData.backup;
         testAppDataSource = testAppData.dataSource;
-        process.env.OBJECTS_STORAGE_BUCKET_NAME = 'test-bucket';
+        process.env.OBJECTS_STORAGE_BUCKET_NAME = "test-bucket";
     });
 
     beforeEach(async () => {
@@ -31,8 +29,8 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
         capturedBuffer = undefined;
 
         // Mock S3 upload with complete implementation
-        uploadSpy = spyOn(S3Service.prototype, 'uploadPdf')
-            .mockImplementation(async (options: {
+        uploadSpy = spyOn(S3Service.prototype, "uploadPdf").mockImplementation(
+            async (options: {
                 claimId: string;
                 pdfBuffer: Buffer;
                 documentId?: string | undefined;
@@ -43,11 +41,12 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
                     url: `https://test-bucket.s3.amazonaws.com/claims/${options.claimId}.pdf`,
                     key: `claims/${options.claimId}.pdf`,
                     size: options.pdfBuffer.length,
-                    hash: 'test-hash',
+                    hash: "test-hash",
                     isDuplicate: false,
-                    duplicateKey: undefined
+                    duplicateKey: undefined,
                 };
-            });
+            }
+        );
     });
 
     afterEach(() => {
@@ -56,13 +55,12 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
     });
 
     describe("Successful PDF Generation", () => {
-
         test("GET /claims/{id}/pdf - Successfully generates PDF and returns S3 URL", async () => {
             const response = await app.request(TESTING_PREFIX + "/claims/0174375f-e7c4-4862-bb9f-f58318bb2e7d/pdf", {
                 method: "GET",
                 headers: {
                     companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb"
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
                 },
             });
 
@@ -70,12 +68,12 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
             const data = await response.json();
 
             expect(data).toHaveProperty("url");
-            expect(data.url).toContain('https://test-bucket.s3.amazonaws.com/claims/');
+            expect(data.url).toContain("https://test-bucket.s3.amazonaws.com/claims/");
 
             expect(uploadSpy).toHaveBeenCalledTimes(1);
             expect(uploadSpy).toHaveBeenCalledWith({
-                claimId: '0174375f-e7c4-4862-bb9f-f58318bb2e7d',
-                pdfBuffer: expect.any(Buffer)
+                claimId: "0174375f-e7c4-4862-bb9f-f58318bb2e7d",
+                pdfBuffer: expect.any(Buffer),
             });
         });
 
@@ -84,7 +82,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
                 method: "GET",
                 headers: {
                     companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb"
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
                 },
             });
 
@@ -93,7 +91,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
             expect(capturedBuffer).toBeDefined();
             expect(Buffer.isBuffer(capturedBuffer)).toBe(true);
             expect(capturedBuffer!.length).toBeGreaterThan(0);
-            expect(capturedBuffer!.toString('utf-8', 0, 4)).toBe('%PDF');
+            expect(capturedBuffer!.toString("utf-8", 0, 4)).toBe("%PDF");
         });
 
         test("GET /claims/{id}/pdf - Passes correct claim ID to S3", async () => {
@@ -103,7 +101,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
                 method: "GET",
                 headers: {
                     companyId: "a1a542da-0abe-4531-9386-8919c9f86369",
-                    userId: "0199e0cc-4e92-702c-9773-071340163ae4"  // John Doe from Company Cool
+                    userId: "0199e0cc-4e92-702c-9773-071340163ae4", // John Doe from Company Cool
                 },
             });
 
@@ -111,19 +109,18 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
 
             expect(uploadSpy).toHaveBeenCalledWith({
                 claimId: testClaimId,
-                pdfBuffer: expect.any(Buffer)
+                pdfBuffer: expect.any(Buffer),
             });
         });
     });
 
-    describe("Error Handling", () => {
-
+    describe("Issues with claim ID", () => {
         test("GET /claims/{id}/pdf - Claim does not exist", async () => {
             const response = await app.request(TESTING_PREFIX + "/claims/00000000-0000-0000-0000-000000000000/pdf", {
                 method: "GET",
                 headers: {
                     companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb"
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
                 },
             });
 
@@ -136,7 +133,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
                 method: "GET",
                 headers: {
                     companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb"
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
                 },
             });
 
@@ -149,7 +146,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
                 method: "GET",
                 headers: {
                     companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb"
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
                 },
             });
 
@@ -159,7 +156,6 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
     });
 
     describe("PDF Content Verification - Exact Data", () => {
-
         test("GET /claims/{id}/pdf - PDF contains exact company and user data from database", async () => {
             const claimId = "0174375f-e7c4-4862-bb9f-f58318bb2e7d";
 
@@ -167,7 +163,13 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
             const claimRepository = testAppDataSource.getRepository(Claim);
             const claim = await claimRepository.findOne({
                 where: { id: claimId },
-                relations: ['company', 'selfDisaster', 'claimLocations', 'claimLocations.locationAddress', 'purchaseLineItems']
+                relations: [
+                    "company",
+                    "selfDisaster",
+                    "claimLocations",
+                    "claimLocations.locationAddress",
+                    "purchaseLineItems",
+                ],
             });
 
             expect(claim).toBeDefined();
@@ -177,7 +179,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
                 method: "GET",
                 headers: {
                     companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb"
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
                 },
             });
 
@@ -198,7 +200,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
 
             // Verify self-declared disaster
             if (claim!.selfDisaster) {
-                expect(pdfData.text).toContain('Self-declared');
+                expect(pdfData.text).toContain("Self-declared");
                 expect(pdfData.text).toContain("Fire in main office building");
             }
 
@@ -223,7 +225,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
             const claimRepository = testAppDataSource.getRepository(Claim);
             const claim = await claimRepository.findOne({
                 where: { id: claimId },
-                relations: ['company', 'femaDisaster']
+                relations: ["company", "femaDisaster"],
             });
 
             expect(claim).toBeDefined();
@@ -233,15 +235,15 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
                 method: "GET",
                 headers: {
                     companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb"
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
                 },
             });
 
             const uint8Array = new Uint8Array(capturedBuffer!);
             const pdfData = await new PDFParse(uint8Array).getText();
 
-            expect(pdfData.text).toContain('Northeastern Inc.');
-            expect(pdfData.text).toContain('Type: FEMA');
+            expect(pdfData.text).toContain("Northeastern Inc.");
+            expect(pdfData.text).toContain("Type: FEMA");
             expect(pdfData.text).toContain(claim!.femaDisaster!.id);
             expect(pdfData.text).toContain("Flooding"); // From designatedIncidentTypes
 
@@ -255,7 +257,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
             const claimRepository = testAppDataSource.getRepository(Claim);
             const claim = await claimRepository.findOne({
                 where: { id: claimId },
-                relations: ['purchaseLineItems']
+                relations: ["purchaseLineItems"],
             });
 
             expect(claim).toBeDefined();
@@ -264,7 +266,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
                 method: "GET",
                 headers: {
                     companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb"
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
                 },
             });
 
@@ -284,7 +286,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
             const claimRepository = testAppDataSource.getRepository(Claim);
             const claim = await claimRepository.findOne({
                 where: { id: claimId },
-                relations: ['femaDisaster']
+                relations: ["femaDisaster"],
             });
 
             expect(claim?.femaDisaster).toBeDefined();
@@ -293,7 +295,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
                 method: "GET",
                 headers: {
                     companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb"
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
                 },
             });
 
@@ -311,7 +313,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
                 method: "GET",
                 headers: {
                     companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb"
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
                 },
             });
 
@@ -321,13 +323,13 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
             const uint8Array = new Uint8Array(capturedBuffer!);
             const pdfData = await new PDFParse(uint8Array).getText();
 
-            expect(pdfData.text).toContain('Claim Report');
-            expect(pdfData.text).toContain('Company Information');
-            expect(pdfData.text).toContain('User Information');
-            expect(pdfData.text).toContain('Disaster Information');
-            expect(pdfData.text).toContain('Impacted Locations');
-            expect(pdfData.text).toContain('Relevant Expenses');
-            expect(pdfData.text).toContain('Average Income');
+            expect(pdfData.text).toContain("Claim Report");
+            expect(pdfData.text).toContain("Company Information");
+            expect(pdfData.text).toContain("User Information");
+            expect(pdfData.text).toContain("Disaster Information");
+            expect(pdfData.text).toContain("Impacted Locations");
+            expect(pdfData.text).toContain("Relevant Expenses");
+            expect(pdfData.text).toContain("Average Income");
         });
 
         test("GET /claims/{id}/pdf - PDF contains exact location data", async () => {
@@ -336,7 +338,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
             const claimRepository = testAppDataSource.getRepository(Claim);
             const claim = await claimRepository.findOne({
                 where: { id: claimId },
-                relations: ['claimLocations', 'claimLocations.locationAddress']
+                relations: ["claimLocations", "claimLocations.locationAddress"],
             });
 
             expect(claim).toBeDefined();
@@ -345,7 +347,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
                 method: "GET",
                 headers: {
                     companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb"
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
                 },
             });
 
@@ -366,31 +368,16 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
         });
     });
 
-    describe("Error Handling", () => {
-
-        test("GET /claims/{id}/pdf - Claim does not exist", async () => {
-            const response = await app.request(TESTING_PREFIX + "/claims/00000000-0000-0000-0000-000000000000/pdf", {
-                method: "GET",
-                headers: {
-                    companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb"
-                },
-            });
-
-            expect(response.status).toBe(404);
-            expect(uploadSpy).not.toHaveBeenCalled();
-        });
-
+    describe("S3 failure", () => {
         test("GET /claims/{id}/pdf - S3 upload fails", async () => {
             uploadSpy.mockRestore();
-            uploadSpy = spyOn(S3Service.prototype, 'uploadPdf')
-                .mockRejectedValue(new Error('S3 upload failed'));
+            uploadSpy = spyOn(S3Service.prototype, "uploadPdf").mockRejectedValue(new Error("S3 upload failed"));
 
             const response = await app.request(TESTING_PREFIX + "/claims/0174375f-e7c4-4862-bb9f-f58318bb2e7d/pdf", {
                 method: "GET",
                 headers: {
                     companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb"
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
                 },
             });
 

@@ -18,13 +18,10 @@ import { plainToClass } from "class-transformer";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
-import {
-    ClaimDataForPDF,
-} from "./types";
+import { ClaimDataForPDF } from "./types";
 import Boom from "@hapi/boom";
 import { UserTransaction } from "../user/transaction";
 import { InvoiceTransaction } from "../invoice/transaction";
-
 
 export interface IClaimTransaction {
     /**
@@ -81,7 +78,6 @@ export interface IClaimTransaction {
      */
     deletePurchaseLineItem(claimId: string, lineItemId: string): Promise<DeletePurchaseLineItemResponse | null>;
 
-
     /**
      * To retrieve and package the relevant information to generate a pdf for a claim.
      * @param claimId from the desired claim.
@@ -89,7 +85,6 @@ export interface IClaimTransaction {
      * @returns the necessary claim, user, and invoice data to make the pdf
      */
     retrieveDataForPDF(claimId: string, userId: string): Promise<ClaimDataForPDF>;
-
 }
 
 export class ClaimTransaction implements IClaimTransaction {
@@ -287,20 +282,19 @@ export class ClaimTransaction implements IClaimTransaction {
 
     async retrieveDataForPDF(claimId: string, userId: string): Promise<ClaimDataForPDF> {
         const claimInfo = await this.db.manager
-            .createQueryBuilder(Claim, 'claim')
-            .leftJoinAndSelect('claim.company', 'company')
-            .leftJoinAndSelect('claim.femaDisaster', 'fema')
-            .leftJoinAndSelect('claim.selfDisaster', 'self')
-            .leftJoinAndSelect('claim.claimLocations', 'locations')
-            .leftJoinAndSelect('locations.locationAddress', 'locationAddress')
-            .leftJoinAndSelect('claim.purchaseLineItems', 'lineItems')
-            .where('claim.id = :id', { id: claimId })
+            .createQueryBuilder(Claim, "claim")
+            .leftJoinAndSelect("claim.company", "company")
+            .leftJoinAndSelect("claim.femaDisaster", "fema")
+            .leftJoinAndSelect("claim.selfDisaster", "self")
+            .leftJoinAndSelect("claim.claimLocations", "locations")
+            .leftJoinAndSelect("locations.locationAddress", "locationAddress")
+            .leftJoinAndSelect("claim.purchaseLineItems", "lineItems")
+            .where("claim.id = :id", { id: claimId })
             .getOne();
 
         const userTransaction = new UserTransaction(this.db);
-        const invoiceTransaction = new InvoiceTransaction(this.db)
-        const user =  await userTransaction.getUser({id: userId});
-
+        const invoiceTransaction = new InvoiceTransaction(this.db);
+        const user = await userTransaction.getUser({ id: userId });
 
         if (!claimInfo) {
             throw Boom.notFound("Could not find the claim");
@@ -314,7 +308,7 @@ export class ClaimTransaction implements IClaimTransaction {
             companyId: claimInfo.companyId,
             startDate: new Date(new Date().setFullYear(new Date().getFullYear() - 4)).toISOString(),
             endDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString(),
-        })
+        });
 
         return {
             ...claimInfo,
@@ -322,6 +316,4 @@ export class ClaimTransaction implements IClaimTransaction {
             averageIncome: incomeLastThreeYears / 3,
         };
     }
-
-
 }

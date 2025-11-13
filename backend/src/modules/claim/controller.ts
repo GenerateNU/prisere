@@ -148,5 +148,5 @@ export class ClaimController {
 
             return ctx.json(pdfUrl, 200);
         }
-        );
+    );
 }

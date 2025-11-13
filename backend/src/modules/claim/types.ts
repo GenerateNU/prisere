@@ -1,12 +1,11 @@
-import { z } from 'zod';
+import { z } from "zod";
 import { ClaimLocation } from "../../entities/ClaimLocation";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import { User } from "../../entities/User";
 
-
-export const ClaimPDFGenerationResponseSchema= z.object({
+export const ClaimPDFGenerationResponseSchema = z.object({
     url: z.url(),
-})
+});
 
 export type ClaimDataForPDF = {
     id: string;
@@ -25,7 +24,7 @@ export type ClaimDataForPDF = {
 export const UserInfoSchema = z.object({
     firstName: z.string(),
     lastName: z.string(),
-    email: z.string().optional()
+    email: z.string().optional(),
 });
 
 const CompanySchema = z.object({
@@ -43,7 +42,7 @@ export const FemaDisasterInfoSchema = z.object({
 export const SelfDisasterInfoSchema = z.object({
     description: z.string(),
     startDate: z.date(),
-    endDate: z.date().optional()
+    endDate: z.date().optional(),
 });
 
 export const ImpactedLocationSchema = z.object({
@@ -60,7 +59,7 @@ export const RelevantExpenseSchema = z.object({
     description: z.string(),
 });
 
-const ClaimDataSchema = z.object({
+export const ClaimDataSchema = z.object({
     user: UserInfoSchema,
     company: CompanySchema,
     disaster: z.array(z.union([FemaDisasterInfoSchema, SelfDisasterInfoSchema])),
