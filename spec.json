@@ -1939,8 +1939,7 @@
               "type": "string",
               "enum": [
                 "unread",
-                "read",
-                "acknowledged"
+                "read"
               ]
             },
             "required": false,
@@ -1992,11 +1991,9 @@
                       },
                       "notificationStatus": {
                         "type": "string",
-                        "nullable": true,
                         "enum": [
                           "unread",
-                          "read",
-                          "acknowledged"
+                          "read"
                         ]
                       },
                       "firstSentAt": {
@@ -2268,6 +2265,7 @@
                       "userId",
                       "femaDisasterId",
                       "notificationType",
+                      "notificationStatus",
                       "createdAt",
                       "user",
                       "femaDisaster",
@@ -2365,8 +2363,7 @@
                       "nullable": true,
                       "enum": [
                         "unread",
-                        "read",
-                        "acknowledged"
+                        "read"
                       ]
                     },
                     "firstSentAt": {
@@ -2521,8 +2518,7 @@
                       "nullable": true,
                       "enum": [
                         "unread",
-                        "read",
-                        "acknowledged"
+                        "read"
                       ]
                     },
                     "firstSentAt": {
@@ -2699,8 +2695,7 @@
                         "nullable": true,
                         "enum": [
                           "unread",
-                          "read",
-                          "acknowledged"
+                          "read"
                         ]
                       },
                       "firstSentAt": {

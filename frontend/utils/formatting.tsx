@@ -13,15 +13,15 @@ export function getDeclarationTypeMeanings(declarationType: string): string {
     }
 }
 
-export const dateFormatter = new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    timeZoneName: 'short',
-  });
+export const dateFormatter = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZoneName: "short",
+});
 
 export function getIncidentTypeMeanings(designatedIncidentTypes: string): string[] {
     const incidentMeanings: string[] = [];

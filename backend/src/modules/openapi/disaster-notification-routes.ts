@@ -24,7 +24,7 @@ export const getUserNotificationsRoute = createRoute({
     request: {
         query: z.object({
             type: z.enum(["web", "email"]).optional(),
-            status: z.enum(["unread", "read", "acknowledged"]).optional(),
+            status: z.enum(["unread", "read"]).optional(),
             page: z.string().transform(Number).pipe(z.number().int().positive()).optional(),
             limit: z.string().transform(Number).pipe(z.number().int().positive().max(100)).optional(),
         }),

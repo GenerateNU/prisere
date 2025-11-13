@@ -1162,7 +1162,7 @@ export interface paths {
             parameters: {
                 query?: {
                     type?: "web" | "email";
-                    status?: "unread" | "read" | "acknowledged";
+                    status?: "unread" | "read";
                     page?: string;
                     limit?: string;
                 };
@@ -1184,8 +1184,8 @@ export interface paths {
                             femaDisasterId: string;
                             /** @enum {string} */
                             notificationType: "web" | "email";
-                            /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            /** @enum {string} */
+                            notificationStatus: "unread" | "read";
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;
@@ -1318,7 +1318,7 @@ export interface paths {
                             /** @enum {string} */
                             notificationType: "web" | "email";
                             /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;
@@ -1393,7 +1393,7 @@ export interface paths {
                             /** @enum {string} */
                             notificationType: "web" | "email";
                             /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;
@@ -1471,7 +1471,7 @@ export interface paths {
                             /** @enum {string} */
                             notificationType: "web" | "email";
                             /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;

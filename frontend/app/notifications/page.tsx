@@ -1,7 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { IoMdArrowBack } from "react-icons/io";
 import Notification, { LoadingNotification } from "./notification";
 import { useEffect, useRef } from "react";
 import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
@@ -60,24 +58,21 @@ export default function Page() {
     return (
         <div className="p-15 bg-slate w-full items-center">
             <div className="flex row gap-5 pb-15">
-                <Button size="icon" onClick={() => router.push("/")}>
-                    <IoMdArrowBack />
-                </Button>
                 <h1 className="text-charcoal text-3xl font-bold"> Notifications </h1>
             </div>
 
             <div className="flex flex-col gap-5">
                 {data?.pages.map((page, i) => (
-                    <div key={i} className= "flex flex-col gap-5">
+                    <div key={i} className="flex flex-col gap-5">
                         {page.map((notification) => (
                             <Notification key={notification.id} notification={notification} />
                         ))}
                     </div>
                 ))}
                 {isFetchingNextPage && <LoadingNotification />}
-                <div ref={observerTarget} className = "self-center font-charcoal">
-                {!hasNextPage && <p>No More Notifications</p>}
-            </div>
+                <div ref={observerTarget} className="self-center font-charcoal">
+                    {!hasNextPage && <p>No More Notifications</p>}
+                </div>
             </div>
         </div>
     );
