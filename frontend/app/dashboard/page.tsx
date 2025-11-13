@@ -1,9 +1,9 @@
 "use client";
 import NavBarCircle from "@/icons/NavBarCircle";
-import RevenueAndExpenses from "../../components/RevenueAndExpenses";
-import NextSteps from "../../components/NextSteps";
-import LocationRisk from "../../components/LocationRisk";
-import NetDisasterExpenses from "../../components/NetDisasterExpenses";
+import RevenueAndExpenses from "../../components/dashboard/RevenueAndExpenses";
+import NextSteps from "../../components/dashboard/NextSteps";
+import LocationRisk from "../../components/dashboard/LocationRisk";
+import NetDisasterExpenses from "../../components/dashboard/NetDisasterExpenses";
 
 export default function Dashboard() {
     return (
