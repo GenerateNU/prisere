@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Notification as NotificationType } from "@/types/notifications";
 import { getDeclarationTypeMeanings } from "@/utils/formatting";
 import { RiMore2Fill } from "react-icons/ri";
-import formatDescription, { dateFormatter } from "./utils";
+import formatDescription from "./utils";
+import { dateFormatter } from "@/utils/formatting";
 
 interface NotificationProps {
     notification: NotificationType;
@@ -25,7 +26,7 @@ export default function Notification({ notification }: NotificationProps) {
             </div>
             <p className="text-sm text-fuchsia font-medium mb-4">{dateFormatter.format(new Date(notification.femaDisaster.declarationDate))}</p>
             <p className="text-charcoal leading-relaxed">{formatDescription(notification)}</p>
-            <p className="text-[#8E8E8E] text-sm"> FEMA-ID:{notification.femaDisaster.id}</p>
+            <p className="text-[#8E8E8E] text-sm"> FEMA-ID:{notification.femaDisaster.disasterNumber}</p>
         </div>
     );
 }
