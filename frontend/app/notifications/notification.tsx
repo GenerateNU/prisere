@@ -14,22 +14,16 @@ interface NotificationProps {
 }
 export default function Notification({ notification }: NotificationProps) {
     const [error, setError] = useState(false);
-    const [title, setTitle] = useState(notification.notificationStatus)
-    const {
-        isPending,
-        error: notifError,
-        mutate,
-    } = useMutation({
-        mutationFn: () =>
-            updateNotificationStatus(notification.id, title == "read"? "unread" : "read"),
-        onError: (error: Error) => {
-            setError(false)
+    const [title, setTitle] = useState(notification.notificationStatus);
+    const { mutate } = useMutation({
+        mutationFn: () => updateNotificationStatus(notification.id, title == "read" ? "unread" : "read"),
+        onError: () => {
+            setError(false);
         },
         onSuccess: () => {
-            setTitle(title == "read"? "unread" : "read");
-        }
+            setTitle(title == "read" ? "unread" : "read");
+        },
     });
-
 
     return (
         <div className="rounded-2xl p-6 max-w-full bg-white">
@@ -52,10 +46,10 @@ export default function Notification({ notification }: NotificationProps) {
                     <PopoverContent className="flex justify-center w-40 h-20">
                         <div className="flex flex-col items-center justify-center">
                             <Button
-                            variant="secondary"
-                            className="text-charcoal rounded-sm"
-                            size="sm"
-                            onClick={() => mutate()}
+                                variant="secondary"
+                                className="text-charcoal rounded-sm"
+                                size="sm"
+                                onClick={() => mutate()}
                             >
                                 {title == "read" ? "Mark as unread" : "Mark as read"}
                             </Button>

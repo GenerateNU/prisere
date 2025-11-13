@@ -1,5 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
 import Notification, { LoadingNotification } from "./notification";
 import { useEffect, useRef } from "react";
 import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
@@ -8,7 +7,6 @@ import { NOTIFICATION_LIMIT } from "@/types/constants";
 import { GetNotificationsResponse } from "@/types/notifications";
 
 export default function Page() {
-    const router = useRouter();
     const observerTarget = useRef(null);
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery<
         GetNotificationsResponse,
