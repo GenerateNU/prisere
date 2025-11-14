@@ -22,15 +22,13 @@ describe("buildClaimPdfHtml", () => {
         company: {
             name: "Test Company Inc.",
         },
-        disaster: [
-            {
-                id: "fema-123",
-                designatedIncidentTypes: "flooding,hurricane",
-                declarationDate: new Date("2024-01-15"),
-                incidentBeginDate: new Date("2024-01-10"),
-                incidentEndDate: new Date("2024-01-20"),
-            },
-        ],
+        femaDisaster: {
+            id: "fema-123",
+            designatedIncidentTypes: "flooding,hurricane",
+            declarationDate: new Date("2024-01-15"),
+            incidentBeginDate: new Date("2024-01-10"),
+            incidentEndDate: new Date("2024-01-20"),
+        },
         impactedLocations: [
             {
                 streetAddress: "123 Main St",
@@ -59,13 +57,12 @@ describe("buildClaimPdfHtml", () => {
     it("should match the expected self-declared disaster HTML", () => {
         const dataWithSelfDisaster: ClaimData = {
             ...mockClaimData,
-            disaster: [
-                {
-                    description: "Office fire",
-                    startDate: new Date("2024-02-01"),
-                    endDate: new Date("2024-02-02"),
-                },
-            ],
+            femaDisaster: undefined,
+            selfDisaster: {
+                description: "Office fire",
+                startDate: new Date("2024-02-01"),
+                endDate: new Date("2024-02-02"),
+            },
         };
 
         const html = buildClaimPdfHtml(dataWithSelfDisaster);
@@ -95,15 +92,13 @@ describe("buildClaimPdfHtml", () => {
     it("should match the expected missing FEMA dates HTML", () => {
         const dataWithMissingDates: ClaimData = {
             ...mockClaimData,
-            disaster: [
-                {
-                    id: "fema-456",
-                    designatedIncidentTypes: "tornado",
-                    declarationDate: new Date("2024-03-01"),
-                    incidentBeginDate: undefined,
-                    incidentEndDate: undefined,
-                },
-            ],
+            femaDisaster: {
+                id: "fema-456",
+                designatedIncidentTypes: "tornado",
+                declarationDate: new Date("2024-03-01"),
+                incidentBeginDate: undefined,
+                incidentEndDate: undefined,
+            },
         };
 
         const html = buildClaimPdfHtml(dataWithMissingDates);
@@ -115,20 +110,18 @@ describe("buildClaimPdfHtml", () => {
     it("should match the expected multiple disasters HTML", () => {
         const dataWithMultipleDisasters: ClaimData = {
             ...mockClaimData,
-            disaster: [
-                {
-                    id: "fema-123",
-                    designatedIncidentTypes: "flooding",
-                    declarationDate: new Date("2024-01-15"),
-                    incidentBeginDate: new Date("2024-01-10"),
-                    incidentEndDate: new Date("2024-01-20"),
-                },
-                {
-                    description: "Office fire",
-                    startDate: new Date("2024-02-01"),
-                    endDate: new Date("2024-02-02"),
-                },
-            ],
+            femaDisaster: {
+                id: "fema-123",
+                designatedIncidentTypes: "flooding",
+                declarationDate: new Date("2024-01-15"),
+                incidentBeginDate: new Date("2024-01-10"),
+                incidentEndDate: new Date("2024-01-20"),
+            },
+            selfDisaster: {
+                description: "Office fire",
+                startDate: new Date("2024-02-01"),
+                endDate: new Date("2024-02-02"),
+            },
         };
 
         const html = buildClaimPdfHtml(dataWithMultipleDisasters);

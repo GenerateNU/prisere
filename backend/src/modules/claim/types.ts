@@ -62,7 +62,8 @@ export const RelevantExpenseSchema = z.object({
 export const ClaimDataSchema = z.object({
     user: UserInfoSchema,
     company: CompanySchema,
-    disaster: z.array(z.union([FemaDisasterInfoSchema, SelfDisasterInfoSchema])),
+    femaDisaster: FemaDisasterInfoSchema.optional(),
+    selfDisaster: SelfDisasterInfoSchema.optional(),
     impactedLocations: z.array(ImpactedLocationSchema),
     relevantExpenses: z.array(RelevantExpenseSchema),
     averageIncome: z.number().gte(0),

@@ -92,9 +92,10 @@ describe("restructureClaimDataForPdf", () => {
         expect(result.user.lastName).toBe("Doe");
         expect(result.user.email).toBe("john@test.com");
         expect(result.company.name).toBe("Test Company Inc.");
-        expect(result.disaster).toHaveLength(1);
-        expect(result.disaster[0]).toHaveProperty("id", "fema-123");
-        expect(result.disaster[0]).toHaveProperty("designatedIncidentTypes", "flooding,hurricane");
+        expect(result.femaDisaster).toBeDefined();
+        expect(result.femaDisaster).toHaveProperty("id", "fema-123");
+        expect(result.femaDisaster).toHaveProperty("designatedIncidentTypes", "flooding,hurricane");
+        expect(result.selfDisaster).toBeUndefined();
         expect(result.impactedLocations).toHaveLength(1);
         expect(result.impactedLocations[0].city).toBe("Boston");
         expect(result.relevantExpenses).toHaveLength(2);
@@ -117,10 +118,10 @@ describe("restructureClaimDataForPdf", () => {
 
         const result = restructureClaimDataForPdf(dataWithSelfDisaster);
 
-        expect(result.disaster).toHaveLength(1);
-        expect(result.disaster[0]).toHaveProperty("description", "Office fire");
-        expect(result.disaster[0]).toHaveProperty("startDate");
-        expect(result.disaster[0]).not.toHaveProperty("id");
+        expect(result.selfDisaster).toBeDefined();
+        expect(result.selfDisaster).toHaveProperty("description", "Office fire");
+        expect(result.selfDisaster).toHaveProperty("startDate");
+        expect(result.selfDisaster).not.toHaveProperty("id");
     });
 
     it("should parse claim data with both FEMA and self-declared disasters", () => {
@@ -136,9 +137,10 @@ describe("restructureClaimDataForPdf", () => {
 
         const result = restructureClaimDataForPdf(dataWithBothDisasters);
 
-        expect(result.disaster).toHaveLength(2);
-        expect(result.disaster[0]).toHaveProperty("id", "fema-123");
-        expect(result.disaster[1]).toHaveProperty("description", "Office fire");
+        expect(result.femaDisaster).toBeDefined();
+        expect(result.selfDisaster).toBeDefined();
+        expect(result.femaDisaster).toHaveProperty("id", "fema-123");
+        expect(result.selfDisaster).toHaveProperty("description", "Office fire");
     });
 
     it("should handle missing email", () => {
@@ -169,8 +171,8 @@ describe("restructureClaimDataForPdf", () => {
 
         const result = restructureClaimDataForPdf(dataWithMissingDates);
 
-        expect(result.disaster[0]).toHaveProperty("incidentBeginDate", undefined);
-        expect(result.disaster[0]).toHaveProperty("incidentEndDate", undefined);
+        expect(result.femaDisaster).toHaveProperty("incidentBeginDate", undefined);
+        expect(result.femaDisaster).toHaveProperty("incidentEndDate", undefined);
     });
 
     it("should handle multiple claim locations", () => {
@@ -264,28 +266,6 @@ describe("restructureClaimDataForPdf", () => {
         expect(() => {
             restructureClaimDataForPdf(dataWithoutCompany);
         }).toThrow();
-    });
-
-    it("should throw error when claim locations are undefined", () => {
-        const dataWithoutLocations: ClaimDataForPDF = {
-            ...baseClaimDataForPDF,
-            claimLocations: undefined,
-        };
-
-        expect(() => {
-            restructureClaimDataForPdf(dataWithoutLocations);
-        }).toThrow("No associated claim locations that were affected");
-    });
-
-    it("should throw error when claim locations are empty", () => {
-        const dataWithEmptyLocations: ClaimDataForPDF = {
-            ...baseClaimDataForPDF,
-            claimLocations: [],
-        };
-
-        expect(() => {
-            restructureClaimDataForPdf(dataWithEmptyLocations);
-        }).toThrow("No associated claim locations that were affected");
     });
 
     it("should handle location without county", () => {

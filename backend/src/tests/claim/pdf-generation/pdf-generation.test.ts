@@ -149,15 +149,14 @@ describe("generatePDFfromHTML", () => {
             company: {
                 name: "Test Company Inc.",
             },
-            disaster: [
-                {
-                    id: "fema-123",
-                    designatedIncidentTypes: "flooding,hurricane",
-                    declarationDate: new Date("2024-01-15"),
-                    incidentBeginDate: new Date("2024-01-10"),
-                    incidentEndDate: new Date("2024-01-20"),
-                },
-            ],
+            femaDisaster: {
+                id: "fema-123",
+                designatedIncidentTypes: "flooding,hurricane",
+                declarationDate: new Date("2024-01-15"),
+                incidentBeginDate: new Date("2024-01-10"),
+                incidentEndDate: new Date("2024-01-20"),
+            },
+
             impactedLocations: [
                 {
                     streetAddress: "123 Main St",
@@ -211,13 +210,11 @@ describe("generatePDFfromHTML", () => {
         it("should generate PDF from claim HTML with self-declared disaster", async () => {
             const dataWithSelfDisaster: ClaimData = {
                 ...mockClaimData,
-                disaster: [
-                    {
-                        description: "Office fire",
-                        startDate: new Date("2024-02-01"),
-                        endDate: new Date("2024-02-02"),
-                    },
-                ],
+                selfDisaster: {
+                    description: "Office fire",
+                    startDate: new Date("2024-02-01"),
+                    endDate: new Date("2024-02-02"),
+                },
             };
 
             const html = buildClaimPdfHtml(dataWithSelfDisaster);
@@ -234,20 +231,18 @@ describe("generatePDFfromHTML", () => {
         it("should generate PDF with multiple disasters", async () => {
             const dataWithMultipleDisasters: ClaimData = {
                 ...mockClaimData,
-                disaster: [
-                    {
-                        id: "fema-123",
-                        designatedIncidentTypes: "flooding",
-                        declarationDate: new Date("2024-01-15"),
-                        incidentBeginDate: new Date("2024-01-10"),
-                        incidentEndDate: new Date("2024-01-20"),
-                    },
-                    {
-                        description: "Office fire",
-                        startDate: new Date("2024-02-01"),
-                        endDate: new Date("2024-02-02"),
-                    },
-                ],
+                femaDisaster: {
+                    id: "fema-123",
+                    designatedIncidentTypes: "flooding",
+                    declarationDate: new Date("2024-01-15"),
+                    incidentBeginDate: new Date("2024-01-10"),
+                    incidentEndDate: new Date("2024-01-20"),
+                },
+                selfDisaster: {
+                    description: "Office fire",
+                    startDate: new Date("2024-02-01"),
+                    endDate: new Date("2024-02-02"),
+                },
             };
 
             const html = buildClaimPdfHtml(dataWithMultipleDisasters);

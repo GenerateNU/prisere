@@ -359,16 +359,18 @@ export class ClaimTransaction implements IClaimTransaction {
     }
 
     async retrieveDataForPDF(claimId: string, userId: string): Promise<ClaimDataForPDF> {
-        const claimInfo = await this.db.manager
-            .createQueryBuilder(Claim, "claim")
-            .leftJoinAndSelect("claim.company", "company")
-            .leftJoinAndSelect("claim.femaDisaster", "fema")
-            .leftJoinAndSelect("claim.selfDisaster", "self")
-            .leftJoinAndSelect("claim.claimLocations", "locations")
-            .leftJoinAndSelect("locations.locationAddress", "locationAddress")
-            .leftJoinAndSelect("claim.purchaseLineItems", "lineItems")
-            .where("claim.id = :id", { id: claimId })
-            .getOne();
+        const claimInfo = await this.db.manager.findOne(Claim, {
+            where: { id: claimId },
+            relations: {
+                company: true,
+                femaDisaster: true,
+                selfDisaster: true,
+                claimLocations: {
+                    locationAddress: true,
+                },
+                purchaseLineItems: true,
+            },
+        });
 
         const userTransaction = new UserTransaction(this.db);
         const invoiceTransaction = new InvoiceTransaction(this.db);
