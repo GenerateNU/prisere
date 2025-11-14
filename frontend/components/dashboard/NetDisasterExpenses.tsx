@@ -8,12 +8,46 @@ import Link from "next/link";
 
 type Props = {
     bannerData: BannerData | null;
+    hasData: boolean;
 };
 
-export default function NetDisasterExpense({ bannerData }: Props) {
+// No Data Component
+function NetDisasterExpenseNoData() {
+    return (
+        <Card className="w-full max-w-xl p-8 border-none shadow-lg">
+            <CardContent className="p-0 flex flex-col items-center justify-center min-h-[300px] gap-4">
+                <div className="w-16 h-16 bg-fuchsia rounded-full flex items-center justify-center">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <path
+                            d="M16 8v8m0 4h.01M28 16c0 6.627-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4s12 5.373 12 12z"
+                            stroke="white"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                        />
+                    </svg>
+                </div>
+
+                <div className="text-center max-w-xs">
+                    <h3 className="text-lg font-bold mb-2">No data shown in this range</h3>
+                    <p className="text-sm text-gray-600">
+                        You need to connect QuickBooks or upload a CSV for your data
+                    </p>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
+export default function NetDisasterExpense({ bannerData, hasData }: Props) {
     if (!bannerData) {
         return null;
     }
+
+    // If no data, show the no data version
+    if (!hasData) {
+        return <NetDisasterExpenseNoData />;
+    }
+
     // Color palette that rotates through
     const colorPalette = [
         "var(--pink)",

@@ -8,16 +8,17 @@ import LocationRisk from "@/components/dashboard/LocationRisk";
 import IconCircle from "@/icons/NavBarCircle";
 import { NOTIFICATION_BELL } from "@/icons/icon-constants";
 import { companyHasData } from "@/api/company";
-import NoDataOverlay from "@/components/dashboard/NoData";
+import NoDataPopupWrapper from "@/components/dashboard/NoDataPopupWrapper";
 
 export default async function Dashboard() {
     const bannerData = await getDashboardBannerData();
-    // let hasData = await companyHasData();
     const hasData = await companyHasData();
-    // hasData = true;
 
     return (
         <div className="bg-[#f5f5f5] flex flex-col gap-8 px-16 pt-16 pb-8 mx-auto">
+            {/* No Data Popup - only shows when hasData is false */}
+            <NoDataPopupWrapper hasData={hasData} />
+
             {/* Header */}
             <div className="flex justify-between items-center">
                 <h2 className="text-4xl font-bold">Dashboard</h2>
@@ -33,8 +34,7 @@ export default async function Dashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
                 {/* Left Column - Revenue & Expenses */}
                 <div className="w-full lg:col-span-4 relative">
-                    <RevenueAndExpenses />
-                    {!hasData && <NoDataOverlay />}
+                    <RevenueAndExpenses hasData={hasData} />
                 </div>
 
                 {/* Right Column - Next Steps */}
@@ -48,12 +48,13 @@ export default async function Dashboard() {
                 {/* Left Column - Location Based Risk */}
                 <div className="w-full lg:col-span-4 relative">
                     <LocationRisk />
-                    {!hasData && <NoDataOverlay />}
                 </div>
 
                 {/* Right Column - Net Disaster Expense */}
                 <div className="w-full lg:col-span-2">
-                    {bannerData.status === "has-claim" && <NetDisasterExpense bannerData={bannerData} />}
+                    {bannerData.status === "has-claim" && (
+                        <NetDisasterExpense bannerData={bannerData} hasData={hasData} />
+                    )}
                 </div>
             </div>
         </div>

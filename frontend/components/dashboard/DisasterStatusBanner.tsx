@@ -71,7 +71,7 @@ export default function DisasterStatusBanner({ bannerData }: Props) {
     // Claim in progress
     if (bannerData.status === "has-claim") {
         return (
-            <Banner className="w-full p-6 rounded-lg bg-white border-0">
+            <Banner className="w-full px-6 pt-6 pb-2 rounded-lg bg-white border-0">
                 <div className="flex flex-row items-center w-full gap-3">
                     <div className="flex-1">
                         <BannerTitle className="text-lg font-semibold text-left flex-1 text-black mb-2">

@@ -3,13 +3,44 @@ import { sumInvoicesByCompanyAndDateRange } from "@/api/invoice";
 import { sumPurchasesByCompanyAndDateRange } from "@/api/purchase";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { ChartContainer, ChartTooltipContent, ChartTooltip, ChartConfig } from "@/components/ui/chart";
 import Link from "next/link";
 import Circle from "@/icons/Circle";
 
-export default function RevenueAndExpenses() {
+type Props = {
+    hasData: boolean;
+};
+
+// No Data Component
+function RevenueAndExpensesNoData() {
+    return (
+        <Card className="h-full min-h-[371px] p-6 border flex flex-col items-center justify-center">
+            <div className="flex flex-col items-center gap-4 max-w-md text-center">
+                <div className="w-16 h-16 bg-fuchsia rounded-full flex items-center justify-center">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <path
+                            d="M16 8v8m0 4h.01M28 16c0 6.627-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4s12 5.373 12 12z"
+                            stroke="white"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                        />
+                    </svg>
+                </div>
+
+                <div>
+                    <h3 className="text-lg font-bold mb-2">No data shown in this range</h3>
+                    <p className="text-sm text-gray-600">
+                        You need to connect QuickBooks or upload a CSV for your data
+                    </p>
+                </div>
+            </div>
+        </Card>
+    );
+}
+
+export default function RevenueAndExpenses({ hasData }: Props) {
     const today = new Date();
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth();
@@ -21,29 +52,40 @@ export default function RevenueAndExpenses() {
     const months = 6;
     const monthDates = Array.from({ length: months }, (_, i) => getMonth(i));
 
-    /* eslint-disable react-hooks/rules-of-hooks */
-    const revenueQueries = monthDates.map((date) => {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const startOfMonth = new Date(year, month, 1);
-        const endOfMonth = month === currentMonth && year === currentYear ? new Date() : new Date(year, month + 1, 0);
-        return useQuery({
-            queryKey: ["revenue", year, month],
-            queryFn: () => sumInvoicesByCompanyAndDateRange(startOfMonth, endOfMonth),
-        });
+    const revenueQueries = useQueries({
+        queries: monthDates.map((date) => {
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const startOfMonth = new Date(year, month, 1);
+            const endOfMonth =
+                month === currentMonth && year === currentYear ? new Date() : new Date(year, month + 1, 0);
+            return {
+                queryKey: ["revenue", year, month],
+                queryFn: () => sumInvoicesByCompanyAndDateRange(startOfMonth, endOfMonth),
+                enabled: hasData, // Only fetch if we have data
+            };
+        }),
     });
 
-    /* eslint-disable react-hooks/rules-of-hooks */
-    const expensesQueries = monthDates.map((date) => {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const startOfMonth = new Date(year, month, 1);
-        const endOfMonth = month === currentMonth && year === currentYear ? new Date() : new Date(year, month + 1, 0);
-        return useQuery({
-            queryKey: ["expenses", year, month],
-            queryFn: () => sumPurchasesByCompanyAndDateRange(startOfMonth, endOfMonth),
-        });
+    const expensesQueries = useQueries({
+        queries: monthDates.map((date) => {
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const startOfMonth = new Date(year, month, 1);
+            const endOfMonth =
+                month === currentMonth && year === currentYear ? new Date() : new Date(year, month + 1, 0);
+            return {
+                queryKey: ["expenses", year, month],
+                queryFn: () => sumPurchasesByCompanyAndDateRange(startOfMonth, endOfMonth),
+                enabled: hasData, // Only fetch if we have data
+            };
+        }),
     });
+
+    // If no data, show the no data version
+    if (!hasData) {
+        return <RevenueAndExpensesNoData />;
+    }
 
     const getChartData = () => {
         return monthDates
