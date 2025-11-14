@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CircleAlert } from "lucide-react";
@@ -10,10 +10,10 @@ type Props = {
     showButtons?: boolean;
 };
 
-export default function NoDataOverlay({ 
+export default function NoDataOverlay({
     title = "Looks like you have no data",
     message = "Upload a file for any cash basis which you're trying to convert to accrual to unlock this dashboard.",
-    showButtons = true 
+    showButtons = true,
 }: Props) {
     return (
         <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-lg z-10">
@@ -25,14 +25,10 @@ export default function NoDataOverlay({
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-lg font-bold text-charcoal">
-                        {title}
-                    </h3>
+                    <h3 className="text-lg font-bold text-charcoal">{title}</h3>
 
                     {/* Message */}
-                    <p className="text-sm text-charcoal/80">
-                        {message}
-                    </p>
+                    <p className="text-sm text-charcoal/80">{message}</p>
 
                     {/* Action Buttons */}
                     {showButtons && (
@@ -43,7 +39,10 @@ export default function NoDataOverlay({
                                 </Button>
                             </Link>
                             <Link href="/upload-csv">
-                                <Button variant="outline" className="rounded-full border-charcoal text-charcoal px-6 w-42 h-16">
+                                <Button
+                                    variant="outline"
+                                    className="rounded-full border-charcoal text-charcoal px-6 w-42 h-16"
+                                >
                                     Upload CSV
                                 </Button>
                             </Link>

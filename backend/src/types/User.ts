@@ -1,7 +1,5 @@
 import { z } from "zod";
 import { ErrorResponseSchema } from "./Utils";
-import { FemaDisasterSchema } from "./fema-disaster";
-import { CompanySchema } from "./Company";
 
 /* Zod schemas for OpenAPI docs */
 export const UserSchema = z.object({
@@ -9,7 +7,7 @@ export const UserSchema = z.object({
     firstName: z.string(),
     lastName: z.string(),
     email: z.string().email().optional().nullable(),
-    companyId: z.string().optional().nullable()
+    companyId: z.string().optional().nullable(),
 });
 
 //POST

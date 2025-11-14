@@ -1,8 +1,5 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import Chevron from "@/icons/Chevron";
-import IconCircle from "../icons/NavBarCircle";
-import { NOTIFICATION_BELL } from "@/icons/icon-constants";
 import { UserIcon } from "lucide-react";
 import { logoutUser } from "@/actions/auth";
 import { LuLayoutDashboard } from "react-icons/lu";

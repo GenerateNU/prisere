@@ -75,7 +75,7 @@ describe("Email Notification Integration Test", () => {
 
         // erify the flow worked
         expect(result).toBe(true);
-        console.log(result)
+        // console.log(result)
 
         // Verify SQS was called (if user's location matches any disaster)
         if (mockSend.mock.calls.length > 0) {

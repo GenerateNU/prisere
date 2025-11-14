@@ -1,5 +1,4 @@
 "use server";
-import NavBarCircle from "@/icons/NavBarCircle";
 import DisasterStatusBanner from "@/components/dashboard/DisasterStatusBanner";
 import { getDashboardBannerData } from "@/api/dashboard";
 import RevenueAndExpenses from "@/components/dashboard/RevenueAndExpenses";
@@ -22,7 +21,7 @@ export default async function Dashboard() {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <h2 className="text-4xl font-bold">Dashboard</h2>
-                <IconCircle size={43} icon={NOTIFICATION_BELL}/>
+                <IconCircle size={43} icon={NOTIFICATION_BELL} />
             </div>
 
             {/* Banner - Full Width */}
@@ -34,7 +33,7 @@ export default async function Dashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
                 {/* Left Column - Revenue & Expenses */}
                 <div className="w-full lg:col-span-4 relative">
-                    <RevenueAndExpenses/>
+                    <RevenueAndExpenses />
                     {!hasData && <NoDataOverlay />}
                 </div>
 
@@ -54,9 +53,7 @@ export default async function Dashboard() {
 
                 {/* Right Column - Net Disaster Expense */}
                 <div className="w-full lg:col-span-2">
-                    {bannerData.status === "has-claim" && (
-                        <NetDisasterExpense bannerData={bannerData} />
-                    )}
+                    {bannerData.status === "has-claim" && <NetDisasterExpense bannerData={bannerData} />}
                 </div>
             </div>
         </div>

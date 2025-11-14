@@ -11,7 +11,7 @@ export const CompanyExternalSchema = z.object({
     companyId: z.string(),
     createdAt: z.string(),
     updatedAt: z.string(),
-    importTime: z.string().optional()
+    importTime: z.string().optional(),
 });
 
 export const CompanyExternalOptionalSchema = z.object({
@@ -21,7 +21,7 @@ export const CompanyExternalOptionalSchema = z.object({
     companyId: z.string().optional(),
     createdAt: z.string().optional(),
     updatedAt: z.string().optional(),
-    importTime: z.string().optional()
+    importTime: z.string().optional(),
 });
 
 export const CompanySchema = z.object({

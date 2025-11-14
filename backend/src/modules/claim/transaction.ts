@@ -19,7 +19,6 @@ import { plainToClass } from "class-transformer";
 import { ClaimStatusInProgressTypes, ClaimStatusType } from "../../types/ClaimStatusType";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
-import { Purchase } from "../../entities/Purchase";
 import Boom from "@hapi/boom";
 
 export interface IClaimTransaction {

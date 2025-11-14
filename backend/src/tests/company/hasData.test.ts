@@ -1,25 +1,19 @@
-import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { TESTING_PREFIX } from "../../utilities/constants";
 import CompanySeeder from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
 import UserSeeder from "../../database/seeds/user.seed";
 import { Company } from "../../entities/Company";
 import { User } from "../../entities/User";
-import { LocationAddress } from "../../entities/LocationAddress";
-import { FemaDisaster } from "../../entities/FemaDisaster";
 import { Purchase } from "../../entities/Purchase";
-import { QuickbooksClient } from "../../external/quickbooks/client";
-import { QuickbooksSession } from "../../entities/QuickbookSession";
 import { CompanyService } from "../../modules/company/service";
 import { CompanyTransaction } from "../../modules/company/transaction";
 import { ClaimTransaction } from "../../modules/claim/transaction";
 
 describe("Company - Update lastQuickBooksImportTime", () => {
-    let app: Hono;
+    // let app: Hono;
     let backup: IBackup;
     let datasource: DataSource;
     let companyTransaction: CompanyTransaction;
@@ -32,7 +26,7 @@ describe("Company - Update lastQuickBooksImportTime", () => {
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
-        app = testAppData.app;
+        // app = testAppData.app;
         backup = testAppData.backup;
         datasource = testAppData.dataSource;
         companyTransaction = new CompanyTransaction(datasource);
@@ -104,11 +98,11 @@ describe("Company - Update lastQuickBooksImportTime", () => {
             isRefund: false,
             dateCreated: new Date("2025-01-11T12:00:00Z"),
             quickbooksDateCreated: new Date("2025-01-11T12:00:00Z"),
-        })
+        });
         await purchaseRepo.save(purchase);
 
         const companyExternal = companyExternalRepo.create({
-            source: "quickbooks", 
+            source: "quickbooks",
             externalId: "test-qb-external-id",
             companyId: companyWithExternal.id,
             company: companyWithExternal,
@@ -149,17 +143,17 @@ describe("Company - Update lastQuickBooksImportTime", () => {
     });
 
     test("GET company that does not have data", async () => {
-        const hasData = await companyService.hasCompanyData(companyWithNoData.id)
+        const hasData = await companyService.hasCompanyData(companyWithNoData.id);
         expect(hasData).toBe(false);
     });
 
     test("GET company that does have data from purchase data", async () => {
-        const hasData = await companyService.hasCompanyData(companyWithPurchaseData.id)
+        const hasData = await companyService.hasCompanyData(companyWithPurchaseData.id);
         expect(hasData).toBe(true);
     });
 
     test("GET company that does have data with company external", async () => {
-        const hasData = await companyService.hasCompanyData(companyWithExternal.id)
+        const hasData = await companyService.hasCompanyData(companyWithExternal.id);
         expect(hasData).toBe(true);
     });
 
@@ -167,5 +161,4 @@ describe("Company - Update lastQuickBooksImportTime", () => {
         const hasData = await companyService.hasCompanyData(companyWithInvoiceData.id);
         expect(hasData).toBe(true);
     });
-
 });

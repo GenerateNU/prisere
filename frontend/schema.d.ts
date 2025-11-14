@@ -646,58 +646,68 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            id: string;
-                            /**
-                             * @default ACTIVE
-                             * @enum {string}
-                             */
-                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
-                            /** Format: date-time */
-                            createdAt: string;
-                            /** Format: date-time */
-                            updatedAt?: string;
-                            femaDisaster?: {
-                                /** Format: uuid */
-                                id: string;
-                                disasterNumber: number;
-                                fipsStateCode: number;
-                                /** Format: date-time */
-                                declarationDate: string;
-                                incidentBeginDate?: string;
-                                incidentEndDate?: string;
-                                fipsCountyCode: number;
-                                declarationType: string;
-                                designatedArea: string;
-                                designatedIncidentTypes: string | null;
-                            };
-                            selfDisaster?: {
-                                id: string;
-                                name: string;
-                                description: string;
-                                /** Format: date */
-                                startDate: string;
-                                /** Format: date */
-                                endDate?: string;
-                                /** Format: date */
-                                createdAt: string;
-                                /** Format: date */
-                                updatedAt: string;
-                            };
-                            insurancePolicy?: {
-                                id: string;
-                                policyName: string;
-                                policyHolderFirstName: string;
-                                policyHolderLastName: string;
-                                insuranceCompanyName: string;
-                                policyNumber: string;
-                                insuranceType: string;
-                                /** Format: date-time */
-                                updatedAt: string;
-                                /** Format: date-time */
-                                createdAt: string;
-                            };
-                        } | unknown | unknown;
+                        "application/json":
+                            | {
+                                  id: string;
+                                  /**
+                                   * @default ACTIVE
+                                   * @enum {string}
+                                   */
+                                  status:
+                                      | "ACTIVE"
+                                      | "FILED"
+                                      | "IN_PROGRESS_DISASTER"
+                                      | "IN_PROGRESS_PERSONAL"
+                                      | "IN_PROGRESS_BUSINESS"
+                                      | "IN_PROGRESS_INSURANCE"
+                                      | "IN_PROGRESS_EXPORT";
+                                  /** Format: date-time */
+                                  createdAt: string;
+                                  /** Format: date-time */
+                                  updatedAt?: string;
+                                  femaDisaster?: {
+                                      /** Format: uuid */
+                                      id: string;
+                                      disasterNumber: number;
+                                      fipsStateCode: number;
+                                      /** Format: date-time */
+                                      declarationDate: string;
+                                      incidentBeginDate?: string;
+                                      incidentEndDate?: string;
+                                      fipsCountyCode: number;
+                                      declarationType: string;
+                                      designatedArea: string;
+                                      designatedIncidentTypes: string | null;
+                                  };
+                                  selfDisaster?: {
+                                      id: string;
+                                      name: string;
+                                      description: string;
+                                      /** Format: date */
+                                      startDate: string;
+                                      /** Format: date */
+                                      endDate?: string;
+                                      /** Format: date */
+                                      createdAt: string;
+                                      /** Format: date */
+                                      updatedAt: string;
+                                  };
+                                  insurancePolicy?: {
+                                      id: string;
+                                      policyName: string;
+                                      policyHolderFirstName: string;
+                                      policyHolderLastName: string;
+                                      insuranceCompanyName: string;
+                                      policyNumber: string;
+                                      insuranceType: string;
+                                      /** Format: date-time */
+                                      updatedAt: string;
+                                      /** Format: date-time */
+                                      createdAt: string;
+                                  };
+                              }
+                            | unknown
+                            | unknown;
                     };
                 };
                 /** @description Get Claim in Progress Errors */
@@ -2864,7 +2874,14 @@ export interface paths {
                          * @default ACTIVE
                          * @enum {string}
                          */
-                        status?: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                        status?:
+                            | "ACTIVE"
+                            | "FILED"
+                            | "IN_PROGRESS_DISASTER"
+                            | "IN_PROGRESS_PERSONAL"
+                            | "IN_PROGRESS_BUSINESS"
+                            | "IN_PROGRESS_INSURANCE"
+                            | "IN_PROGRESS_EXPORT";
                     };
                 };
             };
@@ -2881,7 +2898,14 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -2991,7 +3015,14 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */

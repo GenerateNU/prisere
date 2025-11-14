@@ -1,6 +1,11 @@
 "use server";
 import { authHeader, authWrapper, getClient } from "./client";
-import { CreateClaimRequest, CreateClaimResponse, GetClaimLineItemsResponse, GetCompanyClaimResponse } from "@/types/claim";
+import {
+    CreateClaimRequest,
+    CreateClaimResponse,
+    GetClaimLineItemsResponse,
+    GetCompanyClaimResponse,
+} from "@/types/claim";
 
 export const createClaim = async (payload: CreateClaimRequest): Promise<CreateClaimResponse> => {
     const req = async (token: string): Promise<CreateClaimResponse> => {
@@ -22,7 +27,7 @@ export const getClaims = async (): Promise<GetCompanyClaimResponse> => {
     const req = async (token: string): Promise<GetCompanyClaimResponse> => {
         const client = getClient();
         const { data, error, response } = await client.GET("/claims/company", {
-            headers: authHeader(token)
+            headers: authHeader(token),
         });
         if (response.ok) {
             return data!;
@@ -33,16 +38,18 @@ export const getClaims = async (): Promise<GetCompanyClaimResponse> => {
     return authWrapper<GetCompanyClaimResponse>()(req);
 };
 
-export const getPurchaseLineItemsFromClaim = async (params: { claimId: string }): Promise<GetClaimLineItemsResponse> => {
+export const getPurchaseLineItemsFromClaim = async (params: {
+    claimId: string;
+}): Promise<GetClaimLineItemsResponse> => {
     const req = async (token: string): Promise<GetClaimLineItemsResponse> => {
         const client = getClient();
         const id = params.claimId;
-        console.log("Claim ID: ", id)
+        console.log("Claim ID: ", id);
         const { data, error, response } = await client.GET(`/claims/{id}/line-item`, {
             headers: authHeader(token),
             params: {
-                path: { id: params.claimId }
-            }
+                path: { id: params.claimId },
+            },
         });
         if (response.ok) {
             return data!;

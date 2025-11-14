@@ -46,4 +46,3 @@ export const getUser = async (): Promise<User> => {
     };
     return authWrapper<User>()(req);
 };
-

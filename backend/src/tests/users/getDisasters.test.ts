@@ -1,28 +1,23 @@
-import { Hono } from "hono";
-import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
+import { describe, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { GetUserCompanyResponseSchema } from "../../types/User";
-import { validate } from "uuid";
-import { TESTING_PREFIX } from "../../utilities/constants";
 import UserSeeder from "../../database/seeds/user.seed";
 import CompanySeeder from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
-import { DisasterSeeder } from "../../database/seeds/disaster.seed";
 import { Company } from "../../entities/Company";
 import { User } from "../../entities/User";
 import { LocationAddress } from "../../entities/LocationAddress";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 
 describe("GET /users/company", () => {
-    let app: Hono;
+    // let app: Hono;
     let backup: IBackup;
     let datasource: DataSource;
 
     beforeAll(async () => {
         const setup = await startTestApp();
-        app = setup.app;
+        // app = setup.app;
         backup = setup.backup;
         datasource = setup.dataSource;
     });
@@ -120,5 +115,4 @@ describe("GET /users/company", () => {
         });
         await disasterRepo.save(notMatchingDisaster);
     });
-
 });

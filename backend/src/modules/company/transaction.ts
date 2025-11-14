@@ -1,5 +1,10 @@
 import { Company } from "../../entities/Company";
-import { CreateCompanyDTO, GetCompanyByIdDTO, GetCompanyExternalDTO, UpdateQuickBooksImportTimeDTO } from "../../types/Company";
+import {
+    CreateCompanyDTO,
+    GetCompanyByIdDTO,
+    GetCompanyExternalDTO,
+    UpdateQuickBooksImportTimeDTO,
+} from "../../types/Company";
 import { DataSource } from "typeorm";
 import Boom from "@hapi/boom";
 import { logMessageToFile } from "../../utilities/logger";
@@ -97,8 +102,6 @@ export class CompanyTransaction implements ICompanyTransaction {
     }
 
     async updateLastQuickBooksInvoiceImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company | null> {
-        console.log("Made it to transaction")
-        console.log(`Payload IMPORT TIME: ${payload.importTime}`)
         const result = await this.db
             .createQueryBuilder()
             .update(Company)
@@ -106,8 +109,6 @@ export class CompanyTransaction implements ICompanyTransaction {
             .where("id = :id", { id: payload.companyId })
             .returning("*")
             .execute();
-
-        console.log(result)
 
         return result.raw[0] as Company | null;
     }
@@ -136,12 +137,11 @@ export class CompanyTransaction implements ICompanyTransaction {
         return external ?? null;
     }
 
-    async getCompanyFinancialData(payload: GetCompanyByIdDTO): Promise<{ purchases: Purchase[]; invoices: Invoice[] } | null> {
+    async getCompanyFinancialData(
+        payload: GetCompanyByIdDTO
+    ): Promise<{ purchases: Purchase[]; invoices: Invoice[] } | null> {
         const purchases = await this.db.getRepository(Purchase).findBy({ companyId: payload.id });
         const invoices = await this.db.getRepository(Invoice).findBy({ companyId: payload.id });
-
-        console.log(`Purchases: ${purchases.length}`)
-        console.log(`Invoices: ${invoices.length}`)
 
         // If both are empty, return null
         if ((!purchases || purchases.length === 0) && (!invoices || invoices.length === 0)) {

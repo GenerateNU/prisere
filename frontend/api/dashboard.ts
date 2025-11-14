@@ -5,11 +5,11 @@ import { getClaimInProgress } from "./company";
 
 export const getDashboardBannerData = async (): Promise<BannerData> => {
     const disasterNotifications = await getNotifications({
-                                        type: "web",
-                                        page: 1,
-                                        limit: 1,
-                                        status: "unread",
-                                    });
+        type: "web",
+        page: 1,
+        limit: 1,
+        status: "unread",
+    });
     if (disasterNotifications.length > 0) {
         const disaster = disasterNotifications[0].femaDisaster;
         const claim = await getClaimInProgress();
@@ -18,6 +18,6 @@ export const getDashboardBannerData = async (): Promise<BannerData> => {
         } else {
             return { status: "no-claim", disaster };
         }
-    } 
+    }
     return { status: "no-disaster" };
 };

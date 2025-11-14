@@ -1,6 +1,4 @@
 import { User } from "../../entities/User";
-import { Company } from "../../entities/Company";
-import { FemaDisaster } from "../../entities/FemaDisaster";
 import { DataSource } from "typeorm";
 import { plainToClass } from "class-transformer";
 import { GetUserDTO, CreateUserDTO, GetUserCompanyDTO } from "../../types/User";

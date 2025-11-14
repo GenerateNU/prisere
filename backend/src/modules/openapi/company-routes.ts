@@ -188,8 +188,7 @@ const hasCompanyData = createRoute({
     method: "get",
     path: "/companies/has-company-data",
     summary: "Check if a company has data (either connected to quickbooks or has purchase/invoice data)",
-    description:
-        "Gets the company's data if it is present.",
+    description: "Gets the company's data if it is present.",
     responses: {
         200: {
             content: {

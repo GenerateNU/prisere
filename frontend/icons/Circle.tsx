@@ -18,8 +18,7 @@ const Circle = (props: CircleProps) => {
                 justifyContent: "center",
                 boxShadow: "0 0 2px #ccc",
             }}
-        >
-        </div>
+        ></div>
     );
 };
 

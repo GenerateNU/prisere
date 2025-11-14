@@ -1,4 +1,4 @@
-import { CreateCompanyDTO, GetCompanyByIdDTO, GetCompanyExternalResponse, UpdateQuickBooksImportTimeDTO } from "../../types/Company";
+import { CreateCompanyDTO, GetCompanyByIdDTO, UpdateQuickBooksImportTimeDTO } from "../../types/Company";
 import { Company } from "../../entities/Company";
 import { ICompanyTransaction } from "./transaction";
 import Boom from "@hapi/boom";
@@ -46,7 +46,6 @@ export class CompanyService implements CompanyService {
 
     updateLastQuickBooksInvoiceImportTime = withServiceErrorHandling(
         async (payload: UpdateQuickBooksImportTimeDTO): Promise<Company> => {
-            console.log("Update QB Service layer")
             const company = await this.companyTransaction.updateLastQuickBooksInvoiceImportTime(payload);
             if (!company) {
                 throw Boom.notFound("Company Not Found");
@@ -81,25 +80,20 @@ export class CompanyService implements CompanyService {
         }
     );
 
-    getCompanyExternal = withServiceErrorHandling(
-        async (companyId: string): Promise<CompanyExternal | null> => {
-            const external = await this.companyTransaction.getCompanyExternal({ id: companyId });
-            return external;
-        }
-    );
+    getCompanyExternal = withServiceErrorHandling(async (companyId: string): Promise<CompanyExternal | null> => {
+        const external = await this.companyTransaction.getCompanyExternal({ id: companyId });
+        return external;
+    });
 
-    hasCompanyData = withServiceErrorHandling(
-        async (companyId: string): Promise<boolean> => {
-            const external = await this.companyTransaction.getCompanyExternal({ id: companyId });
-            if (external) {
-                console.log("Company has external company")
-                return true;
-            }
-            const financialData = await this.companyTransaction.getCompanyFinancialData({ id: companyId });
-            if (financialData) {
-                console.log("Company has financial data")
-                return true;
-            }
-            return false;
+    hasCompanyData = withServiceErrorHandling(async (companyId: string): Promise<boolean> => {
+        const external = await this.companyTransaction.getCompanyExternal({ id: companyId });
+        if (external) {
+            return true;
+        }
+        const financialData = await this.companyTransaction.getCompanyFinancialData({ id: companyId });
+        if (financialData) {
+            return true;
+        }
+        return false;
     });
 }

@@ -68,25 +68,14 @@ export class CompanyController implements ICompanyController {
                 importTime: body.importTime ? new Date(body.importTime).toISOString() : undefined,
             });
 
-            console.log(`Got parse event: ${parseResult}`)
-            console.log(`Got parse event: ${parseResult.data}`)
-            console.log(`Got parse event: ${parseResult.error}`)
-
-
-            console.log(`GOT BODY: ${body.importTime}`)
-            console.log(`GOT COMP ID: ${companyId}`)
-
             if (!parseResult.success) {
                 return ctx.json({ error: "Invalid request body: ", body }, 400);
             }
-
-            console.log("Calling service")
             const updated = await this.companyService.updateLastQuickBooksInvoiceImportTime(parseResult.data);
             if (!updated) {
                 logMessageToFile("Company not found");
             }
 
-            console.log("Returning........")
             return ctx.json(
                 {
                     ...updated,
@@ -209,5 +198,4 @@ export class CompanyController implements ICompanyController {
             return ctx.json({ hasData }, 200);
         }
     );
-
 }

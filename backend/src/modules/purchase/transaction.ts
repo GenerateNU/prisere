@@ -146,7 +146,6 @@ export class PurchaseTransaction implements IPurchaseTransaction {
 
     async sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number> {
         const { companyId, startDate, endDate } = payload;
-        console.log(`CompanyId: ${companyId}`)
 
         const summation = await this.db
             .createQueryBuilder(Purchase, "purchase")

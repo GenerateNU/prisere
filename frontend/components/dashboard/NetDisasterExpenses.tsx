@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 
 type Props = {
-  bannerData: BannerData | null;
+    bannerData: BannerData | null;
 };
 
 export default function NetDisasterExpense({ bannerData }: Props) {
@@ -21,29 +21,30 @@ export default function NetDisasterExpense({ bannerData }: Props) {
         "var(--ochre)",
         "var(--seafoam)",
         "var(--charcoal)",
-        "var(--teal)"
+        "var(--teal)",
     ];
 
-    let claimId = '';
-    if (bannerData.status === 'has-claim') {
+    let claimId = "";
+    if (bannerData.status === "has-claim") {
         // If claim is an array, use [0] to get the first claim
         claimId = bannerData.claim.id;
     }
 
-    console.log(`CLAIM ID: ${claimId}`)
-    console.log(`CLAIM: ${bannerData}`)
+    console.log(`CLAIM ID: ${claimId}`);
+    console.log(`CLAIM: ${bannerData}`);
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const purchaseLineItems = useQuery({
         queryKey: ["purchaseLineItems-for-company", claimId],
-        queryFn: () => getPurchaseLineItemsFromClaim({claimId}),
-        enabled: !!claimId
+        queryFn: () => getPurchaseLineItemsFromClaim({ claimId }),
+        enabled: !!claimId,
     });
 
     const expenses = purchaseLineItems.data
-        ? purchaseLineItems.data.map(purchase => ({
-            name: purchase.description,
-            amount: purchase.amountCents / 100.0, // convert cents to dollars
-            }))
+        ? purchaseLineItems.data.map((purchase) => ({
+              name: purchase.description,
+              amount: purchase.amountCents / 100.0, // convert cents to dollars
+          }))
         : [];
 
     const totalExpense = expenses.reduce((sum, exp) => sum + exp.amount, 0);
@@ -52,7 +53,7 @@ export default function NetDisasterExpense({ bannerData }: Props) {
     const expensesWithPercentage = expenses.map((exp, index) => ({
         ...exp,
         color: colorPalette[index % colorPalette.length],
-        percentage: (exp.amount / totalExpense) * 100
+        percentage: (exp.amount / totalExpense) * 100,
     }));
 
     return (
@@ -65,9 +66,7 @@ export default function NetDisasterExpense({ bannerData }: Props) {
                 </div>
 
                 {/* Total Amount */}
-                <div className="text-2xl font-bold">
-                    ${totalExpense.toLocaleString()}
-                </div>
+                <div className="text-2xl font-bold">${totalExpense.toLocaleString()}</div>
 
                 {/* Stacked Bar Chart */}
                 <div className="flex h-12 w-full rounded-lg overflow-hidden">
@@ -76,7 +75,7 @@ export default function NetDisasterExpense({ bannerData }: Props) {
                             key={index}
                             style={{
                                 width: `${expense.percentage}%`,
-                                backgroundColor: expense.color
+                                backgroundColor: expense.color,
                             }}
                             className="h-full"
                         />
@@ -94,9 +93,7 @@ export default function NetDisasterExpense({ bannerData }: Props) {
                                 />
                                 <span className="text-md font-medium">{expense.name}</span>
                             </div>
-                            <span className="text-md font-semibold">
-                                ${expense.amount.toLocaleString()}
-                            </span>
+                            <span className="text-md font-semibold">${expense.amount.toLocaleString()}</span>
                         </div>
                     ))}
                 </div>

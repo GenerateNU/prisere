@@ -1,4 +1,6 @@
 import type { paths } from "../schema";
+import { CreateClaimResponse } from "./claim";
+import { FemaDisaster } from "./disaster";
 
 export type CreateUserRequest = paths["/users"]["post"]["requestBody"]["content"]["application/json"];
 
@@ -30,7 +32,6 @@ export const progressToNumber: Record<requiredOnboardingProgress, number> = {
 };
 
 export type BannerData =
- { status: "no-disaster" }
-  | { status: "no-claim"; disaster: any }
-  | { status: "has-claim"; disaster: any; 
-    claim: any;};
+    | { status: "no-disaster" }
+    | { status: "no-claim"; disaster: FemaDisaster }
+    | { status: "has-claim"; disaster: FemaDisaster; claim: CreateClaimResponse };
