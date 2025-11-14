@@ -56,9 +56,7 @@ export class PurchaseTransaction implements IPurchaseTransaction {
     }
 
     async getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<Purchase[]> {
-        let { companyId, pageNumber, resultsPerPage } = payload;
-        // const { companyId, pageNumber, resultsPerPage } = payload;
-        companyId = '40fcc7c3-892c-44c9-bc79-0aebb1dd94a0';
+        const { companyId, pageNumber, resultsPerPage } = payload;
 
         const numToSkip = resultsPerPage * pageNumber;
         return await this.db.manager.find(Purchase, {
@@ -69,9 +67,7 @@ export class PurchaseTransaction implements IPurchaseTransaction {
     }
 
     async sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number> {
-        let { companyId, startDate, endDate } = payload;
-        // const { companyId, startDate, endDate } = payload;
-        companyId = '40fcc7c3-892c-44c9-bc79-0aebb1dd94a0';
+        const { companyId, startDate, endDate } = payload;
         console.log(`CompanyId: ${companyId}`)
 
         const summation = await this.db

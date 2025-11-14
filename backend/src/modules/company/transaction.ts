@@ -105,6 +105,8 @@ export class CompanyTransaction implements ICompanyTransaction {
             .returning("*")
             .execute();
 
+        console.log(result)
+
         return result.raw[0] as Company | null;
     }
 

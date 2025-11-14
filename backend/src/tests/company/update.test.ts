@@ -36,8 +36,9 @@ describe("Company - Update lastQuickBooksImportTime", () => {
                 "Content-Type": "application/json",
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             },
-            body: JSON.stringify({ importTime: newDate.toISOString() }), // <-- use importTime
+            body: JSON.stringify({ importTime: new Date() }), // <-- use importTime
         });
+        console.log(response)
         expect(response.status).toBe(200);
         const body = await response.json();
         expect(body.lastQuickBooksInvoiceImportTime).toBe(newDate.toISOString());

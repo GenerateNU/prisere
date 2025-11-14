@@ -83,9 +83,7 @@ export class InvoiceTransaction implements IInvoiceTransaction {
     }
 
     async sumInvoicesByCompanyAndDateRange(payload: GetCompanyInvoicesByDateDTO): Promise<number> {
-        let { companyId, startDate, endDate } = payload;
-        // const { companyId, startDate, endDate } = payload;
-        companyId = '40fcc7c3-892c-44c9-bc79-0aebb1dd94a0';
+        const { companyId, startDate, endDate } = payload;
 
         const summation = await this.db
             .createQueryBuilder(Invoice, "invoice")

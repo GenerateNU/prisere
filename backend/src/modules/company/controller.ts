@@ -64,6 +64,8 @@ export class CompanyController implements ICompanyController {
                 importTime: body.importTime ? new Date(body.importTime) : undefined,
             });
 
+            console.log(`Got parse event: ${parseResult}`)
+
             if (!parseResult.success) {
                 return ctx.json({ error: "Invalid request body: ", body }, 400);
             }
@@ -73,6 +75,7 @@ export class CompanyController implements ICompanyController {
                 logMessageToFile("Company not found");
             }
 
+            console.log("Returning........")
             return ctx.json(
                 {
                     ...updated,
@@ -165,8 +168,7 @@ export class CompanyController implements ICompanyController {
 
     getCompanyExternal = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyExternalResponse, 200>> => {
-            // const companyId = ctx.get("companyId");
-            const companyId = '40fcc7c3-892c-44c9-bc79-0aebb1dd94a0';
+            const companyId = ctx.get("companyId");
             if (!validate(companyId)) {
                 return ctx.json({ error: "Invalid company ID format" }, 400);
             }
@@ -180,8 +182,7 @@ export class CompanyController implements ICompanyController {
 
     hasCompanyData = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<HasCompanyDataDTOResponse, 200>> => {
-            // const companyId = ctx.get("companyId");
-            const companyId = '40fcc7c3-892c-44c9-bc79-0aebb1dd94a0';
+            const companyId = ctx.get("companyId");
 
             if (!validate(companyId)) {
                 return ctx.json({ error: "Invalid company ID format" }, 400);
