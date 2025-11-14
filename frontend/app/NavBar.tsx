@@ -4,6 +4,8 @@ import { usePathname } from "next/navigation";
 import NavBarCircle from "../icons/NavBarCircle";
 import Link from "next/link";
 import Chevron from "@/icons/Chevron";
+import IconCircle from "../icons/NavBarCircle";
+import { NOTIFICATION_BELL } from "@/icons/icon-constants";
 
 export default function NavBar() {
     const pathname = usePathname();
@@ -27,7 +29,7 @@ export default function NavBar() {
                                     className={`flex px-[20px] py-[15px] text-[20px] justify-between items-center ${pathname === item.href && "bg-[#6e6e6e] rounded-[53px] text-white font-bold"}`}
                                 >
                                     <div className="flex gap-[25px] items-center">
-                                        <NavBarCircle /> {/* Placeholder for icons */}
+                                        <IconCircle size={43} icon={NOTIFICATION_BELL}/>
                                         {item.name}
                                     </div>
                                     {pathname === item.href && <Chevron />}
@@ -39,7 +41,7 @@ export default function NavBar() {
                 <li>
                     <Link href="/profile">
                         <div className="flex nav-bar-item gap-[25px] text-[20px] px-[20px] py-[15px] items-center">
-                            <NavBarCircle /> {/* Placeholder for icons */}
+                            <IconCircle size={43} icon={NOTIFICATION_BELL}/>
                             Prisere
                         </div>
                     </Link>

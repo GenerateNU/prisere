@@ -3,14 +3,6 @@ import { z } from "zod";
 export const COMPANY_EXTERNAL_SOURCES = ["quickbooks"] as const;
 export type CompanyExternalSource = (typeof COMPANY_EXTERNAL_SOURCES)[number];
 
-export const UserSchema = z.object({
-    id: z.string(),
-    firstName: z.string(),
-    lastName: z.string(),
-    email: z.string().email().optional().nullable(),
-    companyId: z.string().optional().nullable()
-});
-
 /* Zod schemas for OpenAPI docs */
 export const CompanyExternalSchema = z.object({
     id: z.string(),
@@ -19,6 +11,7 @@ export const CompanyExternalSchema = z.object({
     companyId: z.string(),
     createdAt: z.string(),
     updatedAt: z.string(),
+    importTime: z.string().optional()
 });
 
 export const CompanySchema = z.object({
@@ -40,24 +33,34 @@ export const CreateCompanyDTOSchema = z.object({
 
 export const CreateCompanyResponseSchema = CompanySchema;
 
+export const GetCompanyExternalResponseSchema = CompanyExternalSchema.nullable();
+
 /* Zod schema for GET company by ID */
 
 export const GetCompanyByIdDTOSchema = z.object({
     id: z.string(),
 });
 
+export const GetCompanyExternalDTOSchema = z.object({
+    id: z.string(),
+});
+
+export const HasCompanyDataDTOSchemaResponse = z.object({
+    hasData: z.boolean(),
+});
+
 export const GetCompanyByIdResponseSchema = CompanySchema;
 
-export const UpdateQuickBooksImportTimeDTOSchema = z.object({
-    companyId: z.string(),
-    importTime: z.date(),
-});
+export const UpdateQuickBooksImportTimeDTOSchema = CompanyExternalSchema;
 
 /* Zod types for payload validation */
 export type CreateCompanyDTO = z.infer<typeof CreateCompanyDTOSchema>;
 export type CreateCompanyResponse = z.infer<typeof CreateCompanyResponseSchema>;
 
 export type GetCompanyByIdDTO = z.infer<typeof GetCompanyByIdDTOSchema>;
+export type GetCompanyExternalDTO = z.infer<typeof GetCompanyExternalDTOSchema>;
 export type GetCompanyByIdResponse = z.infer<typeof GetCompanyByIdResponseSchema>;
+export type GetCompanyExternalResponse = z.infer<typeof GetCompanyExternalResponseSchema>;
+export type HasCompanyDataDTOResponse = z.infer<typeof HasCompanyDataDTOSchemaResponse>;
 
 export type UpdateQuickBooksImportTimeDTO = z.infer<typeof UpdateQuickBooksImportTimeDTOSchema>;

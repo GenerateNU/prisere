@@ -209,106 +209,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users/getDisastersAffectingUser": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Fetches a user's associated company/disaster pair, for disasters that affect their company
-         * @description Fetches a user's associated company/disaster pair, for disasters that affect their company
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successfull fetch of a user's companies affected by disasters */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            company: {
-                                id: string;
-                                name: string;
-                                businessOwnerFullName: string;
-                                lastQuickBooksInvoiceImportTime?: string | null;
-                                lastQuickBooksPurchaseImportTime?: string | null;
-                                externals?: {
-                                    id: string;
-                                    source: string;
-                                    externalId: string;
-                                    companyId: string;
-                                    createdAt: string;
-                                    updatedAt: string;
-                                }[];
-                                createdAt: string;
-                                updatedAt: string;
-                            };
-                            disaster: {
-                                /** Format: uuid */
-                                id: string;
-                                disasterNumber: number;
-                                fipsStateCode: number;
-                                /** Format: date-time */
-                                declarationDate: string;
-                                incidentBeginDate: string | null;
-                                incidentEndDate: string | null;
-                                fipsCountyCode: number;
-                                declarationType: string;
-                                designatedArea: string;
-                                designatedIncidentTypes: string | null;
-                            }[];
-                        }[];
-                    };
-                };
-                /** @description Get Disasters + Companies affecting User */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                        };
-                    };
-                };
-                /** @description There does not exist any user in the database such that the given id matches their id OR there is no such user with the given ID that has a non-null company */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Get Disasters + Companies affecting User */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/companies": {
         parameters: {
             query?: never;
@@ -348,6 +248,7 @@ export interface paths {
                                 companyId: string;
                                 createdAt: string;
                                 updatedAt: string;
+                                importTime?: string;
                             }[];
                             createdAt: string;
                             updatedAt: string;
@@ -425,6 +326,7 @@ export interface paths {
                                 companyId: string;
                                 createdAt: string;
                                 updatedAt: string;
+                                importTime?: string;
                             }[];
                             createdAt: string;
                             updatedAt: string;
@@ -495,8 +397,12 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        /** Format: date */
-                        importTime: string;
+                        id: string;
+                        source: string;
+                        externalId: string;
+                        createdAt: string;
+                        updatedAt: string;
+                        importTime?: string;
                     };
                 };
             };
@@ -520,6 +426,7 @@ export interface paths {
                                 companyId: string;
                                 createdAt: string;
                                 updatedAt: string;
+                                importTime?: string;
                             }[];
                             createdAt: string;
                             updatedAt: string;
@@ -579,8 +486,12 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        /** Format: date */
-                        importTime: string;
+                        id: string;
+                        source: string;
+                        externalId: string;
+                        createdAt: string;
+                        updatedAt: string;
+                        importTime?: string;
                     };
                 };
             };
@@ -604,6 +515,7 @@ export interface paths {
                                 companyId: string;
                                 createdAt: string;
                                 updatedAt: string;
+                                importTime?: string;
                             }[];
                             createdAt: string;
                             updatedAt: string;
@@ -800,6 +712,69 @@ export interface paths {
                     };
                 };
                 /** @description Get Claim in Progress Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/companies/has-company-data": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Check if a company has data (either connected to quickbooks or has purchase/invoice data)
+         * @description Gets the company's data if it is present.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Company data successfullly set */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            hasData: boolean;
+                        };
+                    };
+                };
+                /** @description Get Company Data in Progress Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Get Company Data in Progress Errors */
                 500: {
                     headers: {
                         [name: string]: unknown;
@@ -1337,6 +1312,7 @@ export interface paths {
                                         companyId: string;
                                         createdAt: string;
                                         updatedAt: string;
+                                        importTime?: string;
                                     }[];
                                     createdAt: string;
                                     updatedAt: string;

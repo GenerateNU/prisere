@@ -3,7 +3,7 @@ import { Company } from "../../entities/Company";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { DataSource } from "typeorm";
 import { plainToClass } from "class-transformer";
-import { GetUserDTO, CreateUserDTO, GetUserCompanyDTO, GetDisastersAffectingUserDTO } from "../../types/User";
+import { GetUserDTO, CreateUserDTO, GetUserCompanyDTO } from "../../types/User";
 import { UserPreferences } from "../../entities/UserPreferences";
 
 export interface IUserTransaction {
@@ -27,14 +27,6 @@ export interface IUserTransaction {
      * @returns The found company ID and name
      */
     getCompany(payload: GetUserCompanyDTO): Promise<NonNullCompanyUser | null>;
-
-    /**
-     * Fetches pairs of company to disaster for the disaster that affects the user's company (array in case user has multiple companies)
-     * If there are multiple disasters affecting a company it will be returned like {company 1, disaster 1}, {company 1, disaster 2}, etc.
-     * @param payload The id of the user whose company data will be returned
-     * @returns The found company ID and disaster ID pairs
-     */
-    getDisastersAffectingUser(payload: GetDisastersAffectingUserDTO): Promise<{company: Company, disaster: FemaDisaster}[]>
 }
 
 type NonNullCompanyUser = Omit<User, "company" | "companyId"> & {
@@ -82,73 +74,5 @@ export class UserTransaction implements IUserTransaction {
         }
 
         return null;
-    }
-
-    async getDisastersAffectingUser(payload: GetDisastersAffectingUserDTO): Promise<{ company: Company, disaster: FemaDisaster }[]> {
-        // const { id: userId } = payload;
-        const userId = '422992d5-9ed6-4093-b52b-e076f5dd7aeb'
-        console.log(`Getting disasters affecting user: ${userId}`)
-
-        // Fetch user with their company
-        const user = await this.db.manager.findOne(User, {
-            where: { id: userId },
-            relations: { company: true },
-        });
-
-        if (!user || !user.company) {
-            return [];
-        }
-
-        // Fetch all locations for the company
-        // Can't fetch locations from company, so must get locations first
-        const locations = await this.db.manager.find("LocationAddress", {
-            where: { companyId: user.company.id },
-        });
-
-        if (!locations.length) {
-            return [];
-        }
-
-        // Collect all unique FIPS county and state code pairs for the companies locations
-        const fipsPairs = locations
-            .map((loc: any) => ({
-                fipsStateCode: loc.fipsStateCode,
-                fipsCountyCode: loc.fipsCountyCode
-            }))
-            .filter(pair => pair.fipsStateCode && pair.fipsCountyCode);
-
-        console.log(`Fips pairs: ${fipsPairs[0].fipsCountyCode}, ${fipsPairs[0].fipsStateCode}`)
-
-        // Remove duplicates
-        const uniqueFipsPairs = Array.from(
-            new Set(fipsPairs.map(pair => `${pair.fipsStateCode}-${pair.fipsCountyCode}`))
-        ).map(key => {
-            const [fipsStateCode, fipsCountyCode] = key.split('-').map(Number);
-            return { fipsStateCode, fipsCountyCode };
-        });
-
-        if (!uniqueFipsPairs.length) {
-            return [];
-        }
-
-        const now = new Date();
-        // Find disasters affecting any of these FIPS pairs
-        const disasters = await this.db.manager.find(FemaDisaster, {
-            where: uniqueFipsPairs.map(pair => ({
-                fipsStateCode: pair.fipsStateCode,
-                fipsCountyCode: pair.fipsCountyCode,
-            })),
-        });
-
-        console.log(`Disasters: ${disasters}`)
-        const activeDisasters = disasters.filter(disaster => {
-            const end = disaster.incidentEndDate ? new Date(disaster.incidentEndDate) : null;
-            return (!end || end >= now);
-        })
-
-        return activeDisasters.map(disaster => ({
-            company: user.company!,
-            disaster,
-        }));
     }
 }

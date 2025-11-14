@@ -4,6 +4,14 @@ import { FemaDisasterSchema } from "./fema-disaster";
 import { CompanySchema } from "./Company";
 
 /* Zod schemas for OpenAPI docs */
+export const UserSchema = z.object({
+    id: z.string(),
+    firstName: z.string(),
+    lastName: z.string(),
+    email: z.string().email().optional().nullable(),
+    companyId: z.string().optional().nullable()
+});
+
 //POST
 export const createUserRequestBody = z.object({
     firstName: z.string().nonempty(),
@@ -44,20 +52,11 @@ export const GetUserResponseSchema = z.object({
 export const GetUsercompanyDTOSchema = z.object({
     id: z.string().nonempty(),
 });
-export const GetDisastersAffectingUserDTOSchema = z.object({
-    id: z.string().nonempty(),
-});
 
 export const GetUserCompanyResponseSchema = z.object({
     companyId: z.string(),
     companyName: z.string(),
 });
-export const GetDisastersAffectingUserResponseSchema = z.array(
-    z.object({
-        company: CompanySchema,
-        disaster: FemaDisasterSchema,
-    })
-);
 export const CreateUserAPIResponseSchema = z.union([CreateUserResponseSchema, ErrorResponseSchema]);
 
 /* Zod types for payload validation */
@@ -72,6 +71,4 @@ export type GetUserResponse = z.infer<typeof GetUserResponseSchema>;
 
 //GET COMPANY
 export type GetUserCompanyDTO = z.infer<typeof GetUsercompanyDTOSchema>;
-export type GetDisastersAffectingUserDTO = z.infer<typeof GetDisastersAffectingUserDTOSchema>;
 export type GetUserCompanyResponse = z.infer<typeof GetUserCompanyResponseSchema>;
-export type GetDisastersAffectingUseResponse = z.infer<typeof GetDisastersAffectingUserResponseSchema>;

@@ -9,6 +9,7 @@ import {
 import { BannerData } from '@/types/user';
 import { CircleAlert, CircleCheck } from 'lucide-react';
 import Link from 'next/link';
+import Progress from '../progress';
 
 type Props = {
     bannerData: BannerData | null;
@@ -87,29 +88,7 @@ export default function DisasterStatusBanner({ bannerData }: Props) {
                         <p className="text-sm text-charcoal mb-4">
                             Continue filing your claim report to ensure you maximize benefits.
                         </p>
-                        {/* Progress indicator */}
-                        <div className="flex items-center gap-2 mb-4">
-                            {[1, 2, 3, 4, 5].map((step) => (
-                                <div key={step} className="flex items-center">
-                                    <div
-                                        className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${step <= 3
-                                                ? 'bg-burgundy-700 text-pink bg-fuchsia' // completed steps
-                                                : step === 4
-                                                    ? 'bg-pink text-fuchsia' // current step
-                                                    : 'bg-white text-fuchsia border-fuchsia border-2' // upcoming steps
-                                            }`}
-                                    >
-                                        {step <= 3 ? '🗸' : step}
-                                    </div>
-                                    {step < 5 && (
-                                        <div
-                                            className={`w-12 h-1 ${step < 3 ? 'bg-fuchsia' : 'bg-fuchsia opacity-50'
-                                                }`}
-                                        />
-                                    )}
-                                </div>
-                            ))}
-                        </div>
+                        <Progress progress={3} items={[{label: "step 1", step: 1}, {label: "step 2", step: 2}, {label: "step 3", step: 3}, {label: "step 4", step: 4}, {label: "step 5", step: 5}]}/>
                     </div>
                     <Link href={"/claims"} className="text-sm font-semibold underline no-underline">
                         <BannerAction className="max-w-xs rounded-lg hover:bg-pink bg-fuchsia text-white">

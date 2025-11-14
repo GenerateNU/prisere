@@ -1,5 +1,5 @@
 "use server";
-import { CreateUserRequest, GetDisastersAffectingUseResponse, User, requiredOnboardingProgress } from "@/types/user";
+import { CreateUserRequest, User, requiredOnboardingProgress } from "@/types/user";
 import { authHeader, authWrapper, getClient } from "./client";
 import { createSupabaseClient } from "@/utils/supabase/server";
 
@@ -47,17 +47,3 @@ export const getUser = async (): Promise<User> => {
     return authWrapper<User>()(req);
 };
 
-export const getDisastersAffectingUser = async (): Promise<GetDisastersAffectingUseResponse> => {
-    const req = async (token: string): Promise<GetDisastersAffectingUseResponse> => {
-        const client = getClient();
-        const { data, error, response } = await client.GET("/users/getDisastersAffectingUser", {
-            headers: authHeader(token),
-        });
-        if (response.ok) {
-            return data!;
-        } else {
-            throw Error(error?.error);
-        }
-    };
-    return authWrapper<GetDisastersAffectingUseResponse>()(req);
-};

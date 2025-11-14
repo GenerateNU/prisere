@@ -1,28 +1,26 @@
-import React from "react";
-
-type IconCircleProps = {
+type CircleProps = {
     size?: number;
-    icon: React.ReactNode; // Accepts JSX or a React component
-    bgColor?: string;
+    color: string;
 };
 
-const IconCircle = ({ size = 23, icon, bgColor = "white" }: IconCircleProps) => {
+const Circle = (props: CircleProps) => {
+    const { size = 23, color } = props; // <-- add color here
+
     return (
         <div
             style={{
                 width: size,
                 height: size,
                 borderRadius: "50%",
-                background: bgColor,
+                background: color, // <-- use color prop
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 boxShadow: "0 0 2px #ccc",
             }}
         >
-            {icon}
         </div>
     );
 };
 
-export default IconCircle;
+export default Circle;

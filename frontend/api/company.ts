@@ -64,3 +64,19 @@ export const getClaimInProgress = async (): Promise<GetClaimInProgressForCompany
     };
     return authWrapper<GetClaimInProgressForCompanyResponse>()(req);
 };
+
+export const companyHasData = async (): Promise<boolean> => {
+    const req = async (token: string): Promise<boolean> => {
+        const client = getClient();
+        const {data, error, response } = await client.GET("/companies/has-company-data", {
+            headers: authHeader(token)
+        });
+        if (response.ok) {
+            console.log(`Data is: ${data?.hasData}`)
+            return data?.hasData!;
+        } else {
+            throw Error(error?.error)
+        }
+    }
+    return authWrapper<boolean>()(req);
+}

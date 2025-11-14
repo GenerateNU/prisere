@@ -18,13 +18,11 @@ export const createClaim = async (payload: CreateClaimRequest): Promise<CreateCl
     return authWrapper<CreateClaimResponse>()(req);
 };
 
-export const getClaims = async (params: { companyId: string }): Promise<GetCompanyClaimResponse> => {
+export const getClaims = async (): Promise<GetCompanyClaimResponse> => {
     const req = async (token: string): Promise<GetCompanyClaimResponse> => {
         const client = getClient();
-        console.log(`Company ID: ${params.companyId}`)
         const { data, error, response } = await client.GET("/claims/company", {
-            headers: authHeader(token),
-            query: params
+            headers: authHeader(token)
         });
         if (response.ok) {
             return data!;

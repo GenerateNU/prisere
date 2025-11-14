@@ -275,208 +275,6 @@
         }
       }
     },
-    "/users/getDisastersAffectingUser": {
-      "get": {
-        "summary": "Fetches a user's associated company/disaster pair, for disasters that affect their company",
-        "description": "Fetches a user's associated company/disaster pair, for disasters that affect their company",
-        "tags": [
-          "Users"
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfull fetch of a user's companies affected by disasters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "company": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "name": {
-                            "type": "string",
-                            "minLength": 1
-                          },
-                          "businessOwnerFullName": {
-                            "type": "string",
-                            "minLength": 1
-                          },
-                          "lastQuickBooksInvoiceImportTime": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "lastQuickBooksPurchaseImportTime": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "externals": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "source": {
-                                  "type": "string"
-                                },
-                                "externalId": {
-                                  "type": "string"
-                                },
-                                "companyId": {
-                                  "type": "string"
-                                },
-                                "createdAt": {
-                                  "type": "string"
-                                },
-                                "updatedAt": {
-                                  "type": "string"
-                                }
-                              },
-                              "required": [
-                                "id",
-                                "source",
-                                "externalId",
-                                "companyId",
-                                "createdAt",
-                                "updatedAt"
-                              ]
-                            }
-                          },
-                          "createdAt": {
-                            "type": "string"
-                          },
-                          "updatedAt": {
-                            "type": "string"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "name",
-                          "businessOwnerFullName",
-                          "createdAt",
-                          "updatedAt"
-                        ]
-                      },
-                      "disaster": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "format": "uuid"
-                            },
-                            "disasterNumber": {
-                              "type": "number"
-                            },
-                            "fipsStateCode": {
-                              "type": "number",
-                              "minimum": 0,
-                              "maximum": 56
-                            },
-                            "declarationDate": {
-                              "type": "string",
-                              "format": "date-time"
-                            },
-                            "incidentBeginDate": {
-                              "type": "string",
-                              "nullable": true
-                            },
-                            "incidentEndDate": {
-                              "type": "string",
-                              "nullable": true
-                            },
-                            "fipsCountyCode": {
-                              "type": "number",
-                              "minimum": 0,
-                              "maximum": 1000,
-                              "exclusiveMaximum": true
-                            },
-                            "declarationType": {
-                              "type": "string",
-                              "minLength": 2,
-                              "maxLength": 2
-                            },
-                            "designatedArea": {
-                              "type": "string"
-                            },
-                            "designatedIncidentTypes": {
-                              "type": "string",
-                              "nullable": true
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "disasterNumber",
-                            "fipsStateCode",
-                            "declarationDate",
-                            "incidentBeginDate",
-                            "incidentEndDate",
-                            "fipsCountyCode",
-                            "declarationType",
-                            "designatedArea",
-                            "designatedIncidentTypes"
-                          ]
-                        }
-                      }
-                    },
-                    "required": [
-                      "company",
-                      "disaster"
-                    ]
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Get Disasters + Companies affecting User",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "There does not exist any user in the database such that the given id matches their id OR there is no such user with the given ID that has a non-null company"
-          },
-          "500": {
-            "description": "Get Disasters + Companies affecting User",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/companies": {
       "post": {
         "summary": "Create a new company",
@@ -556,6 +354,9 @@
                             "type": "string"
                           },
                           "updatedAt": {
+                            "type": "string"
+                          },
+                          "importTime": {
                             "type": "string"
                           }
                         },
@@ -683,6 +484,9 @@
                           },
                           "updatedAt": {
                             "type": "string"
+                          },
+                          "importTime": {
+                            "type": "string"
                           }
                         },
                         "required": [
@@ -768,13 +572,31 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string"
+                  },
+                  "externalId": {
+                    "type": "string"
+                  },
+                  "createdAt": {
+                    "type": "string"
+                  },
+                  "updatedAt": {
+                    "type": "string"
+                  },
                   "importTime": {
-                    "type": "string",
-                    "format": "date"
+                    "type": "string"
                   }
                 },
                 "required": [
-                  "importTime"
+                  "id",
+                  "source",
+                  "externalId",
+                  "createdAt",
+                  "updatedAt"
                 ]
               }
             }
@@ -828,6 +650,9 @@
                             "type": "string"
                           },
                           "updatedAt": {
+                            "type": "string"
+                          },
+                          "importTime": {
                             "type": "string"
                           }
                         },
@@ -911,13 +736,31 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string"
+                  },
+                  "externalId": {
+                    "type": "string"
+                  },
+                  "createdAt": {
+                    "type": "string"
+                  },
+                  "updatedAt": {
+                    "type": "string"
+                  },
                   "importTime": {
-                    "type": "string",
-                    "format": "date"
+                    "type": "string"
                   }
                 },
                 "required": [
-                  "importTime"
+                  "id",
+                  "source",
+                  "externalId",
+                  "createdAt",
+                  "updatedAt"
                 ]
               }
             }
@@ -971,6 +814,9 @@
                             "type": "string"
                           },
                           "updatedAt": {
+                            "type": "string"
+                          },
+                          "importTime": {
                             "type": "string"
                           }
                         },
@@ -1367,6 +1213,71 @@
           },
           "500": {
             "description": "Get Claim in Progress Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/companies/has-company-data": {
+      "get": {
+        "summary": "Check if a company has data (either connected to quickbooks or has purchase/invoice data)",
+        "description": "Gets the company's data if it is present.",
+        "tags": [
+          "Companies"
+        ],
+        "responses": {
+          "200": {
+            "description": "Company data successfullly set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hasData": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "hasData"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get Company Data in Progress Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Get Company Data in Progress Errors",
             "content": {
               "application/json": {
                 "schema": {
@@ -2421,6 +2332,9 @@
                                       "type": "string"
                                     },
                                     "updatedAt": {
+                                      "type": "string"
+                                    },
+                                    "importTime": {
                                       "type": "string"
                                     }
                                   },

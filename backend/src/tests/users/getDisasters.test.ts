@@ -121,22 +121,4 @@ describe("GET /users/company", () => {
         await disasterRepo.save(notMatchingDisaster);
     });
 
-    test("should return 200 and company data when user exists and has a company", async () => {
-        const response = await app.request(TESTING_PREFIX + `/users/getDisastersAffectingUser`, {
-            method: "GET",
-            headers: {
-                userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
-            },
-        });
-
-        const responseBody = await response.json();
-        // console.log(responseBody); 
-
-        expect(response.status).toBe(200);
-        expect(responseBody.length).toBe(1);
-
-        expect(responseBody[0]).toHaveProperty("company");
-        expect(responseBody[0]).toHaveProperty("disaster");
-    });
-
 });

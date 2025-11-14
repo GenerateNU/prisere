@@ -6,6 +6,8 @@ import {
     UpdateQuickBooksImportTimeDTOSchema,
     GetCompanyByIdResponse,
     CreateCompanyResponse,
+    GetCompanyExternalResponse,
+    HasCompanyDataDTOResponse,
 } from "../../types/Company";
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
@@ -20,6 +22,8 @@ export interface ICompanyController {
     updateQuickbooksPurchaseImportTime(ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 200>>;
     getCompanyLocationsById(ctx: Context): ControllerResponse<TypedResponse<GetLocationAddressResponse[], 200>>;
     getClaimInProgress(ctx: Context): ControllerResponse<TypedResponse<GetClaimInProgressForCompanyResponse, 200>>;
+    getCompanyExternal(ctx: Context): ControllerResponse<TypedResponse<GetCompanyExternalResponse, 200>>;
+    hasCompanyData(ctx: Context): ControllerResponse<TypedResponse<HasCompanyDataDTOResponse, 200>>;
 }
 
 export class CompanyController implements ICompanyController {
@@ -158,4 +162,36 @@ export class CompanyController implements ICompanyController {
             return ctx.json(claim, 200);
         }
     );
+
+    getCompanyExternal = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<GetCompanyExternalResponse, 200>> => {
+            // const companyId = ctx.get("companyId");
+            const companyId = '40fcc7c3-892c-44c9-bc79-0aebb1dd94a0';
+            if (!validate(companyId)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
+
+            const external = await this.companyService.getCompanyExternal(companyId);
+
+            // handles null external as well
+            return ctx.json(external, 200);
+        }
+    );
+
+    hasCompanyData = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<HasCompanyDataDTOResponse, 200>> => {
+            // const companyId = ctx.get("companyId");
+            const companyId = '40fcc7c3-892c-44c9-bc79-0aebb1dd94a0';
+
+            if (!validate(companyId)) {
+                return ctx.json({ error: "Invalid company ID format" }, 400);
+            }
+
+            const hasData = await this.companyService.hasCompanyData(companyId);
+
+            // Had to create primitive boolean because zod types use that
+            return ctx.json({ hasData }, 200);
+        }
+    );
+
 }
