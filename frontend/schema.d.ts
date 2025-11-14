@@ -1237,7 +1237,7 @@ export interface paths {
             parameters: {
                 query?: {
                     type?: "web" | "email";
-                    status?: "unread" | "read" | "acknowledged";
+                    status?: "unread" | "read";
                     page?: string;
                     limit?: string;
                 };
@@ -1259,8 +1259,8 @@ export interface paths {
                             femaDisasterId: string;
                             /** @enum {string} */
                             notificationType: "web" | "email";
-                            /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            /** @enum {string} */
+                            notificationStatus: "unread" | "read";
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;
@@ -1394,7 +1394,7 @@ export interface paths {
                             /** @enum {string} */
                             notificationType: "web" | "email";
                             /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;
@@ -1469,7 +1469,7 @@ export interface paths {
                             /** @enum {string} */
                             notificationType: "web" | "email";
                             /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;
@@ -1547,7 +1547,7 @@ export interface paths {
                             /** @enum {string} */
                             notificationType: "web" | "email";
                             /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;
@@ -2555,13 +2555,20 @@ export interface paths {
         };
         /**
          * Fetches all purchases for a company
-         * @description Retrieves a paginated list of purchases for the specified company
+         * @description Retrieves a paginated, sorted and filtered list of purchases for the specified company
          */
         get: {
             parameters: {
                 query?: {
                     pageNumber?: number;
                     resultsPerPage?: number;
+                    sortBy?: "date" | "totalAmountCents";
+                    sortOrder?: "ASC" | "DESC";
+                    categories?: string[];
+                    type?: "extraneous" | "typical";
+                    dateFrom?: string;
+                    dateTo?: string;
+                    search?: string;
                 };
                 header?: never;
                 path?: never;
@@ -2584,6 +2591,20 @@ export interface paths {
                             isRefund: boolean;
                             dateCreated: string;
                             lastUpdated: string;
+                            lineItems: {
+                                id: string;
+                                description?: string;
+                                quickBooksId?: number;
+                                purchaseId: string;
+                                amountCents: number;
+                                category?: string | null;
+                                /** @enum {string} */
+                                type: "extraneous" | "typical";
+                                dateCreated: string;
+                                lastUpdated: string;
+                                /** Format: date-time */
+                                quickbooksDateCreated?: string;
+                            }[];
                         }[];
                     };
                 };
@@ -2732,6 +2753,67 @@ export interface paths {
                     };
                 };
                 /** @description Getting Purchase Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/purchase/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Fetches all the categories of a company's purchase line items
+         * @description Retrieves an array of categories that contain the categories of all purchase line items linked to a company
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful fetch of categories */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string[];
+                    };
+                };
+                /** @description Get company purchases error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Get company purchases error */
                 500: {
                     headers: {
                         [name: string]: unknown;
@@ -4181,6 +4263,186 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/purchase/line/category": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Updates a purchase line item's category
+         * @description Updates the category of the purchase line item with the given Id to the given category
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        category: string;
+                        removeCategory: boolean;
+                    };
+                };
+            };
+            responses: {
+                /** @description Successfully updated the line item's category */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            description?: string;
+                            quickBooksId?: number;
+                            purchaseId: string;
+                            amountCents: number;
+                            category?: string | null;
+                            /** @enum {string} */
+                            type: "extraneous" | "typical";
+                            dateCreated: string;
+                            lastUpdated: string;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string | null;
+                        };
+                    };
+                };
+                /** @description Error modifying purchase line item */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description There does not exist any purchase line item the given id */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Error modifying purchase line item */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/purchase/line/type": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Updates a purchase line item's type
+         * @description Updates the type of the purchase line item with the given Id to the given type
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        type: "extraneous" | "typical";
+                    };
+                };
+            };
+            responses: {
+                /** @description Successfully updated the line item's type */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            description?: string;
+                            quickBooksId?: number;
+                            purchaseId: string;
+                            amountCents: number;
+                            category?: string | null;
+                            /** @enum {string} */
+                            type: "extraneous" | "typical";
+                            dateCreated: string;
+                            lastUpdated: string;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string | null;
+                        };
+                    };
+                };
+                /** @description Error modifying purchase line item */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description There does not exist any purchase line item the given id */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Error modifying purchase line item */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/disaster/self": {

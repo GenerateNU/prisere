@@ -15,12 +15,13 @@ export type MarkAllAsReadResponse =
     paths["/notifications/user/markAllAsRead"]["patch"]["responses"]["200"]["content"]["application/json"];
 
 export type Notification = paths["/notifications"]["get"]["responses"]["200"]["content"]["application/json"][0];
+
 // Helper type for easier use
 export type NotificationFilters = {
     type?: "web" | "email";
     page?: number;
     limit?: number;
-    status?: "unread" | "read" | "acknowledged";
+    status?: "unread" | "read";
 };
 
 export type PaginationStatus = {
@@ -73,3 +74,39 @@ export type DisasterNotificationWithRealtionsType = {
         };
     };
 };
+
+export const INCIDENT_MAPPING = {
+    "0": "not applicable",
+    "1": "an explosion",
+    "2": "a straight-line winds",
+    "3": "tidal waves",
+    "4": "a tropical storm",
+    "5": "a winter storm",
+    "8": "tropical depression",
+    A: "a tsunami",
+    B: "a biological disaster",
+    C: "a coastal storm",
+    D: "a drought",
+    E: "an earthquake",
+    F: "a flood",
+    G: "freezing temperatures",
+    H: "a hurricane",
+    I: "a terrorist attack",
+    J: "a typhoon",
+    K: "a dam/devee break",
+    L: "a chemical ",
+    M: "a mud/landslide",
+    N: "a nuclear disaster",
+    O: "a severe ice storm",
+    P: "fishing losses",
+    Q: "crop losses",
+    R: "a fire",
+    S: "a snowstorm",
+    T: "a tornado",
+    U: "civil unrest",
+    V: "a volcanic eruption",
+    W: "a severe storm",
+    X: "toxic substances",
+    Y: "human cause",
+    Z: "other",
+} as const;

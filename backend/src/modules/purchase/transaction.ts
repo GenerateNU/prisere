@@ -1,13 +1,13 @@
-import { Brackets, DataSource } from "typeorm";
 import Boom from "@hapi/boom";
+import { plainToInstance } from "class-transformer";
+import { Brackets, DataSource } from "typeorm";
+import { Purchase } from "../../entities/Purchase";
 import {
     CreateOrChangePurchaseDTO,
     GetCompanyPurchasesByDateDTO,
     GetCompanyPurchasesDTO,
     GetCompanyPurchasesInMonthBinsResponse,
 } from "./types";
-import { Purchase } from "../../entities/Purchase";
-import { plainToInstance } from "class-transformer";
 
 export interface IPurchaseTransaction {
     createOrUpdatePurchase(payload: CreateOrChangePurchaseDTO): Promise<Purchase[]>;
@@ -17,6 +17,7 @@ export interface IPurchaseTransaction {
     sumPurchasesByCompanyInMonthBins(
         payload: GetCompanyPurchasesByDateDTO
     ): Promise<GetCompanyPurchasesInMonthBinsResponse>;
+    getPurchaseCategoriesForCompany(companyId: string): Promise<string[]>;
 }
 
 export class PurchaseTransaction implements IPurchaseTransaction {
@@ -56,14 +57,91 @@ export class PurchaseTransaction implements IPurchaseTransaction {
     }
 
     async getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<Purchase[]> {
-        const { companyId, pageNumber, resultsPerPage } = payload;
+        const { companyId, pageNumber, resultsPerPage, categories, type, dateFrom, dateTo, search, sortBy, sortOrder } =
+            payload;
 
         const numToSkip = resultsPerPage * pageNumber;
-        return await this.db.manager.find(Purchase, {
-            where: { companyId: companyId },
-            skip: numToSkip,
-            take: resultsPerPage,
-        });
+        const sortColumnMap: Record<string, string> = {
+            date: "p.dateCreated",
+            totalAmountCents: "p.totalAmountCents",
+        };
+
+        const queryBuilder = this.db.manager.createQueryBuilder(Purchase, "p");
+        queryBuilder.where("p.companyId = :companyId", { companyId });
+
+        if (categories && categories.length > 0) {
+            queryBuilder.andWhere((qb) => {
+                const subQuery = qb
+                    .subQuery()
+                    .select("li_sub.purchaseId")
+                    .from("purchase_line_item", "li_sub")
+                    .where("li_sub.category IN (:...categories)", { categories })
+                    .getQuery();
+                return `p.id IN ${subQuery}`;
+            });
+        }
+
+        if (type === "extraneous") {
+            queryBuilder.andWhere((qb) => {
+                const subQuery = qb
+                    .subQuery()
+                    .select("li_sub.purchaseId")
+                    .from("purchase_line_item", "li_sub")
+                    .where("li_sub.type = 'extraneous'")
+                    .getQuery();
+                return `p.id IN ${subQuery}`;
+            });
+        } else if (type === "typical") {
+            queryBuilder.andWhere((qb) => {
+                const subQuery = qb
+                    .subQuery()
+                    .select("li_sub.purchaseId")
+                    .from("purchase_line_item", "li_sub")
+                    .where("li_sub.type = 'extraneous'")
+                    .getQuery();
+                return `p.id NOT IN ${subQuery}`;
+            });
+        }
+
+        if (dateFrom && dateTo) {
+            queryBuilder.andWhere("p.dateCreated BETWEEN :dateFrom AND :dateTo", { dateFrom, dateTo });
+        }
+
+        if (search) {
+            queryBuilder.andWhere((qb) => {
+                const subQuery = qb
+                    .subQuery()
+                    .select("li_sub.purchaseId")
+                    .from("purchase_line_item", "li_sub")
+                    .where("(li_sub.description ILIKE :search OR li_sub.category ILIKE :search)", {
+                        search: `%${search}%`,
+                    })
+                    .getQuery();
+                return `p.id IN ${subQuery}`;
+            });
+        }
+
+        if (sortBy && sortOrder && sortColumnMap[sortBy]) {
+            queryBuilder.orderBy(sortColumnMap[sortBy], sortOrder);
+        }
+
+        const idRows = await queryBuilder.skip(numToSkip).take(resultsPerPage).getMany();
+        const ids = idRows.map((row) => row.id);
+        if (ids.length === 0) {
+            return [];
+        }
+
+        const queryBuilderForIds = this.db.manager
+            .createQueryBuilder(Purchase, "p")
+            .leftJoinAndSelect("p.lineItems", "li")
+            .where("p.id IN (:...ids)", { ids });
+
+        if (sortBy && sortOrder && sortColumnMap[sortBy]) {
+            queryBuilderForIds.orderBy(sortColumnMap[sortBy], sortOrder);
+        }
+        // to guarantee that line items do not move in the table rows
+        queryBuilderForIds.addOrderBy("li.dateCreated", "ASC");
+        return await queryBuilderForIds.getMany();
     }
 
     async sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number> {
@@ -125,5 +203,18 @@ export class PurchaseTransaction implements IPurchaseTransaction {
             month: `${row.year}-${String(row.month).padStart(2, "0")}`,
             total: parseInt(row.total) || 0,
         }));
+    }
+
+    async getPurchaseCategoriesForCompany(companyId: string): Promise<string[]> {
+        const categories = await this.db
+            .createQueryBuilder(Purchase, "purchase")
+            .where("purchase.companyId = :companyId", { companyId })
+            .leftJoinAndSelect("purchase.lineItems", "lineItems")
+            .getMany()
+            .then((purchases) =>
+                purchases.flatMap((p) => p.lineItems?.map((lineItem) => lineItem.category ?? null) ?? [])
+            );
+
+        return [...new Set(categories.filter((cat) => cat !== null))];
     }
 }

@@ -45,7 +45,7 @@ describe("Get Purchase summation by company id per month", () => {
         );
         const body = await response.json();
         expect(response.status).toBe(200);
-        expect(body.length).toBe(2);
+        expect(body.length).toBe(3);
         expect(body).toEqual([
             {
                 month: "2025-01",
@@ -54,6 +54,10 @@ describe("Get Purchase summation by company id per month", () => {
             {
                 month: "2025-02",
                 total: 1234,
+            },
+            {
+                month: "2025-03",
+                total: 5000,
             },
         ]);
     });
@@ -69,7 +73,7 @@ describe("Get Purchase summation by company id per month", () => {
         );
         const body = await response.json();
         expect(response.status).toBe(200);
-        expect(body.length).toBe(3);
+        expect(body.length).toBe(4);
         expect(body).toEqual([
             {
                 month: "2024-04",
@@ -82,6 +86,10 @@ describe("Get Purchase summation by company id per month", () => {
             {
                 month: "2025-02",
                 total: 1234,
+            },
+            {
+                month: "2025-03",
+                total: 5000,
             },
         ]);
     });

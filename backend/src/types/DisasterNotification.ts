@@ -4,7 +4,7 @@ import { LocationAddressSchemaType } from "./Location";
 import { FIPSCounty, FIPSState, incidentTypeString } from "./fema-disaster";
 
 const notificationTypes = ["web", "email"] as const;
-const notificationStatus = ["unread", "read", "acknowledged"] as const;
+const notificationStatus = ["unread", "read"] as const;
 
 export const DisasterNotification = z.object({
     id: z.string(),
@@ -23,7 +23,7 @@ export const DisasterNotificationWithRelations = z.object({
     userId: z.string(),
     femaDisasterId: z.string(),
     notificationType: z.enum(notificationTypes),
-    notificationStatus: z.enum(notificationStatus).optional().nullable(),
+    notificationStatus: z.enum(notificationStatus),
     firstSentAt: z.union([z.date(), z.string()]).optional().nullable(),
     lastSentAt: z.union([z.date(), z.string()]).optional().nullable(),
     acknowledgedAt: z.union([z.date(), z.string()]).optional().nullable(),
