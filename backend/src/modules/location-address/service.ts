@@ -10,6 +10,10 @@ import {
     GetLocationAddressDTO,
     GetLocationAddressResponse,
     LocationAddress,
+    UpdateLocationAddressBulkDTO,
+    UpdateLocationAddressBulkResponse,
+    UpdateLocationAddressDTO,
+    UpdateLocationAddressResponse,
 } from "../../types/Location";
 import { IFEMALocationMatcher } from "../clients/fips-location-matching/service";
 
@@ -39,6 +43,24 @@ export interface ILocationAddressService {
      * @param payload contains the id for the location that must be removed
      */
     removeLocationAddressById(payload: GetLocationAddressDTO): Promise<DeleteResult>;
+
+    /**
+     * Attempts to update a location address based on the given id
+     * @param payload The updated location address
+     */
+    updateLocationAddressById(
+        payload: UpdateLocationAddressDTO,
+        companyId: string
+    ): Promise<UpdateLocationAddressResponse>;
+
+    /**
+     * Attempts to update multiple location addresses in bulk
+     * @param payload The updated location addresses
+     */
+    updateLocationAddressBulk(
+        payload: UpdateLocationAddressBulkDTO,
+        companyId: string
+    ): Promise<UpdateLocationAddressBulkResponse>;
 }
 
 export class LocationAddressService implements ILocationAddressService {
@@ -129,6 +151,34 @@ export class LocationAddressService implements ILocationAddressService {
             }
 
             return result;
+        }
+    );
+
+    updateLocationAddressById = withServiceErrorHandling(
+        async (payload: UpdateLocationAddressDTO, companyId: string): Promise<UpdateLocationAddressResponse> => {
+            const updatedLocationAddress = await this.locationAddressTransaction.updateLocationAddressById(
+                payload,
+                companyId
+            );
+
+            if (!updatedLocationAddress) {
+                throw Boom.internal("Could not update Policy");
+            }
+
+            return updatedLocationAddress;
+        }
+    );
+
+    updateLocationAddressBulk = withServiceErrorHandling(
+        async (
+            payload: UpdateLocationAddressBulkDTO,
+            companyId: string
+        ): Promise<UpdateLocationAddressBulkResponse> => {
+            const updatedLocations = await this.locationAddressTransaction.updateLocationAddressBulk(
+                payload,
+                companyId
+            );
+            return updatedLocations;
         }
     );
 }

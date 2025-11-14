@@ -7,6 +7,10 @@ import {
     CreateLocationAddressResponse,
     CreateLocationAddressSchema,
     GetLocationAddressResponse,
+    UpdateLocationAddressBulkResponse,
+    UpdateLocationAddressResponse,
+    UpdateLocationAddressDTOSchema,
+    UpdateLocationAddressBulkDTOSchema,
 } from "../../types/Location";
 import { validate } from "uuid";
 import { ControllerResponse } from "../../utilities/response";
@@ -33,6 +37,20 @@ export interface ILocationAddressController {
      * @param ctx the http request
      */
     removeLocationAddressById(ctx: Context): Promise<Response>;
+
+    /**
+     * Will make request to the location address service to update an existing address
+     * @param ctx The Hono Context
+     * @return The result of the location address update or an error
+     */
+    updateLocationAddressById(ctx: Context): ControllerResponse<TypedResponse<UpdateLocationAddressResponse, 200>>;
+
+    /**
+     * Will make request to the location address service to update multiple existing addresses
+     * @param ctx The Hono Context
+     * @return The result of the location address bulk update or an error
+     */
+    updateLocationAddressBulk(ctx: Context): ControllerResponse<TypedResponse<UpdateLocationAddressBulkResponse, 200>>;
 }
 
 // Rename the class to avoid naming conflict
@@ -114,4 +132,32 @@ export class LocationAddressController implements ILocationAddressController {
             return ctx.body(null);
         }
     });
+
+    updateLocationAddressById = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<UpdateLocationAddressResponse, 200>> => {
+            const json = await ctx.req.json();
+            const payload = UpdateLocationAddressDTOSchema.parse(json);
+            const companyId = ctx.get("companyId");
+
+            const updateLocationResponse = await this.locationAddressService.updateLocationAddressById(
+                payload,
+                companyId
+            );
+            return ctx.json(updateLocationResponse, 200);
+        }
+    );
+
+    updateLocationAddressBulk = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<UpdateLocationAddressBulkResponse, 200>> => {
+            const json = await ctx.req.json();
+            const payload = UpdateLocationAddressBulkDTOSchema.parse(json);
+            const companyId = ctx.get("companyId");
+
+            const updateLocationBulkResponse = await this.locationAddressService.updateLocationAddressBulk(
+                payload,
+                companyId
+            );
+            return ctx.json(updateLocationBulkResponse, 200);
+        }
+    );
 }

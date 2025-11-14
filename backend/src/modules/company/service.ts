@@ -1,4 +1,9 @@
-import { CreateCompanyDTO, GetCompanyByIdDTO, UpdateQuickBooksImportTimeDTO } from "../../types/Company";
+import {
+    CreateCompanyDTO,
+    GetCompanyByIdDTO,
+    UpdateCompanyDTO,
+    UpdateQuickBooksImportTimeDTO,
+} from "../../types/Company";
 import { Company } from "../../entities/Company";
 import { ICompanyTransaction } from "./transaction";
 import Boom from "@hapi/boom";
@@ -14,6 +19,7 @@ export interface ICompanyService {
     updateLastQuickBooksPurchaseImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company>;
     getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]>;
     getClaimInProgress(companyId: string): Promise<GetClaimInProgressForCompanyResponse>;
+    updateCompanyById(payload: UpdateCompanyDTO): Promise<Company>;
 }
 
 export class CompanyService implements CompanyService {
@@ -76,4 +82,13 @@ export class CompanyService implements CompanyService {
             return claim;
         }
     );
+
+    updateCompanyById = withServiceErrorHandling(async (payload: UpdateCompanyDTO): Promise<Company> => {
+        const company = await this.companyTransaction.updateCompanyById(payload);
+
+        if (!company) {
+            throw Boom.notFound("Company Not Found");
+        }
+        return company;
+    });
 }

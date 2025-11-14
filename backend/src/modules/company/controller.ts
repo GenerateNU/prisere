@@ -6,6 +6,7 @@ import {
     UpdateQuickBooksImportTimeDTOSchema,
     GetCompanyByIdResponse,
     CreateCompanyResponse,
+    UpdateCompanyResponse,
 } from "../../types/Company";
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
@@ -20,6 +21,7 @@ export interface ICompanyController {
     updateQuickbooksPurchaseImportTime(ctx: Context): ControllerResponse<TypedResponse<CreateCompanyResponse, 200>>;
     getCompanyLocationsById(ctx: Context): ControllerResponse<TypedResponse<GetLocationAddressResponse[], 200>>;
     getClaimInProgress(ctx: Context): ControllerResponse<TypedResponse<GetClaimInProgressForCompanyResponse, 200>>;
+    updateCompanyById(ctx: Context): ControllerResponse<TypedResponse<UpdateCompanyResponse, 200>>;
 }
 
 export class CompanyController implements ICompanyController {
@@ -156,6 +158,20 @@ export class CompanyController implements ICompanyController {
 
             // handles null claim as well
             return ctx.json(claim, 200);
+        }
+    );
+
+    updateCompanyById = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<UpdateCompanyResponse, 200>> => {
+            const companyId = ctx.get("companyId");
+            const payload = await ctx.req.json();
+
+            if (payload.id !== companyId) {
+                return ctx.json({ error: "Company ID does not match authenticated company ID" }, 400);
+            }
+
+            const updatedCompany = await this.companyService.updateCompanyById(payload);
+            return ctx.json(updatedCompany, 200);
         }
     );
 }

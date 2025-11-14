@@ -1,5 +1,10 @@
 import { Company } from "../../entities/Company";
-import { CreateCompanyDTO, GetCompanyByIdDTO, UpdateQuickBooksImportTimeDTO } from "../../types/Company";
+import {
+    CreateCompanyDTO,
+    GetCompanyByIdDTO,
+    UpdateCompanyDTO,
+    UpdateQuickBooksImportTimeDTO,
+} from "../../types/Company";
 import { DataSource } from "typeorm";
 import Boom from "@hapi/boom";
 import { logMessageToFile } from "../../utilities/logger";
@@ -40,6 +45,13 @@ export interface ICompanyTransaction {
      * @returns Promise resolving to fetched Company locations or null if company was not found
      */
     getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]>;
+
+    /**
+     * Update a Company's information by id
+     * @param payload The updated company
+     * @returns Promise resolving to updated Company or null if not found
+     */
+    updateCompanyById(payload: UpdateCompanyDTO): Promise<Company | null>;
 }
 
 export class CompanyTransaction implements ICompanyTransaction {
@@ -118,5 +130,10 @@ export class CompanyTransaction implements ICompanyTransaction {
             companyId: payload.id,
         });
         return locations;
+    }
+
+    async updateCompanyById(payload: UpdateCompanyDTO): Promise<Company | null> {
+        const company = await this.db.manager.update(Company, { id: payload.id }, payload);
+        return company.affected === 1 ? this.db.manager.findOneBy(Company, { id: payload.id }) : null;
     }
 }

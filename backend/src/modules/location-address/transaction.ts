@@ -1,10 +1,19 @@
 import { DataSource, DeleteResult } from "typeorm";
 import { LocationAddress } from "../../entities/LocationAddress";
-import { CreateLocationAddressBulkDTO, CreateLocationAddressDTO, GetLocationAddressDTO } from "../../types/Location";
+import {
+    CreateLocationAddressBulkDTO,
+    CreateLocationAddressDTO,
+    GetLocationAddressDTO,
+    UpdateLocationAddressBulkDTO,
+    UpdateLocationAddressBulkResponse,
+    UpdateLocationAddressDTO,
+    UpdateLocationAddressResponse,
+} from "../../types/Location";
 import { plainToClass } from "class-transformer";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { User } from "../../entities/User";
 import { logMessageToFile } from "../../utilities/logger";
+import Boom from "@hapi/boom";
 
 export interface ILocationAddressTransaction {
     /**
@@ -38,6 +47,24 @@ export interface ILocationAddressTransaction {
     getUsersAffectedByDisasters(
         disasters: FemaDisaster[]
     ): Promise<{ user: User; disaster: FemaDisaster; location: LocationAddress }[]>;
+
+    /**
+     * Updates a location address by its id
+     * @param payload The updated location address
+     */
+    updateLocationAddressById(
+        payload: UpdateLocationAddressDTO,
+        companyId: string
+    ): Promise<UpdateLocationAddressResponse | null>;
+
+    /**
+     * Updates multiple location addresses in bulk by their ids
+     * @param payload The updated location addresses
+     */
+    updateLocationAddressBulk(
+        payload: UpdateLocationAddressBulkDTO,
+        companyId: string
+    ): Promise<UpdateLocationAddressBulkResponse>;
 }
 
 /**
@@ -169,5 +196,45 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
         }
 
         return userDisasterPairs;
+    }
+
+    async updateLocationAddressById(
+        payload: UpdateLocationAddressDTO,
+        companyId: string
+    ): Promise<UpdateLocationAddressResponse | null> {
+        const updateResponse = await this.db.manager.update(
+            LocationAddress,
+            { id: payload.id, companyId: companyId },
+            payload
+        );
+        return updateResponse.affected === 1 ? this.db.manager.findOneBy(LocationAddress, { id: payload.id }) : null;
+    }
+
+    async updateLocationAddressBulk(
+        payload: UpdateLocationAddressBulkDTO,
+        companyId: string
+    ): Promise<UpdateLocationAddressBulkResponse> {
+        const updatedLocations: LocationAddress[] = [];
+
+        await this.db.transaction(async (manager) => {
+            for (const policy of payload) {
+                const updateResponse = await manager.update(
+                    LocationAddress,
+                    { id: policy.id, companyId: companyId },
+                    policy
+                );
+                if (updateResponse.affected === 1) {
+                    const updatedLocation = await manager.findOneBy(LocationAddress, { id: policy.id });
+                    if (updatedLocation) {
+                        updatedLocations.push(updatedLocation);
+                    }
+                } else {
+                    // will rollback the transaction if any update fails
+                    throw Boom.internal(`Failed to update policy with ID: ${policy.id}`);
+                }
+            }
+        });
+
+        return updatedLocations;
     }
 }

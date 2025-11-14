@@ -42,6 +42,14 @@ export const UpdateQuickBooksImportTimeDTOSchema = z.object({
     importTime: z.date(),
 });
 
+export const UpdateCompanyDTOSchema = z.object({
+    id: z.string(),
+    name: z.string().min(1).optional(),
+    businessOwnerFullName: z.string().optional(),
+});
+
+export const UpdateCompanyResponseSchema = CompanySchema;
+
 /* Zod types for payload validation */
 export type CreateCompanyDTO = z.infer<typeof CreateCompanyDTOSchema>;
 export type CreateCompanyResponse = z.infer<typeof CreateCompanyResponseSchema>;
@@ -50,3 +58,6 @@ export type GetCompanyByIdDTO = z.infer<typeof GetCompanyByIdDTOSchema>;
 export type GetCompanyByIdResponse = z.infer<typeof GetCompanyByIdResponseSchema>;
 
 export type UpdateQuickBooksImportTimeDTO = z.infer<typeof UpdateQuickBooksImportTimeDTOSchema>;
+
+export type UpdateCompanyDTO = z.infer<typeof UpdateCompanyDTOSchema>;
+export type UpdateCompanyResponse = z.infer<typeof UpdateCompanyResponseSchema>;
