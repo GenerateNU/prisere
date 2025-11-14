@@ -1,7 +1,7 @@
-"use client";
-
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { UserIcon } from "lucide-react";
+import { logoutUser } from "@/actions/auth";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { HiOutlineTableCells } from "react-icons/hi2";
@@ -11,6 +11,10 @@ import Image from "next/image";
 
 export default function NavBar() {
     const pathname = usePathname();
+
+    const logout = async () => {
+        await logoutUser();
+    };
 
     const navigationItems = [
         { name: "Dashboard", href: "/", icon: <LuLayoutDashboard /> },
@@ -42,12 +46,22 @@ export default function NavBar() {
                     ))}
                 </div>
             </ul>
-            <div className="mt-auto">
+            <div className="flex flex-col gap-5">
                 <Link href="/profile">
                     <div className={`flex gap-3 items-center text-lg ${pathname === "/profile" && "text-fuchsia"}`}>
-                        <IoSettingsOutline />
+                        <IoSettingsOutline size={"24px"} />
                         Settings
                     </div>
+                </Link>
+                <Link
+                    href={"/"}
+                    onClick={async () => {
+                        await logout();
+                    }}
+                    className="h-[40px] flex items-center justify-start gap-3"
+                >
+                    <UserIcon size={"24px"} />
+                    <p>Logout</p>
                 </Link>
             </div>
         </nav>
