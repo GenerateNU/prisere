@@ -1,10 +1,6 @@
-"use client";
-
-import { usePathname, useRouter } from "next/navigation";
-import NavBarCircle from "../icons/NavBarCircle";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { UserIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { logoutUser } from "@/actions/auth";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { IoIosNotificationsOutline } from "react-icons/io";
@@ -15,7 +11,6 @@ import Image from "next/image";
 
 export default function NavBar() {
     const pathname = usePathname();
-    const nextRouter = useRouter();
 
     const logout = async () => {
         await logoutUser();
@@ -50,34 +45,23 @@ export default function NavBar() {
                         </li>
                     ))}
                 </div>
-                <li>
-                    <div>
-                        <Link href="/profile">
-                            <div className="flex nav-bar-item gap-[25px] text-[20px] px-[20px] py-[15px] items-center">
-                                <NavBarCircle /> {/* Placeholder for icons */}
-                                Prisere
-                            </div>
-                        </Link>
-                        <Button
-                            onClick={async () => {
-                                await logout();
-                                nextRouter.push("/");
-                            }}
-                            className="h-[40px] flex justify-start gap-[25px] px-[20px] py-[15px]"
-                            variant="outline"
-                        >
-                            <UserIcon />
-                            <p>Logout</p>
-                        </Button>
-                    </div>
-                </li>
             </ul>
-            <div className="mt-auto">
+            <div className="flex flex-col gap-5">
                 <Link href="/profile">
                     <div className={`flex gap-3 items-center text-lg ${pathname === "/profile" && "text-fuchsia"}`}>
-                        <IoSettingsOutline />
+                        <IoSettingsOutline size={"24px"} />
                         Settings
                     </div>
+                </Link>
+                <Link
+                    href={"/"}
+                    onClick={async () => {
+                        await logout();
+                    }}
+                    className="h-[40px] flex items-center justify-start gap-3"
+                >
+                    <UserIcon size={"24px"} />
+                    <p>Logout</p>
                 </Link>
             </div>
         </nav>
