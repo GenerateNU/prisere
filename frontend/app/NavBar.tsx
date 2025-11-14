@@ -6,18 +6,14 @@ import Link from "next/link";
 import Chevron from "@/icons/Chevron";
 import { UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { logoutUser } from "@/actions/auth";
 
 export default function NavBar() {
     const pathname = usePathname();
     const nextRouter = useRouter();
-    const clearAuthCookies = () => {
-        document.cookie
-            .split(";")
-            .map((cookie) => cookie.trim())
-            .filter((cookie) => cookie.substring(0, 3) === "sb-")
-            .forEach((authCookie) => {
-                document.cookie = authCookie + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
-            });
+
+    const logout = async () => {
+        await logoutUser();
     };
 
     const navigationItems = [
@@ -57,8 +53,8 @@ export default function NavBar() {
                             </div>
                         </Link>
                         <Button
-                            onClick={() => {
-                                clearAuthCookies();
+                            onClick={async () => {
+                                await logout();
                                 nextRouter.push("/");
                             }}
                             className="h-[40px] flex justify-start gap-[25px] px-[20px] py-[15px]"
