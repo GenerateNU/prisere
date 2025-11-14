@@ -7,7 +7,7 @@ import NetDisasterExpenses from "@/components/dashboard/NetDisasterExpenses";
 
 export default function Dashboard() {
     return (
-        <div className={"flex flex-col gap-[32px] px-[70px] pt-[72px] mb-4 justify-center"}>
+        <div className={"flex flex-col gap-[32px] px-[70px] pt-[72px] mb-4 justify-center bg-slate"}>
             <div className="flex justify-between items-center">
                 <h2 className="text-[40px] font-bold">Dashboard</h2>
                 <NavBarCircle size={43} />
