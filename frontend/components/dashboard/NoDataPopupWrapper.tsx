@@ -11,7 +11,6 @@ export default function NoDataPopupWrapper({ hasData }: Props) {
     const [showPopup, setShowPopup] = useState(false);
 
     useEffect(() => {
-        // Only show popup on initial mount if there's no data
         if (!hasData) {
             setShowPopup(true);
         }

@@ -5,14 +5,10 @@ import Link from "next/link";
 import Progress from "../progress";
 
 type Props = {
-    bannerData: BannerData | null;
+    bannerData: BannerData;
 };
 
 export default function DisasterStatusBanner({ bannerData }: Props) {
-    if (!bannerData) {
-        return null;
-    }
-
     // No disaster affecting business
     if (bannerData.status === "no-disaster") {
         return (

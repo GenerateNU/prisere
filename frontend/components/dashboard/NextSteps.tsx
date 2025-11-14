@@ -9,7 +9,7 @@ const FEMA_RISK_ASSESMENT_URL =
     "https://www.fema.gov/emergency-managers/national-preparedness/goal/risk-capability-assessment";
 const FEMA_ASSISTANCE_URL = "https://www.fema.gov/assistance/individual/small-business";
 type Props = {
-    bannerData: BannerData | null;
+    bannerData: BannerData;
 };
 
 // Define individual step components
@@ -74,10 +74,6 @@ const STEPS = {
 };
 
 export default function NextSteps({ bannerData }: Props) {
-    if (!bannerData) {
-        return null;
-    }
-
     // Build steps array based on status
     let steps: (typeof STEPS)[keyof typeof STEPS][] = [];
     let headerText = "";

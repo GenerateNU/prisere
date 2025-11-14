@@ -7,12 +7,11 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 
 type Props = {
-    bannerData: BannerData | null;
-    hasData: boolean;
+    bannerData: BannerData;
 };
 
 // No Data Component
-function NetDisasterExpenseNoData() {
+export function NetDisasterExpenseNoData() {
     return (
         <Card className="w-full max-w-xl p-8 border-none shadow-lg">
             <CardContent className="p-0 flex flex-col items-center justify-center min-h-[300px] gap-4">
@@ -38,16 +37,7 @@ function NetDisasterExpenseNoData() {
     );
 }
 
-export default function NetDisasterExpense({ bannerData, hasData }: Props) {
-    if (!bannerData) {
-        return null;
-    }
-
-    // If no data, show the no data version
-    if (!hasData) {
-        return <NetDisasterExpenseNoData />;
-    }
-
+export default function NetDisasterExpense({ bannerData }: Props) {
     // Color palette that rotates through
     const colorPalette = [
         "var(--pink)",
@@ -64,14 +54,9 @@ export default function NetDisasterExpense({ bannerData, hasData }: Props) {
         claimId = bannerData.claim.id;
     }
 
-    console.log(`CLAIM ID: ${claimId}`);
-    console.log(`CLAIM: ${bannerData}`);
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const purchaseLineItems = useQuery({
         queryKey: ["purchaseLineItems-for-company", claimId],
         queryFn: () => getPurchaseLineItemsFromClaim({ claimId }),
-        enabled: !!claimId,
     });
 
     const expenses = purchaseLineItems.data

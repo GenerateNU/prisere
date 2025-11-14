@@ -1,9 +1,9 @@
 "use server";
 import DisasterStatusBanner from "@/components/dashboard/DisasterStatusBanner";
 import { getDashboardBannerData } from "@/api/dashboard";
-import RevenueAndExpenses from "@/components/dashboard/RevenueAndExpenses";
+import RevenueAndExpenses, { RevenueAndExpensesNoData } from "@/components/dashboard/RevenueAndExpenses";
 import NextSteps from "@/components/dashboard/NextSteps";
-import NetDisasterExpense from "@/components/dashboard/NetDisasterExpenses";
+import NetDisasterExpense, { NetDisasterExpenseNoData } from "@/components/dashboard/NetDisasterExpenses";
 import LocationRisk from "@/components/dashboard/LocationRisk";
 import IconCircle from "@/icons/NavBarCircle";
 import { NOTIFICATION_BELL } from "@/icons/icon-constants";
@@ -34,7 +34,7 @@ export default async function Dashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
                 {/* Left Column - Revenue & Expenses */}
                 <div className="w-full lg:col-span-4 relative">
-                    <RevenueAndExpenses hasData={hasData} />
+                    {hasData ? <RevenueAndExpenses /> : <RevenueAndExpensesNoData />}
                 </div>
 
                 {/* Right Column - Next Steps */}
@@ -52,9 +52,8 @@ export default async function Dashboard() {
 
                 {/* Right Column - Net Disaster Expense */}
                 <div className="w-full lg:col-span-2">
-                    {bannerData.status === "has-claim" && (
-                        <NetDisasterExpense bannerData={bannerData} hasData={hasData} />
-                    )}
+                    {bannerData.status === "has-claim" &&
+                        (hasData ? <NetDisasterExpense bannerData={bannerData} /> : <NetDisasterExpenseNoData />)}
                 </div>
             </div>
         </div>

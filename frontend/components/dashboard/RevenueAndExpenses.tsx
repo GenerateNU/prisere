@@ -9,12 +9,8 @@ import { ChartContainer, ChartTooltipContent, ChartTooltip, ChartConfig } from "
 import Link from "next/link";
 import Circle from "@/icons/Circle";
 
-type Props = {
-    hasData: boolean;
-};
-
 // No Data Component
-function RevenueAndExpensesNoData() {
+export function RevenueAndExpensesNoData() {
     return (
         <Card className="h-full min-h-[371px] p-6 border flex flex-col items-center justify-center">
             <div className="flex flex-col items-center gap-4 max-w-md text-center">
@@ -40,7 +36,7 @@ function RevenueAndExpensesNoData() {
     );
 }
 
-export default function RevenueAndExpenses({ hasData }: Props) {
+export default function RevenueAndExpenses() {
     const today = new Date();
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth();
@@ -62,7 +58,6 @@ export default function RevenueAndExpenses({ hasData }: Props) {
             return {
                 queryKey: ["revenue", year, month],
                 queryFn: () => sumInvoicesByCompanyAndDateRange(startOfMonth, endOfMonth),
-                enabled: hasData, // Only fetch if we have data
             };
         }),
     });
@@ -77,15 +72,9 @@ export default function RevenueAndExpenses({ hasData }: Props) {
             return {
                 queryKey: ["expenses", year, month],
                 queryFn: () => sumPurchasesByCompanyAndDateRange(startOfMonth, endOfMonth),
-                enabled: hasData, // Only fetch if we have data
             };
         }),
     });
-
-    // If no data, show the no data version
-    if (!hasData) {
-        return <RevenueAndExpensesNoData />;
-    }
 
     const getChartData = () => {
         return monthDates
@@ -119,18 +108,6 @@ export default function RevenueAndExpenses({ hasData }: Props) {
         },
     } satisfies ChartConfig;
 
-    function ChangeIcon({ up }: { up: boolean }) {
-        return up ? (
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="var(--seafoam)">
-                <path d="M6 2l4 6H2z" />
-            </svg>
-        ) : (
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="var(--fuchsia)">
-                <path d="M6 10l4-6H2z" />
-            </svg>
-        );
-    }
-
     return (
         <Card className="h-full min-h-[371px] p-6 border flex flex-col">
             {/* Header with title and percentage change */}
@@ -139,15 +116,9 @@ export default function RevenueAndExpenses({ hasData }: Props) {
 
                 <div className="flex items-center gap-2 text-sm py-1 rounded">
                     <div
-                        className={
-                            percentChange >= 0
-                                ? "bg-seafoam flex items-center rounded p-1"
-                                : "bg-pink flex items-center rounded p-1"
-                        }
+                        className={`flex items-center rounded py-1 px-2 ${percentChange >= 0 ? "bg-seafoam" : "bg-pink"}`}
                     >
-                        <ChangeIcon up={percentChange >= 0} />
-
-                        <span className={percentChange >= 0 ? "text-teal" : "text-fuchsia"}>
+                        <span className={`text-center ${percentChange >= 0 ? "text-teal" : "text-fuchsia"}`}>
                             {percentChange >= 0 ? "+" : ""}
                             {percentChange.toFixed(2)}%
                         </span>

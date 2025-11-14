@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default function NoDataPopup({ isOpen, onClose }: Props) {
-    if (!isOpen) return null;
+    if (!isOpen) return <></>;
 
     return (
         <div className="fixed inset-0 bg-black/30  flex items-center justify-center z-50">

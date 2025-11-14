@@ -44,7 +44,9 @@ export const getPurchaseLineItemsFromClaim = async (params: {
     const req = async (token: string): Promise<GetClaimLineItemsResponse> => {
         const client = getClient();
         const id = params.claimId;
-        console.log("Claim ID: ", id);
+        if (!id) {
+            return [];
+        }
         const { data, error, response } = await client.GET(`/claims/{id}/line-item`, {
             headers: authHeader(token),
             params: {
