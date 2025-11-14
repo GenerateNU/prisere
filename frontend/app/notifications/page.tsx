@@ -54,8 +54,8 @@ export default function Page() {
     }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
     return (
-        <div className="p-15 bg-slate w-full items-center">
-            <div className="flex row gap-5 pb-15">
+        <div className="min-h-screen p-15 bg-slate w-full items-center">
+            <div className="flex row gap-5 pb-15 min-h-full">
                 <h1 className="text-charcoal text-3xl font-bold"> Notifications </h1>
             </div>
 
