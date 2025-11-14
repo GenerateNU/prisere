@@ -10,3 +10,6 @@ export type GetCompanyLocationsResponse =
 export type Company = paths["/companies"]["post"]["responses"][201]["content"]["application/json"];
 
 export const businessTypes = ["LLC", "Sole Proprietorship", "Corporation", "Partnership"];
+
+export type GetClaimInProgressForCompanyResponse =
+    paths["/companies/claim-in-progress"]["get"]["responses"][200]["content"]["application/json"];

@@ -248,6 +248,7 @@ export interface paths {
                                 companyId: string;
                                 createdAt: string;
                                 updatedAt: string;
+                                importTime?: string;
                             }[];
                             createdAt: string;
                             updatedAt: string;
@@ -325,6 +326,7 @@ export interface paths {
                                 companyId: string;
                                 createdAt: string;
                                 updatedAt: string;
+                                importTime?: string;
                             }[];
                             createdAt: string;
                             updatedAt: string;
@@ -395,8 +397,12 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        /** Format: date */
-                        importTime: string;
+                        id: string;
+                        source: string;
+                        externalId: string;
+                        createdAt: string;
+                        updatedAt: string;
+                        importTime?: string;
                     };
                 };
             };
@@ -420,6 +426,7 @@ export interface paths {
                                 companyId: string;
                                 createdAt: string;
                                 updatedAt: string;
+                                importTime?: string;
                             }[];
                             createdAt: string;
                             updatedAt: string;
@@ -479,8 +486,12 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        /** Format: date */
-                        importTime: string;
+                        id: string;
+                        source: string;
+                        externalId: string;
+                        createdAt: string;
+                        updatedAt: string;
+                        importTime?: string;
                     };
                 };
             };
@@ -504,6 +515,7 @@ export interface paths {
                                 companyId: string;
                                 createdAt: string;
                                 updatedAt: string;
+                                importTime?: string;
                             }[];
                             createdAt: string;
                             updatedAt: string;
@@ -710,6 +722,69 @@ export interface paths {
                     };
                 };
                 /** @description Get Claim in Progress Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/companies/has-company-data": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Check if a company has data (either connected to quickbooks or has purchase/invoice data)
+         * @description Gets the company's data if it is present.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Company data successfullly set */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            hasData: boolean;
+                        };
+                    };
+                };
+                /** @description Get Company Data in Progress Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Get Company Data in Progress Errors */
                 500: {
                     headers: {
                         [name: string]: unknown;
@@ -1247,6 +1322,7 @@ export interface paths {
                                         companyId: string;
                                         createdAt: string;
                                         updatedAt: string;
+                                        importTime?: string;
                                     }[];
                                     createdAt: string;
                                     updatedAt: string;

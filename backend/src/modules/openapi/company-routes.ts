@@ -7,6 +7,7 @@ import {
     CreateCompanyDTOSchema,
     CreateCompanyResponseSchema,
     GetCompanyByIdResponseSchema,
+    HasCompanyDataDTOSchemaResponse,
     UpdateQuickBooksImportTimeDTOSchema,
 } from "../../types/Company";
 import { openApiErrorCodes } from "../../utilities/error";
@@ -30,6 +31,7 @@ export const addOpenApiCompanyRoutes = (openApi: OpenAPIHono, db: DataSource): O
     );
     openApi.openapi(getCompanyLocationsByIdRoute, (ctx) => companyController.getCompanyLocationsById(ctx));
     openApi.openapi(getCompanyClaimInProgress, (ctx) => companyController.getClaimInProgress(ctx));
+    openApi.openapi(hasCompanyData, (ctx) => companyController.hasCompanyData(ctx));
     return openApi;
 };
 
@@ -178,6 +180,25 @@ const getCompanyClaimInProgress = createRoute({
             description: "Claim fetched successfully",
         },
         ...openApiErrorCodes("Get Claim in Progress Errors"),
+    },
+    tags: ["Companies"],
+});
+
+const hasCompanyData = createRoute({
+    method: "get",
+    path: "/companies/has-company-data",
+    summary: "Check if a company has data (either connected to quickbooks or has purchase/invoice data)",
+    description: "Gets the company's data if it is present.",
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: HasCompanyDataDTOSchemaResponse,
+                },
+            },
+            description: "Company data successfullly set",
+        },
+        ...openApiErrorCodes("Get Company Data in Progress Errors"),
     },
     tags: ["Companies"],
 });

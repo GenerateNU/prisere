@@ -1,31 +1,59 @@
-"use client";
-import NavBarCircle from "@/icons/NavBarCircle";
-import RevenueAndExpenses from "@/components/dashboard/RevenueAndExpenses";
+"use server";
+import DisasterStatusBanner from "@/components/dashboard/DisasterStatusBanner";
+import { getDashboardBannerData } from "@/api/dashboard";
+import RevenueAndExpenses, { RevenueAndExpensesNoData } from "@/components/dashboard/RevenueAndExpenses";
 import NextSteps from "@/components/dashboard/NextSteps";
+import NetDisasterExpense, { NetDisasterExpenseNoData } from "@/components/dashboard/NetDisasterExpenses";
 import LocationRisk from "@/components/dashboard/LocationRisk";
-import NetDisasterExpenses from "@/components/dashboard/NetDisasterExpenses";
+import IconCircle from "@/icons/NavBarCircle";
+import { NOTIFICATION_BELL } from "@/icons/icon-constants";
+import { companyHasData } from "@/api/company";
+import NoDataPopupWrapper from "@/components/dashboard/NoDataPopupWrapper";
 
-export default function Dashboard() {
+export default async function Dashboard() {
+    const bannerData = await getDashboardBannerData();
+    const hasData = await companyHasData();
+
     return (
-        <div className={"flex flex-col gap-[32px] px-[70px] pt-[72px] mb-4 justify-center bg-slate"}>
+        <div className="bg-[#f5f5f5] flex flex-col gap-8 px-16 pt-16 pb-8 mx-auto">
+            {/* No Data Popup - only shows when hasData is false */}
+            <NoDataPopupWrapper hasData={hasData} />
+
+            {/* Header */}
             <div className="flex justify-between items-center">
-                <h2 className="text-[40px] font-bold">Dashboard</h2>
-                <NavBarCircle size={43} />
+                <h2 className="text-4xl font-bold">Dashboard</h2>
+                <IconCircle size={43} icon={NOTIFICATION_BELL} />
             </div>
-            <div className="flex gap-[28px]">
-                <div className="basis-2/3">
-                    <RevenueAndExpenses />
+
+            {/* Banner - Full Width */}
+            <div className="w-full">
+                <DisasterStatusBanner bannerData={bannerData} />
+            </div>
+
+            {/* Two Column Grid for Revenue and Next Steps */}
+            <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
+                {/* Left Column - Revenue & Expenses */}
+                <div className="w-full lg:col-span-4 relative">
+                    {hasData ? <RevenueAndExpenses /> : <RevenueAndExpensesNoData />}
                 </div>
-                <div className="basis-1/3">
-                    <NextSteps />
+
+                {/* Right Column - Next Steps */}
+                <div className="w-full lg:col-span-2">
+                    <NextSteps bannerData={bannerData} />
                 </div>
             </div>
-            <div className="flex gap-[28px]">
-                <div className="flex-2/5">
+
+            {/* Two Column Grid for Location Based Risk and Net Disaster Expense */}
+            <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
+                {/* Left Column - Location Based Risk */}
+                <div className="w-full lg:col-span-4 relative">
                     <LocationRisk />
                 </div>
-                <div className="flex-3/5">
-                    <NetDisasterExpenses />
+
+                {/* Right Column - Net Disaster Expense */}
+                <div className="w-full lg:col-span-2">
+                    {bannerData.status === "has-claim" &&
+                        (hasData ? <NetDisasterExpense bannerData={bannerData} /> : <NetDisasterExpenseNoData />)}
                 </div>
             </div>
         </div>

@@ -355,6 +355,9 @@
                           },
                           "updatedAt": {
                             "type": "string"
+                          },
+                          "importTime": {
+                            "type": "string"
                           }
                         },
                         "required": [
@@ -481,6 +484,9 @@
                           },
                           "updatedAt": {
                             "type": "string"
+                          },
+                          "importTime": {
+                            "type": "string"
                           }
                         },
                         "required": [
@@ -566,13 +572,31 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string"
+                  },
+                  "externalId": {
+                    "type": "string"
+                  },
+                  "createdAt": {
+                    "type": "string"
+                  },
+                  "updatedAt": {
+                    "type": "string"
+                  },
                   "importTime": {
-                    "type": "string",
-                    "format": "date"
+                    "type": "string"
                   }
                 },
                 "required": [
-                  "importTime"
+                  "id",
+                  "source",
+                  "externalId",
+                  "createdAt",
+                  "updatedAt"
                 ]
               }
             }
@@ -626,6 +650,9 @@
                             "type": "string"
                           },
                           "updatedAt": {
+                            "type": "string"
+                          },
+                          "importTime": {
                             "type": "string"
                           }
                         },
@@ -709,13 +736,31 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string"
+                  },
+                  "externalId": {
+                    "type": "string"
+                  },
+                  "createdAt": {
+                    "type": "string"
+                  },
+                  "updatedAt": {
+                    "type": "string"
+                  },
                   "importTime": {
-                    "type": "string",
-                    "format": "date"
+                    "type": "string"
                   }
                 },
                 "required": [
-                  "importTime"
+                  "id",
+                  "source",
+                  "externalId",
+                  "createdAt",
+                  "updatedAt"
                 ]
               }
             }
@@ -769,6 +814,9 @@
                             "type": "string"
                           },
                           "updatedAt": {
+                            "type": "string"
+                          },
+                          "importTime": {
                             "type": "string"
                           }
                         },
@@ -1165,6 +1213,71 @@
           },
           "500": {
             "description": "Get Claim in Progress Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/companies/has-company-data": {
+      "get": {
+        "summary": "Check if a company has data (either connected to quickbooks or has purchase/invoice data)",
+        "description": "Gets the company's data if it is present.",
+        "tags": [
+          "Companies"
+        ],
+        "responses": {
+          "200": {
+            "description": "Company data successfullly set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hasData": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "hasData"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get Company Data in Progress Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Get Company Data in Progress Errors",
             "content": {
               "application/json": {
                 "schema": {
@@ -2216,6 +2329,9 @@
                                       "type": "string"
                                     },
                                     "updatedAt": {
+                                      "type": "string"
+                                    },
+                                    "importTime": {
                                       "type": "string"
                                     }
                                   },
