@@ -59,17 +59,28 @@ export class CompanyController implements ICompanyController {
             const companyId = ctx.get("companyId");
             const body = await ctx.req.json();
 
+            if (!body.importTime || isNaN(Date.parse(body.importTime))) {
+                return ctx.json({ error: "Invalid or missing importTime" }, 400);
+            }
+
             const parseResult = UpdateQuickBooksImportTimeDTOSchema.safeParse({
                 companyId,
-                importTime: body.importTime ? new Date(body.importTime) : undefined,
+                importTime: body.importTime ? new Date(body.importTime).toISOString() : undefined,
             });
 
             console.log(`Got parse event: ${parseResult}`)
+            console.log(`Got parse event: ${parseResult.data}`)
+            console.log(`Got parse event: ${parseResult.error}`)
+
+
+            console.log(`GOT BODY: ${body.importTime}`)
+            console.log(`GOT COMP ID: ${companyId}`)
 
             if (!parseResult.success) {
                 return ctx.json({ error: "Invalid request body: ", body }, 400);
             }
 
+            console.log("Calling service")
             const updated = await this.companyService.updateLastQuickBooksInvoiceImportTime(parseResult.data);
             if (!updated) {
                 logMessageToFile("Company not found");
@@ -104,9 +115,13 @@ export class CompanyController implements ICompanyController {
             const companyId = ctx.get("companyId");
             const body = await ctx.req.json();
 
+            if (!body.importTime || isNaN(Date.parse(body.importTime))) {
+                return ctx.json({ error: "Invalid or missing importTime" }, 400);
+            }
+
             const parseResult = UpdateQuickBooksImportTimeDTOSchema.safeParse({
                 companyId,
-                importTime: body.importTime ? new Date(body.importTime) : undefined,
+                importTime: body.importTime ? new Date(body.importTime).toISOString() : undefined,
             });
 
             if (!parseResult.success) {

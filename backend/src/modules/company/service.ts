@@ -46,6 +46,7 @@ export class CompanyService implements CompanyService {
 
     updateLastQuickBooksInvoiceImportTime = withServiceErrorHandling(
         async (payload: UpdateQuickBooksImportTimeDTO): Promise<Company> => {
+            console.log("Update QB Service layer")
             const company = await this.companyTransaction.updateLastQuickBooksInvoiceImportTime(payload);
             if (!company) {
                 throw Boom.notFound("Company Not Found");

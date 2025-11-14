@@ -14,6 +14,16 @@ export const CompanyExternalSchema = z.object({
     importTime: z.string().optional()
 });
 
+export const CompanyExternalOptionalSchema = z.object({
+    id: z.string().optional(),
+    source: z.string().optional(),
+    externalId: z.string().optional(),
+    companyId: z.string().optional(),
+    createdAt: z.string().optional(),
+    updatedAt: z.string().optional(),
+    importTime: z.string().optional()
+});
+
 export const CompanySchema = z.object({
     id: z.string(),
     name: z.string().nonempty(),
@@ -51,7 +61,7 @@ export const HasCompanyDataDTOSchemaResponse = z.object({
 
 export const GetCompanyByIdResponseSchema = CompanySchema;
 
-export const UpdateQuickBooksImportTimeDTOSchema = CompanyExternalSchema;
+export const UpdateQuickBooksImportTimeDTOSchema = CompanyExternalOptionalSchema;
 
 /* Zod types for payload validation */
 export type CreateCompanyDTO = z.infer<typeof CreateCompanyDTOSchema>;

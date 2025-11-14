@@ -97,6 +97,8 @@ export class CompanyTransaction implements ICompanyTransaction {
     }
 
     async updateLastQuickBooksInvoiceImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company | null> {
+        console.log("Made it to transaction")
+        console.log(`Payload IMPORT TIME: ${payload.importTime}`)
         const result = await this.db
             .createQueryBuilder()
             .update(Company)
