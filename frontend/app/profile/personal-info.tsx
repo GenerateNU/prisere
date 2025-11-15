@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckIcon, SquarePenIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { ProfileSettingsCard } from "./common";
 import { HiOutlineX } from "react-icons/hi";
+import { ProfileSettingsCard } from "./common";
 
 export function PersonalInfoSettings() {
     const queryClient = useQueryClient();

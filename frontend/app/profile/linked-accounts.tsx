@@ -1,9 +1,9 @@
 "use client";
+import { redirectToQuickbooks } from "@/api/quickbooks";
 import { Button } from "@/components/ui/button";
 import { QuickBooksIcon } from "@/icons/quickbooks";
 import { CirclePlusIcon } from "lucide-react";
 import { ProfileSettingsCard } from "./common";
-import { redirectToQuickbooks } from "@/api/quickbooks";
 
 export function LinkedAccountsSettings() {
     const quickbooksAuth = async () => {
