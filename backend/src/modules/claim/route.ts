@@ -1,8 +1,8 @@
-import { DataSource } from "typeorm";
 import { Hono } from "hono";
-import { ClaimTransaction, IClaimTransaction } from "./transaction";
-import { ClaimService, IClaimService } from "./service";
+import { DataSource } from "typeorm";
 import { ClaimController, IClaimController } from "./controller";
+import { ClaimService, IClaimService } from "./service";
+import { ClaimTransaction, IClaimTransaction } from "./transaction";
 
 export const claimRoutes = (db: DataSource): Hono => {
     const claim = new Hono();
@@ -13,6 +13,8 @@ export const claimRoutes = (db: DataSource): Hono => {
 
     claim.get("/company", (ctx) => claimController.getClaimByCompanyId(ctx));
     claim.post("/", (ctx) => claimController.createClaim(ctx));
+    claim.get("/:id", (ctx) => claimController.getClaimById(ctx));
+    claim.patch("/:id/status", (ctx) => claimController.updateClaimStatus(ctx));
     claim.delete("/:id", (ctx) => claimController.deleteClaim(ctx));
     claim.post("/line-item", (ctx) => claimController.linkClaimToLineItem(ctx));
     claim.post("/purchase", (ctx) => claimController.linkClaimToPurchaseItems(ctx));
