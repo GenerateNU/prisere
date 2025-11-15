@@ -1,7 +1,6 @@
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 // import { buildEmailHtml, buildEmailText } from "./email-template";
 import { DisasterEmailMessage } from "../../../types/DisasterNotification";
-import { buildEmailHtml, buildEmailText } from "./email-template";
 
 export class SESEmailService {
     private client: SESClient;
