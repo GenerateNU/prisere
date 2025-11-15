@@ -1,3 +1,4 @@
+"use server";
 import { FilteredPurchases, PurchaseLineItemType, Purchases } from "../types/purchase";
 import { authHeader, authWrapper, getClient, getClientAuthToken } from "./client";
 import { useQuery } from "@tanstack/react-query";
