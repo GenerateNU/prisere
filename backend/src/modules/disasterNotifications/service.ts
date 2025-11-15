@@ -182,6 +182,7 @@ export class DisasterNotificationService implements IDisasterNotificationService
             logMessageToFile(`About to process notification ${notif}`);
             const message: DisasterEmailMessage = {
                 to: notif.user.email,
+                alt: notif.user.company?.alternateEmail,
                 from: "priseregenerate@gmail.com",
                 subject: "FEMA Disaster Alert from Prisere",
                 firstName: notif.user.firstName,
