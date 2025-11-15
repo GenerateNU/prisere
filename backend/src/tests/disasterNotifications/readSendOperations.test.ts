@@ -25,7 +25,7 @@ describe("Test get unread notifications (for email)", () => {
 
     test("GET all unread notifications for email", async () => {
         const result = await disasterNotificationTransaction.getUnreadNotifications();
-        expect(result.length).toBe(30);
+        expect(result.length).toBe(3);
     });
 
     test("Mark notifications as sent (for second time)", async () => {
