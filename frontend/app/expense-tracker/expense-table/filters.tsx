@@ -187,6 +187,13 @@ function DisasterRelatedFilter({ onTypeChange }: { onTypeChange: (type: Purchase
                 <DropdownMenuItem onClick={() => handleSelect(PurchaseLineItemType.TYPICAL)}>
                     Non-Disaster
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleSelect(PurchaseLineItemType.PENDING)}>Pending</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleSelect(PurchaseLineItemType.SUG_EX)}>
+                    Suggested: Disaster
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleSelect(PurchaseLineItemType.SUG_TY)}>
+                    Suggested: Non-Disaster
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );

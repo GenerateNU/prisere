@@ -4944,7 +4944,10 @@
               "type": "string",
               "enum": [
                 "extraneous",
-                "typical"
+                "typical",
+                "pending",
+                "suggested extraneous",
+                "suggested typical"
               ]
             },
             "required": false,
@@ -5048,7 +5051,10 @@
                               "type": "string",
                               "enum": [
                                 "extraneous",
-                                "typical"
+                                "typical",
+                                "pending",
+                                "suggested extraneous",
+                                "suggested typical"
                               ]
                             },
                             "dateCreated": {
@@ -6188,7 +6194,10 @@
                         "type": "string",
                         "enum": [
                           "extraneous",
-                          "typical"
+                          "typical",
+                          "pending",
+                          "suggested extraneous",
+                          "suggested typical"
                         ]
                       },
                       "dateCreated": {
@@ -7269,7 +7278,10 @@
                           "type": "string",
                           "enum": [
                             "extraneous",
-                            "typical"
+                            "typical",
+                            "pending",
+                            "suggested extraneous",
+                            "suggested typical"
                           ]
                         },
                         "quickbooksDateCreated": {
@@ -7328,7 +7340,10 @@
                         "type": "string",
                         "enum": [
                           "extraneous",
-                          "typical"
+                          "typical",
+                          "pending",
+                          "suggested extraneous",
+                          "suggested typical"
                         ]
                       },
                       "dateCreated": {
@@ -7448,7 +7463,10 @@
                       "type": "string",
                       "enum": [
                         "extraneous",
-                        "typical"
+                        "typical",
+                        "pending",
+                        "suggested extraneous",
+                        "suggested typical"
                       ]
                     },
                     "dateCreated": {
@@ -7569,7 +7587,10 @@
                         "type": "string",
                         "enum": [
                           "extraneous",
-                          "typical"
+                          "typical",
+                          "pending",
+                          "suggested extraneous",
+                          "suggested typical"
                         ]
                       },
                       "dateCreated": {
@@ -7706,7 +7727,10 @@
                       "type": "string",
                       "enum": [
                         "extraneous",
-                        "typical"
+                        "typical",
+                        "pending",
+                        "suggested extraneous",
+                        "suggested typical"
                       ]
                     },
                     "dateCreated": {
@@ -7793,7 +7817,10 @@
                     "type": "string",
                     "enum": [
                       "extraneous",
-                      "typical"
+                      "typical",
+                      "pending",
+                      "suggested extraneous",
+                      "suggested typical"
                     ]
                   }
                 },
@@ -7838,7 +7865,10 @@
                       "type": "string",
                       "enum": [
                         "extraneous",
-                        "typical"
+                        "typical",
+                        "pending",
+                        "suggested extraneous",
+                        "suggested typical"
                       ]
                     },
                     "dateCreated": {

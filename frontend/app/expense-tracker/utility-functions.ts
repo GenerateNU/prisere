@@ -13,8 +13,16 @@ export function getPurchaseTypeString(lineItems: { type?: string | null }[]): Di
 
     if (types.length === 0) {
         return "typical";
+    } else if (types.includes("extraneous")) {
+        return "extraneous";
+    } else if (types.includes("typical")) {
+        return "extraneous";
+    } else if (types.includes("suggested extraneous")) {
+        return "suggested extraneous";
+    } else if (types.includes("suggested typical")) {
+        return "suggested typical";
     } else {
-        return types.includes("extraneous") ? "extraneous" : "typical";
+        return "pending";
     }
 }
 
