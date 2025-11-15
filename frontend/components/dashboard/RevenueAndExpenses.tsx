@@ -7,7 +7,7 @@ import { useQueries } from "@tanstack/react-query";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { ChartContainer, ChartTooltipContent, ChartTooltip, ChartConfig } from "@/components/ui/chart";
 import Link from "next/link";
-import Circle from "@/icons/Circle";
+import { FaCircle } from "react-icons/fa";
 
 // No Data Component
 export function RevenueAndExpensesNoData() {
@@ -134,7 +134,7 @@ export default function RevenueAndExpenses() {
                         <div>
                             <div className="flex items-center gap-2 text-sm text-charcoal mb-2">
                                 <div className="text-seafoam">
-                                    <Circle size={10} color="var(--seafoam)" />
+                                    <FaCircle size={10} color="var(--seafoam)" />
                                 </div>
                                 Total Revenue this Month
                             </div>
@@ -144,7 +144,7 @@ export default function RevenueAndExpenses() {
                         <div>
                             <div className="flex items-center gap-2 text-sm text-charcoal mb-2">
                                 <div className="text-teal">
-                                    <Circle size={10} color="var(--teal)" />
+                                    <FaCircle size={10} color="var(--teal)" />
                                 </div>
                                 Total Expenses this Month
                             </div>

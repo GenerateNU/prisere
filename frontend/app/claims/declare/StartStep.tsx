@@ -1,8 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import NavBarCircle from "@/icons/NavBarCircle";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { FaCircle } from "react-icons/fa";
 
 type StartProps = {
     handleStepForward: () => void;
@@ -39,28 +39,19 @@ export default function StartStep({ handleStepForward }: StartProps) {
                     <ul className="flex flex-col gap-[10px]">
                         <li>
                             <div className="flex text-[15px] w-[330px] h-[65px] items-center gap-[10px] rounded-[20px] border-[1px] border-[#bfbfbf] p-[10px]">
-                                <NavBarCircle
-                                    icon={<img src="/table.svg" alt="" style={{ width: "16px" }} />}
-                                    size={40}
-                                />
+                                <FaCircle />
                                 Update disaster related expenses
                             </div>
                         </li>
                         <li>
                             <div className="flex text-[15px] w-[330px] h-[65px] items-center gap-[10px] rounded-[20px] border-[1px] border-[#bfbfbf] p-[10px]">
-                                <NavBarCircle
-                                    icon={<img src="/report.svg" alt="" style={{ width: "16px" }} />}
-                                    size={40}
-                                />
+                                <FaCircle />
                                 Insurance information
                             </div>
                         </li>
                         <li>
                             <div className="flex text-[15px] w-[330px] h-[65px] items-center gap-[10px] rounded-[20px] border-[1px] border-[#bfbfbf] p-[10px]">
-                                <NavBarCircle
-                                    icon={<img src="/image.svg" alt="" style={{ width: "16px" }} />}
-                                    size={40}
-                                />
+                                <FaCircle />
                                 Images of damage or property loss
                             </div>
                         </li>

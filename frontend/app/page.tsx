@@ -5,8 +5,7 @@ import RevenueAndExpenses, { RevenueAndExpensesNoData } from "@/components/dashb
 import NextSteps from "@/components/dashboard/NextSteps";
 import NetDisasterExpense, { NetDisasterExpenseNoData } from "@/components/dashboard/NetDisasterExpenses";
 import LocationRisk from "@/components/dashboard/LocationRisk";
-import IconCircle from "@/icons/NavBarCircle";
-import { NOTIFICATION_BELL } from "@/icons/icon-constants";
+import { VscBellDot } from "react-icons/vsc";
 import { companyHasData } from "@/api/company";
 import NoDataPopupWrapper from "@/components/dashboard/NoDataPopupWrapper";
 
@@ -22,7 +21,10 @@ export default async function Dashboard() {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <h2 className="text-4xl font-bold">Dashboard</h2>
-                <IconCircle size={43} icon={NOTIFICATION_BELL} />
+                <div className="rounded-full bg-white w-10 h-10 flex items-center justify-center">
+                    {" "}
+                    <VscBellDot />{" "}
+                </div>
             </div>
 
             {/* Banner - Full Width */}

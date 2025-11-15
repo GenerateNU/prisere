@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { GetCompanyLocationsResponse } from "@/types/company";
 import React from "react";
 import { validateDisasterInfo } from "./utils/validationUtils";
-import Circle from "@/icons/Circle";
+import { FaCircle } from "react-icons/fa";
 
 type DisasterInfo = {
     name: string;
@@ -112,13 +112,13 @@ export default function DisasterInfoStep({
                 <div className="flex flex-col gap-[16px]">
                     <Button className="w-fit h-fit rounded-full py-[12px] px-[20px]">
                         <Label>
-                            <Circle size={24} color="white" />
+                            <FaCircle size={24} color="white" />
                             <p>Upload from computer</p>
                         </Label>
                     </Button>
                     <Button className="w-fit h-fit rounded-full py-[12px] px-[20px]">
                         <Label>
-                            <Circle size={24} color="white" />
+                            <FaCircle size={24} color="white" />
                             <p>Select from business profile</p>
                         </Label>
                     </Button>
