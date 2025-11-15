@@ -2867,7 +2867,7 @@ export interface paths {
                     sortBy?: "date" | "totalAmountCents";
                     sortOrder?: "ASC" | "DESC";
                     categories?: string[];
-                    type?: "extraneous" | "typical";
+                    type?: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                     dateFrom?: string;
                     dateTo?: string;
                     search?: string;
@@ -2902,7 +2902,12 @@ export interface paths {
                                 amountCents: number;
                                 category?: string | null;
                                 /** @enum {string} */
-                                type: "extraneous" | "typical";
+                                type:
+                                    | "extraneous"
+                                    | "typical"
+                                    | "pending"
+                                    | "suggested extraneous"
+                                    | "suggested typical";
                                 dateCreated: string;
                                 lastUpdated: string;
                                 /** Format: date-time */
@@ -3667,7 +3672,7 @@ export interface paths {
                             amountCents: number;
                             category?: string | null;
                             /** @enum {string} */
-                            type: "extraneous" | "typical";
+                            type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                             dateCreated: string;
                             lastUpdated: string;
                             /** Format: date-time */
@@ -4433,7 +4438,7 @@ export interface paths {
                             amountCents: number;
                             category?: string | null;
                             /** @enum {string} */
-                            type: "extraneous" | "typical";
+                            type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                             /** Format: date-time */
                             quickbooksDateCreated?: string;
                         }[];
@@ -4455,7 +4460,7 @@ export interface paths {
                             amountCents: number;
                             category?: string | null;
                             /** @enum {string} */
-                            type: "extraneous" | "typical";
+                            type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                             dateCreated: string;
                             lastUpdated: string;
                             /** Format: date-time */
@@ -4536,7 +4541,7 @@ export interface paths {
                             amountCents: number;
                             category?: string | null;
                             /** @enum {string} */
-                            type: "extraneous" | "typical";
+                            type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                             dateCreated: string;
                             lastUpdated: string;
                             /** Format: date-time */
@@ -4619,7 +4624,7 @@ export interface paths {
                             amountCents: number;
                             category?: string | null;
                             /** @enum {string} */
-                            type: "extraneous" | "typical";
+                            type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                             dateCreated: string;
                             lastUpdated: string;
                             /** Format: date-time */
@@ -4715,7 +4720,7 @@ export interface paths {
                             amountCents: number;
                             category?: string | null;
                             /** @enum {string} */
-                            type: "extraneous" | "typical";
+                            type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                             dateCreated: string;
                             lastUpdated: string;
                             /** Format: date-time */
@@ -4779,7 +4784,7 @@ export interface paths {
                         /** Format: uuid */
                         id: string;
                         /** @enum {string} */
-                        type: "extraneous" | "typical";
+                        type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                     };
                 };
             };
@@ -4798,7 +4803,7 @@ export interface paths {
                             amountCents: number;
                             category?: string | null;
                             /** @enum {string} */
-                            type: "extraneous" | "typical";
+                            type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                             dateCreated: string;
                             lastUpdated: string;
                             /** Format: date-time */

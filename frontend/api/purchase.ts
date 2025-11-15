@@ -87,7 +87,7 @@ const typeMap: Record<string, PurchaseLineItemType> = {
     extraneous: PurchaseLineItemType.EXTRANEOUS,
 };
 
-type typeString = "typical" | "extraneous";
+type typeString = "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
 
 export const updateType = async (type: typeString, purchaseLineIds: string[]) => {
     const req = async (token: string) => {

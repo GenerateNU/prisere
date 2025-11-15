@@ -8,6 +8,9 @@ export type PurchaseLineItem = paths["/purchase/line/{id}"]["get"]["responses"][
 export enum PurchaseLineItemType {
     EXTRANEOUS = "extraneous",
     TYPICAL = "typical",
+    PENDING = "pending",
+    SUG_EX = "suggested extraneous",
+    SUG_TY = "suggested typical",
 }
 
 export enum SortByColumn {
@@ -15,7 +18,7 @@ export enum SortByColumn {
     AMOUNT = "totalAmountCents",
 }
 
-export type DisasterType = "typical" | "extraneous";
+export type DisasterType = "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
 
 export type FilteredPurchases = {
     pageNumber: number;
