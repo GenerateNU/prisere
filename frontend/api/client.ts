@@ -9,6 +9,7 @@ export const getClient = () => {
             ? process.env.NEXT_PUBLIC_PROD_API_BASE_URL
             : process.env.NEXT_PUBLIC_LOCAL_API_BASE_URL;
     console.log(apiBaseRoute);
+    console.log(process.env.NODE_ENV);
     console.log("ROUTING!");
 
     return createClient<paths>({ baseUrl: apiBaseRoute });
