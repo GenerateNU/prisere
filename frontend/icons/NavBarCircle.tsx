@@ -1,21 +1,28 @@
-type NavBarCircleProps = {
+import React from "react";
+
+type IconCircleProps = {
     size?: number;
+    icon: React.ReactNode; // Accepts JSX or a React component
+    bgColor?: string;
 };
 
-const NavBarCircle = (props: NavBarCircleProps) => {
-    const { size = 23 } = props;
+const IconCircle = ({ size = 23, icon, bgColor = "white" }: IconCircleProps) => {
     return (
-        <svg
-            className="flex-none"
-            width={size}
-            height={size}
-            viewBox={`0 0 ${size} ${size}`}
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+        <div
+            style={{
+                width: size,
+                height: size,
+                borderRadius: "50%",
+                background: bgColor,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 0 2px #ccc",
+            }}
         >
-            <circle cx={size / 2} cy={size / 2} r={size / 2} fill="#8D8D8D" />
-        </svg>
+            {icon}
+        </div>
     );
 };
 
-export default NavBarCircle;
+export default IconCircle;

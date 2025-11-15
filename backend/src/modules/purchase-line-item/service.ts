@@ -1,4 +1,5 @@
-import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
+import { PurchaseLineItem, PurchaseLineItemType } from "../../entities/PurchaseLineItem";
+import { withServiceErrorHandling } from "../../utilities/error";
 import { IPurchaseLineItemTransaction } from "./transaction";
 import {
     CreateOrChangePurchaseLineItemsDTO,
@@ -14,6 +15,8 @@ export interface IPurchaseLineItemService {
     ): Promise<CreateOrChangePurchaseLineItemsResponse>;
     getPurchaseLineItem(id: string): Promise<GetPurchaseLineItemResponse>;
     getPurchaseLineItemsForPurchase(parentPurchaseId: string): Promise<GetPurchaseLineItemsFromParentResponse>;
+    updatePurchaseLineItemCategory(id: string, category: string, removeCategory: boolean): Promise<PurchaseLineItem>;
+    updatePurchaseLineItemType(id: string, type: PurchaseLineItemType): Promise<PurchaseLineItem>;
 }
 
 export class PurchaseLineItemService implements IPurchaseLineItemService {
@@ -55,4 +58,16 @@ export class PurchaseLineItemService implements IPurchaseLineItemService {
             quickbooksDateCreated: item.quickbooksDateCreated?.toISOString(),
         };
     };
+
+    updatePurchaseLineItemCategory = withServiceErrorHandling(
+        async (id: string, category: string, removeCategory: boolean): Promise<PurchaseLineItem> => {
+            return this.purchaseLineItemTransaction.updatePurchaseLineItemCategory(id, category, removeCategory);
+        }
+    );
+
+    updatePurchaseLineItemType = withServiceErrorHandling(
+        async (id: string, type: PurchaseLineItemType): Promise<PurchaseLineItem> => {
+            return this.purchaseLineItemTransaction.updatePurchaseLineItemType(id, type);
+        }
+    );
 }

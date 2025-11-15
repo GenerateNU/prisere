@@ -355,6 +355,9 @@
                           },
                           "updatedAt": {
                             "type": "string"
+                          },
+                          "importTime": {
+                            "type": "string"
                           }
                         },
                         "required": [
@@ -480,6 +483,9 @@
                             "type": "string"
                           },
                           "updatedAt": {
+                            "type": "string"
+                          },
+                          "importTime": {
                             "type": "string"
                           }
                         },
@@ -711,13 +717,31 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string"
+                  },
+                  "externalId": {
+                    "type": "string"
+                  },
+                  "createdAt": {
+                    "type": "string"
+                  },
+                  "updatedAt": {
+                    "type": "string"
+                  },
                   "importTime": {
-                    "type": "string",
-                    "format": "date"
+                    "type": "string"
                   }
                 },
                 "required": [
-                  "importTime"
+                  "id",
+                  "source",
+                  "externalId",
+                  "createdAt",
+                  "updatedAt"
                 ]
               }
             }
@@ -771,6 +795,9 @@
                             "type": "string"
                           },
                           "updatedAt": {
+                            "type": "string"
+                          },
+                          "importTime": {
                             "type": "string"
                           }
                         },
@@ -854,13 +881,31 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string"
+                  },
+                  "externalId": {
+                    "type": "string"
+                  },
+                  "createdAt": {
+                    "type": "string"
+                  },
+                  "updatedAt": {
+                    "type": "string"
+                  },
                   "importTime": {
-                    "type": "string",
-                    "format": "date"
+                    "type": "string"
                   }
                 },
                 "required": [
-                  "importTime"
+                  "id",
+                  "source",
+                  "externalId",
+                  "createdAt",
+                  "updatedAt"
                 ]
               }
             }
@@ -914,6 +959,9 @@
                             "type": "string"
                           },
                           "updatedAt": {
+                            "type": "string"
+                          },
+                          "importTime": {
                             "type": "string"
                           }
                         },
@@ -1310,6 +1358,71 @@
           },
           "500": {
             "description": "Get Claim in Progress Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/companies/has-company-data": {
+      "get": {
+        "summary": "Check if a company has data (either connected to quickbooks or has purchase/invoice data)",
+        "description": "Gets the company's data if it is present.",
+        "tags": [
+          "Companies"
+        ],
+        "responses": {
+          "200": {
+            "description": "Company data successfullly set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hasData": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "hasData"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get Company Data in Progress Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Get Company Data in Progress Errors",
             "content": {
               "application/json": {
                 "schema": {
@@ -2359,8 +2472,7 @@
               "type": "string",
               "enum": [
                 "unread",
-                "read",
-                "acknowledged"
+                "read"
               ]
             },
             "required": false,
@@ -2412,11 +2524,9 @@
                       },
                       "notificationStatus": {
                         "type": "string",
-                        "nullable": true,
                         "enum": [
                           "unread",
-                          "read",
-                          "acknowledged"
+                          "read"
                         ]
                       },
                       "firstSentAt": {
@@ -2640,6 +2750,9 @@
                                     },
                                     "updatedAt": {
                                       "type": "string"
+                                    },
+                                    "importTime": {
+                                      "type": "string"
                                     }
                                   },
                                   "required": [
@@ -2688,6 +2801,7 @@
                       "userId",
                       "femaDisasterId",
                       "notificationType",
+                      "notificationStatus",
                       "createdAt",
                       "user",
                       "femaDisaster",
@@ -2785,8 +2899,7 @@
                       "nullable": true,
                       "enum": [
                         "unread",
-                        "read",
-                        "acknowledged"
+                        "read"
                       ]
                     },
                     "firstSentAt": {
@@ -2941,8 +3054,7 @@
                       "nullable": true,
                       "enum": [
                         "unread",
-                        "read",
-                        "acknowledged"
+                        "read"
                       ]
                     },
                     "firstSentAt": {
@@ -3119,8 +3231,7 @@
                         "nullable": true,
                         "enum": [
                           "unread",
-                          "read",
-                          "acknowledged"
+                          "read"
                         ]
                       },
                       "firstSentAt": {
@@ -4552,7 +4663,7 @@
     "/purchase": {
       "get": {
         "summary": "Fetches all purchases for a company",
-        "description": "Retrieves a paginated list of purchases for the specified company",
+        "description": "Retrieves a paginated, sorted and filtered list of purchases for the specified company",
         "tags": [
           "Purchases"
         ],
@@ -4576,6 +4687,83 @@
             },
             "required": false,
             "name": "resultsPerPage",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "date",
+                "totalAmountCents"
+              ]
+            },
+            "required": false,
+            "name": "sortBy",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "default": "DESC"
+            },
+            "required": false,
+            "name": "sortOrder",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "default": []
+            },
+            "required": false,
+            "name": "categories",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "extraneous",
+                "typical"
+              ]
+            },
+            "required": false,
+            "name": "type",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": false,
+            "name": "dateFrom",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "default": "2025-11-08T22:26:03.355Z"
+            },
+            "required": false,
+            "name": "dateTo",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "search",
             "in": "query"
           }
         ],
@@ -4615,6 +4803,60 @@
                       },
                       "lastUpdated": {
                         "type": "string"
+                      },
+                      "lineItems": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "quickBooksId": {
+                              "type": "number"
+                            },
+                            "purchaseId": {
+                              "type": "string"
+                            },
+                            "amountCents": {
+                              "type": "number"
+                            },
+                            "category": {
+                              "type": "string",
+                              "nullable": true,
+                              "minLength": 1
+                            },
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "extraneous",
+                                "typical"
+                              ]
+                            },
+                            "dateCreated": {
+                              "type": "string"
+                            },
+                            "lastUpdated": {
+                              "type": "string"
+                            },
+                            "quickbooksDateCreated": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "purchaseId",
+                            "amountCents",
+                            "type",
+                            "dateCreated",
+                            "lastUpdated"
+                          ]
+                        }
                       }
                     },
                     "required": [
@@ -4623,7 +4865,8 @@
                       "totalAmountCents",
                       "isRefund",
                       "dateCreated",
-                      "lastUpdated"
+                      "lastUpdated",
+                      "lineItems"
                     ]
                   }
                 }
@@ -4829,6 +5072,67 @@
           },
           "500": {
             "description": "Getting Purchase Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/purchase/categories": {
+      "get": {
+        "summary": "Fetches all the categories of a company's purchase line items",
+        "description": "Retrieves an array of categories that contain the categories of all purchase line items linked to a company",
+        "tags": [
+          "Purchases"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful fetch of categories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get company purchases error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Get company purchases error",
             "content": {
               "application/json": {
                 "schema": {
@@ -7003,6 +7307,278 @@
           },
           "500": {
             "description": "Get purchase line items for purchase error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/purchase/line/category": {
+      "patch": {
+        "summary": "Updates a purchase line item's category",
+        "description": "Updates the category of the purchase line item with the given Id to the given category",
+        "tags": [
+          "Purchase Line Items"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "category": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "removeCategory": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "category",
+                  "removeCategory"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated the line item's category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "quickBooksId": {
+                      "type": "number"
+                    },
+                    "purchaseId": {
+                      "type": "string"
+                    },
+                    "amountCents": {
+                      "type": "number"
+                    },
+                    "category": {
+                      "type": "string",
+                      "nullable": true,
+                      "minLength": 1
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "extraneous",
+                        "typical"
+                      ]
+                    },
+                    "dateCreated": {
+                      "type": "string"
+                    },
+                    "lastUpdated": {
+                      "type": "string"
+                    },
+                    "quickbooksDateCreated": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "purchaseId",
+                    "amountCents",
+                    "type",
+                    "dateCreated",
+                    "lastUpdated"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error modifying purchase line item",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "There does not exist any purchase line item the given id"
+          },
+          "500": {
+            "description": "Error modifying purchase line item",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/purchase/line/type": {
+      "patch": {
+        "summary": "Updates a purchase line item's type",
+        "description": "Updates the type of the purchase line item with the given Id to the given type",
+        "tags": [
+          "Purchase Line Items"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "extraneous",
+                      "typical"
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated the line item's type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "quickBooksId": {
+                      "type": "number"
+                    },
+                    "purchaseId": {
+                      "type": "string"
+                    },
+                    "amountCents": {
+                      "type": "number"
+                    },
+                    "category": {
+                      "type": "string",
+                      "nullable": true,
+                      "minLength": 1
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "extraneous",
+                        "typical"
+                      ]
+                    },
+                    "dateCreated": {
+                      "type": "string"
+                    },
+                    "lastUpdated": {
+                      "type": "string"
+                    },
+                    "quickbooksDateCreated": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "purchaseId",
+                    "amountCents",
+                    "type",
+                    "dateCreated",
+                    "lastUpdated"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error modifying purchase line item",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "There does not exist any purchase line item the given id"
+          },
+          "500": {
+            "description": "Error modifying purchase line item",
             "content": {
               "application/json": {
                 "schema": {

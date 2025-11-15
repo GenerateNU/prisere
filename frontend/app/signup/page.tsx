@@ -3,7 +3,7 @@ import { signup } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { redirect, useSearchParams } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
+import { Suspense, useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { signupInitialState } from "@/types/user";
 import Onboarding from "./onboarding";
@@ -20,7 +20,7 @@ const initialState: signupInitialState = {
     email: "",
 };
 
-export default function SignUpPage() {
+function SignUpContent() {
     const searchParams = useSearchParams();
     const stage = searchParams.get("stage");
     const [state, signupAction] = useActionState(signup, initialState);
@@ -149,5 +149,13 @@ export default function SignUpPage() {
                 </div>
             )}
         </div>
+    );
+}
+
+export default function SignUpPage() {
+    return (
+        <Suspense fallback={<Spinner />}>
+            <SignUpContent />
+        </Suspense>
     );
 }

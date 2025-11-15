@@ -23,6 +23,17 @@ export async function login(prevState: loginInitialState, formData: FormData) {
     redirect("/");
 }
 
+export async function logoutUser() {
+    const supabase = await createSupabaseClient();
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+        console.error("Error signing out:", error.message);
+    } else {
+        console.log("User signed out successfully.");
+    }
+}
+
 export async function signup(prevState: signupInitialState, formData: FormData) {
     const supabase = await createSupabaseClient();
     const payload = {

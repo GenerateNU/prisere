@@ -20,6 +20,9 @@ import { ClaimStatusInProgressTypes, ClaimStatusType } from "../../types/ClaimSt
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
 import Boom from "@hapi/boom";
+import { ClaimDataForPDF } from "./types";
+import { UserTransaction } from "../user/transaction";
+import { InvoiceTransaction } from "../invoice/transaction";
 
 export interface IClaimTransaction {
     /**
@@ -84,6 +87,14 @@ export interface IClaimTransaction {
      * @returns either the found Claim or null if none found
      */
     getClaimInProgressForCompany(companyId: string): Promise<GetClaimInProgressForCompanyResponse>;
+
+    /**
+     * To retrieve and package the relevant information to generate a pdf for a claim.
+     * @param claimId from the desired claim.
+     * @param userId for the user who is making the claim
+     * @returns the necessary claim, user, and invoice data to make the pdf
+     */
+    retrieveDataForPDF(claimId: string, userId: string): Promise<ClaimDataForPDF>;
 }
 
 export class ClaimTransaction implements IClaimTransaction {
@@ -345,5 +356,44 @@ export class ClaimTransaction implements IClaimTransaction {
             };
         }
         return null;
+    }
+
+    async retrieveDataForPDF(claimId: string, userId: string): Promise<ClaimDataForPDF> {
+        const claimInfo = await this.db.manager.findOne(Claim, {
+            where: { id: claimId },
+            relations: {
+                company: true,
+                femaDisaster: true,
+                selfDisaster: true,
+                claimLocations: {
+                    locationAddress: true,
+                },
+                purchaseLineItems: true,
+            },
+        });
+
+        const userTransaction = new UserTransaction(this.db);
+        const invoiceTransaction = new InvoiceTransaction(this.db);
+        const user = await userTransaction.getUser({ id: userId });
+
+        if (!claimInfo) {
+            throw Boom.notFound("Could not find the claim");
+        }
+
+        if (!user) {
+            throw Boom.notFound("Could not find the associated user");
+        }
+
+        const incomeLastThreeYears = await invoiceTransaction.sumInvoicesByCompanyAndDateRange({
+            companyId: claimInfo.companyId,
+            startDate: new Date(new Date().setFullYear(new Date().getFullYear() - 4)).toISOString(),
+            endDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString(),
+        });
+
+        return {
+            ...claimInfo,
+            user: user,
+            averageIncome: incomeLastThreeYears / 3,
+        };
     }
 }

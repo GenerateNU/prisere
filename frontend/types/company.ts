@@ -13,3 +13,6 @@ export type UpdateCompanyRequest = paths["/companies"]["patch"]["requestBody"]["
 export type UpdateCompanyResponse = paths["/companies"]["patch"]["responses"][200]["content"]["application/json"];
 
 export const businessTypes = ["LLC", "Sole Proprietorship", "Corporation", "Partnership"];
+
+export type GetClaimInProgressForCompanyResponse =
+    paths["/companies/claim-in-progress"]["get"]["responses"][200]["content"]["application/json"];
