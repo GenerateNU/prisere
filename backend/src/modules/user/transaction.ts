@@ -83,7 +83,7 @@ export class UserTransaction implements IUserTransaction {
 
     async updateUser(payload: UpdateUserDTO) {
         const { id: givenId, ...data } = payload;
-        console.log({ data });
+
         const result = await this.db
             .createQueryBuilder()
             .update(User)
