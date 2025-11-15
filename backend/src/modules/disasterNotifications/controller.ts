@@ -12,7 +12,6 @@ import {
     DismissNotificationResponse,
     NotificationTypeFilter,
 } from "../../types/DisasterNotification";
-import { NotificationType } from "../../types/NotificationEnums";
 
 export interface IDisasterNotificationController {
     getUserNotifications(ctx: Context): Promise<TypedResponse<GetUsersDisasterNotificationsResponse> | Response>;
@@ -117,13 +116,8 @@ export class DisasterNotificationController implements IDisasterNotificationCont
         async (ctx: Context): Promise<TypedResponse<BulkCreateNotificationsResponse>> => {
             const json = await ctx.req.json();
             const payload = BulkCreateNotificationsRequestSchema.parse(json);
-            const convertedPayload = payload.map((item) => ({
-                ...item,
-                notificationType:
-                    NotificationType[item.notificationType.toUpperCase() as keyof typeof NotificationType],
-            }));
 
-            const created = await this.notificationService.bulkCreateNotifications(convertedPayload);
+            const created = await this.notificationService.bulkCreateNotifications(payload);
 
             return ctx.json(created, 201);
         }

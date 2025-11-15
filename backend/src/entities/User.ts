@@ -25,6 +25,9 @@ export class User {
     @Column({ nullable: true })
     companyId?: string;
 
+    @Column()
+    phoneNumber!: string;
+
     @OneToMany(() => DisasterNotification, (notifications) => notifications.user)
     disasterNotifications!: Relation<DisasterNotification[]>;
 

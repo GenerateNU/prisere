@@ -35,6 +35,7 @@ export interface paths {
                             firstName: string;
                             lastName: string;
                             email?: string;
+                            phoneNumber: string;
                         };
                     };
                 };
@@ -89,6 +90,7 @@ export interface paths {
                         /** Format: email */
                         email?: string;
                         companyId?: string | null;
+                        phoneNumber: string;
                     };
                 };
             };
@@ -105,6 +107,7 @@ export interface paths {
                             lastName: string;
                             email?: string;
                             companyId?: string | null;
+                            phoneNumber: string;
                         };
                     };
                 };
@@ -135,7 +138,69 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Updates a user by the given ID
+         * @description Updates the user with the given ID in the database
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        firstName?: string;
+                        lastName?: string;
+                        /** Format: email */
+                        email?: string;
+                        phoneNumber?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Successfully updated user */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            firstName: string;
+                            lastName: string;
+                            email?: string;
+                            companyId?: string | null;
+                            phoneNumber: string;
+                        };
+                    };
+                };
+                /** @description Update user error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Update user error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/users/company": {
@@ -250,6 +315,8 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** @enum {string} */
+                            companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
                             updatedAt: string;
                         };
@@ -303,6 +370,8 @@ export interface paths {
                     "application/json": {
                         name: string;
                         businessOwnerFullName: string;
+                        /** @enum {string} */
+                        companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                     };
                 };
             };
@@ -328,6 +397,8 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** @enum {string} */
+                            companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
                             updatedAt: string;
                         };
@@ -383,6 +454,8 @@ export interface paths {
                     "application/json": {
                         name?: string;
                         businessOwnerFullName?: string;
+                        /** @enum {string} */
+                        companyType?: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                     };
                 };
             };
@@ -408,6 +481,8 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** @enum {string} */
+                            companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
                             updatedAt: string;
                         };
@@ -497,6 +572,8 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** @enum {string} */
+                            companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
                             updatedAt: string;
                         };
@@ -586,6 +663,8 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** @enum {string} */
+                            companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
                             updatedAt: string;
                         };
@@ -1467,8 +1546,8 @@ export interface paths {
                             id: string;
                             userId: string;
                             femaDisasterId: string;
-                            /** @enum {string} */
-                            notificationType: "web" | "email";
+                            isWeb: boolean;
+                            isEmail: boolean;
                             /** @enum {string} */
                             notificationStatus: "unread" | "read";
                             firstSentAt?: string | unknown;
@@ -1481,6 +1560,7 @@ export interface paths {
                                 lastName: string;
                                 email?: string;
                                 companyId?: string | null;
+                                phoneNumber: string;
                             };
                             femaDisaster: {
                                 /** Format: uuid */
@@ -1524,6 +1604,8 @@ export interface paths {
                                         updatedAt: string;
                                         importTime?: string;
                                     }[];
+                                    /** @enum {string} */
+                                    companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                                     createdAt: string;
                                     updatedAt: string;
                                 };
@@ -1601,8 +1683,8 @@ export interface paths {
                             id: string;
                             userId: string;
                             femaDisasterId: string;
-                            /** @enum {string} */
-                            notificationType: "web" | "email";
+                            isWeb: boolean;
+                            isEmail: boolean;
                             /** @enum {string|null} */
                             notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
@@ -1676,8 +1758,8 @@ export interface paths {
                             id: string;
                             userId: string;
                             femaDisasterId: string;
-                            /** @enum {string} */
-                            notificationType: "web" | "email";
+                            isWeb: boolean;
+                            isEmail: boolean;
                             /** @enum {string|null} */
                             notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
@@ -1738,8 +1820,10 @@ export interface paths {
                     "application/json": {
                         userId: string;
                         femaDisasterId: string;
-                        /** @enum {string} */
-                        notificationType: "web" | "email";
+                        /** @default true */
+                        isWeb?: boolean;
+                        /** @default true */
+                        isEmail?: boolean;
                     }[];
                 };
             };
@@ -1754,8 +1838,8 @@ export interface paths {
                             id: string;
                             userId: string;
                             femaDisasterId: string;
-                            /** @enum {string} */
-                            notificationType: "web" | "email";
+                            isWeb: boolean;
+                            isEmail: boolean;
                             /** @enum {string|null} */
                             notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
@@ -2122,14 +2206,16 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
-                        quickbooksId?: number;
-                        totalAmountCents: number;
-                        /** Format: date-time */
-                        quickbooksDateCreated?: string;
-                    }[];
+                        items: {
+                            quickbooksId?: number;
+                            totalAmountCents: number;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string;
+                        }[];
+                    };
                 };
             };
             responses: {
@@ -2594,15 +2680,18 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
-                        quickBooksId?: number;
-                        totalAmountCents: number;
-                        isRefund: boolean;
-                        /** Format: date-time */
-                        quickbooksDateCreated?: string;
-                    }[];
+                        items: {
+                            quickBooksId?: number;
+                            totalAmountCents: number;
+                            isRefund: boolean;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string;
+                            vendor?: string;
+                        }[];
+                    };
                 };
             };
             responses: {
@@ -2620,6 +2709,7 @@ export interface paths {
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
                             dateCreated: string;
+                            vendor?: string;
                         }[];
                     };
                 };
@@ -2637,6 +2727,7 @@ export interface paths {
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
                             dateCreated: string;
+                            vendor?: string;
                         }[];
                     };
                 };
@@ -2712,6 +2803,7 @@ export interface paths {
                             totalAmountCents: number;
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
+                            vendor?: string;
                             dateCreated: string;
                             lastUpdated: string;
                         };
@@ -2799,6 +2891,7 @@ export interface paths {
                             totalAmountCents: number;
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
+                            vendor?: string;
                             dateCreated: string;
                             lastUpdated: string;
                             lineItems: {
@@ -3994,7 +4087,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/notifications/preferences": {
+    "/preferences": {
         parameters: {
             query?: never;
             header?: never;
@@ -4155,17 +4248,19 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
-                        description?: string;
-                        invoiceId: string;
-                        quickbooksId?: number;
-                        amountCents: number;
-                        category?: string;
-                        /** Format: date-time */
-                        quickbooksDateCreated?: string | null;
-                    }[];
+                        items: {
+                            description?: string;
+                            invoiceId: string;
+                            quickbooksId?: number;
+                            amountCents: number;
+                            category?: string;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string | null;
+                        }[];
+                    };
                 };
             };
             responses: {
@@ -4328,19 +4423,21 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
-                        description?: string;
-                        quickBooksId?: number;
-                        purchaseId: string;
-                        amountCents: number;
-                        category?: string | null;
-                        /** @enum {string} */
-                        type: "extraneous" | "typical";
-                        /** Format: date-time */
-                        quickbooksDateCreated?: string;
-                    }[];
+                        items: {
+                            description?: string;
+                            quickBooksId?: number;
+                            purchaseId: string;
+                            amountCents: number;
+                            category?: string | null;
+                            /** @enum {string} */
+                            type: "extraneous" | "typical";
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string;
+                        }[];
+                    };
                 };
             };
             responses: {

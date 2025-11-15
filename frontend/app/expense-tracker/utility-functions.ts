@@ -18,7 +18,7 @@ export function getPurchaseTypeString(lineItems: { type?: string | null }[]): Di
     }
 }
 
-export function getMerchant(lineItems: { description?: string | null }[]): string {
+export function getLineItemDescriptions(lineItems: { description?: string | null }[]): string {
     return lineItems
         .map((li) => li.description)
         .filter(Boolean)

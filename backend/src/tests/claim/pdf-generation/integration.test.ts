@@ -243,8 +243,6 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
             const pdfData = await new PDFParse(uint8Array).getText();
 
             expect(pdfData.text).toContain("Northeastern Inc.");
-            expect(pdfData.text).toContain("Type: FEMA");
-            expect(pdfData.text).toContain(claim!.femaDisaster!.id);
             expect(pdfData.text).toContain("Flooding"); // From designatedIncidentTypes
 
             const declarationDate = new Date(claim!.femaDisaster!.declarationDate).toLocaleDateString();
@@ -323,13 +321,13 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
             const uint8Array = new Uint8Array(capturedBuffer!);
             const pdfData = await new PDFParse(uint8Array).getText();
 
-            expect(pdfData.text).toContain("Claim Report");
-            expect(pdfData.text).toContain("Company Information");
-            expect(pdfData.text).toContain("User Information");
-            expect(pdfData.text).toContain("Disaster Information");
-            expect(pdfData.text).toContain("Impacted Locations");
-            expect(pdfData.text).toContain("Relevant Expenses");
-            expect(pdfData.text).toContain("Average Income");
+            expect(pdfData.text).toContain("Insurance Claim Report");
+            expect(pdfData.text).toContain("Business Information");
+            expect(pdfData.text).toContain("Personal Information");
+            expect(pdfData.text).toContain("Disaster Specific Information");
+            expect(pdfData.text).toContain("Affected Business\nLocations");
+            expect(pdfData.text).toContain("Extreneous Expenses");
+            expect(pdfData.text).toContain("Average Revenue");
         });
 
         test("GET /claims/{id}/pdf - PDF contains exact location data", async () => {

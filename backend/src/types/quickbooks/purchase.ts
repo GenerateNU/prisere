@@ -10,6 +10,11 @@ export type QBPurchase = {
         LastUpdatedTime: string;
     };
     Credit?: boolean;
+    EntityRef?: {
+        type: string;
+        DisplayName?: string;
+        GivenName: string;
+    };
 };
 
 type QBItemBasedExpense = {

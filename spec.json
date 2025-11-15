@@ -43,11 +43,16 @@
                   "companyId": {
                     "type": "string",
                     "nullable": true
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "pattern": "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$"
                   }
                 },
                 "required": [
                   "firstName",
-                  "lastName"
+                  "lastName",
+                  "phoneNumber"
                 ]
               }
             }
@@ -76,12 +81,16 @@
                     "companyId": {
                       "type": "string",
                       "nullable": true
+                    },
+                    "phoneNumber": {
+                      "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "firstName",
-                    "lastName"
+                    "lastName",
+                    "phoneNumber"
                   ]
                 }
               }
@@ -150,12 +159,16 @@
                     },
                     "email": {
                       "type": "string"
+                    },
+                    "phoneNumber": {
+                      "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "firstName",
-                    "lastName"
+                    "lastName",
+                    "phoneNumber"
                   ]
                 }
               }
@@ -184,6 +197,116 @@
           },
           "500": {
             "description": "Get User Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Updates a user by the given ID",
+        "description": "Updates the user with the given ID in the database",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstName": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "pattern": "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully updated user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "companyId": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "phoneNumber": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "firstName",
+                    "lastName",
+                    "phoneNumber"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Update user error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Update user error",
             "content": {
               "application/json": {
                 "schema": {
@@ -296,11 +419,21 @@
                   "businessOwnerFullName": {
                     "type": "string",
                     "minLength": 1
+                  },
+                  "companyType": {
+                    "type": "string",
+                    "enum": [
+                      "LLC",
+                      "Sole Proprietorship",
+                      "Corporation",
+                      "Partnership"
+                    ]
                   }
                 },
                 "required": [
                   "name",
-                  "businessOwnerFullName"
+                  "businessOwnerFullName",
+                  "companyType"
                 ]
               }
             }
@@ -370,6 +503,15 @@
                         ]
                       }
                     },
+                    "companyType": {
+                      "type": "string",
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
+                    },
                     "createdAt": {
                       "type": "string"
                     },
@@ -381,6 +523,7 @@
                     "id",
                     "name",
                     "businessOwnerFullName",
+                    "companyType",
                     "createdAt",
                     "updatedAt"
                   ]
@@ -499,6 +642,15 @@
                         ]
                       }
                     },
+                    "companyType": {
+                      "type": "string",
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
+                    },
                     "createdAt": {
                       "type": "string"
                     },
@@ -510,6 +662,7 @@
                     "id",
                     "name",
                     "businessOwnerFullName",
+                    "companyType",
                     "createdAt",
                     "updatedAt"
                   ]
@@ -574,6 +727,15 @@
                   },
                   "businessOwnerFullName": {
                     "type": "string"
+                  },
+                  "companyType": {
+                    "type": "string",
+                    "enum": [
+                      "LLC",
+                      "Sole Proprietorship",
+                      "Corporation",
+                      "Partnership"
+                    ]
                   }
                 }
               }
@@ -644,6 +806,15 @@
                         ]
                       }
                     },
+                    "companyType": {
+                      "type": "string",
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
+                    },
                     "createdAt": {
                       "type": "string"
                     },
@@ -655,6 +826,7 @@
                     "id",
                     "name",
                     "businessOwnerFullName",
+                    "companyType",
                     "createdAt",
                     "updatedAt"
                   ]
@@ -801,6 +973,15 @@
                         ]
                       }
                     },
+                    "companyType": {
+                      "type": "string",
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
+                    },
                     "createdAt": {
                       "type": "string"
                     },
@@ -812,6 +993,7 @@
                     "id",
                     "name",
                     "businessOwnerFullName",
+                    "companyType",
                     "createdAt",
                     "updatedAt"
                   ]
@@ -958,6 +1140,15 @@
                         ]
                       }
                     },
+                    "companyType": {
+                      "type": "string",
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
+                    },
                     "createdAt": {
                       "type": "string"
                     },
@@ -969,6 +1160,7 @@
                     "id",
                     "name",
                     "businessOwnerFullName",
+                    "companyType",
                     "createdAt",
                     "updatedAt"
                   ]
@@ -2491,12 +2683,11 @@
                       "femaDisasterId": {
                         "type": "string"
                       },
-                      "notificationType": {
-                        "type": "string",
-                        "enum": [
-                          "web",
-                          "email"
-                        ]
+                      "isWeb": {
+                        "type": "boolean"
+                      },
+                      "isEmail": {
+                        "type": "boolean"
                       },
                       "notificationStatus": {
                         "type": "string",
@@ -2576,12 +2767,16 @@
                           "companyId": {
                             "type": "string",
                             "nullable": true
+                          },
+                          "phoneNumber": {
+                            "type": "string"
                           }
                         },
                         "required": [
                           "id",
                           "firstName",
-                          "lastName"
+                          "lastName",
+                          "phoneNumber"
                         ]
                       },
                       "femaDisaster": {
@@ -2741,6 +2936,15 @@
                                   ]
                                 }
                               },
+                              "companyType": {
+                                "type": "string",
+                                "enum": [
+                                  "LLC",
+                                  "Sole Proprietorship",
+                                  "Corporation",
+                                  "Partnership"
+                                ]
+                              },
                               "createdAt": {
                                 "type": "string"
                               },
@@ -2752,6 +2956,7 @@
                               "id",
                               "name",
                               "businessOwnerFullName",
+                              "companyType",
                               "createdAt",
                               "updatedAt"
                             ]
@@ -2776,7 +2981,8 @@
                       "id",
                       "userId",
                       "femaDisasterId",
-                      "notificationType",
+                      "isWeb",
+                      "isEmail",
                       "notificationStatus",
                       "createdAt",
                       "user",
@@ -2863,12 +3069,11 @@
                     "femaDisasterId": {
                       "type": "string"
                     },
-                    "notificationType": {
-                      "type": "string",
-                      "enum": [
-                        "web",
-                        "email"
-                      ]
+                    "isWeb": {
+                      "type": "boolean"
+                    },
+                    "isEmail": {
+                      "type": "boolean"
                     },
                     "notificationStatus": {
                       "type": "string",
@@ -2936,7 +3141,8 @@
                     "id",
                     "userId",
                     "femaDisasterId",
-                    "notificationType",
+                    "isWeb",
+                    "isEmail",
                     "createdAt"
                   ]
                 }
@@ -3018,12 +3224,11 @@
                     "femaDisasterId": {
                       "type": "string"
                     },
-                    "notificationType": {
-                      "type": "string",
-                      "enum": [
-                        "web",
-                        "email"
-                      ]
+                    "isWeb": {
+                      "type": "boolean"
+                    },
+                    "isEmail": {
+                      "type": "boolean"
                     },
                     "notificationStatus": {
                       "type": "string",
@@ -3091,7 +3296,8 @@
                     "id",
                     "userId",
                     "femaDisasterId",
-                    "notificationType",
+                    "isWeb",
+                    "isEmail",
                     "createdAt"
                   ]
                 }
@@ -3158,18 +3364,18 @@
                     "femaDisasterId": {
                       "type": "string"
                     },
-                    "notificationType": {
-                      "type": "string",
-                      "enum": [
-                        "web",
-                        "email"
-                      ]
+                    "isWeb": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "isEmail": {
+                      "type": "boolean",
+                      "default": true
                     }
                   },
                   "required": [
                     "userId",
-                    "femaDisasterId",
-                    "notificationType"
+                    "femaDisasterId"
                   ]
                 }
               }
@@ -3195,12 +3401,11 @@
                       "femaDisasterId": {
                         "type": "string"
                       },
-                      "notificationType": {
-                        "type": "string",
-                        "enum": [
-                          "web",
-                          "email"
-                        ]
+                      "isWeb": {
+                        "type": "boolean"
+                      },
+                      "isEmail": {
+                        "type": "boolean"
                       },
                       "notificationStatus": {
                         "type": "string",
@@ -3268,7 +3473,8 @@
                       "id",
                       "userId",
                       "femaDisasterId",
-                      "notificationType",
+                      "isWeb",
+                      "isEmail",
                       "createdAt"
                     ]
                   }
@@ -3660,37 +3866,46 @@
     },
     "/invoice/bulk": {
       "post": {
-        "summary": "Bulk create or update new invoices",
+        "summary": "Bulk create or update new invoices ",
         "description": "Creates new invoices according to the schema. If there is an invoice in the database with the same quickbooks_id, company_id pairing, then it will overwrite it's attributes",
         "tags": [
           "Invoice"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "quickbooksId": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "exclusiveMinimum": true
-                    },
-                    "totalAmountCents": {
-                      "type": "integer",
-                      "minimum": 0
-                    },
-                    "quickbooksDateCreated": {
-                      "type": "string",
-                      "format": "date-time"
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "quickbooksId": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": true
+                        },
+                        "totalAmountCents": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "quickbooksDateCreated": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "totalAmountCents"
+                      ]
                     }
-                  },
-                  "required": [
-                    "totalAmountCents"
-                  ]
-                }
+                  }
+                },
+                "required": [
+                  "items"
+                ]
               }
             }
           }
@@ -4361,34 +4576,46 @@
           "Purchases"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "quickBooksId": {
-                      "type": "number"
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "quickBooksId": {
+                          "type": "number"
+                        },
+                        "totalAmountCents": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "isRefund": {
+                          "type": "boolean"
+                        },
+                        "quickbooksDateCreated": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "vendor": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "totalAmountCents",
+                        "isRefund"
+                      ]
                     },
-                    "totalAmountCents": {
-                      "type": "number",
-                      "minimum": 0
-                    },
-                    "isRefund": {
-                      "type": "boolean"
-                    },
-                    "quickbooksDateCreated": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  },
-                  "required": [
-                    "totalAmountCents",
-                    "isRefund"
-                  ]
+                    "minItems": 1
+                  }
                 },
-                "minItems": 1
+                "required": [
+                  "items"
+                ]
               }
             }
           }
@@ -4425,6 +4652,9 @@
                         "type": "boolean"
                       },
                       "dateCreated": {
+                        "type": "string"
+                      },
+                      "vendor": {
                         "type": "string"
                       }
                     },
@@ -4471,6 +4701,9 @@
                         "type": "boolean"
                       },
                       "dateCreated": {
+                        "type": "string"
+                      },
+                      "vendor": {
                         "type": "string"
                       }
                     },
@@ -4574,6 +4807,9 @@
                     },
                     "isRefund": {
                       "type": "boolean"
+                    },
+                    "vendor": {
+                      "type": "string"
                     },
                     "dateCreated": {
                       "type": "string"
@@ -4772,6 +5008,9 @@
                       },
                       "isRefund": {
                         "type": "boolean"
+                      },
+                      "vendor": {
+                        "type": "string"
                       },
                       "dateCreated": {
                         "type": "string"
@@ -6489,7 +6728,7 @@
         }
       }
     },
-    "/notifications/preferences": {
+    "/preferences": {
       "get": {
         "summary": "Get a user's notificiation preferences",
         "tags": [
@@ -6707,44 +6946,53 @@
           "InvoiceLineItem"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "description": {
-                      "type": "string",
-                      "maxLength": 400
-                    },
-                    "invoiceId": {
-                      "type": "string"
-                    },
-                    "quickbooksId": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "exclusiveMinimum": true
-                    },
-                    "amountCents": {
-                      "type": "integer",
-                      "minimum": 0
-                    },
-                    "category": {
-                      "type": "string",
-                      "maxLength": 100
-                    },
-                    "quickbooksDateCreated": {
-                      "type": "string",
-                      "nullable": true,
-                      "format": "date-time"
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "type": "string",
+                          "maxLength": 400
+                        },
+                        "invoiceId": {
+                          "type": "string"
+                        },
+                        "quickbooksId": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": true
+                        },
+                        "amountCents": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "category": {
+                          "type": "string",
+                          "maxLength": 100
+                        },
+                        "quickbooksDateCreated": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "invoiceId",
+                        "amountCents"
+                      ]
                     }
-                  },
-                  "required": [
-                    "invoiceId",
-                    "amountCents"
-                  ]
-                }
+                  }
+                },
+                "required": [
+                  "items"
+                ]
               }
             }
           }
@@ -6986,52 +7234,61 @@
           "Purchase Line Items"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "description": {
-                      "type": "string",
-                      "maxLength": 400
-                    },
-                    "quickBooksId": {
-                      "type": "number"
-                    },
-                    "purchaseId": {
-                      "type": "string",
-                      "minLength": 1
-                    },
-                    "amountCents": {
-                      "type": "number",
-                      "minimum": 0
-                    },
-                    "category": {
-                      "type": "string",
-                      "nullable": true,
-                      "maxLength": 100
-                    },
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "extraneous",
-                        "typical"
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "type": "string",
+                          "maxLength": 400
+                        },
+                        "quickBooksId": {
+                          "type": "number"
+                        },
+                        "purchaseId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "amountCents": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "category": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 100
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "extraneous",
+                            "typical"
+                          ]
+                        },
+                        "quickbooksDateCreated": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "purchaseId",
+                        "amountCents",
+                        "type"
                       ]
                     },
-                    "quickbooksDateCreated": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  },
-                  "required": [
-                    "purchaseId",
-                    "amountCents",
-                    "type"
-                  ]
+                    "minItems": 1
+                  }
                 },
-                "minItems": 1
+                "required": [
+                  "items"
+                ]
               }
             }
           }

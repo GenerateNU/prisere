@@ -38,7 +38,7 @@ export class InvoiceController implements IInvoiceController {
         async (ctx: Context): ControllerResponse<TypedResponse<CreateOrUpdateInvoicesResponse, 201>> => {
             const json = await ctx.req.json();
             const companyId = await ctx.get("companyId");
-            const invoicesWithCompanyId = json.map((invoice: CreateOrUpdateInvoicesRequest) => ({
+            const invoicesWithCompanyId = json.items.map((invoice: CreateOrUpdateInvoicesRequest) => ({
                 ...invoice,
                 companyId: companyId,
             }));

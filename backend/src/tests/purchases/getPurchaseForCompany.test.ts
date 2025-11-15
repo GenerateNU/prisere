@@ -44,13 +44,15 @@ describe("GET /purchase", () => {
 
     test("GET /purchase - Valid companyId", async () => {
         for (let i = 0; i < 5; i++) {
-            await createPurchase([
-                {
-                    quickBooksId: 10000 + i,
-                    totalAmountCents: 50000 + i * 1000,
-                    isRefund: false,
-                },
-            ]);
+            await createPurchase({
+                items: [
+                    {
+                        quickBooksId: 10000 + i,
+                        totalAmountCents: 50000 + i * 1000,
+                        isRefund: false,
+                    },
+                ],
+            });
         }
 
         const response = await app.request(TESTING_PREFIX + `/purchase`, {
@@ -78,13 +80,15 @@ describe("GET /purchase", () => {
     test("GET /purchase - With pageNumber", async () => {
         // Create some purchases
         for (let i = 0; i < 3; i++) {
-            await createPurchase([
-                {
-                    quickBooksId: 10000 + i,
-                    totalAmountCents: 50000 + i * 1000,
-                    isRefund: false,
-                },
-            ]);
+            await createPurchase({
+                items: [
+                    {
+                        quickBooksId: 10000 + i,
+                        totalAmountCents: 50000 + i * 1000,
+                        isRefund: false,
+                    },
+                ],
+            });
         }
 
         const response = await app.request(TESTING_PREFIX + `/purchase?pageNumber=1`, {
@@ -102,13 +106,15 @@ describe("GET /purchase", () => {
     test("GET /purchase - With resultsPerPage", async () => {
         // Create 15 purchases
         for (let i = 0; i < 15; i++) {
-            await createPurchase([
-                {
-                    quickBooksId: 10000 + i,
-                    totalAmountCents: 50000 + i * 1000,
-                    isRefund: false,
-                },
-            ]);
+            await createPurchase({
+                items: [
+                    {
+                        quickBooksId: 10000 + i,
+                        totalAmountCents: 50000 + i * 1000,
+                        isRefund: false,
+                    },
+                ],
+            });
         }
 
         const response = await app.request(TESTING_PREFIX + `/purchase?resultsPerPage=10`, {
@@ -127,13 +133,15 @@ describe("GET /purchase", () => {
     test("GET /purchase - With pageNumber and resultsPerPage", async () => {
         // Create 10 purchases
         for (let i = 0; i < 10; i++) {
-            await createPurchase([
-                {
-                    quickBooksId: 10000 + i,
-                    totalAmountCents: 50000 + i * 1000,
-                    isRefund: false,
-                },
-            ]);
+            await createPurchase({
+                items: [
+                    {
+                        quickBooksId: 10000 + i,
+                        totalAmountCents: 50000 + i * 1000,
+                        isRefund: false,
+                    },
+                ],
+            });
         }
 
         const response = await app.request(TESTING_PREFIX + `/purchase?pageNumber=0&resultsPerPage=5`, {
@@ -152,13 +160,15 @@ describe("GET /purchase", () => {
     test("GET /purchase - Default Pagination Values", async () => {
         // Create 25 purchases to test default page size
         for (let i = 0; i < 25; i++) {
-            await createPurchase([
-                {
-                    isRefund: false,
-                    quickBooksId: 10000 + i,
-                    totalAmountCents: 50000 + i * 1000,
-                },
-            ]);
+            await createPurchase({
+                items: [
+                    {
+                        isRefund: false,
+                        quickBooksId: 10000 + i,
+                        totalAmountCents: 50000 + i * 1000,
+                    },
+                ],
+            });
         }
 
         // Should use default pageNumber=0 and resultsPerPage=20
@@ -269,13 +279,15 @@ describe("GET /purchase", () => {
     test("GET /purchase - Very Large pageNumber", async () => {
         // Create a few purchases
         for (let i = 0; i < 5; i++) {
-            await createPurchase([
-                {
-                    isRefund: false,
-                    quickBooksId: 10000 + i,
-                    totalAmountCents: 50000,
-                },
-            ]);
+            await createPurchase({
+                items: [
+                    {
+                        isRefund: false,
+                        quickBooksId: 10000 + i,
+                        totalAmountCents: 50000,
+                    },
+                ],
+            });
         }
 
         const response = await app.request(TESTING_PREFIX + `/purchase?pageNumber=10000`, {
@@ -294,13 +306,15 @@ describe("GET /purchase", () => {
     test("GET /purchase - Very Large resultsPerPage", async () => {
         // Create a few purchases
         for (let i = 0; i < 5; i++) {
-            await createPurchase([
-                {
-                    isRefund: false,
-                    quickBooksId: 10000 + i,
-                    totalAmountCents: 50000,
-                },
-            ]);
+            await createPurchase({
+                items: [
+                    {
+                        isRefund: false,
+                        quickBooksId: 10000 + i,
+                        totalAmountCents: 50000,
+                    },
+                ],
+            });
         }
 
         const response = await app.request(TESTING_PREFIX + `/purchase?resultsPerPage=1000`, {
@@ -320,13 +334,15 @@ describe("GET /purchase", () => {
 
         // Create multiple purchases for the same company
         for (let i = 0; i < purchaseCount; i++) {
-            await createPurchase([
-                {
-                    quickBooksId: 20000 + i,
-                    totalAmountCents: 100000 + i * 5000,
-                    isRefund: i % 2 === 0,
-                },
-            ]);
+            await createPurchase({
+                items: [
+                    {
+                        quickBooksId: 20000 + i,
+                        totalAmountCents: 100000 + i * 5000,
+                        isRefund: i % 2 === 0,
+                    },
+                ],
+            });
         }
 
         const response = await app.request(TESTING_PREFIX + `/purchase?resultsPerPage=10`, {

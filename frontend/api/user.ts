@@ -1,7 +1,13 @@
 "use server";
-import { CreateUserRequest, User, requiredOnboardingProgress } from "@/types/user";
-import { authHeader, authWrapper, getClient } from "./client";
+import {
+    CreateUserRequest,
+    UpdateUserRequest,
+    UpdateUserResponse,
+    User,
+    requiredOnboardingProgress,
+} from "@/types/user";
 import { createSupabaseClient } from "@/utils/supabase/server";
+import { authHeader, authWrapper, getClient } from "./client";
 
 export const createUser = async (payload: CreateUserRequest): Promise<User> => {
     const req = async (token: string): Promise<User> => {
@@ -45,4 +51,21 @@ export const getUser = async (): Promise<User> => {
         }
     };
     return authWrapper<User>()(req);
+};
+
+export const updateUserInfo = async (payload: UpdateUserRequest & { id: string }) => {
+    const req = async (token: string) => {
+        const client = getClient();
+        const { data, error, response } = await client.PATCH("/users", {
+            headers: authHeader(token),
+            body: { ...payload, id: payload.id },
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+
+    return authWrapper<UpdateUserResponse>()(req);
 };

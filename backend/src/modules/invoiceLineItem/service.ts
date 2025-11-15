@@ -23,7 +23,7 @@ export class InvoiceLineItemService implements IInvoiceLineItemService {
 
     bulkCreateOrUpdateInvoiceLineItems = withServiceErrorHandling(
         async (payload: CreateOrUpdateInvoiceLineItemsDTO): Promise<InvoiceLineItem[]> => {
-            const uniqueInvoiceIds = [...new Set(payload.map((inv) => inv.invoiceId))];
+            const uniqueInvoiceIds = [...new Set(payload.items.map((inv) => inv.invoiceId))];
 
             // validate all uuids as being properly formatted
             const badIds = uniqueInvoiceIds.filter((id) => !validate(id));
