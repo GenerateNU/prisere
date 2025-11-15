@@ -115,9 +115,7 @@ export default function TableContent({
                                     }}
                                 />
                             )}
-                            <span className="align-middle">
-                                {displayMerchant}
-                            </span>
+                            <span className="align-middle">{displayMerchant}</span>
                         </div>
                     );
                 },
@@ -147,9 +145,7 @@ export default function TableContent({
                                     }}
                                 />
                             )}
-                            <span className="align-middle">
-                                {displayMerchant.length > 0 ? displayMerchant : ""}
-                            </span>
+                            <span className="align-middle">{displayMerchant.length > 0 ? displayMerchant : ""}</span>
                         </div>
                     );
                 },
