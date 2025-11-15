@@ -3,6 +3,7 @@ import { Banner, BannerAction, BannerTitle } from "@/components/ui/shadcn-io/ban
 import { BannerData } from "@/types/user";
 import Link from "next/link";
 import Progress from "../progress";
+import { ClaimInProgressIndexMapping, ClaimStatusInProgressTypes, ClaimStatusType } from "@/types/claim";
 
 type Props = {
     bannerData: BannerData;
@@ -65,7 +66,13 @@ export default function DisasterStatusBanner({ bannerData }: Props) {
     }
 
     // Claim in progress
-    if (bannerData.status === "has-claim") {
+    if (bannerData.status === "has-claim" && bannerData.claim) {
+        let progressStep;
+        if(!ClaimStatusInProgressTypes.includes(bannerData.claim.status as ClaimStatusType)) {
+            progressStep = 5;
+        } else {
+            progressStep = ClaimInProgressIndexMapping[bannerData.claim.status as keyof typeof ClaimInProgressIndexMapping];
+        }
         return (
             <Banner className="w-full px-6 pt-6 pb-2 rounded-lg bg-white border-0">
                 <div className="flex flex-row items-center w-full gap-3">
@@ -77,7 +84,7 @@ export default function DisasterStatusBanner({ bannerData }: Props) {
                             Continue filing your claim report to ensure you maximize benefits.
                         </p>
                         <Progress
-                            progress={3}
+                            progress={progressStep}
                             items={[
                                 { label: "step 1", step: 1 },
                                 { label: "step 2", step: 2 },
