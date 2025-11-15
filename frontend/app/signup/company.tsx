@@ -210,7 +210,7 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
                     <LocationEditor
                         key={index}
                         location={location}
-                        setLocation={(loc) => updateLocation(index, loc)}
+                        setLocation={(loc) => updateLocation(index, loc as CreateLocationRequest)}
                         removeLocation={() => removeLocation(index)}
                         isExpanded={editingLocationIndex === index}
                         onExpand={() =>

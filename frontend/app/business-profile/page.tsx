@@ -1,7 +1,48 @@
+"use client";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Overview from "./Overview";
+
 export default function BusinessProfile() {
+
+    const tabs = [
+        {
+            name: "Overview",
+            value: 'overview',
+            content: (
+                <Overview />
+            )
+        },
+        {
+            name: "View Documents",
+            value: 'documents',
+            content: (
+                <div>View Documents</div>
+            )
+        },
+    ]
+
     return (
-        <div>
-            Business Profile
+        <div className="p-[50px] flex flex-col gap-[23px] ">
+            <div className="pb-[10px]">
+                <h2 className="text-[30px] font-bold">My Business Profile</h2>
+            </div>
+            <Tabs defaultValue='overview' className="gap-[23px]">
+                <TabsList className='bg-background rounded-none p-0'>
+                    {tabs.map(tab => (
+                        <TabsTrigger key={tab.value} value={tab.value}
+                            className='bg-background p-[10px] text-[16px] data-[state=active]:border-[var(--fuchsia)] data-[state=active]:text-[var(--fuchsia)] hover:text-[var(--fuchsia)] h-full rounded-none border-0 border-b-2 border-transparent data-[state=active]:shadow-none'
+                        >
+                            {tab.name}
+                        </TabsTrigger>
+                    ))}
+                </TabsList>
+                {tabs.map(tab => (
+                    <TabsContent key={tab.value} value={tab.value}>
+                        {tab.content}
+                    </TabsContent>
+                ))}
+            </Tabs>
 
         </div>
     );

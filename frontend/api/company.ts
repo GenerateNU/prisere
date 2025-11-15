@@ -1,5 +1,5 @@
 "use server";
-import { Company, CreateCompanyRequest, GetCompanyLocationsResponse } from "@/types/company";
+import { Company, CreateCompanyRequest, GetCompanyLocationsResponse, UpdateCompanyRequest, UpdateCompanyResponse } from "@/types/company";
 import { authHeader, authWrapper, getClient } from "./client";
 
 export const createCompany = async (payload: CreateCompanyRequest): Promise<Company> => {
@@ -48,4 +48,20 @@ export const getCompany = async (): Promise<Company> => {
         }
     };
     return authWrapper<Company>()(req);
+};
+
+export const updateCompany = async (payload: UpdateCompanyRequest): Promise<UpdateCompanyResponse> => {
+    const req = async (token: string): Promise<UpdateCompanyResponse> => {
+        const client = getClient();
+        const { data, error, response } = await client.PATCH("/companies", {
+            headers: authHeader(token),
+            body: payload
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<UpdateCompanyResponse>()(req);
 };
