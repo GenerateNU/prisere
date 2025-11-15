@@ -49,7 +49,7 @@ export default function NetDisasterExpense({ bannerData }: Props) {
     ];
 
     let claimId = "";
-    if (bannerData.status === "has-claim") {
+    if (bannerData.status === "has-claim" && bannerData.claim) {
         // If claim is an array, use [0] to get the first claim
         claimId = bannerData.claim.id;
     }

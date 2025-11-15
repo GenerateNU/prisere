@@ -397,11 +397,11 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        id: string;
-                        source: string;
-                        externalId: string;
-                        createdAt: string;
-                        updatedAt: string;
+                        id?: string;
+                        source?: string;
+                        externalId?: string;
+                        createdAt?: string;
+                        updatedAt?: string;
                         importTime?: string;
                     };
                 };
@@ -486,11 +486,11 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        id: string;
-                        source: string;
-                        externalId: string;
-                        createdAt: string;
-                        updatedAt: string;
+                        id?: string;
+                        source?: string;
+                        externalId?: string;
+                        createdAt?: string;
+                        updatedAt?: string;
                         importTime?: string;
                     };
                 };
@@ -646,68 +646,65 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json":
-                            | {
-                                  id: string;
-                                  /**
-                                   * @default ACTIVE
-                                   * @enum {string}
-                                   */
-                                  status:
-                                      | "ACTIVE"
-                                      | "FILED"
-                                      | "IN_PROGRESS_DISASTER"
-                                      | "IN_PROGRESS_PERSONAL"
-                                      | "IN_PROGRESS_BUSINESS"
-                                      | "IN_PROGRESS_INSURANCE"
-                                      | "IN_PROGRESS_EXPORT";
-                                  /** Format: date-time */
-                                  createdAt: string;
-                                  /** Format: date-time */
-                                  updatedAt?: string;
-                                  femaDisaster?: {
-                                      /** Format: uuid */
-                                      id: string;
-                                      disasterNumber: number;
-                                      fipsStateCode: number;
-                                      /** Format: date-time */
-                                      declarationDate: string;
-                                      incidentBeginDate?: string;
-                                      incidentEndDate?: string;
-                                      fipsCountyCode: number;
-                                      declarationType: string;
-                                      designatedArea: string;
-                                      designatedIncidentTypes: string | null;
-                                  };
-                                  selfDisaster?: {
-                                      id: string;
-                                      name: string;
-                                      description: string;
-                                      /** Format: date */
-                                      startDate: string;
-                                      /** Format: date */
-                                      endDate?: string;
-                                      /** Format: date */
-                                      createdAt: string;
-                                      /** Format: date */
-                                      updatedAt: string;
-                                  };
-                                  insurancePolicy?: {
-                                      id: string;
-                                      policyName: string;
-                                      policyHolderFirstName: string;
-                                      policyHolderLastName: string;
-                                      insuranceCompanyName: string;
-                                      policyNumber: string;
-                                      insuranceType: string;
-                                      /** Format: date-time */
-                                      updatedAt: string;
-                                      /** Format: date-time */
-                                      createdAt: string;
-                                  };
-                              }
-                            | unknown
-                            | unknown;
+                        "application/json": {
+                            id: string;
+                            /**
+                             * @default ACTIVE
+                             * @enum {string}
+                             */
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt?: string;
+                            femaDisaster?: {
+                                /** Format: uuid */
+                                id: string;
+                                disasterNumber: number;
+                                fipsStateCode: number;
+                                /** Format: date-time */
+                                declarationDate: string;
+                                incidentBeginDate?: string;
+                                incidentEndDate?: string;
+                                fipsCountyCode: number;
+                                declarationType: string;
+                                designatedArea: string;
+                                designatedIncidentTypes: string | null;
+                            };
+                            selfDisaster?: {
+                                id: string;
+                                name: string;
+                                description: string;
+                                /** Format: date */
+                                startDate: string;
+                                /** Format: date */
+                                endDate?: string;
+                                /** Format: date */
+                                createdAt: string;
+                                /** Format: date */
+                                updatedAt: string;
+                            };
+                            insurancePolicy?: {
+                                id: string;
+                                policyName: string;
+                                policyHolderFirstName: string;
+                                policyHolderLastName: string;
+                                insuranceCompanyName: string;
+                                policyNumber: string;
+                                insuranceType: string;
+                                /** Format: date-time */
+                                updatedAt: string;
+                                /** Format: date-time */
+                                createdAt: string;
+                            };
+                        } | null;
                     };
                 };
                 /** @description Get Claim in Progress Errors */
@@ -3497,6 +3494,79 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/claims/{id}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Generates the pdf for the claim with the given ID
+         * @description Compiles the necessary information from the db and builds the appropriate PDF
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    claimId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Generated pdf available at the returned link */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** Format: uri */
+                            url: string;
+                        };
+                    };
+                };
+                /** @description PDF generation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Claim not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description PDF generation error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/claim-locations": {
         parameters: {
             query?: never;
@@ -4364,13 +4434,6 @@ export interface paths {
                         };
                     };
                 };
-                /** @description There does not exist any purchase line item the given id */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
                 /** @description Error modifying purchase line item */
                 500: {
                     headers: {
@@ -4453,13 +4516,6 @@ export interface paths {
                             error: string;
                         };
                     };
-                };
-                /** @description There does not exist any purchase line item the given id */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
                 };
                 /** @description Error modifying purchase line item */
                 500: {
