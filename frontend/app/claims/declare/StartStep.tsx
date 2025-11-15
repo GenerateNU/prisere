@@ -39,19 +39,28 @@ export default function StartStep({ handleStepForward }: StartProps) {
                     <ul className="flex flex-col gap-[10px]">
                         <li>
                             <div className="flex text-[15px] w-[330px] h-[65px] items-center gap-[10px] rounded-[20px] border-[1px] border-[#bfbfbf] p-[10px]">
-                                <NavBarCircle size={40} />
+                                <NavBarCircle
+                                    icon={<img src="/table.svg" alt="" style={{ width: "16px" }} />}
+                                    size={40}
+                                />
                                 Update disaster related expenses
                             </div>
                         </li>
                         <li>
                             <div className="flex text-[15px] w-[330px] h-[65px] items-center gap-[10px] rounded-[20px] border-[1px] border-[#bfbfbf] p-[10px]">
-                                <NavBarCircle size={40} />
+                                <NavBarCircle
+                                    icon={<img src="/report.svg" alt="" style={{ width: "16px" }} />}
+                                    size={40}
+                                />
                                 Insurance information
                             </div>
                         </li>
                         <li>
                             <div className="flex text-[15px] w-[330px] h-[65px] items-center gap-[10px] rounded-[20px] border-[1px] border-[#bfbfbf] p-[10px]">
-                                <NavBarCircle size={40} />
+                                <NavBarCircle
+                                    icon={<img src="/image.svg" alt="" style={{ width: "16px" }} />}
+                                    size={40}
+                                />
                                 Images of damage or property loss
                             </div>
                         </li>

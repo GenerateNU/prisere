@@ -117,7 +117,7 @@ export default function BusinessInfoStep({
                     <p className="text-[20px]">
                         We will use a 3 years average of your revenues and expense data for the report.
                     </p>
-                    <RevenueAndExpenses showLinks={false} />
+                    <RevenueAndExpenses />
                 </div>
             </Card>
             <div className="flex justify-end gap-[25px]">

@@ -3,7 +3,6 @@ import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from
 import { FilteredPurchases } from "@/types/purchase";
 import { FileUp, Filter, Printer } from "lucide-react";
 import { useState } from "react";
-import { useFetchPurchases, useFetchAllCategories } from "../../../api/purchase";
 import { Filters } from "./filters";
 import PaginationControls from "./PaginationControls";
 import ResultsPerPageSelect from "./ResultsPerPageSelect";
@@ -11,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { SortByColumn } from "../../../types/purchase";
 import { FilterDisplay } from "./filter-display-bar";
 import TableContent from "./table-content";
+import { getClientAuthToken, getClient, authHeader, authWrapper } from "@/api/client";
+import { useQuery } from "@tanstack/react-query";
 
 interface ExpenseTableConfig {
     title: string;
@@ -115,4 +116,57 @@ export default function ExpenseTable({ title, editableTags, rowOption }: Expense
             </CardFooter>
         </Card>
     );
+}
+
+export function useFetchPurchases(filters: FilteredPurchases) {
+    return useQuery({
+        queryKey: ["purchases-for-company", filters],
+        queryFn: async ({ signal }) => {
+            const token = await getClientAuthToken();
+            const client = getClient();
+            const { data, error, response } = await client.GET("/purchase", {
+                params: {
+                    query: {
+                        categories: filters.categories,
+                        dateFrom: filters.dateFrom,
+                        dateTo: filters.dateTo,
+                        search: filters.search,
+                        sortBy: filters.sortBy,
+                        sortOrder: filters.sortOrder,
+                        pageNumber: filters.pageNumber,
+                        resultsPerPage: filters.resultsPerPage,
+                        type: filters.type,
+                    },
+                },
+                headers: authHeader(token),
+                signal,
+            });
+            if (response.ok) {
+                return data;
+            } else {
+                throw Error(error?.error);
+            }
+        },
+    });
+}
+
+export function useFetchAllCategories() {
+    return useQuery({
+        queryKey: ["categories-for-purchases"],
+        queryFn: async (): Promise<string[]> => {
+            const req = async (token: string): Promise<string[]> => {
+                const client = getClient();
+                const { data, error, response } = await client.GET("/purchase/categories", {
+                    headers: authHeader(token),
+                });
+                if (response.ok) {
+                    return data!;
+                } else {
+                    throw Error(error?.error);
+                }
+            };
+
+            return authWrapper<string[]>()(req);
+        },
+    });
 }
