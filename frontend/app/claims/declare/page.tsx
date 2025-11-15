@@ -1,45 +1,23 @@
 "use client";
 
-import React from "react";
+import { getCompany, getCompanyLocations } from "@/api/company";
+import { getUser } from "@/api/user";
+import Progress from "@/components/progress";
+import { cn } from "@/lib/utils";
+import { ClaimStepData, ClaimStepNumber, decrementStep, incrementStep, isStep } from "@/types/claim";
+import { useQuery } from "@tanstack/react-query";
+import React, { Suspense } from "react";
 import BusinessInfoStep from "./BusinessInfoStep";
+import { SaveStatusIndicator } from "./components/SaveStatusIndicator";
 import DisasterInfoStep from "./DisasterInfoStep";
 import ExportStep from "./ExportStep";
+import { useClaimProgress } from "./hooks/useClaimProgress";
+import IncidentDateStep from "./IncidentDateStep";
 import InsurerInfoStep from "./InsurerInfoStep";
 import PersonalInfoStep from "./PersonalInfoStep";
 import StartStep from "./StartStep";
-import IncidentDateStep from "./IncidentDateStep";
-import { getCompany, getCompanyLocations } from "@/api/company";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createSelfDisaster } from "@/api/self-disaster";
-import { createClaim } from "@/api/claim";
-import { createClaimLocationLink } from "@/api/claim-location";
-import { getUser } from "@/api/user";
-import Progress from "@/components/progress";
 
-export default function DeclareDisaster() {
-    const [step, setStep] = React.useState(-2);
-    const [disasterInfo, setDisasterInfo] = React.useState({
-        name: "",
-        startDate: null as Date | null,
-        endDate: null as Date | null,
-        location: "", //  business locations id
-        description: "",
-    });
-    const [personalInfo, setPersonalInfo] = React.useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-    });
-    const [businessInfo, setBusinessInfo] = React.useState({
-        businessName: "",
-        businessOwner: "",
-        businessType: "", // ???
-    });
-    const [insurerInfo, setInsurerInfo] = React.useState({
-        name: "test",
-    });
-
+function DeclareDisasterContent() {
     const { data: businessInfoData, isSuccess: businessInfoSuccess } = useQuery({
         queryKey: ["businessInfo"],
         queryFn: getCompany,
@@ -50,15 +28,71 @@ export default function DeclareDisaster() {
         queryFn: getUser,
     });
 
+    const { data: companyLocations } = useQuery({
+        queryKey: ["companyLocations"],
+        queryFn: getCompanyLocations,
+    });
+
+    // Initial form data from user/company queries
+    const initialDisasterInfo = {
+        name: "",
+        startDate: null as Date | null,
+        endDate: null as Date | null,
+        location: "",
+        description: "",
+    };
+
+    const initialPersonalInfo = {
+        firstName: userInfoData?.firstName || "",
+        lastName: userInfoData?.lastName || "",
+        email: userInfoData?.email || "",
+        phone: "",
+    };
+
+    const initialBusinessInfo = {
+        businessName: businessInfoData?.name || "",
+        businessOwner: businessInfoData?.businessOwnerFullName || "",
+        businessType: "",
+    };
+
+    const initialInsurerInfo = {
+        name: "test",
+    };
+
+    // Use the claim progress hook
+    const {
+        claimId,
+        step,
+        saveStatus,
+        disasterInfo,
+        personalInfo,
+        businessInfo,
+        insurerInfo,
+        setDisasterInfo,
+        setPersonalInfo,
+        setBusinessInfo,
+        setInsurerInfo,
+        setStep,
+        commitDisasterStep,
+        commitPersonalStep,
+        commitBusinessStep,
+        commitInsurerStep,
+        finalizeClaimSubmission,
+    } = useClaimProgress(initialDisasterInfo, initialPersonalInfo, initialBusinessInfo, initialInsurerInfo);
+
+    // Update local state when queries succeed
     React.useEffect(() => {
-        if (businessInfoSuccess) {
+        if (businessInfoSuccess && businessInfoData) {
             setBusinessInfo({
                 businessName: businessInfoData.name,
                 businessOwner: businessInfoData.businessOwnerFullName,
                 businessType: "",
             });
         }
-        if (userInfoSuccess) {
+    }, [businessInfoSuccess, businessInfoData, setBusinessInfo]);
+
+    React.useEffect(() => {
+        if (userInfoSuccess && userInfoData) {
             setPersonalInfo({
                 firstName: userInfoData.firstName,
                 lastName: userInfoData.lastName,
@@ -66,72 +100,46 @@ export default function DeclareDisaster() {
                 phone: "",
             });
         }
-    }, [businessInfoSuccess, userInfoSuccess, businessInfoData, userInfoData]);
+    }, [userInfoSuccess, userInfoData, setPersonalInfo]);
 
-    const { mutate: createClaimLocationMutation } = useMutation({
-        mutationFn: (claimId: string) =>
-            createClaimLocationLink({ claimId: claimId, locationAddressId: disasterInfo.location }),
-        onSuccess: () => {
-            setStep(6); // Move to export step
-        },
-        onError: (error) => {
-            console.error("Error creating claim location link:", error);
-        },
-    });
-
-    const { mutate: createClaimMutation } = useMutation({
-        mutationFn: (disasterId: string) => createClaim({ selfDisasterId: disasterId }),
-        onSuccess: (data) => {
-            createClaimLocationMutation(data.id);
-        },
-        onError: (error) => {
-            console.error("Error creating claim:", error);
-        },
-    });
-
-    const { mutate: createSelfDisasterMutation } = useMutation({
-        mutationFn: async () => {
-            const payload = {
-                name: disasterInfo.name,
-                description: disasterInfo.description,
-                startDate:
-                    disasterInfo.startDate?.toISOString().split("T")[0] ?? new Date().toISOString().split("T")[0],
-                endDate: disasterInfo.endDate?.toISOString().split("T")[0],
-            };
-            return await createSelfDisaster(payload);
-        },
-        onSuccess: (data) => {
-            createClaimMutation(data.id);
-        },
-        onError: (error) => {
-            console.error("Error creating self disaster:", error);
-        },
-    });
-
-    const handleStepForward = () => {
-        if (step === 5) {
-            createSelfDisasterMutation();
-            return;
+    const handleStepForward = async <T extends ClaimStepNumber>(step: T, validatedData: ClaimStepData<T>) => {
+        // Handle claim creation and backend commits at specific steps
+        if (isStep(step, -1)) {
+            // Moving from incident date to disaster info
+            setStep(0);
+        } else if (isStep(step, 0, validatedData)) {
+            // Commit disaster step - creates/updates SelfDisaster and Claim
+            await commitDisasterStep(validatedData.disasterInfo);
+            setStep(1);
+        } else if (isStep(step, 1, validatedData)) {
+            // Commit personal step
+            await commitPersonalStep(validatedData.personalInfo);
+            setStep(2);
+        } else if (isStep(step, 2, validatedData)) {
+            // Commit business step
+            await commitBusinessStep(validatedData.businessInfo);
+            setStep(3);
+        } else if (isStep(step, 3, validatedData)) {
+            // Commit insurer step
+            await commitInsurerStep(validatedData.insurerInfo);
+            setStep(4);
+        } else if (isStep(step, 4, validatedData)) {
+            // Finalize submission
+            await finalizeClaimSubmission();
+            setStep(5);
+        } else {
+            setStep(incrementStep(step));
         }
-        setStep(step + 1);
     };
 
     const handleStepBack = () => {
-        setStep(step - 1);
+        setStep(decrementStep(step));
     };
-
-    // Query for company locations
-    const { data: companyLocations } = useQuery({
-        queryKey: ["companyLocations"],
-        queryFn: getCompanyLocations,
-    });
-
-    React.useEffect(() => {}, [disasterInfo]);
 
     const steps = [
         {
             step: -2,
-            render: <StartStep handleStepForward={handleStepForward} />,
+            render: <StartStep handleStepForward={() => setStep(-1)} />,
         },
         {
             step: -1,
@@ -139,11 +147,11 @@ export default function DeclareDisaster() {
                 <IncidentDateStep
                     incidentDate={disasterInfo.startDate}
                     setIncidentDate={(date: Date) => {
-                        setDisasterInfo((prev) => ({ ...prev, startDate: date }));
+                        setDisasterInfo({ startDate: date });
                     }}
                     incidentEndDate={disasterInfo.endDate}
-                    setIncidentEndDate={(date: Date) => setDisasterInfo((prev) => ({ ...prev, endDate: date }))}
-                    handleStepForward={handleStepForward}
+                    setIncidentEndDate={(date: Date) => setDisasterInfo({ endDate: date })}
+                    handleStepForward={() => handleStepForward(-1, null)}
                     handleStepBack={handleStepBack}
                 />
             ),
@@ -153,8 +161,8 @@ export default function DeclareDisaster() {
             render: (
                 <DisasterInfoStep
                     disasterInfo={disasterInfo}
-                    setInfo={(info) => setDisasterInfo((prev) => ({ ...prev, ...info }))}
-                    handleStepForward={handleStepForward}
+                    setDisasterInfo={setDisasterInfo}
+                    handleStepForward={(info) => handleStepForward(0, { disasterInfo: info })}
                     handleStepBack={handleStepBack}
                     locations={companyLocations}
                 />
@@ -165,8 +173,8 @@ export default function DeclareDisaster() {
             render: (
                 <PersonalInfoStep
                     personalInfo={personalInfo}
-                    setInfo={(info) => setPersonalInfo((prev) => ({ ...prev, ...info }))}
-                    handleStepForward={handleStepForward}
+                    setPersonalInfo={setPersonalInfo}
+                    handleStepForward={(info) => handleStepForward(1, { personalInfo: info })}
                     handleStepBack={handleStepBack}
                 />
             ),
@@ -176,8 +184,8 @@ export default function DeclareDisaster() {
             render: (
                 <BusinessInfoStep
                     businessInfo={businessInfo}
-                    setInfo={(info) => setBusinessInfo((prev) => ({ ...prev, ...info }))}
-                    handleStepForward={handleStepForward}
+                    setBusinessInfo={setBusinessInfo}
+                    handleStepForward={(info) => handleStepForward(2, { businessInfo: info })}
                     handleStepBack={handleStepBack}
                     locations={companyLocations}
                 />
@@ -188,8 +196,8 @@ export default function DeclareDisaster() {
             render: (
                 <InsurerInfoStep
                     insurerInfo={insurerInfo}
-                    setInfo={(info) => setInsurerInfo((prev) => ({ ...prev, ...info }))}
-                    handleStepForward={handleStepForward}
+                    setInsurerInfo={setInsurerInfo}
+                    handleStepForward={(info) => handleStepForward(3, { insurerInfo: info })}
                     handleStepBack={handleStepBack}
                 />
             ),
@@ -198,23 +206,33 @@ export default function DeclareDisaster() {
             step: 4,
             render: <ExportStep />,
         },
-    ];
+    ] satisfies { step: ClaimStepNumber; render: React.ReactNode }[];
 
     const currentStep = steps.find((s) => s.step === step);
     const claimReportSteps = [
         { label: "Disaster Info", step: 0 },
-        { label: "Business Info", step: 1 },
-        { label: "Personal Info", step: 2 },
+        { label: "Personal Info", step: 1 },
+        { label: "Business Info", step: 2 },
         { label: "Insurer Info", step: 3 },
         { label: "Export Report", step: 4 },
-    ];
+    ] satisfies { label: string; step: ClaimStepNumber }[];
 
     return (
-        <div className={`flex flex-col px-[20%] pt-[70px] min-h-screen pb-8 ${step === 1 && "justify-center"}`}>
+        <div className={cn(`flex flex-col px-[20%] pt-[70px] min-h-screen pb-8`, step === 1 && "justify-center")}>
             {step > -1 && step !== 5 && (
                 <div className="">
-                    <h2 className="text-[40px] font-bold ">Declare Disaster</h2>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-[40px] font-bold">Declare Disaster</h2>
+                        <SaveStatusIndicator status={saveStatus} />
+                    </div>
                     <Progress progress={step} items={claimReportSteps} />
+                </div>
+            )}
+            {claimId && step >= 0 && (
+                <div className="mb-4">
+                    <p className="text-sm text-gray-500">
+                        {step > 0 && "Resuming claim - "}Claim ID: {claimId.substring(0, 8)}...
+                    </p>
                 </div>
             )}
             {currentStep?.render}
@@ -223,5 +241,13 @@ export default function DeclareDisaster() {
              * <ExpenseTable title={"Select Relevant Transactions"} rowOption={'checkbox'} editableTags={false}/>;
              */}
         </div>
+    );
+}
+
+export default function DeclareDisaster() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <DeclareDisasterContent />
+        </Suspense>
     );
 }

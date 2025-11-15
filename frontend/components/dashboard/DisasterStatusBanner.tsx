@@ -1,9 +1,9 @@
 "use client";
 import { Banner, BannerAction, BannerTitle } from "@/components/ui/shadcn-io/banner";
+import { ClaimInProgressIndexMapping } from "@/types/claim";
 import { BannerData } from "@/types/user";
 import Link from "next/link";
 import Progress from "../progress";
-import { ClaimInProgressIndexMapping, ClaimStatusInProgressTypes, ClaimStatusType } from "@/types/claim";
 
 type Props = {
     bannerData: BannerData;
@@ -67,13 +67,8 @@ export default function DisasterStatusBanner({ bannerData }: Props) {
 
     // Claim in progress
     if (bannerData.status === "has-claim" && bannerData.claim) {
-        let progressStep;
-        if (!ClaimStatusInProgressTypes.includes(bannerData.claim.status as ClaimStatusType)) {
-            progressStep = 5;
-        } else {
-            progressStep =
-                ClaimInProgressIndexMapping[bannerData.claim.status as keyof typeof ClaimInProgressIndexMapping];
-        }
+        const status = bannerData.claim.status;
+        const progressStep = ClaimInProgressIndexMapping[status as keyof typeof ClaimInProgressIndexMapping] ?? 5;
         return (
             <Banner className="w-full px-6 pt-6 pb-2 rounded-lg bg-white border-0">
                 <div className="flex flex-row items-center w-full gap-3">
