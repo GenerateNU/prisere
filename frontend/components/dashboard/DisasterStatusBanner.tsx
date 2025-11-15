@@ -68,10 +68,11 @@ export default function DisasterStatusBanner({ bannerData }: Props) {
     // Claim in progress
     if (bannerData.status === "has-claim" && bannerData.claim) {
         let progressStep;
-        if(!ClaimStatusInProgressTypes.includes(bannerData.claim.status as ClaimStatusType)) {
+        if (!ClaimStatusInProgressTypes.includes(bannerData.claim.status as ClaimStatusType)) {
             progressStep = 5;
         } else {
-            progressStep = ClaimInProgressIndexMapping[bannerData.claim.status as keyof typeof ClaimInProgressIndexMapping];
+            progressStep =
+                ClaimInProgressIndexMapping[bannerData.claim.status as keyof typeof ClaimInProgressIndexMapping];
         }
         return (
             <Banner className="w-full px-6 pt-6 pb-2 rounded-lg bg-white border-0">

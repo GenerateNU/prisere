@@ -24,7 +24,7 @@ export const ClaimInProgressIndexMapping = {
     [ClaimStatusType.IN_PROGRESS_BUSINESS]: 3,
     [ClaimStatusType.IN_PROGRESS_INSURANCE]: 4,
     [ClaimStatusType.IN_PROGRESS_EXPORT]: 5,
-}
+};
 
 export const ClaimStatusInProgressTypes = Object.values(ClaimStatusType).filter((status) =>
     status.startsWith("IN_PROGRESS_")
