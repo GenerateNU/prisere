@@ -99,6 +99,11 @@ describe("inserting purcahse data", () => {
                         },
                     ],
                     Credit: true,
+                    EntityRef: {
+                        type: "Vendor",
+                        DisplayName: "Testing Display Name",
+                        GivenName: "Testing given name",
+                    },
                 },
             ],
         });
@@ -116,6 +121,90 @@ describe("inserting purcahse data", () => {
             id: expect.anything(),
             dateCreated: expect.anything(),
             lastUpdated: expect.anything(),
+            vendor: "Testing Display Name",
+        });
+
+        const lineItems = await db.getRepository(PurchaseLineItem).find({ where: { purchaseId: purchases[0].id } });
+        expect(lineItems).toBeArrayOfSize(2);
+        lineItems.sort((i1, i2) => (i1.quickBooksId ?? -1) - (i2.quickBooksId ?? -1));
+        expect(lineItems[0]).toEqual({
+            quickBooksId: 1,
+            amountCents: 500,
+            purchaseId: purchases[0].id,
+            category: null,
+            description: "Testing description",
+            quickbooksDateCreated: new Date(now),
+            type: PurchaseLineItemType.TYPICAL,
+            id: expect.anything(),
+            dateCreated: expect.anything(),
+            lastUpdated: expect.anything(),
+        });
+        expect(lineItems[1]).toEqual({
+            quickBooksId: 2,
+            amountCents: 550,
+            purchaseId: purchases[0].id,
+            category: "acc-ref",
+            description: "Testing description 2",
+            quickbooksDateCreated: new Date(now),
+            type: PurchaseLineItemType.TYPICAL,
+            id: expect.anything(),
+            dateCreated: expect.anything(),
+            lastUpdated: expect.anything(),
+        });
+    });
+
+    it("should create a new purchase - no vendor info", async () => {
+        const now = new Date().toISOString();
+
+        mockQuerySuccessReturn<{ Purchase: QBPurchase[] }>(client, {
+            Purchase: [
+                {
+                    Id: "1",
+                    MetaData: { CreateTime: now, LastUpdatedTime: now },
+                    TotalAmt: 10.5,
+                    Line: [
+                        {
+                            DetailType: "ItemBasedExpenseLineDetail",
+                            ItemBasedExpenseLineDetail: {
+                                TaxInclusiveAmt: 5.0,
+                                CustomerRef: {
+                                    value: "cust-ref",
+                                },
+                            },
+                            Id: "1",
+                            Description: "Testing description",
+                        },
+                        {
+                            DetailType: "AccountBasedExpenseLineDetail",
+                            AccountBasedExpenseLineDetail: {
+                                AccountRef: {
+                                    value: "acc-ref",
+                                },
+                            },
+                            Amount: 5.5,
+                            Id: "2",
+                            Description: "Testing description 2",
+                        },
+                    ],
+                    Credit: true,
+                },
+            ],
+        });
+
+        await service.updateUnprocessedPurchases({ userId });
+
+        const purchases = await db.getRepository(Purchase).find({ where: { companyId } });
+        expect(purchases).toBeArrayOfSize(1);
+        expect(purchases[0]).toEqual({
+            companyId,
+            quickBooksId: 1,
+            quickbooksDateCreated: new Date(now),
+            totalAmountCents: 1050,
+            isRefund: true,
+            id: expect.anything(),
+            dateCreated: expect.anything(),
+            lastUpdated: expect.anything(),
+            vendor: null,
         });
 
         const lineItems = await db.getRepository(PurchaseLineItem).find({ where: { purchaseId: purchases[0].id } });
@@ -180,6 +269,10 @@ describe("inserting purcahse data", () => {
                             Description: "Testing description 2",
                         },
                     ],
+                    EntityRef: {
+                        type: "Vendor",
+                        GivenName: "Testing Given Name",
+                    },
                 },
             ],
         });
@@ -224,6 +317,11 @@ describe("inserting purcahse data", () => {
                             Description: "Testing description 2",
                         },
                     ],
+                    EntityRef: {
+                        type: "other",
+                        DisplayName: "SHOULD NOT EXIST",
+                        GivenName: "SHOULD NOT EXIST",
+                    },
                 },
             ],
         });
@@ -241,6 +339,7 @@ describe("inserting purcahse data", () => {
             id: expect.anything(),
             dateCreated: expect.anything(),
             lastUpdated: expect.anything(),
+            vendor: null,
         });
 
         const lineItemsAfter = await db

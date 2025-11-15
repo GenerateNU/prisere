@@ -267,6 +267,7 @@ export class QuickbooksService implements IQuickbooksService {
                 totalAmountCents: Math.round(p.TotalAmt * 100),
                 quickbooksDateCreated: p.MetaData.CreateTime,
                 quickBooksId: parseInt(p.Id),
+                vendor: p.EntityRef?.type === "Vendor" ? p.EntityRef.DisplayName || p.EntityRef.GivenName : undefined,
             }))
         );
 

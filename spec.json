@@ -4600,6 +4600,9 @@
                         "quickbooksDateCreated": {
                           "type": "string",
                           "format": "date-time"
+                        },
+                        "vendor": {
+                          "type": "string"
                         }
                       },
                       "required": [
@@ -4650,6 +4653,9 @@
                       },
                       "dateCreated": {
                         "type": "string"
+                      },
+                      "vendor": {
+                        "type": "string"
                       }
                     },
                     "required": [
@@ -4695,6 +4701,9 @@
                         "type": "boolean"
                       },
                       "dateCreated": {
+                        "type": "string"
+                      },
+                      "vendor": {
                         "type": "string"
                       }
                     },
@@ -4798,6 +4807,9 @@
                     },
                     "isRefund": {
                       "type": "boolean"
+                    },
+                    "vendor": {
+                      "type": "string"
                     },
                     "dateCreated": {
                       "type": "string"
@@ -4996,6 +5008,9 @@
                       },
                       "isRefund": {
                         "type": "boolean"
+                      },
+                      "vendor": {
+                        "type": "string"
                       },
                       "dateCreated": {
                         "type": "string"

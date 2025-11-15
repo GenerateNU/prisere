@@ -2689,6 +2689,7 @@ export interface paths {
                             isRefund: boolean;
                             /** Format: date-time */
                             quickbooksDateCreated?: string;
+                            vendor?: string;
                         }[];
                     };
                 };
@@ -2708,6 +2709,7 @@ export interface paths {
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
                             dateCreated: string;
+                            vendor?: string;
                         }[];
                     };
                 };
@@ -2725,6 +2727,7 @@ export interface paths {
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
                             dateCreated: string;
+                            vendor?: string;
                         }[];
                     };
                 };
@@ -2800,6 +2803,7 @@ export interface paths {
                             totalAmountCents: number;
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
+                            vendor?: string;
                             dateCreated: string;
                             lastUpdated: string;
                         };
@@ -2887,6 +2891,7 @@ export interface paths {
                             totalAmountCents: number;
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
+                            vendor?: string;
                             dateCreated: string;
                             lastUpdated: string;
                             lineItems: {
