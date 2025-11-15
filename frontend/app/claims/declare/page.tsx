@@ -93,7 +93,6 @@ function DeclareDisasterContent() {
 
     React.useEffect(() => {
         if (userInfoSuccess && userInfoData) {
-            console.log("setting", userInfoData);
             setPersonalInfo({
                 firstName: userInfoData.firstName,
                 lastName: userInfoData.lastName,
