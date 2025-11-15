@@ -272,11 +272,15 @@ export class ClaimTransaction implements IClaimTransaction {
 
         const lineItemIds = lineItems.map((item) => item.id);
 
-        await this.db.manager
-            .createQueryBuilder()
-            .relation(Claim, "purchaseLineItems")
-            .of(payload.claimId)
-            .add(lineItemIds);
+        try {
+            await this.db.manager
+                .createQueryBuilder()
+                .relation(Claim, "purchaseLineItems")
+                .of(payload.claimId)
+                .add(lineItemIds);
+        } catch {
+            return null;
+        }
 
         const result = lineItemIds.map((id) => ({
             claimId: payload.claimId,
