@@ -4,9 +4,9 @@ defaults:
         working-directory: ./backend
 on:
     push:
-        branches: [main]
+        branches: [main, featurethon]
     pull_request:
-        branches: [main]
+        branches: [main, featurethon]
 jobs:
     test:
         runs-on: ubuntu-latest
