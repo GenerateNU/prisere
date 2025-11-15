@@ -10,7 +10,6 @@ import {
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { ILocationAddressTransaction } from "../location-address/transaction";
 import { NotificationStatus } from "../../types/NotificationEnums";
-import { NotificationStatus } from "../../types/NotificationEnums";
 import { LocationAddress } from "../../entities/LocationAddress";
 import { logMessageToFile } from "../../utilities/logger";
 import { IPreferenceTransaction } from "../preferences/transaction";

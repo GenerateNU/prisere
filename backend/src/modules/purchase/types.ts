@@ -11,7 +11,7 @@ export const CreateOrChangePurchaseRequestSchema = z.object({
                 isRefund: z.boolean(),
                 quickbooksDateCreated: z.iso.datetime().optional(),
                 vendor: z.string().optional(),
-        })
+            })
         )
         .nonempty(),
 });
