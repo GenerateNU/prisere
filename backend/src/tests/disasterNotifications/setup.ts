@@ -2,7 +2,6 @@ import { DataSource } from "typeorm";
 import { User } from "../../entities/User";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { DisasterNotification } from "../../entities/DisasterNotification";
-import { NotificationType } from "../../types/NotificationEnums";
 import { randomUUID } from "crypto";
 
 export interface TestDataSetup {
@@ -97,7 +96,8 @@ export const createTestData = async (dataSource: DataSource, includeNotification
                 id: randomUUID(),
                 userId: seedUsers[0].id,
                 femaDisasterId: seedDisasters[0].id,
-                notificationType: NotificationType.WEB,
+                isWeb: true,
+                isEmail: false,
                 firstSentAt: new Date(),
                 lastSentAt: new Date(),
             },
@@ -105,7 +105,8 @@ export const createTestData = async (dataSource: DataSource, includeNotification
                 id: randomUUID(),
                 userId: seedUsers[1].id,
                 femaDisasterId: seedDisasters[1].id,
-                notificationType: NotificationType.EMAIL,
+                isWeb: false,
+                isEmail: true,
                 firstSentAt: new Date(),
                 lastSentAt: new Date(),
             },
@@ -113,7 +114,8 @@ export const createTestData = async (dataSource: DataSource, includeNotification
                 id: randomUUID(),
                 userId: seedUsers[1].id,
                 femaDisasterId: seedDisasters[1].id,
-                notificationType: NotificationType.EMAIL,
+                isWeb: false,
+                isEmail: true,
                 firstSentAt: new Date(),
                 lastSentAt: new Date(),
             },
@@ -121,7 +123,8 @@ export const createTestData = async (dataSource: DataSource, includeNotification
                 id: randomUUID(),
                 userId: seedUsers[1].id,
                 femaDisasterId: seedDisasters[1].id,
-                notificationType: NotificationType.EMAIL,
+                isWeb: false,
+                isEmail: true,
                 firstSentAt: new Date(),
                 lastSentAt: new Date(),
             },
@@ -129,7 +132,8 @@ export const createTestData = async (dataSource: DataSource, includeNotification
                 id: randomUUID(),
                 userId: seedUsers[1].id,
                 femaDisasterId: seedDisasters[1].id,
-                notificationType: NotificationType.WEB,
+                isWeb: true,
+                isEmail: false,
                 firstSentAt: new Date(),
                 lastSentAt: new Date(),
             },
@@ -139,7 +143,8 @@ export const createTestData = async (dataSource: DataSource, includeNotification
                 id: randomUUID(),
                 userId: seedUsers[2].id,
                 femaDisasterId: seedDisasters[1].id,
-                notificationType: NotificationType.WEB,
+                isWeb: true,
+                isEmail: false,
                 firstSentAt: new Date(),
                 lastSentAt: new Date(),
             });
