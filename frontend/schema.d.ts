@@ -135,7 +135,67 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Updates a user by the given ID
+         * @description Updates the user with the given ID in the database
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        firstName?: string;
+                        lastName?: string;
+                        /** Format: email */
+                        email?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Successfully updated user */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            firstName: string;
+                            lastName: string;
+                            email?: string;
+                            companyId?: string | null;
+                        };
+                    };
+                };
+                /** @description Update user error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Update user error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/users/company": {
@@ -721,14 +781,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3074,14 +3127,7 @@ export interface paths {
                          * @default ACTIVE
                          * @enum {string}
                          */
-                        status?:
-                            | "ACTIVE"
-                            | "FILED"
-                            | "IN_PROGRESS_DISASTER"
-                            | "IN_PROGRESS_PERSONAL"
-                            | "IN_PROGRESS_BUSINESS"
-                            | "IN_PROGRESS_INSURANCE"
-                            | "IN_PROGRESS_EXPORT";
+                        status?: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                     };
                 };
             };
@@ -3098,14 +3144,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3215,14 +3254,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3994,7 +4026,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/notifications/preferences": {
+    "/preferences": {
         parameters: {
             query?: never;
             header?: never;
