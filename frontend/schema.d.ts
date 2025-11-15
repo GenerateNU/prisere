@@ -2184,14 +2184,16 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
-                        quickbooksId?: number;
-                        totalAmountCents: number;
-                        /** Format: date-time */
-                        quickbooksDateCreated?: string;
-                    }[];
+                        items: {
+                            quickbooksId?: number;
+                            totalAmountCents: number;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string;
+                        }[];
+                    };
                 };
             };
             responses: {
@@ -2656,15 +2658,17 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
-                        quickBooksId?: number;
-                        totalAmountCents: number;
-                        isRefund: boolean;
-                        /** Format: date-time */
-                        quickbooksDateCreated?: string;
-                    }[];
+                        items: {
+                            quickBooksId?: number;
+                            totalAmountCents: number;
+                            isRefund: boolean;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string;
+                        }[];
+                    };
                 };
             };
             responses: {
@@ -4217,17 +4221,19 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
-                        description?: string;
-                        invoiceId: string;
-                        quickbooksId?: number;
-                        amountCents: number;
-                        category?: string;
-                        /** Format: date-time */
-                        quickbooksDateCreated?: string | null;
-                    }[];
+                        items: {
+                            description?: string;
+                            invoiceId: string;
+                            quickbooksId?: number;
+                            amountCents: number;
+                            category?: string;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string | null;
+                        }[];
+                    };
                 };
             };
             responses: {
@@ -4390,19 +4396,21 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
-                        description?: string;
-                        quickBooksId?: number;
-                        purchaseId: string;
-                        amountCents: number;
-                        category?: string | null;
-                        /** @enum {string} */
-                        type: "extraneous" | "typical";
-                        /** Format: date-time */
-                        quickbooksDateCreated?: string;
-                    }[];
+                        items: {
+                            description?: string;
+                            quickBooksId?: number;
+                            purchaseId: string;
+                            amountCents: number;
+                            category?: string | null;
+                            /** @enum {string} */
+                            type: "extraneous" | "typical";
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string;
+                        }[];
+                    };
                 };
             };
             responses: {

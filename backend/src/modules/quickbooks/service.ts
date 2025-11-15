@@ -229,7 +229,7 @@ export class QuickbooksService implements IQuickbooksService {
             return getInvoiceLineItems(i).map((l) => ({ ...l, invoiceId: dbInvoice.id }));
         });
 
-        await this.invoiceLineItemTransaction.createOrUpdateInvoiceLineItems(lineItemData);
+        await this.invoiceLineItemTransaction.createOrUpdateInvoiceLineItems({ items: lineItemData });
 
         await this.transaction.updateCompanyInvoiceQuickbooksSync({ date: new Date(), companyId: user.companyId });
     });
@@ -282,7 +282,7 @@ export class QuickbooksService implements IQuickbooksService {
             }));
         });
 
-        await this.purchaseLineItemTransaction.createOrUpdatePurchaseLineItems(lineItemData);
+        await this.purchaseLineItemTransaction.createOrUpdatePurchaseLineItems({ items: lineItemData });
 
         await this.transaction.updateCompanyPurchaseQuickbooksSync({ date: new Date(), companyId: user.companyId });
     });

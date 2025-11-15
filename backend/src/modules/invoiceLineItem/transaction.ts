@@ -18,7 +18,7 @@ export class InvoiceLineItemTransaction implements IInvoiceLineItemTransaction {
     }
 
     async createOrUpdateInvoiceLineItems(payload: CreateOrUpdateInvoiceLineItemsDTO): Promise<InvoiceLineItem[]> {
-        const newInvoices = payload.map((invoice) => plainToInstance(InvoiceLineItem, invoice));
+        const newInvoices = payload.items.map((invoice) => plainToInstance(InvoiceLineItem, invoice));
         const result = await this.db
             .createQueryBuilder()
             .insert()

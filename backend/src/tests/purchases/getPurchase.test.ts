@@ -67,7 +67,7 @@ describe("GET /purchase/:id", () => {
             isRefund: false,
         };
 
-        const createdPurchase = await createPurchase([createBody]);
+        const createdPurchase = await createPurchase({ items: [createBody] });
 
         // Now retrieve the purchase
         const response = await app.request(TESTING_PREFIX + `/purchase/${createdPurchase.id}`, {
@@ -93,7 +93,7 @@ describe("GET /purchase/:id", () => {
             isRefund: true,
         };
 
-        const createdPurchase = await createPurchase([createBody]);
+        const createdPurchase = await createPurchase({ items: [createBody] });
 
         // Retrieve the purchase
         const response = await app.request(TESTING_PREFIX + `/purchase/${createdPurchase.id}`, {
