@@ -3,7 +3,7 @@ import { CreateUserResponseSchema } from "../types/User";
 import { LocationAddressSchemaType } from "./Location";
 import { FIPSCounty, FIPSState, incidentTypeString } from "./fema-disaster";
 
-const notificationTypes = ["web", "email"] as const;
+const _notificationTypes = ["web", "email"] as const;
 const notificationStatus = ["unread", "read"] as const;
 
 export const DisasterNotification = z.object({
@@ -49,7 +49,7 @@ export const DisasterNotificationWithRelations = z.object({
 export type DisasterNotificationType = z.infer<typeof DisasterNotification>;
 export type DisasterNotificationWithRealtionsType = z.infer<typeof DisasterNotificationWithRelations>;
 
-export type NotificationTypeFilter = z.infer<typeof notificationTypes>;
+export type NotificationTypeFilter = z.infer<typeof _notificationTypes>;
 
 // GET /api/notifications/{user-id}
 export const GetUsersDisasterNotificationsResponseSchema = z.array(DisasterNotificationWithRelations);
@@ -74,7 +74,7 @@ export const BulkCreateNotificationsRequestSchema = z.array(
         userId: z.string(),
         femaDisasterId: z.string(),
         isWeb: z.boolean().optional().default(true),
-        isEmail: z.boolean().optional().default(true)
+        isEmail: z.boolean().optional().default(true),
         // Only created with these 3 attributes set, rest start null
     })
 );

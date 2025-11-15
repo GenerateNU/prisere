@@ -12,7 +12,6 @@ import {
     DismissNotificationResponse,
     NotificationTypeFilter,
 } from "../../types/DisasterNotification";
-import { NotificationType } from "../../types/NotificationEnums";
 
 export interface IDisasterNotificationController {
     getUserNotifications(ctx: Context): Promise<TypedResponse<GetUsersDisasterNotificationsResponse> | Response>;

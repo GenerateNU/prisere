@@ -70,7 +70,7 @@ describe("Bulk create disaster notifications", () => {
         const requestBody = [
             {
                 userId: testData.users.user1.id,
-                femaDisasterId: testData.disasters.disaster1.id
+                femaDisasterId: testData.disasters.disaster1.id,
             },
         ];
 

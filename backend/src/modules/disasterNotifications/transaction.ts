@@ -99,9 +99,9 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
             .where("notifications.userId = :id", { id: payload.id })
             .orderBy("notifications.createdAt", "DESC"); // Added sorting since we will show most recent notif as banner
 
-        if (type == "web") {
+        if (type === "web") {
             queryBuilder.andWhere("notifications.isWeb IS TRUE");
-        } else if (type == "email") {
+        } else if (type === "email") {
             queryBuilder.andWhere("notifications.isEmail IS TRUE");
         }
         if (status) {
