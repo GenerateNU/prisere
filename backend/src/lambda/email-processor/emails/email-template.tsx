@@ -66,8 +66,8 @@ export default function DisasterEmail({ message }: DisasterEmailProps) {
                                     <td className="text-gray-700 text-sm pb-3">{declarationDate}</td>
                                 </tr>
                                 <tr>
-                                    <td className="text-gray-500 text-sm pb-3">Declaration Type</td>
-                                    <td className="text-gray-700 text-sm pb-3">{message.declarationType}</td>
+                                    <td className="text-gray-500 text-sm pb-3">Incident Type</td>
+                                    <td className="text-gray-700 text-sm pb-3">{Array.isArray(message.incidentTypeMeanings) ? message.incidentTypeMeanings.join(", ") : message.incidentTypeMeanings}</td>
                                 </tr>
                                 <tr>
                                     <td className="text-gray-500 text-sm pb-3">County</td>

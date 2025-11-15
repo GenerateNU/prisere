@@ -9,17 +9,6 @@ describe("SQSService", () => {
 
     beforeEach(() => {
         sqsService = new SQSService();
-
-        // Mock the send method
-        mockSend = mock(() =>
-            Promise.resolve({
-                Successful: [],
-                Failed: [],
-            })
-        );
-
-        // Replace the client's send method with the mock
-        sqsService["client"].send = mockSend;
     });
 
     const queueUrl = process.env.SQS_QUEUE_URL_PROD
@@ -27,10 +16,10 @@ describe("SQSService", () => {
         : "https://sqs.us-east-1.amazonaws.com/1234/test";
 
     const createMockMessage = (id: string): DisasterEmailMessage => ({
-        to: `example@test.com`,
+        to: `zainab.imadulla@icloud.com`,
         from: "priseregenerate@gmail.com",
         subject: "FEMA Disaster Alert",
-        firstName: `Abby`,
+        firstName: `Zainab`,
         declarationDate: new Date("2025-01-01"),
         declarationType: "EM",
         declarationTypeMeaning: "Emergency declaration",

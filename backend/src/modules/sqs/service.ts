@@ -18,22 +18,7 @@ export class SQSService {
     private SQS_QUEUE_URL = process.env.SQS_QUEUE_URL_PROD;
 
     constructor() {
-        const config: any = {
-            region: process.env.AWS_REGION || "us-east-1",
-        };
-
-        // Provide fake credentials in test environment
-        if (process.env.NODE_ENV === "test") {
-            config.credentials = {
-                accessKeyId: "test-key",
-                secretAccessKey: "test-secret",
-            };
-        }
-
-        this.client = new SQSClient(config);
-        // Comment out the client creation above, and uncomment this to test locally:
-        // AWS access and secret key from .env will automatically be used instead of test creds then
-        // this.client = new SQSClient({}); // <- Uncomment this to test locally
+        this.client = new SQSClient({}); // <- Uncomment this to test locally
     }
 
     async sendMessage(message: DisasterEmailMessage): Promise<void> {
