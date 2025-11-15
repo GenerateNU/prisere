@@ -8,7 +8,7 @@ import { updateCategory, updateType } from "../../../api/purchase";
 import CategoryLabel from "./category-options";
 import DisasterLabel from "./disaster-options";
 import { SortByColumn } from "../../../types/purchase";
-import { getCategoriesString, getMerchant, getPurchaseTypeString } from "../utility-functions";
+import { getCategoriesString, getLineItemDescriptions, getPurchaseTypeString } from "../utility-functions";
 import { SortableHeader } from "./sortable-header";
 import { CollapsibleArrow } from "@/components/table/collapsibleArrow";
 
@@ -29,9 +29,10 @@ export default function TableContent({
         () =>
             purchases.data?.map((purchase) => {
                 return {
+                    vendor: purchase.vendor || "Unknown Vendor",
                     amount: purchase.totalAmountCents,
                     date: new Date(purchase.dateCreated),
-                    description: getMerchant(purchase.lineItems),
+                    description: getLineItemDescriptions(purchase.lineItems),
                     category: getCategoriesString(purchase.lineItems),
                     disasterRelated: getPurchaseTypeString(purchase.lineItems),
                     lineItemIds: purchase.lineItems.map((li) => li.id),
@@ -79,7 +80,11 @@ export default function TableContent({
         getCoreRowModel: getCoreRowModel(),
         getExpandedRowModel: getExpandedRowModel(),
         data: standardizedData,
-        getSubRows: (row) => row.lineItems ?? [],
+        getSubRows: (row) =>
+            row.lineItems?.map((item) => ({
+                ...item,
+                vendor: row.vendor, // inherit from parent
+            })) ?? [],
         enableSubRowSelection(row) {
             return row.original.lineItems.length > 0;
         },
@@ -88,6 +93,38 @@ export default function TableContent({
             {
                 id: "merchant",
                 header: () => "Merchant",
+                accessorFn: (row) => row.vendor,
+                cell: ({ row, cell }) => {
+                    const cellVal = cell.getValue();
+                    const displayMerchant = cellVal.length > 20 ? `${cellVal.substring(0, 20)}...` : cellVal;
+                    return (
+                        <div className={cn("flex items-center", row.depth > 0 && "pl-8")}>
+                            {rowOption === "collapsible" ? (
+                                row.getCanExpand() ? (
+                                    <CollapsibleArrow
+                                        onClick={() => row.toggleExpanded()}
+                                        isOpen={row.getIsExpanded()}
+                                    />
+                                ) : null
+                            ) : (
+                                <input
+                                    type="checkbox"
+                                    className="w-4 h-4 cursor-pointer mr-2 accent-black align-middle"
+                                    onChange={(e) => {
+                                        e.stopPropagation();
+                                    }}
+                                />
+                            )}
+                            <span className="align-middle">
+                                {displayMerchant.length > 0 ? displayMerchant : "Unknown Merchant"}
+                            </span>
+                        </div>
+                    );
+                },
+            },
+            {
+                id: "description",
+                header: () => "Description",
                 accessorFn: (row) => row.description,
                 cell: ({ row, cell }) => {
                     const cellVal = cell.getValue();
@@ -138,6 +175,7 @@ export default function TableContent({
                             }}
                             lineItemIds={row.lineItemIds}
                             editableTags={editableTags}
+                            hasLineItems={row.lineItems.length > 0}
                         />
                     );
                 },
