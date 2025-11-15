@@ -17,6 +17,7 @@ import {
     LinkClaimToPurchaseResponseSchema,
 } from "../../types/Claim";
 import { openApiErrorCodes } from "../../utilities/error";
+import { ClaimPDFGenerationResponseSchema } from "../claim/types";
 
 export const createOpenAPIClaimRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const claimTransaction: IClaimTransaction = new ClaimTransaction(db);
@@ -30,6 +31,7 @@ export const createOpenAPIClaimRoutes = (openApi: OpenAPIHono, db: DataSource): 
     openApi.openapi(createLinkClaimPurchaseRoute, (ctx) => claimController.linkClaimToPurchaseItems(ctx));
     openApi.openapi(getPurchaseLineItemsForClaimRoute, (ctx) => claimController.getLinkedPurchaseLineItems(ctx));
     openApi.openapi(deletePurchaseLineItemLinkRoute, (ctx) => claimController.deletePurchaseLineItem(ctx));
+    openApi.openapi(generateClaimPDFRoute, (ctx) => claimController.createClaimPDF(ctx));
     return openApi;
 };
 
@@ -215,6 +217,31 @@ const deletePurchaseLineItemLinkRoute = createRoute({
             description: "Claim or line item not found",
         },
         ...openApiErrorCodes("Link deletion Errors"),
+    },
+    tags: ["Claims"],
+});
+
+const generateClaimPDFRoute = createRoute({
+    method: "get",
+    path: "/claims/{id}/pdf",
+    summary: "Generates the pdf for the claim with the given ID",
+    description: "Compiles the necessary information from the db and builds the appropriate PDF",
+    request: {
+        params: z.object({ claimId: z.uuid() }),
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: ClaimPDFGenerationResponseSchema,
+                },
+            },
+            description: "Generated pdf available at the returned link",
+        },
+        404: {
+            description: "Claim not found",
+        },
+        ...openApiErrorCodes("PDF generation error"),
     },
     tags: ["Claims"],
 });

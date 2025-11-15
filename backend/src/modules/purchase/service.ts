@@ -18,6 +18,7 @@ export interface IPurchaseService {
     sumPurchasesByCompanyInMonthBins(
         payload: GetCompanyPurchasesByDateDTO
     ): Promise<GetCompanyPurchasesInMonthBinsResponse>;
+    getPurchaseCategoriesForCompany(companyId: string): Promise<string[]>;
 }
 
 export class PurchaseService implements IPurchaseService {
@@ -44,7 +45,7 @@ export class PurchaseService implements IPurchaseService {
 
         return {
             dateCreated: qbPurchase.dateCreated.toUTCString(),
-            lastUpdated: qbPurchase.dateCreated.toUTCString(),
+            lastUpdated: qbPurchase.lastUpdated.toUTCString(),
             companyId: qbPurchase.companyId,
             id: qbPurchase.id,
             isRefund: qbPurchase.isRefund,
@@ -67,6 +68,14 @@ export class PurchaseService implements IPurchaseService {
                 totalAmountCents: Math.round(qbPurchase.totalAmountCents),
                 quickbooksDateCreated: qbPurchase.quickbooksDateCreated?.toUTCString(),
                 lastUpdated: qbPurchase.lastUpdated.toUTCString(),
+                lineItems: qbPurchase.lineItems
+                    ? qbPurchase.lineItems.map((item) => ({
+                          ...item,
+                          dateCreated: item.dateCreated.toISOString(),
+                          lastUpdated: item.lastUpdated.toISOString(),
+                          quickbooksDateCreated: item.quickbooksDateCreated?.toISOString(),
+                      }))
+                    : [],
             }));
         }
     );
@@ -86,4 +95,9 @@ export class PurchaseService implements IPurchaseService {
             return perMonthSums;
         }
     );
+
+    getPurchaseCategoriesForCompany = withServiceErrorHandling(async (companyId: string): Promise<string[]> => {
+        const categories = this.PurchaseTransaction.getPurchaseCategoriesForCompany(companyId);
+        return categories;
+    });
 }

@@ -1,6 +1,7 @@
+import { retrieveToken } from "@/actions/auth";
+import { getAuthToken } from "@/utils/supabase/client";
 import createClient from "openapi-fetch";
 import type { paths } from "../schema";
-import { retrieveToken } from "@/actions/auth";
 
 export const getClient = () => {
     const apiBaseRoute =
@@ -18,9 +19,21 @@ export const authHeader = (token: string, contentType: string = "application/jso
     };
 };
 
+/**
+ * Server-side: Wraps a function that needs authentication token
+ * Uses retrieveToken() which accesses cookies server-side
+ */
 export const authWrapper =
     <T>() =>
     async (fn: (token: string) => Promise<T>) => {
         const token = await retrieveToken();
         return fn(token);
     };
+
+/**
+ * Client-side: Gets auth token for use in client components
+ * Uses getAuthToken() which reads from browser cookies/storage
+ */
+export const getClientAuthToken = async (): Promise<string> => {
+    return await getAuthToken();
+};

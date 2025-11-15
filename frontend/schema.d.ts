@@ -248,6 +248,7 @@ export interface paths {
                                 companyId: string;
                                 createdAt: string;
                                 updatedAt: string;
+                                importTime?: string;
                             }[];
                             createdAt: string;
                             updatedAt: string;
@@ -325,6 +326,7 @@ export interface paths {
                                 companyId: string;
                                 createdAt: string;
                                 updatedAt: string;
+                                importTime?: string;
                             }[];
                             createdAt: string;
                             updatedAt: string;
@@ -365,7 +367,76 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update a company's information
+         * @description Updates a company's information by ID
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        name?: string;
+                        businessOwnerFullName?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Company updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            name: string;
+                            businessOwnerFullName: string;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
+                            externals?: {
+                                id: string;
+                                source: string;
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                                importTime?: string;
+                            }[];
+                            createdAt: string;
+                            updatedAt: string;
+                        };
+                    };
+                };
+                /** @description Update Company Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Update Company Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/companies/quickbooks-invoice-import-time": {
@@ -395,8 +466,12 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        /** Format: date */
-                        importTime: string;
+                        id?: string;
+                        source?: string;
+                        externalId?: string;
+                        createdAt?: string;
+                        updatedAt?: string;
+                        importTime?: string;
                     };
                 };
             };
@@ -420,6 +495,7 @@ export interface paths {
                                 companyId: string;
                                 createdAt: string;
                                 updatedAt: string;
+                                importTime?: string;
                             }[];
                             createdAt: string;
                             updatedAt: string;
@@ -479,8 +555,12 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        /** Format: date */
-                        importTime: string;
+                        id?: string;
+                        source?: string;
+                        externalId?: string;
+                        createdAt?: string;
+                        updatedAt?: string;
+                        importTime?: string;
                     };
                 };
             };
@@ -504,6 +584,7 @@ export interface paths {
                                 companyId: string;
                                 createdAt: string;
                                 updatedAt: string;
+                                importTime?: string;
                             }[];
                             createdAt: string;
                             updatedAt: string;
@@ -640,7 +721,14 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -674,6 +762,7 @@ export interface paths {
                             };
                             insurancePolicy?: {
                                 id: string;
+                                policyName: string;
                                 policyHolderFirstName: string;
                                 policyHolderLastName: string;
                                 insuranceCompanyName: string;
@@ -684,7 +773,7 @@ export interface paths {
                                 /** Format: date-time */
                                 createdAt: string;
                             };
-                        } | unknown | unknown;
+                        } | null;
                     };
                 };
                 /** @description Get Claim in Progress Errors */
@@ -699,6 +788,69 @@ export interface paths {
                     };
                 };
                 /** @description Get Claim in Progress Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/companies/has-company-data": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Check if a company has data (either connected to quickbooks or has purchase/invoice data)
+         * @description Gets the company's data if it is present.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Company data successfullly set */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            hasData: boolean;
+                        };
+                    };
+                };
+                /** @description Get Company Data in Progress Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Get Company Data in Progress Errors */
                 500: {
                     headers: {
                         [name: string]: unknown;
@@ -944,7 +1096,74 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update the given location
+         * @description Updates the location address information for the location with the given id
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        id: string;
+                        alias?: string;
+                        country?: string;
+                        stateProvince?: string;
+                        city?: string;
+                        streetAddress?: string;
+                        postalCode?: string;
+                        county?: string | null;
+                    };
+                };
+            };
+            responses: {
+                /** @description Location updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            alias: string;
+                            country: string;
+                            stateProvince: string;
+                            city: string;
+                            streetAddress: string;
+                            postalCode: string;
+                            county?: string;
+                        };
+                    };
+                };
+                /** @description Update Location Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Update Location Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/location-address/{id}": {
@@ -1143,7 +1362,74 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update the given array of locations
+         * @description Updates the location address information for each of the given locations based on their id
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        id: string;
+                        alias?: string;
+                        country?: string;
+                        stateProvince?: string;
+                        city?: string;
+                        streetAddress?: string;
+                        postalCode?: string;
+                        county?: string | null;
+                    }[];
+                };
+            };
+            responses: {
+                /** @description Location updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            alias: string;
+                            country: string;
+                            stateProvince: string;
+                            city: string;
+                            streetAddress: string;
+                            postalCode: string;
+                            county?: string;
+                        }[];
+                    };
+                };
+                /** @description Update Location Bulk Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Update Location Bulk Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/notifications": {
@@ -1161,7 +1447,7 @@ export interface paths {
             parameters: {
                 query?: {
                     type?: "web" | "email";
-                    status?: "unread" | "read" | "acknowledged";
+                    status?: "unread" | "read";
                     page?: string;
                     limit?: string;
                 };
@@ -1183,8 +1469,8 @@ export interface paths {
                             femaDisasterId: string;
                             /** @enum {string} */
                             notificationType: "web" | "email";
-                            /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            /** @enum {string} */
+                            notificationStatus: "unread" | "read";
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;
@@ -1236,6 +1522,7 @@ export interface paths {
                                         companyId: string;
                                         createdAt: string;
                                         updatedAt: string;
+                                        importTime?: string;
                                     }[];
                                     createdAt: string;
                                     updatedAt: string;
@@ -1317,7 +1604,7 @@ export interface paths {
                             /** @enum {string} */
                             notificationType: "web" | "email";
                             /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;
@@ -1392,7 +1679,7 @@ export interface paths {
                             /** @enum {string} */
                             notificationType: "web" | "email";
                             /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;
@@ -1470,7 +1757,7 @@ export interface paths {
                             /** @enum {string} */
                             notificationType: "web" | "email";
                             /** @enum {string|null} */
-                            notificationStatus?: "unread" | "read" | "acknowledged" | null;
+                            notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
                             lastSentAt?: string | unknown;
                             acknowledgedAt?: string | unknown;
@@ -2482,13 +2769,20 @@ export interface paths {
         };
         /**
          * Fetches all purchases for a company
-         * @description Retrieves a paginated list of purchases for the specified company
+         * @description Retrieves a paginated, sorted and filtered list of purchases for the specified company
          */
         get: {
             parameters: {
                 query?: {
                     pageNumber?: number;
                     resultsPerPage?: number;
+                    sortBy?: "date" | "totalAmountCents";
+                    sortOrder?: "ASC" | "DESC";
+                    categories?: string[];
+                    type?: "extraneous" | "typical";
+                    dateFrom?: string;
+                    dateTo?: string;
+                    search?: string;
                 };
                 header?: never;
                 path?: never;
@@ -2511,6 +2805,20 @@ export interface paths {
                             isRefund: boolean;
                             dateCreated: string;
                             lastUpdated: string;
+                            lineItems: {
+                                id: string;
+                                description?: string;
+                                quickBooksId?: number;
+                                purchaseId: string;
+                                amountCents: number;
+                                category?: string | null;
+                                /** @enum {string} */
+                                type: "extraneous" | "typical";
+                                dateCreated: string;
+                                lastUpdated: string;
+                                /** Format: date-time */
+                                quickbooksDateCreated?: string;
+                            }[];
                         }[];
                     };
                 };
@@ -2679,6 +2987,67 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/purchase/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Fetches all the categories of a company's purchase line items
+         * @description Retrieves an array of categories that contain the categories of all purchase line items linked to a company
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful fetch of categories */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string[];
+                    };
+                };
+                /** @description Get company purchases error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Get company purchases error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/claims": {
         parameters: {
             query?: never;
@@ -2709,7 +3078,14 @@ export interface paths {
                          * @default ACTIVE
                          * @enum {string}
                          */
-                        status?: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                        status?:
+                            | "ACTIVE"
+                            | "FILED"
+                            | "IN_PROGRESS_DISASTER"
+                            | "IN_PROGRESS_PERSONAL"
+                            | "IN_PROGRESS_BUSINESS"
+                            | "IN_PROGRESS_INSURANCE"
+                            | "IN_PROGRESS_EXPORT";
                     };
                 };
             };
@@ -2726,7 +3102,14 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -2760,6 +3143,7 @@ export interface paths {
                             };
                             insurancePolicy?: {
                                 id: string;
+                                policyName: string;
                                 policyHolderFirstName: string;
                                 policyHolderLastName: string;
                                 insuranceCompanyName: string;
@@ -2835,7 +3219,14 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -2869,6 +3260,7 @@ export interface paths {
                             };
                             insurancePolicy?: {
                                 id: string;
+                                policyName: string;
                                 policyHolderFirstName: string;
                                 policyHolderLastName: string;
                                 insuranceCompanyName: string;
@@ -3304,6 +3696,79 @@ export interface paths {
                 };
             };
         };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/claims/{id}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Generates the pdf for the claim with the given ID
+         * @description Compiles the necessary information from the db and builds the appropriate PDF
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    claimId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Generated pdf available at the returned link */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** Format: uri */
+                            url: string;
+                        };
+                    };
+                };
+                /** @description PDF generation error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Claim not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description PDF generation error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -4112,6 +4577,172 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/purchase/line/category": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Updates a purchase line item's category
+         * @description Updates the category of the purchase line item with the given Id to the given category
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        category: string;
+                        removeCategory: boolean;
+                    };
+                };
+            };
+            responses: {
+                /** @description Successfully updated the line item's category */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            description?: string;
+                            quickBooksId?: number;
+                            purchaseId: string;
+                            amountCents: number;
+                            category?: string | null;
+                            /** @enum {string} */
+                            type: "extraneous" | "typical";
+                            dateCreated: string;
+                            lastUpdated: string;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string | null;
+                        };
+                    };
+                };
+                /** @description Error modifying purchase line item */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Error modifying purchase line item */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/purchase/line/type": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Updates a purchase line item's type
+         * @description Updates the type of the purchase line item with the given Id to the given type
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        type: "extraneous" | "typical";
+                    };
+                };
+            };
+            responses: {
+                /** @description Successfully updated the line item's type */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            description?: string;
+                            quickBooksId?: number;
+                            purchaseId: string;
+                            amountCents: number;
+                            category?: string | null;
+                            /** @enum {string} */
+                            type: "extraneous" | "typical";
+                            dateCreated: string;
+                            lastUpdated: string;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string | null;
+                        };
+                    };
+                };
+                /** @description Error modifying purchase line item */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Error modifying purchase line item */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
     "/disaster/self": {
         parameters: {
             query?: never;
@@ -4256,6 +4887,369 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/insurance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Gets all of the insurance policies for a company
+         * @description Will get all of the insurance policies that have been created for a Company
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Result includes all of the insurance policies for the user's company */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            policyName: string;
+                            policyHolderFirstName: string;
+                            policyHolderLastName: string;
+                            insuranceCompanyName: string;
+                            policyNumber: string;
+                            insuranceType: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                    };
+                };
+                /** @description Error Getting insurance policies for the company */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Error Getting insurance policies for the company */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Create data about the company's insurance policy
+         * @description Creates a new entity with data about the company's insurance policy
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        policyName: string;
+                        policyHolderFirstName: string;
+                        policyHolderLastName: string;
+                        insuranceCompanyName: string;
+                        policyNumber: string;
+                        insuranceType: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Create insurance policy response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            policyName: string;
+                            policyHolderFirstName: string;
+                            policyHolderLastName: string;
+                            insuranceCompanyName: string;
+                            policyNumber: string;
+                            insuranceType: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        };
+                    };
+                };
+                /** @description Error Creating an insurance policy */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Error Creating an insurance policy */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update the given insurance policy
+         * @description Updates the insurancy policy information for the insurance with the given id
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        id: string;
+                        policyName?: string;
+                        policyHolderFirstName?: string;
+                        policyHolderLastName?: string;
+                        insuranceCompanyName?: string;
+                        policyNumber?: string;
+                        insuranceType?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Insurance updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            policyName: string;
+                            policyHolderFirstName: string;
+                            policyHolderLastName: string;
+                            insuranceCompanyName: string;
+                            policyNumber: string;
+                            insuranceType: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        };
+                    };
+                };
+                /** @description Update Insurance Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Update Insurance Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/insurance/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Creates data about the company's insurance policy
+         * @description Can create many new entities with data about the company's insurance policy
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        policyName: string;
+                        policyHolderFirstName: string;
+                        policyHolderLastName: string;
+                        insuranceCompanyName: string;
+                        policyNumber: string;
+                        insuranceType: string;
+                    }[];
+                };
+            };
+            responses: {
+                /** @description Create bulk insurance policy response */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            policyName: string;
+                            policyHolderFirstName: string;
+                            policyHolderLastName: string;
+                            insuranceCompanyName: string;
+                            policyNumber: string;
+                            insuranceType: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                    };
+                };
+                /** @description Error Creating insurance policies in bulk */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Error Creating insurance policies in bulk */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update the given array of insurance policies
+         * @description Updates the insurance information for each of the given insurance policies based on their id
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        id: string;
+                        policyName?: string;
+                        policyHolderFirstName?: string;
+                        policyHolderLastName?: string;
+                        insuranceCompanyName?: string;
+                        policyNumber?: string;
+                        insuranceType?: string;
+                    }[];
+                };
+            };
+            responses: {
+                /** @description Insurance updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            policyName: string;
+                            policyHolderFirstName: string;
+                            policyHolderLastName: string;
+                            insuranceCompanyName: string;
+                            policyNumber: string;
+                            insuranceType: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                    };
+                };
+                /** @description Update Insurance in Bulk Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Update Insurance in Bulk Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
 }

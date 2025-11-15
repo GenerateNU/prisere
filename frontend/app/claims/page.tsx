@@ -10,7 +10,11 @@ export default function Claims() {
             <div>
                 <h2 className="text-[40px] font-bold">Claim Reports</h2>
             </div>
-            <Button className="mt-4 w-[200px] h-[38px]" onClick={() => router.push("/claims/declare")}>
+            <Button
+                variant="outline"
+                className="mt-4 w-[200px] h-[38px]"
+                onClick={() => router.push("/claims/declare")}
+            >
                 Declare a Disaster
             </Button>
         </div>

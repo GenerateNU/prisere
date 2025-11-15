@@ -47,6 +47,11 @@
     --color-seafoam: var(--seafoam);
     --color-teal: var(--teal);
     --color-charcoal: var(--charcoal);
+    --color-light-teal: var(--light-teal);
+    --color-slate: var(--slate);
+    --color-light-fuchsia: var(--light-fuchsia);
+    --color-gold: var(--gold);
+    --color-deep-gold: var(--deep-gold);
 }
 
 :root {
@@ -84,10 +89,15 @@
     --sidebar-ring: oklch(0.708 0 0);
     --fuchsia: #9e2450;
     --pink: #edc3d2;
-    --ochre: #a8d4d7;
+    --ochre: #edce8e;
     --seafoam: #a8d4d7;
     --teal: #448e93;
     --charcoal: #2e2f2d;
+    --light-teal: #ddeff1;
+    --slate: #f5f5f5;
+    --light-fuchsia: #f7dce5;
+    --gold: #edce8e;
+    --deep-gold: #69573a;
 }
 
 .dark {

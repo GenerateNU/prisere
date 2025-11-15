@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import ExpenseTable from "./expense-table";
+import ExpenseTable from "./expense-table/expense-table";
 import TransactionImportModal from "./transaction-import-csv/TransactionImportModal";
 import { Button } from "@/components/ui/button";
 
@@ -12,7 +12,7 @@ export default function ExpenseTracker() {
         <>
             <Button onClick={onOpenImportModal}>Import Transactions</Button>
             <TransactionImportModal isOpen={importModalOpen} onClose={onCloseImportModal} />
-            <ExpenseTable />
+            <ExpenseTable title={"Business Transactions"} rowOption={"collapsible"} editableTags={true} />
         </>
     );
 }

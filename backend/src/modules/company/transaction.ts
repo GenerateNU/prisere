@@ -1,11 +1,20 @@
 import { Company } from "../../entities/Company";
-import { CreateCompanyDTO, GetCompanyByIdDTO, UpdateQuickBooksImportTimeDTO } from "../../types/Company";
+import {
+    CreateCompanyDTO,
+    GetCompanyByIdDTO,
+    UpdateCompanyDTO,
+    GetCompanyExternalDTO,
+    UpdateQuickBooksImportTimeDTO,
+} from "../../types/Company";
 import { DataSource } from "typeorm";
 import Boom from "@hapi/boom";
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
 import { LocationAddress } from "../../entities/LocationAddress";
 import { User } from "../../entities/User";
+import { CompanyExternal } from "../../entities/CompanyExternals";
+import { Purchase } from "../../entities/Purchase";
+import { Invoice } from "../../entities/Invoice";
 
 export interface ICompanyTransaction {
     /**
@@ -40,6 +49,17 @@ export interface ICompanyTransaction {
      * @returns Promise resolving to fetched Company locations or null if company was not found
      */
     getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]>;
+
+    getCompanyExternal(paylaod: GetCompanyExternalDTO): Promise<CompanyExternal | null>;
+
+    getCompanyFinancialData(payload: GetCompanyByIdDTO): Promise<{ purchases: Purchase[]; invoices: Invoice[] } | null>;
+
+    /**
+     * Update a Company's information by id
+     * @param payload The updated company
+     * @returns Promise resolving to updated Company or null if not found
+     */
+    updateCompanyById(companyId: string, payload: UpdateCompanyDTO): Promise<Company | null>;
 }
 
 export class CompanyTransaction implements ICompanyTransaction {
@@ -118,5 +138,29 @@ export class CompanyTransaction implements ICompanyTransaction {
             companyId: payload.id,
         });
         return locations;
+    }
+
+    async getCompanyExternal(payload: GetCompanyExternalDTO): Promise<CompanyExternal | null> {
+        const external = await this.db.getRepository(CompanyExternal).findOneBy({ companyId: payload.id });
+        return external ?? null;
+    }
+
+    async getCompanyFinancialData(
+        payload: GetCompanyByIdDTO
+    ): Promise<{ purchases: Purchase[]; invoices: Invoice[] } | null> {
+        const purchases = await this.db.getRepository(Purchase).findBy({ companyId: payload.id });
+        const invoices = await this.db.getRepository(Invoice).findBy({ companyId: payload.id });
+
+        // If both are empty, return null
+        if ((!purchases || purchases.length === 0) && (!invoices || invoices.length === 0)) {
+            return null;
+        }
+
+        return { purchases, invoices };
+    }
+
+    async updateCompanyById(companyId: string, payload: UpdateCompanyDTO): Promise<Company | null> {
+        const company = await this.db.manager.update(Company, { id: companyId }, payload);
+        return company.affected === 1 ? this.db.manager.findOneBy(Company, { id: companyId }) : null;
     }
 }

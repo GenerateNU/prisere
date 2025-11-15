@@ -201,19 +201,27 @@ export default function DeclareDisaster() {
     ];
 
     const currentStep = steps.find((s) => s.step === step);
+    const claimReportSteps = [
+        { label: "Disaster Info", step: 0 },
+        { label: "Business Info", step: 1 },
+        { label: "Personal Info", step: 2 },
+        { label: "Insurer Info", step: 3 },
+        { label: "Export Report", step: 4 },
+    ];
 
     return (
         <div className={`flex flex-col px-[20%] pt-[70px] min-h-screen pb-8 ${step === 1 && "justify-center"}`}>
             {step > -1 && step !== 5 && (
                 <div className="">
                     <h2 className="text-[40px] font-bold ">Declare Disaster</h2>
-                    <Progress
-                        progress={step}
-                        items={["Disaster Info", "Business Info", "Personal Info", "Insurer Info", "Export Report"]}
-                    />
+                    <Progress progress={step} items={claimReportSteps} />
                 </div>
             )}
             {currentStep?.render}
+            {/**
+             * WHEN ADDING THE TABLE TO LINK PURCHASES TO CLAIMS USE THIS:
+             * <ExpenseTable title={"Select Relevant Transactions"} rowOption={'checkbox'} editableTags={false}/>;
+             */}
         </div>
     );
 }

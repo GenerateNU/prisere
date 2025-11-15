@@ -36,13 +36,15 @@ describe("POST /quickbooks/invoice/bulk", () => {
     });
 
     test("POST /quickbooks/invoice/bulk - All Fields Given, single creation", async () => {
-        const requestBody = [
-            {
-                quickbooksId: 12,
-                totalAmountCents: 4004,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-        ];
+        const requestBody = {
+            items: [
+                {
+                    quickbooksId: 12,
+                    totalAmountCents: 4004,
+                    quickbooksDateCreated: quickbooksDateCreatedEx,
+                },
+            ],
+        };
         const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
@@ -67,18 +69,20 @@ describe("POST /quickbooks/invoice/bulk", () => {
     });
 
     test("POST /quickbooks/invoice/bulk - All Fields Given, multiple creations", async () => {
-        const requestBody = [
-            {
-                quickbooksId: 13,
-                totalAmountCents: 4004,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-            {
-                quickbooksId: 14,
-                totalAmountCents: 0,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-        ];
+        const requestBody = {
+            items: [
+                {
+                    quickbooksId: 13,
+                    totalAmountCents: 4004,
+                    quickbooksDateCreated: quickbooksDateCreatedEx,
+                },
+                {
+                    quickbooksId: 14,
+                    totalAmountCents: 0,
+                    quickbooksDateCreated: quickbooksDateCreatedEx,
+                },
+            ],
+        };
         const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
@@ -110,16 +114,18 @@ describe("POST /quickbooks/invoice/bulk", () => {
     });
 
     test("POST /quickbooks/invoice/bulk - MIssing quickbooksId, multiple creations", async () => {
-        const requestBody = [
-            {
-                totalAmountCents: 4004,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-            {
-                totalAmountCents: 0,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-        ];
+        const requestBody = {
+            items: [
+                {
+                    totalAmountCents: 4004,
+                    quickbooksDateCreated: quickbooksDateCreatedEx,
+                },
+                {
+                    totalAmountCents: 0,
+                    quickbooksDateCreated: quickbooksDateCreatedEx,
+                },
+            ],
+        };
         const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
@@ -149,17 +155,19 @@ describe("POST /quickbooks/invoice/bulk", () => {
     });
 
     test("POST /quickbooks/invoice/bulk - Missing Fields, multiple creations", async () => {
-        const requestBody = [
-            {
-                quickbooksId: 13,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-            {
-                quickbooksId: 14,
-                totalAmountCents: 0,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-        ];
+        const requestBody = {
+            items: [
+                {
+                    quickbooksId: 13,
+                    quickbooksDateCreated: quickbooksDateCreatedEx,
+                },
+                {
+                    quickbooksId: 14,
+                    totalAmountCents: 0,
+                    quickbooksDateCreated: quickbooksDateCreatedEx,
+                },
+            ],
+        };
         const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
@@ -176,14 +184,16 @@ describe("POST /quickbooks/invoice/bulk", () => {
     });
 
     test("POST /quickbooks/invoice/bulk - Missing Fields 2, multiple creations", async () => {
-        const requestBody = [
-            {
-                quickbooksId: 13,
-                totalAmountCents: 998,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-            {},
-        ];
+        const requestBody = {
+            items: [
+                {
+                    quickbooksId: 13,
+                    totalAmountCents: 998,
+                    quickbooksDateCreated: quickbooksDateCreatedEx,
+                },
+                {},
+            ],
+        };
         const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
@@ -200,13 +210,15 @@ describe("POST /quickbooks/invoice/bulk", () => {
     });
 
     test("POST /quickbooks/invoice/bulk - Single Bad company ID", async () => {
-        const requestBody = [
-            {
-                quickbooksId: 13,
-                totalAmountCents: 11,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-        ];
+        const requestBody = {
+            items: [
+                {
+                    quickbooksId: 13,
+                    totalAmountCents: 11,
+                    quickbooksDateCreated: quickbooksDateCreatedEx,
+                },
+            ],
+        };
         const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
@@ -222,13 +234,15 @@ describe("POST /quickbooks/invoice/bulk", () => {
     });
 
     test("POST /quickbooks/invoice/bulk - Bad quickbooks ID", async () => {
-        const requestBody = [
-            {
-                quickbooksId: -15,
-                totalAmountCents: 11,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-        ];
+        const requestBody = {
+            items: [
+                {
+                    quickbooksId: -15,
+                    totalAmountCents: 11,
+                    quickbooksDateCreated: quickbooksDateCreatedEx,
+                },
+            ],
+        };
         const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
@@ -245,13 +259,15 @@ describe("POST /quickbooks/invoice/bulk", () => {
     });
 
     test("POST /quickbooks/invoice/bulk - Bad total cents", async () => {
-        const requestBody = [
-            {
-                quickbooksId: 15,
-                totalAmountCents: -11,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-        ];
+        const requestBody = {
+            items: [
+                {
+                    quickbooksId: 15,
+                    totalAmountCents: -11,
+                    quickbooksDateCreated: quickbooksDateCreatedEx,
+                },
+            ],
+        };
         const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
@@ -268,13 +284,15 @@ describe("POST /quickbooks/invoice/bulk", () => {
     });
 
     test("POST /quickbooks/invoice/bulk - updating invoice instance", async () => {
-        const requestBody = [
-            {
-                quickbooksId: 1, // already exists from the seeded example
-                totalAmountCents: 999999,
-                quickbooksDateCreated: quickbooksDateCreatedEx,
-            },
-        ];
+        const requestBody = {
+            items: [
+                {
+                    quickbooksId: 1, // already exists from the seeded example
+                    totalAmountCents: 999999,
+                    quickbooksDateCreated: quickbooksDateCreatedEx,
+                },
+            ],
+        };
         const response = await app.request(TESTING_PREFIX + "/invoice/bulk", {
             method: "POST",
             headers: {
@@ -290,7 +308,7 @@ describe("POST /quickbooks/invoice/bulk", () => {
             [
                 {
                     companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
-                    quickbooksId: 1, // already exists from the seeded example
+                    quickbooksId: 1,
                     totalAmountCents: 999999,
                     quickbooksDateCreated: quickbooksDateCreatedEx,
                 },

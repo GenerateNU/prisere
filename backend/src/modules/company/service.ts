@@ -1,4 +1,9 @@
-import { CreateCompanyDTO, GetCompanyByIdDTO, UpdateQuickBooksImportTimeDTO } from "../../types/Company";
+import {
+    CreateCompanyDTO,
+    GetCompanyByIdDTO,
+    UpdateCompanyDTO,
+    UpdateQuickBooksImportTimeDTO,
+} from "../../types/Company";
 import { Company } from "../../entities/Company";
 import { ICompanyTransaction } from "./transaction";
 import Boom from "@hapi/boom";
@@ -6,6 +11,7 @@ import { withServiceErrorHandling } from "../../utilities/error";
 import { LocationAddress } from "../../entities/LocationAddress";
 import { IClaimTransaction } from "../claim/transaction";
 import { GetClaimInProgressForCompanyResponse } from "../../types/Claim";
+import { CompanyExternal } from "../../entities/CompanyExternals";
 
 export interface ICompanyService {
     createCompany(payload: CreateCompanyDTO, userId: string): Promise<Company>;
@@ -14,6 +20,9 @@ export interface ICompanyService {
     updateLastQuickBooksPurchaseImportTime(payload: UpdateQuickBooksImportTimeDTO): Promise<Company>;
     getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]>;
     getClaimInProgress(companyId: string): Promise<GetClaimInProgressForCompanyResponse>;
+    getCompanyExternal(companyId: string): Promise<CompanyExternal | null>;
+    hasCompanyData(companyId: string): Promise<boolean>;
+    updateCompanyById(companyId: string, payload: UpdateCompanyDTO): Promise<Company>;
 }
 
 export class CompanyService implements CompanyService {
@@ -74,6 +83,34 @@ export class CompanyService implements CompanyService {
             const claim = await this.claimTransaction.getClaimInProgressForCompany(companyId);
 
             return claim;
+        }
+    );
+
+    getCompanyExternal = withServiceErrorHandling(async (companyId: string): Promise<CompanyExternal | null> => {
+        const external = await this.companyTransaction.getCompanyExternal({ id: companyId });
+        return external;
+    });
+
+    hasCompanyData = withServiceErrorHandling(async (companyId: string): Promise<boolean> => {
+        const external = await this.companyTransaction.getCompanyExternal({ id: companyId });
+        if (external) {
+            return true;
+        }
+        const financialData = await this.companyTransaction.getCompanyFinancialData({ id: companyId });
+        if (financialData) {
+            return true;
+        }
+        return false;
+    });
+
+    updateCompanyById = withServiceErrorHandling(
+        async (companyId: string, payload: UpdateCompanyDTO): Promise<Company> => {
+            const company = await this.companyTransaction.updateCompanyById(companyId, payload);
+
+            if (!company) {
+                throw Boom.notFound("Company Not Found");
+            }
+            return company;
         }
     );
 }

@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
+import { GetPurchaseLineItemResponseSchema } from "../purchase-line-item/types";
 
 export const CreateOrChangePurchaseRequestSchema = z.object({
     items: z
@@ -47,16 +49,36 @@ export const GetPurchasesResponseSchema = z.object({
     lastUpdated: z.string(),
 });
 
-//Get a list of purchases given the company ID
-export const GetCompanyPurchasesDTOSchema = z.object({
-    companyId: z.string().nonempty(),
-    pageNumber: z.number().gte(0).optional().default(0),
-    resultsPerPage: z.number().gt(0).optional().default(20),
+export const GetPurchaseWithLineItems = GetPurchasesResponseSchema.extend({
+    lineItems: z.array(GetPurchaseLineItemResponseSchema),
 });
+
+enum SortByColumn {
+    DATE = "date",
+    AMOUNT = "totalAmountCents",
+}
 
 export const GetCompanyPurchasesQueryParams = z.object({
     pageNumber: z.number().gte(0).optional().default(0),
     resultsPerPage: z.number().gt(0).optional().default(20),
+    sortBy: z.enum(SortByColumn).optional(),
+    sortOrder: z.enum(["ASC", "DESC"]).optional().default("DESC"),
+    categories: z.array(z.string().nonempty()).optional().default([]),
+    type: z.enum(PurchaseLineItemType).optional(),
+    dateFrom: z.string().datetime().optional(),
+    dateTo: z.string().datetime().optional(),
+    search: z.string().optional(),
+});
+
+/**
+ * This was expanded to support server side sorting, filtering, and search.
+ */
+export const GetCompanyPurchasesDTOSchema = GetCompanyPurchasesQueryParams.extend({
+    companyId: z.uuid(),
+});
+
+export const GetPurchaseCategoriesForCompanyDTOSchema = z.object({
+    companyId: z.uuid(),
 });
 
 export const GetPurchaseDTOSchema = z.object({
@@ -69,7 +91,7 @@ export const GetCompanyPurchasesByDateDTOSchema = z.object({
     endDate: z.iso.datetime(),
 });
 
-export const GetCompanyPurchasesResponseSchema = z.array(GetPurchasesResponseSchema);
+export const GetCompanyPurchasesResponseSchema = z.array(GetPurchaseWithLineItems);
 
 export const GetCompanyPurchasesSummationResponseSchema = z.object({
     total: z.number().nonnegative(),
@@ -82,12 +104,15 @@ export const GetCompanyPurchasesInMonthBinsResponseSchema = z.array(
     })
 );
 
+export const GetPurchaseCategoriesForCompanyResponseSchema = z.array(z.string().nonempty());
+
 //Controller Responses
 export type CreateOrChangePurchaseResponse = z.infer<typeof CreateOrChangePurchasesResponseSchema>;
 export type GetPurchaseResponse = z.infer<typeof GetPurchasesResponseSchema>;
 export type GetCompanyPurchasesResponse = z.infer<typeof GetCompanyPurchasesResponseSchema>;
 export type GetCompanyPurchasesSummationResponse = z.infer<typeof GetCompanyPurchasesSummationResponseSchema>;
 export type GetCompanyPurchasesInMonthBinsResponse = z.infer<typeof GetCompanyPurchasesInMonthBinsResponseSchema>;
+export type GetPurchaseCategoriesForCompanyResponse = z.infer<typeof GetPurchaseCategoriesForCompanyResponseSchema>;
 
 //Input types
 export type CreateOrChangePurchaseRequest = z.infer<typeof CreateOrChangePurchaseRequestSchema>;

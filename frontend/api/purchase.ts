@@ -1,15 +1,22 @@
 "use server";
-import { CreatePurchaseInput, CreatePurchaseResponse, Purchase } from "../types/purchase";
+import { FilteredPurchases, PurchaseLineItemType, Purchases } from "../types/purchase";
 import { authHeader, authWrapper, getClient } from "./client";
 
-export const getAllPurchasesForCompany = async (pageNumber: number, resultsPerPage: number): Promise<Purchase[]> => {
-    const req = async (token: string): Promise<Purchase[]> => {
+export const getAllPurchasesForCompany = async (filters: FilteredPurchases): Promise<Purchases> => {
+    const req = async (token: string): Promise<Purchases> => {
         const client = getClient();
         const { data, error, response } = await client.GET("/purchase", {
             params: {
                 query: {
-                    pageNumber: pageNumber,
-                    resultsPerPage: resultsPerPage,
+                    pageNumber: filters.pageNumber,
+                    resultsPerPage: filters.resultsPerPage,
+                    categories: filters.categories,
+                    type: filters.type,
+                    dateFrom: filters.dateFrom,
+                    dateTo: filters.dateTo,
+                    search: filters.search,
+                    sortBy: filters.sortBy,
+                    sortOrder: filters.sortOrder,
                 },
             },
             headers: authHeader(token),
@@ -21,7 +28,7 @@ export const getAllPurchasesForCompany = async (pageNumber: number, resultsPerPa
         }
     };
 
-    return authWrapper<Purchase[]>()(req);
+    return authWrapper<Purchases>()(req);
 };
 
 export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate: Date): Promise<{ total: number }> => {
@@ -47,20 +54,52 @@ export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate
     return authWrapper<{ total: number }>()(req);
 };
 
-export const createPurchaseForCompany = async (newPurchase: CreatePurchaseInput): Promise<CreatePurchaseResponse> => {
-    const req = async (token: string): Promise<CreatePurchaseResponse> => {
+export const updateCategory = async (category: string, purchaseLineIds: string[], removeCategory: boolean) => {
+    const req = async (token: string) => {
         const client = getClient();
-        const { data, error, response } = await client.POST("/purchase/bulk", {
-            body: newPurchase,
-            headers: authHeader(token),
-        });
+        for (let i = 0; i < purchaseLineIds.length; i++) {
+            const { error, response } = await client.PATCH("/purchase/line/category", {
+                headers: authHeader(token),
+                body: {
+                    id: purchaseLineIds[i],
+                    category: category,
+                    removeCategory: removeCategory,
+                },
+            });
 
-        if (response.ok) {
-            return data!;
-        } else {
-            throw Error(error?.error);
+            if (!response.ok) {
+                throw Error(error?.error);
+            }
         }
     };
 
-    return authWrapper<CreatePurchaseResponse>()(req);
+    return authWrapper<void>()(req);
+};
+
+const typeMap: Record<string, PurchaseLineItemType> = {
+    typical: PurchaseLineItemType.TYPICAL,
+    extraneous: PurchaseLineItemType.EXTRANEOUS,
+};
+
+type typeString = "typical" | "extraneous";
+
+export const updateType = async (type: typeString, purchaseLineIds: string[]) => {
+    const req = async (token: string) => {
+        const client = getClient();
+        for (let i = 0; i < purchaseLineIds.length; i++) {
+            const { error, response } = await client.PATCH("/purchase/line/type", {
+                headers: authHeader(token),
+                body: {
+                    id: purchaseLineIds[i],
+                    type: typeMap[type],
+                },
+            });
+
+            if (!response.ok) {
+                throw Error(error?.error);
+            }
+        }
+    };
+
+    return authWrapper<void>()(req);
 };
