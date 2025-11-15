@@ -1,7 +1,8 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Overview from "./Overview";
+import Overview from "./overview/Overview";
+import ViewDocuments from "./view-documents/ViewDocuments";
 
 export default function BusinessProfile() {
 
@@ -17,7 +18,7 @@ export default function BusinessProfile() {
             name: "View Documents",
             value: 'documents',
             content: (
-                <div>View Documents</div>
+                <ViewDocuments />
             )
         },
     ]
