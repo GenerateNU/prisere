@@ -64,7 +64,6 @@ export const GetCompanyByIdResponseSchema = CompanySchema;
 export const UpdateQuickBooksImportTimeDTOSchema = CompanyExternalOptionalSchema;
 
 export const UpdateCompanyDTOSchema = z.object({
-    id: z.string(),
     name: z.string().min(1).optional(),
     businessOwnerFullName: z.string().optional(),
 });

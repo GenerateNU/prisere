@@ -9,7 +9,6 @@ import { getUser } from "@/api/user";
 
 export default function BusinessCard() {
     const [businessInfo, setBusinessInfo] = useState<UpdateCompanyRequest>({
-        id: "",
         name: "",
         businessOwnerFullName: "",
     });

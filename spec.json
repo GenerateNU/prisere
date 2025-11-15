@@ -568,9 +568,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {
-                    "type": "string"
-                  },
                   "name": {
                     "type": "string",
                     "minLength": 1
@@ -578,10 +575,7 @@
                   "businessOwnerFullName": {
                     "type": "string"
                   }
-                },
-                "required": [
-                  "id"
-                ]
+                }
               }
             }
           }
@@ -634,6 +628,9 @@
                             "type": "string"
                           },
                           "updatedAt": {
+                            "type": "string"
+                          },
+                          "importTime": {
                             "type": "string"
                           }
                         },
@@ -1867,7 +1864,8 @@
                     "pattern": "^\\d+$"
                   },
                   "county": {
-                    "type": "string"
+                    "type": "string",
+                    "nullable": true
                   }
                 },
                 "required": [
@@ -2317,7 +2315,8 @@
                       "pattern": "^\\d+$"
                     },
                     "county": {
-                      "type": "string"
+                      "type": "string",
+                      "nullable": true
                     }
                   },
                   "required": [

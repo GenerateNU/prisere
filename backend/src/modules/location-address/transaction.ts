@@ -202,10 +202,14 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
         payload: UpdateLocationAddressDTO,
         companyId: string
     ): Promise<UpdateLocationAddressResponse | null> {
+        const updateData = Object.fromEntries(
+            Object.entries(payload).filter(([_, value]) => value !== null)
+        ) as Partial<LocationAddress>;
+
         const updateResponse = await this.db.manager.update(
             LocationAddress,
             { id: payload.id, companyId: companyId },
-            payload
+            updateData
         );
         return updateResponse.affected === 1 ? this.db.manager.findOneBy(LocationAddress, { id: payload.id }) : null;
     }
@@ -217,20 +221,24 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
         const updatedLocations: LocationAddress[] = [];
 
         await this.db.transaction(async (manager) => {
-            for (const policy of payload) {
+            for (const location of payload) {
+                const updateData = Object.fromEntries(
+                    Object.entries(location).filter(([_, value]) => value !== null)
+                ) as Partial<LocationAddress>;
+
                 const updateResponse = await manager.update(
                     LocationAddress,
-                    { id: policy.id, companyId: companyId },
-                    policy
+                    { id: location.id, companyId: companyId },
+                    updateData
                 );
                 if (updateResponse.affected === 1) {
-                    const updatedLocation = await manager.findOneBy(LocationAddress, { id: policy.id });
+                    const updatedLocation = await manager.findOneBy(LocationAddress, { id: location.id });
                     if (updatedLocation) {
                         updatedLocations.push(updatedLocation);
                     }
                 } else {
                     // will rollback the transaction if any update fails
-                    throw Boom.internal(`Failed to update policy with ID: ${policy.id}`);
+                    throw Boom.internal(`Failed to update policy with ID: ${location.id}`);
                 }
             }
         });

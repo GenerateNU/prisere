@@ -159,8 +159,21 @@ export class LocationAddressService implements ILocationAddressService {
             // get the current location
             const locationAddress = await this.locationAddressTransaction.getLocationAddressById({ id: payload.id });
 
+            if (!locationAddress) {
+                throw Boom.badRequest("No location address with given id found");
+            }
+
+            const locationForMatching: Partial<LocationAddress> = {
+                country: payload.country ?? locationAddress.country,
+                stateProvince: payload.stateProvince ?? locationAddress.stateProvince,
+                city: payload.city ?? locationAddress.city,
+                streetAddress: payload.streetAddress ?? locationAddress.streetAddress,
+                postalCode: payload.postalCode ?? locationAddress.postalCode,
+                county: payload.county ?? locationAddress.county,
+            };
+
             // get the new fips codes if any of the address fields have changed
-            const fipsLocation = await this.locationMatcher.getLocationFips({ ...locationAddress, ...payload });
+            const fipsLocation = await this.locationMatcher.getLocationFips(locationForMatching);
 
             if (fipsLocation === null) {
                 throw Boom.badRequest("Fips state and county code cannot be null");

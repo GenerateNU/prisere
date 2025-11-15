@@ -9,6 +9,7 @@ import {
     GetCompanyExternalResponse,
     HasCompanyDataDTOResponse,
     UpdateCompanyResponse,
+    UpdateCompanyDTOSchema,
 } from "../../types/Company";
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
@@ -204,13 +205,14 @@ export class CompanyController implements ICompanyController {
     updateCompanyById = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<UpdateCompanyResponse, 200>> => {
             const companyId = ctx.get("companyId");
-            const payload = await ctx.req.json();
+            const json = await ctx.req.json();
+            const payload = UpdateCompanyDTOSchema.parse(json);
 
-            if (payload.id !== companyId) {
-                return ctx.json({ error: "Company ID does not match authenticated company ID" }, 400);
+            if (!validate(companyId)) {
+                return ctx.json({ error: "Invalid company ID" }, 400);
             }
 
-            const updatedCompany = await this.companyService.updateCompanyById(payload);
+            const updatedCompany = await this.companyService.updateCompanyById(companyId, payload);
             return ctx.json(updatedCompany, 200);
         }
     );

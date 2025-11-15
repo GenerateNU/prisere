@@ -381,7 +381,6 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
-                        id: string;
                         name?: string;
                         businessOwnerFullName?: string;
                     };
@@ -407,6 +406,7 @@ export interface paths {
                                 companyId: string;
                                 createdAt: string;
                                 updatedAt: string;
+                                importTime?: string;
                             }[];
                             createdAt: string;
                             updatedAt: string;
@@ -1117,7 +1117,7 @@ export interface paths {
                         city?: string;
                         streetAddress?: string;
                         postalCode?: string;
-                        county?: string;
+                        county?: string | null;
                     };
                 };
             };
@@ -1383,7 +1383,7 @@ export interface paths {
                         city?: string;
                         streetAddress?: string;
                         postalCode?: string;
-                        county?: string;
+                        county?: string | null;
                     }[];
                 };
             };

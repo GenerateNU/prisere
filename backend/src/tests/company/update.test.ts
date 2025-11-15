@@ -30,7 +30,6 @@ describe("Company - Update", () => {
 
     test("PATCH /companies - valid update all fields", async () => {
         const requestBody = {
-            id: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             name: "Cool Company",
             businessOwnerFullName: "Cool Guy",
         };
@@ -50,7 +49,6 @@ describe("Company - Update", () => {
 
     test("PATCH /companies - valid partial fields ", async () => {
         const requestBody = {
-            id: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             name: "Cool Company",
         };
         const response = await app.request(TESTING_PREFIX + "/companies", {
@@ -67,26 +65,8 @@ describe("Company - Update", () => {
         expect(body.businessOwnerFullName).toBe("Garfield Parrish");
     });
 
-    test("PATCH /companies - not the logged in company ", async () => {
-        const requestBody = {
-            id: "35fe231e-0635-49c7-9096-4b6a17b3639b",
-            name: "Cool Company",
-            businessOwnerFullName: "Cool Guy",
-        };
-        const response = await app.request(TESTING_PREFIX + "/companies", {
-            method: "patch",
-            headers: {
-                "Content-Type": "application/json",
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
-            },
-            body: JSON.stringify(requestBody),
-        });
-        expect(response.status).toBe(400);
-    });
-
     test("PATCH /companies - invalid Id ", async () => {
         const requestBody = {
-            id: "ffc8243b-876e-4b6d-8b80-ffc73522a",
             name: "Cool Company",
             businessOwnerFullName: "Cool Guy",
         };
@@ -94,7 +74,7 @@ describe("Company - Update", () => {
             method: "patch",
             headers: {
                 "Content-Type": "application/json",
-                companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
+                companyId: "BADID",
             },
             body: JSON.stringify(requestBody),
         });

@@ -22,7 +22,7 @@ export interface ICompanyService {
     getClaimInProgress(companyId: string): Promise<GetClaimInProgressForCompanyResponse>;
     getCompanyExternal(companyId: string): Promise<CompanyExternal | null>;
     hasCompanyData(companyId: string): Promise<boolean>;
-    updateCompanyById(payload: UpdateCompanyDTO): Promise<Company>;
+    updateCompanyById(companyId: string, payload: UpdateCompanyDTO): Promise<Company>;
 }
 
 export class CompanyService implements CompanyService {
@@ -103,12 +103,14 @@ export class CompanyService implements CompanyService {
         return false;
     });
 
-    updateCompanyById = withServiceErrorHandling(async (payload: UpdateCompanyDTO): Promise<Company> => {
-        const company = await this.companyTransaction.updateCompanyById(payload);
+    updateCompanyById = withServiceErrorHandling(
+        async (companyId: string, payload: UpdateCompanyDTO): Promise<Company> => {
+            const company = await this.companyTransaction.updateCompanyById(companyId, payload);
 
-        if (!company) {
-            throw Boom.notFound("Company Not Found");
+            if (!company) {
+                throw Boom.notFound("Company Not Found");
+            }
+            return company;
         }
-        return company;
-    });
+    );
 }
