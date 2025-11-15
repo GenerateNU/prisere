@@ -52,6 +52,19 @@ export function PersonalInfoSettings() {
         });
     }
 
+    function onDiscardChanges() {
+        resetEditedInfo();
+        setMode("view");
+    }
+
+    function resetEditedInfo() {
+        setEditedInfo({
+            firstName: userInfoData?.firstName ?? "",
+            lastName: userInfoData?.lastName ?? "",
+            email: userInfoData?.email ?? "",
+        });
+    }
+
     return (
         <ProfileSettingsCard
             title="Personal Information"
@@ -63,11 +76,23 @@ export function PersonalInfoSettings() {
                             "bg-slate rounded-full p-2 cursor-pointer ",
                             mode === "edit" ? "bg-fuchsia hover:bg-fuchsia/80" : "bg-slate hover:bg-slate/80"
                         )}
-                        onClick={() => setMode((prev) => (prev === "view" ? "edit" : "view"))}
+                        onClick={() =>
+                            setMode((prev) => {
+                                if (prev === "view") {
+                                    resetEditedInfo();
+                                    return "edit";
+                                }
+
+                                return "view";
+                            })
+                        }
                     >
                         <SquarePenIcon className={cn(mode === "edit" ? "text-white" : "text-black")} />
                     </button>
-                    <button className="bg-slate rounded-full p-2 cursor-pointer hover:bg-slate/80">
+                    <button
+                        className="bg-slate rounded-full p-2 cursor-pointer hover:bg-slate/80"
+                        onClick={onDiscardChanges}
+                    >
                         <Trash2Icon />
                     </button>
                 </div>
@@ -85,17 +110,17 @@ export function PersonalInfoSettings() {
                     <div className="grid grid-cols-2 grid-rows-2 gap-x-10 gap-y-2.5 row-">
                         <InfoEditBlock
                             title="First Name"
-                            prefill={userInfoData?.firstName ?? ""}
+                            prefill={editedInfo.firstName}
                             onChange={(value) => setEditedInfo({ ...editedInfo, firstName: value })}
                         />
                         <InfoEditBlock
                             title="Last Name"
-                            prefill={userInfoData?.lastName ?? ""}
+                            prefill={editedInfo.lastName}
                             onChange={(value) => setEditedInfo({ ...editedInfo, lastName: value })}
                         />
                         <InfoEditBlock
                             title="Email"
-                            prefill={userInfoData?.email ?? ""}
+                            prefill={editedInfo.email}
                             onChange={(value) => setEditedInfo({ ...editedInfo, email: value })}
                         />
                     </div>
