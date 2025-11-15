@@ -1,7 +1,7 @@
 import { z } from "zod";
+import { Purchase } from "../../entities/Purchase";
 import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
 import { GetPurchaseLineItemResponseSchema } from "../purchase-line-item/types";
-import { Purchase } from "../../entities/Purchase";
 
 export const CreateOrChangePurchaseRequestSchema = z.object({
     items: z
