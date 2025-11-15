@@ -43,11 +43,16 @@
                   "companyId": {
                     "type": "string",
                     "nullable": true
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "pattern": "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$"
                   }
                 },
                 "required": [
                   "firstName",
-                  "lastName"
+                  "lastName",
+                  "phoneNumber"
                 ]
               }
             }
@@ -76,12 +81,16 @@
                     "companyId": {
                       "type": "string",
                       "nullable": true
+                    },
+                    "phoneNumber": {
+                      "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "firstName",
-                    "lastName"
+                    "lastName",
+                    "phoneNumber"
                   ]
                 }
               }
@@ -150,12 +159,16 @@
                     },
                     "email": {
                       "type": "string"
+                    },
+                    "phoneNumber": {
+                      "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "firstName",
-                    "lastName"
+                    "lastName",
+                    "phoneNumber"
                   ]
                 }
               }
@@ -226,6 +239,10 @@
                   "email": {
                     "type": "string",
                     "format": "email"
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "pattern": "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$"
                   }
                 }
               }
@@ -255,12 +272,16 @@
                     "companyId": {
                       "type": "string",
                       "nullable": true
+                    },
+                    "phoneNumber": {
+                      "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "firstName",
-                    "lastName"
+                    "lastName",
+                    "phoneNumber"
                   ]
                 }
               }
@@ -398,11 +419,21 @@
                   "businessOwnerFullName": {
                     "type": "string",
                     "minLength": 1
+                  },
+                  "companyType": {
+                    "type": "string",
+                    "enum": [
+                      "LLC",
+                      "Sole Proprietorship",
+                      "Corporation",
+                      "Partnership"
+                    ]
                   }
                 },
                 "required": [
                   "name",
-                  "businessOwnerFullName"
+                  "businessOwnerFullName",
+                  "companyType"
                 ]
               }
             }
@@ -472,6 +503,15 @@
                         ]
                       }
                     },
+                    "companyType": {
+                      "type": "string",
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
+                    },
                     "createdAt": {
                       "type": "string"
                     },
@@ -483,6 +523,7 @@
                     "id",
                     "name",
                     "businessOwnerFullName",
+                    "companyType",
                     "createdAt",
                     "updatedAt"
                   ]
@@ -601,6 +642,15 @@
                         ]
                       }
                     },
+                    "companyType": {
+                      "type": "string",
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
+                    },
                     "createdAt": {
                       "type": "string"
                     },
@@ -612,6 +662,7 @@
                     "id",
                     "name",
                     "businessOwnerFullName",
+                    "companyType",
                     "createdAt",
                     "updatedAt"
                   ]
@@ -676,6 +727,15 @@
                   },
                   "businessOwnerFullName": {
                     "type": "string"
+                  },
+                  "companyType": {
+                    "type": "string",
+                    "enum": [
+                      "LLC",
+                      "Sole Proprietorship",
+                      "Corporation",
+                      "Partnership"
+                    ]
                   }
                 }
               }
@@ -746,6 +806,15 @@
                         ]
                       }
                     },
+                    "companyType": {
+                      "type": "string",
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
+                    },
                     "createdAt": {
                       "type": "string"
                     },
@@ -757,6 +826,7 @@
                     "id",
                     "name",
                     "businessOwnerFullName",
+                    "companyType",
                     "createdAt",
                     "updatedAt"
                   ]
@@ -903,6 +973,15 @@
                         ]
                       }
                     },
+                    "companyType": {
+                      "type": "string",
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
+                    },
                     "createdAt": {
                       "type": "string"
                     },
@@ -914,6 +993,7 @@
                     "id",
                     "name",
                     "businessOwnerFullName",
+                    "companyType",
                     "createdAt",
                     "updatedAt"
                   ]
@@ -1060,6 +1140,15 @@
                         ]
                       }
                     },
+                    "companyType": {
+                      "type": "string",
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
+                    },
                     "createdAt": {
                       "type": "string"
                     },
@@ -1071,6 +1160,7 @@
                     "id",
                     "name",
                     "businessOwnerFullName",
+                    "companyType",
                     "createdAt",
                     "updatedAt"
                   ]
@@ -2677,12 +2767,16 @@
                           "companyId": {
                             "type": "string",
                             "nullable": true
+                          },
+                          "phoneNumber": {
+                            "type": "string"
                           }
                         },
                         "required": [
                           "id",
                           "firstName",
-                          "lastName"
+                          "lastName",
+                          "phoneNumber"
                         ]
                       },
                       "femaDisaster": {
@@ -2842,6 +2936,15 @@
                                   ]
                                 }
                               },
+                              "companyType": {
+                                "type": "string",
+                                "enum": [
+                                  "LLC",
+                                  "Sole Proprietorship",
+                                  "Corporation",
+                                  "Partnership"
+                                ]
+                              },
                               "createdAt": {
                                 "type": "string"
                               },
@@ -2853,6 +2956,7 @@
                               "id",
                               "name",
                               "businessOwnerFullName",
+                              "companyType",
                               "createdAt",
                               "updatedAt"
                             ]

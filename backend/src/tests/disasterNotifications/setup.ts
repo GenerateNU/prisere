@@ -27,18 +27,21 @@ export const createTestData = async (dataSource: DataSource, includeNotification
             firstName: "Alice",
             lastName: "Bob",
             email: "alice@prisere.com",
+            phoneNumber: "0123456789",
         },
         {
             id: "0199e585-a52b-7bcf-982d-a1c5230b3d40",
             firstName: "Jane",
             lastName: "Smith",
             email: "example@test.com",
+            phoneNumber: "0123456789",
         },
         {
             id: "0189e585-a52b-7bcf-982d-a1c5230b3d40",
             firstName: "Jane",
             lastName: "Buddy",
             email: "janeB@prisere.com",
+            phoneNumber: "0123456789",
         },
     ];
 
