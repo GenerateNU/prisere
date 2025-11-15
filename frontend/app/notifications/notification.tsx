@@ -84,7 +84,7 @@ export function LoadingNotification() {
                 </Button>
             </div>
             <p className="text-sm text-fuchsia font-medium mb-4">Time Declared</p>
-            <p className="text-charcoal leading-relaxed">Description Loading...</p>
+            <p className="text-charcoal leading-relaxed">Description</p>
         </div>
     );
 }
