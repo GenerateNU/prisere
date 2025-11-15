@@ -1,5 +1,5 @@
 "use server";
-import { Purchase } from "../types/purchase";
+import { CreatePurchaseInput, CreatePurchaseResponse, Purchase } from "../types/purchase";
 import { authHeader, authWrapper, getClient } from "./client";
 
 export const getAllPurchasesForCompany = async (pageNumber: number, resultsPerPage: number): Promise<Purchase[]> => {
@@ -45,4 +45,22 @@ export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate
     };
 
     return authWrapper<{ total: number }>()(req);
+};
+
+export const createPurchaseForCompany = async (newPurchase: CreatePurchaseInput): Promise<CreatePurchaseResponse> => {
+    const req = async (token: string): Promise<CreatePurchaseResponse> => {
+        const client = getClient();
+        const { data, error, response } = await client.POST("/purchase/bulk", {
+            body: newPurchase,
+            headers: authHeader(token),
+        });
+
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+
+    return authWrapper<CreatePurchaseResponse>()(req);
 };

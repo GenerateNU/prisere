@@ -1,12 +1,15 @@
 import { z } from "zod";
 
-export const CreateOrUpdateInvoicesRequestSchema = z.array(
-    z.object({
-        quickbooksId: z.number().int().positive().optional(),
-        totalAmountCents: z.number().int().nonnegative(),
-        quickbooksDateCreated: z.iso.datetime().optional(),
-    })
-);
+export const CreateOrUpdateInvoicesRequestSchema = z.object({
+    items: z.array(
+        z.object({
+            quickbooksId: z.number().int().positive().optional(),
+            totalAmountCents: z.number().int().nonnegative(),
+            quickbooksDateCreated: z.iso.datetime().optional(),
+        })
+    ),
+});
+
 export const CreateOrUpdateInvoicesDTOSchema = z.array(
     z.object({
         companyId: z.string(),

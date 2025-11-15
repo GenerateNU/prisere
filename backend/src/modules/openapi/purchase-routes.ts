@@ -40,6 +40,7 @@ const createOrUpdatePurchaseRoute = createRoute({
     description: "Creates a new purchase or updates an existing purchase with the provided information",
     request: {
         body: {
+            required: true,
             content: {
                 "application/json": {
                     schema: CreateOrChangePurchaseRequestSchema,

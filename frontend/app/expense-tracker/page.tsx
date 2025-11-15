@@ -1,5 +1,18 @@
+"use client";
+import { useState } from "react";
 import ExpenseTable from "./expense-table";
+import TransactionImportModal from "./transaction-import-csv/TransactionImportModal";
+import { Button } from "@/components/ui/button";
 
-export default async function ExpenseTracker() {
-    return <ExpenseTable></ExpenseTable>;
+export default function ExpenseTracker() {
+    const [importModalOpen, setImportModalOpen] = useState<boolean>(false);
+    const onOpenImportModal = () => setImportModalOpen(true);
+    const onCloseImportModal = () => setImportModalOpen(false);
+    return (
+        <>
+            <Button onClick={onOpenImportModal}>Import Transactions</Button>
+            <TransactionImportModal isOpen={importModalOpen} onClose={onCloseImportModal} />
+            <ExpenseTable />
+        </>
+    );
 }

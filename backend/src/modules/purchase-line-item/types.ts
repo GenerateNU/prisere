@@ -2,28 +2,30 @@ import { z } from "zod";
 import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
 import { LINE_ITEM_CATEGORY_CHARS, LINE_ITEM_DESCRIPTION_CHARS } from "../../utilities/constants";
 
-export const CreateOrChangePurchaseLineItemsDTOSchema = z
-    .array(
-        z.object({
-            description: z
-                .string()
-                .max(
-                    LINE_ITEM_DESCRIPTION_CHARS,
-                    `Description must be at most ${LINE_ITEM_DESCRIPTION_CHARS} characters.`
-                )
-                .optional(),
-            quickBooksId: z.number().optional(),
-            purchaseId: z.string().nonempty(),
-            amountCents: z.number().min(0),
-            category: z
-                .string()
-                .max(LINE_ITEM_CATEGORY_CHARS, `Category must be at most ${LINE_ITEM_CATEGORY_CHARS} characters.`)
-                .nullish(),
-            type: z.enum(PurchaseLineItemType),
-            quickbooksDateCreated: z.iso.datetime().optional(),
-        })
-    )
-    .nonempty();
+export const CreateOrChangePurchaseLineItemsDTOSchema = z.object({
+    items: z
+        .array(
+            z.object({
+                description: z
+                    .string()
+                    .max(
+                        LINE_ITEM_DESCRIPTION_CHARS,
+                        `Description must be at most ${LINE_ITEM_DESCRIPTION_CHARS} characters.`
+                    )
+                    .optional(),
+                quickBooksId: z.number().optional(),
+                purchaseId: z.string().nonempty(),
+                amountCents: z.number().min(0),
+                category: z
+                    .string()
+                    .max(LINE_ITEM_CATEGORY_CHARS, `Category must be at most ${LINE_ITEM_CATEGORY_CHARS} characters.`)
+                    .nullish(),
+                type: z.enum(PurchaseLineItemType),
+                quickbooksDateCreated: z.iso.datetime().optional(),
+            })
+        )
+        .nonempty(),
+});
 
 export const CreateOrChangePurchaseLineItemsResponseSchema = z.array(
     z.object({

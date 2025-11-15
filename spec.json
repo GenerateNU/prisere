@@ -946,6 +946,240 @@
         }
       }
     },
+    "/companies/claim-in-progress": {
+      "get": {
+        "summary": "Get a company's claim in progress, if one exists",
+        "description": "Gets the company's current claim in progress. Companies can only have up to one claim in progress at a time.",
+        "tags": [
+          "Companies"
+        ],
+        "responses": {
+          "200": {
+            "description": "Claim fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "ACTIVE",
+                            "FILED",
+                            "IN_PROGRESS_DISASTER",
+                            "IN_PROGRESS_PERSONAL",
+                            "IN_PROGRESS_BUSINESS",
+                            "IN_PROGRESS_INSURANCE",
+                            "IN_PROGRESS_EXPORT"
+                          ],
+                          "default": "ACTIVE"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "femaDisaster": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "disasterNumber": {
+                              "type": "number"
+                            },
+                            "fipsStateCode": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 56
+                            },
+                            "declarationDate": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "incidentBeginDate": {
+                              "type": "string"
+                            },
+                            "incidentEndDate": {
+                              "type": "string"
+                            },
+                            "fipsCountyCode": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1000,
+                              "exclusiveMaximum": true
+                            },
+                            "declarationType": {
+                              "type": "string",
+                              "minLength": 2,
+                              "maxLength": 2
+                            },
+                            "designatedArea": {
+                              "type": "string"
+                            },
+                            "designatedIncidentTypes": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "disasterNumber",
+                            "fipsStateCode",
+                            "declarationDate",
+                            "fipsCountyCode",
+                            "declarationType",
+                            "designatedArea",
+                            "designatedIncidentTypes"
+                          ]
+                        },
+                        "selfDisaster": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 250
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "startDate": {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            "endDate": {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "name",
+                            "description",
+                            "startDate",
+                            "createdAt",
+                            "updatedAt"
+                          ]
+                        },
+                        "insurancePolicy": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "policyHolderFirstName": {
+                              "type": "string"
+                            },
+                            "policyHolderLastName": {
+                              "type": "string"
+                            },
+                            "insuranceCompanyName": {
+                              "type": "string"
+                            },
+                            "policyNumber": {
+                              "type": "string"
+                            },
+                            "insuranceType": {
+                              "type": "string"
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "policyHolderFirstName",
+                            "policyHolderLastName",
+                            "insuranceCompanyName",
+                            "policyNumber",
+                            "insuranceType",
+                            "updatedAt",
+                            "createdAt"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "createdAt"
+                      ]
+                    },
+                    {
+                      "nullable": true
+                    },
+                    {
+                      "nullable": true
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get Claim in Progress Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Get Claim in Progress Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/disaster": {
       "post": {
         "summary": "Create a new disaster",
@@ -2915,37 +3149,46 @@
     },
     "/invoice/bulk": {
       "post": {
-        "summary": "Bulk create or update new invoices",
+        "summary": "Bulk create or update new invoices ",
         "description": "Creates new invoices according to the schema. If there is an invoice in the database with the same quickbooks_id, company_id pairing, then it will overwrite it's attributes",
         "tags": [
           "Invoice"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "quickbooksId": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "exclusiveMinimum": true
-                    },
-                    "totalAmountCents": {
-                      "type": "integer",
-                      "minimum": 0
-                    },
-                    "quickbooksDateCreated": {
-                      "type": "string",
-                      "format": "date-time"
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "quickbooksId": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": true
+                        },
+                        "totalAmountCents": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "quickbooksDateCreated": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "totalAmountCents"
+                      ]
                     }
-                  },
-                  "required": [
-                    "totalAmountCents"
-                  ]
-                }
+                  }
+                },
+                "required": [
+                  "items"
+                ]
               }
             }
           }
@@ -3616,34 +3859,43 @@
           "Purchases"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "quickBooksId": {
-                      "type": "number"
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "quickBooksId": {
+                          "type": "number"
+                        },
+                        "totalAmountCents": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "isRefund": {
+                          "type": "boolean"
+                        },
+                        "quickbooksDateCreated": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "totalAmountCents",
+                        "isRefund"
+                      ]
                     },
-                    "totalAmountCents": {
-                      "type": "number",
-                      "minimum": 0
-                    },
-                    "isRefund": {
-                      "type": "boolean"
-                    },
-                    "quickbooksDateCreated": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  },
-                  "required": [
-                    "totalAmountCents",
-                    "isRefund"
-                  ]
+                    "minItems": 1
+                  }
                 },
-                "minItems": 1
+                "required": [
+                  "items"
+                ]
               }
             }
           }
@@ -4208,6 +4460,22 @@
                   },
                   "selfDisasterId": {
                     "type": "string"
+                  },
+                  "insurancePolicyId": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "ACTIVE",
+                      "FILED",
+                      "IN_PROGRESS_DISASTER",
+                      "IN_PROGRESS_PERSONAL",
+                      "IN_PROGRESS_BUSINESS",
+                      "IN_PROGRESS_INSURANCE",
+                      "IN_PROGRESS_EXPORT"
+                    ],
+                    "default": "ACTIVE"
                   }
                 }
               }
@@ -4230,7 +4498,12 @@
                       "type": "string",
                       "enum": [
                         "ACTIVE",
-                        "FILED"
+                        "FILED",
+                        "IN_PROGRESS_DISASTER",
+                        "IN_PROGRESS_PERSONAL",
+                        "IN_PROGRESS_BUSINESS",
+                        "IN_PROGRESS_INSURANCE",
+                        "IN_PROGRESS_EXPORT"
                       ],
                       "default": "ACTIVE"
                     },
@@ -4336,6 +4609,47 @@
                         "createdAt",
                         "updatedAt"
                       ]
+                    },
+                    "insurancePolicy": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "policyHolderFirstName": {
+                          "type": "string"
+                        },
+                        "policyHolderLastName": {
+                          "type": "string"
+                        },
+                        "insuranceCompanyName": {
+                          "type": "string"
+                        },
+                        "policyNumber": {
+                          "type": "string"
+                        },
+                        "insuranceType": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "policyHolderFirstName",
+                        "policyHolderLastName",
+                        "insuranceCompanyName",
+                        "policyNumber",
+                        "insuranceType",
+                        "updatedAt",
+                        "createdAt"
+                      ]
                     }
                   },
                   "required": [
@@ -4410,7 +4724,12 @@
                         "type": "string",
                         "enum": [
                           "ACTIVE",
-                          "FILED"
+                          "FILED",
+                          "IN_PROGRESS_DISASTER",
+                          "IN_PROGRESS_PERSONAL",
+                          "IN_PROGRESS_BUSINESS",
+                          "IN_PROGRESS_INSURANCE",
+                          "IN_PROGRESS_EXPORT"
                         ],
                         "default": "ACTIVE"
                       },
@@ -4515,6 +4834,47 @@
                           "startDate",
                           "createdAt",
                           "updatedAt"
+                        ]
+                      },
+                      "insurancePolicy": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "policyHolderFirstName": {
+                            "type": "string"
+                          },
+                          "policyHolderLastName": {
+                            "type": "string"
+                          },
+                          "insuranceCompanyName": {
+                            "type": "string"
+                          },
+                          "policyNumber": {
+                            "type": "string"
+                          },
+                          "insuranceType": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "policyHolderFirstName",
+                          "policyHolderLastName",
+                          "insuranceCompanyName",
+                          "policyNumber",
+                          "insuranceType",
+                          "updatedAt",
+                          "createdAt"
                         ]
                       }
                     },
@@ -5574,44 +5934,53 @@
           "InvoiceLineItem"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "description": {
-                      "type": "string",
-                      "maxLength": 400
-                    },
-                    "invoiceId": {
-                      "type": "string"
-                    },
-                    "quickbooksId": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "exclusiveMinimum": true
-                    },
-                    "amountCents": {
-                      "type": "integer",
-                      "minimum": 0
-                    },
-                    "category": {
-                      "type": "string",
-                      "maxLength": 100
-                    },
-                    "quickbooksDateCreated": {
-                      "type": "string",
-                      "nullable": true,
-                      "format": "date-time"
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "type": "string",
+                          "maxLength": 400
+                        },
+                        "invoiceId": {
+                          "type": "string"
+                        },
+                        "quickbooksId": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": true
+                        },
+                        "amountCents": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "category": {
+                          "type": "string",
+                          "maxLength": 100
+                        },
+                        "quickbooksDateCreated": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "invoiceId",
+                        "amountCents"
+                      ]
                     }
-                  },
-                  "required": [
-                    "invoiceId",
-                    "amountCents"
-                  ]
-                }
+                  }
+                },
+                "required": [
+                  "items"
+                ]
               }
             }
           }
@@ -5853,52 +6222,61 @@
           "Purchase Line Items"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "description": {
-                      "type": "string",
-                      "maxLength": 400
-                    },
-                    "quickBooksId": {
-                      "type": "number"
-                    },
-                    "purchaseId": {
-                      "type": "string",
-                      "minLength": 1
-                    },
-                    "amountCents": {
-                      "type": "number",
-                      "minimum": 0
-                    },
-                    "category": {
-                      "type": "string",
-                      "nullable": true,
-                      "maxLength": 100
-                    },
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "extraneous",
-                        "typical"
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "type": "string",
+                          "maxLength": 400
+                        },
+                        "quickBooksId": {
+                          "type": "number"
+                        },
+                        "purchaseId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "amountCents": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "category": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 100
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "extraneous",
+                            "typical"
+                          ]
+                        },
+                        "quickbooksDateCreated": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "purchaseId",
+                        "amountCents",
+                        "type"
                       ]
                     },
-                    "quickbooksDateCreated": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  },
-                  "required": [
-                    "purchaseId",
-                    "amountCents",
-                    "type"
-                  ]
+                    "minItems": 1
+                  }
                 },
-                "minItems": 1
+                "required": [
+                  "items"
+                ]
               }
             }
           }
