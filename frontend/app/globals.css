@@ -42,6 +42,7 @@
     --radius-lg: var(--radius);
     --radius-xl: calc(var(--radius) + 4px);
     --color-fuchsia: var(--fuchsia);
+    --color-light-fuchsia: var(--light-fuchsia);
     --color-pink: var(--pink);
     --color-ochre: var(--ochre);
     --color-seafoam: var(--seafoam);
@@ -88,6 +89,7 @@
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
     --fuchsia: #9e2450;
+    --light-fuchsia: #f7dce5;
     --pink: #edc3d2;
     --ochre: #edce8e;
     --seafoam: #a8d4d7;
