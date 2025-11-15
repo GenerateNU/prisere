@@ -10,7 +10,8 @@ export const DisasterNotification = z.object({
     id: z.string(),
     userId: z.string(),
     femaDisasterId: z.string(),
-    notificationType: z.enum(notificationTypes),
+    isWeb: z.boolean(),
+    isEmail: z.boolean(),
     notificationStatus: z.enum(notificationStatus).optional().nullable(),
     firstSentAt: z.union([z.date(), z.string()]).optional().nullable(),
     lastSentAt: z.union([z.date(), z.string()]).optional().nullable(),
@@ -22,7 +23,8 @@ export const DisasterNotificationWithRelations = z.object({
     id: z.string(),
     userId: z.string(),
     femaDisasterId: z.string(),
-    notificationType: z.enum(notificationTypes),
+    isWeb: z.boolean(),
+    isEmail: z.boolean(),
     notificationStatus: z.enum(notificationStatus),
     firstSentAt: z.union([z.date(), z.string()]).optional().nullable(),
     lastSentAt: z.union([z.date(), z.string()]).optional().nullable(),
@@ -71,7 +73,8 @@ export const BulkCreateNotificationsRequestSchema = z.array(
     z.object({
         userId: z.string(),
         femaDisasterId: z.string(),
-        notificationType: z.enum(notificationTypes),
+        isWeb: z.boolean().optional().default(true),
+        isEmail: z.boolean().optional().default(true)
         // Only created with these 3 attributes set, rest start null
     })
 );

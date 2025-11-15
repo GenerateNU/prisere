@@ -30,12 +30,12 @@ describe("Bulk create disaster notifications", () => {
             {
                 userId: testData.users.user1.id,
                 femaDisasterId: testData.disasters.disaster1.id,
-                notificationType: "web",
+                isWeb: false,
             },
             {
                 userId: testData.users.user2.id,
                 femaDisasterId: testData.disasters.disaster2.id,
-                notificationType: "email",
+                isEmail: false,
             },
         ];
 
@@ -58,8 +58,10 @@ describe("Bulk create disaster notifications", () => {
         expect(body[1].userId).toBe(testData.users.user2.id);
         expect(body[0].femaDisasterId).toBe(testData.disasters.disaster1.id);
         expect(body[1].femaDisasterId).toBe(testData.disasters.disaster2.id);
-        expect(body[0].notificationType).toBe("web");
-        expect(body[1].notificationType).toBe("email");
+        expect(body[0].isWeb).toBe(false);
+        expect(body[0].isEmail).toBe(true);
+        expect(body[1].isWeb).toBe(true);
+        expect(body[1].isEmail).toBe(false);
         expect(body[0].firstSentAt).toBeDefined();
         expect(body[1].firstSentAt).toBeDefined();
     });
@@ -68,8 +70,7 @@ describe("Bulk create disaster notifications", () => {
         const requestBody = [
             {
                 userId: testData.users.user1.id,
-                femaDisasterId: testData.disasters.disaster1.id,
-                notificationType: "web",
+                femaDisasterId: testData.disasters.disaster1.id
             },
         ];
 
@@ -89,7 +90,8 @@ describe("Bulk create disaster notifications", () => {
         expect(body).toHaveLength(1);
         expect(body[0].userId).toBe(testData.users.user1.id);
         expect(body[0].femaDisasterId).toBe(testData.disasters.disaster1.id);
-        expect(body[0].notificationType).toBe("web");
+        expect(body[0].isWeb).toBe(true);
+        expect(body[0].isEmail).toBe(true);
         expect(body[0].notificationStatus).toBe("unread");
     });
 
@@ -99,7 +101,6 @@ describe("Bulk create disaster notifications", () => {
             {
                 userId: invalidUserId,
                 femaDisasterId: testData.disasters.disaster1.id,
-                notificationType: "web",
             },
         ];
 

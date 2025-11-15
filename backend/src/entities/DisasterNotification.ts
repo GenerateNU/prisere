@@ -24,11 +24,11 @@ export class DisasterNotification {
     @JoinColumn({ name: "femaDisasterId" })
     femaDisaster!: Relation<FemaDisaster>;
 
-    @Column({
-        type: "enum",
-        enum: NotificationType,
-    })
-    notificationType!: NotificationType;
+    @Column({default: true})
+    isWeb!: boolean;
+
+    @Column({default: true})
+    isEmail!: boolean
 
     @Column({
         type: "enum",
