@@ -69,7 +69,7 @@ export const UpdateQuickBooksImportTimeDTOSchema = CompanyExternalOptionalSchema
 export const UpdateCompanyDTOSchema = z.object({
     name: z.string().min(1).optional(),
     businessOwnerFullName: z.string().optional(),
-    companyType: z.enum(CompanyTypesEnum),
+    companyType: z.enum(CompanyTypesEnum).optional(),
 });
 
 export const UpdateCompanyResponseSchema = CompanySchema;

@@ -10,7 +10,7 @@ export const UserSchema = z.object({
     lastName: z.string(),
     email: z.string().email().optional().nullable(),
     companyId: z.string().optional().nullable(),
-    phoneNumber: z.string().regex(phoneRegex, "Invalid phone number format"),
+    phoneNumber: z.string(),
 });
 
 //POST
@@ -37,7 +37,7 @@ export const CreateUpdateUserResponseSchema = z.object({
     lastName: z.string(),
     email: z.string().optional(),
     companyId: z.string().nullish(),
-    phoneNumber: z.string().regex(phoneRegex, "Invalid phone number format"),
+    phoneNumber: z.string(),
 });
 
 //GET
@@ -50,7 +50,7 @@ export const GetUserResponseSchema = z.object({
     firstName: z.string(),
     lastName: z.string(),
     email: z.string().optional(),
-    phoneNumber: z.string().regex(phoneRegex, "Invalid phone number format"),
+    phoneNumber: z.string(),
 });
 
 //GET COMPANY
@@ -70,7 +70,7 @@ export const UpdateUserRequestBodySchema = z.object({
     firstName: z.string().nonempty().optional(),
     lastName: z.string().nonempty().optional(),
     email: z.email().optional(),
-    phoneNumber: z.string().regex(phoneRegex, "Invalid phone number format"),
+    phoneNumber: z.string().regex(phoneRegex, "Invalid phone number format").optional(),
 });
 
 export const UpdateUserDTOSchema = UpdateUserRequestBodySchema.extend({

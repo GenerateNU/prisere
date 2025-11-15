@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { CreartUserRequest, CreateUserDTO, CreateUserResponse } from "../../types/User";
 import { CreateCompanyDTO } from "../../types/Company";
 import { TESTING_PREFIX } from "../../utilities/constants";
+import { CompanyTypesEnum } from "../../entities/Company";
 
 export async function createUser(app: Hono, request: CreartUserRequest) {
     const userResponse = await app.request(TESTING_PREFIX + "/users", {
@@ -29,6 +30,7 @@ export async function createUserWithCompany(app: Hono, request: Omit<CreateUserD
         body: JSON.stringify({
             name: `company-${Math.random()}`,
             businessOwnerFullName: "MRS BOSS",
+            companyType: CompanyTypesEnum.LLC,
         } satisfies CreateCompanyDTO),
     });
 

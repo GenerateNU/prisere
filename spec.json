@@ -83,8 +83,7 @@
                       "nullable": true
                     },
                     "phoneNumber": {
-                      "type": "string",
-                      "pattern": "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$"
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -162,8 +161,7 @@
                       "type": "string"
                     },
                     "phoneNumber": {
-                      "type": "string",
-                      "pattern": "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$"
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -246,10 +244,7 @@
                     "type": "string",
                     "pattern": "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$"
                   }
-                },
-                "required": [
-                  "phoneNumber"
-                ]
+                }
               }
             }
           }
@@ -279,8 +274,7 @@
                       "nullable": true
                     },
                     "phoneNumber": {
-                      "type": "string",
-                      "pattern": "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$"
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -743,10 +737,7 @@
                       "Partnership"
                     ]
                   }
-                },
-                "required": [
-                  "companyType"
-                ]
+                }
               }
             }
           }
@@ -2778,8 +2769,7 @@
                             "nullable": true
                           },
                           "phoneNumber": {
-                            "type": "string",
-                            "pattern": "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$"
+                            "type": "string"
                           }
                         },
                         "required": [
