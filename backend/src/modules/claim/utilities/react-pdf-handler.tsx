@@ -237,9 +237,7 @@ function ClaimPDF({ data }: { data: ClaimData }) {
                     <View style={styles.dataTable}>
                         {insuranceInfo.map((item, index) => (
                             <View key={index} style={styles.insuranceInfo}>
-                                <Text style={styles.insuranceName}>
-                                    {item.name}
-                                </Text>
+                                <Text style={styles.insuranceName}>{item.name}</Text>
                                 {item.info.map((info, subIndex) => (
                                     <View key={subIndex} style={styles.dataRow}>
                                         <Text style={styles.dataLabel}>{info.label}</Text>

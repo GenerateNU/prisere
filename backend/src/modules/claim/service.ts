@@ -17,7 +17,7 @@ import { IClaimTransaction } from "./transaction";
 import { ClaimData, ClaimDataForPDF, ClaimPDFGenerationResponse } from "./types";
 import { restructureClaimDataForPdf } from "./utilities/pdf-mapper";
 import { S3Service } from "../s3/service";
-import { generatePdfToBuffer, generatePdfToFile } from "./utilities/react-pdf-handler";
+import { generatePdfToBuffer } from "./utilities/react-pdf-handler";
 
 export interface IClaimService {
     createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse>;
