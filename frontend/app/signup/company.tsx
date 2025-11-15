@@ -86,7 +86,7 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
         mutate,
     } = useMutation<Company, Error, CreateCompanyRequest>({
         mutationFn: (payload: CreateCompanyRequest) =>
-            createCompany({ ...payload, businessOwnerFullName: "Owner Name" }),
+            createCompany(payload),
         onError: (error: Error) => {
             console.error("Error creating company:", error);
         },

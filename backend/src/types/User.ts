@@ -8,6 +8,7 @@ export const UserSchema = z.object({
     lastName: z.string(),
     email: z.string().email().optional().nullable(),
     companyId: z.string().optional().nullable(),
+    phoneNumber: z.string(),
 });
 
 //POST
@@ -16,6 +17,7 @@ export const createUserRequestBody = z.object({
     lastName: z.string().nonempty(),
     email: z.string().email().optional(),
     companyId: z.string().nullish(),
+    phoneNumber: z.string(),
 });
 
 export const CreateUserDTOSchema = z.object({
@@ -24,6 +26,7 @@ export const CreateUserDTOSchema = z.object({
     lastName: z.string().nonempty(),
     email: z.email().optional(),
     companyId: z.string().nullish(),
+    phoneNumber: z.string(),
 });
 
 export const CreateUpdateUserResponseSchema = z.object({
@@ -32,6 +35,7 @@ export const CreateUpdateUserResponseSchema = z.object({
     lastName: z.string(),
     email: z.string().optional(),
     companyId: z.string().nullish(),
+    phoneNumber: z.string(),
 });
 
 //GET
@@ -44,6 +48,7 @@ export const GetUserResponseSchema = z.object({
     firstName: z.string(),
     lastName: z.string(),
     email: z.string().optional(),
+    phoneNumber: z.string(),
 });
 
 //GET COMPANY
@@ -63,6 +68,7 @@ export const UpdateUserRequestBodySchema = z.object({
     firstName: z.string().nonempty().optional(),
     lastName: z.string().nonempty().optional(),
     email: z.email().optional(),
+    phoneNumber: z.string(),
 });
 
 export const UpdateUserDTOSchema = UpdateUserRequestBodySchema.extend({
