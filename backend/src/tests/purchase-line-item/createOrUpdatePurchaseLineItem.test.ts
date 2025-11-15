@@ -2,10 +2,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it } from "bun:test
 import { Hono } from "hono";
 import { IBackup } from "pg-mem";
 import { startTestApp } from "../setup-tests";
-import {
-    CreateOrChangePurchaseLineItemsDTO,
-    CreateOrChangePurchaseLineItemsResponseSchema,
-} from "../../modules/purchase-line-item/types";
+import { CreateOrChangePurchaseLineItemsResponseSchema } from "../../modules/purchase-line-item/types";
 import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
 import { PurchaseSeeder, seededPurchases } from "../../database/seeds/purchase.seed";
 import { randomUUIDv7 } from "bun";

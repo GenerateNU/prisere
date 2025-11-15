@@ -3,8 +3,8 @@ import { useCallback, useState } from "react";
 import { ErroredParsedRowResult } from "../types";
 import { buildValidateRowValues } from "./helpers/validateRowValues";
 import { useReadCSV } from "./useReadCSV";
-import { createPurchaseForCompany } from "@/api/purchase";
 import { createInvoice } from "@/api/invoice";
+import { createPurchaseForCompany } from "@/api/purchase";
 import { parseAndSaveTransaction } from "./helpers/parseAndSaveTransaction";
 import { collectValidationErrors } from "./helpers/collectValidationErrors";
 import { useColumnOrderSelection } from "./useColumnOrderSelection";
@@ -47,19 +47,24 @@ export const useParseCSVForTransaction = () => {
         setImportStage("Complete!");
     };
 
-    const {
-        parseFile: parseAndSaveFile,
-        isReadingCSV: isSavingFile,
-        hasErrored: hasSavingErrored,
-    } = useReadCSV(hasParsingError, onImportComplete, async (values, parentTransactionId) => {
-        const importErrors = await parseAndSaveTransaction(values, parentTransactionId, transactionType, columnOrder);
+    const { parseFile: parseAndSaveFile, isReadingCSV: isSavingFile } = useReadCSV(
+        hasParsingError,
+        onImportComplete,
+        async (values, parentTransactionId) => {
+            const importErrors = await parseAndSaveTransaction(
+                values,
+                parentTransactionId,
+                transactionType,
+                columnOrder
+            );
 
-        if (importErrors && importErrors.length > 0) {
-            setImportErrors((prevErrors) => [...prevErrors, ...importErrors]);
+            if (importErrors && importErrors.length > 0) {
+                setImportErrors((prevErrors) => [...prevErrors, ...importErrors]);
+            }
+
+            return importErrors || [];
         }
-
-        return importErrors || [];
-    });
+    );
 
     const setSelectedFileWrapper = async (newFile: File | null | undefined) => {
         if (!newFile) return;
