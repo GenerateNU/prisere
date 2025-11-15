@@ -1,14 +1,13 @@
+import { updateNotificationStatus } from "@/api/notifications";
+import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Notification as NotificationType } from "@/types/notifications";
-import { getDeclarationTypeMeanings } from "@/utils/formatting";
+import { dateFormatter, getDeclarationTypeMeanings } from "@/utils/formatting";
+import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import { RiMore2Fill } from "react-icons/ri";
 import formatDescription from "./utils";
-import { dateFormatter } from "@/utils/formatting";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useMutation } from "@tanstack/react-query";
-import { updateNotificationStatus } from "@/api/notifications";
-import { useState } from "react";
-import Loading from "@/components/loading";
 
 interface NotificationProps {
     notification: NotificationType;
