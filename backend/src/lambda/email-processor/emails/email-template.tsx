@@ -1,4 +1,8 @@
-import { DisasterEmailMessage } from "../../../types/DisasterNotification";
+
+/** @jsxImportSource react */
+
+import React from 'react';
+import { DisasterEmailMessage } from '../../../types/DisasterNotification';
 import type { TailwindConfig } from '@react-email/components';
 import {
     Html,
@@ -10,13 +14,14 @@ import {
     Hr,
     Img,
     Tailwind,
+    render,
   } from "@react-email/components";
 
 interface DisasterEmailProps {
     message: DisasterEmailMessage
 }
 
-export function DisasterEmail({ message }: DisasterEmailProps) {
+export default function DisasterEmail({ message }: DisasterEmailProps) {
     const declarationDate = message.declarationDate.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -104,6 +109,7 @@ export function DisasterEmail({ message }: DisasterEmailProps) {
               </Text>
   
               <Text className="text-base mb-8">Stay safe,</Text>
+              <Img className = "w-100 h-20"src="https://prisere.com/wp-content/uploads/2023/09/Prisere-logo-transparent.png"/>
   
               <Hr className="border-gray-300 my-8" />
   
@@ -117,26 +123,12 @@ export function DisasterEmail({ message }: DisasterEmailProps) {
       </Html>
     );
   }
-  
 
-export default function TestDisasterEmail() {
-    return (
-        <DisasterEmail
-            message={{
-                to: "john.doe@example.com",
-                from: "alerts@disaster-system.com",
-                subject: "Disaster Declaration Notice",
-                firstName: "John",
-                declarationDate: new Date("2025-01-15T00:00:00.000Z"),
-                declarationType: "Major Disaster Declaration",
-                declarationTypeMeaning: "The President has declared a major disaster.",
-                incidentTypes: "Flood",
-                incidentTypeMeanings: ["Severe flooding", "Coastal storm surge"],
-                city: "Miami",
-                notificationId: "2d79f84e-17d0-4475-b4d1-a9edfa305a91",
-                disasterId: "b8797ef5-44d3-4714-a440-8fa12ab0ca48",
-                companyName: "Helping Hands Insurance",
-            }}
-        />
-    );
-}
+  export async function renderDisasterEmailHTML(message: DisasterEmailMessage) {
+    return render(<DisasterEmail message={message} />, { pretty: true });
+  }
+  
+  export async function renderDisasterEmailText(message: DisasterEmailMessage) {
+    return render(<DisasterEmail message={message} />, { plainText: true });
+  }
+  
