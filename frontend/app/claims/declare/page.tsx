@@ -46,13 +46,13 @@ function DeclareDisasterContent() {
         firstName: userInfoData?.firstName || "",
         lastName: userInfoData?.lastName || "",
         email: userInfoData?.email || "",
-        phone: "",
+        phone: userInfoData?.phoneNumber || "",
     };
 
     const initialBusinessInfo = {
         businessName: businessInfoData?.name || "",
         businessOwner: businessInfoData?.businessOwnerFullName || "",
-        businessType: "",
+        businessType: businessInfoData?.companyType || "",
     };
 
     const initialInsurerInfo = {
@@ -86,18 +86,19 @@ function DeclareDisasterContent() {
             setBusinessInfo({
                 businessName: businessInfoData.name,
                 businessOwner: businessInfoData.businessOwnerFullName,
-                businessType: "",
+                businessType: businessInfoData.companyType,
             });
         }
     }, [businessInfoSuccess, businessInfoData, setBusinessInfo]);
 
     React.useEffect(() => {
         if (userInfoSuccess && userInfoData) {
+            console.log("setting", userInfoData);
             setPersonalInfo({
                 firstName: userInfoData.firstName,
                 lastName: userInfoData.lastName,
                 email: userInfoData.email ?? "",
-                phone: "",
+                phone: userInfoData.phoneNumber,
             });
         }
     }, [userInfoSuccess, userInfoData, setPersonalInfo]);

@@ -3,6 +3,7 @@
 import { createClaim, getClaimById, updateClaimStatus } from "@/api/claim";
 import { createClaimLocationLink } from "@/api/claim-location";
 import { createSelfDisaster, updateSelfDisaster } from "@/api/self-disaster";
+import { getUser, updateUserInfo } from "@/api/user";
 import {
     BusinessInfo,
     ClaimStatusType,
@@ -14,6 +15,7 @@ import {
     PersonalInfo,
     SaveStatus,
 } from "@/types/claim";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cleanExpiredTempData, clearTempData, loadTempData, saveTempData } from "../utils/tempStorage";
@@ -48,8 +50,14 @@ export function useClaimProgress(
     initialBusinessInfo: BusinessInfo,
     initialInsurerInfo: InsurerInfo
 ): UseClaimProgressReturn {
+    const queryClient = useQueryClient();
     const router = useRouter();
     const searchParams = useSearchParams();
+
+    const { data: userInfoData } = useQuery({
+        queryKey: ["userInfo"],
+        queryFn: getUser,
+    });
 
     // Get claimId and step from URL
     const urlClaimId = searchParams.get("claimId");
@@ -336,6 +344,16 @@ export function useClaimProgress(
             if (data) {
                 setPersonalInfoState((prev) => ({ ...prev, ...data }));
             }
+
+            await updateUserInfo({
+                email: personalInfo.email,
+                firstName: personalInfo.firstName,
+                lastName: personalInfo.lastName,
+                phoneNumber: personalInfo.phone,
+                id: userInfoData?.id ?? "",
+            });
+
+            await queryClient.invalidateQueries({ queryKey: ["userInfo"] });
 
             // Personal info comes from User entity, no backend update needed for this step
             // Just update claim status

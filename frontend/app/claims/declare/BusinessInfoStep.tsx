@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { GetCompanyLocationsResponse } from "@/types/company";
+import { CompanyTypes, GetCompanyLocationsResponse } from "@/types/company";
 import React from "react";
 import { validateBusinessInfo } from "./utils/validationUtils";
 
@@ -31,7 +31,6 @@ export default function BusinessInfoStep({
     handleStepBack,
     locations,
 }: Props) {
-    const businessTypes = ["Type 1", "Type 2", "Type 3"];
     const [errors, setErrors] = React.useState<{ [key: string]: string }>({});
 
     const validateForm = () =>
@@ -95,7 +94,7 @@ export default function BusinessInfoStep({
                             <SelectValue placeholder="Select business type" />
                         </SelectTrigger>
                         <SelectContent>
-                            {businessTypes.map((type) => (
+                            {CompanyTypes.map((type) => (
                                 <SelectItem key={type} value={type} className="text-[16px]">
                                     {type}
                                 </SelectItem>
