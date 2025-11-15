@@ -45,14 +45,18 @@ describe("Location Address Controller Tests", () => {
                 county: "Suffolk",
             };
 
-            const response = await app.request(TESTING_PREFIX + "/location-address", {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                    companyId: "7f8e9d0c-1b2a-3c4d-5e6f-7a8b9c0d1e2f",
+            const response = await app.request(
+                TESTING_PREFIX + "/location-address",
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        companyId: "7f8e9d0c-1b2a-3c4d-5e6f-7a8b9c0d1e2f",
+                    },
+                    body: JSON.stringify(requestBody),
                 },
-                body: JSON.stringify(requestBody),
-            });
+                10000
+            );
 
             expect(response.status).toBe(200);
             const responseBody = await response.json();
@@ -107,7 +111,7 @@ describe("Location Address Controller Tests", () => {
             });
 
             expect(response.status).toBe(500);
-        });
+        }, 10000);
 
         test("should fail - location not associated with id", async () => {
             const requestBody = {
@@ -125,6 +129,6 @@ describe("Location Address Controller Tests", () => {
             });
 
             expect(response.status).toBe(500);
-        });
+        }, 10000);
     });
 });

@@ -1,14 +1,22 @@
 import { Context, TypedResponse } from "hono";
-import { IUserService } from "./service";
-import { withControllerErrorHandling } from "../../utilities/error";
-import { CreateUserDTOSchema, CreateUserResponse, GetUserResponse, GetUserCompanyResponse } from "../../types/User";
 import { validate } from "uuid";
+import {
+    CreateUserDTOSchema,
+    CreateUserResponse,
+    GetUserCompanyResponse,
+    GetUserResponse,
+    UpdateUserRequestBodySchema,
+    UpdateUserResponse,
+} from "../../types/User";
+import { withControllerErrorHandling } from "../../utilities/error";
 import { ControllerResponse } from "../../utilities/response";
+import { IUserService } from "./service";
 
 export interface IUserController {
     createUser(_ctx: Context): ControllerResponse<TypedResponse<CreateUserResponse, 201>>;
     getUser(_ctx: Context): ControllerResponse<TypedResponse<GetUserResponse, 200>>;
     getCompany(_ctx: Context): ControllerResponse<TypedResponse<GetUserCompanyResponse, 200>>;
+    updateUser(_ctx: Context): ControllerResponse<TypedResponse<UpdateUserResponse, 201>>;
 }
 
 export class UserController implements IUserController {
@@ -54,6 +62,18 @@ export class UserController implements IUserController {
 
             const company = await this.userService.getCompany({ id: maybeId });
             return ctx.json(company, 200);
+        }
+    );
+
+    updateUser = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<UpdateUserResponse, 201>> => {
+            const maybeId = ctx.get("userId");
+            const json = await ctx.req.json();
+
+            const payload = UpdateUserRequestBodySchema.parse(json);
+            const user = await this.userService.updateUser({ ...payload, id: maybeId });
+
+            return ctx.json(user, 201);
         }
     );
 }

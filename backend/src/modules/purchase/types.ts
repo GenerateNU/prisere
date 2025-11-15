@@ -2,17 +2,19 @@ import { z } from "zod";
 import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
 import { GetPurchaseLineItemResponseSchema } from "../purchase-line-item/types";
 
-export const CreateOrChangePurchaseRequestSchema = z
-    .array(
-        z.object({
-            quickBooksId: z.number().optional(),
-            totalAmountCents: z.number().min(0),
-            isRefund: z.boolean(),
-            quickbooksDateCreated: z.iso.datetime().optional(),
-            vendor: z.string().optional(),
+export const CreateOrChangePurchaseRequestSchema = z.object({
+    items: z
+        .array(
+            z.object({
+                quickBooksId: z.number().optional(),
+                totalAmountCents: z.number().min(0),
+                isRefund: z.boolean(),
+                quickbooksDateCreated: z.iso.datetime().optional(),
+                vendor: z.string().optional(),
         })
-    )
-    .nonempty();
+        )
+        .nonempty(),
+});
 export const CreateOrChangePurchaseDTOSchema = z
     .array(
         z.object({
