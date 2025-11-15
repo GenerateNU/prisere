@@ -11,6 +11,7 @@ export default function BusinessCard() {
     const [businessInfo, setBusinessInfo] = useState<UpdateCompanyRequest>({
         name: "",
         businessOwnerFullName: "",
+        companyType: "LLC",
     });
 
     const [user, setUser] = useState({
@@ -45,7 +46,7 @@ export default function BusinessCard() {
 
     useEffect(() => {
         if (userQuery) {
-            setUser({ ...user, email: userQuery.email ?? "", phoneNumber: "" });
+            setUser({ ...user, email: userQuery.email ?? "", phoneNumber: userQuery.phoneNumber});
         }
     }, [userQuery]);
 

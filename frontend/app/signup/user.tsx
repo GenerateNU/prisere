@@ -20,6 +20,7 @@ export default function UserInfoPage({ email, progress, setProgress }: UserInfoP
         firstName: "",
         lastName: "",
         email: email,
+        phoneNumber: ""
     });
     const { isPending, mutate } = useMutation({
         mutationFn: (payload: CreateUserRequest) => createUser(payload),
@@ -34,7 +35,7 @@ export default function UserInfoPage({ email, progress, setProgress }: UserInfoP
     const [fieldError, setFieldError] = useState<string | null>(null);
 
     const handleSubmit = () => {
-        if (!payload.firstName || !payload.lastName /*|| !payload.phone */) {
+        if (!payload.firstName || !payload.lastName || !payload.phoneNumber ) {
             setFieldError("Please fill in all required fields.");
             return;
         }
@@ -84,7 +85,7 @@ export default function UserInfoPage({ email, progress, setProgress }: UserInfoP
                         type="phone"
                         required
                         className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
-                        onChange={(e) => setPayload({ ...payload, lastName: e.target.value })}
+                        onChange={(e) => setPayload({ ...payload, phoneNumber: e.target.value })}
                     />
                 </div>
             </div>

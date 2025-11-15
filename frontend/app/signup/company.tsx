@@ -5,7 +5,7 @@ import LocationEditor from "@/components/LocationEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { type Company, CreateCompanyRequest, businessTypes } from "@/types/company";
+import { type Company, CompanyTypesEnum, CreateCompanyRequest, businessTypes } from "@/types/company";
 import { CreateLocationBulkRequest, CreateLocationRequest } from "@/types/location";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { useMutation } from "@tanstack/react-query";
@@ -27,7 +27,8 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
     const [companyPayload, setCompanyPayload] = useState<CreateCompanyRequest>({
         name: "",
         businessOwnerFullName: "",
-    }); // add businessType fields
+        companyType: "LLC"
+    });
 
     const [locationPayloads, setLocationPayloads] = useState<CreateLocationBulkRequest>([
         {
@@ -166,7 +167,12 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
                         <Label htmlFor="businessType" className="text-[16px]">
                             Business Type<span className="text-red-500 text-[16px]">*</span>
                         </Label>
-                        <Select>
+                        <Select
+                            defaultValue={companyPayload.companyType}
+                            onValueChange={(value: CompanyTypesEnum) => {
+                                setCompanyPayload({ ...companyPayload, companyType: value })
+                            }}
+                        >
                             <SelectTrigger
                                 id="businessType"
                                 //className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"

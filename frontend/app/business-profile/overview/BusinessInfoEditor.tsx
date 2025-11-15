@@ -1,4 +1,4 @@
-import { UpdateCompanyRequest, businessTypes } from "@/types/company";
+import { CompanyTypesEnum, UpdateCompanyRequest, businessTypes } from "@/types/company";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -81,8 +81,9 @@ export default function CompanyEditor({
                                 Business Type<span className="text-red-500 text-[16px]">*</span>
                             </Label>
                             <Select
-                                onValueChange={() => {
-                                    /*setCompany({ ...company, companyType: value }) + add value={company.businessType}*/
+                                defaultValue={company.companyType}
+                                onValueChange={(value: CompanyTypesEnum) => {
+                                    setCompany({ ...company, companyType: value })
                                 }}
                             >
                                 <SelectTrigger
@@ -96,7 +97,7 @@ export default function CompanyEditor({
                                         backgroundColor: "transparent",
                                     }}
                                 >
-                                    <SelectValue placeholder="Select company type" />
+                                    <SelectValue placeholder={company.companyType} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {businessTypes.map((type) => (
