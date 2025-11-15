@@ -92,7 +92,7 @@ export const updateCompany = async (payload: UpdateCompanyRequest): Promise<Upda
         const client = getClient();
         const { data, error, response } = await client.PATCH("/companies", {
             headers: authHeader(token),
-            body: payload
+            body: payload,
         });
         if (response.ok) {
             return data!;

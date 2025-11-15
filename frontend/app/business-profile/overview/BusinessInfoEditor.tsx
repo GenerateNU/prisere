@@ -7,16 +7,18 @@ import { Card } from "@/components/ui/card";
 import { IoCheckmark } from "react-icons/io5";
 import { FiEdit } from "react-icons/fi";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
 
 interface CompanyEditorProps {
     company: UpdateCompanyRequest;
-    user: { phoneNumber: string, email: string }
+    user: { phoneNumber: string; email: string };
     setCompany: (company: UpdateCompanyRequest) => void;
-    setUser: (user: { phoneNumber: string, email: string }) => void;
+    setUser: (user: { phoneNumber: string; email: string }) => void;
     isExpanded?: boolean;
     onExpand: () => void;
     onCollapse: () => void;
     saveError: string | null;
+    initialPending?: boolean;
 }
 
 export default function CompanyEditor({
@@ -28,15 +30,11 @@ export default function CompanyEditor({
     onExpand,
     onCollapse,
     saveError = null,
+    initialPending = false,
 }: CompanyEditorProps) {
     const [error, setError] = React.useState<string | null>(null);
     const handleCollapse = () => {
-        if (
-            !company.name ||
-            !company.businessOwnerFullName ||
-            !user.phoneNumber ||
-            !user.email
-        ) {
+        if (!company.name || !company.businessOwnerFullName || !user.phoneNumber || !user.email) {
             setError("Please fill in all required fields before saving.");
             return;
         }
@@ -48,9 +46,7 @@ export default function CompanyEditor({
         <Card className="w-full px-[28px] py-[20px]">
             <div className="flex items-center justify-between">
                 <div className="flex gap-[10px] items-center w-3/4">
-                    <p className="text-[20px] font-bold">
-                        Business Information
-                    </p>
+                    <p className="text-[20px] font-bold">Business Information</p>
                 </div>
                 <div className="flex gap-[8px] self-start">
                     <Button
@@ -85,7 +81,9 @@ export default function CompanyEditor({
                                 Business Type<span className="text-red-500 text-[16px]">*</span>
                             </Label>
                             <Select
-                                onValueChange={(value) => {/*setCompany({ ...company, companyType: value }) + add value={company.businessType}*/ }}
+                                onValueChange={() => {
+                                    /*setCompany({ ...company, companyType: value }) + add value={company.businessType}*/
+                                }}
                             >
                                 <SelectTrigger
                                     id="companyType"
@@ -140,7 +138,11 @@ export default function CompanyEditor({
                             />
                         </div>
                     </div>
-                    {error || saveError ? <p className="text-red-400 text-[14px] self-center">{error || saveError}</p> : ""}
+                    {error || saveError ? (
+                        <p className="text-red-400 text-[14px] self-center">{error || saveError}</p>
+                    ) : (
+                        ""
+                    )}
                     <Button
                         className="text-[14px] py-[7px] bg-[var(--pink)] text-[var(--fuchsia)] self-end w-fit h-fit flex justify-center items-center gap-[8px] hover:text-[white]"
                         onClick={handleCollapse}
@@ -150,25 +152,29 @@ export default function CompanyEditor({
                     </Button>
                 </div>
             ) : (
-                <div className="flex gap-[20px] justify-between">
-                    <div className="flex flex-col gap-[4px] overflow-hidden truncate text-ellipsis">
-                        <p className="font-bold text-[16px]">Business Name</p>
-                        <p>{company.name}</p>
-                    </div>
-                    <div className="flex flex-col gap-[4px]">
-                        <p className="font-bold text-[16px]">Business Type</p>
-                        <p>
-                            --None-- {/* temp until business type is added */}
-                        </p>
-                    </div>
-                    <div className="flex flex-col gap-[4px] overflow-hidden truncate text-ellipsis">
-                        <p className="font-bold text-[16px]">Phone Number</p>
-                        <p>{user.phoneNumber}</p>
-                    </div>
-                    <div className="flex flex-col gap-[4px] overflow-hidden truncate text-ellipsis">
-                        <p className="font-bold text-[16px]">Email</p>
-                        <p>{user.email}</p>
-                    </div>
+                <div>
+                    {initialPending ? (
+                        <Spinner />
+                    ) : (
+                        <div className="flex gap-[20px] justify-between">
+                            <div className="flex flex-col gap-[4px] overflow-hidden truncate text-ellipsis">
+                                <p className="font-bold text-[16px]">Business Name</p>
+                                <p>{company.name}</p>
+                            </div>
+                            <div className="flex flex-col gap-[4px]">
+                                <p className="font-bold text-[16px]">Business Type</p>
+                                <p>--None-- {/* temp until business type is added */}</p>
+                            </div>
+                            <div className="flex flex-col gap-[4px] overflow-hidden truncate text-ellipsis">
+                                <p className="font-bold text-[16px]">Phone Number</p>
+                                <p>{user.phoneNumber}</p>
+                            </div>
+                            <div className="flex flex-col gap-[4px] overflow-hidden truncate text-ellipsis">
+                                <p className="font-bold text-[16px]">Email</p>
+                                <p>{user.email}</p>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </Card>

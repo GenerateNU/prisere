@@ -3153,19 +3153,6 @@ export interface paths {
                                 /** Format: date-time */
                                 createdAt: string;
                             };
-                            insurancePolicy?: {
-                                id: string;
-                                policyName: string;
-                                policyHolderFirstName: string;
-                                policyHolderLastName: string;
-                                insuranceCompanyName: string;
-                                policyNumber: string;
-                                insuranceType: string;
-                                /** Format: date-time */
-                                updatedAt: string;
-                                /** Format: date-time */
-                                createdAt: string;
-                            };
                         };
                     };
                 };
@@ -3269,19 +3256,6 @@ export interface paths {
                                 createdAt: string;
                                 /** Format: date */
                                 updatedAt: string;
-                            };
-                            insurancePolicy?: {
-                                id: string;
-                                policyName: string;
-                                policyHolderFirstName: string;
-                                policyHolderLastName: string;
-                                insuranceCompanyName: string;
-                                policyNumber: string;
-                                insuranceType: string;
-                                /** Format: date-time */
-                                updatedAt: string;
-                                /** Format: date-time */
-                                createdAt: string;
                             };
                             insurancePolicy?: {
                                 id: string;

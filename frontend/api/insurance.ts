@@ -57,9 +57,11 @@ export const getInsurancePolicies = async (): Promise<GetInsurancePoliciesRespon
         }
     };
     return authWrapper<GetInsurancePoliciesResponseType>()(req);
-}
+};
 
-export const updateInsurancePolicy = async (payload: UpdateInsurancePolicyRequest): Promise<UpdateInsurancePolicyResponse> => {
+export const updateInsurancePolicy = async (
+    payload: UpdateInsurancePolicyRequest
+): Promise<UpdateInsurancePolicyResponse> => {
     const req = async (token: string): Promise<UpdateInsurancePolicyResponse> => {
         const client = getClient();
         const { data, error, response } = await client.PATCH("/insurance", {
@@ -73,7 +75,7 @@ export const updateInsurancePolicy = async (payload: UpdateInsurancePolicyReques
         }
     };
     return authWrapper<UpdateInsurancePolicyResponse>()(req);
-}
+};
 
 export const updateInsurancePolicyBulk = async (
     payload: UpdateInsurancePolicyBulkRequest

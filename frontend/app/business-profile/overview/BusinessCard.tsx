@@ -17,7 +17,7 @@ export default function BusinessCard() {
     const [user, setUser] = useState({
         phoneNumber: "",
         email: "",
-    })
+    });
 
     const [error, setError] = useState<string | null>(null);
     const [editing, setEditing] = useState<boolean>(false);
@@ -26,34 +26,34 @@ export default function BusinessCard() {
         mutationFn: (businessInfo: UpdateCompanyRequest) => updateCompany(businessInfo),
         onError: (error: Error) => {
             setError(error.message);
-        }
+        },
     });
 
     const handleSave = () => {
         updateBusinessMutate(businessInfo);
-    }
+    };
 
-    const { data: businessQuery } = useQuery({
-        queryKey: ['businessInfo'],
-        queryFn: getCompany
+    const { data: businessQuery, isPending: businessPending } = useQuery({
+        queryKey: ["businessInfo"],
+        queryFn: getCompany,
     });
 
     const { data: userQuery } = useQuery({
-        queryKey: ['userInfo'],
-        queryFn: getUser
-    })
+        queryKey: ["userInfo"],
+        queryFn: getUser,
+    });
 
     useEffect(() => {
         if (userQuery) {
             setUser({ ...user, email: userQuery.email ?? "", phoneNumber: "" });
         }
-    }, [userQuery])
+    }, [userQuery]);
 
     useEffect(() => {
         if (businessQuery) {
             setBusinessInfo(businessQuery);
         }
-    }, [businessQuery])
+    }, [businessQuery]);
 
     return (
         <div>
@@ -64,9 +64,10 @@ export default function BusinessCard() {
                     setCompany={(company: UpdateCompanyRequest) => setBusinessInfo(company)}
                     setUser={(userInfo) => setUser(userInfo)}
                     isExpanded={editing}
-                    onExpand={() => editing ? setEditing(false) : setEditing(true)}
+                    onExpand={() => (editing ? setEditing(false) : setEditing(true))}
                     onCollapse={() => handleSave()}
                     saveError={error}
+                    initialPending={businessPending}
                 />
             </div>
         </div>

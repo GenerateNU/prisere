@@ -1,5 +1,13 @@
 "use server";
-import { CreateLocationBulkRequest, CreateLocationRequest, Location, UpdateLocationBulkRequest, UpdateLocationBulkResponse, UpdateLocationRequest, UpdateLocationResponse } from "@/types/location";
+import {
+    CreateLocationBulkRequest,
+    CreateLocationRequest,
+    Location,
+    UpdateLocationBulkRequest,
+    UpdateLocationBulkResponse,
+    UpdateLocationRequest,
+    UpdateLocationResponse,
+} from "@/types/location";
 import { authHeader, authWrapper, getClient } from "./client";
 
 export const createLocation = async (payload: CreateLocationRequest): Promise<Location> => {
@@ -48,9 +56,11 @@ export const updateLocationAddress = async (payload: UpdateLocationRequest): Pro
         }
     };
     return authWrapper<UpdateLocationResponse>()(req);
-}
+};
 
-export const updateLocationAddressBulk = async (payload: UpdateLocationBulkRequest): Promise<UpdateLocationBulkResponse> => {
+export const updateLocationAddressBulk = async (
+    payload: UpdateLocationBulkRequest
+): Promise<UpdateLocationBulkResponse> => {
     const req = async (token: string): Promise<UpdateLocationBulkResponse> => {
         const client = getClient();
         const { data, error, response } = await client.PATCH("/location-address/bulk", {

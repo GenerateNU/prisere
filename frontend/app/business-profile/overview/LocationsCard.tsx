@@ -4,21 +4,21 @@ import { getCompanyLocations } from "@/api/company";
 import { createLocation, updateLocationAddress } from "@/api/location";
 import LocationEditor from "@/components/LocationEditor";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { CreateLocationRequest, UpdateLocationRequest } from "@/types/location";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
 
 export default function LocationsCard() {
-
     const [locationInfo, setLocationInfo] = useState<(CreateLocationRequest | UpdateLocationRequest)[]>([]);
     const [editingLocationIndex, setEditingLocationIndex] = useState<number | null>(null);
     const [saveError, setSaveError] = useState<string | null>(null);
 
-    const { data: locationsQuery } = useQuery({
-        queryKey: ['locations'],
-        queryFn: getCompanyLocations
-    })
+    const { data: locationsQuery, isPending: businessPending } = useQuery({
+        queryKey: ["locations"],
+        queryFn: getCompanyLocations,
+    });
 
     const { mutate: updateLocationsMutate } = useMutation({
         mutationFn: (location: UpdateLocationRequest) => updateLocationAddress(location),
@@ -33,7 +33,7 @@ export default function LocationsCard() {
                 setSaveError("An error occurred while saving the location.");
             }
         },
-    })
+    });
 
     const { mutate: createLocationMutate } = useMutation({
         mutationFn: (location: CreateLocationRequest) => createLocation(location),
@@ -48,7 +48,7 @@ export default function LocationsCard() {
                 setSaveError("An error occurred while creating the location.");
             }
         },
-    })
+    });
 
     const updateLocation = (index: number, location: CreateLocationRequest | UpdateLocationRequest) => {
         const newLocations = [...locationInfo];
@@ -78,40 +78,44 @@ export default function LocationsCard() {
 
     const handleSave = () => {
         if (editingLocationIndex === null) return;
-        if ('id' in locationInfo[editingLocationIndex]) {
+        if ("id" in locationInfo[editingLocationIndex]) {
             updateLocationsMutate(locationInfo[editingLocationIndex] as UpdateLocationRequest);
         } else {
             createLocationMutate(locationInfo[editingLocationIndex] as CreateLocationRequest);
         }
-    }
+    };
 
     useEffect(() => {
         if (locationsQuery) {
             setLocationInfo(locationsQuery);
         }
-    }, [locationsQuery])
+    }, [locationsQuery]);
 
     return (
         <div>
-            <div className="flex gap-[38px]">
-                {locationInfo.map((location, index) =>
-                    <div key={index} className="w-1/2">
-                        <LocationEditor
-                            location={location}
-                            setLocation={(loc) => updateLocation(index, loc)}
-                            removeLocation={() => removeLocation(index)}
-                            isExpanded={editingLocationIndex === index}
-                            onExpand={() =>
-                                editingLocationIndex === index
-                                    ? setEditingLocationIndex(null)
-                                    : setEditingLocationIndex(index)
-                            }
-                            onCollapse={() => handleSave()}
-                            saveError={saveError}
-                        />
-                    </div>
-                )}
-            </div>
+            {businessPending ? (
+                <Spinner className="mb-[16px]" />
+            ) : (
+                <div className="flex gap-[38px]">
+                    {locationInfo.map((location, index) => (
+                        <div key={index} className="w-1/2">
+                            <LocationEditor
+                                location={location}
+                                setLocation={(loc) => updateLocation(index, loc)}
+                                removeLocation={() => removeLocation(index)}
+                                isExpanded={editingLocationIndex === index}
+                                onExpand={() =>
+                                    editingLocationIndex === index
+                                        ? setEditingLocationIndex(null)
+                                        : setEditingLocationIndex(index)
+                                }
+                                onCollapse={() => handleSave()}
+                                saveError={saveError}
+                            />
+                        </div>
+                    ))}
+                </div>
+            )}
             <Button
                 className="w-[196px] flex items-center text-[16px] h-[34px] self-start px-[12px] py-[4px] underline bg-slate hover:text-gray-600"
                 onClick={addLocation}
