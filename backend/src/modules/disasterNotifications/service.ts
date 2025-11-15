@@ -9,7 +9,7 @@ import {
 } from "../../types/DisasterNotification";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { ILocationAddressTransaction } from "../location-address/transaction";
-import { NotificationStatus, NotificationType } from "../../types/NotificationEnums";
+import { NotificationStatus } from "../../types/NotificationEnums";
 import { LocationAddress } from "../../entities/LocationAddress";
 import { logMessageToFile } from "../../utilities/logger";
 import { IPreferenceTransaction } from "../preferences/transaction";
@@ -120,31 +120,16 @@ export class DisasterNotificationService implements IDisasterNotificationService
 
                 for (const { user, disaster, location } of userDisasterPairs) {
                     const preferences = await this.userPreferences.getOrCreateUserPreferences(user.id);
-                    // Check web notification preferences
-                    if (preferences?.webNotificationsEnabled) {
-                        notificationsToCreate.push({
-                            userId: user.id,
-                            femaDisasterId: disaster.id,
-                            locationAddressId: location.id,
-                            notificationType: NotificationType.WEB,
-                            notificationStatus: NotificationStatus.UNREAD,
-                            user: user,
-                            femaDisaster: disaster,
-                        });
-                    }
-
-                    // Check email notification preferences
-                    if (preferences?.emailEnabled) {
-                        notificationsToCreate.push({
-                            userId: user.id,
-                            femaDisasterId: disaster.id,
-                            locationAddressId: location.id,
-                            notificationType: NotificationType.EMAIL,
-                            notificationStatus: NotificationStatus.UNREAD,
-                            user: user,
-                            femaDisaster: disaster,
-                        });
-                    }
+                    notificationsToCreate.push({
+                        userId: user.id,
+                        femaDisasterId: disaster.id,
+                        locationAddressId: location.id,
+                        isWeb: preferences?.webNotificationsEnabled || false,
+                        isEmail: preferences?.emailEnabled || false,
+                        notificationStatus: NotificationStatus.UNREAD,
+                        user: user,
+                        femaDisaster: disaster,
+                    });
                 }
 
                 // Bulk create all notifications

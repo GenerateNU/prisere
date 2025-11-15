@@ -2352,9 +2352,11 @@
                       "femaDisasterId": {
                         "type": "string"
                       },
-                      "notificationType": {
-                        "type": "string",
-                        "enum": ["web", "email"]
+                      "isWeb": {
+                        "type": "boolean"
+                      },
+                      "isEmail": {
+                        "type": "boolean"
                       },
                       "notificationStatus": {
                         "type": "string",
@@ -2614,7 +2616,8 @@
                       "id",
                       "userId",
                       "femaDisasterId",
-                      "notificationType",
+                      "isWeb",
+                      "isEmail",
                       "notificationStatus",
                       "createdAt",
                       "user",
@@ -2695,9 +2698,11 @@
                     "femaDisasterId": {
                       "type": "string"
                     },
-                    "notificationType": {
-                      "type": "string",
-                      "enum": ["web", "email"]
+                    "isWeb": {
+                      "type": "boolean"
+                    },
+                    "isEmail": {
+                      "type": "boolean"
                     },
                     "notificationStatus": {
                       "type": "string",
@@ -2758,7 +2763,7 @@
                       ]
                     }
                   },
-                  "required": ["id", "userId", "femaDisasterId", "notificationType", "createdAt"]
+                  "required": ["id", "userId", "femaDisasterId", "isWeb", "isEmail", "createdAt"]
                 }
               }
             }
@@ -2832,9 +2837,11 @@
                     "femaDisasterId": {
                       "type": "string"
                     },
-                    "notificationType": {
-                      "type": "string",
-                      "enum": ["web", "email"]
+                    "isWeb": {
+                      "type": "boolean"
+                    },
+                    "isEmail": {
+                      "type": "boolean"
                     },
                     "notificationStatus": {
                       "type": "string",
@@ -2895,7 +2902,7 @@
                       ]
                     }
                   },
-                  "required": ["id", "userId", "femaDisasterId", "notificationType", "createdAt"]
+                  "required": ["id", "userId", "femaDisasterId", "isWeb", "isEmail", "createdAt"]
                 }
               }
             }
@@ -2954,12 +2961,16 @@
                     "femaDisasterId": {
                       "type": "string"
                     },
-                    "notificationType": {
-                      "type": "string",
-                      "enum": ["web", "email"]
+                    "isWeb": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "isEmail": {
+                      "type": "boolean",
+                      "default": true
                     }
                   },
-                  "required": ["userId", "femaDisasterId", "notificationType"]
+                  "required": ["userId", "femaDisasterId"]
                 }
               }
             }
@@ -2984,9 +2995,11 @@
                       "femaDisasterId": {
                         "type": "string"
                       },
-                      "notificationType": {
-                        "type": "string",
-                        "enum": ["web", "email"]
+                      "isWeb": {
+                        "type": "boolean"
+                      },
+                      "isEmail": {
+                        "type": "boolean"
                       },
                       "notificationStatus": {
                         "type": "string",
@@ -3047,7 +3060,7 @@
                         ]
                       }
                     },
-                    "required": ["id", "userId", "femaDisasterId", "notificationType", "createdAt"]
+                    "required": ["id", "userId", "femaDisasterId", "isWeb", "isEmail", "createdAt"]
                   }
                 }
               }
