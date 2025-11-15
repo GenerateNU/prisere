@@ -17,7 +17,6 @@ export enum CompanyTypesEnum {
     PART = "Partnership",
 }
 
-
 @Entity("company")
 export class Company {
     @PrimaryGeneratedColumn("uuid")

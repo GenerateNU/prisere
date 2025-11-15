@@ -20,7 +20,7 @@ export default function UserInfoPage({ email, progress, setProgress }: UserInfoP
         firstName: "",
         lastName: "",
         email: email,
-        phoneNumber: ""
+        phoneNumber: "",
     });
     const { isPending, mutate } = useMutation({
         mutationFn: (payload: CreateUserRequest) => createUser(payload),
@@ -35,7 +35,7 @@ export default function UserInfoPage({ email, progress, setProgress }: UserInfoP
     const [fieldError, setFieldError] = useState<string | null>(null);
 
     const handleSubmit = () => {
-        if (!payload.firstName || !payload.lastName || !payload.phoneNumber ) {
+        if (!payload.firstName || !payload.lastName || !payload.phoneNumber) {
             setFieldError("Please fill in all required fields.");
             return;
         }

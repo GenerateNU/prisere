@@ -83,7 +83,7 @@ export default function CompanyEditor({
                             <Select
                                 defaultValue={company.companyType}
                                 onValueChange={(value: CompanyTypesEnum) => {
-                                    setCompany({ ...company, companyType: value })
+                                    setCompany({ ...company, companyType: value });
                                 }}
                             >
                                 <SelectTrigger

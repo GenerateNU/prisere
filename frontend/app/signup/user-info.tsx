@@ -13,7 +13,7 @@ export default function UserInfoPage({ email }: { email: string }) {
         firstName: "",
         lastName: "",
         email: email,
-        phoneNumber: ""
+        phoneNumber: "",
     });
     const { isPending, error, mutate } = useMutation({
         mutationFn: (payload: CreateUserRequest) => createUser(payload),

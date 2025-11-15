@@ -46,7 +46,7 @@ export default function BusinessCard() {
 
     useEffect(() => {
         if (userQuery) {
-            setUser({ ...user, email: userQuery.email ?? "", phoneNumber: userQuery.phoneNumber});
+            setUser({ ...user, email: userQuery.email ?? "", phoneNumber: userQuery.phoneNumber });
         }
     }, [userQuery]);
 

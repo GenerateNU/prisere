@@ -27,7 +27,7 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
     const [companyPayload, setCompanyPayload] = useState<CreateCompanyRequest>({
         name: "",
         businessOwnerFullName: "",
-        companyType: "LLC"
+        companyType: "LLC",
     });
 
     const [locationPayloads, setLocationPayloads] = useState<CreateLocationBulkRequest>([
@@ -86,8 +86,7 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
         error: companyMutateError,
         mutate,
     } = useMutation<Company, Error, CreateCompanyRequest>({
-        mutationFn: (payload: CreateCompanyRequest) =>
-            createCompany(payload),
+        mutationFn: (payload: CreateCompanyRequest) => createCompany(payload),
         onError: (error: Error) => {
             console.error("Error creating company:", error);
         },
@@ -170,7 +169,7 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
                         <Select
                             defaultValue={companyPayload.companyType}
                             onValueChange={(value: CompanyTypesEnum) => {
-                                setCompanyPayload({ ...companyPayload, companyType: value })
+                                setCompanyPayload({ ...companyPayload, companyType: value });
                             }}
                         >
                             <SelectTrigger
