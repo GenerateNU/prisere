@@ -19,6 +19,8 @@ export type ClaimDataForPDF = {
     purchaseLineItems?: PurchaseLineItem[];
     user: User;
     averageIncome: number;
+    pastRevenues: { year: number; amountCents: number }[];
+    pastPurchases: { year: number; amountCents: number }[];
 };
 
 export const UserInfoSchema = z.object({
@@ -60,6 +62,8 @@ export const RelevantExpenseSchema = z.object({
     description: z.string(),
 });
 
+export const PastExpensesSchema = z.array(z.object({ year: z.number(), amountCents: z.number().gte(0) }));
+
 export const ClaimDataSchema = z.object({
     user: UserInfoSchema,
     company: CompanySchema,
@@ -69,6 +73,8 @@ export const ClaimDataSchema = z.object({
     relevantExpenses: z.array(RelevantExpenseSchema),
     averageIncome: z.number().gte(0),
     dateGenerated: z.date(),
+    pastRevenues: PastExpensesSchema,
+    pastPurchases: PastExpensesSchema,
 });
 
 export type ClaimPDFGenerationResponse = z.infer<typeof ClaimPDFGenerationResponseSchema>;

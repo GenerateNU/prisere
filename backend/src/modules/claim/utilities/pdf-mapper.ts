@@ -19,6 +19,8 @@ export function restructureClaimDataForPdf({
     purchaseLineItems,
     selfDisaster,
     user,
+    pastRevenues,
+    pastPurchases,
 }: ClaimDataForPDF): ClaimData {
     return {
         user: UserInfoSchema.parse(user),
@@ -29,6 +31,8 @@ export function restructureClaimDataForPdf({
         relevantExpenses: parseRelevantExpenses(purchaseLineItems),
         averageIncome: averageIncome,
         dateGenerated: new Date(),
+        pastRevenues: pastRevenues,
+        pastPurchases: pastPurchases,
     };
 }
 

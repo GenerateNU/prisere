@@ -2,10 +2,6 @@ import { ClaimData } from "../types";
 import { getIncidentTypeMeanings } from "../../../utilities/incident_code_meanings";
 
 export function buildClaimPdfHtml(data: ClaimData): string {
-
-
-
-
     return `
 <!DOCTYPE html>
 <html>

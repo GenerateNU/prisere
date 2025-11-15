@@ -214,6 +214,6 @@ export class PurchaseTransaction implements IPurchaseTransaction {
                 purchases.flatMap((p) => p.lineItems?.map((lineItem) => lineItem.category ?? null) ?? [])
             );
 
-        return [...new Set(categories.filter((cat) => cat !== null))];
+        return [...new Set(categories.filter((cat): cat is string => cat !== null))];
     }
 }
