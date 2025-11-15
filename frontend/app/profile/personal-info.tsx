@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckIcon, SquarePenIcon, Trash2Icon } from "lucide-react";
+import { CheckIcon, SquarePenIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ProfileSettingsCard } from "./common";
+import { HiOutlineX } from "react-icons/hi";
 
 export function PersonalInfoSettings() {
     const queryClient = useQueryClient();
@@ -71,9 +72,10 @@ export function PersonalInfoSettings() {
             subtitle="View and update your personal details and account information"
             action={
                 <div className="flex gap-2">
-                    <button
+                    <Button
+                        size="icon"
                         className={cn(
-                            "bg-slate rounded-full p-2 cursor-pointer ",
+                            "bg-slate cursor-pointer",
                             mode === "edit" ? "bg-fuchsia hover:bg-fuchsia/80" : "bg-slate hover:bg-slate/80"
                         )}
                         onClick={() =>
@@ -88,13 +90,12 @@ export function PersonalInfoSettings() {
                         }
                     >
                         <SquarePenIcon className={cn(mode === "edit" ? "text-white" : "text-black")} />
-                    </button>
-                    <button
-                        className="bg-slate rounded-full p-2 cursor-pointer hover:bg-slate/80"
-                        onClick={onDiscardChanges}
-                    >
-                        <Trash2Icon />
-                    </button>
+                    </Button>
+                    {mode == "edit" && (
+                        <Button size="icon" variant="secondary" onClick={onDiscardChanges}>
+                            <HiOutlineX className={"text-black"} />
+                        </Button>
+                    )}
                 </div>
             }
         >
