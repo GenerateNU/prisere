@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CompanyTypesEnum } from "../entities/Company";
 
 export const COMPANY_EXTERNAL_SOURCES = ["quickbooks"] as const;
 export type CompanyExternalSource = (typeof COMPANY_EXTERNAL_SOURCES)[number];
@@ -32,6 +33,7 @@ export const CompanySchema = z.object({
     lastQuickBooksPurchaseImportTime: z.string().optional().nullable(),
     externals: z.array(CompanyExternalSchema).optional(),
     alternateEmail: z.email().optional(),
+    companyType: z.enum(CompanyTypesEnum),
     createdAt: z.string(),
     updatedAt: z.string(),
 });
@@ -40,6 +42,7 @@ export const CompanySchema = z.object({
 export const CreateCompanyDTOSchema = z.object({
     name: z.string().min(1),
     businessOwnerFullName: z.string().nonempty(),
+    companyType: z.enum(CompanyTypesEnum),
     alternateEmail: z.email().optional(),
 });
 
@@ -69,6 +72,7 @@ export const UpdateCompanyDTOSchema = z.object({
     name: z.string().min(1).optional(),
     businessOwnerFullName: z.string().optional(),
     alternateEmail: z.email().optional(),
+    companyType: z.enum(CompanyTypesEnum).optional(),
 });
 
 export const UpdateCompanyResponseSchema = CompanySchema;

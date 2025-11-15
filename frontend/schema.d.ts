@@ -35,6 +35,7 @@ export interface paths {
                             firstName: string;
                             lastName: string;
                             email?: string;
+                            phoneNumber: string;
                         };
                     };
                 };
@@ -89,6 +90,7 @@ export interface paths {
                         /** Format: email */
                         email?: string;
                         companyId?: string | null;
+                        phoneNumber: string;
                     };
                 };
             };
@@ -105,6 +107,7 @@ export interface paths {
                             lastName: string;
                             email?: string;
                             companyId?: string | null;
+                            phoneNumber: string;
                         };
                     };
                 };
@@ -153,6 +156,7 @@ export interface paths {
                         lastName?: string;
                         /** Format: email */
                         email?: string;
+                        phoneNumber?: string;
                     };
                 };
             };
@@ -169,6 +173,7 @@ export interface paths {
                             lastName: string;
                             email?: string;
                             companyId?: string | null;
+                            phoneNumber: string;
                         };
                     };
                 };
@@ -310,6 +315,8 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** @enum {string} */
+                            companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
                             updatedAt: string;
                         };
@@ -363,6 +370,8 @@ export interface paths {
                     "application/json": {
                         name: string;
                         businessOwnerFullName: string;
+                        /** @enum {string} */
+                        companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                     };
                 };
             };
@@ -388,6 +397,8 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** @enum {string} */
+                            companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
                             updatedAt: string;
                         };
@@ -443,6 +454,8 @@ export interface paths {
                     "application/json": {
                         name?: string;
                         businessOwnerFullName?: string;
+                        /** @enum {string} */
+                        companyType?: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                     };
                 };
             };
@@ -468,6 +481,8 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** @enum {string} */
+                            companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
                             updatedAt: string;
                         };
@@ -557,6 +572,8 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** @enum {string} */
+                            companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
                             updatedAt: string;
                         };
@@ -646,6 +663,8 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** @enum {string} */
+                            companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
                             updatedAt: string;
                         };
@@ -1541,6 +1560,7 @@ export interface paths {
                                 lastName: string;
                                 email?: string;
                                 companyId?: string | null;
+                                phoneNumber: string;
                             };
                             femaDisaster: {
                                 /** Format: uuid */
@@ -1584,6 +1604,8 @@ export interface paths {
                                         updatedAt: string;
                                         importTime?: string;
                                     }[];
+                                    /** @enum {string} */
+                                    companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                                     createdAt: string;
                                     updatedAt: string;
                                 };
@@ -2667,6 +2689,7 @@ export interface paths {
                             isRefund: boolean;
                             /** Format: date-time */
                             quickbooksDateCreated?: string;
+                            vendor?: string;
                         }[];
                     };
                 };
@@ -2686,6 +2709,7 @@ export interface paths {
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
                             dateCreated: string;
+                            vendor?: string;
                         }[];
                     };
                 };
@@ -2703,6 +2727,7 @@ export interface paths {
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
                             dateCreated: string;
+                            vendor?: string;
                         }[];
                     };
                 };
@@ -2778,6 +2803,7 @@ export interface paths {
                             totalAmountCents: number;
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
+                            vendor?: string;
                             dateCreated: string;
                             lastUpdated: string;
                         };
@@ -2865,6 +2891,7 @@ export interface paths {
                             totalAmountCents: number;
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
+                            vendor?: string;
                             dateCreated: string;
                             lastUpdated: string;
                             lineItems: {

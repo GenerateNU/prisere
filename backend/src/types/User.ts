@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { ErrorResponseSchema } from "./Utils";
 
+const phoneRegex = /^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+
 /* Zod schemas for OpenAPI docs */
 export const UserSchema = z.object({
     id: z.string(),
@@ -8,6 +10,7 @@ export const UserSchema = z.object({
     lastName: z.string(),
     email: z.string().email().optional().nullable(),
     companyId: z.string().optional().nullable(),
+    phoneNumber: z.string(),
 });
 
 //POST
@@ -16,6 +19,7 @@ export const createUserRequestBody = z.object({
     lastName: z.string().nonempty(),
     email: z.string().email().optional(),
     companyId: z.string().nullish(),
+    phoneNumber: z.string().regex(phoneRegex, "Invalid phone number format"),
 });
 
 export const CreateUserDTOSchema = z.object({
@@ -24,6 +28,7 @@ export const CreateUserDTOSchema = z.object({
     lastName: z.string().nonempty(),
     email: z.email().optional(),
     companyId: z.string().nullish(),
+    phoneNumber: z.string().regex(phoneRegex, "Invalid phone number format"),
 });
 
 export const CreateUpdateUserResponseSchema = z.object({
@@ -32,6 +37,7 @@ export const CreateUpdateUserResponseSchema = z.object({
     lastName: z.string(),
     email: z.string().optional(),
     companyId: z.string().nullish(),
+    phoneNumber: z.string(),
 });
 
 //GET
@@ -44,6 +50,7 @@ export const GetUserResponseSchema = z.object({
     firstName: z.string(),
     lastName: z.string(),
     email: z.string().optional(),
+    phoneNumber: z.string(),
 });
 
 //GET COMPANY
@@ -63,6 +70,7 @@ export const UpdateUserRequestBodySchema = z.object({
     firstName: z.string().nonempty().optional(),
     lastName: z.string().nonempty().optional(),
     email: z.email().optional(),
+    phoneNumber: z.string().regex(phoneRegex, "Invalid phone number format").optional(),
 });
 
 export const UpdateUserDTOSchema = UpdateUserRequestBodySchema.extend({
