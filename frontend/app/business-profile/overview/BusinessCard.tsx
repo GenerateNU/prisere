@@ -31,6 +31,7 @@ export default function BusinessCard() {
 
     const handleSave = () => {
         updateBusinessMutate(businessInfo);
+        setEditing(false);
     };
 
     const { data: businessQuery, isPending: businessPending } = useQuery({

@@ -96,9 +96,9 @@ export default function LocationsCard() {
             {businessPending ? (
                 <Spinner className="mb-[16px]" />
             ) : (
-                <div className="flex gap-[38px]">
+                <div className="grid grid-cols-2 gap-x-[38px] gap-y-[16px]">
                     {locationInfo.map((location, index) => (
-                        <div key={index} className="w-1/2">
+                        <div key={index}>
                             <LocationEditor
                                 location={location}
                                 setLocation={(loc) => updateLocation(index, loc)}

@@ -37,10 +37,10 @@ describe("Location Address Controller Tests", () => {
             const requestBody = {
                 id: "5e6f7a8b-9c0d-4e2f-8a4b-5c6d7e8f9a0b",
                 alias: "Business Locations numero uno",
-                country: "UK",
+                country: "USA",
                 stateProvince: "MA",
                 city: "Boston",
-                streetAddress: "123456 Main St - business",
+                streetAddress: "744 Columbus Ave",
                 postalCode: "02120",
                 county: "Suffolk",
             };
@@ -57,10 +57,10 @@ describe("Location Address Controller Tests", () => {
             expect(response.status).toBe(200);
             const responseBody = await response.json();
             expect(responseBody.alias).toBe("Business Locations numero uno");
-            expect(responseBody.country).toBe("UK");
+            expect(responseBody.country).toBe("USA");
             expect(responseBody.stateProvince).toBe("MA");
             expect(responseBody.city).toBe("Boston");
-            expect(responseBody.streetAddress).toBe("123456 Main St - business");
+            expect(responseBody.streetAddress).toBe("744 Columbus Ave");
             expect(responseBody.postalCode).toBe("02120");
             expect(responseBody.county).toBe("Suffolk");
         }, 10000);

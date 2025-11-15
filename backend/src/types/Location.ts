@@ -90,7 +90,7 @@ export const UpdateLocationAddressDTOSchema = z.object({
             message: "Must be a non-negative number string",
         })
         .optional(),
-    county: z.string().optional(),
+    county: z.string().optional().nullable(),
 });
 
 export const UpdateLocationAddressResponseSchema = CreateLocationAddressResponseSchema;

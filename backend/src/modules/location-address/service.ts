@@ -156,13 +156,29 @@ export class LocationAddressService implements ILocationAddressService {
 
     updateLocationAddressById = withServiceErrorHandling(
         async (payload: UpdateLocationAddressDTO, companyId: string): Promise<UpdateLocationAddressResponse> => {
+            // get the current location
+            const locationAddress = await this.locationAddressTransaction.getLocationAddressById({ id: payload.id });
+
+            // get the new fips codes if any of the address fields have changed
+            const fipsLocation = await this.locationMatcher.getLocationFips({ ...locationAddress, ...payload });
+
+            if (fipsLocation === null) {
+                throw Boom.badRequest("Fips state and county code cannot be null");
+            }
+
+            const updatedLocationWithFips = {
+                ...payload,
+                fipsStateCode: Number(fipsLocation.fipsStateCode),
+                fipsCountyCode: Number(fipsLocation.fipsCountyCode),
+            };
+
             const updatedLocationAddress = await this.locationAddressTransaction.updateLocationAddressById(
-                payload,
+                updatedLocationWithFips,
                 companyId
             );
 
             if (!updatedLocationAddress) {
-                throw Boom.internal("Could not update Policy");
+                throw Boom.internal("Could not update Location");
             }
 
             return updatedLocationAddress;
