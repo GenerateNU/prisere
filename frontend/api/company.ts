@@ -45,6 +45,7 @@ export const getCompanyLocations = async (): Promise<GetCompanyLocationsResponse
 export const getCompany = async (): Promise<Company> => {
     const req = async (token: string): Promise<Company> => {
         const client = getClient();
+        console.log(token);
         const { data, error, response } = await client.GET("/companies", {
             headers: authHeader(token),
         });

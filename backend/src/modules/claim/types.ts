@@ -46,6 +46,7 @@ export const SelfDisasterInfoSchema = z.object({
 });
 
 export const ImpactedLocationSchema = z.object({
+    alias: z.string().optional(),
     country: z.string(),
     stateProvince: z.string(),
     city: z.string(),
