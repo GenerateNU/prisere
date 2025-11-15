@@ -1,12 +1,22 @@
-import { CreateSelfDisasterDTO, CreateSelfDisasterResponse } from "./types";
+import {
+    CreateSelfDisasterDTO,
+    CreateSelfDisasterResponse,
+    UpdateSelfDisasterDTO,
+    UpdateSelfDisasterResponse,
+} from "./types";
 
-import { withServiceErrorHandling } from "../../utilities/error";
 import Boom from "@hapi/boom";
+import { withServiceErrorHandling } from "../../utilities/error";
 import { ISelfDisasterTransaction } from "./transaction";
 
 export interface ISelfDisasterService {
     createSelfDisaster(payload: CreateSelfDisasterDTO, companyId: string): Promise<CreateSelfDisasterResponse>;
     deleteSelfDisaster(params: string, companyId: string): Promise<void>;
+    updateSelfDisaster(
+        id: string,
+        payload: UpdateSelfDisasterDTO,
+        companyId: string
+    ): Promise<UpdateSelfDisasterResponse>;
 }
 
 export class SelfDisasterService implements ISelfDisasterService {
@@ -41,4 +51,22 @@ export class SelfDisasterService implements ISelfDisasterService {
             throw Boom.internal("Deleting self disaster failed");
         }
     });
+
+    updateSelfDisaster = withServiceErrorHandling(
+        async (id: string, payload: UpdateSelfDisasterDTO, companyId: string): Promise<UpdateSelfDisasterResponse> => {
+            const updatedDisaster = await this.disasterTransaction.updateSelfDisaster(id, payload, companyId);
+
+            if (!updatedDisaster) {
+                throw Boom.internal("Updating disaster failed");
+            }
+
+            return {
+                ...updatedDisaster,
+                startDate: updatedDisaster.startDate.toISOString(),
+                endDate: updatedDisaster.endDate?.toISOString(),
+                updatedAt: updatedDisaster.updatedAt.toISOString(),
+                createdAt: updatedDisaster.createdAt.toISOString(),
+            };
+        }
+    );
 }

@@ -7,8 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { GetCompanyLocationsResponse } from "@/types/company";
 import React from "react";
-import { validateDisasterInfo } from "./utils/validationUtils";
 import { FaCircle } from "react-icons/fa";
+import { validateDisasterInfo } from "./utils/validationUtils";
 
 type DisasterInfo = {
     name: string;
@@ -20,30 +20,26 @@ type DisasterInfo = {
 
 type Props = {
     disasterInfo: DisasterInfo;
-    setInfo: React.Dispatch<React.SetStateAction<DisasterInfo>>;
-    handleStepForward: () => void;
+    setDisasterInfo: (info: Partial<DisasterInfo>) => void;
+    handleStepForward: (data: Partial<DisasterInfo>) => void;
     handleStepBack: () => void;
     locations: GetCompanyLocationsResponse | undefined;
 };
 
 export default function DisasterInfoStep({
     disasterInfo,
-    setInfo,
+    setDisasterInfo,
     handleStepForward,
     handleStepBack,
     locations,
 }: Props) {
-    const [name, setName] = React.useState(disasterInfo.name);
-    const [locationId, setLocationId] = React.useState(disasterInfo.location);
-    const [description, setDescription] = React.useState(disasterInfo.description);
     const [errors, setErrors] = React.useState<{ [key: string]: string }>({});
 
-    const validateForm = () => validateDisasterInfo(name, locationId, setErrors);
+    const validateForm = () => validateDisasterInfo(disasterInfo.name, disasterInfo.location, setErrors);
 
     const handleProceed = () => {
         if (validateForm()) {
-            setInfo({ ...disasterInfo, name: name, location: locationId, description: description });
-            handleStepForward();
+            handleStepForward(disasterInfo);
         }
     };
 
@@ -57,10 +53,10 @@ export default function DisasterInfoStep({
                     </Label>
                     <Input
                         className={`h-[58px] rounded-[10px] text-[16px] ${errors.name ? "border-red-500" : ""}`}
-                        value={name}
+                        value={disasterInfo.name}
                         placeholder="Enter a disaster name"
                         onChange={(e) => {
-                            setName(e.target.value);
+                            setDisasterInfo({ name: e.target.value });
                             if (errors.name) setErrors({ ...errors, name: "" });
                         }}
                     />
@@ -71,9 +67,9 @@ export default function DisasterInfoStep({
                         Location of incident <span className="text-red-500 ml-1">*</span>
                     </Label>
                     <Select
-                        value={locationId}
+                        value={disasterInfo.location}
                         onValueChange={(value) => {
-                            setLocationId(value);
+                            setDisasterInfo({ location: value });
                             if (errors.location) setErrors({ ...errors, location: "" });
                         }}
                     >
@@ -98,8 +94,8 @@ export default function DisasterInfoStep({
                         className="min-h-64 text-[16px]"
                         rows={5}
                         placeholder="Begin typing or "
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        value={disasterInfo.description}
+                        onChange={(e) => setDisasterInfo({ description: e.target.value })}
                     />
                 </div>
             </Card>
