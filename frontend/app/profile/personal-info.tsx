@@ -19,6 +19,7 @@ export function PersonalInfoSettings() {
         firstName: "",
         lastName: "",
         email: "",
+        phoneNumber: "",
     });
 
     const { data: userInfoData } = useQuery({
@@ -32,6 +33,7 @@ export function PersonalInfoSettings() {
                 firstName: userInfoData.firstName,
                 lastName: userInfoData.lastName,
                 email: userInfoData.email ?? "",
+                phoneNumber: userInfoData.phoneNumber ?? "",
             });
         }
     }, [userInfoData]);
@@ -50,6 +52,7 @@ export function PersonalInfoSettings() {
             lastName: editedInfo.lastName,
             email: editedInfo.email,
             id: userInfoData?.id ?? "",
+            phoneNumber: editedInfo.phoneNumber,
         });
     }
 
@@ -63,6 +66,7 @@ export function PersonalInfoSettings() {
             firstName: userInfoData?.firstName ?? "",
             lastName: userInfoData?.lastName ?? "",
             email: userInfoData?.email ?? "",
+            phoneNumber: userInfoData?.phoneNumber ?? "",
         });
     }
 
@@ -104,6 +108,7 @@ export function PersonalInfoSettings() {
                 <div className="flex gap-10">
                     <InfoBlock title="First Name">{userInfoData?.firstName}</InfoBlock>
                     <InfoBlock title="Last Name">{userInfoData?.lastName}</InfoBlock>
+                    <InfoBlock title="Phone Number">{userInfoData?.phoneNumber}</InfoBlock>
                     <InfoBlock title="Email">{userInfoData?.email}</InfoBlock>
                 </div>
             ) : (
@@ -118,6 +123,11 @@ export function PersonalInfoSettings() {
                             title="Last Name"
                             prefill={editedInfo.lastName}
                             onChange={(value) => setEditedInfo({ ...editedInfo, lastName: value })}
+                        />
+                        <InfoEditBlock
+                            title="Phone Number"
+                            prefill={editedInfo.phoneNumber}
+                            onChange={(value) => setEditedInfo({ ...editedInfo, phoneNumber: value })}
                         />
                         <InfoEditBlock
                             title="Email"

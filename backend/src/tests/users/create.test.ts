@@ -11,6 +11,7 @@ const resetZahra = () => ({
     lastName: "Wibisana",
     email: "zahra.w@gmail.com",
     companyId: null,
+    phoneNumber: "1111111111",
 });
 
 describe("POST users/", () => {

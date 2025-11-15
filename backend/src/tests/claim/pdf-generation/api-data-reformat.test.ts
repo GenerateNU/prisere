@@ -14,6 +14,7 @@ describe("restructureClaimDataForPdf", () => {
             firstName: "John",
             lastName: "Doe",
             email: "john@test.com",
+            phoneNumber: "1234567890",
             companyId: "company-456",
             company: undefined,
             disasterNotifications: undefined!,

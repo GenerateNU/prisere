@@ -25,7 +25,7 @@ describe("notification preference retreival", () => {
     });
 
     it("should create a user's preferences on user creation", async () => {
-        await createUser(app, { firstName: "test", lastName: "user" });
+        await createUser(app, { firstName: "test", lastName: "user", phoneNumber: "1234567890" });
         const response = await app.request(TESTING_PREFIX + `/preferences`, {
             headers: {
                 userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
@@ -41,7 +41,11 @@ describe("notification preference retreival", () => {
     });
 
     it("should get a user's notifications that do not exist yet", async () => {
-        const { data: user } = await createUser(app, { firstName: "test", lastName: "user" });
+        const { data: user } = await createUser(app, {
+            firstName: "test",
+            lastName: "user",
+            phoneNumber: "1234567890",
+        });
 
         // delete user preferences from the database (simulates user that was created before preferences existed)
         await db.getRepository(UserPreferences).delete({ userId: user.id });
@@ -76,7 +80,7 @@ describe("notification preference update", () => {
     });
 
     it("should perform full update to user preferences", async () => {
-        await createUser(app, { firstName: "test", lastName: "user" });
+        await createUser(app, { firstName: "test", lastName: "user", phoneNumber: "1234567890" });
         const getResponse = await app.request(TESTING_PREFIX + `/preferences`, {
             headers: {
                 userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
@@ -111,7 +115,7 @@ describe("notification preference update", () => {
     });
 
     it("should perform partial update to user preferences", async () => {
-        await createUser(app, { firstName: "test", lastName: "user" });
+        await createUser(app, { firstName: "test", lastName: "user", phoneNumber: "1234567890" });
         const getResponse = await app.request(TESTING_PREFIX + `/preferences`, {
             headers: {
                 userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
@@ -145,7 +149,7 @@ describe("notification preference update", () => {
     });
 
     it("should error on no values given", async () => {
-        await createUser(app, { firstName: "test", lastName: "user" });
+        await createUser(app, { firstName: "test", lastName: "user", phoneNumber: "1234567890" });
         const getResponse = await app.request(TESTING_PREFIX + `/preferences`, {
             headers: {
                 userId: "3c191e85-7f80-40a6-89ec-cbdbff33a5b2",
