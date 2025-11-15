@@ -9,6 +9,7 @@ export const CreateOrChangePurchaseRequestSchema = z
             totalAmountCents: z.number().min(0),
             isRefund: z.boolean(),
             quickbooksDateCreated: z.iso.datetime().optional(),
+            vendor: z.string().optional(),
         })
     )
     .nonempty();
@@ -20,6 +21,7 @@ export const CreateOrChangePurchaseDTOSchema = z
             isRefund: z.boolean(),
             companyId: z.string().nonempty(),
             quickbooksDateCreated: z.iso.datetime().optional(),
+            vendor: z.string().optional(),
         })
     )
     .nonempty();
@@ -33,6 +35,7 @@ export const CreateOrChangePurchasesResponseSchema = z.array(
         quickbooksDateCreated: z.string().optional(),
         isRefund: z.boolean(),
         dateCreated: z.string(),
+        vendor: z.string().optional(),
     })
 );
 
@@ -43,6 +46,7 @@ export const GetPurchasesResponseSchema = z.object({
     totalAmountCents: z.number().min(0),
     quickbooksDateCreated: z.string().optional(),
     isRefund: z.boolean(),
+    vendor: z.string().optional(),
     dateCreated: z.string(),
     lastUpdated: z.string(),
 });

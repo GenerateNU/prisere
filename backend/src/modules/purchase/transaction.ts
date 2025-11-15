@@ -36,7 +36,10 @@ export class PurchaseTransaction implements IPurchaseTransaction {
                 .insert()
                 .into(Purchase)
                 .values(normalizedPayload)
-                .orUpdate(["totalAmountCents", "isRefund", "quickbooksDateCreated"], ["quickBooksId", "companyId"])
+                .orUpdate(
+                    ["totalAmountCents", "isRefund", "quickbooksDateCreated", "vendor"],
+                    ["quickBooksId", "companyId"]
+                )
                 .returning("*")
                 .execute()
         ).raw;
@@ -117,7 +120,7 @@ export class PurchaseTransaction implements IPurchaseTransaction {
                         search: `%${search}%`,
                     })
                     .getQuery();
-                return `p.id IN ${subQuery}`;
+                return `(p.id IN ${subQuery} OR p.vendor ILIKE :search)`;
             });
         }
 
