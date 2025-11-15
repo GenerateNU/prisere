@@ -3,19 +3,20 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import React from "react";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { CreateInsurancePolicyRequest } from "@/types/insurance-policy";
+import { CreateInsurancePolicyRequest, UpdateInsurancePolicyRequest } from "@/types/insurance-policy";
 import { HiOutlineTrash } from "react-icons/hi2";
 import { FiEdit } from "react-icons/fi";
 import { Card } from "./ui/card";
 import { IoCheckmark } from "react-icons/io5";
 
 interface InsuranceEditorProps {
-    insurance: CreateInsurancePolicyRequest;
-    setInsurance: (insurance: CreateInsurancePolicyRequest) => void;
+    insurance: CreateInsurancePolicyRequest | UpdateInsurancePolicyRequest;
+    setInsurance: (insurance: CreateInsurancePolicyRequest | UpdateInsurancePolicyRequest) => void;
     removeInsurance: () => void;
     isExpanded?: boolean;
     onExpand: () => void;
     onCollapse: () => void;
+    saveError?: string | null;
 }
 
 export default function InsuranceEditor({
@@ -25,6 +26,7 @@ export default function InsuranceEditor({
     isExpanded,
     onExpand,
     onCollapse,
+    saveError = null,
 }: InsuranceEditorProps) {
     const [error, setError] = React.useState<string | null>(null);
 
@@ -88,7 +90,7 @@ export default function InsuranceEditor({
                     <Button
                         onClick={removeInsurance}
                         style={{ paddingInline: 0 }}
-                        className="p-0 flex items-center justify-center h-[35px] w-[35px]"
+                        className="p-0 flex items-center justify-center h-[35px] w-[35px] bg-[var(--slate)]"
                     >
                         <HiOutlineTrash className="" />
                     </Button>
@@ -185,7 +187,11 @@ export default function InsuranceEditor({
                             className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
                         />
                     </div>
-                    {error ? <p className="text-red-400 text-[14px] self-center">{error}</p> : ""}
+                    {error || saveError ? (
+                        <p className="text-red-400 text-[14px] self-center">{error || saveError}</p>
+                    ) : (
+                        ""
+                    )}
                     <Button
                         className="text-[14px] py-[7px] bg-[var(--pink)] text-[var(--fuchsia)] self-end w-fit h-fit flex justify-center items-center gap-[8px] hover:text-[white]"
                         onClick={handleCollapse}

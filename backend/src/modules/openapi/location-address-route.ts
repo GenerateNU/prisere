@@ -7,6 +7,10 @@ import {
     GetLocationAddressSchema,
     CreateLocationAddressBulkSchema,
     CreateLocationAddressBulkResponseSchema,
+    UpdateLocationAddressResponseSchema,
+    UpdateLocationAddressDTOSchema,
+    UpdateLocationAddressBulkDTOSchema,
+    UpdateLocationAddressBulkResponseSchema,
 } from "../../types/Location";
 import { ILocationAddressTransaction, LocationAddressTransactions } from "../location-address/transaction";
 import { ILocationAddressService, LocationAddressService } from "../location-address/service";
@@ -28,6 +32,8 @@ export const addOpenApiLocationAddressRoutes = (openApi: OpenAPIHono, db: DataSo
     openApi.openapi(getLocationAddressRoute, (ctx) => locationAddressController.getLocationAddress(ctx));
     openApi.openapi(removeLocationAddressRoute, (ctx) => locationAddressController.removeLocationAddressById(ctx));
     openApi.openapi(createLocationAddressBulkRoute, (ctx) => locationAddressController.createLocationAddressBulk(ctx));
+    openApi.openapi(updateLocationAddress, (ctx) => locationAddressController.updateLocationAddressById(ctx));
+    openApi.openapi(updateLocationAddressBulk, (ctx) => locationAddressController.updateLocationAddressBulk(ctx));
 
     return openApi;
 };
@@ -137,4 +143,60 @@ const createLocationAddressBulkRoute = createRoute({
         ...openApiErrorCodes("Error Creating Location Address"),
     },
     tags: ["Location Address"],
+});
+
+const updateLocationAddress = createRoute({
+    method: "patch",
+    path: "/location-address",
+    summary: "Update the given location",
+    description: "Updates the location address information for the location with the given id",
+    request: {
+        body: {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: UpdateLocationAddressDTOSchema,
+                },
+            },
+        },
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: UpdateLocationAddressResponseSchema,
+                },
+            },
+            description: "Location updated successfully",
+        },
+        ...openApiErrorCodes("Update Location Errors"),
+    },
+});
+
+const updateLocationAddressBulk = createRoute({
+    method: "patch",
+    path: "/location-address/bulk",
+    summary: "Update the given array of locations",
+    description: "Updates the location address information for each of the given locations based on their id",
+    request: {
+        body: {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: UpdateLocationAddressBulkDTOSchema,
+                },
+            },
+        },
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: UpdateLocationAddressBulkResponseSchema,
+                },
+            },
+            description: "Location updated successfully",
+        },
+        ...openApiErrorCodes("Update Location Bulk Errors"),
+    },
 });

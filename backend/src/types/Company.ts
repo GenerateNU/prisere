@@ -63,6 +63,13 @@ export const GetCompanyByIdResponseSchema = CompanySchema;
 
 export const UpdateQuickBooksImportTimeDTOSchema = CompanyExternalOptionalSchema;
 
+export const UpdateCompanyDTOSchema = z.object({
+    name: z.string().min(1).optional(),
+    businessOwnerFullName: z.string().optional(),
+});
+
+export const UpdateCompanyResponseSchema = CompanySchema;
+
 /* Zod types for payload validation */
 export type CreateCompanyDTO = z.infer<typeof CreateCompanyDTOSchema>;
 export type CreateCompanyResponse = z.infer<typeof CreateCompanyResponseSchema>;
@@ -74,3 +81,6 @@ export type GetCompanyExternalResponse = z.infer<typeof GetCompanyExternalRespon
 export type HasCompanyDataDTOResponse = z.infer<typeof HasCompanyDataDTOSchemaResponse>;
 
 export type UpdateQuickBooksImportTimeDTO = z.infer<typeof UpdateQuickBooksImportTimeDTOSchema>;
+
+export type UpdateCompanyDTO = z.infer<typeof UpdateCompanyDTOSchema>;
+export type UpdateCompanyResponse = z.infer<typeof UpdateCompanyResponseSchema>;

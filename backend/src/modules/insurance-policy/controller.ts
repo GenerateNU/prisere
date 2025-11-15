@@ -8,12 +8,18 @@ import {
     CreateInsurancePolicyDTOSchema,
     CreateInsurancePolicyResponse,
     GetInsurancePoliciesResponse,
+    UpdateInsurancePolicyBulkDTOSchema,
+    UpdateInsurancePolicyBulkResponse,
+    UpdateInsurancePolicyDTOSchema,
+    UpdateInsurancePolicyResponse,
 } from "./types";
 
 export interface IInsurancePolicyController {
     getAllPolicies(_ctx: Context): ControllerResponse<TypedResponse<GetInsurancePoliciesResponse, 200>>;
     createInsurancePolicy(_ctx: Context): ControllerResponse<TypedResponse<CreateInsurancePolicyResponse, 201>>;
     createInsureancePolicyBulk(ctx: Context): ControllerResponse<TypedResponse<CreateInsurancePolicyBulkResponse, 201>>;
+    updateInsurancePolicy(_ctx: Context): ControllerResponse<TypedResponse<UpdateInsurancePolicyResponse, 200>>;
+    updateInsurancePolicyBulk(ctx: Context): ControllerResponse<TypedResponse<UpdateInsurancePolicyBulkResponse, 200>>;
 }
 
 export class InsurancePolicyController implements IInsurancePolicyController {
@@ -51,6 +57,31 @@ export class InsurancePolicyController implements IInsurancePolicyController {
 
             const createInsureancPolicyBulkResponse = await this.insurancePolicyService.createPolicyBulk(payload, id);
             return ctx.json(createInsureancPolicyBulkResponse, 201);
+        }
+    );
+
+    updateInsurancePolicy = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<UpdateInsurancePolicyResponse, 200>> => {
+            const json = await ctx.req.json();
+            const payload = UpdateInsurancePolicyDTOSchema.parse(json);
+            const companyId = ctx.get("companyId");
+
+            const updateInsurancePolicyResponse = await this.insurancePolicyService.updatePolicy(payload, companyId);
+            return ctx.json(updateInsurancePolicyResponse, 200);
+        }
+    );
+
+    updateInsurancePolicyBulk = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<UpdateInsurancePolicyBulkResponse, 200>> => {
+            const json = await ctx.req.json();
+            const payload = UpdateInsurancePolicyBulkDTOSchema.parse(json);
+            const companyId = ctx.get("companyId");
+
+            const updateInsurancePolicyBulkResponse = await this.insurancePolicyService.updatePolicyBulk(
+                payload,
+                companyId
+            );
+            return ctx.json(updateInsurancePolicyBulkResponse, 200);
         }
     );
 }

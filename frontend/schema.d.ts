@@ -367,7 +367,76 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update a company's information
+         * @description Updates a company's information by ID
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        name?: string;
+                        businessOwnerFullName?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Company updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            name: string;
+                            businessOwnerFullName: string;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
+                            externals?: {
+                                id: string;
+                                source: string;
+                                externalId: string;
+                                companyId: string;
+                                createdAt: string;
+                                updatedAt: string;
+                                importTime?: string;
+                            }[];
+                            createdAt: string;
+                            updatedAt: string;
+                        };
+                    };
+                };
+                /** @description Update Company Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Update Company Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/companies/quickbooks-invoice-import-time": {
@@ -1027,7 +1096,74 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update the given location
+         * @description Updates the location address information for the location with the given id
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        id: string;
+                        alias?: string;
+                        country?: string;
+                        stateProvince?: string;
+                        city?: string;
+                        streetAddress?: string;
+                        postalCode?: string;
+                        county?: string | null;
+                    };
+                };
+            };
+            responses: {
+                /** @description Location updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            alias: string;
+                            country: string;
+                            stateProvince: string;
+                            city: string;
+                            streetAddress: string;
+                            postalCode: string;
+                            county?: string;
+                        };
+                    };
+                };
+                /** @description Update Location Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Update Location Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/location-address/{id}": {
@@ -1226,7 +1362,74 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update the given array of locations
+         * @description Updates the location address information for each of the given locations based on their id
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        id: string;
+                        alias?: string;
+                        country?: string;
+                        stateProvince?: string;
+                        city?: string;
+                        streetAddress?: string;
+                        postalCode?: string;
+                        county?: string | null;
+                    }[];
+                };
+            };
+            responses: {
+                /** @description Location updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            alias: string;
+                            country: string;
+                            stateProvince: string;
+                            city: string;
+                            streetAddress: string;
+                            postalCode: string;
+                            county?: string;
+                        }[];
+                    };
+                };
+                /** @description Update Location Bulk Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Update Location Bulk Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/notifications": {
@@ -4816,7 +5019,76 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update the given insurance policy
+         * @description Updates the insurancy policy information for the insurance with the given id
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        id: string;
+                        policyName?: string;
+                        policyHolderFirstName?: string;
+                        policyHolderLastName?: string;
+                        insuranceCompanyName?: string;
+                        policyNumber?: string;
+                        insuranceType?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Insurance updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            policyName: string;
+                            policyHolderFirstName: string;
+                            policyHolderLastName: string;
+                            insuranceCompanyName: string;
+                            policyNumber: string;
+                            insuranceType: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        };
+                    };
+                };
+                /** @description Update Insurance Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Update Insurance Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/insurance/bulk": {
@@ -4900,7 +5172,76 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update the given array of insurance policies
+         * @description Updates the insurance information for each of the given insurance policies based on their id
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        id: string;
+                        policyName?: string;
+                        policyHolderFirstName?: string;
+                        policyHolderLastName?: string;
+                        insuranceCompanyName?: string;
+                        policyNumber?: string;
+                        insuranceType?: string;
+                    }[];
+                };
+            };
+            responses: {
+                /** @description Insurance updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            policyName: string;
+                            policyHolderFirstName: string;
+                            policyHolderLastName: string;
+                            insuranceCompanyName: string;
+                            policyNumber: string;
+                            insuranceType: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                    };
+                };
+                /** @description Update Insurance in Bulk Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Update Insurance in Bulk Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
 }

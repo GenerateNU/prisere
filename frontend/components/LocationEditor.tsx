@@ -1,4 +1,4 @@
-import { CreateLocationRequest } from "@/types/location";
+import { CreateLocationRequest, UpdateLocationRequest } from "@/types/location";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
@@ -9,12 +9,13 @@ import { FiEdit } from "react-icons/fi";
 import { HiOutlineTrash } from "react-icons/hi2";
 
 interface LocationEditorProps {
-    location: CreateLocationRequest;
-    setLocation: (location: CreateLocationRequest) => void;
+    location: CreateLocationRequest | UpdateLocationRequest;
+    setLocation: (location: CreateLocationRequest | UpdateLocationRequest) => void;
     removeLocation: () => void;
     isExpanded?: boolean;
     onExpand: () => void;
     onCollapse: () => void;
+    saveError?: string | null;
 }
 
 export default function LocationEditor({
@@ -24,6 +25,7 @@ export default function LocationEditor({
     isExpanded,
     onExpand,
     onCollapse,
+    saveError = null,
 }: LocationEditorProps) {
     const [error, setError] = React.useState<string | null>(null);
     const handleCollapse = () => {
@@ -78,7 +80,7 @@ export default function LocationEditor({
                     <Button
                         onClick={removeLocation}
                         style={{ paddingInline: 0 }}
-                        className="p-0 flex items-center justify-center h-[35px] w-[35px]"
+                        className="p-0 flex items-center justify-center h-[35px] w-[35px] bg-[var(--slate)]"
                     >
                         <HiOutlineTrash className="" />
                     </Button>
@@ -161,7 +163,11 @@ export default function LocationEditor({
                             />
                         </div>
                     </div>
-                    {error ? <p className="text-red-400 text-[14px] self-center">{error}</p> : ""}
+                    {error || saveError ? (
+                        <p className="text-red-400 text-[14px] self-center">{error || saveError}</p>
+                    ) : (
+                        ""
+                    )}
                     <Button
                         className="text-[14px] py-[7px] bg-[var(--pink)] text-[var(--fuchsia)] self-end w-fit h-fit flex justify-center items-center gap-[8px] hover:text-[white]"
                         onClick={handleCollapse}

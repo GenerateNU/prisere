@@ -4,6 +4,8 @@ import {
     CreateCompanyRequest,
     GetClaimInProgressForCompanyResponse,
     GetCompanyLocationsResponse,
+    UpdateCompanyRequest,
+    UpdateCompanyResponse,
 } from "@/types/company";
 import { authHeader, authWrapper, getClient } from "./client";
 
@@ -83,4 +85,20 @@ export const companyHasData = async (): Promise<boolean> => {
         }
     };
     return authWrapper<boolean>()(req);
+};
+
+export const updateCompany = async (payload: UpdateCompanyRequest): Promise<UpdateCompanyResponse> => {
+    const req = async (token: string): Promise<UpdateCompanyResponse> => {
+        const client = getClient();
+        const { data, error, response } = await client.PATCH("/companies", {
+            headers: authHeader(token),
+            body: payload,
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<UpdateCompanyResponse>()(req);
 };

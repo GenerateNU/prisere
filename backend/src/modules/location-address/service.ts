@@ -10,6 +10,10 @@ import {
     GetLocationAddressDTO,
     GetLocationAddressResponse,
     LocationAddress,
+    UpdateLocationAddressBulkDTO,
+    UpdateLocationAddressBulkResponse,
+    UpdateLocationAddressDTO,
+    UpdateLocationAddressResponse,
 } from "../../types/Location";
 import { IFEMALocationMatcher } from "../clients/fips-location-matching/service";
 
@@ -39,6 +43,24 @@ export interface ILocationAddressService {
      * @param payload contains the id for the location that must be removed
      */
     removeLocationAddressById(payload: GetLocationAddressDTO): Promise<DeleteResult>;
+
+    /**
+     * Attempts to update a location address based on the given id
+     * @param payload The updated location address
+     */
+    updateLocationAddressById(
+        payload: UpdateLocationAddressDTO,
+        companyId: string
+    ): Promise<UpdateLocationAddressResponse>;
+
+    /**
+     * Attempts to update multiple location addresses in bulk
+     * @param payload The updated location addresses
+     */
+    updateLocationAddressBulk(
+        payload: UpdateLocationAddressBulkDTO,
+        companyId: string
+    ): Promise<UpdateLocationAddressBulkResponse>;
 }
 
 export class LocationAddressService implements ILocationAddressService {
@@ -129,6 +151,63 @@ export class LocationAddressService implements ILocationAddressService {
             }
 
             return result;
+        }
+    );
+
+    updateLocationAddressById = withServiceErrorHandling(
+        async (payload: UpdateLocationAddressDTO, companyId: string): Promise<UpdateLocationAddressResponse> => {
+            // get the current location
+            const locationAddress = await this.locationAddressTransaction.getLocationAddressById({ id: payload.id });
+
+            if (!locationAddress) {
+                throw Boom.badRequest("No location address with given id found");
+            }
+
+            const locationForMatching: Partial<LocationAddress> = {
+                country: payload.country ?? locationAddress.country,
+                stateProvince: payload.stateProvince ?? locationAddress.stateProvince,
+                city: payload.city ?? locationAddress.city,
+                streetAddress: payload.streetAddress ?? locationAddress.streetAddress,
+                postalCode: payload.postalCode ?? locationAddress.postalCode,
+                county: payload.county ?? locationAddress.county,
+            };
+
+            // get the new fips codes if any of the address fields have changed
+            const fipsLocation = await this.locationMatcher.getLocationFips(locationForMatching);
+
+            if (fipsLocation === null) {
+                throw Boom.badRequest("Fips state and county code cannot be null");
+            }
+
+            const updatedLocationWithFips = {
+                ...payload,
+                fipsStateCode: Number(fipsLocation.fipsStateCode),
+                fipsCountyCode: Number(fipsLocation.fipsCountyCode),
+            };
+
+            const updatedLocationAddress = await this.locationAddressTransaction.updateLocationAddressById(
+                updatedLocationWithFips,
+                companyId
+            );
+
+            if (!updatedLocationAddress) {
+                throw Boom.internal("Could not update Location");
+            }
+
+            return updatedLocationAddress;
+        }
+    );
+
+    updateLocationAddressBulk = withServiceErrorHandling(
+        async (
+            payload: UpdateLocationAddressBulkDTO,
+            companyId: string
+        ): Promise<UpdateLocationAddressBulkResponse> => {
+            const updatedLocations = await this.locationAddressTransaction.updateLocationAddressBulk(
+                payload,
+                companyId
+            );
+            return updatedLocations;
         }
     );
 }

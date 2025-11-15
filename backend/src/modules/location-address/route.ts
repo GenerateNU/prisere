@@ -23,6 +23,8 @@ export const locationAddressRoute = (db: DataSource): Hono => {
     locationAddress.post("/bulk", (ctx) => locationAddressController.createLocationAddressBulk(ctx));
     locationAddress.get("/:id", (ctx) => locationAddressController.getLocationAddress(ctx));
     locationAddress.delete("/:id", (ctx) => locationAddressController.removeLocationAddressById(ctx));
+    locationAddress.patch("/", (ctx) => locationAddressController.updateLocationAddressById(ctx));
+    locationAddress.patch("/bulk", (ctx) => locationAddressController.updateLocationAddressBulk(ctx));
 
     return locationAddress;
 };

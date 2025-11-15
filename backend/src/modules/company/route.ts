@@ -23,6 +23,7 @@ export const companyRoutes = (db: DataSource): Hono => {
     company.get("/claim-in-progress", (ctx) => companyController.getClaimInProgress(ctx));
     company.get("/company-external", (ctx) => companyController.getCompanyExternal(ctx));
     company.get("/has-company-data", (ctx) => companyController.hasCompanyData(ctx));
+    company.patch("/", (ctx) => companyController.updateCompanyById(ctx));
 
     return company;
 };

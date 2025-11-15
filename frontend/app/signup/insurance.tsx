@@ -110,7 +110,7 @@ export default function Insurance({ progress, setProgress }: InsuranceInfoProps)
                 <InsuranceEditor
                     key={index}
                     insurance={insurance}
-                    setInsurance={(i) => updateInsurance(index, i)}
+                    setInsurance={(i) => updateInsurance(index, i as CreateInsurancePolicyRequest)}
                     removeInsurance={() => removeInsurance(index)}
                     isExpanded={editingInsuranceIndex === index}
                     onExpand={() =>

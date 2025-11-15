@@ -557,6 +557,148 @@
             }
           }
         }
+      },
+      "patch": {
+        "summary": "Update a company's information",
+        "description": "Updates a company's information by ID",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "businessOwnerFullName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Company updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "businessOwnerFullName": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "lastQuickBooksInvoiceImportTime": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "lastQuickBooksPurchaseImportTime": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "externals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string"
+                          },
+                          "externalId": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          },
+                          "importTime": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "businessOwnerFullName",
+                    "createdAt",
+                    "updatedAt"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Update Company Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Update Company Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/companies/quickbooks-invoice-import-time": {
@@ -1688,6 +1830,141 @@
             }
           }
         }
+      },
+      "patch": {
+        "summary": "Update the given location",
+        "description": "Updates the location address information for the location with the given id",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "alias": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "stateProvince": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "streetAddress": {
+                    "type": "string"
+                  },
+                  "postalCode": {
+                    "type": "string",
+                    "pattern": "^\\d+$"
+                  },
+                  "county": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Location updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "alias": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "stateProvince": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "city": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "streetAddress": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "postalCode": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": "^\\d+$"
+                    },
+                    "county": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "alias",
+                    "country",
+                    "stateProvince",
+                    "city",
+                    "streetAddress",
+                    "postalCode"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Update Location Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Update Location Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/location-address/{id}": {
@@ -1985,6 +2262,148 @@
           },
           "500": {
             "description": "Error Creating Location Address",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update the given array of locations",
+        "description": "Updates the location address information for each of the given locations based on their id",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "alias": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string"
+                    },
+                    "stateProvince": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "streetAddress": {
+                      "type": "string"
+                    },
+                    "postalCode": {
+                      "type": "string",
+                      "pattern": "^\\d+$"
+                    },
+                    "county": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                },
+                "minItems": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Location updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "alias": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "stateProvince": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "city": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "streetAddress": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "postalCode": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "^\\d+$"
+                      },
+                      "county": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "alias",
+                      "country",
+                      "stateProvince",
+                      "city",
+                      "streetAddress",
+                      "postalCode"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Update Location Bulk Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Update Location Bulk Errors",
             "content": {
               "application/json": {
                 "schema": {
@@ -7658,6 +8077,136 @@
             }
           }
         }
+      },
+      "patch": {
+        "summary": "Update the given insurance policy",
+        "description": "Updates the insurancy policy information for the insurance with the given id",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "policyName": {
+                    "type": "string"
+                  },
+                  "policyHolderFirstName": {
+                    "type": "string"
+                  },
+                  "policyHolderLastName": {
+                    "type": "string"
+                  },
+                  "insuranceCompanyName": {
+                    "type": "string"
+                  },
+                  "policyNumber": {
+                    "type": "string"
+                  },
+                  "insuranceType": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Insurance updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "policyName": {
+                      "type": "string"
+                    },
+                    "policyHolderFirstName": {
+                      "type": "string"
+                    },
+                    "policyHolderLastName": {
+                      "type": "string"
+                    },
+                    "insuranceCompanyName": {
+                      "type": "string"
+                    },
+                    "policyNumber": {
+                      "type": "string"
+                    },
+                    "insuranceType": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "policyName",
+                    "policyHolderFirstName",
+                    "policyHolderLastName",
+                    "insuranceCompanyName",
+                    "policyNumber",
+                    "insuranceType",
+                    "updatedAt",
+                    "createdAt"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Update Insurance Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Update Insurance Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/insurance/bulk": {
@@ -7792,6 +8341,144 @@
           },
           "500": {
             "description": "Error Creating insurance policies in bulk",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update the given array of insurance policies",
+        "description": "Updates the insurance information for each of the given insurance policies based on their id",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "policyName": {
+                      "type": "string"
+                    },
+                    "policyHolderFirstName": {
+                      "type": "string"
+                    },
+                    "policyHolderLastName": {
+                      "type": "string"
+                    },
+                    "insuranceCompanyName": {
+                      "type": "string"
+                    },
+                    "policyNumber": {
+                      "type": "string"
+                    },
+                    "insuranceType": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                },
+                "minItems": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Insurance updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "policyName": {
+                        "type": "string"
+                      },
+                      "policyHolderFirstName": {
+                        "type": "string"
+                      },
+                      "policyHolderLastName": {
+                        "type": "string"
+                      },
+                      "insuranceCompanyName": {
+                        "type": "string"
+                      },
+                      "policyNumber": {
+                        "type": "string"
+                      },
+                      "insuranceType": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "policyName",
+                      "policyHolderFirstName",
+                      "policyHolderLastName",
+                      "insuranceCompanyName",
+                      "policyNumber",
+                      "insuranceType",
+                      "updatedAt",
+                      "createdAt"
+                    ]
+                  },
+                  "minItems": 1
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Update Insurance in Bulk Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Update Insurance in Bulk Errors",
             "content": {
               "application/json": {
                 "schema": {

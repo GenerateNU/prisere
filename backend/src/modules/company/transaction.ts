@@ -2,6 +2,7 @@ import { Company } from "../../entities/Company";
 import {
     CreateCompanyDTO,
     GetCompanyByIdDTO,
+    UpdateCompanyDTO,
     GetCompanyExternalDTO,
     UpdateQuickBooksImportTimeDTO,
 } from "../../types/Company";
@@ -52,6 +53,13 @@ export interface ICompanyTransaction {
     getCompanyExternal(paylaod: GetCompanyExternalDTO): Promise<CompanyExternal | null>;
 
     getCompanyFinancialData(payload: GetCompanyByIdDTO): Promise<{ purchases: Purchase[]; invoices: Invoice[] } | null>;
+
+    /**
+     * Update a Company's information by id
+     * @param payload The updated company
+     * @returns Promise resolving to updated Company or null if not found
+     */
+    updateCompanyById(companyId: string, payload: UpdateCompanyDTO): Promise<Company | null>;
 }
 
 export class CompanyTransaction implements ICompanyTransaction {
@@ -149,5 +157,10 @@ export class CompanyTransaction implements ICompanyTransaction {
         }
 
         return { purchases, invoices };
+    }
+
+    async updateCompanyById(companyId: string, payload: UpdateCompanyDTO): Promise<Company | null> {
+        const company = await this.db.manager.update(Company, { id: companyId }, payload);
+        return company.affected === 1 ? this.db.manager.findOneBy(Company, { id: companyId }) : null;
     }
 }

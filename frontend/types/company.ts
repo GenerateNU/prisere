@@ -9,6 +9,9 @@ export type GetCompanyLocationsResponse =
 
 export type Company = paths["/companies"]["post"]["responses"][201]["content"]["application/json"];
 
+export type UpdateCompanyRequest = paths["/companies"]["patch"]["requestBody"]["content"]["application/json"];
+export type UpdateCompanyResponse = paths["/companies"]["patch"]["responses"][200]["content"]["application/json"];
+
 export const businessTypes = ["LLC", "Sole Proprietorship", "Corporation", "Partnership"];
 
 export type GetClaimInProgressForCompanyResponse =

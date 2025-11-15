@@ -8,6 +8,8 @@ import {
     CreateCompanyResponse,
     GetCompanyExternalResponse,
     HasCompanyDataDTOResponse,
+    UpdateCompanyResponse,
+    UpdateCompanyDTOSchema,
 } from "../../types/Company";
 import { logMessageToFile } from "../../utilities/logger";
 import { validate } from "uuid";
@@ -24,6 +26,7 @@ export interface ICompanyController {
     getClaimInProgress(ctx: Context): ControllerResponse<TypedResponse<GetClaimInProgressForCompanyResponse, 200>>;
     getCompanyExternal(ctx: Context): ControllerResponse<TypedResponse<GetCompanyExternalResponse, 200>>;
     hasCompanyData(ctx: Context): ControllerResponse<TypedResponse<HasCompanyDataDTOResponse, 200>>;
+    updateCompanyById(ctx: Context): ControllerResponse<TypedResponse<UpdateCompanyResponse, 200>>;
 }
 
 export class CompanyController implements ICompanyController {
@@ -196,6 +199,21 @@ export class CompanyController implements ICompanyController {
 
             // Had to create primitive boolean because zod types use that
             return ctx.json({ hasData }, 200);
+        }
+    );
+
+    updateCompanyById = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<UpdateCompanyResponse, 200>> => {
+            const companyId = ctx.get("companyId");
+            const json = await ctx.req.json();
+            const payload = UpdateCompanyDTOSchema.parse(json);
+
+            if (!validate(companyId)) {
+                return ctx.json({ error: "Invalid company ID" }, 400);
+            }
+
+            const updatedCompany = await this.companyService.updateCompanyById(companyId, payload);
+            return ctx.json(updatedCompany, 200);
         }
     );
 }

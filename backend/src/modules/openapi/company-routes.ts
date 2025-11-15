@@ -8,6 +8,8 @@ import {
     CreateCompanyResponseSchema,
     GetCompanyByIdResponseSchema,
     HasCompanyDataDTOSchemaResponse,
+    UpdateCompanyDTOSchema,
+    UpdateCompanyResponseSchema,
     UpdateQuickBooksImportTimeDTOSchema,
 } from "../../types/Company";
 import { openApiErrorCodes } from "../../utilities/error";
@@ -32,6 +34,8 @@ export const addOpenApiCompanyRoutes = (openApi: OpenAPIHono, db: DataSource): O
     openApi.openapi(getCompanyLocationsByIdRoute, (ctx) => companyController.getCompanyLocationsById(ctx));
     openApi.openapi(getCompanyClaimInProgress, (ctx) => companyController.getClaimInProgress(ctx));
     openApi.openapi(hasCompanyData, (ctx) => companyController.hasCompanyData(ctx));
+    openApi.openapi(updateCompanyById, (ctx) => companyController.updateCompanyById(ctx));
+
     return openApi;
 };
 
@@ -201,4 +205,32 @@ const hasCompanyData = createRoute({
         ...openApiErrorCodes("Get Company Data in Progress Errors"),
     },
     tags: ["Companies"],
+});
+
+const updateCompanyById = createRoute({
+    method: "patch",
+    path: "/companies",
+    summary: "Update a company's information",
+    description: "Updates a company's information by ID",
+    request: {
+        body: {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: UpdateCompanyDTOSchema,
+                },
+            },
+        },
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: UpdateCompanyResponseSchema,
+                },
+            },
+            description: "Company updated successfully",
+        },
+        ...openApiErrorCodes("Update Company Errors"),
+    },
 });
