@@ -23,6 +23,7 @@
     "@hono/node-server": "^1.12.2",
     "@hono/swagger-ui": "^0.5.2",
     "@hono/zod-openapi": "^1.1.0",
+    "@react-pdf/renderer": "^4.3.1",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.10",
     "@tanstack/react-table": "^8.21.3",

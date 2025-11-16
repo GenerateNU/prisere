@@ -2,6 +2,7 @@ import { z } from "zod";
 import { ClaimLocation } from "../../entities/ClaimLocation";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import { User } from "../../entities/User";
+import { CompanyTypesEnum } from "../../entities/Company";
 
 export const ClaimPDFGenerationResponseSchema = z.object({
     url: z.url(),
@@ -31,6 +32,8 @@ export const UserInfoSchema = z.object({
 
 const CompanySchema = z.object({
     name: z.string(),
+    businessOwnerFullName: z.string().optional(),
+    companyType: z.enum(CompanyTypesEnum).optional(),
 });
 
 export const FemaDisasterInfoSchema = z.object({

@@ -104,8 +104,8 @@ function ClaimPDF({ data }: { data: ClaimData }) {
 
     const businessInfo = [
         { label: "Business Name", value: data.company.name },
-        { label: "Business Owner", value: data.user.firstName + " " + data.user.firstName },
-        { label: "Business Type", value: "Sole Proprietorship" },
+        { label: "Business Owner", value: data.company.businessOwnerFullName },
+        { label: "Business Type", value: data.company.companyType },
         { label: "Seasonal", value: "No" },
         { label: "Months of\nBusiness Activity", value: "N/A" },
     ];
