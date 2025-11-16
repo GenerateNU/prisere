@@ -1,8 +1,8 @@
-import { DataSource } from "typeorm";
 import { Hono } from "hono";
-import { SelfDisasterTransaction } from "./transaction";
-import { SelfDisasterService } from "./service";
+import { DataSource } from "typeorm";
 import { SelfDisasterController } from "./controller";
+import { SelfDisasterService } from "./service";
+import { SelfDisasterTransaction } from "./transaction";
 
 export const selfDisasterRoutes = (db: DataSource, femaHono: Hono): Hono => {
     const disasterTransaction = new SelfDisasterTransaction(db);
@@ -10,6 +10,7 @@ export const selfDisasterRoutes = (db: DataSource, femaHono: Hono): Hono => {
     const disasterController = new SelfDisasterController(disasterService);
 
     femaHono.post("/self", (ctx) => disasterController.createSelfDisaster(ctx));
+    femaHono.patch("/self/:id", (ctx) => disasterController.updateSelfDisaster(ctx));
     femaHono.delete("/self/:id", (ctx) => disasterController.deleteSelfDisaster(ctx));
 
     return femaHono;
