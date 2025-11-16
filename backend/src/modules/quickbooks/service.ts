@@ -284,7 +284,9 @@ export class QuickbooksService implements IQuickbooksService {
             }));
         });
 
-        const result: PurchaseLineItem[] = await this.purchaseLineItemTransaction.createOrUpdatePurchaseLineItems({ items: lineItemData });
+        const result: PurchaseLineItem[] = await this.purchaseLineItemTransaction.createOrUpdatePurchaseLineItems({
+            items: lineItemData,
+        });
         for (const val of result) {
             if (val.type === null) {
                 const type = await classifyLineItem(val);

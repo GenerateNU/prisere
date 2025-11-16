@@ -1,5 +1,5 @@
 import { PurchaseLineItem, PurchaseLineItemType } from "../../entities/PurchaseLineItem";
-import { execFile, execFileSync } from 'child_process';
+import { execFileSync } from "child_process";
 
 export async function classifyLineItem(p: PurchaseLineItem): Promise<PurchaseLineItemType> {
     const amount = p.amountCents.toString();
@@ -10,7 +10,7 @@ export async function classifyLineItem(p: PurchaseLineItem): Promise<PurchaseLin
         const stdout = execFileSync(
             "python3",
             ["predict.py", "--amount", amount, "--category", category, "--merchant", merchant],
-            { encoding: 'utf8' }
+            { encoding: "utf8" }
         );
 
         const label = parseInt(stdout.trim(), 10);
@@ -20,7 +20,7 @@ export async function classifyLineItem(p: PurchaseLineItem): Promise<PurchaseLin
         } else {
             return PurchaseLineItemType.SUG_TY;
         }
-    } catch (error) {
+    } catch (_error) {
         throw new Error("Model failed");
     }
 }
