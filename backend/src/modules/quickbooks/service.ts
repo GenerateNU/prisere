@@ -11,8 +11,9 @@ import { IInvoiceTransaction } from "../invoice/transaction";
 import { IInvoiceLineItemTransaction } from "../invoiceLineItem/transaction";
 import { IPurchaseTransaction } from "../purchase/transaction";
 import { IPurchaseLineItemTransaction } from "../purchase-line-item/transaction";
-import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
+import { PurchaseLineItem, PurchaseLineItemType } from "../../entities/PurchaseLineItem";
 import { logMessageToFile } from "../../utilities/logger";
+import { classifyLineItem } from "../../utilities/classification-model/classifyLineItem";
 
 export interface IQuickbooksService {
     generateAuthUrl(args: { userId: string }): Promise<{ state: string; url: string }>;
@@ -283,7 +284,13 @@ export class QuickbooksService implements IQuickbooksService {
             }));
         });
 
-        await this.purchaseLineItemTransaction.createOrUpdatePurchaseLineItems({ items: lineItemData });
+        const result: PurchaseLineItem[] = await this.purchaseLineItemTransaction.createOrUpdatePurchaseLineItems({ items: lineItemData });
+        for (const val of result) {
+            if (val.type === null) {
+                const type = await classifyLineItem(val);
+                await this.purchaseLineItemTransaction.updatePurchaseLineItemType(val.id, type);
+            }
+        }
 
         await this.transaction.updateCompanyPurchaseQuickbooksSync({ date: new Date(), companyId: user.companyId });
     });
