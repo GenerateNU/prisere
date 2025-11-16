@@ -12,6 +12,7 @@ export default function BusinessCard() {
         name: "",
         businessOwnerFullName: "",
         companyType: "LLC",
+        alternateEmail: "",
     });
 
     const [user, setUser] = useState({

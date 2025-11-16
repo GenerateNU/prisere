@@ -32,6 +32,7 @@ export const CompanySchema = z.object({
     lastQuickBooksInvoiceImportTime: z.string().optional().nullable(),
     lastQuickBooksPurchaseImportTime: z.string().optional().nullable(),
     externals: z.array(CompanyExternalSchema).optional(),
+    alternateEmail: z.email().optional(),
     companyType: z.enum(CompanyTypesEnum),
     createdAt: z.string(),
     updatedAt: z.string(),
@@ -42,6 +43,7 @@ export const CreateCompanyDTOSchema = z.object({
     name: z.string().min(1),
     businessOwnerFullName: z.string().nonempty(),
     companyType: z.enum(CompanyTypesEnum),
+    alternateEmail: z.email().optional(),
 });
 
 export const CreateCompanyResponseSchema = CompanySchema;
@@ -69,6 +71,7 @@ export const UpdateQuickBooksImportTimeDTOSchema = CompanyExternalOptionalSchema
 export const UpdateCompanyDTOSchema = z.object({
     name: z.string().min(1).optional(),
     businessOwnerFullName: z.string().optional(),
+    alternateEmail: z.email().optional(),
     companyType: z.enum(CompanyTypesEnum).optional(),
 });
 

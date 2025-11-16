@@ -57,20 +57,6 @@ export class SQSService {
             const entries: SendMessageBatchRequestEntry[] = batch.map((message, index) => ({
                 Id: `${i + index}`, // Unique ID for each message in the batch
                 MessageBody: JSON.stringify(message),
-                MessageAttributes: {
-                    email: {
-                        DataType: "String",
-                        StringValue: message.to,
-                    },
-                    notificationId: {
-                        DataType: "String",
-                        StringValue: message.notificationId,
-                    },
-                    disasterId: {
-                        DataType: "String",
-                        StringValue: message.disasterId,
-                    },
-                },
             }));
 
             logMessageToFile(`Entires: \n${entries}`);

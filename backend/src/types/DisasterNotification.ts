@@ -100,6 +100,7 @@ export type MarkAllAsReadResponse = z.infer<typeof MarkAllAsReadResponseSchema>;
 
 export const DisasterEmailMessageSchema = z.object({
     to: z.string(),
+    alt: z.string().optional(),
     from: z.string(),
     subject: z.string(),
     firstName: z.string(),

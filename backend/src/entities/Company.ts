@@ -25,6 +25,9 @@ export class Company {
     @Column()
     name!: string;
 
+    @Column({ nullable: true })
+    alternateEmail?: string;
+
     @Column({ length: 200 })
     businessOwnerFullName!: string;
 

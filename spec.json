@@ -428,6 +428,10 @@
                       "Corporation",
                       "Partnership"
                     ]
+                  },
+                  "alternateEmail": {
+                    "type": "string",
+                    "format": "email"
                   }
                 },
                 "required": [
@@ -502,6 +506,10 @@
                           "updatedAt"
                         ]
                       }
+                    },
+                    "alternateEmail": {
+                      "type": "string",
+                      "format": "email"
                     },
                     "companyType": {
                       "type": "string",
@@ -642,6 +650,10 @@
                         ]
                       }
                     },
+                    "alternateEmail": {
+                      "type": "string",
+                      "format": "email"
+                    },
                     "companyType": {
                       "type": "string",
                       "enum": [
@@ -728,6 +740,10 @@
                   "businessOwnerFullName": {
                     "type": "string"
                   },
+                  "alternateEmail": {
+                    "type": "string",
+                    "format": "email"
+                  },
                   "companyType": {
                     "type": "string",
                     "enum": [
@@ -805,6 +821,10 @@
                           "updatedAt"
                         ]
                       }
+                    },
+                    "alternateEmail": {
+                      "type": "string",
+                      "format": "email"
                     },
                     "companyType": {
                       "type": "string",
@@ -973,6 +993,10 @@
                         ]
                       }
                     },
+                    "alternateEmail": {
+                      "type": "string",
+                      "format": "email"
+                    },
                     "companyType": {
                       "type": "string",
                       "enum": [
@@ -1139,6 +1163,10 @@
                           "updatedAt"
                         ]
                       }
+                    },
+                    "alternateEmail": {
+                      "type": "string",
+                      "format": "email"
                     },
                     "companyType": {
                       "type": "string",
@@ -2991,6 +3019,10 @@
                                     "updatedAt"
                                   ]
                                 }
+                              },
+                              "alternateEmail": {
+                                "type": "string",
+                                "format": "email"
                               },
                               "companyType": {
                                 "type": "string",

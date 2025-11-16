@@ -28,6 +28,7 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
         name: "",
         businessOwnerFullName: "",
         companyType: "LLC",
+        alternateEmail: "",
     });
 
     const [locationPayloads, setLocationPayloads] = useState<CreateLocationBulkRequest>([
@@ -209,6 +210,22 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
                         className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
                         onChange={(e) => setCompanyPayload({ ...companyPayload, name: e.target.value })}
                     />
+                </div>
+                <div className="flex flex-col gap-[8px] w-full mb-[30px]">
+                    <Label htmlFor="owner" className="text-[16px]">
+                        Secondary Email (Optional) <span className="text-red-500 text-[16px]">*</span>
+                    </Label>
+                    <Input
+                        id="owner"
+                        name="owner"
+                        type="text"
+                        required
+                        className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
+                        onChange={(e) => setCompanyPayload({ ...companyPayload, alternateEmail: e.target.value })}
+                    />
+                    <div className="text-xs text-gray-600">
+                        FEMA disaster notifications will additionally be sent to this email.
+                    </div>
                 </div>
 
                 {locationPayloads.map((location, index) => (

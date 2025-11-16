@@ -315,6 +315,8 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** Format: email */
+                            alternateEmail?: string;
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
@@ -372,6 +374,8 @@ export interface paths {
                         businessOwnerFullName: string;
                         /** @enum {string} */
                         companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
+                        /** Format: email */
+                        alternateEmail?: string;
                     };
                 };
             };
@@ -397,6 +401,8 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** Format: email */
+                            alternateEmail?: string;
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
@@ -454,6 +460,8 @@ export interface paths {
                     "application/json": {
                         name?: string;
                         businessOwnerFullName?: string;
+                        /** Format: email */
+                        alternateEmail?: string;
                         /** @enum {string} */
                         companyType?: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                     };
@@ -481,6 +489,8 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** Format: email */
+                            alternateEmail?: string;
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
@@ -572,6 +582,8 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** Format: email */
+                            alternateEmail?: string;
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
@@ -663,6 +675,8 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** Format: email */
+                            alternateEmail?: string;
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
@@ -1618,6 +1632,8 @@ export interface paths {
                                         updatedAt: string;
                                         importTime?: string;
                                     }[];
+                                    /** Format: email */
+                                    alternateEmail?: string;
                                     /** @enum {string} */
                                     companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                                     createdAt: string;
