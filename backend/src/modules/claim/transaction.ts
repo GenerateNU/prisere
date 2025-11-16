@@ -25,6 +25,7 @@ import { logMessageToFile } from "../../utilities/logger";
 import { InvoiceTransaction } from "../invoice/transaction";
 import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
 import { UserTransaction } from "../user/transaction";
+import { PurchaseTransaction } from "../purchase/transaction";
 import { ClaimDataForPDF } from "./types";
 
 export interface IClaimTransaction {
@@ -407,6 +408,7 @@ export class ClaimTransaction implements IClaimTransaction {
 
         const userTransaction = new UserTransaction(this.db);
         const invoiceTransaction = new InvoiceTransaction(this.db);
+        const purchaseTransaction = new PurchaseTransaction(this.db);
         const user = await userTransaction.getUser({ id: userId });
 
         if (!claimInfo) {
@@ -415,6 +417,29 @@ export class ClaimTransaction implements IClaimTransaction {
 
         if (!user) {
             throw Boom.notFound("Could not find the associated user");
+        }
+
+        const revenues = [];
+        const purchases = [];
+
+        for (let i = 0; i < 3; i++) {
+            const year = new Date().getFullYear() - 1 - i;
+
+            const revenue = await invoiceTransaction.sumInvoicesByCompanyAndDateRange({
+                companyId: claimInfo.companyId,
+                startDate: new Date(year, 0, 1).toISOString(),
+                endDate: new Date(year, 11, 31).toISOString(),
+            });
+
+            revenues.push({ year: year, amountCents: revenue });
+
+            const purchaseAmount = await purchaseTransaction.sumPurchasesByCompanyAndDateRange({
+                companyId: claimInfo.companyId,
+                startDate: new Date(year, 0, 1).toISOString(),
+                endDate: new Date(year, 11, 31).toISOString(),
+            });
+
+            purchases.push({ year: year, amountCents: purchaseAmount });
         }
 
         const incomeLastThreeYears = await invoiceTransaction.sumInvoicesByCompanyAndDateRange({
@@ -427,6 +452,8 @@ export class ClaimTransaction implements IClaimTransaction {
             ...claimInfo,
             user: user,
             averageIncome: incomeLastThreeYears / 3,
+            pastRevenues: revenues,
+            pastPurchases: purchases,
         };
     }
 

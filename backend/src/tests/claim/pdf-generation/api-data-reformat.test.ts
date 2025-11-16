@@ -84,6 +84,16 @@ describe("restructureClaimDataForPdf", () => {
             },
         ],
         averageIncome: 75000.0,
+        pastRevenues: [
+            { year: 2021, amountCents: 2500000 },
+            { year: 2022, amountCents: 3000000 },
+            { year: 2023, amountCents: 3500000 },
+        ],
+        pastPurchases: [
+            { year: 2021, amountCents: 125000 },
+            { year: 2022, amountCents: 150000 },
+            { year: 2023, amountCents: 175000 },
+        ],
     };
 
     it("should successfully parse valid claim data with FEMA disaster", () => {

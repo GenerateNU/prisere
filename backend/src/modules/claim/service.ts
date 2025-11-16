@@ -19,9 +19,8 @@ import { withServiceErrorHandling } from "../../utilities/error";
 import { S3Service } from "../s3/service";
 import { IClaimTransaction } from "./transaction";
 import { ClaimData, ClaimDataForPDF, ClaimPDFGenerationResponse } from "./types";
-import { buildClaimPdfHtml } from "./utilities/claim-pdf-html";
 import { restructureClaimDataForPdf } from "./utilities/pdf-mapper";
-import { generatePDFfromHTML } from "./utilities/puppeteer-handler";
+import { generatePdfToBuffer } from "./utilities/react-pdf-handler";
 
 export interface IClaimService {
     createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse>;
@@ -142,8 +141,13 @@ export class ClaimService implements IClaimService {
                 throw Boom.notFound("Claim does not have an associated company");
             }
             const claimData: ClaimData = restructureClaimDataForPdf(pdfData);
-            const claimHtml = buildClaimPdfHtml(claimData);
-            const pdfBuffer = await generatePDFfromHTML(claimHtml);
+
+            // Uncomment to Generate PDF in a test file locally to see file output
+            // await generatePdfToFile(claimData);
+            // return { url: "test" };
+
+            const pdfBuffer = await generatePdfToBuffer(claimData);
+
             const s3 = new S3Service();
             const uploadResponse = await s3.uploadPdf({ claimId, pdfBuffer });
             return { url: uploadResponse.url };
