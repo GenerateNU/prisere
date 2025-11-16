@@ -326,7 +326,7 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
             expect(pdfData.text).toContain("Personal Information");
             expect(pdfData.text).toContain("Disaster Specific Information");
             expect(pdfData.text).toContain("Affected Business\nLocations");
-            expect(pdfData.text).toContain("Extreneous Expenses");
+            expect(pdfData.text).toContain("Extraneous Expenses");
             expect(pdfData.text).toContain("Average Revenue");
         });
 

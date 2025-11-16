@@ -266,7 +266,7 @@ function ClaimPDF({ data }: { data: ClaimData }) {
                 </View>
                 {lineBreak}
                 <View style={styles.section} wrap={false}>
-                    <Text style={styles.sectionHead}>Extreneous Expenses</Text>
+                    <Text style={styles.sectionHead}>Extraneous Expenses</Text>
                     <View style={styles.dataTable}>
                         <View style={styles.dataRow}>
                             <Text style={{ ...styles.dataValue, fontWeight: "bold" }}>Expense Type</Text>
