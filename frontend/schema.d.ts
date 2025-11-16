@@ -721,14 +721,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3074,14 +3067,7 @@ export interface paths {
                          * @default ACTIVE
                          * @enum {string}
                          */
-                        status?:
-                            | "ACTIVE"
-                            | "FILED"
-                            | "IN_PROGRESS_DISASTER"
-                            | "IN_PROGRESS_PERSONAL"
-                            | "IN_PROGRESS_BUSINESS"
-                            | "IN_PROGRESS_INSURANCE"
-                            | "IN_PROGRESS_EXPORT";
+                        status?: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                     };
                 };
             };
@@ -3098,14 +3084,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3215,14 +3194,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -5242,6 +5214,314 @@ export interface paths {
                 };
             };
         };
+        trace?: never;
+    };
+    "/s3/getUploadUrl": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Get presigned URL for document upload
+         * @description Generates a presigned URL that allows direct upload to S3 from the client. The URL expires after 1 hour.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        companyId: string;
+                        /** @description Original file name */
+                        fileName: string;
+                        /** @description MIME type of the file (e.g., application/pdf, image/jpeg) */
+                        fileType: string;
+                        /**
+                         * @default GENERAL_BUSINESS
+                         * @enum {string}
+                         */
+                        documentType?: "CLAIM" | "GENERAL_BUSINESS" | "IMAGES";
+                        /** @description Optional claim ID for claim-specific documents */
+                        claimId?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Presigned URL generated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            uploadUrl: string;
+                            key: string;
+                            documentId: string;
+                            expiresIn: number;
+                        };
+                    };
+                };
+                /** @description Invalid request - missing or invalid parameters */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description User authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/s3/confirmUpload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm document upload completion
+         * @description Verifies that a file was successfully uploaded to S3 and returns file details including a presigned download URL.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @description S3 key of the uploaded file */
+                        key: string;
+                        /** @description Document ID returned from getUploadUrl */
+                        documentId: string;
+                        /**
+                         * @default GENERAL_BUSINESS
+                         * @enum {string}
+                         */
+                        documentType?: "CLAIM" | "GENERAL_BUSINESS" | "IMAGES";
+                        /** @description Optional claim ID for claim-specific documents */
+                        claimId?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Upload confirmed successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description S3 key of the uploaded file */
+                            key: string;
+                            /**
+                             * Format: uri
+                             * @description Presigned download URL for the file
+                             */
+                            url: string;
+                            /** @description File size in bytes */
+                            size: number;
+                            /** @description SHA-256 hash of the file */
+                            hash: string;
+                            /** @description Whether this file is a duplicate */
+                            isDuplicate?: boolean;
+                            /** @description Key of the original file if duplicate */
+                            duplicateKey?: string;
+                        };
+                    };
+                };
+                /** @description Invalid request - missing or invalid parameters */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description User authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description File not found in S3 */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/s3/getAllDocuments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all documents of a specific type
+         * @description Retrieves all documents of the specified type for a company or user.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        companyId: string;
+                        /** @enum {string} */
+                        documentType: "CLAIM" | "GENERAL_BUSINESS" | "IMAGES";
+                        userId?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Documents retrieved successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            key: string;
+                            url: string;
+                            size: number;
+                            /** Format: date */
+                            lastModified?: string;
+                            documentId: string;
+                        }[];
+                    };
+                };
+                /** @description Invalid request - missing or invalid parameters */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description User authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description No documents found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
 }

@@ -8,7 +8,7 @@ export const claimRoutes = (db: DataSource): Hono => {
     const claim = new Hono();
 
     const claimTransaction: IClaimTransaction = new ClaimTransaction(db);
-    const claimService: IClaimService = new ClaimService(claimTransaction);
+    const claimService: IClaimService = new ClaimService(claimTransaction, db);
     const claimController: IClaimController = new ClaimController(claimService);
 
     claim.get("/company", (ctx) => claimController.getClaimByCompanyId(ctx));

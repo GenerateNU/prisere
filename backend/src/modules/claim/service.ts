@@ -19,6 +19,9 @@ import { restructureClaimDataForPdf } from "./utilities/pdf-mapper";
 import { buildClaimPdfHtml } from "./utilities/claim-pdf-html";
 import { generatePDFfromHTML } from "./utilities/puppeteer-handler";
 import { S3Service } from "../s3/service";
+import { DataSource } from "typeorm";
+import { CompanyService } from "../company/service";
+import { DocumentTypes } from "../../types/S3Types";
 
 export interface IClaimService {
     createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse>;
@@ -28,14 +31,16 @@ export interface IClaimService {
     linkClaimToPurchaseItems(payload: LinkClaimToPurchaseDTO): Promise<LinkClaimToPurchaseResponse>;
     getLinkedPurchaseLineItems(claimId: string): Promise<GetPurchaseLineItemsForClaimResponse>;
     deletePurchaseLineItem(claimId: string, lineItemId: string): Promise<DeletePurchaseLineItemResponse>;
-    createClaimPDF(claimId: string, userId: string): Promise<ClaimPDFGenerationResponse>;
+    createClaimPDF(claimId: string, userId: string, companyId: string): Promise<ClaimPDFGenerationResponse>;
 }
 
 export class ClaimService implements IClaimService {
     private claimTransaction: IClaimTransaction;
+    private db: DataSource;
 
-    constructor(claimTransaction: IClaimTransaction) {
+    constructor(claimTransaction: IClaimTransaction, db: DataSource) {
         this.claimTransaction = claimTransaction;
+        this.db = db;
     }
 
     createClaim = withServiceErrorHandling(
@@ -127,7 +132,7 @@ export class ClaimService implements IClaimService {
     );
 
     createClaimPDF = withServiceErrorHandling(
-        async (claimId: string, userId: string): Promise<ClaimPDFGenerationResponse> => {
+        async (claimId: string, userId: string, companyId: string): Promise<ClaimPDFGenerationResponse> => {
             const pdfData: ClaimDataForPDF = await this.claimTransaction.retrieveDataForPDF(claimId, userId);
             if (!pdfData.company) {
                 throw Boom.notFound("Claim does not have an associated company");
@@ -135,9 +140,14 @@ export class ClaimService implements IClaimService {
             const claimData: ClaimData = restructureClaimDataForPdf(pdfData);
             const claimHtml = buildClaimPdfHtml(claimData);
             const pdfBuffer = await generatePDFfromHTML(claimHtml);
-            const s3 = new S3Service();
-            const uploadResponse = await s3.uploadPdf({ claimId, pdfBuffer });
-            return { url: uploadResponse.url };
+            const s3 = new S3Service(this.db);
+            const timestamp = new Date().toISOString();
+            const key = `claims/${companyId}/${claimId}/${claimId}-${timestamp}.pdf`;
+            const uploadResponseUrl = await s3.getPresignedUploadUrl(key)
+            await s3.uploadBufferToS3(uploadResponseUrl, pdfBuffer)
+            const confirmUploadResponse = await s3.confirmUpload( { key: key, documentId: `${claimId}-${timestamp}.pdf`, documentType: DocumentTypes.CLAIM, userId: userId })
+            return { url: confirmUploadResponse.url };
         }
     );
+
 }

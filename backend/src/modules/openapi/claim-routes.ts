@@ -21,7 +21,7 @@ import { ClaimPDFGenerationResponseSchema } from "../claim/types";
 
 export const createOpenAPIClaimRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const claimTransaction: IClaimTransaction = new ClaimTransaction(db);
-    const claimService: IClaimService = new ClaimService(claimTransaction);
+    const claimService: IClaimService = new ClaimService(claimTransaction, db);
     const claimController: IClaimController = new ClaimController(claimService);
 
     openApi.openapi(createClaimRoute, (ctx) => claimController.createClaim(ctx));

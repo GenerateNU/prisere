@@ -18,6 +18,7 @@ import { preferenceRoutes } from "./modules/preferences/route";
 import { invoiceLineItemsRoutes } from "./modules/invoiceLineItem/route";
 
 import { config } from "dotenv";
+import { s3Routes } from "./modules/s3/route";
 config({ path: ".env" });
 
 export const setUpRoutes = (app: Hono<any>, db: DataSource, apiPrefix: string) => {
@@ -36,6 +37,7 @@ export const setUpRoutes = (app: Hono<any>, db: DataSource, apiPrefix: string) =
     routes.route("/preferences", preferenceRoutes(db));
     routes.route("/claim-locations", claimLocationRoutes(db));
     routes.route("/insurance", insurancePolicyRoutes(db));
+    routes.route("/s3", s3Routes(db));
 
     app.route(apiPrefix, routes);
     process.env.NODE_ENV === "production"

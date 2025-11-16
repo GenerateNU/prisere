@@ -7,6 +7,7 @@ import { IoFilterOutline } from "react-icons/io5";
 import DocumentTable from "./DocumentTable";
 import { useMemo, useState } from "react";
 import BusinessDocumentFilters from "./BusinessDocumentFilters";
+import { confirmBusinessDocumentUpload, getAllDocuments, getBusinessDocumentUploadUrl, uploadToS3 } from "@/api/business-profile";
 
 type SortOrder = "asc" | "desc";
 
@@ -54,8 +55,13 @@ export default function ViewDocuments() {
     const [categoryFilter, setCategoryFilter] = useState("All Categories");
     const [dateFilter, setDateFilter] = useState("All Dates");
     const [showFilters, setShowFilters] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedFile, setFile] = useState<File | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState<string>("");
 
     const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+    
 
     const filteredAndSortedDocuments = useMemo(() => {
         let results = documents;
@@ -106,6 +112,83 @@ export default function ViewDocuments() {
         return sorted;
     }, [documents, searchQuery, categoryFilter, dateFilter, sortOrder]);
 
+    const handleUploadClick = () => {
+        setIsModalOpen(true);
+        setFile(null);
+        setUploadProgress("");
+    };
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length > 0) {
+            setFile(event.target.files[0]);
+        }
+    };
+
+    const handleFileUpload = async () => {
+        if (!selectedFile) {
+            alert("Please select a file to upload.");
+            return;
+        }
+
+        setIsUploading(true);
+        setUploadProgress("Getting upload URL...");
+
+        try {
+            const docResponse = await getAllDocuments();
+            console.log("GOT ALL DOCUMENTS")
+            console.log(docResponse);
+            // Get presigned upload URL from backend
+            const { uploadUrl, key, documentId } = await getBusinessDocumentUploadUrl(
+                selectedFile.name,
+                selectedFile.type
+            );
+
+            // Upload directly to S3
+            setUploadProgress("Uploading to S3...");
+            await uploadToS3(uploadUrl, selectedFile);
+
+            // Confirm upload with backend (optional)
+            setUploadProgress("Confirming upload...");
+            await confirmBusinessDocumentUpload(key, documentId);
+
+            setUploadProgress("Upload complete!");
+            alert("File uploaded successfully!");
+            setIsModalOpen(false);
+            setFile(null);
+            
+            // ?? Refresh your documents list here
+            
+            
+        } catch (error) {
+            console.error("Error uploading file:", error);
+            alert(`Failed to upload the file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            setUploadProgress("");
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    const fileData = () => {
+        if (selectedFile) {
+            return (
+                <div className="mt-4 p-4 bg-gray-50 rounded-md">
+                    <h2 className="font-semibold mb-2">File Details:</h2>
+                    <p className="text-sm">File Name: {selectedFile.name}</p>
+                    {/* <p className="text-sm">File Type: {selectedFile.type}</p> */}
+                    {/* <p className="text-sm">
+                        File Size: {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                    </p> */}
+                </div>
+            );
+        } else {
+            return (
+                <div className="mt-4 text-center text-gray-500">
+                    <p>Choose a file before pressing the Upload button</p>
+                </div>
+            );
+        }
+    };
+
     return (
         <Card>
             <CardHeader className="flex justify-between">
@@ -114,7 +197,7 @@ export default function ViewDocuments() {
                     <p className="text-[14px]"> Upload general business documents below. </p>
                 </div>
                 <div className="flex gap-[6px]">
-                    <Button className="bg-[var(--fuchsia)] text-white text-[14px] h-[34px] w-fit">
+                    <Button className="bg-[var(--fuchsia)] text-white text-[14px] h-[34px] w-fit" onClick={handleUploadClick}>
                         <FiUpload className="test-white" /> Upload Document
                     </Button>
                     <Button
@@ -149,6 +232,53 @@ export default function ViewDocuments() {
                     initialPending={true}
                 />
             </CardContent>
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
+                    <div className="bg-white p-6 rounded-md shadow-md w-[600px] max-w-[90%]">
+                        <h2 className="text-lg font-bold mb-4">Upload Document</h2>
+                        
+                        <label 
+                            htmlFor="file-upload" 
+                            className="inline-block cursor-pointer bg-[var(--fuchsia)] text-white px-4 py-2 rounded-md shadow-md hover:bg-[var(--fuchsia-dark)] disabled:opacity-50"
+                        >
+                            Select File
+                        </label>
+                        <input 
+                            id="file-upload"
+                            type="file"
+                            className="hidden"
+                            onChange={handleFileChange}
+                            disabled={isUploading}
+                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                        />
+                        
+                        {fileData()}
+                        
+                        {uploadProgress && (
+                            <div className="mt-4 p-3 bg-blue-50 text-blue-700 rounded-md text-sm">
+                                {uploadProgress}
+                            </div>
+                        )}
+                        
+                        <div className="flex justify-center gap-4 mt-6">
+                            <Button 
+                                className="bg-gray-300 hover:bg-gray-400" 
+                                onClick={() => setIsModalOpen(false)}
+                                disabled={isUploading}
+                            >
+                                Cancel
+                            </Button>
+                            <Button 
+                                className="bg-[var(--fuchsia)] text-white hover:bg-[var(--fuchsia-dark)] disabled:opacity-50" 
+                                onClick={handleFileUpload}
+                                disabled={!selectedFile || isUploading}
+                            >
+                                {isUploading ? "Uploading..." : "Upload"}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </Card>
     );
 }

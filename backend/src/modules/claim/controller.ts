@@ -66,12 +66,12 @@ export class ClaimController {
     deleteClaim = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<DeleteClaimResponse, 200>> => {
             const id = ctx.req.param("id");
-            const comapnyId = ctx.get("companyId");
+            const companyId = ctx.get("companyId");
 
             if (!validate(id)) {
                 return ctx.json({ error: "Invalid claim ID format" }, 400);
             }
-            const claim = await this.claimService.deleteClaim({ id: id }, comapnyId);
+            const claim = await this.claimService.deleteClaim({ id: id }, companyId);
             return ctx.json(claim, 200);
         }
     );
@@ -139,12 +139,13 @@ export class ClaimController {
         async (ctx: Context): ControllerResponse<TypedResponse<ClaimPDFGenerationResponse, 200>> => {
             const userId = ctx.get("userId");
             const claimId = ctx.req.param("id");
+            const companyId = ctx.req.param("companyId");
 
             if (!validate(claimId)) {
                 return ctx.json({ error: "Invalid claim Id format" }, 400);
             }
 
-            const pdfUrl = await this.claimService.createClaimPDF(claimId, userId);
+            const pdfUrl = await this.claimService.createClaimPDF(claimId, userId, companyId);
 
             return ctx.json(pdfUrl, 200);
         }
