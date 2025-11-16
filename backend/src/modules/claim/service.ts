@@ -1,4 +1,5 @@
 import Boom from "@hapi/boom";
+import { DataSource } from "typeorm";
 import {
     CreateClaimDTO,
     CreateClaimResponse,
@@ -15,14 +16,13 @@ import {
     UpdateClaimStatusDTO,
     UpdateClaimStatusResponse,
 } from "../../types/Claim";
+import { DocumentTypes } from "../../types/S3Types";
 import { withServiceErrorHandling } from "../../utilities/error";
+import { IDocumentTransaction } from "../documents/transaction";
 import { S3Service } from "../s3/service";
 import { IClaimTransaction } from "./transaction";
 import { ClaimData, ClaimDataForPDF, ClaimPDFGenerationResponse } from "./types";
 import { restructureClaimDataForPdf } from "./utilities/pdf-mapper";
-import { DataSource } from "typeorm";
-import { DocumentTypes } from "../../types/S3Types";
-import { IDocumentTransaction } from "../documents/transaction";
 import { generatePdfToBuffer } from "./utilities/react-pdf-handler";
 
 export interface IClaimService {

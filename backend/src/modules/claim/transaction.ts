@@ -24,8 +24,8 @@ import { ClaimStatusInProgressTypes, ClaimStatusType } from "../../types/ClaimSt
 import { logMessageToFile } from "../../utilities/logger";
 import { InvoiceTransaction } from "../invoice/transaction";
 import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
-import { UserTransaction } from "../user/transaction";
 import { PurchaseTransaction } from "../purchase/transaction";
+import { UserTransaction } from "../user/transaction";
 import { ClaimDataForPDF } from "./types";
 
 export interface IClaimTransaction {
