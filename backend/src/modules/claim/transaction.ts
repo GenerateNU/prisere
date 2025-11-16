@@ -26,6 +26,7 @@ import { InvoiceTransaction } from "../invoice/transaction";
 import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
 import { UserTransaction } from "../user/transaction";
 import { PurchaseTransaction } from "../purchase/transaction";
+import { ClaimDataForPDF } from "./types";
 
 export interface IClaimTransaction {
     /**
