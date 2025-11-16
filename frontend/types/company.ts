@@ -19,3 +19,10 @@ export type GetClaimInProgressForCompanyResponse =
 
 export type CompanyTypesEnum =
     paths["/companies"]["get"]["responses"][200]["content"]["application/json"]["companyType"];
+
+export const CompanyTypes = [
+    "LLC",
+    "Sole Proprietorship",
+    "Corporation",
+    "Partnership",
+] as const satisfies CompanyTypesEnum[];
