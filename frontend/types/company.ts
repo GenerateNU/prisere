@@ -16,3 +16,13 @@ export const businessTypes = ["LLC", "Sole Proprietorship", "Corporation", "Part
 
 export type GetClaimInProgressForCompanyResponse =
     paths["/companies/claim-in-progress"]["get"]["responses"][200]["content"]["application/json"];
+
+export type CompanyTypesEnum =
+    paths["/companies"]["get"]["responses"][200]["content"]["application/json"]["companyType"];
+
+export const CompanyTypes = [
+    "LLC",
+    "Sole Proprietorship",
+    "Corporation",
+    "Partnership",
+] as const satisfies CompanyTypesEnum[];

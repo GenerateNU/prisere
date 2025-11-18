@@ -43,11 +43,16 @@
                   "companyId": {
                     "type": "string",
                     "nullable": true
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "pattern": "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$"
                   }
                 },
                 "required": [
                   "firstName",
-                  "lastName"
+                  "lastName",
+                  "phoneNumber"
                 ]
               }
             }
@@ -76,12 +81,16 @@
                     "companyId": {
                       "type": "string",
                       "nullable": true
+                    },
+                    "phoneNumber": {
+                      "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "firstName",
-                    "lastName"
+                    "lastName",
+                    "phoneNumber"
                   ]
                 }
               }
@@ -150,12 +159,16 @@
                     },
                     "email": {
                       "type": "string"
+                    },
+                    "phoneNumber": {
+                      "type": "string"
                     }
                   },
                   "required": [
                     "id",
                     "firstName",
-                    "lastName"
+                    "lastName",
+                    "phoneNumber"
                   ]
                 }
               }
@@ -184,6 +197,116 @@
           },
           "500": {
             "description": "Get User Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Updates a user by the given ID",
+        "description": "Updates the user with the given ID in the database",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstName": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "pattern": "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully updated user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "firstName": {
+                      "type": "string"
+                    },
+                    "lastName": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "companyId": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "phoneNumber": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "firstName",
+                    "lastName",
+                    "phoneNumber"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Update user error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Update user error",
             "content": {
               "application/json": {
                 "schema": {
@@ -296,11 +419,25 @@
                   "businessOwnerFullName": {
                     "type": "string",
                     "minLength": 1
+                  },
+                  "companyType": {
+                    "type": "string",
+                    "enum": [
+                      "LLC",
+                      "Sole Proprietorship",
+                      "Corporation",
+                      "Partnership"
+                    ]
+                  },
+                  "alternateEmail": {
+                    "type": "string",
+                    "format": "email"
                   }
                 },
                 "required": [
                   "name",
-                  "businessOwnerFullName"
+                  "businessOwnerFullName",
+                  "companyType"
                 ]
               }
             }
@@ -370,6 +507,19 @@
                         ]
                       }
                     },
+                    "alternateEmail": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "companyType": {
+                      "type": "string",
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
+                    },
                     "createdAt": {
                       "type": "string"
                     },
@@ -381,6 +531,7 @@
                     "id",
                     "name",
                     "businessOwnerFullName",
+                    "companyType",
                     "createdAt",
                     "updatedAt"
                   ]
@@ -499,6 +650,19 @@
                         ]
                       }
                     },
+                    "alternateEmail": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "companyType": {
+                      "type": "string",
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
+                    },
                     "createdAt": {
                       "type": "string"
                     },
@@ -510,6 +674,7 @@
                     "id",
                     "name",
                     "businessOwnerFullName",
+                    "companyType",
                     "createdAt",
                     "updatedAt"
                   ]
@@ -574,6 +739,19 @@
                   },
                   "businessOwnerFullName": {
                     "type": "string"
+                  },
+                  "alternateEmail": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "companyType": {
+                    "type": "string",
+                    "enum": [
+                      "LLC",
+                      "Sole Proprietorship",
+                      "Corporation",
+                      "Partnership"
+                    ]
                   }
                 }
               }
@@ -644,6 +822,19 @@
                         ]
                       }
                     },
+                    "alternateEmail": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "companyType": {
+                      "type": "string",
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
+                    },
                     "createdAt": {
                       "type": "string"
                     },
@@ -655,6 +846,7 @@
                     "id",
                     "name",
                     "businessOwnerFullName",
+                    "companyType",
                     "createdAt",
                     "updatedAt"
                   ]
@@ -801,6 +993,19 @@
                         ]
                       }
                     },
+                    "alternateEmail": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "companyType": {
+                      "type": "string",
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
+                    },
                     "createdAt": {
                       "type": "string"
                     },
@@ -812,6 +1017,7 @@
                     "id",
                     "name",
                     "businessOwnerFullName",
+                    "companyType",
                     "createdAt",
                     "updatedAt"
                   ]
@@ -958,6 +1164,19 @@
                         ]
                       }
                     },
+                    "alternateEmail": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "companyType": {
+                      "type": "string",
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
+                    },
                     "createdAt": {
                       "type": "string"
                     },
@@ -969,6 +1188,7 @@
                     "id",
                     "name",
                     "businessOwnerFullName",
+                    "companyType",
                     "createdAt",
                     "updatedAt"
                   ]
@@ -1302,6 +1522,62 @@
                         "updatedAt",
                         "createdAt"
                       ]
+                    },
+                    "claimLocations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "alias": {
+                            "type": "string"
+                          },
+                          "country": {
+                            "type": "string"
+                          },
+                          "stateProvince": {
+                            "type": "string"
+                          },
+                          "city": {
+                            "type": "string"
+                          },
+                          "streetAddress": {
+                            "type": "string"
+                          },
+                          "postalCode": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^\\d+$"
+                          },
+                          "county": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "fipsStateCode": {
+                            "type": "number"
+                          },
+                          "fipsCountyCode": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "alias",
+                          "country",
+                          "stateProvince",
+                          "city",
+                          "streetAddress",
+                          "postalCode",
+                          "companyId",
+                          "fipsStateCode",
+                          "fipsCountyCode"
+                        ]
+                      }
                     }
                   },
                   "required": [
@@ -2575,12 +2851,16 @@
                           "companyId": {
                             "type": "string",
                             "nullable": true
+                          },
+                          "phoneNumber": {
+                            "type": "string"
                           }
                         },
                         "required": [
                           "id",
                           "firstName",
-                          "lastName"
+                          "lastName",
+                          "phoneNumber"
                         ]
                       },
                       "femaDisaster": {
@@ -2740,6 +3020,19 @@
                                   ]
                                 }
                               },
+                              "alternateEmail": {
+                                "type": "string",
+                                "format": "email"
+                              },
+                              "companyType": {
+                                "type": "string",
+                                "enum": [
+                                  "LLC",
+                                  "Sole Proprietorship",
+                                  "Corporation",
+                                  "Partnership"
+                                ]
+                              },
                               "createdAt": {
                                 "type": "string"
                               },
@@ -2751,6 +3044,7 @@
                               "id",
                               "name",
                               "businessOwnerFullName",
+                              "companyType",
                               "createdAt",
                               "updatedAt"
                             ]
@@ -3660,37 +3954,46 @@
     },
     "/invoice/bulk": {
       "post": {
-        "summary": "Bulk create or update new invoices",
+        "summary": "Bulk create or update new invoices ",
         "description": "Creates new invoices according to the schema. If there is an invoice in the database with the same quickbooks_id, company_id pairing, then it will overwrite it's attributes",
         "tags": [
           "Invoice"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "quickbooksId": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "exclusiveMinimum": true
-                    },
-                    "totalAmountCents": {
-                      "type": "integer",
-                      "minimum": 0
-                    },
-                    "quickbooksDateCreated": {
-                      "type": "string",
-                      "format": "date-time"
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "quickbooksId": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": true
+                        },
+                        "totalAmountCents": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "quickbooksDateCreated": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "totalAmountCents"
+                      ]
                     }
-                  },
-                  "required": [
-                    "totalAmountCents"
-                  ]
-                }
+                  }
+                },
+                "required": [
+                  "items"
+                ]
               }
             }
           }
@@ -4361,34 +4664,46 @@
           "Purchases"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "quickBooksId": {
-                      "type": "number"
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "quickBooksId": {
+                          "type": "number"
+                        },
+                        "totalAmountCents": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "isRefund": {
+                          "type": "boolean"
+                        },
+                        "quickbooksDateCreated": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "vendor": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "totalAmountCents",
+                        "isRefund"
+                      ]
                     },
-                    "totalAmountCents": {
-                      "type": "number",
-                      "minimum": 0
-                    },
-                    "isRefund": {
-                      "type": "boolean"
-                    },
-                    "quickbooksDateCreated": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  },
-                  "required": [
-                    "totalAmountCents",
-                    "isRefund"
-                  ]
+                    "minItems": 1
+                  }
                 },
-                "minItems": 1
+                "required": [
+                  "items"
+                ]
               }
             }
           }
@@ -4425,6 +4740,9 @@
                         "type": "boolean"
                       },
                       "dateCreated": {
+                        "type": "string"
+                      },
+                      "vendor": {
                         "type": "string"
                       }
                     },
@@ -4471,6 +4789,9 @@
                         "type": "boolean"
                       },
                       "dateCreated": {
+                        "type": "string"
+                      },
+                      "vendor": {
                         "type": "string"
                       }
                     },
@@ -4574,6 +4895,9 @@
                     },
                     "isRefund": {
                       "type": "boolean"
+                    },
+                    "vendor": {
+                      "type": "string"
                     },
                     "dateCreated": {
                       "type": "string"
@@ -4708,7 +5032,10 @@
               "type": "string",
               "enum": [
                 "extraneous",
-                "typical"
+                "typical",
+                "pending",
+                "suggested extraneous",
+                "suggested typical"
               ]
             },
             "required": false,
@@ -4773,6 +5100,9 @@
                       "isRefund": {
                         "type": "boolean"
                       },
+                      "vendor": {
+                        "type": "string"
+                      },
                       "dateCreated": {
                         "type": "string"
                       },
@@ -4809,7 +5139,10 @@
                               "type": "string",
                               "enum": [
                                 "extraneous",
-                                "typical"
+                                "typical",
+                                "pending",
+                                "suggested extraneous",
+                                "suggested typical"
                               ]
                             },
                             "dateCreated": {
@@ -5339,6 +5672,62 @@
                         "updatedAt",
                         "createdAt"
                       ]
+                    },
+                    "claimLocations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "alias": {
+                            "type": "string"
+                          },
+                          "country": {
+                            "type": "string"
+                          },
+                          "stateProvince": {
+                            "type": "string"
+                          },
+                          "city": {
+                            "type": "string"
+                          },
+                          "streetAddress": {
+                            "type": "string"
+                          },
+                          "postalCode": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^\\d+$"
+                          },
+                          "county": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "fipsStateCode": {
+                            "type": "number"
+                          },
+                          "fipsCountyCode": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "alias",
+                          "country",
+                          "stateProvince",
+                          "city",
+                          "streetAddress",
+                          "postalCode",
+                          "companyId",
+                          "fipsStateCode",
+                          "fipsCountyCode"
+                        ]
+                      }
                     }
                   },
                   "required": [
@@ -5569,6 +5958,62 @@
                           "updatedAt",
                           "createdAt"
                         ]
+                      },
+                      "claimLocations": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "alias": {
+                              "type": "string"
+                            },
+                            "country": {
+                              "type": "string"
+                            },
+                            "stateProvince": {
+                              "type": "string"
+                            },
+                            "city": {
+                              "type": "string"
+                            },
+                            "streetAddress": {
+                              "type": "string"
+                            },
+                            "postalCode": {
+                              "type": "string",
+                              "minLength": 1,
+                              "pattern": "^\\d+$"
+                            },
+                            "county": {
+                              "type": "string"
+                            },
+                            "companyId": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "fipsStateCode": {
+                              "type": "number"
+                            },
+                            "fipsCountyCode": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "alias",
+                            "country",
+                            "stateProvince",
+                            "city",
+                            "streetAddress",
+                            "postalCode",
+                            "companyId",
+                            "fipsStateCode",
+                            "fipsCountyCode"
+                          ]
+                        }
                       }
                     },
                     "required": [
@@ -5623,6 +6068,302 @@
       }
     },
     "/claims/{id}": {
+      "get": {
+        "summary": "Get a single claim by ID",
+        "description": "Retrieves a claim with all its relations (selfDisaster, femaDisaster, insurancePolicy, locations)",
+        "tags": [
+          "Claims"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Claim retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ACTIVE",
+                        "FILED",
+                        "IN_PROGRESS_DISASTER",
+                        "IN_PROGRESS_PERSONAL",
+                        "IN_PROGRESS_BUSINESS",
+                        "IN_PROGRESS_INSURANCE",
+                        "IN_PROGRESS_EXPORT"
+                      ],
+                      "default": "ACTIVE"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "femaDisaster": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "disasterNumber": {
+                          "type": "number"
+                        },
+                        "fipsStateCode": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 56
+                        },
+                        "declarationDate": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "incidentBeginDate": {
+                          "type": "string"
+                        },
+                        "incidentEndDate": {
+                          "type": "string"
+                        },
+                        "fipsCountyCode": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1000,
+                          "exclusiveMaximum": true
+                        },
+                        "declarationType": {
+                          "type": "string",
+                          "minLength": 2,
+                          "maxLength": 2
+                        },
+                        "designatedArea": {
+                          "type": "string"
+                        },
+                        "designatedIncidentTypes": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "disasterNumber",
+                        "fipsStateCode",
+                        "declarationDate",
+                        "fipsCountyCode",
+                        "declarationType",
+                        "designatedArea",
+                        "designatedIncidentTypes"
+                      ]
+                    },
+                    "selfDisaster": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 250
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "startDate": {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        "endDate": {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "description",
+                        "startDate",
+                        "createdAt",
+                        "updatedAt"
+                      ]
+                    },
+                    "insurancePolicy": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "policyName": {
+                          "type": "string"
+                        },
+                        "policyHolderFirstName": {
+                          "type": "string"
+                        },
+                        "policyHolderLastName": {
+                          "type": "string"
+                        },
+                        "insuranceCompanyName": {
+                          "type": "string"
+                        },
+                        "policyNumber": {
+                          "type": "string"
+                        },
+                        "insuranceType": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "policyName",
+                        "policyHolderFirstName",
+                        "policyHolderLastName",
+                        "insuranceCompanyName",
+                        "policyNumber",
+                        "insuranceType",
+                        "updatedAt",
+                        "createdAt"
+                      ]
+                    },
+                    "claimLocations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "alias": {
+                            "type": "string"
+                          },
+                          "country": {
+                            "type": "string"
+                          },
+                          "stateProvince": {
+                            "type": "string"
+                          },
+                          "city": {
+                            "type": "string"
+                          },
+                          "streetAddress": {
+                            "type": "string"
+                          },
+                          "postalCode": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^\\d+$"
+                          },
+                          "county": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "fipsStateCode": {
+                            "type": "number"
+                          },
+                          "fipsCountyCode": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "alias",
+                          "country",
+                          "stateProvince",
+                          "city",
+                          "streetAddress",
+                          "postalCode",
+                          "companyId",
+                          "fipsStateCode",
+                          "fipsCountyCode"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "createdAt"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Get Claim Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Claim not found"
+          },
+          "500": {
+            "description": "Get Claim Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "summary": "Deletes a claim from the database",
         "description": "Deletes a claim based off a claim ID",
@@ -5680,6 +6421,333 @@
           },
           "500": {
             "description": "Create Claims Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/claims/{id}/status": {
+      "patch": {
+        "summary": "Update a claim's status",
+        "description": "Updates a claim's status and optionally the insurance policy ID",
+        "tags": [
+          "Claims"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "ACTIVE",
+                      "FILED",
+                      "IN_PROGRESS_DISASTER",
+                      "IN_PROGRESS_PERSONAL",
+                      "IN_PROGRESS_BUSINESS",
+                      "IN_PROGRESS_INSURANCE",
+                      "IN_PROGRESS_EXPORT"
+                    ]
+                  },
+                  "insurancePolicyId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Claim status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ACTIVE",
+                        "FILED",
+                        "IN_PROGRESS_DISASTER",
+                        "IN_PROGRESS_PERSONAL",
+                        "IN_PROGRESS_BUSINESS",
+                        "IN_PROGRESS_INSURANCE",
+                        "IN_PROGRESS_EXPORT"
+                      ],
+                      "default": "ACTIVE"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "femaDisaster": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "disasterNumber": {
+                          "type": "number"
+                        },
+                        "fipsStateCode": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 56
+                        },
+                        "declarationDate": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "incidentBeginDate": {
+                          "type": "string"
+                        },
+                        "incidentEndDate": {
+                          "type": "string"
+                        },
+                        "fipsCountyCode": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1000,
+                          "exclusiveMaximum": true
+                        },
+                        "declarationType": {
+                          "type": "string",
+                          "minLength": 2,
+                          "maxLength": 2
+                        },
+                        "designatedArea": {
+                          "type": "string"
+                        },
+                        "designatedIncidentTypes": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "disasterNumber",
+                        "fipsStateCode",
+                        "declarationDate",
+                        "fipsCountyCode",
+                        "declarationType",
+                        "designatedArea",
+                        "designatedIncidentTypes"
+                      ]
+                    },
+                    "selfDisaster": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 250
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "startDate": {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        "endDate": {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "description",
+                        "startDate",
+                        "createdAt",
+                        "updatedAt"
+                      ]
+                    },
+                    "insurancePolicy": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "policyName": {
+                          "type": "string"
+                        },
+                        "policyHolderFirstName": {
+                          "type": "string"
+                        },
+                        "policyHolderLastName": {
+                          "type": "string"
+                        },
+                        "insuranceCompanyName": {
+                          "type": "string"
+                        },
+                        "policyNumber": {
+                          "type": "string"
+                        },
+                        "insuranceType": {
+                          "type": "string"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "policyName",
+                        "policyHolderFirstName",
+                        "policyHolderLastName",
+                        "insuranceCompanyName",
+                        "policyNumber",
+                        "insuranceType",
+                        "updatedAt",
+                        "createdAt"
+                      ]
+                    },
+                    "claimLocations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "alias": {
+                            "type": "string"
+                          },
+                          "country": {
+                            "type": "string"
+                          },
+                          "stateProvince": {
+                            "type": "string"
+                          },
+                          "city": {
+                            "type": "string"
+                          },
+                          "streetAddress": {
+                            "type": "string"
+                          },
+                          "postalCode": {
+                            "type": "string",
+                            "minLength": 1,
+                            "pattern": "^\\d+$"
+                          },
+                          "county": {
+                            "type": "string"
+                          },
+                          "companyId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "fipsStateCode": {
+                            "type": "number"
+                          },
+                          "fipsCountyCode": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "alias",
+                          "country",
+                          "stateProvince",
+                          "city",
+                          "streetAddress",
+                          "postalCode",
+                          "companyId",
+                          "fipsStateCode",
+                          "fipsCountyCode"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "createdAt"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Update Claim Status Errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Claim not found"
+          },
+          "500": {
+            "description": "Update Claim Status Errors",
             "content": {
               "application/json": {
                 "schema": {
@@ -5949,7 +7017,10 @@
                         "type": "string",
                         "enum": [
                           "extraneous",
-                          "typical"
+                          "typical",
+                          "pending",
+                          "suggested extraneous",
+                          "suggested typical"
                         ]
                       },
                       "dateCreated": {
@@ -6489,7 +7560,7 @@
         }
       }
     },
-    "/notifications/preferences": {
+    "/preferences": {
       "get": {
         "summary": "Get a user's notificiation preferences",
         "tags": [
@@ -6707,44 +7778,53 @@
           "InvoiceLineItem"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "description": {
-                      "type": "string",
-                      "maxLength": 400
-                    },
-                    "invoiceId": {
-                      "type": "string"
-                    },
-                    "quickbooksId": {
-                      "type": "integer",
-                      "minimum": 0,
-                      "exclusiveMinimum": true
-                    },
-                    "amountCents": {
-                      "type": "integer",
-                      "minimum": 0
-                    },
-                    "category": {
-                      "type": "string",
-                      "maxLength": 100
-                    },
-                    "quickbooksDateCreated": {
-                      "type": "string",
-                      "nullable": true,
-                      "format": "date-time"
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "type": "string",
+                          "maxLength": 400
+                        },
+                        "invoiceId": {
+                          "type": "string"
+                        },
+                        "quickbooksId": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": true
+                        },
+                        "amountCents": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "category": {
+                          "type": "string",
+                          "maxLength": 100
+                        },
+                        "quickbooksDateCreated": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "invoiceId",
+                        "amountCents"
+                      ]
                     }
-                  },
-                  "required": [
-                    "invoiceId",
-                    "amountCents"
-                  ]
-                }
+                  }
+                },
+                "required": [
+                  "items"
+                ]
               }
             }
           }
@@ -6986,52 +8066,64 @@
           "Purchase Line Items"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "description": {
-                      "type": "string",
-                      "maxLength": 400
-                    },
-                    "quickBooksId": {
-                      "type": "number"
-                    },
-                    "purchaseId": {
-                      "type": "string",
-                      "minLength": 1
-                    },
-                    "amountCents": {
-                      "type": "number",
-                      "minimum": 0
-                    },
-                    "category": {
-                      "type": "string",
-                      "nullable": true,
-                      "maxLength": 100
-                    },
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "extraneous",
-                        "typical"
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "type": "string",
+                          "maxLength": 400
+                        },
+                        "quickBooksId": {
+                          "type": "number"
+                        },
+                        "purchaseId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "amountCents": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "category": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 100
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "extraneous",
+                            "typical",
+                            "pending",
+                            "suggested extraneous",
+                            "suggested typical"
+                          ]
+                        },
+                        "quickbooksDateCreated": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "purchaseId",
+                        "amountCents",
+                        "type"
                       ]
                     },
-                    "quickbooksDateCreated": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  },
-                  "required": [
-                    "purchaseId",
-                    "amountCents",
-                    "type"
-                  ]
+                    "minItems": 1
+                  }
                 },
-                "minItems": 1
+                "required": [
+                  "items"
+                ]
               }
             }
           }
@@ -7071,7 +8163,10 @@
                         "type": "string",
                         "enum": [
                           "extraneous",
-                          "typical"
+                          "typical",
+                          "pending",
+                          "suggested extraneous",
+                          "suggested typical"
                         ]
                       },
                       "dateCreated": {
@@ -7191,7 +8286,10 @@
                       "type": "string",
                       "enum": [
                         "extraneous",
-                        "typical"
+                        "typical",
+                        "pending",
+                        "suggested extraneous",
+                        "suggested typical"
                       ]
                     },
                     "dateCreated": {
@@ -7312,7 +8410,10 @@
                         "type": "string",
                         "enum": [
                           "extraneous",
-                          "typical"
+                          "typical",
+                          "pending",
+                          "suggested extraneous",
+                          "suggested typical"
                         ]
                       },
                       "dateCreated": {
@@ -7449,7 +8550,10 @@
                       "type": "string",
                       "enum": [
                         "extraneous",
-                        "typical"
+                        "typical",
+                        "pending",
+                        "suggested extraneous",
+                        "suggested typical"
                       ]
                     },
                     "dateCreated": {
@@ -7536,7 +8640,10 @@
                     "type": "string",
                     "enum": [
                       "extraneous",
-                      "typical"
+                      "typical",
+                      "pending",
+                      "suggested extraneous",
+                      "suggested typical"
                     ]
                   }
                 },
@@ -7581,7 +8688,10 @@
                       "type": "string",
                       "enum": [
                         "extraneous",
-                        "typical"
+                        "typical",
+                        "pending",
+                        "suggested extraneous",
+                        "suggested typical"
                       ]
                     },
                     "dateCreated": {
@@ -7774,6 +8884,141 @@
       }
     },
     "/disaster/self/{id}": {
+      "patch": {
+        "summary": "Update a self-reported disaster",
+        "description": "Updates a self-reported disaster's information (name, description, dates)",
+        "tags": [
+          "Self Disaster"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "The ID of the self-reported disaster to update",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            },
+            "required": true,
+            "description": "The ID of the self-reported disaster to update",
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 250
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "startDate": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "endDate": {
+                    "type": "string",
+                    "format": "date"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Self-reported disaster was successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 250
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "startDate": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "endDate": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "format": "date"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "startDate",
+                    "createdAt",
+                    "updatedAt"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Updating Self Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Self-reported disaster not found"
+          },
+          "500": {
+            "description": "Updating Self Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "summary": "Delete a self-reported disaster",
         "description": "Deletes a self-reported disaster by its ID",

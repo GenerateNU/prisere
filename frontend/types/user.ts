@@ -6,6 +6,10 @@ export type CreateUserRequest = paths["/users"]["post"]["requestBody"]["content"
 
 export type CreateUserResponse = paths["/users"]["post"]["responses"];
 
+export type UpdateUserRequest = paths["/users"]["patch"]["requestBody"]["content"]["application/json"];
+
+export type UpdateUserResponse = paths["/users"]["patch"]["responses"][201]["content"]["application/json"];
+
 export type User = paths["/users"]["post"]["responses"][201]["content"]["application/json"];
 
 export type loginInitialState = {

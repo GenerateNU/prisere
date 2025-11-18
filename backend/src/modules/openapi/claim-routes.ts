@@ -1,22 +1,25 @@
 import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
 import { DataSource } from "typeorm";
-import { ClaimTransaction, IClaimTransaction } from "../claim/transaction";
-import { ClaimService, IClaimService } from "../claim/service";
-import { ClaimController, IClaimController } from "../claim/controller";
 import {
     CreateClaimDTOSchema,
     CreateClaimResponseSchema,
     DeleteClaimDTOSchema,
     DeleteClaimResponseSchema,
     DeletePurchaseLineItemResponseSchema,
+    GetClaimByIdResponseSchema,
     GetClaimsByCompanyIdResponseSchema,
     GetPurchaseLineItemsForClaimResponseSchema,
     LinkClaimToLineItemDTOSchema,
     LinkClaimToLineItemResponseSchema,
     LinkClaimToPurchaseDTOSchema,
     LinkClaimToPurchaseResponseSchema,
+    UpdateClaimStatusDTOSchema,
+    UpdateClaimStatusResponseSchema,
 } from "../../types/Claim";
 import { openApiErrorCodes } from "../../utilities/error";
+import { ClaimController, IClaimController } from "../claim/controller";
+import { ClaimService, IClaimService } from "../claim/service";
+import { ClaimTransaction, IClaimTransaction } from "../claim/transaction";
 import { ClaimPDFGenerationResponseSchema } from "../claim/types";
 
 export const createOpenAPIClaimRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
@@ -26,6 +29,8 @@ export const createOpenAPIClaimRoutes = (openApi: OpenAPIHono, db: DataSource): 
 
     openApi.openapi(createClaimRoute, (ctx) => claimController.createClaim(ctx));
     openApi.openapi(getClaimsByCompanyIdRoute, (ctx) => claimController.getClaimByCompanyId(ctx));
+    openApi.openapi(getClaimByIdRoute, (ctx) => claimController.getClaimById(ctx));
+    openApi.openapi(updateClaimStatusRoute, (ctx) => claimController.updateClaimStatus(ctx));
     openApi.openapi(deleteClaimRoute, (ctx) => claimController.deleteClaim(ctx));
     openApi.openapi(createLinkClaimPurchaseLineItemRoute, (ctx) => claimController.linkClaimToLineItem(ctx));
     openApi.openapi(createLinkClaimPurchaseRoute, (ctx) => claimController.linkClaimToPurchaseItems(ctx));
@@ -242,6 +247,63 @@ const generateClaimPDFRoute = createRoute({
             description: "Claim not found",
         },
         ...openApiErrorCodes("PDF generation error"),
+    },
+    tags: ["Claims"],
+});
+
+const getClaimByIdRoute = createRoute({
+    method: "get",
+    path: "/claims/{id}",
+    summary: "Get a single claim by ID",
+    description: "Retrieves a claim with all its relations (selfDisaster, femaDisaster, insurancePolicy, locations)",
+    request: {
+        params: z.object({ id: z.uuid() }),
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: GetClaimByIdResponseSchema,
+                },
+            },
+            description: "Claim retrieved successfully",
+        },
+        404: {
+            description: "Claim not found",
+        },
+        ...openApiErrorCodes("Get Claim Errors"),
+    },
+    tags: ["Claims"],
+});
+
+const updateClaimStatusRoute = createRoute({
+    method: "patch",
+    path: "/claims/{id}/status",
+    summary: "Update a claim's status",
+    description: "Updates a claim's status and optionally the insurance policy ID",
+    request: {
+        params: z.object({ id: z.uuid() }),
+        body: {
+            content: {
+                "application/json": {
+                    schema: UpdateClaimStatusDTOSchema,
+                },
+            },
+        },
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: UpdateClaimStatusResponseSchema,
+                },
+            },
+            description: "Claim status updated successfully",
+        },
+        404: {
+            description: "Claim not found",
+        },
+        ...openApiErrorCodes("Update Claim Status Errors"),
     },
     tags: ["Claims"],
 });

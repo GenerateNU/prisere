@@ -11,8 +11,9 @@ import { IInvoiceTransaction } from "../invoice/transaction";
 import { IInvoiceLineItemTransaction } from "../invoiceLineItem/transaction";
 import { IPurchaseTransaction } from "../purchase/transaction";
 import { IPurchaseLineItemTransaction } from "../purchase-line-item/transaction";
-import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
+import { PurchaseLineItem, PurchaseLineItemType } from "../../entities/PurchaseLineItem";
 import { logMessageToFile } from "../../utilities/logger";
+import { classifyLineItem } from "../../utilities/classification-model/classifyLineItem";
 
 export interface IQuickbooksService {
     generateAuthUrl(args: { userId: string }): Promise<{ state: string; url: string }>;
@@ -229,7 +230,7 @@ export class QuickbooksService implements IQuickbooksService {
             return getInvoiceLineItems(i).map((l) => ({ ...l, invoiceId: dbInvoice.id }));
         });
 
-        await this.invoiceLineItemTransaction.createOrUpdateInvoiceLineItems(lineItemData);
+        await this.invoiceLineItemTransaction.createOrUpdateInvoiceLineItems({ items: lineItemData });
 
         await this.transaction.updateCompanyInvoiceQuickbooksSync({ date: new Date(), companyId: user.companyId });
     });
@@ -267,6 +268,7 @@ export class QuickbooksService implements IQuickbooksService {
                 totalAmountCents: Math.round(p.TotalAmt * 100),
                 quickbooksDateCreated: p.MetaData.CreateTime,
                 quickBooksId: parseInt(p.Id),
+                vendor: p.EntityRef?.type === "Vendor" ? p.EntityRef.DisplayName || p.EntityRef.GivenName : undefined,
             }))
         );
 
@@ -282,7 +284,15 @@ export class QuickbooksService implements IQuickbooksService {
             }));
         });
 
-        await this.purchaseLineItemTransaction.createOrUpdatePurchaseLineItems(lineItemData);
+        const result: PurchaseLineItem[] = await this.purchaseLineItemTransaction.createOrUpdatePurchaseLineItems({
+            items: lineItemData,
+        });
+        for (const val of result) {
+            if (val.type === null) {
+                const type = await classifyLineItem(val);
+                await this.purchaseLineItemTransaction.updatePurchaseLineItemType(val.id, type);
+            }
+        }
 
         await this.transaction.updateCompanyPurchaseQuickbooksSync({ date: new Date(), companyId: user.companyId });
     });

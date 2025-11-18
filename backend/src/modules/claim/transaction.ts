@@ -1,28 +1,32 @@
+import Boom from "@hapi/boom";
+import { plainToClass } from "class-transformer";
 import { DataSource, In } from "typeorm";
 import { Claim } from "../../entities/Claim";
+import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import {
     CreateClaimDTO,
+    CreateClaimResponse,
     DeleteClaimDTO,
     DeleteClaimResponse,
+    DeletePurchaseLineItemResponse,
+    GetClaimByIdResponse,
+    GetClaimInProgressForCompanyResponse,
     GetClaimsByCompanyIdResponse,
-    CreateClaimResponse,
+    GetPurchaseLineItemsForClaimResponse,
     LinkClaimToLineItemDTO,
     LinkClaimToLineItemResponse,
     LinkClaimToPurchaseDTO,
     LinkClaimToPurchaseResponse,
-    GetPurchaseLineItemsForClaimResponse,
-    DeletePurchaseLineItemResponse,
-    GetClaimInProgressForCompanyResponse,
+    UpdateClaimStatusDTO,
+    UpdateClaimStatusResponse,
 } from "../../types/Claim";
-import { logMessageToFile } from "../../utilities/logger";
-import { plainToClass } from "class-transformer";
 import { ClaimStatusInProgressTypes, ClaimStatusType } from "../../types/ClaimStatusType";
-import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
-import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
-import Boom from "@hapi/boom";
-import { ClaimDataForPDF } from "./types";
-import { UserTransaction } from "../user/transaction";
+import { logMessageToFile } from "../../utilities/logger";
 import { InvoiceTransaction } from "../invoice/transaction";
+import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
+import { UserTransaction } from "../user/transaction";
+import { PurchaseTransaction } from "../purchase/transaction";
+import { ClaimDataForPDF } from "./types";
 
 export interface IClaimTransaction {
     /**
@@ -95,6 +99,27 @@ export interface IClaimTransaction {
      * @returns the necessary claim, user, and invoice data to make the pdf
      */
     retrieveDataForPDF(claimId: string, userId: string): Promise<ClaimDataForPDF>;
+
+    /**
+     * Gets a single claim by ID with all relations
+     * @param claimId ID of the claim to fetch
+     * @param companyId ID of the company (for authorization)
+     * @returns Promise resolving to the claim with relations or null if not found
+     */
+    getClaimById(claimId: string, companyId: string): Promise<GetClaimByIdResponse | null>;
+
+    /**
+     * Updates a claim's status and related fields
+     * @param claimId ID of the claim to update
+     * @param payload Update data including status
+     * @param companyId ID of the company (for authorization)
+     * @returns Promise resolving to the updated claim or null if not found
+     */
+    updateClaimStatus(
+        claimId: string,
+        payload: UpdateClaimStatusDTO,
+        companyId: string
+    ): Promise<UpdateClaimStatusResponse | null>;
 }
 
 export class ClaimTransaction implements IClaimTransaction {
@@ -148,6 +173,9 @@ export class ClaimTransaction implements IClaimTransaction {
                           createdAt: result.insurancePolicy.createdAt.toISOString(),
                       }
                     : undefined,
+                claimLocations: result.claimLocations
+                    ?.map((cl) => cl.locationAddress)
+                    .filter((loc) => loc !== null && loc !== undefined),
             };
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
@@ -163,6 +191,9 @@ export class ClaimTransaction implements IClaimTransaction {
                     femaDisaster: true,
                     selfDisaster: true,
                     insurancePolicy: true,
+                    claimLocations: {
+                        locationAddress: true,
+                    },
                 },
             });
 
@@ -196,6 +227,9 @@ export class ClaimTransaction implements IClaimTransaction {
                           createdAt: claim.insurancePolicy.createdAt.toISOString(),
                       }
                     : undefined,
+                claimLocations: claim.claimLocations
+                    ?.map((cl) => cl.locationAddress)
+                    .filter((loc) => loc !== null && loc !== undefined),
             }));
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
@@ -235,56 +269,50 @@ export class ClaimTransaction implements IClaimTransaction {
 
     async linkClaimToPurchaseItems(payload: LinkClaimToPurchaseDTO): Promise<LinkClaimToPurchaseResponse | null> {
         const purchaseLineItemTransaction: IPurchaseLineItemTransaction = new PurchaseLineItemTransaction(this.db);
+        const lineItems = await purchaseLineItemTransaction.getPurchaseLineItemsForPurchase(payload.purchaseId);
+
+        const lineItemIds = lineItems.map((item) => item.id);
+
         try {
-            const lineItems = await purchaseLineItemTransaction.getPurchaseLineItemsForPurchase(payload.purchaseId);
-
-            const lineItemIds = lineItems.map((item) => item.id);
-
             await this.db.manager
                 .createQueryBuilder()
                 .relation(Claim, "purchaseLineItems")
                 .of(payload.claimId)
                 .add(lineItemIds);
-
-            const result = lineItemIds.map((id) => ({
-                claimId: payload.claimId,
-                purchaseLineItemId: id,
-            }));
-
-            return result;
-        } catch (error) {
-            logMessageToFile(`Transaction error: ${error}`);
+        } catch {
             return null;
         }
+
+        const result = lineItemIds.map((id) => ({
+            claimId: payload.claimId,
+            purchaseLineItemId: id,
+        }));
+
+        return result;
     }
 
     async getLinkedPurchaseLineItems(claimId: string): Promise<GetPurchaseLineItemsForClaimResponse | null> {
-        try {
-            const claim = await this.db.manager.findOne(Claim, {
-                where: { id: claimId },
-            });
+        const claim = await this.db.manager.findOne(Claim, {
+            where: { id: claimId },
+        });
 
-            if (!claim) {
-                return null;
-            }
-
-            const lineItems = await this.db.manager
-                .createQueryBuilder(PurchaseLineItem, "lineItem")
-                // this is needed because the claim-line item link is unilateral
-                .innerJoin("claim_purchase_line_items", "bridge", "bridge.purchaseLineItemId = lineItem.id")
-                .where("bridge.claimId = :claimId", { claimId })
-                .getMany();
-
-            return lineItems.map((item) => ({
-                ...item,
-                dateCreated: item.dateCreated.toISOString(),
-                lastUpdated: item.lastUpdated.toISOString(),
-                quickbooksDateCreated: item.quickbooksDateCreated?.toISOString(),
-            }));
-        } catch (error) {
-            logMessageToFile(`Transaction error: ${error}`);
+        if (!claim) {
             return null;
         }
+
+        const lineItems = await this.db.manager
+            .createQueryBuilder(PurchaseLineItem, "lineItem")
+            // this is needed because the claim-line item link is unilateral
+            .innerJoin("claim_purchase_line_items", "bridge", "bridge.purchaseLineItemId = lineItem.id")
+            .where("bridge.claimId = :claimId", { claimId })
+            .getMany();
+
+        return lineItems.map((item) => ({
+            ...item,
+            dateCreated: item.dateCreated.toISOString(),
+            lastUpdated: item.lastUpdated.toISOString(),
+            quickbooksDateCreated: item.quickbooksDateCreated?.toISOString(),
+        }));
     }
 
     async deletePurchaseLineItem(claimId: string, lineItemId: string): Promise<DeletePurchaseLineItemResponse | null> {
@@ -321,6 +349,9 @@ export class ClaimTransaction implements IClaimTransaction {
                 femaDisaster: true,
                 selfDisaster: true,
                 insurancePolicy: true,
+                claimLocations: {
+                    locationAddress: true,
+                },
             },
         });
         if (claim) {
@@ -353,6 +384,9 @@ export class ClaimTransaction implements IClaimTransaction {
                           createdAt: claim.insurancePolicy.createdAt.toISOString(),
                       }
                     : undefined,
+                claimLocations: claim.claimLocations
+                    ?.map((cl) => cl.locationAddress)
+                    .filter((loc): loc is NonNullable<typeof loc> => loc !== null && loc !== undefined),
             };
         }
         return null;
@@ -374,6 +408,7 @@ export class ClaimTransaction implements IClaimTransaction {
 
         const userTransaction = new UserTransaction(this.db);
         const invoiceTransaction = new InvoiceTransaction(this.db);
+        const purchaseTransaction = new PurchaseTransaction(this.db);
         const user = await userTransaction.getUser({ id: userId });
 
         if (!claimInfo) {
@@ -382,6 +417,29 @@ export class ClaimTransaction implements IClaimTransaction {
 
         if (!user) {
             throw Boom.notFound("Could not find the associated user");
+        }
+
+        const revenues = [];
+        const purchases = [];
+
+        for (let i = 0; i < 3; i++) {
+            const year = new Date().getFullYear() - 1 - i;
+
+            const revenue = await invoiceTransaction.sumInvoicesByCompanyAndDateRange({
+                companyId: claimInfo.companyId,
+                startDate: new Date(year, 0, 1).toISOString(),
+                endDate: new Date(year, 11, 31).toISOString(),
+            });
+
+            revenues.push({ year: year, amountCents: revenue });
+
+            const purchaseAmount = await purchaseTransaction.sumPurchasesByCompanyAndDateRange({
+                companyId: claimInfo.companyId,
+                startDate: new Date(year, 0, 1).toISOString(),
+                endDate: new Date(year, 11, 31).toISOString(),
+            });
+
+            purchases.push({ year: year, amountCents: purchaseAmount });
         }
 
         const incomeLastThreeYears = await invoiceTransaction.sumInvoicesByCompanyAndDateRange({
@@ -394,6 +452,150 @@ export class ClaimTransaction implements IClaimTransaction {
             ...claimInfo,
             user: user,
             averageIncome: incomeLastThreeYears / 3,
+            pastRevenues: revenues,
+            pastPurchases: purchases,
         };
+    }
+
+    async getClaimById(claimId: string, companyId: string): Promise<GetClaimByIdResponse | null> {
+        try {
+            const claim = await this.db.getRepository(Claim).findOne({
+                where: { id: claimId, companyId: companyId },
+                relations: {
+                    femaDisaster: true,
+                    selfDisaster: true,
+                    insurancePolicy: true,
+                    claimLocations: {
+                        locationAddress: true,
+                    },
+                },
+            });
+
+            if (!claim) {
+                return null;
+            }
+
+            return {
+                id: claim.id,
+                status: claim.status,
+                createdAt: claim.createdAt.toISOString(),
+                updatedAt: claim.updatedAt?.toISOString(),
+                femaDisaster: claim.femaDisaster
+                    ? {
+                          ...claim.femaDisaster,
+                          declarationDate: claim.femaDisaster.declarationDate.toISOString(),
+                          incidentBeginDate: claim.femaDisaster.incidentBeginDate?.toISOString(),
+                          incidentEndDate: claim.femaDisaster.incidentEndDate?.toISOString(),
+                      }
+                    : undefined,
+                selfDisaster: claim.selfDisaster
+                    ? {
+                          ...claim.selfDisaster,
+                          startDate: claim.selfDisaster.startDate.toISOString(),
+                          endDate: claim.selfDisaster.endDate?.toISOString(),
+                          createdAt: claim.selfDisaster.createdAt.toISOString(),
+                          updatedAt: claim.selfDisaster.updatedAt.toISOString(),
+                      }
+                    : undefined,
+                insurancePolicy: claim.insurancePolicy
+                    ? {
+                          ...claim.insurancePolicy,
+                          updatedAt: claim.insurancePolicy.updatedAt.toISOString(),
+                          createdAt: claim.insurancePolicy.createdAt.toISOString(),
+                      }
+                    : undefined,
+                claimLocations: claim.claimLocations
+                    ?.map((cl) => cl.locationAddress)
+                    .filter((loc) => loc !== null && loc !== undefined),
+            };
+        } catch (error) {
+            logMessageToFile(`Transaction error: ${error}`);
+            return null;
+        }
+    }
+
+    async updateClaimStatus(
+        claimId: string,
+        payload: UpdateClaimStatusDTO,
+        companyId: string
+    ): Promise<UpdateClaimStatusResponse | null> {
+        try {
+            const claim = await this.db.getRepository(Claim).findOne({
+                where: { id: claimId, companyId: companyId },
+                relations: {
+                    femaDisaster: true,
+                    selfDisaster: true,
+                    insurancePolicy: true,
+                },
+            });
+
+            if (!claim) {
+                return null;
+            }
+
+            // Update the status
+            claim.status = payload.status;
+
+            // Update insurance policy if provided
+            if (payload.insurancePolicyId !== undefined) {
+                claim.insurancePolicyId = payload.insurancePolicyId;
+            }
+
+            const updatedClaim = await this.db.manager.save(Claim, claim);
+
+            // Reload to get updated relations
+            const result = await this.db.getRepository(Claim).findOne({
+                where: { id: updatedClaim.id },
+                relations: {
+                    femaDisaster: true,
+                    selfDisaster: true,
+                    insurancePolicy: true,
+                    claimLocations: {
+                        locationAddress: true,
+                    },
+                },
+            });
+
+            if (!result) {
+                return null;
+            }
+
+            return {
+                id: result.id,
+                status: result.status,
+                createdAt: result.createdAt.toISOString(),
+                updatedAt: result.updatedAt?.toISOString(),
+                femaDisaster: result.femaDisaster
+                    ? {
+                          ...result.femaDisaster,
+                          declarationDate: result.femaDisaster.declarationDate.toISOString(),
+                          incidentBeginDate: result.femaDisaster.incidentBeginDate?.toISOString(),
+                          incidentEndDate: result.femaDisaster.incidentEndDate?.toISOString(),
+                      }
+                    : undefined,
+                selfDisaster: result.selfDisaster
+                    ? {
+                          ...result.selfDisaster,
+                          startDate: result.selfDisaster.startDate.toISOString(),
+                          endDate: result.selfDisaster.endDate?.toISOString(),
+                          createdAt: result.selfDisaster.createdAt.toISOString(),
+                          updatedAt: result.selfDisaster.updatedAt.toISOString(),
+                      }
+                    : undefined,
+                insurancePolicy: result.insurancePolicy
+                    ? {
+                          ...result.insurancePolicy,
+                          updatedAt: result.insurancePolicy.updatedAt.toISOString(),
+                          createdAt: result.insurancePolicy.createdAt.toISOString(),
+                      }
+                    : undefined,
+                claimLocations: result.claimLocations
+                    ?.map((cl) => cl.locationAddress)
+                    .filter((loc) => loc !== null && loc !== undefined),
+            };
+        } catch (error) {
+            logMessageToFile(`Transaction error: ${error}`);
+            return null;
+        }
     }
 }

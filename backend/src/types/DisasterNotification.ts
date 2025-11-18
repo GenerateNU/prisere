@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CreateUserResponseSchema } from "../types/User";
+import { CreateUpdateUserResponseSchema } from "../types/User";
 import { LocationAddressSchemaType } from "./Location";
 import { FIPSCounty, FIPSState, incidentTypeString } from "./fema-disaster";
 
@@ -30,7 +30,7 @@ export const DisasterNotificationWithRelations = z.object({
     lastSentAt: z.union([z.date(), z.string()]).optional().nullable(),
     acknowledgedAt: z.union([z.date(), z.string()]).optional().nullable(),
     createdAt: z.union([z.date(), z.string()]),
-    user: CreateUserResponseSchema,
+    user: CreateUpdateUserResponseSchema,
     femaDisaster: z.object({
         id: z.uuid(),
         disasterNumber: z.number(),
@@ -100,6 +100,7 @@ export type MarkAllAsReadResponse = z.infer<typeof MarkAllAsReadResponseSchema>;
 
 export const DisasterEmailMessageSchema = z.object({
     to: z.string(),
+    alt: z.string().optional(),
     from: z.string(),
     subject: z.string(),
     firstName: z.string(),

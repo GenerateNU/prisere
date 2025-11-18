@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { ErrorResponseSchema } from "./Utils";
 
+const phoneRegex = /^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+
 /* Zod schemas for OpenAPI docs */
 export const UserSchema = z.object({
     id: z.string(),
@@ -8,6 +10,7 @@ export const UserSchema = z.object({
     lastName: z.string(),
     email: z.string().email().optional().nullable(),
     companyId: z.string().optional().nullable(),
+    phoneNumber: z.string(),
 });
 
 //POST
@@ -16,22 +19,25 @@ export const createUserRequestBody = z.object({
     lastName: z.string().nonempty(),
     email: z.string().email().optional(),
     companyId: z.string().nullish(),
+    phoneNumber: z.string().regex(phoneRegex, "Invalid phone number format"),
 });
 
 export const CreateUserDTOSchema = z.object({
     id: z.uuid(),
     firstName: z.string().nonempty(),
     lastName: z.string().nonempty(),
-    email: z.string().email().optional(),
+    email: z.email().optional(),
     companyId: z.string().nullish(),
+    phoneNumber: z.string().regex(phoneRegex, "Invalid phone number format"),
 });
 
-export const CreateUserResponseSchema = z.object({
+export const CreateUpdateUserResponseSchema = z.object({
     id: z.string(),
     firstName: z.string(),
     lastName: z.string(),
     email: z.string().optional(),
     companyId: z.string().nullish(),
+    phoneNumber: z.string(),
 });
 
 //GET
@@ -44,6 +50,7 @@ export const GetUserResponseSchema = z.object({
     firstName: z.string(),
     lastName: z.string(),
     email: z.string().optional(),
+    phoneNumber: z.string(),
 });
 
 //GET COMPANY
@@ -55,13 +62,31 @@ export const GetUserCompanyResponseSchema = z.object({
     companyId: z.string(),
     companyName: z.string(),
 });
-export const CreateUserAPIResponseSchema = z.union([CreateUserResponseSchema, ErrorResponseSchema]);
+export const CreateUserAPIResponseSchema = z.union([CreateUpdateUserResponseSchema, ErrorResponseSchema]);
+
+//PATCH
+
+export const UpdateUserRequestBodySchema = z.object({
+    firstName: z.string().nonempty().optional(),
+    lastName: z.string().nonempty().optional(),
+    email: z.email().optional(),
+    phoneNumber: z.string().regex(phoneRegex, "Invalid phone number format").optional(),
+});
+
+export const UpdateUserDTOSchema = UpdateUserRequestBodySchema.extend({
+    id: z.string().nonempty(),
+});
 
 /* Zod types for payload validation */
 export type CreartUserRequest = z.infer<typeof createUserRequestBody>;
 export type CreateUserDTO = z.infer<typeof CreateUserDTOSchema>;
-export type CreateUserResponse = z.infer<typeof CreateUserResponseSchema>;
+export type CreateUserResponse = z.infer<typeof CreateUpdateUserResponseSchema>;
 export type CreateUserAPIResponse = z.infer<typeof CreateUserAPIResponseSchema>;
+
+//PATCH
+export type UpdateUserRequest = z.infer<typeof UpdateUserDTOSchema>;
+export type UpdateUserResponse = z.infer<typeof CreateUpdateUserResponseSchema>;
+export type UpdateUserDTO = z.infer<typeof UpdateUserDTOSchema>;
 
 //GET
 export type GetUserDTO = z.infer<typeof GetUserDTOSchema>;

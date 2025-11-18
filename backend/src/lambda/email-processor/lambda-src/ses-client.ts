@@ -29,11 +29,16 @@ export class SESEmailService {
         const htmlBody = await renderDisasterEmailHTML(message);
         const textBody = await renderDisasterEmailText(message);
 
+        const destination: any = {
+            ToAddresses: [message.to],
+        };
+        if (message.alt) {
+            destination.BccAddresses = [message.alt];
+        }
+
         const command = new SendEmailCommand({
             Source: this.fromEmail,
-            Destination: {
-                ToAddresses: [message.to],
-            },
+            Destination: destination,
             Message: {
                 Subject: {
                     Data: message.subject,

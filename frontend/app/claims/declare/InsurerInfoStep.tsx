@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -11,6 +10,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 type insurerInfo = {
@@ -19,12 +19,12 @@ type insurerInfo = {
 
 type Props = {
     insurerInfo: insurerInfo;
-    setInfo: React.Dispatch<React.SetStateAction<insurerInfo>>;
-    handleStepForward: () => void;
+    setInsurerInfo: (info: Partial<insurerInfo>) => void;
+    handleStepForward: (data: Partial<insurerInfo>) => void;
     handleStepBack: () => void;
 };
 
-export default function InsurerInfoStep({ insurerInfo, setInfo, handleStepForward, handleStepBack }: Props) {
+export default function InsurerInfoStep({ insurerInfo, handleStepForward, handleStepBack }: Props) {
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
     const handleNext = () => {
@@ -33,8 +33,7 @@ export default function InsurerInfoStep({ insurerInfo, setInfo, handleStepForwar
 
     const handleConfirm = () => {
         setShowConfirmDialog(false);
-        setInfo(insurerInfo); // edit later
-        handleStepForward();
+        handleStepForward(insurerInfo);
     };
 
     return (

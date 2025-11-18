@@ -1,5 +1,5 @@
 import { DataSource } from "typeorm";
-import { Company } from "../../entities/Company";
+import { Company, CompanyTypesEnum } from "../../entities/Company";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
 import { seededSelfDisasters, SelfDisasterSeeder } from "../../database/seeds/selfDisaster.seed";
@@ -51,18 +51,21 @@ export const initTestData = async (dataSource: DataSource) => {
             name: "Northeastern Inc.",
             businessOwnerFullName: "joseph aoun",
             lastQuickBooksInvoiceImportTime: new Date("2023-01-01T12:00:00Z"),
+            companyType: CompanyTypesEnum.LLC,
         },
         {
             id: "a1a542da-0abe-4531-9386-8919c9f86369",
             name: "Company Cool",
             businessOwnerFullName: "Cool Guy",
             lastQuickBooksInvoiceImportTime: new Date("2023-02-01T12:00:00Z"),
+            companyType: CompanyTypesEnum.LLC,
         },
         {
             id: "c0ce685a-27d8-4183-90ff-31f294b2c6da",
             name: "Company COMPANY",
             businessOwnerFullName: "MA",
             lastQuickBooksInvoiceImportTime: new Date("2023-02-01T12:00:00Z"),
+            companyType: CompanyTypesEnum.LLC,
         },
     ]);
 

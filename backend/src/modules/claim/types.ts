@@ -2,6 +2,7 @@ import { z } from "zod";
 import { ClaimLocation } from "../../entities/ClaimLocation";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import { User } from "../../entities/User";
+import { CompanyTypesEnum } from "../../entities/Company";
 
 export const ClaimPDFGenerationResponseSchema = z.object({
     url: z.url(),
@@ -19,6 +20,8 @@ export type ClaimDataForPDF = {
     purchaseLineItems?: PurchaseLineItem[];
     user: User;
     averageIncome: number;
+    pastRevenues: { year: number; amountCents: number }[];
+    pastPurchases: { year: number; amountCents: number }[];
 };
 
 export const UserInfoSchema = z.object({
@@ -29,6 +32,8 @@ export const UserInfoSchema = z.object({
 
 const CompanySchema = z.object({
     name: z.string(),
+    businessOwnerFullName: z.string().optional(),
+    companyType: z.enum(CompanyTypesEnum).optional(),
 });
 
 export const FemaDisasterInfoSchema = z.object({
@@ -46,6 +51,7 @@ export const SelfDisasterInfoSchema = z.object({
 });
 
 export const ImpactedLocationSchema = z.object({
+    alias: z.string().optional(),
     country: z.string(),
     stateProvince: z.string(),
     city: z.string(),
@@ -59,6 +65,8 @@ export const RelevantExpenseSchema = z.object({
     description: z.string(),
 });
 
+export const PastExpensesSchema = z.array(z.object({ year: z.number(), amountCents: z.number().gte(0) }));
+
 export const ClaimDataSchema = z.object({
     user: UserInfoSchema,
     company: CompanySchema,
@@ -68,6 +76,8 @@ export const ClaimDataSchema = z.object({
     relevantExpenses: z.array(RelevantExpenseSchema),
     averageIncome: z.number().gte(0),
     dateGenerated: z.date(),
+    pastRevenues: PastExpensesSchema,
+    pastPurchases: PastExpensesSchema,
 });
 
 export type ClaimPDFGenerationResponse = z.infer<typeof ClaimPDFGenerationResponseSchema>;
