@@ -8,8 +8,19 @@ export class SESEmailService {
     private fromEmail: string;
 
     constructor(region: string = "us-east-1", fromEmail: string) {
-    
-        this.client = new SESClient({});
+        const config: any = {
+            region: process.env.AWS_REGION || region,
+        };
+
+        // Provide fake credentials in test environment
+        if (process.env.NODE_ENV === "test") {
+            config.credentials = {
+                accessKeyId: "test-key",
+                secretAccessKey: "test-secret",
+            };
+        }
+
+        this.client = new SESClient(config);
         this.fromEmail = fromEmail;
     }
 

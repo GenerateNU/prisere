@@ -9,6 +9,17 @@ describe("SQSService", () => {
 
     beforeEach(() => {
         sqsService = new SQSService();
+
+        // Mock the send method
+        mockSend = mock(() =>
+            Promise.resolve({
+                Successful: [],
+                Failed: [],
+            })
+        );
+
+        // Replace the client's send method with the mock
+        sqsService["client"].send = mockSend;
     });
 
     const queueUrl = process.env.SQS_QUEUE_URL_PROD
