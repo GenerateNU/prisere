@@ -1,13 +1,13 @@
 "use client";
 
+import RevenueAndExpenses from "@/components/dashboard/RevenueAndExpenses";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { SelectContent, SelectItem, SelectTrigger, SelectValue, Select } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CompanyTypes, GetCompanyLocationsResponse } from "@/types/company";
 import React from "react";
-import RevenueAndExpenses from "@/components/dashboard/RevenueAndExpenses";
-import { GetCompanyLocationsResponse } from "@/types/company";
 import { validateBusinessInfo } from "./utils/validationUtils";
 
 type BusinessInfo = {
@@ -18,35 +18,37 @@ type BusinessInfo = {
 
 type Props = {
     businessInfo: BusinessInfo;
-    setInfo: React.Dispatch<React.SetStateAction<BusinessInfo>>;
-    handleStepForward: () => void;
+    setBusinessInfo: (info: Partial<BusinessInfo>) => void;
+    handleStepForward: (data: Partial<BusinessInfo>) => void;
     handleStepBack: () => void;
     locations: GetCompanyLocationsResponse | undefined;
 };
 
 export default function BusinessInfoStep({
     businessInfo,
-    setInfo,
+    setBusinessInfo,
     handleStepForward,
     handleStepBack,
     locations,
 }: Props) {
-    const businessTypes = ["Type 1", "Type 2", "Type 3"];
-    const [businessName, setBusinessName] = React.useState(businessInfo.businessName);
-    const [businessOwner, setBusinessOwner] = React.useState(businessInfo.businessOwner);
-    const [businessType, setBusinessType] = React.useState(businessInfo.businessType);
     const [errors, setErrors] = React.useState<{ [key: string]: string }>({});
 
-    const validateForm = () => validateBusinessInfo(businessName, businessOwner, businessType, setErrors);
+    const validateForm = () =>
+        validateBusinessInfo(
+            businessInfo.businessName,
+            businessInfo.businessOwner,
+            businessInfo.businessType,
+            setErrors
+        );
 
     const handleProceed = () => {
         if (validateForm()) {
-            setInfo({
-                businessName: businessName.trim(),
-                businessOwner: businessOwner.trim(),
-                businessType: businessType,
-            });
-            handleStepForward();
+            const validatedData = {
+                businessName: businessInfo.businessName.trim(),
+                businessOwner: businessInfo.businessOwner.trim(),
+                businessType: businessInfo.businessType,
+            };
+            handleStepForward(validatedData);
         }
     };
 
@@ -60,9 +62,9 @@ export default function BusinessInfoStep({
                     </Label>
                     <Input
                         className={`h-[58px] rounded-[10px] text-[16px] ${errors.businessName ? "border-red-500" : ""}`}
-                        value={businessName}
+                        value={businessInfo.businessName}
                         onChange={(e) => {
-                            setBusinessName(e.target.value);
+                            setBusinessInfo({ businessName: e.target.value });
                             if (errors.businessName) setErrors({ ...errors, businessName: "" });
                         }}
                     />
@@ -74,9 +76,9 @@ export default function BusinessInfoStep({
                     </Label>
                     <Input
                         className={`h-[58px] rounded-[10px] text-[16px] ${errors.businessOwner ? "border-red-500" : ""}`}
-                        value={businessOwner}
+                        value={businessInfo.businessOwner}
                         onChange={(e) => {
-                            setBusinessOwner(e.target.value);
+                            setBusinessInfo({ businessOwner: e.target.value });
                             if (errors.businessOwner) setErrors({ ...errors, businessOwner: "" });
                         }}
                     />
@@ -84,12 +86,15 @@ export default function BusinessInfoStep({
                 </div>
                 <div className="w-1/2">
                     <Label className="text-[16px]">Business type</Label>
-                    <Select value={businessType} onValueChange={setBusinessType}>
+                    <Select
+                        value={businessInfo.businessType}
+                        onValueChange={(value) => setBusinessInfo({ businessType: value })}
+                    >
                         <SelectTrigger className="w-full h-[58px] rounded-[10px] text-[16px] ">
                             <SelectValue placeholder="Select business type" />
                         </SelectTrigger>
                         <SelectContent>
-                            {businessTypes.map((type) => (
+                            {CompanyTypes.map((type) => (
                                 <SelectItem key={type} value={type} className="text-[16px]">
                                     {type}
                                 </SelectItem>

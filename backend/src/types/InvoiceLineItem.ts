@@ -19,10 +19,9 @@ const InvoiceLineItemSchema = z.object({
     lastUpdated: z.iso.datetime(),
 });
 
-export const CreateOrUpdateInvoiceLineItemsDTOSchema = z.array(
-    InvoiceLineItemSchema.omit({ id: true, dateCreated: true, lastUpdated: true })
-);
-
+export const CreateOrUpdateInvoiceLineItemsDTOSchema = z.object({
+    items: z.array(InvoiceLineItemSchema.omit({ id: true, dateCreated: true, lastUpdated: true })),
+});
 export const CreateOrUpdateInvoiceLineItemsResponseSchema = z.array(InvoiceLineItemSchema);
 
 export const GetInvoiceLineItemDTOSchema = z.object({

@@ -1,16 +1,17 @@
+import { afterEach, beforeAll, describe, expect, test } from "bun:test";
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, afterEach } from "bun:test";
-import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { CreateUserResponseSchema } from "../../types/User";
 import { validate } from "uuid";
+import { CreateUpdateUserResponseSchema } from "../../types/User";
 import { TESTING_PREFIX } from "../../utilities/constants";
+import { startTestApp } from "../setup-tests";
 
 const resetZahra = () => ({
     firstName: "Zahra",
     lastName: "Wibisana",
     email: "zahra.w@gmail.com",
     companyId: null,
+    phoneNumber: "1111111111",
 });
 
 describe("POST users/", () => {
@@ -40,7 +41,7 @@ describe("POST users/", () => {
 
         expect(response.status).toBe(201);
         const responseData = await response.json();
-        const validatedResponse = CreateUserResponseSchema.parse(responseData);
+        const validatedResponse = CreateUpdateUserResponseSchema.parse(responseData);
         expect(validatedResponse).toMatchObject({
             firstName: requestBody.firstName,
             lastName: requestBody.lastName,

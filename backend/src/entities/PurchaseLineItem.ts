@@ -15,6 +15,9 @@ import { LINE_ITEM_CATEGORY_CHARS, LINE_ITEM_DESCRIPTION_CHARS } from "../utilit
 export enum PurchaseLineItemType {
     EXTRANEOUS = "extraneous",
     TYPICAL = "typical",
+    PENDING = "pending",
+    SUG_EX = "suggested extraneous",
+    SUG_TY = "suggested typical",
 }
 
 @Entity("purchase_line_item")

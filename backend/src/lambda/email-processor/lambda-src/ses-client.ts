@@ -1,8 +1,8 @@
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
-// import { buildEmailHtml, buildEmailText } from "./email-template";
-import { DisasterEmailMessage } from "../../../types/DisasterNotification";
-import { buildEmailHtml, buildEmailText } from "./email-template";
+/** @jsxImportSource react */
 
+import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+import { DisasterEmailMessage } from "../../../types/DisasterNotification";
+import { renderDisasterEmailHTML, renderDisasterEmailText } from "../emails/email-template";
 export class SESEmailService {
     private client: SESClient;
     private fromEmail: string;
@@ -25,14 +25,20 @@ export class SESEmailService {
     }
 
     async sendDisasterEmail(message: DisasterEmailMessage): Promise<void> {
-        const htmlBody = buildEmailHtml(message);
-        const textBody = buildEmailText(message);
+        // Render the React Email component to HTML and plain text
+        const htmlBody = await renderDisasterEmailHTML(message);
+        const textBody = await renderDisasterEmailText(message);
+
+        const destination: any = {
+            ToAddresses: [message.to],
+        };
+        if (message.alt) {
+            destination.BccAddresses = [message.alt];
+        }
 
         const command = new SendEmailCommand({
             Source: this.fromEmail,
-            Destination: {
-                ToAddresses: [message.to],
-            },
+            Destination: destination,
             Message: {
                 Subject: {
                     Data: message.subject,

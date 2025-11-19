@@ -9,6 +9,7 @@ interface CategoryLabelProps {
     updateCategory: (category: string, lineItems: string[], removeCategory: boolean) => void;
     lineItemIds: string[];
     editableTags: boolean;
+    hasLineItems?: boolean;
 }
 
 interface CategoryBadgeProps extends CategoryLabelProps {
@@ -22,11 +23,17 @@ interface CreateCategoryProps {
     lineItemIds: string[];
 }
 
-export default function CategoryLabel({ category, updateCategory, lineItemIds, editableTags }: CategoryLabelProps) {
+export default function CategoryLabel({
+    category,
+    updateCategory,
+    lineItemIds,
+    editableTags,
+    hasLineItems = true,
+}: CategoryLabelProps) {
     const categories = category.length > 0 ? category.split(",") : [];
 
     if (editableTags && categories.length === 0) {
-        return <AddCategoryButton />;
+        return <AddCategoryButton disabled={!hasLineItems} />;
     }
 
     return (
@@ -45,12 +52,14 @@ export default function CategoryLabel({ category, updateCategory, lineItemIds, e
         </>
     );
 
-    function AddCategoryButton() {
+    function AddCategoryButton({ disabled }: { disabled: boolean }) {
         const [searchValue, setSearchValue] = useState("");
         return (
             <Popover>
                 <PopoverTrigger asChild>
-                    <button className="text-gray-400 text-sm hover:text-gray-600 underline">+ Add category</button>
+                    <button className="text-gray-400 text-sm hover:text-gray-600 underline" disabled={disabled}>
+                        + Add category
+                    </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[200px] p-4">
                     <div className="space-y-2">

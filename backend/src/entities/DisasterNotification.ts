@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn } from "typeorm";
 import { FemaDisaster } from "./FemaDisaster.js";
-import { NotificationType, NotificationStatus } from "../types/NotificationEnums.js";
+import { NotificationStatus } from "../types/NotificationEnums.js";
 import { User } from "./User.js";
 import type { Relation } from "typeorm";
 import { LocationAddress } from "./LocationAddress.js";
@@ -24,11 +24,11 @@ export class DisasterNotification {
     @JoinColumn({ name: "femaDisasterId" })
     femaDisaster!: Relation<FemaDisaster>;
 
-    @Column({
-        type: "enum",
-        enum: NotificationType,
-    })
-    notificationType!: NotificationType;
+    @Column({ default: true })
+    isWeb!: boolean;
+
+    @Column({ default: true })
+    isEmail!: boolean;
 
     @Column({
         type: "enum",
