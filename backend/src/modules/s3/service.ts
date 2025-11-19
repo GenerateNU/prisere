@@ -339,12 +339,12 @@ export class S3Service implements IS3Service {
             let key: string;
             if (claimId) {
                 // For claim-specific documents
-                key = `claims/${companyId}/${claimId}/${documentId}.pdf`;
+                key = `claims/${companyId}/${claimId}/${documentId}`;
             } else if (documentType === DocumentTypes.GENERAL_BUSINESS) {
                 // For general business documents
-                key = `business-documents/${companyId}/${documentId}${this.getFileExtension(fileName)}`;
+                key = `business-documents/${companyId}/${documentId}`;
             } else {
-                key = `images/${userId}/${documentId}${this.getFileExtension(fileName)}`;
+                key = `images/${userId}/${documentId}`;
             }
 
             // Prepare metadata, we could remove this

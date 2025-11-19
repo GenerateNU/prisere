@@ -45,8 +45,8 @@ export const UploadImageOptionsSchema = z.object({
             format: 'binary',
             description: 'PDF file buffer'
         }),
-    imageType: z.enum(["profile", "other"]).optional().openapi({ description: "Type of image" }),
-    imageId: z.string().optional().openapi({ description: "Optional image ID" }),
+    imageType: z.enum(["profile", "other"]).optional(),
+    imageId: z.string().optional(),
 });
 
 export const GetUploadUrlResponseSchema = z.object({
@@ -66,9 +66,9 @@ export const UploadPdfOptionsSchema = z.object({
             format: 'binary',
             description: 'PDF file buffer'
         }),
-    documentId: z.string().optional().openapi({ description: "Optional document ID" }),
-    originalFilename: z.string().optional().openapi({ description: "Original filename of the PDF" }),
-    documentType: z.enum(["CLAIM", "GENERAL_BUSINESS"]).default(DocumentTypes.GENERAL_BUSINESS).openapi({ description: "Type of document" }),
+    documentId: z.string().optional(),
+    originalFilename: z.string().optional(),
+    documentType: z.enum(["CLAIM", "GENERAL_BUSINESS"]).default(DocumentTypes.GENERAL_BUSINESS),
 });
 
 export const ErrorResponseSchema = z.object({
