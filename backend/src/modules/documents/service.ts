@@ -2,7 +2,7 @@ import Boom from "@hapi/boom";
 import { Document } from "../../entities/Document";
 import { UpsertDocumentDTO } from "../../types/DocumentType";
 import { withServiceErrorHandling } from "../../utilities/error";
-import { DocumentTransaction, IDocumentTransaction } from "./transaction";
+import { IDocumentTransaction } from "./transaction";
 
 export interface IDocumentService {
     upsertDocument(payload: UpsertDocumentDTO): Promise<Document>;

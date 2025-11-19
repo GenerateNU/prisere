@@ -30,15 +30,11 @@ export default function DocumentTable({
     setDateSort,
     initialPending,
 }: DocumentTableProps) {
-    const categories = [
-        "Expenses",
-        "Revenues",
-        "Insurance"
-    ]
+    const categories = ["Expenses", "Revenues", "Insurance"];
     const categoryColors: Record<string, string> = {
-        "Expenses": "bg-[var(--light-fuchsia)] text-[var(--fuchsia)]",
-        "Revenues": "bg-[var(--light-teal)] text-[var(--teal)]",
-        "Insurance": "bg-[var(--gold)] text-[var(--deep-gold)]",
+        Expenses: "bg-[var(--light-fuchsia)] text-[var(--fuchsia)]",
+        Revenues: "bg-[var(--light-teal)] text-[var(--teal)]",
+        Insurance: "bg-[var(--gold)] text-[var(--deep-gold)]",
     };
 
     const handleDateSort = () => {
@@ -77,7 +73,9 @@ export default function DocumentTable({
                                 <TableCell className="border-y text-[12px]">
                                     <CategorySelector
                                         selectedCategory={(doc.category as DocumentCategories | null) ?? ""}
-                                        onCategoryChange={(newCategory) => onCategoryChange(doc.documentId, newCategory)}
+                                        onCategoryChange={(newCategory) =>
+                                            onCategoryChange(doc.documentId, newCategory)
+                                        }
                                         categories={categories}
                                         categoryColors={categoryColors}
                                     />

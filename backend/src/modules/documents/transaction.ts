@@ -2,7 +2,6 @@ import { DataSource } from "typeorm";
 import { Document } from "../../entities/Document";
 import { DocumentCategories, UpsertDocumentDTO } from "../../types/DocumentType";
 
-
 export interface IDocumentTransaction {
     /**
      * Upset a document
@@ -25,9 +24,9 @@ export class DocumentTransaction implements IDocumentTransaction {
 
     async upsertDocument(payload: UpsertDocumentDTO): Promise<Document | null> {
         const repository = this.db.getRepository(Document);
-        
+
         let document = await repository.findOne({ where: { s3DocumentId: payload.s3DocumentId } });
-        
+
         if (document) {
             document.key = payload.key;
             document.downloadUrl = payload.downloadUrl;
@@ -50,14 +49,13 @@ export class DocumentTransaction implements IDocumentTransaction {
                 lastModified: new Date(),
             });
         }
-        
+
         return await repository.save(document);
     }
 
     async deleteDocumentRecord(documentId: string): Promise<void> {
         try {
             await this.db.manager.delete(Document, { id: documentId });
-            console.log(`Successfully deleted document record: ${documentId}`);
         } catch (error) {
             console.error(`Error deleting document record ${documentId}:`, error);
             throw error;
@@ -66,13 +64,8 @@ export class DocumentTransaction implements IDocumentTransaction {
 
     async updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void> {
         try {
-            console.log(`Updating doc ID : ${documentId}. Cat: ${category}`)
             const repository = this.db.getRepository(Document);
-            await repository.update(
-                { id: documentId },
-                { category: category }
-            );
-            console.log(`Successfully updated category for document: ${documentId}`);
+            await repository.update({ id: documentId }, { category: category });
         } catch (error) {
             console.error(`Error updating category for document ${documentId}:`, error);
             throw error;

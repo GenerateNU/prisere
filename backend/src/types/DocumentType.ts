@@ -3,12 +3,10 @@ import { UserSchema } from "./User";
 import { CompanySchema } from "./Company";
 import { ClaimSchemaResponse } from "./Claim";
 
-const documentCategories = ["Expenses", "Revenues", "Insurance"] as const;
-
 export enum DocumentCategories {
     Expenses = "Expenses",
-    Revenues = "Revenues", 
-    Insurance = "Insurance"
+    Revenues = "Revenues",
+    Insurance = "Insurance",
 }
 
 export const DocumentSchema = z.object({
@@ -21,9 +19,8 @@ export const DocumentSchema = z.object({
     lastModified: z.date().optional().nullable(),
     user: UserSchema.optional(),
     company: CompanySchema,
-    claim: ClaimSchemaResponse.optional()
-})
-
+    claim: ClaimSchemaResponse.optional(),
+});
 
 export const UpsertDocumentSchema = z.object({
     key: z.string(),
@@ -35,11 +32,11 @@ export const UpsertDocumentSchema = z.object({
     userId: z.string().optional(),
     companyId: z.string(),
     claimId: z.string().optional(),
-})
+});
 
 export const DocumentResponseSchema = DocumentSchema.extend({
-  createdAt: z.string().optional(),
-  lastModified: z.string().optional().nullable(),
+    createdAt: z.string().optional(),
+    lastModified: z.string().optional().nullable(),
 });
 
 export type Document = z.infer<typeof DocumentSchema>;

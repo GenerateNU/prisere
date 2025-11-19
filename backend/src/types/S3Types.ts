@@ -6,7 +6,7 @@ import { DocumentCategories } from "./DocumentType";
 export enum DocumentTypes {
     CLAIM = "CLAIM",
     GENERAL_BUSINESS = "GENERAL_BUSINESS",
-    IMAGES = "IMAGES"
+    IMAGES = "IMAGES",
 }
 
 export const GetUploadUrlRequestSchema = z.object({
@@ -23,7 +23,7 @@ export const ConfirmUploadRequestSchema = z.object({
     documentType: z.enum(DocumentTypes).default(DocumentTypes.GENERAL_BUSINESS),
     claimId: z.string().optional().describe("Optional claim ID for claim-specific documents"),
     companyId: z.string(),
-    category: z.enum(DocumentCategories).nullable()
+    category: z.enum(DocumentCategories).nullable(),
 });
 
 export const UploadResultSchema = z.object({
@@ -38,13 +38,11 @@ export const UploadResultSchema = z.object({
 // Upload Image
 export const UploadImageOptionsSchema = z.object({
     userId: z.string().nonempty(),
-    imageBuffer: z
-        .array(z.number())
-        .openapi({
-            type: 'string',
-            format: 'binary',
-            description: 'PDF file buffer'
-        }),
+    imageBuffer: z.array(z.number()).openapi({
+        type: "string",
+        format: "binary",
+        description: "PDF file buffer",
+    }),
     imageType: z.enum(["profile", "other"]).optional(),
     imageId: z.string().optional(),
 });
@@ -53,19 +51,17 @@ export const GetUploadUrlResponseSchema = z.object({
     uploadUrl: z.string(),
     key: z.string(),
     documentId: z.string(),
-    expiresIn: z.number()
+    expiresIn: z.number(),
 });
 
 // Upload PDF
 export const UploadPdfOptionsSchema = z.object({
     claimId: z.string().nonempty(),
-    pdfBuffer: z
-        .array(z.number())
-        .openapi({
-            type: 'string',
-            format: 'binary',
-            description: 'PDF file buffer'
-        }),
+    pdfBuffer: z.array(z.number()).openapi({
+        type: "string",
+        format: "binary",
+        description: "PDF file buffer",
+    }),
     documentId: z.string().optional(),
     originalFilename: z.string().optional(),
     documentType: z.enum(["CLAIM", "GENERAL_BUSINESS"]).default(DocumentTypes.GENERAL_BUSINESS),

@@ -3,16 +3,15 @@ import { z } from "zod";
 import { DataSource } from "typeorm";
 import { S3Controller } from "../s3/controller";
 import { S3Service } from "../s3/service";
-import { 
-    ErrorResponseSchema, 
+import {
+    ErrorResponseSchema,
     UploadResultSchema,
-    DocumentTypes, 
+    DocumentTypes,
     ConfirmUploadRequestSchema,
     GetUploadUrlRequestSchema,
     GetUploadUrlResponseSchema,
-    PdfListItemSchema,
     DeleteDocumentResponseSchema,
-    DeleteDocumentRequestSchema
+    DeleteDocumentRequestSchema,
 } from "../../types/S3Types";
 import { DocumentTransaction } from "../documents/transaction";
 import { DocumentCategories, DocumentResponseSchema } from "../../types/DocumentType";
@@ -35,7 +34,8 @@ const getUploadUrlRoute = createRoute({
     method: "post",
     path: "/s3/getUploadUrl",
     summary: "Get presigned URL for document upload",
-    description: "Generates a presigned URL that allows direct upload to S3 from the client. The URL expires after 1 hour.",
+    description:
+        "Generates a presigned URL that allows direct upload to S3 from the client. The URL expires after 1 hour.",
     request: {
         body: {
             content: {
@@ -86,7 +86,8 @@ const confirmUploadRoute = createRoute({
     method: "post",
     path: "/s3/confirmUpload",
     summary: "Confirm document upload completion",
-    description: "Verifies that a file was successfully uploaded to S3 and returns file details including a presigned download URL.",
+    description:
+        "Verifies that a file was successfully uploaded to S3 and returns file details including a presigned download URL.",
     request: {
         body: {
             content: {

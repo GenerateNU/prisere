@@ -13,7 +13,7 @@ import {
     getAllDocuments,
     getBusinessDocumentUploadUrl,
     updateDocumentCategory,
-    uploadToS3
+    uploadToS3,
 } from "@/api/business-profile";
 import { BusinessDocument, DocumentCategories } from "@/types/documents";
 
@@ -42,7 +42,6 @@ export default function ViewDocuments() {
     const [selectedFile, setFile] = useState<File | null>(null);
     const [isUploading, setIsUploading] = useState(false);
     const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
-    const [selectedCategory, setSelectedCategory] = useState("");
     const [uploadCategory, setUploadCategory] = useState<DocumentCategories | "">("");
 
     // Load documents on component mount
@@ -55,21 +54,21 @@ export default function ViewDocuments() {
             setIsLoadingDocuments(true);
             const docs = await getAllDocuments();
 
-            const transformedDocs: BusinessDocument[] = docs.map(doc => {
-            const filename = doc.key.split('/').pop() || doc.id;
-            const extension = '.' + (doc.key.split('.').pop() || 'pdf');
+            const transformedDocs: BusinessDocument[] = docs.map((doc) => {
+                const filename = doc.key.split("/").pop() || doc.id;
+                const extension = "." + (doc.key.split(".").pop() || "pdf");
 
-            return {
-                title: filename.replace(extension, ''),
-                fileType: extension,
-                category: (doc.category as DocumentCategories | null) ?? "",
-                date: doc.lastModified ? new Date(doc.lastModified) : new Date(),
-                key: doc.key,
-                url: doc.downloadUrl,
-                size: 0,
-                documentId: doc.id,
-            };
-        });
+                return {
+                    title: filename.replace(extension, ""),
+                    fileType: extension,
+                    category: (doc.category as DocumentCategories | null) ?? "",
+                    date: doc.lastModified ? new Date(doc.lastModified) : new Date(),
+                    key: doc.key,
+                    url: doc.downloadUrl,
+                    size: 0,
+                    documentId: doc.id,
+                };
+            });
 
             setDocuments(transformedDocs);
         } catch (error) {
@@ -84,9 +83,7 @@ export default function ViewDocuments() {
         let results = documents;
 
         if (searchQuery !== "") {
-            results = results.filter((doc) =>
-                doc.title.toLowerCase().includes(searchQuery.toLowerCase())
-            );
+            results = results.filter((doc) => doc.title.toLowerCase().includes(searchQuery.toLowerCase()));
         }
 
         if (categoryFilter !== "All Categories") {
@@ -108,8 +105,7 @@ export default function ViewDocuments() {
                         return docDate >= weekStart && docDate <= weekEnd;
                     }
                     case "This Month":
-                        return docDate.getMonth() === now.getMonth() &&
-                            docDate.getFullYear() === now.getFullYear();
+                        return docDate.getMonth() === now.getMonth() && docDate.getFullYear() === now.getFullYear();
                     case "This Year":
                         return docDate.getFullYear() === now.getFullYear();
                     default:
@@ -169,32 +165,11 @@ export default function ViewDocuments() {
 
             // Refresh documents list to show the newly uploaded file
             await loadDocuments();
-
         } catch (error) {
             console.error("Error uploading file:", error);
-            alert(`Failed to upload the file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            alert(`Failed to upload the file: ${error instanceof Error ? error.message : "Unknown error"}`);
         } finally {
             setIsUploading(false);
-        }
-    };
-
-    const fileData = () => {
-        if (selectedFile) {
-            return (
-                <div className="mt-4 p-4 bg-gray-50 rounded-md">
-                    <h2 className="font-semibold mb-2">File Details:</h2>
-                    <p className="text-sm">File Name: {selectedFile.name}</p>
-                    <p className="text-sm">
-                        File Size: {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                </div>
-            );
-        } else {
-            return (
-                <div className="mt-4 text-center text-gray-500">
-                    <p>Choose a file before pressing the Upload button</p>
-                </div>
-            );
         }
     };
 
@@ -218,21 +193,18 @@ export default function ViewDocuments() {
         if (!deleteConfirmation.document) return;
 
         try {
-            await deleteBusinessDocument(
-                deleteConfirmation.document.key,
-                deleteConfirmation.document.documentId
-            );
+            await deleteBusinessDocument(deleteConfirmation.document.key, deleteConfirmation.document.documentId);
 
             // Remove from local state
-            setDocuments(prevDocs =>
-                prevDocs.filter(doc => doc.documentId !== deleteConfirmation.document!.documentId)
+            setDocuments((prevDocs) =>
+                prevDocs.filter((doc) => doc.documentId !== deleteConfirmation.document!.documentId)
             );
 
             // Close confirmation dialog
             setDeleteConfirmation({ isOpen: false, document: null });
         } catch (error) {
             console.error("Error deleting document:", error);
-            alert(`Failed to delete document: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            alert(`Failed to delete document: ${error instanceof Error ? error.message : "Unknown error"}`);
         }
     };
 
@@ -283,9 +255,7 @@ export default function ViewDocuments() {
 
                 {/* Show loading state or documents */}
                 {isLoadingDocuments ? (
-                    <div className="text-center py-8 text-gray-500">
-                        Loading documents...
-                    </div>
+                    <div className="text-center py-8 text-gray-500">Loading documents...</div>
                 ) : documents.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
                         No documents found. Upload your first document to get started!
@@ -296,12 +266,12 @@ export default function ViewDocuments() {
                         onCategoryChange={async (documentId, newCategory) => {
                             try {
                                 // Update in backend first then local
-                                console.log("------------")
-                                console.log(documentId, newCategory)
+                                console.log("------------");
+                                console.log(documentId, newCategory);
                                 await updateDocumentCategory(documentId, newCategory as DocumentCategories);
 
-                                setDocuments(prevDocs =>
-                                    prevDocs.map(doc =>
+                                setDocuments((prevDocs) =>
+                                    prevDocs.map((doc) =>
                                         doc.documentId === documentId
                                             ? { ...doc, category: newCategory as DocumentCategories } // ✅ Cast to proper type
                                             : doc
@@ -309,11 +279,13 @@ export default function ViewDocuments() {
                                 );
                             } catch (error) {
                                 console.error("Error updating category:", error);
-                                alert(`Failed to update category: ${error instanceof Error ? error.message : 'Unknown error'}`);
+                                alert(
+                                    `Failed to update category: ${error instanceof Error ? error.message : "Unknown error"}`
+                                );
                             }
                         }}
                         onDownload={(url) => {
-                            window.open(url, '_blank');
+                            window.open(url, "_blank");
                         }}
                         onDelete={handleDeleteClick}
                         onEdit={() => {
@@ -340,9 +312,7 @@ export default function ViewDocuments() {
                         </button>
 
                         {/* Title */}
-                        <h2 className="text-xl font-semibold text-center mb-2">
-                            Upload a File
-                        </h2>
+                        <h2 className="text-xl font-semibold text-center mb-2">Upload a File</h2>
 
                         {/* Subtitle */}
                         <p className="text-sm text-gray-500 text-center mb-6">
@@ -351,7 +321,7 @@ export default function ViewDocuments() {
 
                         {/* Drag and drop area */}
                         <div
-                            onClick={() => !isUploading && document.getElementById('file-upload')?.click()}
+                            onClick={() => !isUploading && document.getElementById("file-upload")?.click()}
                             onDragOver={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -367,14 +337,21 @@ export default function ViewDocuments() {
                         >
                             {/* Upload icon - replace with your own */}
                             <div className="flex justify-center mb-4">
-                                <svg width="55" height="55" viewBox="0 0 55 55" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M25.1875 40.9859V7.46712L16.1588 16.4959L13.4152 13.7136L27.125 0L40.8386 13.7136L38.0951 16.4998L29.0625 7.46712V40.9859H25.1875ZM6.262 54.25C4.47692 54.25 2.98762 53.6533 1.79412 52.4598C0.600624 51.2663 0.00258333 49.7757 0 47.988V38.5989H3.875V47.988C3.875 48.5848 4.123 49.1324 4.619 49.631C5.115 50.1296 5.66137 50.3776 6.25812 50.375H47.9919C48.586 50.375 49.1324 50.127 49.631 49.631C50.1296 49.135 50.3776 48.5873 50.375 47.988V38.5989H54.25V47.988C54.25 49.7731 53.6533 51.2624 52.4598 52.4559C51.2663 53.6494 49.7757 54.2474 47.988 54.25H6.262Z" fill="#2E2F2D" />
+                                <svg
+                                    width="55"
+                                    height="55"
+                                    viewBox="0 0 55 55"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M25.1875 40.9859V7.46712L16.1588 16.4959L13.4152 13.7136L27.125 0L40.8386 13.7136L38.0951 16.4998L29.0625 7.46712V40.9859H25.1875ZM6.262 54.25C4.47692 54.25 2.98762 53.6533 1.79412 52.4598C0.600624 51.2663 0.00258333 49.7757 0 47.988V38.5989H3.875V47.988C3.875 48.5848 4.123 49.1324 4.619 49.631C5.115 50.1296 5.66137 50.3776 6.25812 50.375H47.9919C48.586 50.375 49.1324 50.127 49.631 49.631C50.1296 49.135 50.3776 48.5873 50.375 47.988V38.5989H54.25V47.988C54.25 49.7731 53.6533 51.2624 52.4598 52.4559C51.2663 53.6494 49.7757 54.2474 47.988 54.25H6.262Z"
+                                        fill="#2E2F2D"
+                                    />
                                 </svg>
                             </div>
 
-                            <p className="text-gray-600">
-                                Drop a file or click to browse
-                            </p>
+                            <p className="text-gray-600">Drop a file or click to browse</p>
 
                             <input
                                 id="file-upload"
@@ -436,8 +413,8 @@ export default function ViewDocuments() {
                     <div className="bg-white p-6 rounded-lg shadow-lg w-[400px] max-w-[90%]">
                         <h2 className="text-xl font-semibold mb-4">Delete Document</h2>
                         <p className="text-gray-600 mb-6">
-                            Are you sure you want to delete "{deleteConfirmation.document?.title}"?
-                            This action cannot be undone.
+                            Are you sure you want to delete &quot;{deleteConfirmation.document?.title}&quot;? This
+                            action cannot be undone.
                         </p>
                         <div className="flex justify-end gap-3">
                             <Button

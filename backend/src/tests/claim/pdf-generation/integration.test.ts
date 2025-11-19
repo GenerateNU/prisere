@@ -28,18 +28,19 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
         await initPdfTestData(testAppDataSource);
 
         // Mock getPresignedUploadUrl - PDF gen calls this first
-        getPresignedUploadUrlSpy = spyOn(
-            S3Service.prototype,
-            "getPresignedUploadUrl"
-        ).mockImplementation(async (key: string) => {
-            console.log("Mock: getPresignedUploadUrl called with key:", key);
-            return `https://test-bucket.s3.amazonaws.com/upload/${key}?mock=true`;
-        });
+        getPresignedUploadUrlSpy = spyOn(S3Service.prototype, "getPresignedUploadUrl").mockImplementation(
+            async (key: string) => {
+                console.log("Mock: getPresignedUploadUrl called with key:", key);
+                return `https://test-bucket.s3.amazonaws.com/upload/${key}?mock=true`;
+            }
+        );
 
         // Mock uploadBufferToS3 - PDF gen calls this to upload the buffer
+        /* eslint-disable @typescript-eslint/no-unused-vars */
         const uploadBufferToS3Spy = spyOn(
             S3Service.prototype,
             "uploadBufferToS3"
+            /* eslint-disable @typescript-eslint/no-unused-vars */
         ).mockImplementation(async (uploadUrl: string, buffer: Buffer) => {
             console.log("Mock: uploadBufferToS3 called");
             // Just resolve without actually uploading
@@ -47,10 +48,8 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
         });
 
         // Mock confirmUpload - PDF gen calls this after upload
-        const confirmUploadSpy = spyOn(
-            S3Service.prototype,
-            "confirmUpload"
-        ).mockImplementation(async (options) => {
+        /* eslint-disable @typescript-eslint/no-unused-vars */
+        const confirmUploadSpy = spyOn(S3Service.prototype, "confirmUpload").mockImplementation(async (options) => {
             console.log("Mock: confirmUpload called with key:", options.key);
             return {
                 key: options.key,
@@ -61,19 +60,15 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
         });
 
         // Mock getPresignedDownloadUrl
-        getPresignedDownloadUrlSpy = spyOn(
-            S3Service.prototype,
-            "getPresignedDownloadUrl"
-        ).mockImplementation(async (key: string) => {
-            console.log("Mock: getPresignedDownloadUrl called with key:", key);
-            return `https://test-bucket.s3.amazonaws.com/${key}`;
-        });
+        getPresignedDownloadUrlSpy = spyOn(S3Service.prototype, "getPresignedDownloadUrl").mockImplementation(
+            async (key: string) => {
+                console.log("Mock: getPresignedDownloadUrl called with key:", key);
+                return `https://test-bucket.s3.amazonaws.com/${key}`;
+            }
+        );
 
         // Mock getClaimPdf - checks for existing PDF
-        getClaimPdfSpy = spyOn(
-            S3Service.prototype,
-            "getClaimPdf"
-        ).mockImplementation(async (claimId: string) => {
+        getClaimPdfSpy = spyOn(S3Service.prototype, "getClaimPdf").mockImplementation(async (claimId: string) => {
             console.log("Mock: getClaimPdf called with claimId:", claimId);
             return null; // No existing PDF
         });
@@ -89,17 +84,14 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
     describe("Successful PDF Generation", () => {
         test("GET /claims/{id}/pdf - Successfully generates PDF and returns S3 URL", async () => {
             const claimId = "0174375f-e7c4-4862-bb9f-f58318bb2e7d";
-            
-            const response = await app.request(
-                TESTING_PREFIX + `/claims/${claimId}/pdf`,
-                {
-                    method: "GET",
-                    headers: {
-                        companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                        userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
-                    },
-                }
-            );
+
+            const response = await app.request(TESTING_PREFIX + `/claims/${claimId}/pdf`, {
+                method: "GET",
+                headers: {
+                    companyId: "5667a729-f000-4190-b4ee-7957badca27b",
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
+                },
+            });
 
             // Log error if test fails
             if (response.status !== 200) {
@@ -116,24 +108,22 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
 
         test("GET /claims/{id}/pdf - Creates document record in database", async () => {
             const claimId = "0174375f-e7c4-4862-bb9f-f58318bb2e7d";
-            
-            const response = await app.request(
-                TESTING_PREFIX + `/claims/${claimId}/pdf`,
-                {
-                    method: "GET",
-                    headers: {
-                        companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                        userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
-                    },
-                }
-            );
+
+            const response = await app.request(TESTING_PREFIX + `/claims/${claimId}/pdf`, {
+                method: "GET",
+                headers: {
+                    companyId: "5667a729-f000-4190-b4ee-7957badca27b",
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
+                },
+            });
 
             expect(response.status).toBe(200);
 
             // Verify document was saved to database
             const docRepo = testAppDataSource.getRepository(Document);
+            /* eslint-disable @typescript-eslint/no-unused-vars */
             const savedDoc = await docRepo.findOne({
-                where: { claimId: claimId }
+                where: { claimId: claimId },
             });
 
             // expect(savedDoc).not.toBeNull();
@@ -146,33 +136,27 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
         test("GET /claims/{id}/pdf - Passes correct claim ID", async () => {
             const testClaimId = "2c24c901-38e4-4a35-a1c6-140ce64edf2a";
 
-            const response = await app.request(
-                TESTING_PREFIX + `/claims/${testClaimId}/pdf`,
-                {
-                    method: "GET",
-                    headers: {
-                        companyId: "a1a542da-0abe-4531-9386-8919c9f86369",
-                        userId: "0199e0cc-4e92-702c-9773-071340163ae4",
-                    },
-                }
-            );
+            const response = await app.request(TESTING_PREFIX + `/claims/${testClaimId}/pdf`, {
+                method: "GET",
+                headers: {
+                    companyId: "a1a542da-0abe-4531-9386-8919c9f86369",
+                    userId: "0199e0cc-4e92-702c-9773-071340163ae4",
+                },
+            });
 
             expect(response.status).toBe(200);
-            
+
             const data = await response.json();
             expect(data.url).toBeDefined();
         });
 
         test("GET /claims/{id}/pdf - Returns existing PDF if already generated", async () => {
             const claimId = "0174375f-e7c4-4862-bb9f-f58318bb2e7d";
-            
+
             // Mock getClaimPdf to return an existing PDF on second call
             let callCount = 0;
             getClaimPdfSpy.mockRestore();
-            getClaimPdfSpy = spyOn(
-                S3Service.prototype,
-                "getClaimPdf"
-            ).mockImplementation(async (claimId: string) => {
+            getClaimPdfSpy = spyOn(S3Service.prototype, "getClaimPdf").mockImplementation(async (claimId: string) => {
                 callCount++;
                 if (callCount > 1) {
                     // Return existing PDF
@@ -185,32 +169,26 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
                 }
                 return null;
             });
-            
+
             // First request
-            const response1 = await app.request(
-                TESTING_PREFIX + `/claims/${claimId}/pdf`,
-                {
-                    method: "GET",
-                    headers: {
-                        companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                        userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
-                    },
-                }
-            );
+            const response1 = await app.request(TESTING_PREFIX + `/claims/${claimId}/pdf`, {
+                method: "GET",
+                headers: {
+                    companyId: "5667a729-f000-4190-b4ee-7957badca27b",
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
+                },
+            });
 
             expect(response1.status).toBe(200);
 
             // Second request
-            const response2 = await app.request(
-                TESTING_PREFIX + `/claims/${claimId}/pdf`,
-                {
-                    method: "GET",
-                    headers: {
-                        companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                        userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
-                    },
-                }
-            );
+            const response2 = await app.request(TESTING_PREFIX + `/claims/${claimId}/pdf`, {
+                method: "GET",
+                headers: {
+                    companyId: "5667a729-f000-4190-b4ee-7957badca27b",
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
+                },
+            });
 
             expect(response2.status).toBe(200);
             const data2 = await response2.json();
@@ -220,31 +198,25 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
 
     describe("Issues with claim ID", () => {
         test("GET /claims/{id}/pdf - Claim does not exist", async () => {
-            const response = await app.request(
-                TESTING_PREFIX + "/claims/00000000-0000-0000-0000-000000000000/pdf",
-                {
-                    method: "GET",
-                    headers: {
-                        companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                        userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
-                    },
-                }
-            );
+            const response = await app.request(TESTING_PREFIX + "/claims/00000000-0000-0000-0000-000000000000/pdf", {
+                method: "GET",
+                headers: {
+                    companyId: "5667a729-f000-4190-b4ee-7957badca27b",
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
+                },
+            });
 
             expect(response.status).toBe(404);
         });
 
         test("GET /claims/{id}/pdf - Invalid claim UUID format", async () => {
-            const response = await app.request(
-                TESTING_PREFIX + "/claims/invalid-uuid/pdf",
-                {
-                    method: "GET",
-                    headers: {
-                        companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                        userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
-                    },
-                }
-            );
+            const response = await app.request(TESTING_PREFIX + "/claims/invalid-uuid/pdf", {
+                method: "GET",
+                headers: {
+                    companyId: "5667a729-f000-4190-b4ee-7957badca27b",
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
+                },
+            });
 
             expect(response.status).toBe(400);
         });
@@ -266,16 +238,13 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
         test("GET /claims/{id}/pdf - PDF endpoint returns valid response", async () => {
             const claimId = "0174375f-e7c4-4862-bb9f-f58318bb2e7d";
 
-            const response = await app.request(
-                TESTING_PREFIX + `/claims/${claimId}/pdf`,
-                {
-                    method: "GET",
-                    headers: {
-                        companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                        userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
-                    },
-                }
-            );
+            const response = await app.request(TESTING_PREFIX + `/claims/${claimId}/pdf`, {
+                method: "GET",
+                headers: {
+                    companyId: "5667a729-f000-4190-b4ee-7957badca27b",
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
+                },
+            });
 
             expect(response.status).toBe(200);
             const data = await response.json();
@@ -287,26 +256,22 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
     describe("S3 failure", () => {
         test("GET /claims/{id}/pdf - S3 URL generation fails", async () => {
             getPresignedDownloadUrlSpy.mockRestore();
-            getPresignedDownloadUrlSpy = spyOn(
-                S3Service.prototype,
-                "getPresignedDownloadUrl"
-            ).mockRejectedValue(new Error("S3 failed"));
-
-            const uploadBufferToS3Spy = spyOn(
-                S3Service.prototype,
-                "uploadBufferToS3"
-            ).mockRejectedValue(new Error("S3 failed"));
-
-            const response = await app.request(
-                TESTING_PREFIX + "/claims/0174375f-e7c4-4862-bb9f-f58318bb2e7d/pdf",
-                {
-                    method: "GET",
-                    headers: {
-                        companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                        userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
-                    },
-                }
+            getPresignedDownloadUrlSpy = spyOn(S3Service.prototype, "getPresignedDownloadUrl").mockRejectedValue(
+                new Error("S3 failed")
             );
+
+            /* eslint-disable @typescript-eslint/no-unused-vars */
+            const uploadBufferToS3Spy = spyOn(S3Service.prototype, "uploadBufferToS3").mockRejectedValue(
+                new Error("S3 failed")
+            );
+
+            const response = await app.request(TESTING_PREFIX + "/claims/0174375f-e7c4-4862-bb9f-f58318bb2e7d/pdf", {
+                method: "GET",
+                headers: {
+                    companyId: "5667a729-f000-4190-b4ee-7957badca27b",
+                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
+                },
+            });
 
             expect(response.status).toBe(500);
         });

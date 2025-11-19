@@ -1,9 +1,15 @@
 import { z } from "zod";
 import { ClaimStatusType } from "./ClaimStatusType";
 import { GetAllDisastersDocumentResponseSchema, GetAllDisastersResponseSchema } from "./fema-disaster";
-import { GetSelfDisasterForCompanyResponseSchema, GetSelfDisasterForDocumentResponseSchema } from "../modules/self-disaster/types";
+import {
+    GetSelfDisasterForCompanyResponseSchema,
+    GetSelfDisasterForDocumentResponseSchema,
+} from "../modules/self-disaster/types";
 import { GetPurchaseLineItemResponseSchema } from "../modules/purchase-line-item/types";
-import { SingleInsurancePolicyDocumentResponseSchema, SingleInsurancePolicyResponseSchema } from "../modules/insurance-policy/types";
+import {
+    SingleInsurancePolicyDocumentResponseSchema,
+    SingleInsurancePolicyResponseSchema,
+} from "../modules/insurance-policy/types";
 /* Zod schemas for OpenAPI docs */
 
 /* Claim Schema */
@@ -19,11 +25,11 @@ export const ClaimSchema = z.object({
 });
 
 export const ClaimSchemaResponse = ClaimSchema.extend({
-  femaDisaster: GetAllDisastersDocumentResponseSchema.element.optional(),
-  selfDisaster: GetSelfDisasterForDocumentResponseSchema.optional(),
-  insurancePolicy: SingleInsurancePolicyDocumentResponseSchema.optional(),
-  createdAt: z.string(),
-  lastModified: z.string().optional(),
+    femaDisaster: GetAllDisastersDocumentResponseSchema.element.optional(),
+    selfDisaster: GetSelfDisasterForDocumentResponseSchema.optional(),
+    insurancePolicy: SingleInsurancePolicyDocumentResponseSchema.optional(),
+    createdAt: z.string(),
+    lastModified: z.string().optional(),
 });
 
 // A company might not have a claim in progress

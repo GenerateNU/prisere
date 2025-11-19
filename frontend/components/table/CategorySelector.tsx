@@ -9,23 +9,18 @@ interface CategorySelectorProps {
     categoryColors?: Record<string, string>;
 }
 
-const defaultCategories = [
-    "Expenses",
-    "Revenues",
-    "Insurance"
-];
+const defaultCategories = ["Expenses", "Revenues", "Insurance"];
 
 const defaultCategoryColors: Record<string, string> = {
-    "Expenses": "bg-[var(--light-fuchsia)] text-[var(--fuchsia)]",
-    "Revenues": "bg-[var(--light-teal)] text-[var(--teal)]",
-    "Insurance": "bg-[var(--gold)] text-[var(--deep-gold)]",
+    Expenses: "bg-[var(--light-fuchsia)] text-[var(--fuchsia)]",
+    Revenues: "bg-[var(--light-teal)] text-[var(--teal)]",
+    Insurance: "bg-[var(--gold)] text-[var(--deep-gold)]",
 };
 
-export default function CategorySelector({ 
-    selectedCategory, 
+export default function CategorySelector({
+    selectedCategory,
     onCategoryChange,
     categories = defaultCategories,
-    categoryColors = defaultCategoryColors
 }: CategorySelectorProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -47,9 +42,7 @@ export default function CategorySelector({
         };
     }, [isOpen]);
 
-    const filteredCategories = categories.filter(cat =>
-        cat.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredCategories = categories.filter((cat) => cat.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const handleCategorySelect = (category: string) => {
         onCategoryChange(category);
@@ -71,7 +64,9 @@ export default function CategorySelector({
             >
                 {selectedCategory ? (
                     <div className="flex items-center gap-2 flex-1">
-                        <span className={`px-3 py-1 rounded-md text-sm font-medium ${defaultCategoryColors[selectedCategory] || "bg-gray-100 text-gray-700"}`}>
+                        <span
+                            className={`px-3 py-1 rounded-md text-sm font-medium ${defaultCategoryColors[selectedCategory] || "bg-gray-100 text-gray-700"}`}
+                        >
                             {selectedCategory}
                         </span>
                         <button
@@ -127,7 +122,9 @@ export default function CategorySelector({
                                     </div>
 
                                     {/* Category */}
-                                    <span className={`px-3 py-1 rounded-md text-sm font-medium ${defaultCategoryColors[category] || "bg-gray-100 text-gray-700"}`}>
+                                    <span
+                                        className={`px-3 py-1 rounded-md text-sm font-medium ${defaultCategoryColors[category] || "bg-gray-100 text-gray-700"}`}
+                                    >
                                         {category}
                                     </span>
                                 </div>
@@ -143,7 +140,7 @@ export default function CategorySelector({
                                             }}
                                             className="mt-2 text-purple-600 hover:text-purple-700 font-medium"
                                         >
-                                            Create "{searchQuery}"
+                                            Create &quot;{searchQuery}&quot;
                                         </button>
                                     </div>
                                 ) : (

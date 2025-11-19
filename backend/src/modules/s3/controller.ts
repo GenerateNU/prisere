@@ -1,18 +1,14 @@
 import { Context, TypedResponse } from "hono";
-import { ControllerResponse } from "../../utilities/response";
 import { IS3Service } from "./service";
-import { 
+import {
     ConfirmUploadRequest,
-    DocumentTypes, 
-    ErrorResponse, 
-    GetUploadUrlRequest, 
-    GetUploadUrlResponse, 
-    PdfListItemResponse, 
-    UploadResult 
+    DocumentTypes,
+    ErrorResponse,
+    GetUploadUrlRequest,
+    GetUploadUrlResponse,
+    UploadResult,
 } from "../../types/S3Types";
 import { DocumentCategories, DocumentResponse } from "../../types/DocumentType";
-import { Document } from "../../entities/Document";
-
 
 export interface IS3Controller {
     getUploadUrl(ctx: Context): Promise<TypedResponse<GetUploadUrlResponse | ErrorResponse>>;
@@ -31,8 +27,8 @@ export class S3Controller implements IS3Controller {
             const { key, documentId } = body;
 
             if (!key || !documentId) {
-                const errorResponse: ErrorResponse = { 
-                    error: "Missing required fields: key or documentId" 
+                const errorResponse: ErrorResponse = {
+                    error: "Missing required fields: key or documentId",
                 };
                 return ctx.json(errorResponse, 400);
             }
@@ -43,8 +39,8 @@ export class S3Controller implements IS3Controller {
             return ctx.json({ success: true }, 200);
         } catch (error) {
             console.error("Error deleting document:", error);
-            const errorResponse: ErrorResponse = { 
-                error: "An error occurred while deleting the document." 
+            const errorResponse: ErrorResponse = {
+                error: "An error occurred while deleting the document.",
             };
             return ctx.json(errorResponse, 500);
         }
@@ -55,18 +51,16 @@ export class S3Controller implements IS3Controller {
             const body = await ctx.req.json<GetUploadUrlRequest>();
             const { companyId, fileName, fileType, documentType, claimId } = body;
 
-            console.log(`COMPANY ID: ${companyId}`);
-
             // Make sure the required fields exist
             if (!companyId || !fileName || !fileType || !documentType) {
-                const errorResponse: ErrorResponse = { 
-                    error: "Missing required fields: companyId, fileName, fileType, or documentType" 
+                const errorResponse: ErrorResponse = {
+                    error: "Missing required fields: companyId, fileName, fileType, or documentType",
                 };
                 return ctx.json(errorResponse, 400);
             }
             if (!Object.values(DocumentTypes).includes(documentType)) {
-                const errorResponse: ErrorResponse = { 
-                    error: `Invalid documentType. Must be one of: ${Object.values(DocumentTypes).join(", ")}` 
+                const errorResponse: ErrorResponse = {
+                    error: `Invalid documentType. Must be one of: ${Object.values(DocumentTypes).join(", ")}`,
                 };
                 return ctx.json(errorResponse, 400);
             }
@@ -76,8 +70,8 @@ export class S3Controller implements IS3Controller {
             if (documentType === DocumentTypes.IMAGES) {
                 userId = ctx.get("userId") || ctx.get("user")?.id;
                 if (!userId) {
-                    const errorResponse: ErrorResponse = { 
-                        error: "User authentication required" 
+                    const errorResponse: ErrorResponse = {
+                        error: "User authentication required",
                     };
                     return ctx.json(errorResponse, 401);
                 }
@@ -89,14 +83,14 @@ export class S3Controller implements IS3Controller {
                 documentType,
                 claimId,
                 userId,
-                companyId
+                companyId,
             });
 
             return ctx.json(response, 200);
         } catch (error) {
             console.error("Error generating upload URL:", error);
-            const errorResponse: ErrorResponse = { 
-                error: "An error occurred while generating the upload URL." 
+            const errorResponse: ErrorResponse = {
+                error: "An error occurred while generating the upload URL.",
             };
             return ctx.json(errorResponse, 500);
         }
@@ -107,12 +101,10 @@ export class S3Controller implements IS3Controller {
             const body = await ctx.req.json<ConfirmUploadRequest>();
             const { key, documentId, documentType, claimId, companyId, category } = body;
 
-            console.log(key, documentId, documentType);
-
             // Validate required fields
             if (!key || !documentId || !documentType) {
-                const errorResponse: ErrorResponse = { 
-                    error: "Missing required fields: key, documentId, or documentType" 
+                const errorResponse: ErrorResponse = {
+                    error: "Missing required fields: key, documentId, or documentType",
                 };
                 return ctx.json(errorResponse, 400);
             }
@@ -120,15 +112,15 @@ export class S3Controller implements IS3Controller {
             // Get user ID from context
             const userId = ctx.get("userId") || ctx.get("user")?.id;
             if (!userId) {
-                const errorResponse: ErrorResponse = { 
-                    error: "User authentication required" 
+                const errorResponse: ErrorResponse = {
+                    error: "User authentication required",
                 };
                 return ctx.json(errorResponse, 401);
             }
 
             if (category && !Object.values(DocumentCategories).includes(category as DocumentCategories)) {
-                const errorResponse: ErrorResponse = { 
-                    error: `Invalid category. Must be one of: ${Object.values(DocumentCategories).join(", ")}` 
+                const errorResponse: ErrorResponse = {
+                    error: `Invalid category. Must be one of: ${Object.values(DocumentCategories).join(", ")}`,
                 };
                 return ctx.json(errorResponse, 400);
             }
@@ -141,14 +133,14 @@ export class S3Controller implements IS3Controller {
                 claimId,
                 userId,
                 companyId,
-                category: category as DocumentCategories | undefined
+                category: category as DocumentCategories | undefined,
             });
 
             return ctx.json(response, 200);
         } catch (error) {
             console.error("Error confirming upload:", error);
-            const errorResponse: ErrorResponse = { 
-                error: "An error occurred while confirming the upload." 
+            const errorResponse: ErrorResponse = {
+                error: "An error occurred while confirming the upload.",
             };
             return ctx.json(errorResponse, 500);
         }
@@ -160,32 +152,30 @@ export class S3Controller implements IS3Controller {
             const documentType = ctx.req.query("documentType") as DocumentTypes;
             const userId = ctx.req.query("userId");
 
-            console.log("Query params received:", { companyId, documentType, userId });
-
             if (!companyId) {
-                const errorResponse: ErrorResponse = { 
-                    error: "Missing required query parameter: companyId" 
+                const errorResponse: ErrorResponse = {
+                    error: "Missing required query parameter: companyId",
                 };
                 return ctx.json(errorResponse, 400);
             }
 
             if (!documentType) {
-                const errorResponse: ErrorResponse = { 
-                    error: "Missing required query parameter: documentType" 
+                const errorResponse: ErrorResponse = {
+                    error: "Missing required query parameter: documentType",
                 };
                 return ctx.json(errorResponse, 400);
             }
 
             if (!Object.values(DocumentTypes).includes(documentType)) {
-                const errorResponse: ErrorResponse = { 
-                    error: `Invalid documentType. Must be one of: ${Object.values(DocumentTypes).join(", ")}` 
+                const errorResponse: ErrorResponse = {
+                    error: `Invalid documentType. Must be one of: ${Object.values(DocumentTypes).join(", ")}`,
                 };
                 return ctx.json(errorResponse, 400);
             }
 
             if (documentType === DocumentTypes.IMAGES && !userId) {
-                const errorResponse: ErrorResponse = { 
-                    error: "User authentication required for image documents" 
+                const errorResponse: ErrorResponse = {
+                    error: "User authentication required for image documents",
                 };
                 return ctx.json(errorResponse, 401);
             }
@@ -199,8 +189,8 @@ export class S3Controller implements IS3Controller {
             return ctx.json(documents, 200);
         } catch (error) {
             console.error("Error getting all documents:", error);
-            const errorResponse: ErrorResponse = { 
-                error: "An error occurred while fetching documents." 
+            const errorResponse: ErrorResponse = {
+                error: "An error occurred while fetching documents.",
             };
             return ctx.json(errorResponse, 500);
         }
@@ -211,9 +201,10 @@ export class S3Controller implements IS3Controller {
             const body = await ctx.req.json<{ documentId: string; category: DocumentCategories }>();
             const { documentId, category } = body;
 
-            if (!documentId) { // category is not required because it could be nothing
-                const errorResponse: ErrorResponse = { 
-                    error: "Missing required fields: documentId" 
+            if (!documentId) {
+                // category is not required because it could be nothing
+                const errorResponse: ErrorResponse = {
+                    error: "Missing required fields: documentId",
                 };
                 return ctx.json(errorResponse, 400);
             }
@@ -223,8 +214,8 @@ export class S3Controller implements IS3Controller {
             return ctx.json({ success: true }, 200);
         } catch (error) {
             console.error("Error updating document category:", error);
-            const errorResponse: ErrorResponse = { 
-                error: "An error occurred while updating the document category." 
+            const errorResponse: ErrorResponse = {
+                error: "An error occurred while updating the document category.",
             };
             return ctx.json(errorResponse, 500);
         }

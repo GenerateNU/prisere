@@ -721,7 +721,14 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3067,7 +3074,14 @@ export interface paths {
                          * @default ACTIVE
                          * @enum {string}
                          */
-                        status?: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                        status?:
+                            | "ACTIVE"
+                            | "FILED"
+                            | "IN_PROGRESS_DISASTER"
+                            | "IN_PROGRESS_PERSONAL"
+                            | "IN_PROGRESS_BUSINESS"
+                            | "IN_PROGRESS_INSURANCE"
+                            | "IN_PROGRESS_EXPORT";
                     };
                 };
             };
@@ -3084,7 +3098,14 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3194,7 +3215,14 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -5499,7 +5527,14 @@ export interface paths {
                                  * @default ACTIVE
                                  * @enum {string}
                                  */
-                                status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                                status:
+                                    | "ACTIVE"
+                                    | "FILED"
+                                    | "IN_PROGRESS_DISASTER"
+                                    | "IN_PROGRESS_PERSONAL"
+                                    | "IN_PROGRESS_BUSINESS"
+                                    | "IN_PROGRESS_INSURANCE"
+                                    | "IN_PROGRESS_EXPORT";
                                 createdAt: string;
                                 /** Format: date-time */
                                 updatedAt?: string;

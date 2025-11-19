@@ -20,7 +20,6 @@ import { buildClaimPdfHtml } from "./utilities/claim-pdf-html";
 import { generatePDFfromHTML } from "./utilities/puppeteer-handler";
 import { S3Service } from "../s3/service";
 import { DataSource } from "typeorm";
-import { CompanyService } from "../company/service";
 import { DocumentTypes } from "../../types/S3Types";
 import { IDocumentTransaction } from "../documents/transaction";
 
@@ -146,12 +145,17 @@ export class ClaimService implements IClaimService {
             const s3 = new S3Service(this.db, this.documentTransaction);
             const timestamp = new Date().toISOString();
             const key = `claims/${companyId}/${claimId}/${claimId}-${timestamp}`;
-            const uploadResponseUrl = await s3.getPresignedUploadUrl(key)
-            await s3.uploadBufferToS3(uploadResponseUrl, pdfBuffer)
-            const confirmUploadResponse = await s3.confirmUpload( { key: key, documentId: `${claimId}-${timestamp}`, documentType: DocumentTypes.CLAIM, 
-                claimId: claimId, userId: userId, companyId: companyId })
+            const uploadResponseUrl = await s3.getPresignedUploadUrl(key);
+            await s3.uploadBufferToS3(uploadResponseUrl, pdfBuffer);
+            const confirmUploadResponse = await s3.confirmUpload({
+                key: key,
+                documentId: `${claimId}-${timestamp}`,
+                documentType: DocumentTypes.CLAIM,
+                claimId: claimId,
+                userId: userId,
+                companyId: companyId,
+            });
             return { url: confirmUploadResponse.url };
         }
     );
-
 }

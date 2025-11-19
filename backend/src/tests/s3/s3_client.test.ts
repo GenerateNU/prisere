@@ -3,12 +3,12 @@ import { DataSource } from "typeorm";
 import { S3Service } from "../../modules/s3/service";
 import { startTestApp } from "../setup-tests";
 import { SeederFactoryManager } from "typeorm-extension";
-import { 
-    PutObjectCommand, 
-    ListObjectsV2Command, 
-    HeadObjectCommand, 
+import {
+    PutObjectCommand,
+    ListObjectsV2Command,
+    HeadObjectCommand,
     GetObjectCommand,
-    DeleteObjectCommand 
+    DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import CompanySeeder from "../../database/seeds/company.seed";
 import UserSeeder from "../../database/seeds/user.seed";
@@ -30,7 +30,7 @@ describe("S3 Service - Document Management", () => {
     beforeEach(async () => {
         const testAppData = await startTestApp();
         dataSource = testAppData.dataSource;
-        
+
         documentTransaction = new DocumentTransaction(dataSource);
         s3Service = new S3Service(dataSource, documentTransaction);
 
@@ -49,7 +49,7 @@ describe("S3 Service - Document Management", () => {
                             Key: "business-documents/test-company-id/test-doc.pdf",
                             Size: 1000,
                             LastModified: new Date(),
-                        }
+                        },
                     ],
                 });
             }
@@ -126,7 +126,6 @@ describe("S3 Service - Document Management", () => {
         test("should confirm upload and create document record", async () => {
             const key = `business-documents/${testCompany.id}/test-doc.pdf`;
             const documentIdS3 = "test-doc";
-            const docId = 'a81bc81b-dead-4e5d-abff-90865d1e13b1';
 
             const result = await s3Service.confirmUpload({
                 key,
@@ -145,9 +144,9 @@ describe("S3 Service - Document Management", () => {
             // Verify document was saved to database
             const docRepo = dataSource.getRepository(Document);
             const savedDoc = await docRepo.findOne({
-                where: { companyId: testCompany.id }
+                where: { companyId: testCompany.id },
             });
-            
+
             expect(savedDoc).toBeDefined();
             // expect(savedDoc?.category).toBe(DocumentCategories.Expenses);
             // expect(savedDoc?.companyId).toBe(testCompany.id);
@@ -170,9 +169,9 @@ describe("S3 Service - Document Management", () => {
             // Verify document was saved without category
             const docRepo = dataSource.getRepository(Document);
             const savedDoc = await docRepo.findOne({
-                where: { s3DocumentId: documentId }
+                where: { s3DocumentId: documentId },
             });
-            
+
             expect(savedDoc).toBeDefined();
             expect(savedDoc?.category).toBeUndefined();
         });
@@ -199,18 +198,15 @@ describe("S3 Service - Document Management", () => {
                 category: DocumentCategories.Revenues,
             });
 
-            const result = await s3Service.getAllDocuments(
-                DocumentTypes.GENERAL_BUSINESS,
-                testCompany.id
-            );
+            const result = await s3Service.getAllDocuments(DocumentTypes.GENERAL_BUSINESS, testCompany.id);
 
             expect(result).toBeDefined();
             expect(result.length).toBeGreaterThanOrEqual(2);
-            
-            const doc1 = result.find(d => d.s3DocumentId === "doc1");
+
+            const doc1 = result.find((d) => d.s3DocumentId === "doc1");
             expect(doc1?.category).toBe(DocumentCategories.Expenses);
-            
-            const doc2 = result.find(d => d.s3DocumentId === "doc2");
+
+            const doc2 = result.find((d) => d.s3DocumentId === "doc2");
             expect(doc2?.category).toBe(DocumentCategories.Revenues);
         });
 
@@ -221,10 +217,7 @@ describe("S3 Service - Document Management", () => {
                 businessOwnerFullName: "Test Owner",
             });
 
-            const result = await s3Service.getAllDocuments(
-                DocumentTypes.GENERAL_BUSINESS,
-                newCompany.id
-            );
+            const result = await s3Service.getAllDocuments(DocumentTypes.GENERAL_BUSINESS, newCompany.id);
 
             expect(result).toBeDefined();
             expect(result.length).toBe(0);
@@ -243,15 +236,12 @@ describe("S3 Service - Document Management", () => {
                 category: DocumentCategories.Expenses,
             });
 
-            await s3Service.updateDocumentCategory(
-                doc!.id,
-                DocumentCategories.Revenues
-            );
+            await s3Service.updateDocumentCategory(doc!.id, DocumentCategories.Revenues);
 
             // Verify update
             const docRepo = dataSource.getRepository(Document);
             const updated = await docRepo.findOne({ where: { id: doc!.id } });
-            
+
             expect(updated?.category).toBe(DocumentCategories.Revenues);
         });
     });
@@ -275,15 +265,13 @@ describe("S3 Service - Document Management", () => {
 
             // Verify S3 delete was called
             expect(mockSend).toHaveBeenCalled();
-            const deleteCall = mockSend.mock.calls.find(
-                (call) => call[0] instanceof DeleteObjectCommand
-            );
+            const deleteCall = mockSend.mock.calls.find((call) => call[0] instanceof DeleteObjectCommand);
             expect(deleteCall).toBeDefined();
 
             // Verify database deletion
             const docRepo = dataSource.getRepository(Document);
             const deleted = await docRepo.findOne({
-                where: { id: testCompany.id }
+                where: { id: testCompany.id },
             });
             expect(deleted).toBeNull();
         });
@@ -292,9 +280,9 @@ describe("S3 Service - Document Management", () => {
     describe("getPresignedDownloadUrl", () => {
         test("should generate presigned download URL", async () => {
             const key = "business-documents/test-company/test.pdf";
-            
+
             const url = await s3Service.getPresignedDownloadUrl(key);
-            
+
             expect(url).toBeDefined();
             expect(typeof url).toBe("string");
         });
@@ -302,9 +290,9 @@ describe("S3 Service - Document Management", () => {
         test("should generate URL with custom expiry", async () => {
             const key = "business-documents/test-company/test.pdf";
             const customExpiry = 7200; // 2 hours
-            
+
             const url = await s3Service.getPresignedDownloadUrl(key, customExpiry);
-            
+
             expect(url).toBeDefined();
         });
     });

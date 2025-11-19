@@ -19,10 +19,10 @@ export class Document {
     @Column()
     s3DocumentId!: string;
 
-    @Column({ 
+    @Column({
         type: "enum",
         enum: DocumentCategories,
-        nullable: true 
+        nullable: true,
     })
     category?: DocumentCategories;
 
@@ -46,7 +46,7 @@ export class Document {
     @JoinColumn({ name: "companyId" })
     company!: Relation<Company>;
 
-    @Column({ name: "claimId", nullable: true})
+    @Column({ name: "claimId", nullable: true })
     claimId?: string;
 
     @OneToOne(() => Claim)

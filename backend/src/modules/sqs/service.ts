@@ -15,26 +15,25 @@ export interface ISQSService {
 
 export class SQSService {
     private client: SQSClient;
-    // private SQS_QUEUE_URL = process.env.SQS_QUEUE_URL_PROD;
-    private SQS_QUEUE_URL = 'https://sqs.us-east-1.amazonaws.com/478867930449/prisere-disaster-notifications-queue-prod';
+    private SQS_QUEUE_URL = process.env.SQS_QUEUE_URL_PROD;
 
     constructor() {
-        // const config: any = {
-        //     region: process.env.AWS_REGION || "us-east-1",
-        // };
+        const config: any = {
+            region: process.env.AWS_REGION || "us-east-1",
+        };
 
         // Provide fake credentials in test environment
-        // if (process.env.NODE_ENV === "test") {
-        //     config.credentials = {
-        //         accessKeyId: "test-key",
-        //         secretAccessKey: "test-secret",
-        //     };
-        // }
+        if (process.env.NODE_ENV === "test") {
+            config.credentials = {
+                accessKeyId: "test-key",
+                secretAccessKey: "test-secret",
+            };
+        }
 
-        // this.client = new SQSClient();
+        this.client = new SQSClient(config);
         // Comment out the client creation above, and uncomment this to test locally:
         // AWS access and secret key from .env will automatically be used instead of test creds then
-        this.client = new SQSClient({}); // <- Uncomment this to test locally
+        // this.client = new SQSClient({}); // <- Uncomment this to test locally
     }
 
     async sendMessage(message: DisasterEmailMessage): Promise<void> {

@@ -7,18 +7,14 @@ import {
     ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import sharp from "sharp";
 import { createHash } from "crypto";
-import { DocumentTypes, GetUploadUrlResponse, PdfListItem, UploadImageOptions, UploadPdfOptions, UploadResult } from "../../types/S3Types";
+import { DocumentTypes, GetUploadUrlResponse, PdfListItem, UploadResult } from "../../types/S3Types";
 import { logMessageToFile } from "../../utilities/logger";
-import { DataSource, getRepository } from "typeorm";
-import { array, string, uuidv4 } from "zod";
-import { DocumentTransaction, IDocumentTransaction } from "../documents/transaction";
+import { DataSource } from "typeorm";
 import { DocumentCategories } from "../../types/DocumentType";
 import { Document } from "../../entities/Document";
 
 const S3_BUCKET_NAME = process.env.OBJECTS_STORAGE_BUCKET_NAME;
-const IMAGE_QUALITY = 85; // Compress the image at 85% quality
 const PRESIGNED_URL_EXPIRY = 3600; // 1 hour
 
 export interface IS3Service {
@@ -51,8 +47,8 @@ export interface IS3Service {
      * metadata: optional - custom metadata to attach to the uploaded object
      */
     getPresignedUploadUrl(
-        key: string, 
-        contentType?: string, 
+        key: string,
+        contentType?: string,
         expiresIn?: number,
         metadata?: Record<string, string>
     ): Promise<string>;
@@ -81,12 +77,9 @@ export interface IS3Service {
         category?: DocumentCategories;
     }): Promise<UploadResult>;
 
-    uploadToS3(
-        uploadUrl: string,
-        file: File
-    ): Promise<void>;
+    uploadToS3(uploadUrl: string, file: File): Promise<void>;
 
-    getAllDocuments( documentType: DocumentTypes, companyId?: string, userId?: string): Promise<Document[] | null>;
+    getAllDocuments(documentType: DocumentTypes, companyId?: string, userId?: string): Promise<Document[] | null>;
 
     updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void>;
 }
@@ -163,59 +156,58 @@ export class S3Service implements IS3Service {
     }
 
     async getAllDocuments(documentType: DocumentTypes, companyId?: string, userId?: string): Promise<Document[]> {
-    try {
-        const repository = this.db.getRepository(Document);
-        
-        // Query documents from database based on type
-        let dbDocuments: Document[];
-        
-        if (documentType === DocumentTypes.GENERAL_BUSINESS) {
-            dbDocuments = await repository.find({
-                where: { companyId: companyId },
-                relations: ['user', 'company', 'claim'], // Include relations if needed
-            });
-        } else if (documentType === DocumentTypes.IMAGES) {
-            dbDocuments = await repository.find({
-                where: { userId: userId },
-                relations: ['user', 'company'],
-            });
-        } else if (documentType === DocumentTypes.CLAIM) {
-            dbDocuments = await repository.find({
-                where: { 
-                    companyId: companyId
-                },
-                relations: ['user', 'company', 'claim'],
-            });
-        } else {
-            throw new Error(`Unsupported document type: ${documentType}`);
+        try {
+            const repository = this.db.getRepository(Document);
+
+            // Query documents from database based on type
+            let dbDocuments: Document[];
+
+            if (documentType === DocumentTypes.GENERAL_BUSINESS) {
+                dbDocuments = await repository.find({
+                    where: { companyId: companyId },
+                    relations: ["user", "company", "claim"],
+                });
+            } else if (documentType === DocumentTypes.IMAGES) {
+                dbDocuments = await repository.find({
+                    where: { userId: userId },
+                    relations: ["user", "company"],
+                });
+            } else if (documentType === DocumentTypes.CLAIM) {
+                dbDocuments = await repository.find({
+                    where: {
+                        companyId: companyId,
+                    },
+                    relations: ["user", "company", "claim"],
+                });
+            } else {
+                throw new Error(`Unsupported document type: ${documentType}`);
+            }
+
+            if (dbDocuments.length === 0) {
+                logMessageToFile(`No documents found for type ${documentType}`);
+                return [];
+            }
+
+            // Enrich with fresh presigned URLs from S3
+            const enrichedDocuments = await Promise.all(
+                dbDocuments.map(async (doc) => {
+                    try {
+                        // Generate fresh presigned URL
+                        doc.downloadUrl = await this.getPresignedDownloadUrl(doc.key);
+                    } catch (error) {
+                        console.error(`Error generating URL for ${doc.key}:`, error);
+                        // Keep existing URL or set to empty string
+                    }
+                    return doc;
+                })
+            );
+
+            return enrichedDocuments;
+        } catch (error) {
+            console.error(`Error getting documents for type ${documentType}:`, error);
+            throw error;
         }
-
-        if (dbDocuments.length === 0) {
-            console.log(`No documents found for type ${documentType}`);
-            return [];
-        }
-
-        // Enrich with fresh presigned URLs from S3
-        const enrichedDocuments = await Promise.all(
-            dbDocuments.map(async (doc) => {
-                try {
-                    // Generate fresh presigned URL
-                    doc.downloadUrl = await this.getPresignedDownloadUrl(doc.key);
-                } catch (error) {
-                    console.error(`Error generating URL for ${doc.key}:`, error);
-                    // Keep existing URL or set to empty string
-                }
-                return doc;
-            })
-        );
-
-        console.log(`Found ${enrichedDocuments.length} documents for type ${documentType}`);
-        return enrichedDocuments;
-    } catch (error) {
-        console.error(`Error getting documents for type ${documentType}:`, error);
-        throw error;
     }
-}
 
     async deleteObject(key: string, documentId: string): Promise<void> {
         try {
@@ -225,7 +217,6 @@ export class S3Service implements IS3Service {
             });
 
             await this.client.send(command);
-            console.log(`Successfully deleted object: ${key}`);
             // Delete from database
             await this.documentTransaction.deleteDocumentRecord(documentId);
         } catch (error) {
@@ -247,7 +238,7 @@ export class S3Service implements IS3Service {
             const response = await this.client.send(command);
 
             if (!response.Contents || response.Contents.length === 0) {
-                console.log(`No PDF found for claim ${claimId}`);
+                logMessageToFile(`No PDF found for claim ${claimId}`);
                 return null;
             }
 
@@ -360,12 +351,7 @@ export class S3Service implements IS3Service {
             }
 
             // Generate presigned URL
-            const uploadUrl = await this.getPresignedUploadUrl(
-                key,
-                fileType,
-                PRESIGNED_URL_EXPIRY,
-                metadata
-            );
+            const uploadUrl = await this.getPresignedUploadUrl(key, fileType, PRESIGNED_URL_EXPIRY, metadata);
 
             logMessageToFile(`Generated upload URL for: ${key}`);
 
@@ -390,7 +376,7 @@ export class S3Service implements IS3Service {
         companyId: string;
         category?: DocumentCategories;
     }): Promise<UploadResult> {
-        const { key, documentId, documentType, claimId, userId, companyId, category } = options;
+        const { key, documentId, claimId, userId, companyId, category } = options;
 
         try {
             // Verify the file exists in S3
@@ -417,7 +403,7 @@ export class S3Service implements IS3Service {
                 companyId: companyId,
                 claimId: claimId,
                 category: category ?? undefined,
-            })
+            });
 
             return {
                 key,
@@ -436,35 +422,32 @@ export class S3Service implements IS3Service {
         return document;
     }
 
-    async uploadToS3(
-        uploadUrl: string,
-        file: File
-    ): Promise<void> {
+    async uploadToS3(uploadUrl: string, file: File): Promise<void> {
         const response = await fetch(uploadUrl, {
-            method: 'PUT',
+            method: "PUT",
             body: file,
             headers: {
-                'Content-Type': file.type,
+                "Content-Type": file.type,
             },
         });
 
         if (!response.ok) {
-            throw new Error(`Upload failed: ${response.statusText}`); 
+            throw new Error(`Upload failed: ${response.statusText}`);
         }
-    };
+    }
 
     async uploadBufferToS3(uploadUrl: string, file: Buffer): Promise<void> {
-        const arrayBuffer = file.subarray(0, file.length).buffer;
-        
+        // const arrayBuffer = file.subarray(0, file.length).buffer;
+
         const response = await fetch(uploadUrl, {
-            method: 'PUT',
+            method: "PUT",
             body: new Uint8Array(file),
         });
 
         if (!response.ok) {
             throw new Error(`Upload failed: ${response.statusText}`);
         }
-    };
+    }
 
     /**
      * Helper method to get file extension from filename
@@ -473,8 +456,6 @@ export class S3Service implements IS3Service {
         const lastDot = fileName.lastIndexOf(".");
         return lastDot !== -1 ? fileName.substring(lastDot) : "";
     }
-
-    
 
     /**
      * Generates a SHA-256 hash of a buffer for duplicate detection

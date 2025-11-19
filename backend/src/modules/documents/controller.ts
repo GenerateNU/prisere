@@ -2,7 +2,7 @@ import { Context, TypedResponse } from "hono";
 import { IDocumentService } from "./service";
 import { withControllerErrorHandling } from "../../utilities/error";
 import { DocumentResponse, UpsertDocumentDTO } from "../../types/DocumentType";
-import { Document } from "../../entities/Document";
+import { logMessageToFile } from "../../utilities/logger";
 
 export interface IDocumentController {
     upsertDocument(ctx: Context): Promise<TypedResponse<DocumentResponse | { error: string }> | Response>;
@@ -22,9 +22,10 @@ export class DocumentController implements IDocumentController {
             try {
                 const payload: UpsertDocumentDTO = json;
 
-                const document = await this.documentService.upsertDocument(payload); 
+                const document = await this.documentService.upsertDocument(payload);
                 return ctx.json(document, 200);
             } catch (error) {
+                logMessageToFile(`${error}`);
                 return ctx.json({ error: "Failed to upsert document" }, 400);
             }
         }
