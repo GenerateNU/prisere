@@ -110,7 +110,6 @@ export default function DisasterEmail({ message }: DisasterEmailProps) {
     );
 }
 
-
 export async function renderDisasterEmailHTML(message: DisasterEmailMessage) {
     return render(<DisasterEmail message={message} />, { pretty: true });
 }

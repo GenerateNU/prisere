@@ -27,7 +27,7 @@ describe("SQSService", () => {
         : "https://sqs.us-east-1.amazonaws.com/1234/test";
 
     const createMockMessage = (id: string): DisasterEmailMessage => ({
-        to: `zainab.imadulla@icloud.com`,
+        to: `test@test.com`,
         from: "priseregenerate@gmail.com",
         subject: "FEMA Disaster Alert",
         firstName: `Zainab`,
