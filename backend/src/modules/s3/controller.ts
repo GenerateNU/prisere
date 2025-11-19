@@ -10,13 +10,16 @@ import {
     PdfListItemResponse, 
     UploadResult 
 } from "../../types/S3Types";
+import { DocumentCategories, DocumentResponse } from "../../types/DocumentType";
+import { Document } from "../../entities/Document";
 
 
 export interface IS3Controller {
     getUploadUrl(ctx: Context): Promise<TypedResponse<GetUploadUrlResponse | ErrorResponse>>;
     confirmUpload(ctx: Context): Promise<TypedResponse<UploadResult | ErrorResponse>>;
-    getAllDocuments(ctx: Context): Promise<TypedResponse<PdfListItemResponse[] | ErrorResponse>>;
+    getAllDocuments(ctx: Context): Promise<TypedResponse<DocumentResponse[] | ErrorResponse>>;
     deleteDocument(ctx: Context): Promise<TypedResponse<{ success: boolean } | ErrorResponse>>;
+    updateDocumentCategory(ctx: Context): Promise<TypedResponse<{ success: boolean } | ErrorResponse>>;
 }
 
 export class S3Controller implements IS3Controller {
@@ -102,7 +105,7 @@ export class S3Controller implements IS3Controller {
     async confirmUpload(ctx: Context): Promise<TypedResponse<UploadResult | ErrorResponse>> {
         try {
             const body = await ctx.req.json<ConfirmUploadRequest>();
-            const { key, documentId, documentType, claimId, companyId } = body;
+            const { key, documentId, documentType, claimId, companyId, category } = body;
 
             console.log(key, documentId, documentType);
 
@@ -123,6 +126,13 @@ export class S3Controller implements IS3Controller {
                 return ctx.json(errorResponse, 401);
             }
 
+            if (!Object.values(DocumentCategories).includes(category as DocumentCategories)) {
+                const errorResponse: ErrorResponse = { 
+                    error: `Invalid category. Must be one of: ${Object.values(DocumentCategories).join(", ")}` 
+                };
+                return ctx.json(errorResponse, 400);
+            }
+
             // Verify upload and get file info
             const response = await this.service.confirmUpload({
                 key,
@@ -130,7 +140,8 @@ export class S3Controller implements IS3Controller {
                 documentType,
                 claimId,
                 userId,
-                companyId
+                companyId,
+                category: category as DocumentCategories | undefined
             });
 
             return ctx.json(response, 200);
@@ -143,16 +154,14 @@ export class S3Controller implements IS3Controller {
         }
     }
 
-    async getAllDocuments(ctx: Context): Promise<TypedResponse<PdfListItemResponse[] | ErrorResponse>> {
+    async getAllDocuments(ctx: Context): Promise<TypedResponse<DocumentResponse[] | ErrorResponse>> {
         try {
-            // Get parameters from query string instead of body
             const companyId = ctx.req.query("companyId");
             const documentType = ctx.req.query("documentType") as DocumentTypes;
             const userId = ctx.req.query("userId");
 
             console.log("Query params received:", { companyId, documentType, userId });
 
-            // Validate required fields
             if (!companyId) {
                 const errorResponse: ErrorResponse = { 
                     error: "Missing required query parameter: companyId" 
@@ -167,7 +176,6 @@ export class S3Controller implements IS3Controller {
                 return ctx.json(errorResponse, 400);
             }
 
-            // Validate documentType
             if (!Object.values(DocumentTypes).includes(documentType)) {
                 const errorResponse: ErrorResponse = { 
                     error: `Invalid documentType. Must be one of: ${Object.values(DocumentTypes).join(", ")}` 
@@ -175,7 +183,6 @@ export class S3Controller implements IS3Controller {
                 return ctx.json(errorResponse, 400);
             }
 
-            // Check if userId is required for IMAGES type
             if (documentType === DocumentTypes.IMAGES && !userId) {
                 const errorResponse: ErrorResponse = { 
                     error: "User authentication required for image documents" 
@@ -183,21 +190,41 @@ export class S3Controller implements IS3Controller {
                 return ctx.json(errorResponse, 401);
             }
 
-            // Call service to get documents
-            const response = await this.service.getAllDocuments(documentType, companyId, userId);
+            const documents = await this.service.getAllDocuments(documentType, companyId, userId);
 
-            if (!response) {
-                const errorResponse: ErrorResponse = { 
-                    error: "No documents found" 
-                };
-                return ctx.json(errorResponse, 404);
+            if (!documents || documents.length === 0) {
+                return ctx.json([], 200); // Return empty array instead of error
             }
 
-            return ctx.json(response, 200);
+            return ctx.json(documents, 200);
         } catch (error) {
             console.error("Error getting all documents:", error);
             const errorResponse: ErrorResponse = { 
                 error: "An error occurred while fetching documents." 
+            };
+            return ctx.json(errorResponse, 500);
+        }
+    }
+
+    async updateDocumentCategory(ctx: Context): Promise<TypedResponse<{ success: boolean } | ErrorResponse>> {
+        try {
+            const body = await ctx.req.json<{ documentId: string; category: DocumentCategories }>();
+            const { documentId, category } = body;
+
+            if (!documentId || !category) {
+                const errorResponse: ErrorResponse = { 
+                    error: "Missing required fields: documentId or category" 
+                };
+                return ctx.json(errorResponse, 400);
+            }
+
+            await this.service.updateDocumentCategory(documentId, category);
+
+            return ctx.json({ success: true }, 200);
+        } catch (error) {
+            console.error("Error updating document category:", error);
+            const errorResponse: ErrorResponse = { 
+                error: "An error occurred while updating the document category." 
             };
             return ctx.json(errorResponse, 500);
         }

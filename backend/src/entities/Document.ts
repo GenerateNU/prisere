@@ -3,6 +3,7 @@ import type { Relation } from "typeorm";
 import { User } from "./User";
 import { Company } from "./Company";
 import { Claim } from "./Claim";
+import { DocumentCategories } from "../types/DocumentType";
 
 @Entity("document")
 export class Document {
@@ -18,8 +19,12 @@ export class Document {
     @Column()
     s3DocumentId!: string;
 
-    @Column({ nullable: true })
-    category?: string;
+    @Column({ 
+        type: "enum",
+        enum: DocumentCategories,
+        nullable: true 
+    })
+    category?: DocumentCategories;
 
     @Column({ nullable: true })
     createdAt?: Date;

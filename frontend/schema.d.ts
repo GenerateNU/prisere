@@ -5345,6 +5345,8 @@ export interface paths {
                         /** @description Optional claim ID for claim-specific documents */
                         claimId?: string;
                         companyId: string;
+                        /** @enum {string|null} */
+                        category: "Expenses" | "Revenues" | "Insurance" | null;
                     };
                 };
             };
@@ -5439,21 +5441,16 @@ export interface paths {
          */
         get: {
             parameters: {
-                query?: never;
+                query: {
+                    companyId: string;
+                    documentType: "CLAIM" | "GENERAL_BUSINESS" | "IMAGES";
+                    userId?: string;
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        companyId: string;
-                        /** @enum {string} */
-                        documentType: "CLAIM" | "GENERAL_BUSINESS" | "IMAGES";
-                        userId?: string;
-                    };
-                };
-            };
+            requestBody?: never;
             responses: {
                 /** @description Documents retrieved successfully */
                 200: {
@@ -5462,39 +5459,90 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
+                            id: string;
                             key: string;
-                            url: string;
-                            size: number;
-                            /** Format: date */
-                            lastModified?: string;
-                            documentId: string;
+                            downloadUrl: string;
+                            s3DocumentId: string;
+                            /** @enum {string|null} */
+                            category?: "Expenses" | "Revenues" | "Insurance" | null;
+                            createdAt?: string;
+                            lastModified?: string | null;
+                            user?: {
+                                id: string;
+                                firstName: string;
+                                lastName: string;
+                                /** Format: email */
+                                email?: string | null;
+                                companyId?: string | null;
+                            };
+                            company: {
+                                id: string;
+                                name: string;
+                                businessOwnerFullName: string;
+                                lastQuickBooksInvoiceImportTime?: string | null;
+                                lastQuickBooksPurchaseImportTime?: string | null;
+                                externals?: {
+                                    id: string;
+                                    source: string;
+                                    externalId: string;
+                                    companyId: string;
+                                    createdAt: string;
+                                    updatedAt: string;
+                                    importTime?: string;
+                                }[];
+                                createdAt: string;
+                                updatedAt: string;
+                            };
+                            claim?: {
+                                id: string;
+                                /**
+                                 * @default ACTIVE
+                                 * @enum {string}
+                                 */
+                                status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                                createdAt: string;
+                                /** Format: date-time */
+                                updatedAt?: string;
+                                femaDisaster?: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    disasterNumber: number;
+                                    fipsStateCode: number;
+                                    declarationDate: string;
+                                    incidentBeginDate?: string | null;
+                                    incidentEndDate?: string | null;
+                                    fipsCountyCode: number;
+                                    declarationType: string;
+                                    designatedArea: string;
+                                    designatedIncidentTypes: string | null;
+                                };
+                                selfDisaster?: {
+                                    id: string;
+                                    name: string;
+                                    description: string;
+                                    startDate: string;
+                                    endDate?: string;
+                                    createdAt: string;
+                                    updatedAt: string;
+                                };
+                                insurancePolicy?: {
+                                    id: string;
+                                    policyName: string;
+                                    policyHolderFirstName: string;
+                                    policyHolderLastName: string;
+                                    insuranceCompanyName: string;
+                                    policyNumber: string;
+                                    insuranceType: string;
+                                    updatedAt: string;
+                                    createdAt: string;
+                                };
+                                lastModified?: string;
+                            };
                         }[];
                     };
                 };
                 /** @description Invalid request - missing or invalid parameters */
                 400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                        };
-                    };
-                };
-                /** @description User authentication required */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                        };
-                    };
-                };
-                /** @description No documents found */
-                404: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -5593,6 +5641,78 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/s3/updateDocumentCategory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update document category
+         * @description Updates the category of a document
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @description The database ID of the document */
+                        documentId: string;
+                        /** @enum {string} */
+                        category: "Expenses" | "Revenues" | "Insurance";
+                    };
+                };
+            };
+            responses: {
+                /** @description Category updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            success: boolean;
+                        };
+                    };
+                };
+                /** @description Invalid request - missing documentId or category */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
 }

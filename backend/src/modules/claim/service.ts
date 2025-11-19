@@ -148,7 +148,8 @@ export class ClaimService implements IClaimService {
             const key = `claims/${companyId}/${claimId}/${claimId}-${timestamp}.pdf`;
             const uploadResponseUrl = await s3.getPresignedUploadUrl(key)
             await s3.uploadBufferToS3(uploadResponseUrl, pdfBuffer)
-            const confirmUploadResponse = await s3.confirmUpload( { key: key, documentId: `${claimId}-${timestamp}.pdf`, documentType: DocumentTypes.CLAIM, claimId: claimId, userId: userId, companyId: companyId })
+            const confirmUploadResponse = await s3.confirmUpload( { key: key, documentId: `${claimId}-${timestamp}.pdf`, documentType: DocumentTypes.CLAIM, 
+                claimId: claimId, userId: userId, companyId: companyId })
             return { url: confirmUploadResponse.url };
         }
     );

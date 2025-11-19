@@ -7,30 +7,32 @@ import { IoFilterOutline } from "react-icons/io5";
 import DocumentTable from "./DocumentTable";
 import { useEffect, useMemo, useState } from "react";
 import BusinessDocumentFilters from "./BusinessDocumentFilters";
-import { 
-    confirmBusinessDocumentUpload, 
-    deleteBusinessDocument, 
-    getAllDocuments, 
-    getBusinessDocumentUploadUrl, 
-    uploadToS3 
+import {
+    confirmBusinessDocumentUpload,
+    deleteBusinessDocument,
+    getAllDocuments,
+    getBusinessDocumentUploadUrl,
+    updateDocumentCategory,
+    uploadToS3
 } from "@/api/business-profile";
+import { BusinessDocument, DocumentCategories } from "@/types/documents";
 
 type SortOrder = "asc" | "desc";
 
-interface DocumentWithCategory {
-    title: string;
-    fileType: string;
-    category: string;
-    date: Date;
-    key: string;
-    url: string;
-    size: number;
-    documentId: string;
-}
+// interface BusinessDocument {
+//     title: string;
+//     fileType: string;
+//     category: string;
+//     date: Date;
+//     key: string;
+//     url: string;
+//     size: number;
+//     documentId: string;
+// }
 
 export default function ViewDocuments() {
     // Replace hardcoded documents with state
-    const [documents, setDocuments] = useState<DocumentWithCategory[]>([]);
+    const [documents, setDocuments] = useState<BusinessDocument[]>([]);
     const [isLoadingDocuments, setIsLoadingDocuments] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("All Categories");
@@ -41,6 +43,7 @@ export default function ViewDocuments() {
     const [isUploading, setIsUploading] = useState(false);
     const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
     const [selectedCategory, setSelectedCategory] = useState("");
+    const [uploadCategory, setUploadCategory] = useState<DocumentCategories | "">("");
 
     // Load documents on component mount
     useEffect(() => {
@@ -51,24 +54,23 @@ export default function ViewDocuments() {
         try {
             setIsLoadingDocuments(true);
             const docs = await getAllDocuments();
-            
-            const transformedDocs: DocumentWithCategory[] = docs.map(doc => {
-                // Extract filename from key (last part after /)
-                const filename = doc.key.split('/').pop() || doc.documentId;
-                const extension = '.' + (doc.key.split('.').pop() || 'pdf');
-                
-                return {
-                    title: filename.replace(extension, ''), // Remove extension for title
-                    fileType: extension,
-                    category: selectedCategory,
-                    date: doc.lastModified ? new Date(doc.lastModified) : new Date(),
-                    key: doc.key,
-                    url: doc.url,
-                    size: doc.size,
-                    documentId: doc.documentId,
-                };
-            });
-            
+
+            const transformedDocs: BusinessDocument[] = docs.map(doc => {
+            const filename = doc.key.split('/').pop() || doc.id;
+            const extension = '.' + (doc.key.split('.').pop() || 'pdf');
+
+            return {
+                title: filename.replace(extension, ''),
+                fileType: extension,
+                category: (doc.category as DocumentCategories | null) ?? "",
+                date: doc.lastModified ? new Date(doc.lastModified) : new Date(),
+                key: doc.key,
+                url: doc.downloadUrl,
+                size: 0,
+                documentId: doc.id,
+            };
+        });
+
             setDocuments(transformedDocs);
         } catch (error) {
             console.error("Error loading documents:", error);
@@ -82,7 +84,7 @@ export default function ViewDocuments() {
         let results = documents;
 
         if (searchQuery !== "") {
-            results = results.filter((doc) => 
+            results = results.filter((doc) =>
                 doc.title.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
@@ -106,8 +108,8 @@ export default function ViewDocuments() {
                         return docDate >= weekStart && docDate <= weekEnd;
                     }
                     case "This Month":
-                        return docDate.getMonth() === now.getMonth() && 
-                               docDate.getFullYear() === now.getFullYear();
+                        return docDate.getMonth() === now.getMonth() &&
+                            docDate.getFullYear() === now.getFullYear();
                     case "This Year":
                         return docDate.getFullYear() === now.getFullYear();
                     default:
@@ -160,13 +162,14 @@ export default function ViewDocuments() {
             await uploadToS3(uploadUrl, selectedFile);
 
             // Confirm upload with backend
-            await confirmBusinessDocumentUpload(key, documentId);
+            await confirmBusinessDocumentUpload(key, documentId, uploadCategory);
             setIsModalOpen(false);
             setFile(null);
-            
+            setUploadCategory("");
+
             // Refresh documents list to show the newly uploaded file
             await loadDocuments();
-            
+
         } catch (error) {
             console.error("Error uploading file:", error);
             alert(`Failed to upload the file: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -197,14 +200,14 @@ export default function ViewDocuments() {
 
     const [deleteConfirmation, setDeleteConfirmation] = useState<{
         isOpen: boolean;
-        document: DocumentWithCategory | null;
+        document: BusinessDocument | null;
     }>({
         isOpen: false,
         document: null,
     });
 
     // Add delete handler
-    const handleDeleteClick = (doc: DocumentWithCategory) => {
+    const handleDeleteClick = (doc: BusinessDocument) => {
         setDeleteConfirmation({
             isOpen: true,
             document: doc,
@@ -219,12 +222,12 @@ export default function ViewDocuments() {
                 deleteConfirmation.document.key,
                 deleteConfirmation.document.documentId
             );
-            
+
             // Remove from local state
             setDocuments(prevDocs =>
                 prevDocs.filter(doc => doc.documentId !== deleteConfirmation.document!.documentId)
             );
-            
+
             // Close confirmation dialog
             setDeleteConfirmation({ isOpen: false, document: null });
         } catch (error) {
@@ -248,11 +251,11 @@ export default function ViewDocuments() {
                     </p>
                 </div>
                 <div className="flex gap-[6px]">
-                    <Button 
-                        className="bg-[var(--fuchsia)] text-white text-[14px] h-[34px] w-fit" 
+                    <Button
+                        className="bg-[var(--fuchsia)] text-white text-[14px] h-[34px] w-fit"
                         onClick={handleUploadClick}
                         disabled={isLoadingDocuments}
-                    > 
+                    >
                         <FiUpload className="text-white mr-2" /> Upload Document
                     </Button>
                     <Button
@@ -277,7 +280,7 @@ export default function ViewDocuments() {
                         />
                     </div>
                 )}
-                
+
                 {/* Show loading state or documents */}
                 {isLoadingDocuments ? (
                     <div className="text-center py-8 text-gray-500">
@@ -290,22 +293,27 @@ export default function ViewDocuments() {
                 ) : (
                     <DocumentTable
                         documents={filteredAndSortedDocuments}
-                        onCategoryChange={(documentId, newCategory) => {
-                            // Update the document's category
-                            setDocuments(prevDocs =>
-                                prevDocs.map(doc =>
-                                    doc.documentId === documentId
-                                        ? { ...doc, category: newCategory }
-                                        : doc
-                                )
-                            );
-                            // TODO: Call API to persist the change
+                        onCategoryChange={async (documentId, newCategory) => {
+                            try {
+                                // Update in backend first then local
+                                console.log("------------")
+                                console.log(documentId, newCategory)
+                                await updateDocumentCategory(documentId, newCategory as DocumentCategories);
+
+                                setDocuments(prevDocs =>
+                                    prevDocs.map(doc =>
+                                        doc.documentId === documentId
+                                            ? { ...doc, category: newCategory as DocumentCategories } // ✅ Cast to proper type
+                                            : doc
+                                    )
+                                );
+                            } catch (error) {
+                                console.error("Error updating category:", error);
+                                alert(`Failed to update category: ${error instanceof Error ? error.message : 'Unknown error'}`);
+                            }
                         }}
-                        onDownload={(doc) => {
-                            // Open the presigned URL in a new tab - 
-                            // TO DO - have a popup to display the PDF in the same screen
-                            // TO DO- get the URL
-                            window.open(doc, '_blank');
+                        onDownload={(url) => {
+                            window.open(url, '_blank');
                         }}
                         onDelete={handleDeleteClick}
                         onEdit={() => {
@@ -318,7 +326,7 @@ export default function ViewDocuments() {
                     />
                 )}
             </CardContent>
-            
+
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-[600px] max-w-[90%] relative">
@@ -335,7 +343,7 @@ export default function ViewDocuments() {
                         <h2 className="text-xl font-semibold text-center mb-2">
                             Upload a File
                         </h2>
-                        
+
                         {/* Subtitle */}
                         <p className="text-sm text-gray-500 text-center mb-6">
                             Upload a PDF file to store in the Business Documents table
@@ -360,15 +368,15 @@ export default function ViewDocuments() {
                             {/* Upload icon - replace with your own */}
                             <div className="flex justify-center mb-4">
                                 <svg width="55" height="55" viewBox="0 0 55 55" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M25.1875 40.9859V7.46712L16.1588 16.4959L13.4152 13.7136L27.125 0L40.8386 13.7136L38.0951 16.4998L29.0625 7.46712V40.9859H25.1875ZM6.262 54.25C4.47692 54.25 2.98762 53.6533 1.79412 52.4598C0.600624 51.2663 0.00258333 49.7757 0 47.988V38.5989H3.875V47.988C3.875 48.5848 4.123 49.1324 4.619 49.631C5.115 50.1296 5.66137 50.3776 6.25812 50.375H47.9919C48.586 50.375 49.1324 50.127 49.631 49.631C50.1296 49.135 50.3776 48.5873 50.375 47.988V38.5989H54.25V47.988C54.25 49.7731 53.6533 51.2624 52.4598 52.4559C51.2663 53.6494 49.7757 54.2474 47.988 54.25H6.262Z" fill="#2E2F2D"/>
+                                    <path d="M25.1875 40.9859V7.46712L16.1588 16.4959L13.4152 13.7136L27.125 0L40.8386 13.7136L38.0951 16.4998L29.0625 7.46712V40.9859H25.1875ZM6.262 54.25C4.47692 54.25 2.98762 53.6533 1.79412 52.4598C0.600624 51.2663 0.00258333 49.7757 0 47.988V38.5989H3.875V47.988C3.875 48.5848 4.123 49.1324 4.619 49.631C5.115 50.1296 5.66137 50.3776 6.25812 50.375H47.9919C48.586 50.375 49.1324 50.127 49.631 49.631C50.1296 49.135 50.3776 48.5873 50.375 47.988V38.5989H54.25V47.988C54.25 49.7731 53.6533 51.2624 52.4598 52.4559C51.2663 53.6494 49.7757 54.2474 47.988 54.25H6.262Z" fill="#2E2F2D" />
                                 </svg>
                             </div>
-                            
+
                             <p className="text-gray-600">
                                 Drop a file or click to browse
                             </p>
-                            
-                            <input 
+
+                            <input
                                 id="file-upload"
                                 type="file"
                                 className="hidden"
@@ -404,15 +412,15 @@ export default function ViewDocuments() {
 
                         {/* Action buttons */}
                         <div className="flex justify-end gap-3 mt-6">
-                            <Button 
-                                className="bg-gray-100 text-gray-700 hover:bg-gray-200 w-fit h-[40px] px-6" 
+                            <Button
+                                className="bg-gray-100 text-gray-700 hover:bg-gray-200 w-fit h-[40px] px-6"
                                 onClick={() => setIsModalOpen(false)}
                                 disabled={isUploading}
                             >
                                 Cancel
                             </Button>
-                            <Button 
-                                className="bg-[var(--fuchsia)] text-white hover:bg-[var(--pink)] disabled:opacity-50 w-fit h-[40px] px-6" 
+                            <Button
+                                className="bg-[var(--fuchsia)] text-white hover:bg-[var(--pink)] disabled:opacity-50 w-fit h-[40px] px-6"
                                 onClick={handleFileUpload}
                                 disabled={!selectedFile || isUploading}
                             >
@@ -422,13 +430,13 @@ export default function ViewDocuments() {
                     </div>
                 </div>
             )}
-            
+
             {deleteConfirmation.isOpen && (
                 <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-[400px] max-w-[90%]">
                         <h2 className="text-xl font-semibold mb-4">Delete Document</h2>
                         <p className="text-gray-600 mb-6">
-                            Are you sure you want to delete "{deleteConfirmation.document?.title}"? 
+                            Are you sure you want to delete "{deleteConfirmation.document?.title}"?
                             This action cannot be undone.
                         </p>
                         <div className="flex justify-end gap-3">

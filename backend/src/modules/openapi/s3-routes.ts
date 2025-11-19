@@ -15,6 +15,7 @@ import {
     DeleteDocumentRequestSchema
 } from "../../types/S3Types";
 import { DocumentTransaction } from "../documents/transaction";
+import { DocumentCategories, DocumentResponseSchema } from "../../types/DocumentType";
 
 export const addOpenApiS3Routes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const documentTransaction = new DocumentTransaction(db);
@@ -25,6 +26,7 @@ export const addOpenApiS3Routes = (openApi: OpenAPIHono, db: DataSource): OpenAP
     openApi.openapi(confirmUploadRoute, (ctx) => s3Controller.confirmUpload(ctx) as any);
     openApi.openapi(getAllDocumentsRoute, (ctx) => s3Controller.getAllDocuments(ctx) as any);
     openApi.openapi(deleteDocumentRoute, (ctx) => s3Controller.deleteDocument(ctx) as any);
+    openApi.openapi(updateDocumentCategoryRoute, (ctx) => s3Controller.updateDocumentCategory(ctx) as any);
 
     return openApi;
 };
@@ -139,29 +141,24 @@ const confirmUploadRoute = createRoute({
     tags: ["S3"],
 });
 
+// In your OpenAPI routes file
 const getAllDocumentsRoute = createRoute({
     method: "get",
     path: "/s3/getAllDocuments",
     summary: "Get all documents of a specific type",
     description: "Retrieves all documents of the specified type for a company or user.",
     request: {
-        body: {
-            content: {
-                "application/json": {
-                    schema: z.object({
-                        companyId: z.string().nonempty(),
-                        documentType: z.nativeEnum(DocumentTypes),
-                        userId: z.string().optional(),
-                    }),
-                },
-            },
-        },
+        query: z.object({
+            companyId: z.string().nonempty(),
+            documentType: z.nativeEnum(DocumentTypes),
+            userId: z.string().optional(),
+        }),
     },
     responses: {
         200: {
             content: {
                 "application/json": {
-                    schema: z.array(PdfListItemSchema),
+                    schema: z.array(DocumentResponseSchema),
                 },
             },
             description: "Documents retrieved successfully",
@@ -173,22 +170,6 @@ const getAllDocumentsRoute = createRoute({
                 },
             },
             description: "Invalid request - missing or invalid parameters",
-        },
-        401: {
-            content: {
-                "application/json": {
-                    schema: ErrorResponseSchema,
-                },
-            },
-            description: "User authentication required",
-        },
-        404: {
-            content: {
-                "application/json": {
-                    schema: ErrorResponseSchema,
-                },
-            },
-            description: "No documents found",
         },
         500: {
             content: {
@@ -240,6 +221,54 @@ const deleteDocumentRoute = createRoute({
                 },
             },
             description: "Internal server error - failed to delete document",
+        },
+    },
+    tags: ["S3"],
+});
+
+const updateDocumentCategoryRoute = createRoute({
+    method: "patch",
+    path: "/s3/updateDocumentCategory",
+    summary: "Update document category",
+    description: "Updates the category of a document",
+    request: {
+        body: {
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        documentId: z.string().nonempty().describe("The database ID of the document"),
+                        category: z.enum(DocumentCategories),
+                    }),
+                },
+            },
+        },
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        success: z.boolean(),
+                    }),
+                },
+            },
+            description: "Category updated successfully",
+        },
+        400: {
+            content: {
+                "application/json": {
+                    schema: ErrorResponseSchema,
+                },
+            },
+            description: "Invalid request - missing documentId or category",
+        },
+        500: {
+            content: {
+                "application/json": {
+                    schema: ErrorResponseSchema,
+                },
+            },
+            description: "Internal server error",
         },
     },
     tags: ["S3"],

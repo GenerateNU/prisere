@@ -14,6 +14,8 @@ import { logMessageToFile } from "../../utilities/logger";
 import { DataSource, getRepository } from "typeorm";
 import { array, string, uuidv4 } from "zod";
 import { DocumentTransaction, IDocumentTransaction } from "../documents/transaction";
+import { DocumentCategories } from "../../types/DocumentType";
+import { Document } from "../../entities/Document";
 
 const S3_BUCKET_NAME = process.env.OBJECTS_STORAGE_BUCKET_NAME;
 const IMAGE_QUALITY = 85; // Compress the image at 85% quality
@@ -76,6 +78,7 @@ export interface IS3Service {
         claimId?: string;
         userId: string;
         companyId: string;
+        category?: DocumentCategories;
     }): Promise<UploadResult>;
 
     uploadToS3(
@@ -83,7 +86,9 @@ export interface IS3Service {
         file: File
     ): Promise<void>;
 
-    getAllDocuments( documentType: DocumentTypes, companyId?: string, userId?: string): Promise<PdfListItem[] | null>;
+    getAllDocuments( documentType: DocumentTypes, companyId?: string, userId?: string): Promise<Document[] | null>;
+
+    updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void>;
 }
 
 export class S3Service implements IS3Service {
@@ -153,56 +158,64 @@ export class S3Service implements IS3Service {
         }
     }
 
-    async getAllDocuments(documentType: DocumentTypes, companyId?: string, userId?: string): Promise<PdfListItem[]> {
-        try {
-            // Construct the key based on the document type
-            let prefix: string;
-            if (documentType === DocumentTypes.GENERAL_BUSINESS) {
-                prefix = `business-documents/${companyId}/`;
-            } else if (documentType === DocumentTypes.CLAIM) {
-                prefix = `claims/${companyId}/`;
-            } else if (documentType === DocumentTypes.IMAGES) {
-                prefix = `images/${userId}/`;
-            } else {
-                throw new Error(`Unsupported document type: ${documentType}`);
-            }
-
-            const command = new ListObjectsV2Command({
-                Bucket: this.bucketName,
-                Prefix: prefix,
-            });
-
-            const response = await this.client.send(command);
-
-            if (!response.Contents || response.Contents.length === 0) {
-                console.log(`No documents found for type ${documentType} in company ${companyId}`);
-                return [];
-            }
-
-            // Map the results to PdfListItem objects
-            const documents = await Promise.all(
-                response.Contents.map(async (obj) => {
-                    if (!obj.Key) {
-                        return null;
-                    }
-
-                    return {
-                        key: obj.Key,
-                        url: await this.getPresignedDownloadUrl(obj.Key),
-                        size: obj.Size || 0,
-                        documentId: obj.Key.split("/").pop()?.replace(/\.[^/.]+$/, "") || "",
-                        ...(obj.LastModified && { lastModified: obj.LastModified }),
-                    };
-                })
-            );
-
-            // Filter out any null values (to also adhere to PdfListItem type)
-            return documents.filter((doc): doc is PdfListItem => doc !== null);
-        } catch (error) {
-            console.error(`Error getting documents for type ${documentType}:`, error);
-            throw error;
-        }
+    async updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void> {
+        return this.documentTransaction.updateDocumentCategory(documentId, category);
     }
+
+    async getAllDocuments(documentType: DocumentTypes, companyId?: string, userId?: string): Promise<Document[]> {
+    try {
+        const repository = this.db.getRepository(Document);
+        
+        // Query documents from database based on type
+        let dbDocuments: Document[];
+        
+        if (documentType === DocumentTypes.GENERAL_BUSINESS) {
+            dbDocuments = await repository.find({
+                where: { companyId: companyId },
+                relations: ['user', 'company', 'claim'], // Include relations if needed
+            });
+        } else if (documentType === DocumentTypes.IMAGES) {
+            dbDocuments = await repository.find({
+                where: { userId: userId },
+                relations: ['user', 'company'],
+            });
+        } else if (documentType === DocumentTypes.CLAIM) {
+            dbDocuments = await repository.find({
+                where: { 
+                    companyId: companyId
+                },
+                relations: ['user', 'company', 'claim'],
+            });
+        } else {
+            throw new Error(`Unsupported document type: ${documentType}`);
+        }
+
+        if (dbDocuments.length === 0) {
+            console.log(`No documents found for type ${documentType}`);
+            return [];
+        }
+
+        // Enrich with fresh presigned URLs from S3
+        const enrichedDocuments = await Promise.all(
+            dbDocuments.map(async (doc) => {
+                try {
+                    // Generate fresh presigned URL
+                    doc.downloadUrl = await this.getPresignedDownloadUrl(doc.key);
+                } catch (error) {
+                    console.error(`Error generating URL for ${doc.key}:`, error);
+                    // Keep existing URL or set to empty string
+                }
+                return doc;
+            })
+        );
+
+        console.log(`Found ${enrichedDocuments.length} documents for type ${documentType}`);
+        return enrichedDocuments;
+    } catch (error) {
+        console.error(`Error getting documents for type ${documentType}:`, error);
+        throw error;
+    }
+}
 
     async deleteObject(key: string, documentId: string): Promise<void> {
         try {
@@ -375,8 +388,9 @@ export class S3Service implements IS3Service {
         claimId?: string;
         userId: string;
         companyId: string;
+        category?: DocumentCategories;
     }): Promise<UploadResult> {
-        const { key, documentId, documentType, claimId, userId, companyId } = options;
+        const { key, documentId, documentType, claimId, userId, companyId, category } = options;
 
         try {
             // Verify the file exists in S3
@@ -401,7 +415,8 @@ export class S3Service implements IS3Service {
                 s3DocumentId: documentId,
                 userId: userId,
                 companyId: companyId,
-                claimId: claimId
+                claimId: claimId,
+                category: category ?? undefined,
             })
 
             return {

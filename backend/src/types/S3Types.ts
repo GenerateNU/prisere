@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { DocumentCategories } from "./DocumentType";
 
 /* Zod schemas for S3 operations */
 
@@ -21,7 +22,8 @@ export const ConfirmUploadRequestSchema = z.object({
     documentId: z.string().min(1).describe("Document ID returned from getUploadUrl"),
     documentType: z.enum(DocumentTypes).default(DocumentTypes.GENERAL_BUSINESS),
     claimId: z.string().optional().describe("Optional claim ID for claim-specific documents"),
-    companyId: z.string()
+    companyId: z.string(),
+    category: z.enum(DocumentCategories).nullable()
 });
 
 export const UploadResultSchema = z.object({

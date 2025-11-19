@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import { Document } from "../../entities/Document";
-import { UpsertDocumentDTO } from "../../types/DocumentType";
+import { DocumentCategories, UpsertDocumentDTO } from "../../types/DocumentType";
 
 
 export interface IDocumentTransaction {
@@ -12,6 +12,8 @@ export interface IDocumentTransaction {
     upsertDocument(payload: UpsertDocumentDTO): Promise<Document | null>;
 
     deleteDocumentRecord(documentId: string): Promise<void>;
+
+    updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void>;
 }
 
 export class DocumentTransaction implements IDocumentTransaction {
@@ -58,6 +60,20 @@ export class DocumentTransaction implements IDocumentTransaction {
             console.log(`Successfully deleted document record: ${documentId}`);
         } catch (error) {
             console.error(`Error deleting document record ${documentId}:`, error);
+            throw error;
+        }
+    }
+
+    async updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void> {
+        try {
+            const repository = this.db.getRepository(Document);
+            await repository.update(
+                { s3DocumentId: documentId },
+                { category: category }
+            );
+            console.log(`Successfully updated category for document: ${documentId}`);
+        } catch (error) {
+            console.error(`Error updating category for document ${documentId}:`, error);
             throw error;
         }
     }

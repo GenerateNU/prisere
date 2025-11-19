@@ -7,11 +7,11 @@ import { IoIosArrowRoundUp } from "react-icons/io";
 import { IoIosArrowRoundDown } from "react-icons/io";
 import { Spinner } from "@/components/ui/spinner";
 import CategorySelector from "@/components/table/CategorySelector";
-import { BusinessDocument } from "@/types/documents";
+import { BusinessDocument, DocumentCategories } from "@/types/documents";
 
 export type DocumentTableProps = {
     documents: BusinessDocument[];
-    onDownload: (documentId: string) => void;
+    onDownload: (url: string) => void;
     onEdit: (documentId: string) => void;
     onDelete: (document: BusinessDocument) => void;
     onCategoryChange: (documentId: string, category: string) => void;
@@ -76,7 +76,7 @@ export default function DocumentTable({
                                 <TableCell className="border-y text-[12px]">{doc.fileType}</TableCell>
                                 <TableCell className="border-y text-[12px]">
                                     <CategorySelector
-                                        selectedCategory={doc.category}
+                                        selectedCategory={(doc.category as DocumentCategories | null) ?? ""}
                                         onCategoryChange={(newCategory) => onCategoryChange(doc.documentId, newCategory)}
                                         categories={categories}
                                         categoryColors={categoryColors}
@@ -87,7 +87,7 @@ export default function DocumentTable({
                                     <div className="flex justify-end gap-[6px]">
                                         <Button
                                             className="w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-[var(--slate)]"
-                                            onClick={() => onDownload}
+                                            onClick={() => onDownload(doc.url)}
                                         >
                                             <FiDownload className="text-[14px]" style={{ width: "14px" }} />
                                         </Button>

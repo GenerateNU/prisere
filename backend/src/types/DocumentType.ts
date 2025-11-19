@@ -5,12 +5,18 @@ import { ClaimSchemaResponse } from "./Claim";
 
 const documentCategories = ["Expenses", "Revenues", "Insurance"] as const;
 
+export enum DocumentCategories {
+    Expenses = "Expenses",
+    Revenues = "Revenues", 
+    Insurance = "Insurance"
+}
+
 export const DocumentSchema = z.object({
     id: z.string(),
     key: z.string(),
     downloadUrl: z.string(),
     s3DocumentId: z.string(),
-    category: z.enum(documentCategories).optional().nullable(),
+    category: z.enum(DocumentCategories).optional().nullable(),
     createdAt: z.date().optional(),
     lastModified: z.date().optional().nullable(),
     user: UserSchema.optional(),
@@ -18,11 +24,12 @@ export const DocumentSchema = z.object({
     claim: ClaimSchemaResponse.optional()
 })
 
+
 export const UpsertDocumentSchema = z.object({
     key: z.string(),
     downloadUrl: z.string(),
     s3DocumentId: z.string(),
-    category: z.enum(documentCategories).optional().nullable(),
+    category: z.enum(DocumentCategories).optional().nullable(),
     createdAt: z.date().optional(),
     lastModified: z.date().optional().nullable(),
     userId: z.string().optional(),

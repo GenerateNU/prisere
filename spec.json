@@ -8673,12 +8673,22 @@
                   },
                   "companyId": {
                     "type": "string"
+                  },
+                  "category": {
+                    "type": "string",
+                    "nullable": true,
+                    "enum": [
+                      "Expenses",
+                      "Revenues",
+                      "Insurance"
+                    ]
                   }
                 },
                 "required": [
                   "key",
                   "documentId",
-                  "companyId"
+                  "companyId",
+                  "category"
                 ]
               }
             }
@@ -8810,36 +8820,38 @@
         "tags": [
           "S3"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "companyId": {
-                    "type": "string",
-                    "minLength": 1
-                  },
-                  "documentType": {
-                    "type": "string",
-                    "enum": [
-                      "CLAIM",
-                      "GENERAL_BUSINESS",
-                      "IMAGES"
-                    ]
-                  },
-                  "userId": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "companyId",
-                  "documentType"
-                ]
-              }
-            }
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "companyId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "CLAIM",
+                "GENERAL_BUSINESS",
+                "IMAGES"
+              ]
+            },
+            "required": true,
+            "name": "documentType",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "userId",
+            "in": "query"
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Documents retrieved successfully",
@@ -8850,28 +8862,314 @@
                   "items": {
                     "type": "object",
                     "properties": {
+                      "id": {
+                        "type": "string"
+                      },
                       "key": {
                         "type": "string"
                       },
-                      "url": {
+                      "downloadUrl": {
                         "type": "string"
                       },
-                      "size": {
-                        "type": "number"
+                      "s3DocumentId": {
+                        "type": "string"
+                      },
+                      "category": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                          "Expenses",
+                          "Revenues",
+                          "Insurance"
+                        ]
+                      },
+                      "createdAt": {
+                        "type": "string"
                       },
                       "lastModified": {
                         "type": "string",
-                        "format": "date"
+                        "nullable": true
                       },
-                      "documentId": {
-                        "type": "string"
+                      "user": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "firstName": {
+                            "type": "string"
+                          },
+                          "lastName": {
+                            "type": "string"
+                          },
+                          "email": {
+                            "type": "string",
+                            "nullable": true,
+                            "format": "email"
+                          },
+                          "companyId": {
+                            "type": "string",
+                            "nullable": true
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "firstName",
+                          "lastName"
+                        ]
+                      },
+                      "company": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "businessOwnerFullName": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "lastQuickBooksInvoiceImportTime": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "lastQuickBooksPurchaseImportTime": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "externals": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "source": {
+                                  "type": "string"
+                                },
+                                "externalId": {
+                                  "type": "string"
+                                },
+                                "companyId": {
+                                  "type": "string"
+                                },
+                                "createdAt": {
+                                  "type": "string"
+                                },
+                                "updatedAt": {
+                                  "type": "string"
+                                },
+                                "importTime": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "source",
+                                "externalId",
+                                "companyId",
+                                "createdAt",
+                                "updatedAt"
+                              ]
+                            }
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "businessOwnerFullName",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      },
+                      "claim": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "ACTIVE",
+                              "FILED",
+                              "IN_PROGRESS_DISASTER",
+                              "IN_PROGRESS_PERSONAL",
+                              "IN_PROGRESS_BUSINESS",
+                              "IN_PROGRESS_INSURANCE",
+                              "IN_PROGRESS_EXPORT"
+                            ],
+                            "default": "ACTIVE"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "femaDisaster": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "disasterNumber": {
+                                "type": "number"
+                              },
+                              "fipsStateCode": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 56
+                              },
+                              "declarationDate": {
+                                "type": "string"
+                              },
+                              "incidentBeginDate": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "incidentEndDate": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "fipsCountyCode": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 1000,
+                                "exclusiveMaximum": true
+                              },
+                              "declarationType": {
+                                "type": "string",
+                                "minLength": 2,
+                                "maxLength": 2
+                              },
+                              "designatedArea": {
+                                "type": "string"
+                              },
+                              "designatedIncidentTypes": {
+                                "type": "string",
+                                "nullable": true
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "disasterNumber",
+                              "fipsStateCode",
+                              "declarationDate",
+                              "fipsCountyCode",
+                              "declarationType",
+                              "designatedArea",
+                              "designatedIncidentTypes"
+                            ]
+                          },
+                          "selfDisaster": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 250
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "startDate": {
+                                "type": "string"
+                              },
+                              "endDate": {
+                                "type": "string"
+                              },
+                              "createdAt": {
+                                "type": "string"
+                              },
+                              "updatedAt": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "description",
+                              "startDate",
+                              "createdAt",
+                              "updatedAt"
+                            ]
+                          },
+                          "insurancePolicy": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "policyName": {
+                                "type": "string"
+                              },
+                              "policyHolderFirstName": {
+                                "type": "string"
+                              },
+                              "policyHolderLastName": {
+                                "type": "string"
+                              },
+                              "insuranceCompanyName": {
+                                "type": "string"
+                              },
+                              "policyNumber": {
+                                "type": "string"
+                              },
+                              "insuranceType": {
+                                "type": "string"
+                              },
+                              "updatedAt": {
+                                "type": "string"
+                              },
+                              "createdAt": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "policyName",
+                              "policyHolderFirstName",
+                              "policyHolderLastName",
+                              "insuranceCompanyName",
+                              "policyNumber",
+                              "insuranceType",
+                              "updatedAt",
+                              "createdAt"
+                            ]
+                          },
+                          "lastModified": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "createdAt"
+                        ]
                       }
                     },
                     "required": [
+                      "id",
                       "key",
-                      "url",
-                      "size",
-                      "documentId"
+                      "downloadUrl",
+                      "s3DocumentId",
+                      "company"
                     ]
                   }
                 }
@@ -8880,42 +9178,6 @@
           },
           "400": {
             "description": "Invalid request - missing or invalid parameters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "User authentication required",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "No documents found",
             "content": {
               "application/json": {
                 "schema": {
@@ -9022,6 +9284,99 @@
           },
           "500": {
             "description": "Internal server error - failed to delete document",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/s3/updateDocumentCategory": {
+      "patch": {
+        "summary": "Update document category",
+        "description": "Updates the category of a document",
+        "tags": [
+          "S3"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "documentId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The database ID of the document"
+                  },
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "Expenses",
+                      "Revenues",
+                      "Insurance"
+                    ]
+                  }
+                },
+                "required": [
+                  "documentId",
+                  "category"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing documentId or category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
             "content": {
               "application/json": {
                 "schema": {
