@@ -9,7 +9,7 @@ interface DisasterEmailProps {
     message: DisasterEmailMessage;
 }
 
-export function DisasterEmail({ message }: DisasterEmailProps) {
+export default function DisasterEmail({ message }: DisasterEmailProps) {
     // for some reason this gets converted to a string. Must be something with the
     // json deserialization but adding this as a sanity check
     const declarationDate = new Date(message.declarationDate).toLocaleDateString("en-US", {
@@ -47,7 +47,7 @@ export function DisasterEmail({ message }: DisasterEmailProps) {
                                     <polygon points="0,0 75,0 65,100 0,100" fill="#8a1e41" />
                                 </svg>
                             </div>
-                            <Heading as="h2" className="text-white text-2xl font-semibold m-0 relative z-10">
+                            <Heading className="text-white font-semibold text-[clamp(1.25rem,3vw,3rem)] m-0 relative z-10">
                                 FEMA Disaster Alert
                             </Heading>
                         </Section>
@@ -93,7 +93,7 @@ export function DisasterEmail({ message }: DisasterEmailProps) {
 
                             <Text className="text-base mb-8">Stay safe,</Text>
                             <Img
-                                className="w-60 h-20"
+                                className="w-50 h-20"
                                 src="https://prisere.com/wp-content/uploads/2023/09/Prisere-logo-transparent.png"
                             />
 
@@ -110,27 +110,6 @@ export function DisasterEmail({ message }: DisasterEmailProps) {
     );
 }
 
-export default function TestDisaster() {
-    return (
-        <DisasterEmail
-            message={{
-                to: "zainab.imadulla@icloud.com",
-                from: "priseregenerate@gmail.com",
-                subject: "FEMA Disaster Alert",
-                firstName: "Zainab",
-                declarationDate: new Date("2025-01-01T00:00:00.000Z"),
-                declarationType: "EM",
-                declarationTypeMeaning: "Emergency declaration",
-                incidentTypes: "A,F",
-                incidentTypeMeanings: ["Tsunami", "Flood"],
-                city: "Boston",
-                notificationId: "fake-uuid",
-                disasterId: "2",
-                companyName: "Test Company",
-            }}
-        />
-    );
-}
 
 export async function renderDisasterEmailHTML(message: DisasterEmailMessage) {
     return render(<DisasterEmail message={message} />, { pretty: true });
