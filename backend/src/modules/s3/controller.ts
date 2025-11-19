@@ -211,9 +211,9 @@ export class S3Controller implements IS3Controller {
             const body = await ctx.req.json<{ documentId: string; category: DocumentCategories }>();
             const { documentId, category } = body;
 
-            if (!documentId || !category) {
+            if (!documentId) { // category is not required because it could be nothing
                 const errorResponse: ErrorResponse = { 
-                    error: "Missing required fields: documentId or category" 
+                    error: "Missing required fields: documentId" 
                 };
                 return ctx.json(errorResponse, 400);
             }

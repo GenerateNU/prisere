@@ -56,7 +56,7 @@ export class DocumentTransaction implements IDocumentTransaction {
 
     async deleteDocumentRecord(documentId: string): Promise<void> {
         try {
-            await this.db.manager.delete(Document, { s3DocumentId: documentId });
+            await this.db.manager.delete(Document, { id: documentId });
             console.log(`Successfully deleted document record: ${documentId}`);
         } catch (error) {
             console.error(`Error deleting document record ${documentId}:`, error);
@@ -66,9 +66,10 @@ export class DocumentTransaction implements IDocumentTransaction {
 
     async updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void> {
         try {
+            console.log(`Updating doc ID : ${documentId}. Cat: ${category}`)
             const repository = this.db.getRepository(Document);
             await repository.update(
-                { s3DocumentId: documentId },
+                { id: documentId },
                 { category: category }
             );
             console.log(`Successfully updated category for document: ${documentId}`);
