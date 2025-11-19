@@ -27,10 +27,10 @@ describe("SQSService", () => {
         : "https://sqs.us-east-1.amazonaws.com/1234/test";
 
     const createMockMessage = (id: string): DisasterEmailMessage => ({
-        to: `example@test.com`,
+        to: `test@test.com`,
         from: "priseregenerate@gmail.com",
         subject: "FEMA Disaster Alert",
-        firstName: `Abby`,
+        firstName: `Zainab`,
         declarationDate: new Date("2025-01-01"),
         declarationType: "EM",
         declarationTypeMeaning: "Emergency declaration",
