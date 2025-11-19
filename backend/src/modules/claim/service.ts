@@ -22,6 +22,7 @@ import { S3Service } from "../s3/service";
 import { DataSource } from "typeorm";
 import { CompanyService } from "../company/service";
 import { DocumentTypes } from "../../types/S3Types";
+import { IDocumentTransaction } from "../documents/transaction";
 
 export interface IClaimService {
     createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse>;
@@ -36,10 +37,12 @@ export interface IClaimService {
 
 export class ClaimService implements IClaimService {
     private claimTransaction: IClaimTransaction;
+    private documentTransaction: IDocumentTransaction;
     private db: DataSource;
 
-    constructor(claimTransaction: IClaimTransaction, db: DataSource) {
+    constructor(claimTransaction: IClaimTransaction, documentTransaction: IDocumentTransaction, db: DataSource) {
         this.claimTransaction = claimTransaction;
+        this.documentTransaction = documentTransaction;
         this.db = db;
     }
 
@@ -140,12 +143,12 @@ export class ClaimService implements IClaimService {
             const claimData: ClaimData = restructureClaimDataForPdf(pdfData);
             const claimHtml = buildClaimPdfHtml(claimData);
             const pdfBuffer = await generatePDFfromHTML(claimHtml);
-            const s3 = new S3Service(this.db);
+            const s3 = new S3Service(this.db, this.documentTransaction);
             const timestamp = new Date().toISOString();
             const key = `claims/${companyId}/${claimId}/${claimId}-${timestamp}.pdf`;
             const uploadResponseUrl = await s3.getPresignedUploadUrl(key)
             await s3.uploadBufferToS3(uploadResponseUrl, pdfBuffer)
-            const confirmUploadResponse = await s3.confirmUpload( { key: key, documentId: `${claimId}-${timestamp}.pdf`, documentType: DocumentTypes.CLAIM, userId: userId })
+            const confirmUploadResponse = await s3.confirmUpload( { key: key, documentId: `${claimId}-${timestamp}.pdf`, documentType: DocumentTypes.CLAIM, claimId: claimId, userId: userId, companyId: companyId })
             return { url: confirmUploadResponse.url };
         }
     );

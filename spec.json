@@ -8670,11 +8670,15 @@
                   "claimId": {
                     "type": "string",
                     "description": "Optional claim ID for claim-specific documents"
+                  },
+                  "companyId": {
+                    "type": "string"
                   }
                 },
                 "required": [
                   "key",
-                  "documentId"
+                  "documentId",
+                  "companyId"
                 ]
               }
             }
@@ -8930,6 +8934,94 @@
           },
           "500": {
             "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/s3/deleteDocument": {
+      "delete": {
+        "summary": "Delete a document",
+        "description": "Deletes a document from both S3 storage and the database. This action cannot be undone.",
+        "tags": [
+          "S3"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "documentId": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "key",
+                  "documentId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Document deleted successfully from both S3 and database",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing key or documentId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error - failed to delete document",
             "content": {
               "application/json": {
                 "schema": {

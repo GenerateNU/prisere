@@ -7,9 +7,7 @@ import {
     ErrorResponse, 
     GetUploadUrlRequest, 
     GetUploadUrlResponse, 
-    PdfListItem, 
-    UploadPdfOptionsSchema, 
-    UploadResponse, 
+    PdfListItemResponse, 
     UploadResult 
 } from "../../types/S3Types";
 
@@ -17,11 +15,37 @@ import {
 export interface IS3Controller {
     getUploadUrl(ctx: Context): Promise<TypedResponse<GetUploadUrlResponse | ErrorResponse>>;
     confirmUpload(ctx: Context): Promise<TypedResponse<UploadResult | ErrorResponse>>;
-    getAllDocuments(ctx: Context): Promise<TypedResponse<PdfListItem[] | ErrorResponse>>;
+    getAllDocuments(ctx: Context): Promise<TypedResponse<PdfListItemResponse[] | ErrorResponse>>;
+    deleteDocument(ctx: Context): Promise<TypedResponse<{ success: boolean } | ErrorResponse>>;
 }
 
 export class S3Controller implements IS3Controller {
     constructor(private service: IS3Service) {}
+
+    async deleteDocument(ctx: Context): Promise<TypedResponse<{ success: boolean } | ErrorResponse>> {
+        try {
+            const body = await ctx.req.json<{ key: string; documentId: string }>();
+            const { key, documentId } = body;
+
+            if (!key || !documentId) {
+                const errorResponse: ErrorResponse = { 
+                    error: "Missing required fields: key or documentId" 
+                };
+                return ctx.json(errorResponse, 400);
+            }
+
+            // Delete from S3
+            await this.service.deleteObject(key, documentId);
+
+            return ctx.json({ success: true }, 200);
+        } catch (error) {
+            console.error("Error deleting document:", error);
+            const errorResponse: ErrorResponse = { 
+                error: "An error occurred while deleting the document." 
+            };
+            return ctx.json(errorResponse, 500);
+        }
+    }
 
     async getUploadUrl(ctx: Context): Promise<TypedResponse<GetUploadUrlResponse | ErrorResponse>> {
         try {
@@ -78,7 +102,7 @@ export class S3Controller implements IS3Controller {
     async confirmUpload(ctx: Context): Promise<TypedResponse<UploadResult | ErrorResponse>> {
         try {
             const body = await ctx.req.json<ConfirmUploadRequest>();
-            const { key, documentId, documentType, claimId } = body;
+            const { key, documentId, documentType, claimId, companyId } = body;
 
             console.log(key, documentId, documentType);
 
@@ -106,6 +130,7 @@ export class S3Controller implements IS3Controller {
                 documentType,
                 claimId,
                 userId,
+                companyId
             });
 
             return ctx.json(response, 200);
@@ -118,7 +143,7 @@ export class S3Controller implements IS3Controller {
         }
     }
 
-    async getAllDocuments(ctx: Context): Promise<TypedResponse<PdfListItem[] | ErrorResponse>> {
+    async getAllDocuments(ctx: Context): Promise<TypedResponse<PdfListItemResponse[] | ErrorResponse>> {
         try {
             // Get parameters from query string instead of body
             const companyId = ctx.req.query("companyId");

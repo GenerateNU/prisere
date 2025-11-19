@@ -55,7 +55,6 @@ export const uploadToS3 = async (
 };
 
 // Confirm upload with backend 
-// T do: to update database)
 export const confirmBusinessDocumentUpload = async (
     key: string,
     documentId: string,
@@ -63,13 +62,15 @@ export const confirmBusinessDocumentUpload = async (
 ): Promise<UploadedFileResponse> => {
     const req = async (token: string): Promise<UploadedFileResponse> => {
         const client = getClient();
+        const companyId = (await getCompany()).id;
         const { data, error, response } = await client.POST("/s3/confirmUpload", {
             headers: authHeader(token),
             body: {
                 key,
                 documentId,
                 documentType: DocumentTypes.GENERAL_BUSINESS,
-                claimId, // Nothing is nothing here
+                claimId, // Nothing is here coming from business profile page
+                companyId
             },
         });
         
@@ -82,26 +83,45 @@ export const confirmBusinessDocumentUpload = async (
     return authWrapper<UploadedFileResponse>()(req);
 };
 
-export const getAllDocuments = async (
-): Promise<PdfListItemResponse> => {
+export const getAllDocuments = async (): Promise<PdfListItemResponse> => {
     const req = async (token: string): Promise<PdfListItemResponse> => {
-        console.log("GETTING ALL DOCS")
-        const client = getClient();
+        console.log("GETTING ALL DOCS");
         const companyId = (await getCompany()).id;
         const documentType = DocumentTypes.GENERAL_BUSINESS;
-        const { data, error, response } = await client.GET("/s3/getAllDocuments", {
+        
+        console.log("Making request with:", { companyId, documentType });
+        
+        const client = getClient();
+        
+        // Construct path with query string
+        const path = `/s3/getAllDocuments?companyId=${encodeURIComponent(companyId)}&documentType=${encodeURIComponent(documentType)}` as '/s3/getAllDocuments';
+        
+        const { data, error, response } = await client.GET(path, {
             headers: authHeader(token),
-            body: {
-                companyId,
-                documentType,
-            },
         });
+        
+        console.log("API Response:", { data, error, status: response.status });
 
         if (response.ok) {
             return data!;
         } else {
-            throw new Error(error?.error || "Failed to fetch documents");
+            throw new Error(error?.error);
         }
     };
     return authWrapper<PdfListItemResponse>()(req);
 };
+
+export async function deleteBusinessDocument(key: string, documentId: string): Promise<void> {
+    const req = async (token: string): Promise<void> => {
+        const client = getClient();
+        const { error, response } = await client.DELETE(`/s3/deleteDocument`, {
+            headers: authHeader(token),
+            body: { key, documentId },
+        });
+
+        if (!response.ok) {
+            throw new Error(error?.error);
+        }
+    }
+    return authWrapper<void>()(req);
+}

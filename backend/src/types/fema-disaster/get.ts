@@ -16,6 +16,21 @@ export const GetAllDisastersResponseSchema = z.array(
     })
 );
 
+export const GetAllDisastersDocumentResponseSchema = z.array(
+    z.object({
+        id: z.uuid(),
+        disasterNumber: z.number(),
+        fipsStateCode: FIPSState,
+        declarationDate: z.string(),
+        incidentBeginDate: z.string().optional().nullable(),
+        incidentEndDate: z.string().optional().nullable(),
+        fipsCountyCode: FIPSCounty,
+        declarationType: z.string().length(2),
+        designatedArea: z.string(),
+        designatedIncidentTypes: incidentTypeString.nullable(),
+    })
+);
+
 export const FemaDisasterSchema = z.array(
     z.object({
         id: z.uuid(),

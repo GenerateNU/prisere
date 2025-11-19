@@ -10,16 +10,21 @@ import {
     ConfirmUploadRequestSchema,
     GetUploadUrlRequestSchema,
     GetUploadUrlResponseSchema,
-    PdfListItemSchema
+    PdfListItemSchema,
+    DeleteDocumentResponseSchema,
+    DeleteDocumentRequestSchema
 } from "../../types/S3Types";
+import { DocumentTransaction } from "../documents/transaction";
 
 export const addOpenApiS3Routes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
-    const s3Service = new S3Service(db);
+    const documentTransaction = new DocumentTransaction(db);
+    const s3Service = new S3Service(db, documentTransaction);
     const s3Controller = new S3Controller(s3Service);
 
     openApi.openapi(getUploadUrlRoute, (ctx) => s3Controller.getUploadUrl(ctx) as any);
     openApi.openapi(confirmUploadRoute, (ctx) => s3Controller.confirmUpload(ctx) as any);
     openApi.openapi(getAllDocumentsRoute, (ctx) => s3Controller.getAllDocuments(ctx) as any);
+    openApi.openapi(deleteDocumentRoute, (ctx) => s3Controller.deleteDocument(ctx) as any);
 
     return openApi;
 };
@@ -192,6 +197,49 @@ const getAllDocumentsRoute = createRoute({
                 },
             },
             description: "Internal server error",
+        },
+    },
+    tags: ["S3"],
+});
+
+const deleteDocumentRoute = createRoute({
+    method: "delete",
+    path: "/s3/deleteDocument",
+    summary: "Delete a document",
+    description: "Deletes a document from both S3 storage and the database. This action cannot be undone.",
+    request: {
+        body: {
+            content: {
+                "application/json": {
+                    schema: DeleteDocumentRequestSchema,
+                },
+            },
+        },
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: DeleteDocumentResponseSchema,
+                },
+            },
+            description: "Document deleted successfully from both S3 and database",
+        },
+        400: {
+            content: {
+                "application/json": {
+                    schema: ErrorResponseSchema,
+                },
+            },
+            description: "Invalid request - missing key or documentId",
+        },
+        500: {
+            content: {
+                "application/json": {
+                    schema: ErrorResponseSchema,
+                },
+            },
+            description: "Internal server error - failed to delete document",
         },
     },
     tags: ["S3"],

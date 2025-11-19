@@ -12,7 +12,8 @@ import { createHash } from "crypto";
 import { DocumentTypes, GetUploadUrlResponse, PdfListItem, UploadImageOptions, UploadPdfOptions, UploadResult } from "../../types/S3Types";
 import { logMessageToFile } from "../../utilities/logger";
 import { DataSource, getRepository } from "typeorm";
-import { array } from "zod";
+import { array, string, uuidv4 } from "zod";
+import { DocumentTransaction, IDocumentTransaction } from "../documents/transaction";
 
 const S3_BUCKET_NAME = process.env.OBJECTS_STORAGE_BUCKET_NAME;
 const IMAGE_QUALITY = 85; // Compress the image at 85% quality
@@ -24,7 +25,7 @@ export interface IS3Service {
      * Deletes an object from S3
      * key: requied - path of object to get
      */
-    deleteObject(key: string): Promise<void>;
+    deleteObject(key: string, documentId: string): Promise<void>;
     /**
      * Checks if a file with the same hash already exists in the specified prefix
      * Returns the key of the duplicate if found, null otherwise
@@ -74,6 +75,7 @@ export interface IS3Service {
         documentType: DocumentTypes;
         claimId?: string;
         userId: string;
+        companyId: string;
     }): Promise<UploadResult>;
 
     uploadToS3(
@@ -88,9 +90,11 @@ export class S3Service implements IS3Service {
     private client: S3Client;
     private bucketName: string | undefined; // undefined if not in env vars
     private db: DataSource;
+    private documentTransaction: IDocumentTransaction;
 
-    constructor(db: DataSource) {
+    constructor(db: DataSource, documentTransaction: IDocumentTransaction) {
         this.db = db;
+        this.documentTransaction = documentTransaction;
         const config: any = {
             region: process.env.AWS_REGION || "us-east-1",
         };
@@ -176,7 +180,7 @@ export class S3Service implements IS3Service {
             }
 
             // Map the results to PdfListItem objects
-            const documents: PdfListItem[] = await Promise.all(
+            const documents = await Promise.all(
                 response.Contents.map(async (obj) => {
                     if (!obj.Key) {
                         return null;
@@ -192,7 +196,7 @@ export class S3Service implements IS3Service {
                 })
             );
 
-            // Filter out any null values
+            // Filter out any null values (to also adhere to PdfListItem type)
             return documents.filter((doc): doc is PdfListItem => doc !== null);
         } catch (error) {
             console.error(`Error getting documents for type ${documentType}:`, error);
@@ -200,7 +204,7 @@ export class S3Service implements IS3Service {
         }
     }
 
-    async deleteObject(key: string): Promise<void> {
+    async deleteObject(key: string, documentId: string): Promise<void> {
         try {
             const command = new DeleteObjectCommand({
                 Bucket: this.bucketName,
@@ -209,6 +213,8 @@ export class S3Service implements IS3Service {
 
             await this.client.send(command);
             console.log(`Successfully deleted object: ${key}`);
+            // Delete from database
+            await this.documentTransaction.deleteDocumentRecord(documentId);
         } catch (error) {
             console.error(`Error deleting object ${key}:`, error);
             throw error;
@@ -368,8 +374,9 @@ export class S3Service implements IS3Service {
         documentType: DocumentTypes;
         claimId?: string;
         userId: string;
+        companyId: string;
     }): Promise<UploadResult> {
-        const { key, documentId, documentType, claimId, userId } = options;
+        const { key, documentId, documentType, claimId, userId, companyId } = options;
 
         try {
             // Verify the file exists in S3
@@ -388,14 +395,14 @@ export class S3Service implements IS3Service {
 
             logMessageToFile(`Upload confirmed for: ${key}`);
 
-            // Save the document in our DB
-            // To do: create transaction to save the file somethign like:
-            // const documentData = {
-            //     key,
-            //     user: userId,
-            //     createdAt: new Date().toISOString()
-            // }
-            // this.saveDocument(documentData);
+            this.documentTransaction.upsertDocument({
+                key: key,
+                downloadUrl: url,
+                s3DocumentId: documentId,
+                userId: userId,
+                companyId: companyId,
+                claimId: claimId
+            })
 
             return {
                 key,

@@ -21,6 +21,7 @@ export const ConfirmUploadRequestSchema = z.object({
     documentId: z.string().min(1).describe("Document ID returned from getUploadUrl"),
     documentType: z.enum(DocumentTypes).default(DocumentTypes.GENERAL_BUSINESS),
     claimId: z.string().optional().describe("Optional claim ID for claim-specific documents"),
+    companyId: z.string()
 });
 
 export const UploadResultSchema = z.object({
@@ -77,10 +78,27 @@ export const UploadResponseSchema = z.union([UploadResultSchema, ErrorResponseSc
 // PDF List Item
 export const PdfListItemSchema = z.object({
     key: z.string(),
-    url: z.string(),
+    url: z.string(), // Download URL (opposed to upload)
     size: z.number(),
     lastModified: z.date().optional(),
     documentId: z.string(),
+});
+
+export const PdfListItemResponseSchema = z.object({
+    key: z.string(),
+    url: z.string(), // Download URL (opposed to upload)
+    size: z.number(),
+    lastModified: z.string().optional(),
+    documentId: z.string(),
+});
+
+export const DeleteDocumentRequestSchema = z.object({
+    key: z.string().nonempty(),
+    documentId: z.string().nonempty(),
+});
+
+export const DeleteDocumentResponseSchema = z.object({
+    success: z.boolean(),
 });
 
 /* Zod types for payload validation */
@@ -88,9 +106,11 @@ export type UploadImageOptions = z.infer<typeof UploadImageOptionsSchema>;
 export type UploadPdfOptions = z.infer<typeof UploadPdfOptionsSchema>;
 export type UploadResult = z.infer<typeof UploadResultSchema>;
 export type PdfListItem = z.infer<typeof PdfListItemSchema>;
-
+export type PdfListItemResponse = z.infer<typeof PdfListItemResponseSchema>;
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
 export type UploadResponse = z.infer<typeof UploadResponseSchema>;
 export type GetUploadUrlRequest = z.infer<typeof GetUploadUrlRequestSchema>;
 export type GetUploadUrlResponse = z.infer<typeof GetUploadUrlResponseSchema>;
 export type ConfirmUploadRequest = z.infer<typeof ConfirmUploadRequestSchema>;
+export type DeleteDocumentRequest = z.infer<typeof DeleteDocumentRequestSchema>;
+export type DeleteDocumentResponse = z.infer<typeof DeleteDocumentResponseSchema>;

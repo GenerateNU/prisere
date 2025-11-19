@@ -6,19 +6,15 @@ import { SlPencil } from "react-icons/sl";
 import { IoIosArrowRoundUp } from "react-icons/io";
 import { IoIosArrowRoundDown } from "react-icons/io";
 import { Spinner } from "@/components/ui/spinner";
-
-export type BusinessDocument = {
-    title: string;
-    fileType: string;
-    category: string;
-    date: Date;
-};
+import CategorySelector from "@/components/table/CategorySelector";
+import { BusinessDocument } from "@/types/documents";
 
 export type DocumentTableProps = {
     documents: BusinessDocument[];
     onDownload: (documentId: string) => void;
     onEdit: (documentId: string) => void;
-    onDelete: (documentId: string) => void;
+    onDelete: (document: BusinessDocument) => void;
+    onCategoryChange: (documentId: string, category: string) => void;
     dateSort: "asc" | "desc";
     setDateSort: (sort: "asc" | "desc") => void;
     initialPending: boolean;
@@ -29,35 +25,20 @@ export default function DocumentTable({
     onDownload,
     onEdit,
     onDelete,
+    onCategoryChange,
     dateSort,
     setDateSort,
     initialPending,
 }: DocumentTableProps) {
-    const renderCategory = (category: string) => {
-        let color = "";
-        switch (category) {
-            case "Expenses":
-                color = "bg-[var(--light-fuchsia)] text-[var(--fuchsia)]";
-                break;
-            case "Revenues":
-                color = "bg-[var(--light-teal)] text-[var(--teal)]";
-                break;
-            case "Insurance":
-                color = "bg-[var(--gold)] text-[var(--deep-gold)]";
-                break;
-            default:
-                color = "";
-        }
-        return (
-            <div
-                className={
-                    color +
-                    " flex items-center justify-center rounded-[4px] w-[66px] h-[24px] text-[12px] px-[8px] py-[4px] font-bold"
-                }
-            >
-                {category}
-            </div>
-        );
+    const categories = [
+        "Expenses",
+        "Revenues",
+        "Insurance"
+    ]
+    const categoryColors: Record<string, string> = {
+        "Expenses": "bg-[var(--light-fuchsia)] text-[var(--fuchsia)]",
+        "Revenues": "bg-[var(--light-teal)] text-[var(--teal)]",
+        "Insurance": "bg-[var(--gold)] text-[var(--deep-gold)]",
     };
 
     const handleDateSort = () => {
@@ -93,7 +74,14 @@ export default function DocumentTable({
                             <TableRow key={index}>
                                 <TableCell className="border-y text-[12px]">{doc.title}</TableCell>
                                 <TableCell className="border-y text-[12px]">{doc.fileType}</TableCell>
-                                <TableCell className="border-y text-[12px]">{renderCategory(doc.category)}</TableCell>
+                                <TableCell className="border-y text-[12px]">
+                                    <CategorySelector
+                                        selectedCategory={doc.category}
+                                        onCategoryChange={(newCategory) => onCategoryChange(doc.documentId, newCategory)}
+                                        categories={categories}
+                                        categoryColors={categoryColors}
+                                    />
+                                </TableCell>
                                 <TableCell className="border-y text-[12px]">{doc.date.toLocaleDateString()}</TableCell>
                                 <TableCell className="border-y h-[53px]">
                                     <div className="flex justify-end gap-[6px]">
@@ -111,7 +99,7 @@ export default function DocumentTable({
                                         </Button>
                                         <Button
                                             className="w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-[var(--slate)]"
-                                            onClick={() => onDelete}
+                                            onClick={() => onDelete(doc)}
                                         >
                                             <HiOutlineTrash className="text-[14px]" style={{ width: "14px" }} />
                                         </Button>

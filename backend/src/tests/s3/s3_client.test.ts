@@ -8,6 +8,7 @@ import { startTestApp } from "../setup-tests";
 import { SeederFactoryManager } from "typeorm-extension";
 import { PutObjectCommand, ListObjectsV2Command, HeadObjectCommand } from "@aws-sdk/client-s3";
 import CompanySeeder from "../../database/seeds/company.seed";
+import { DocumentTransaction } from "../../modules/documents/transaction";
 
 describe("S3 Client", () => {
     let dataSource: DataSource;
@@ -20,7 +21,8 @@ describe("S3 Client", () => {
     beforeEach(async () => {
         const testAppData = await startTestApp();
         dataSource = testAppData.dataSource;
-        s3Service = new S3Service();
+        const documentTransaction = new DocumentTransaction(db);
+        s3Service = new S3Service(dataSource, documentTransaction);
         // Mock S3 send method to handle different commands
         mockSend = mock((command) => {
             if (command instanceof PutObjectCommand) {

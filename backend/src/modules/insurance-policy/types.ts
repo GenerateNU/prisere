@@ -23,6 +23,18 @@ export const SingleInsurancePolicyResponseSchema = z.object({
     createdAt: z.iso.datetime(),
 });
 
+export const SingleInsurancePolicyDocumentResponseSchema = z.object({
+    id: z.string(),
+    policyName: z.string(),
+    policyHolderFirstName: z.string(),
+    policyHolderLastName: z.string(),
+    insuranceCompanyName: z.string(),
+    policyNumber: z.string(),
+    insuranceType: z.string(),
+    updatedAt: z.string(),
+    createdAt: z.string(),
+});
+
 export const UpdateInsurancePolicyDTOSchema = z.object({
     id: z.string(),
     policyName: z.string().optional(),
