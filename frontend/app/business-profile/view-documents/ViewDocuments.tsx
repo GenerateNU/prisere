@@ -162,7 +162,7 @@ export default function ViewDocuments() {
             await uploadToS3(uploadUrl, selectedFile);
 
             // Confirm upload with backend
-            await confirmBusinessDocumentUpload(key, documentId, uploadCategory);
+            await confirmBusinessDocumentUpload(key, documentId, uploadCategory || undefined);
             setIsModalOpen(false);
             setFile(null);
             setUploadCategory("");

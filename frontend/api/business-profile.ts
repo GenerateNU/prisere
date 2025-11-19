@@ -17,9 +17,9 @@ export const getAllDocuments = async (): Promise<DocumentResponse[]> => {
         const documentType = DocumentTypes.GENERAL_BUSINESS;
         
         const client = getClient();
-        const path = `/s3/getAllDocuments?companyId=${encodeURIComponent(companyId)}&documentType=${encodeURIComponent(documentType)}` as '/s3/getAllDocuments';
+        // const path = `/s3/getAllDocuments?companyId=${encodeURIComponent(companyId)}&documentType=${encodeURIComponent(documentType)}` as '/s3/getAllDocuments';
         
-        const { data, error, response } = await client.GET(path, {
+        const { data, error, response } = await client.GET('/s3/getAllDocuments', {
             headers: authHeader(token),
             params: {
                 query: {
@@ -71,11 +71,11 @@ export async function getBusinessDocumentUploadUrl(
 export async function confirmBusinessDocumentUpload(
     key: string, 
     documentId: string,
-    companyId: string,
     category?: DocumentCategories
 ): Promise<void> {
     const req = async (token: string): Promise<void> => {
         const client = getClient();
+        const companyId = (await getCompany()).id;
         
         const { error, response } = await client.POST('/s3/confirmUpload', {
             headers: authHeader(token),

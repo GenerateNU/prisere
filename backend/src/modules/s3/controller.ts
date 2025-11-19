@@ -126,7 +126,7 @@ export class S3Controller implements IS3Controller {
                 return ctx.json(errorResponse, 401);
             }
 
-            if (!Object.values(DocumentCategories).includes(category as DocumentCategories)) {
+            if (category && !Object.values(DocumentCategories).includes(category as DocumentCategories)) {
                 const errorResponse: ErrorResponse = { 
                     error: `Invalid category. Must be one of: ${Object.values(DocumentCategories).join(", ")}` 
                 };
