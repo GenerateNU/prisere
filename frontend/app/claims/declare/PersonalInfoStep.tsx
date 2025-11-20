@@ -16,24 +16,26 @@ type PersonalInfo = {
 
 type Props = {
     personalInfo: PersonalInfo;
-    setInfo: React.Dispatch<React.SetStateAction<PersonalInfo>>;
-    handleStepForward: () => void;
+    setPersonalInfo: (info: Partial<PersonalInfo>) => void;
+    handleStepForward: (data: Partial<PersonalInfo>) => void;
     handleStepBack: () => void;
 };
 
-export default function PersonalInfoStep({ personalInfo, setInfo, handleStepForward, handleStepBack }: Props) {
-    const [firstName, setFirstName] = React.useState(personalInfo.firstName);
-    const [lastName, setLastName] = React.useState(personalInfo.lastName);
-    const [phone, setPhone] = React.useState(personalInfo.phone);
-    const [email, setEmail] = React.useState(personalInfo.email);
+export default function PersonalInfoStep({ personalInfo, setPersonalInfo, handleStepForward, handleStepBack }: Props) {
     const [errors, setErrors] = React.useState<{ [key: string]: string }>({});
 
-    const validateForm = () => validatePersonalInfo(firstName, lastName, email, phone, setErrors);
+    const validateForm = () =>
+        validatePersonalInfo(
+            personalInfo.firstName,
+            personalInfo.lastName,
+            personalInfo.email,
+            personalInfo.phone,
+            setErrors
+        );
 
     const handleProceed = () => {
         if (validateForm()) {
-            setInfo({ firstName, lastName, phone, email });
-            handleStepForward();
+            handleStepForward(personalInfo);
         }
     };
 
@@ -47,9 +49,9 @@ export default function PersonalInfoStep({ personalInfo, setInfo, handleStepForw
                     </Label>
                     <Input
                         className={`h-[58px] rounded-[10px] text-[16px] ${errors.firstName ? "border-red-500" : ""}`}
-                        value={firstName}
+                        value={personalInfo.firstName}
                         onChange={(e) => {
-                            setFirstName(e.target.value);
+                            setPersonalInfo({ firstName: e.target.value });
                             if (errors.firstName) setErrors({ ...errors, firstName: "" });
                         }}
                     />
@@ -62,9 +64,9 @@ export default function PersonalInfoStep({ personalInfo, setInfo, handleStepForw
                     </Label>
                     <Input
                         className={`h-[58px] rounded-[10px] text-[16px] ${errors.lastName ? "border-red-500" : ""}`}
-                        value={lastName}
+                        value={personalInfo.lastName}
                         onChange={(e) => {
-                            setLastName(e.target.value);
+                            setPersonalInfo({ lastName: e.target.value });
                             if (errors.lastName) setErrors({ ...errors, lastName: "" });
                         }}
                     />
@@ -76,9 +78,9 @@ export default function PersonalInfoStep({ personalInfo, setInfo, handleStepForw
                     <Input
                         placeholder="(---) --- ----"
                         className={`h-[58px] rounded-[10px] text-[16px] ${errors.phone ? "border-red-500" : ""}`}
-                        value={phone}
+                        value={personalInfo.phone}
                         onChange={(e) => {
-                            setPhone(e.target.value);
+                            setPersonalInfo({ phone: e.target.value });
                             if (errors.phone) setErrors({ ...errors, phone: "" });
                         }}
                     />
@@ -92,9 +94,9 @@ export default function PersonalInfoStep({ personalInfo, setInfo, handleStepForw
                     <Input
                         type="email"
                         className={`h-[58px] rounded-[10px] text-[16px] ${errors.email ? "border-red-500" : ""}`}
-                        value={email}
+                        value={personalInfo.email}
                         onChange={(e) => {
-                            setEmail(e.target.value);
+                            setPersonalInfo({ email: e.target.value });
                             if (errors.email) setErrors({ ...errors, email: "" });
                         }}
                     />

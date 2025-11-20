@@ -1,9 +1,10 @@
 import { z } from "zod";
+import { SingleInsurancePolicyResponseSchema } from "../modules/insurance-policy/types";
+import { GetPurchaseLineItemResponseSchema } from "../modules/purchase-line-item/types";
+import { GetSelfDisasterForCompanyResponseSchema } from "../modules/self-disaster/types";
 import { ClaimStatusType } from "./ClaimStatusType";
 import { GetAllDisastersResponseSchema } from "./fema-disaster";
-import { GetSelfDisasterForCompanyResponseSchema } from "../modules/self-disaster/types";
-import { GetPurchaseLineItemResponseSchema } from "../modules/purchase-line-item/types";
-import { SingleInsurancePolicyResponseSchema } from "../modules/insurance-policy/types";
+import { LocationAddressSchema } from "./Location";
 /* Zod schemas for OpenAPI docs */
 
 /* Claim Schema */
@@ -16,6 +17,7 @@ export const ClaimSchema = z.object({
     femaDisaster: GetAllDisastersResponseSchema.element.optional(), // .element extracts the item schema
     selfDisaster: GetSelfDisasterForCompanyResponseSchema.optional(),
     insurancePolicy: SingleInsurancePolicyResponseSchema.optional(),
+    claimLocations: z.array(LocationAddressSchema).optional(),
 });
 
 // A company might not have a claim in progress
@@ -29,6 +31,7 @@ const stringClaimSchema = z.object({
     femaDisaster: GetAllDisastersResponseSchema.element.optional(),
     selfDisaster: GetSelfDisasterForCompanyResponseSchema.optional(),
     insurancePolicy: SingleInsurancePolicyResponseSchema.optional(),
+    claimLocations: z.array(LocationAddressSchema).optional(),
 });
 
 /* POST */
@@ -80,6 +83,19 @@ export const GetPurchaseLineItemsForClaimResponseSchema = z.array(GetPurchaseLin
 
 export const DeletePurchaseLineItemResponseSchema = LinkClaimToLineItemDTOSchema;
 
+/* Update Claim Status and Partial Data */
+
+export const UpdateClaimStatusDTOSchema = z.object({
+    status: z.enum(ClaimStatusType),
+    insurancePolicyId: z.string().optional(),
+});
+
+export const UpdateClaimStatusResponseSchema = ClaimSchema;
+
+/* Get Single Claim by ID */
+
+export const GetClaimByIdResponseSchema = ClaimSchema;
+
 /* Zod types for payload validation */
 export type Claim = z.infer<typeof ClaimSchema>;
 export type ClaimWithRelations = z.infer<typeof ClaimSchema>;
@@ -102,3 +118,8 @@ export type GetPurchaseLineItemsForClaimResponse = z.infer<typeof GetPurchaseLin
 export type DeletePurchaseLineItemResponse = z.infer<typeof DeletePurchaseLineItemResponseSchema>;
 
 export type GetClaimInProgressForCompanyResponse = z.infer<typeof GetClaimInProgressForCompanySchema>;
+
+export type UpdateClaimStatusDTO = z.infer<typeof UpdateClaimStatusDTOSchema>;
+export type UpdateClaimStatusResponse = z.infer<typeof UpdateClaimStatusResponseSchema>;
+
+export type GetClaimByIdResponse = z.infer<typeof GetClaimByIdResponseSchema>;

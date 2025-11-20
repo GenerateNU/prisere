@@ -1,5 +1,11 @@
 "use server";
-import { FilteredPurchases, PurchaseLineItemType, Purchases } from "../types/purchase";
+import {
+    CreatePurchaseInput,
+    CreatePurchaseResponse,
+    FilteredPurchases,
+    PurchaseLineItemType,
+    Purchases,
+} from "../types/purchase";
 import { authHeader, authWrapper, getClient } from "./client";
 
 export const getAllPurchasesForCompany = async (filters: FilteredPurchases): Promise<Purchases> => {
@@ -81,7 +87,7 @@ const typeMap: Record<string, PurchaseLineItemType> = {
     extraneous: PurchaseLineItemType.EXTRANEOUS,
 };
 
-type typeString = "typical" | "extraneous";
+type typeString = "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
 
 export const updateType = async (type: typeString, purchaseLineIds: string[]) => {
     const req = async (token: string) => {
@@ -102,4 +108,22 @@ export const updateType = async (type: typeString, purchaseLineIds: string[]) =>
     };
 
     return authWrapper<void>()(req);
+};
+
+export const createPurchaseForCompany = async (newPurchase: CreatePurchaseInput): Promise<CreatePurchaseResponse> => {
+    const req = async (token: string): Promise<CreatePurchaseResponse> => {
+        const client = getClient();
+        const { data, error, response } = await client.POST("/purchase/bulk", {
+            body: newPurchase,
+            headers: authHeader(token),
+        });
+
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+
+    return authWrapper<CreatePurchaseResponse>()(req);
 };

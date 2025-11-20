@@ -1,5 +1,5 @@
 import { DataSource } from "typeorm";
-import { Company } from "../../../entities/Company";
+import { Company, CompanyTypesEnum } from "../../../entities/Company";
 import { User } from "../../../entities/User";
 import { FemaDisaster } from "../../../entities/FemaDisaster";
 import { SelfDeclaredDisaster } from "../../../entities/SelfDisaster";
@@ -18,11 +18,13 @@ export const initPdfTestData = async (dataSource: DataSource) => {
             id: "5667a729-f000-4190-b4ee-7957badca27b",
             name: "Northeastern Inc.",
             businessOwnerFullName: "Joseph Aoun",
+            companyType: CompanyTypesEnum.LLC,
         },
         {
             id: "a1a542da-0abe-4531-9386-8919c9f86369",
             name: "Company Cool",
             businessOwnerFullName: "Cool Guy",
+            companyType: CompanyTypesEnum.LLC,
         },
     ]);
 
@@ -35,6 +37,7 @@ export const initPdfTestData = async (dataSource: DataSource) => {
             lastName: "Wibisana",
             email: "zahra.wib@example.com",
             companyId: "5667a729-f000-4190-b4ee-7957badca27b",
+            phoneNumber: "0123456789",
         },
         {
             id: "0199e0cc-4e92-702c-9773-071340163ae4",
@@ -42,6 +45,7 @@ export const initPdfTestData = async (dataSource: DataSource) => {
             lastName: "Doe",
             email: "john.doe@example.com",
             companyId: "a1a542da-0abe-4531-9386-8919c9f86369",
+            phoneNumber: "0123456789",
         },
     ]);
 

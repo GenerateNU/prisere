@@ -21,8 +21,8 @@ export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction
     }
 
     async createOrUpdatePurchaseLineItems(payload: CreateOrChangePurchaseLineItemsDTO): Promise<PurchaseLineItem[]> {
-        const normalizedPayload = payload.map((element) => plainToInstance(PurchaseLineItem, element));
-        const uniquePurchaseIds = [...new Set(payload.map((element) => element.purchaseId))];
+        const normalizedPayload = payload.items.map((element) => plainToInstance(PurchaseLineItem, element));
+        const uniquePurchaseIds = [...new Set(payload.items.map((element) => element.purchaseId))];
 
         const givenPurchaseIds = await this.db.manager.find(Purchase, { where: { id: In(uniquePurchaseIds) } });
 

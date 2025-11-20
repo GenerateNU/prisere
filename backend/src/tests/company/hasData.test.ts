@@ -5,7 +5,7 @@ import CompanySeeder from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
 import UserSeeder from "../../database/seeds/user.seed";
-import { Company } from "../../entities/Company";
+import { Company, CompanyTypesEnum } from "../../entities/Company";
 import { User } from "../../entities/User";
 import { Purchase } from "../../entities/Purchase";
 import { CompanyService } from "../../modules/company/service";
@@ -50,18 +50,21 @@ describe("Company - Update lastQuickBooksImportTime", () => {
             id: "fac8243b-876e-4b6d-8b80-ffc73522a838",
             name: "Company Test",
             businessOwnerFullName: "Jane Doe",
+            companyType: CompanyTypesEnum.LLC,
         });
         await companyRepo.save(companyWithPurchaseData);
         companyWithNoData = companyRepo.create({
             id: "fbc8243b-876e-4b6d-8b80-ffc73522a838",
             name: "Company Test",
             businessOwnerFullName: "Jane Doe",
+            companyType: CompanyTypesEnum.LLC,
         });
         await companyRepo.save(companyWithNoData);
         companyWithExternal = companyRepo.create({
             id: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
             name: "Company Test",
             businessOwnerFullName: "Jane Doe",
+            companyType: CompanyTypesEnum.LLC,
         });
         await companyRepo.save(companyWithExternal);
 
@@ -71,6 +74,7 @@ describe("Company - Update lastQuickBooksImportTime", () => {
             firstName: "Test",
             lastName: "User",
             companyId: companyWithPurchaseData.id,
+            phoneNumber: "1234567890",
         });
         await userRepo.save(userWithPurchase);
 
@@ -79,6 +83,7 @@ describe("Company - Update lastQuickBooksImportTime", () => {
             firstName: "Test",
             lastName: "User",
             companyId: companyWithExternal.id,
+            phoneNumber: "1234567890",
         });
         await userRepo.save(userWithQBClient);
 
@@ -87,6 +92,7 @@ describe("Company - Update lastQuickBooksImportTime", () => {
             firstName: "Test",
             lastName: "User",
             companyId: companyWithNoData.id,
+            phoneNumber: "1234567890",
         });
         await userRepo.save(userWithNoData);
 
@@ -106,6 +112,7 @@ describe("Company - Update lastQuickBooksImportTime", () => {
             externalId: "test-qb-external-id",
             companyId: companyWithExternal.id,
             company: companyWithExternal,
+            companyType: CompanyTypesEnum.LLC,
         });
         await companyExternalRepo.save(companyExternal);
 
@@ -113,6 +120,7 @@ describe("Company - Update lastQuickBooksImportTime", () => {
             id: "abc8243b-876e-4b6d-8b80-ffc73522a838",
             name: "Company With Invoice",
             businessOwnerFullName: "Jane Doe",
+            companyType: CompanyTypesEnum.LLC,
         });
         await companyRepo.save(companyWithInvoiceData);
 
@@ -122,6 +130,7 @@ describe("Company - Update lastQuickBooksImportTime", () => {
             firstName: "Test",
             lastName: "User",
             companyId: companyWithInvoiceData.id,
+            phoneNumber: "1234567890",
         });
         await userRepo.save(userWithInvoice);
 

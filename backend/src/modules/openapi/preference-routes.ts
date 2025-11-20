@@ -7,10 +7,10 @@ import {
     UserMissingErrorSchema,
 } from "../../types/Preferences";
 import { openApiErrorCodes } from "../../utilities/error";
+import { PreferencesController } from "../preferences/controller";
+import { PreferenceService } from "../preferences/service";
 import { PreferenceTransaction } from "../preferences/transaction";
 import { UserTransaction } from "../user/transaction";
-import { PreferenceService } from "../preferences/service";
-import { PreferencesController } from "../preferences/controller";
 
 export const addOpenApiPreferenceRoutes = (openApi: OpenAPIHono, db: DataSource) => {
     const transaction = new PreferenceTransaction(db);
@@ -26,7 +26,7 @@ export const addOpenApiPreferenceRoutes = (openApi: OpenAPIHono, db: DataSource)
 
 const getUserNotificationPreferencesRoute = createRoute({
     method: "get",
-    path: "/notifications/preferences",
+    path: "/preferences",
     summary: "Get a user's notificiation preferences",
     responses: {
         200: {
@@ -52,7 +52,7 @@ const getUserNotificationPreferencesRoute = createRoute({
 
 const updateUserNotificationPreferencesRoute = createRoute({
     method: "put",
-    path: "/notifications/preferences",
+    path: "/preferences",
     summary: "Update a user's notificiation preferences",
     request: {
         body: {

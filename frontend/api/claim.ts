@@ -1,11 +1,14 @@
 "use server";
-import { authHeader, authWrapper, getClient } from "./client";
 import {
     CreateClaimRequest,
     CreateClaimResponse,
+    GetClaimByIdResponse,
     GetClaimLineItemsResponse,
     GetCompanyClaimResponse,
+    UpdateClaimStatusRequest,
+    UpdateClaimStatusResponse,
 } from "@/types/claim";
+import { authHeader, authWrapper, getClient } from "./client";
 
 export const createClaim = async (payload: CreateClaimRequest): Promise<CreateClaimResponse> => {
     const req = async (token: string): Promise<CreateClaimResponse> => {
@@ -60,4 +63,44 @@ export const getPurchaseLineItemsFromClaim = async (params: {
         }
     };
     return authWrapper<GetClaimLineItemsResponse>()(req);
+};
+
+export const getClaimById = async (claimId: string): Promise<GetClaimByIdResponse> => {
+    const req = async (token: string): Promise<GetClaimByIdResponse> => {
+        const client = getClient();
+        const { data, error, response } = await client.GET("/claims/{id}", {
+            headers: authHeader(token),
+            params: {
+                path: { id: claimId },
+            },
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<GetClaimByIdResponse>()(req);
+};
+
+export const updateClaimStatus = async (
+    claimId: string,
+    payload: UpdateClaimStatusRequest
+): Promise<UpdateClaimStatusResponse> => {
+    const req = async (token: string): Promise<UpdateClaimStatusResponse> => {
+        const client = getClient();
+        const { data, error, response } = await client.PATCH("/claims/{id}/status", {
+            headers: authHeader(token),
+            params: {
+                path: { id: claimId },
+            },
+            body: payload,
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<UpdateClaimStatusResponse>()(req);
 };

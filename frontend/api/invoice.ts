@@ -1,6 +1,6 @@
 "use server";
 import { authHeader, authWrapper, getClient } from "./client";
-import { Invoice, TotalInvoiceSum } from "../types/invoice";
+import { CreateInvoiceRequest, Invoice, TotalInvoiceSum } from "../types/invoice";
 
 export const getAllInvoicesForCompany = async (pageNumber: number, resultsPerPage: number): Promise<Invoice> => {
     const req = async (token: string) => {
@@ -44,4 +44,22 @@ export const sumInvoicesByCompanyAndDateRange = async (startDate: Date, endDate:
     };
 
     return authWrapper<TotalInvoiceSum>()(req);
+};
+
+export const createInvoice = async (newLineItems: CreateInvoiceRequest): Promise<Invoice> => {
+    const req = async (token: string): Promise<Invoice> => {
+        const client = getClient();
+        const { data, error, response } = await client.POST("/invoice/bulk", {
+            body: newLineItems,
+            headers: authHeader(token),
+        });
+
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+
+    return authWrapper<Invoice>()(req);
 };

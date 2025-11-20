@@ -8,6 +8,7 @@ import CompanySeeder from "../../database/seeds/company.seed";
 import { DataSource } from "typeorm";
 import { SeederFactoryManager } from "typeorm-extension";
 import UserSeeder from "../../database/seeds/user.seed";
+import { CompanyTypesEnum } from "../../entities/Company";
 
 describe("POST /comapny", () => {
     let app: Hono<{ Variables: ContextVariables }>;
@@ -37,6 +38,7 @@ describe("POST /comapny", () => {
         const requestBody = {
             name: "Cool Company",
             businessOwnerFullName: "Cool Guy",
+            companyType: CompanyTypesEnum.LLC,
         };
         const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
@@ -76,6 +78,7 @@ describe("POST /comapny", () => {
         const requestBody = {
             name: "Cool Company",
             businessOwnerFullName: "Cooler Guy",
+            companyType: CompanyTypesEnum.LLC,
         };
         const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
@@ -97,12 +100,14 @@ describe("POST /comapny", () => {
         const requestBody = {
             name: "Cool Company",
             businessOwnerFullName: "Coolest Guy",
+            companyType: "LLC",
         };
         const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 userId: "0199e0cc-4e92-702c-9773-071340163ae4",
+                companyType: CompanyTypesEnum.LLC,
             },
             body: JSON.stringify(requestBody),
         });
@@ -118,6 +123,7 @@ describe("POST /comapny", () => {
         const requestBody = {
             name: "",
             businessOwnerFullName: "bad Guy",
+            companyType: CompanyTypesEnum.LLC,
         };
         const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
@@ -134,6 +140,7 @@ describe("POST /comapny", () => {
         const requestBody = {
             businessOwnerFullName: "Coolest Guy",
             lastQuickBooksImportTime: new Date(2025, 11, 25, 9, 30, 0, 0),
+            companyType: CompanyTypesEnum.LLC,
         };
         const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
@@ -150,6 +157,7 @@ describe("POST /comapny", () => {
         const requestBody = {
             name: 1,
             businessOwnerFullName: "Coolest Guy",
+            companyType: CompanyTypesEnum.LLC,
         };
         const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
@@ -165,6 +173,7 @@ describe("POST /comapny", () => {
     test("POST /companies - Business owner name not given", async () => {
         const requestBody = {
             name: "Things and Stuff.co",
+            companyType: CompanyTypesEnum.LLC,
         };
         const response = await app.request(TESTING_PREFIX + "/companies", {
             method: "POST",
