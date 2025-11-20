@@ -31,6 +31,7 @@ export enum DocumentCategories {
     Expenses = "Expenses",
     Revenues = "Revenues",
     Insurance = "Insurance",
+    Other = "Other",
 }
 
 export type BusinessDocument = {

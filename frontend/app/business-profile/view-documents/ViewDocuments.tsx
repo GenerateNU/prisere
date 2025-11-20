@@ -19,16 +19,6 @@ import { BusinessDocument, DocumentCategories } from "@/types/documents";
 
 type SortOrder = "asc" | "desc";
 
-// interface BusinessDocument {
-//     title: string;
-//     fileType: string;
-//     category: string;
-//     date: Date;
-//     key: string;
-//     url: string;
-//     size: number;
-//     documentId: string;
-// }
 
 export default function ViewDocuments() {
     // Replace hardcoded documents with state
@@ -52,24 +42,35 @@ export default function ViewDocuments() {
     const loadDocuments = async () => {
         try {
             setIsLoadingDocuments(true);
-            const docs = await getAllDocuments();
 
+            // Fetch documents from the backend
+            const docs = await getAllDocuments();
+            console.log("Getting docs: ", docs);
+
+            // Transform the response into the BusinessDocument type
             const transformedDocs: BusinessDocument[] = docs.map((doc) => {
-                const filename = doc.key.split("/").pop() || doc.id;
-                const extension = "." + (doc.key.split(".").pop() || "pdf");
+                console.log(`Received document:`, doc);
+
+                // Access the nested document object
+                const { document, downloadUrl } = doc;
+
+                // Extract the filename and extension from the key
+                const filename = document.key.split("/").pop() || document.id;
+                const extension = "." + (document.key.split(".").pop() || "pdf");
 
                 return {
-                    title: filename.replace(extension, ""),
-                    fileType: extension,
-                    category: (doc.category as DocumentCategories | null) ?? "",
-                    date: doc.lastModified ? new Date(doc.lastModified) : new Date(),
-                    key: doc.key,
-                    url: doc.downloadUrl,
-                    size: 0,
-                    documentId: doc.id,
+                    title: filename.replace(extension, ""), 
+                    fileType: extension, 
+                    category: (document.category as DocumentCategories | null) ?? "",
+                    date: document.lastModified ? new Date(document.lastModified) : new Date(),
+                    key: document.key,
+                    url: downloadUrl,
+                    size: document.size || 0, 
+                    documentId: document.id,
                 };
             });
 
+            // Update the state with the transformed documents
             setDocuments(transformedDocs);
         } catch (error) {
             console.error("Error loading documents:", error);
@@ -193,11 +194,11 @@ export default function ViewDocuments() {
         if (!deleteConfirmation.document) return;
 
         try {
-            await deleteBusinessDocument(deleteConfirmation.document.key, deleteConfirmation.document.documentId);
+            await deleteBusinessDocument(deleteConfirmation.document.document.key, deleteConfirmation.document.document.id);
 
             // Remove from local state
             setDocuments((prevDocs) =>
-                prevDocs.filter((doc) => doc.documentId !== deleteConfirmation.document!.documentId)
+                prevDocs.filter((doc) => doc.document.id !== deleteConfirmation.document!.document.id)
             );
 
             // Close confirmation dialog
@@ -266,8 +267,6 @@ export default function ViewDocuments() {
                         onCategoryChange={async (documentId, newCategory) => {
                             try {
                                 // Update in backend first then local
-                                console.log("------------");
-                                console.log(documentId, newCategory);
                                 await updateDocumentCategory(documentId, newCategory as DocumentCategories);
 
                                 setDocuments((prevDocs) =>

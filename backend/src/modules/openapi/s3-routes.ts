@@ -14,7 +14,7 @@ import {
     DeleteDocumentRequestSchema,
 } from "../../types/S3Types";
 import { DocumentTransaction } from "../documents/transaction";
-import { DocumentCategories, DocumentResponseSchema } from "../../types/DocumentType";
+import { DocumentCategories, DocumentResponseSchema, DocumentWithUrlSchema } from "../../types/DocumentType";
 
 export const addOpenApiS3Routes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const documentTransaction = new DocumentTransaction(db);
@@ -159,7 +159,7 @@ const getAllDocumentsRoute = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: z.array(DocumentResponseSchema),
+                    schema: z.array(DocumentWithUrlSchema),
                 },
             },
             description: "Documents retrieved successfully",

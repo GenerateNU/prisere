@@ -31,8 +31,8 @@ export const SingleInsurancePolicyDocumentResponseSchema = z.object({
     insuranceCompanyName: z.string(),
     policyNumber: z.string(),
     insuranceType: z.string(),
-    updatedAt: z.string(),
-    createdAt: z.string(),
+    updatedAt: z.union([z.date(), z.string()]),
+    createdAt: z.union([z.date(), z.string()]),
 });
 
 export const UpdateInsurancePolicyDTOSchema = z.object({

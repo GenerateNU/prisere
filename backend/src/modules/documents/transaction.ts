@@ -29,7 +29,6 @@ export class DocumentTransaction implements IDocumentTransaction {
 
         if (document) {
             document.key = payload.key;
-            document.downloadUrl = payload.downloadUrl;
             document.s3DocumentId = payload.s3DocumentId;
             document.category = payload.category || undefined;
             document.userId = payload.userId;
@@ -39,7 +38,6 @@ export class DocumentTransaction implements IDocumentTransaction {
         } else {
             document = repository.create({
                 key: payload.key,
-                downloadUrl: payload.downloadUrl,
                 s3DocumentId: payload.s3DocumentId,
                 category: payload.category || undefined,
                 userId: payload.userId,

@@ -8,12 +8,12 @@ import {
     GetUploadUrlResponse,
     UploadResult,
 } from "../../types/S3Types";
-import { DocumentCategories, DocumentResponse } from "../../types/DocumentType";
+import { DocumentCategories, DocumentResponse, DocumentWithUrl } from "../../types/DocumentType";
 
 export interface IS3Controller {
     getUploadUrl(ctx: Context): Promise<TypedResponse<GetUploadUrlResponse | ErrorResponse>>;
     confirmUpload(ctx: Context): Promise<TypedResponse<UploadResult | ErrorResponse>>;
-    getAllDocuments(ctx: Context): Promise<TypedResponse<DocumentResponse[] | ErrorResponse>>;
+    getAllDocuments(ctx: Context): Promise<TypedResponse<DocumentWithUrl[] | ErrorResponse>>;
     deleteDocument(ctx: Context): Promise<TypedResponse<{ success: boolean } | ErrorResponse>>;
     updateDocumentCategory(ctx: Context): Promise<TypedResponse<{ success: boolean } | ErrorResponse>>;
 }
@@ -49,7 +49,8 @@ export class S3Controller implements IS3Controller {
     async getUploadUrl(ctx: Context): Promise<TypedResponse<GetUploadUrlResponse | ErrorResponse>> {
         try {
             const body = await ctx.req.json<GetUploadUrlRequest>();
-            const { companyId, fileName, fileType, documentType, claimId } = body;
+            const companyId = ctx.get("companyId");
+            const { fileName, fileType, documentType, claimId } = body;
 
             // Make sure the required fields exist
             if (!companyId || !fileName || !fileType || !documentType) {
@@ -99,7 +100,8 @@ export class S3Controller implements IS3Controller {
     async confirmUpload(ctx: Context): Promise<TypedResponse<UploadResult | ErrorResponse>> {
         try {
             const body = await ctx.req.json<ConfirmUploadRequest>();
-            const { key, documentId, documentType, claimId, companyId, category } = body;
+            const companyId = ctx.get("companyId");
+            const { key, documentId, documentType, claimId, category } = body;
 
             // Validate required fields
             if (!key || !documentId || !documentType) {
@@ -146,7 +148,7 @@ export class S3Controller implements IS3Controller {
         }
     }
 
-    async getAllDocuments(ctx: Context): Promise<TypedResponse<DocumentResponse[] | ErrorResponse>> {
+    async getAllDocuments(ctx: Context): Promise<TypedResponse<DocumentWithUrl[] | ErrorResponse>> {
         try {
             const companyId = ctx.req.query("companyId");
             const documentType = ctx.req.query("documentType") as DocumentTypes;

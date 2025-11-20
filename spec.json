@@ -326,12 +326,32 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "externals": {
                       "type": "array",
@@ -351,13 +371,37 @@
                             "type": "string"
                           },
                           "createdAt": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           },
                           "updatedAt": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           },
                           "importTime": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           }
                         },
                         "required": [
@@ -371,10 +415,26 @@
                       }
                     },
                     "createdAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
                     },
                     "updatedAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
                     }
                   },
                   "required": [
@@ -455,12 +515,32 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "externals": {
                       "type": "array",
@@ -480,13 +560,37 @@
                             "type": "string"
                           },
                           "createdAt": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           },
                           "updatedAt": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           },
                           "importTime": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           }
                         },
                         "required": [
@@ -500,10 +604,26 @@
                       }
                     },
                     "createdAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
                     },
                     "updatedAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
                     }
                   },
                   "required": [
@@ -600,12 +720,32 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "externals": {
                       "type": "array",
@@ -625,13 +765,37 @@
                             "type": "string"
                           },
                           "createdAt": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           },
                           "updatedAt": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           },
                           "importTime": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           }
                         },
                         "required": [
@@ -645,10 +809,26 @@
                       }
                     },
                     "createdAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
                     },
                     "updatedAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
                     }
                   },
                   "required": [
@@ -724,13 +904,37 @@
                     "type": "string"
                   },
                   "createdAt": {
-                    "type": "string"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   },
                   "updatedAt": {
-                    "type": "string"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   },
                   "importTime": {
-                    "type": "string"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   }
                 }
               }
@@ -757,12 +961,32 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "externals": {
                       "type": "array",
@@ -782,13 +1006,37 @@
                             "type": "string"
                           },
                           "createdAt": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           },
                           "updatedAt": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           },
                           "importTime": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           }
                         },
                         "required": [
@@ -802,10 +1050,26 @@
                       }
                     },
                     "createdAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
                     },
                     "updatedAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
                     }
                   },
                   "required": [
@@ -881,13 +1145,37 @@
                     "type": "string"
                   },
                   "createdAt": {
-                    "type": "string"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   },
                   "updatedAt": {
-                    "type": "string"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   },
                   "importTime": {
-                    "type": "string"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   }
                 }
               }
@@ -914,12 +1202,32 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "externals": {
                       "type": "array",
@@ -939,13 +1247,37 @@
                             "type": "string"
                           },
                           "createdAt": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           },
                           "updatedAt": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           },
                           "importTime": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           }
                         },
                         "required": [
@@ -959,10 +1291,26 @@
                       }
                     },
                     "createdAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
                     },
                     "updatedAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
                     }
                   },
                   "required": [
@@ -1156,12 +1504,26 @@
                       "default": "ACTIVE"
                     },
                     "createdAt": {
-                      "type": "string",
-                      "format": "date-time"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
                     },
                     "updatedAt": {
-                      "type": "string",
-                      "format": "date-time"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
                     },
                     "femaDisaster": {
                       "type": "object",
@@ -1179,8 +1541,15 @@
                           "maximum": 56
                         },
                         "declarationDate": {
-                          "type": "string",
-                          "format": "date-time"
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ]
                         },
                         "incidentBeginDate": {
                           "type": "string"
@@ -1603,8 +1972,15 @@
                         "maximum": 56
                       },
                       "declarationDate": {
-                        "type": "string",
-                        "format": "date-time"
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
                       },
                       "incidentBeginDate": {
                         "type": "string"
@@ -2697,12 +3073,32 @@
                                 "minLength": 1
                               },
                               "lastQuickBooksInvoiceImportTime": {
-                                "type": "string",
-                                "nullable": true
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "nullable": true
+                                  }
+                                ]
                               },
                               "lastQuickBooksPurchaseImportTime": {
-                                "type": "string",
-                                "nullable": true
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "nullable": true
+                                  }
+                                ]
                               },
                               "externals": {
                                 "type": "array",
@@ -2722,13 +3118,37 @@
                                       "type": "string"
                                     },
                                     "createdAt": {
-                                      "type": "string"
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "format": "date"
+                                        },
+                                        {
+                                          "type": "string"
+                                        }
+                                      ]
                                     },
                                     "updatedAt": {
-                                      "type": "string"
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "format": "date"
+                                        },
+                                        {
+                                          "type": "string"
+                                        }
+                                      ]
                                     },
                                     "importTime": {
-                                      "type": "string"
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "format": "date"
+                                        },
+                                        {
+                                          "type": "string"
+                                        }
+                                      ]
                                     }
                                   },
                                   "required": [
@@ -2742,10 +3162,26 @@
                                 }
                               },
                               "createdAt": {
-                                "type": "string"
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  {
+                                    "type": "string"
+                                  }
+                                ]
                               },
                               "updatedAt": {
-                                "type": "string"
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  {
+                                    "type": "string"
+                                  }
+                                ]
                               }
                             },
                             "required": [
@@ -5216,8 +5652,15 @@
                           "maximum": 56
                         },
                         "declarationDate": {
-                          "type": "string",
-                          "format": "date-time"
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ]
                         },
                         "incidentBeginDate": {
                           "type": "string"
@@ -5423,12 +5866,26 @@
                         "default": "ACTIVE"
                       },
                       "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
                       },
                       "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date"
+                          },
+                          {
+                            "type": "string"
+                          }
+                        ]
                       },
                       "femaDisaster": {
                         "type": "object",
@@ -5446,8 +5903,15 @@
                             "maximum": 56
                           },
                           "declarationDate": {
-                            "type": "string",
-                            "format": "date-time"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           },
                           "incidentBeginDate": {
                             "type": "string"
@@ -8511,9 +8975,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "companyId": {
-                    "type": "string"
-                  },
                   "fileName": {
                     "type": "string",
                     "minLength": 1,
@@ -8539,7 +9000,6 @@
                   }
                 },
                 "required": [
-                  "companyId",
                   "fileName",
                   "fileType"
                 ]
@@ -8671,23 +9131,20 @@
                     "type": "string",
                     "description": "Optional claim ID for claim-specific documents"
                   },
-                  "companyId": {
-                    "type": "string"
-                  },
                   "category": {
                     "type": "string",
                     "nullable": true,
                     "enum": [
                       "Expenses",
                       "Revenues",
-                      "Insurance"
+                      "Insurance",
+                      "Other"
                     ]
                   }
                 },
                 "required": [
                   "key",
                   "documentId",
-                  "companyId",
                   "category"
                 ]
               }
@@ -8862,220 +9319,82 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "id": {
-                        "type": "string"
-                      },
-                      "key": {
-                        "type": "string"
-                      },
-                      "downloadUrl": {
-                        "type": "string"
-                      },
-                      "s3DocumentId": {
-                        "type": "string"
-                      },
-                      "category": {
-                        "type": "string",
-                        "nullable": true,
-                        "enum": [
-                          "Expenses",
-                          "Revenues",
-                          "Insurance"
-                        ]
-                      },
-                      "createdAt": {
-                        "type": "string"
-                      },
-                      "lastModified": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "user": {
+                      "document": {
                         "type": "object",
                         "properties": {
                           "id": {
                             "type": "string"
                           },
-                          "firstName": {
+                          "key": {
                             "type": "string"
                           },
-                          "lastName": {
+                          "s3DocumentId": {
                             "type": "string"
                           },
-                          "email": {
+                          "category": {
                             "type": "string",
                             "nullable": true,
-                            "format": "email"
-                          },
-                          "companyId": {
-                            "type": "string",
-                            "nullable": true
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "firstName",
-                          "lastName"
-                        ]
-                      },
-                      "company": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "name": {
-                            "type": "string",
-                            "minLength": 1
-                          },
-                          "businessOwnerFullName": {
-                            "type": "string",
-                            "minLength": 1
-                          },
-                          "lastQuickBooksInvoiceImportTime": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "lastQuickBooksPurchaseImportTime": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "externals": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "source": {
-                                  "type": "string"
-                                },
-                                "externalId": {
-                                  "type": "string"
-                                },
-                                "companyId": {
-                                  "type": "string"
-                                },
-                                "createdAt": {
-                                  "type": "string"
-                                },
-                                "updatedAt": {
-                                  "type": "string"
-                                },
-                                "importTime": {
-                                  "type": "string"
-                                }
-                              },
-                              "required": [
-                                "id",
-                                "source",
-                                "externalId",
-                                "companyId",
-                                "createdAt",
-                                "updatedAt"
-                              ]
-                            }
-                          },
-                          "createdAt": {
-                            "type": "string"
-                          },
-                          "updatedAt": {
-                            "type": "string"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "name",
-                          "businessOwnerFullName",
-                          "createdAt",
-                          "updatedAt"
-                        ]
-                      },
-                      "claim": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "minLength": 1
-                          },
-                          "status": {
-                            "type": "string",
                             "enum": [
-                              "ACTIVE",
-                              "FILED",
-                              "IN_PROGRESS_DISASTER",
-                              "IN_PROGRESS_PERSONAL",
-                              "IN_PROGRESS_BUSINESS",
-                              "IN_PROGRESS_INSURANCE",
-                              "IN_PROGRESS_EXPORT"
-                            ],
-                            "default": "ACTIVE"
+                              "Expenses",
+                              "Revenues",
+                              "Insurance",
+                              "Other"
+                            ]
                           },
                           "createdAt": {
-                            "type": "string"
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
                           },
-                          "updatedAt": {
-                            "type": "string",
-                            "format": "date-time"
+                          "lastModified": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "nullable": true
+                              }
+                            ]
                           },
-                          "femaDisaster": {
+                          "user": {
                             "type": "object",
                             "properties": {
                               "id": {
-                                "type": "string",
-                                "format": "uuid"
-                              },
-                              "disasterNumber": {
-                                "type": "number"
-                              },
-                              "fipsStateCode": {
-                                "type": "number",
-                                "minimum": 0,
-                                "maximum": 56
-                              },
-                              "declarationDate": {
                                 "type": "string"
                               },
-                              "incidentBeginDate": {
-                                "type": "string",
-                                "nullable": true
-                              },
-                              "incidentEndDate": {
-                                "type": "string",
-                                "nullable": true
-                              },
-                              "fipsCountyCode": {
-                                "type": "number",
-                                "minimum": 0,
-                                "maximum": 1000,
-                                "exclusiveMaximum": true
-                              },
-                              "declarationType": {
-                                "type": "string",
-                                "minLength": 2,
-                                "maxLength": 2
-                              },
-                              "designatedArea": {
+                              "firstName": {
                                 "type": "string"
                               },
-                              "designatedIncidentTypes": {
+                              "lastName": {
+                                "type": "string"
+                              },
+                              "email": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "email"
+                              },
+                              "companyId": {
                                 "type": "string",
                                 "nullable": true
                               }
                             },
                             "required": [
                               "id",
-                              "disasterNumber",
-                              "fipsStateCode",
-                              "declarationDate",
-                              "fipsCountyCode",
-                              "declarationType",
-                              "designatedArea",
-                              "designatedIncidentTypes"
+                              "firstName",
+                              "lastName"
                             ]
                           },
-                          "selfDisaster": {
+                          "company": {
                             "type": "object",
                             "properties": {
                               "id": {
@@ -9083,93 +9402,417 @@
                               },
                               "name": {
                                 "type": "string",
-                                "minLength": 1,
-                                "maxLength": 250
+                                "minLength": 1
                               },
-                              "description": {
-                                "type": "string"
+                              "businessOwnerFullName": {
+                                "type": "string",
+                                "minLength": 1
                               },
-                              "startDate": {
-                                "type": "string"
+                              "lastQuickBooksInvoiceImportTime": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "nullable": true
+                                  }
+                                ]
                               },
-                              "endDate": {
-                                "type": "string"
+                              "lastQuickBooksPurchaseImportTime": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "nullable": true
+                                  }
+                                ]
+                              },
+                              "externals": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "source": {
+                                      "type": "string"
+                                    },
+                                    "externalId": {
+                                      "type": "string"
+                                    },
+                                    "companyId": {
+                                      "type": "string"
+                                    },
+                                    "createdAt": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "format": "date"
+                                        },
+                                        {
+                                          "type": "string"
+                                        }
+                                      ]
+                                    },
+                                    "updatedAt": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "format": "date"
+                                        },
+                                        {
+                                          "type": "string"
+                                        }
+                                      ]
+                                    },
+                                    "importTime": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "format": "date"
+                                        },
+                                        {
+                                          "type": "string"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "source",
+                                    "externalId",
+                                    "companyId",
+                                    "createdAt",
+                                    "updatedAt"
+                                  ]
+                                }
                               },
                               "createdAt": {
-                                "type": "string"
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  {
+                                    "type": "string"
+                                  }
+                                ]
                               },
                               "updatedAt": {
-                                "type": "string"
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  {
+                                    "type": "string"
+                                  }
+                                ]
                               }
                             },
                             "required": [
                               "id",
                               "name",
-                              "description",
-                              "startDate",
+                              "businessOwnerFullName",
                               "createdAt",
                               "updatedAt"
                             ]
                           },
-                          "insurancePolicy": {
+                          "claim": {
                             "type": "object",
                             "properties": {
                               "id": {
-                                "type": "string"
+                                "type": "string",
+                                "minLength": 1
                               },
-                              "policyName": {
-                                "type": "string"
-                              },
-                              "policyHolderFirstName": {
-                                "type": "string"
-                              },
-                              "policyHolderLastName": {
-                                "type": "string"
-                              },
-                              "insuranceCompanyName": {
-                                "type": "string"
-                              },
-                              "policyNumber": {
-                                "type": "string"
-                              },
-                              "insuranceType": {
-                                "type": "string"
-                              },
-                              "updatedAt": {
-                                "type": "string"
+                              "status": {
+                                "type": "string",
+                                "enum": [
+                                  "ACTIVE",
+                                  "FILED",
+                                  "IN_PROGRESS_DISASTER",
+                                  "IN_PROGRESS_PERSONAL",
+                                  "IN_PROGRESS_BUSINESS",
+                                  "IN_PROGRESS_INSURANCE",
+                                  "IN_PROGRESS_EXPORT"
+                                ],
+                                "default": "ACTIVE"
                               },
                               "createdAt": {
-                                "type": "string"
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  {
+                                    "type": "string"
+                                  }
+                                ]
+                              },
+                              "updatedAt": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  {
+                                    "type": "string"
+                                  }
+                                ]
+                              },
+                              "femaDisaster": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "disasterNumber": {
+                                    "type": "number"
+                                  },
+                                  "fipsStateCode": {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 56
+                                  },
+                                  "declarationDate": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "format": "date"
+                                      },
+                                      {
+                                        "type": "string"
+                                      }
+                                    ]
+                                  },
+                                  "incidentBeginDate": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "format": "date"
+                                      },
+                                      {
+                                        "type": "string"
+                                      },
+                                      {
+                                        "nullable": true
+                                      }
+                                    ]
+                                  },
+                                  "incidentEndDate": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "format": "date"
+                                      },
+                                      {
+                                        "type": "string"
+                                      },
+                                      {
+                                        "nullable": true
+                                      }
+                                    ]
+                                  },
+                                  "fipsCountyCode": {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 1000,
+                                    "exclusiveMaximum": true
+                                  },
+                                  "declarationType": {
+                                    "type": "string",
+                                    "minLength": 2,
+                                    "maxLength": 2
+                                  },
+                                  "designatedArea": {
+                                    "type": "string"
+                                  },
+                                  "designatedIncidentTypes": {
+                                    "type": "string",
+                                    "nullable": true
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "disasterNumber",
+                                  "fipsStateCode",
+                                  "declarationDate",
+                                  "fipsCountyCode",
+                                  "declarationType",
+                                  "designatedArea",
+                                  "designatedIncidentTypes"
+                                ]
+                              },
+                              "selfDisaster": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 250
+                                  },
+                                  "description": {
+                                    "type": "string"
+                                  },
+                                  "startDate": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "format": "date"
+                                      },
+                                      {
+                                        "type": "string"
+                                      }
+                                    ]
+                                  },
+                                  "endDate": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "format": "date"
+                                      },
+                                      {
+                                        "type": "string"
+                                      }
+                                    ]
+                                  },
+                                  "createdAt": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "format": "date"
+                                      },
+                                      {
+                                        "type": "string"
+                                      }
+                                    ]
+                                  },
+                                  "updatedAt": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "format": "date"
+                                      },
+                                      {
+                                        "type": "string"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "description",
+                                  "startDate",
+                                  "createdAt",
+                                  "updatedAt"
+                                ]
+                              },
+                              "insurancePolicy": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string"
+                                  },
+                                  "policyName": {
+                                    "type": "string"
+                                  },
+                                  "policyHolderFirstName": {
+                                    "type": "string"
+                                  },
+                                  "policyHolderLastName": {
+                                    "type": "string"
+                                  },
+                                  "insuranceCompanyName": {
+                                    "type": "string"
+                                  },
+                                  "policyNumber": {
+                                    "type": "string"
+                                  },
+                                  "insuranceType": {
+                                    "type": "string"
+                                  },
+                                  "updatedAt": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "format": "date"
+                                      },
+                                      {
+                                        "type": "string"
+                                      }
+                                    ]
+                                  },
+                                  "createdAt": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "format": "date"
+                                      },
+                                      {
+                                        "type": "string"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "policyName",
+                                  "policyHolderFirstName",
+                                  "policyHolderLastName",
+                                  "insuranceCompanyName",
+                                  "policyNumber",
+                                  "insuranceType",
+                                  "updatedAt",
+                                  "createdAt"
+                                ]
+                              },
+                              "lastModified": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  {
+                                    "type": "string"
+                                  }
+                                ]
                               }
                             },
                             "required": [
                               "id",
-                              "policyName",
-                              "policyHolderFirstName",
-                              "policyHolderLastName",
-                              "insuranceCompanyName",
-                              "policyNumber",
-                              "insuranceType",
-                              "updatedAt",
                               "createdAt"
                             ]
-                          },
-                          "lastModified": {
-                            "type": "string"
                           }
                         },
                         "required": [
                           "id",
-                          "createdAt"
+                          "key",
+                          "s3DocumentId",
+                          "company"
                         ]
+                      },
+                      "downloadUrl": {
+                        "type": "string"
                       }
                     },
                     "required": [
-                      "id",
-                      "key",
-                      "downloadUrl",
-                      "s3DocumentId",
-                      "company"
+                      "document",
+                      "downloadUrl"
                     ]
                   }
                 }
@@ -9326,7 +9969,8 @@
                     "enum": [
                       "Expenses",
                       "Revenues",
-                      "Insurance"
+                      "Insurance",
+                      "Other"
                     ]
                   }
                 },

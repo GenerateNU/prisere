@@ -10,7 +10,6 @@ export enum DocumentTypes {
 }
 
 export const GetUploadUrlRequestSchema = z.object({
-    companyId: z.string(),
     fileName: z.string().min(1).describe("Original file name"),
     fileType: z.string().min(1).describe("MIME type of the file (e.g., application/pdf, image/jpeg)"),
     documentType: z.enum(DocumentTypes).default(DocumentTypes.GENERAL_BUSINESS),
@@ -22,7 +21,6 @@ export const ConfirmUploadRequestSchema = z.object({
     documentId: z.string().min(1).describe("Document ID returned from getUploadUrl"),
     documentType: z.enum(DocumentTypes).default(DocumentTypes.GENERAL_BUSINESS),
     claimId: z.string().optional().describe("Optional claim ID for claim-specific documents"),
-    companyId: z.string(),
     category: z.enum(DocumentCategories).nullable(),
 });
 

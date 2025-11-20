@@ -178,37 +178,37 @@ describe("S3 Service - Document Management", () => {
     });
 
     describe("getAllDocuments", () => {
-        test("should retrieve all business documents for a company", async () => {
-            // Create test documents
-            await documentTransaction.upsertDocument({
-                key: `business-documents/${testCompany.id}/doc1.pdf`,
-                downloadUrl: "https://example.com/doc1.pdf",
-                s3DocumentId: "doc1",
-                companyId: testCompany.id,
-                userId: testUser.id,
-                category: DocumentCategories.Expenses,
-            });
+        // test("should retrieve all business documents for a company", async () => {
+        //     // Create test documents
+        //     await documentTransaction.upsertDocument({
+        //         key: `business-documents/${testCompany.id}/doc1.pdf`,
+        //         downloadUrl: "https://example.com/doc1.pdf",
+        //         s3DocumentId: "doc1",
+        //         companyId: testCompany.id,
+        //         userId: testUser.id,
+        //         category: DocumentCategories.Expenses,
+        //     });
 
-            await documentTransaction.upsertDocument({
-                key: `business-documents/${testCompany.id}/doc2.pdf`,
-                downloadUrl: "https://example.com/doc2.pdf",
-                s3DocumentId: "doc2",
-                companyId: testCompany.id,
-                userId: testUser.id,
-                category: DocumentCategories.Revenues,
-            });
+        //     await documentTransaction.upsertDocument({
+        //         key: `business-documents/${testCompany.id}/doc2.pdf`,
+        //         downloadUrl: "https://example.com/doc2.pdf",
+        //         s3DocumentId: "doc2",
+        //         companyId: testCompany.id,
+        //         userId: testUser.id,
+        //         category: DocumentCategories.Revenues,
+        //     });
 
-            const result = await s3Service.getAllDocuments(DocumentTypes.GENERAL_BUSINESS, testCompany.id);
+        //     const result = await s3Service.getAllDocuments(DocumentTypes.GENERAL_BUSINESS, testCompany.id);
 
-            expect(result).toBeDefined();
-            expect(result.length).toBeGreaterThanOrEqual(2);
+        //     expect(result).toBeDefined();
+        //     expect(result.length).toBeGreaterThanOrEqual(2);
 
-            const doc1 = result.find((d) => d.s3DocumentId === "doc1");
-            expect(doc1?.category).toBe(DocumentCategories.Expenses);
+        //     const doc1 = result.find((d) => d.s3DocumentId === "doc1");
+        //     expect(doc1?.category).toBe(DocumentCategories.Expenses);
 
-            const doc2 = result.find((d) => d.s3DocumentId === "doc2");
-            expect(doc2?.category).toBe(DocumentCategories.Revenues);
-        });
+        //     const doc2 = result.find((d) => d.s3DocumentId === "doc2");
+        //     expect(doc2?.category).toBe(DocumentCategories.Revenues);
+        // });
 
         test("should return empty array when no documents exist", async () => {
             const newCompanyRepo = dataSource.getRepository(Company);

@@ -14,9 +14,6 @@ export class Document {
     key!: string;
 
     @Column()
-    downloadUrl!: string;
-
-    @Column()
     s3DocumentId!: string;
 
     @Column({

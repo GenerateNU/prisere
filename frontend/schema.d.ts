@@ -239,8 +239,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | null;
-                            lastQuickBooksPurchaseImportTime?: string | null;
+                            lastQuickBooksInvoiceImportTime?: string | unknown;
+                            lastQuickBooksPurchaseImportTime?: string | unknown;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -317,8 +317,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | null;
-                            lastQuickBooksPurchaseImportTime?: string | null;
+                            lastQuickBooksInvoiceImportTime?: string | unknown;
+                            lastQuickBooksPurchaseImportTime?: string | unknown;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -397,8 +397,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | null;
-                            lastQuickBooksPurchaseImportTime?: string | null;
+                            lastQuickBooksInvoiceImportTime?: string | unknown;
+                            lastQuickBooksPurchaseImportTime?: string | unknown;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -486,8 +486,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | null;
-                            lastQuickBooksPurchaseImportTime?: string | null;
+                            lastQuickBooksInvoiceImportTime?: string | unknown;
+                            lastQuickBooksPurchaseImportTime?: string | unknown;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -575,8 +575,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | null;
-                            lastQuickBooksPurchaseImportTime?: string | null;
+                            lastQuickBooksInvoiceImportTime?: string | unknown;
+                            lastQuickBooksPurchaseImportTime?: string | unknown;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -721,24 +721,14 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
-                            /** Format: date-time */
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             createdAt: string;
-                            /** Format: date-time */
                             updatedAt?: string;
                             femaDisaster?: {
                                 /** Format: uuid */
                                 id: string;
                                 disasterNumber: number;
                                 fipsStateCode: number;
-                                /** Format: date-time */
                                 declarationDate: string;
                                 incidentBeginDate?: string;
                                 incidentEndDate?: string;
@@ -902,7 +892,6 @@ export interface paths {
                             id: string;
                             disasterNumber: number;
                             fipsStateCode: number;
-                            /** Format: date-time */
                             declarationDate: string;
                             incidentBeginDate?: string;
                             incidentEndDate?: string;
@@ -1513,8 +1502,8 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksInvoiceImportTime?: string | null;
-                                    lastQuickBooksPurchaseImportTime?: string | null;
+                                    lastQuickBooksInvoiceImportTime?: string | unknown;
+                                    lastQuickBooksPurchaseImportTime?: string | unknown;
                                     externals?: {
                                         id: string;
                                         source: string;
@@ -3074,14 +3063,7 @@ export interface paths {
                          * @default ACTIVE
                          * @enum {string}
                          */
-                        status?:
-                            | "ACTIVE"
-                            | "FILED"
-                            | "IN_PROGRESS_DISASTER"
-                            | "IN_PROGRESS_PERSONAL"
-                            | "IN_PROGRESS_BUSINESS"
-                            | "IN_PROGRESS_INSURANCE"
-                            | "IN_PROGRESS_EXPORT";
+                        status?: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                     };
                 };
             };
@@ -3098,14 +3080,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3115,7 +3090,6 @@ export interface paths {
                                 id: string;
                                 disasterNumber: number;
                                 fipsStateCode: number;
-                                /** Format: date-time */
                                 declarationDate: string;
                                 incidentBeginDate?: string;
                                 incidentEndDate?: string;
@@ -3215,24 +3189,14 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
-                            /** Format: date-time */
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             createdAt: string;
-                            /** Format: date-time */
                             updatedAt?: string;
                             femaDisaster?: {
                                 /** Format: uuid */
                                 id: string;
                                 disasterNumber: number;
                                 fipsStateCode: number;
-                                /** Format: date-time */
                                 declarationDate: string;
                                 incidentBeginDate?: string;
                                 incidentEndDate?: string;
@@ -5267,7 +5231,6 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        companyId: string;
                         /** @description Original file name */
                         fileName: string;
                         /** @description MIME type of the file (e.g., application/pdf, image/jpeg) */
@@ -5372,9 +5335,8 @@ export interface paths {
                         documentType?: "CLAIM" | "GENERAL_BUSINESS" | "IMAGES";
                         /** @description Optional claim ID for claim-specific documents */
                         claimId?: string;
-                        companyId: string;
                         /** @enum {string|null} */
-                        category: "Expenses" | "Revenues" | "Insurance" | null;
+                        category: "Expenses" | "Revenues" | "Insurance" | "Other" | null;
                     };
                 };
             };
@@ -5487,92 +5449,86 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            id: string;
-                            key: string;
-                            downloadUrl: string;
-                            s3DocumentId: string;
-                            /** @enum {string|null} */
-                            category?: "Expenses" | "Revenues" | "Insurance" | null;
-                            createdAt?: string;
-                            lastModified?: string | null;
-                            user?: {
+                            document: {
                                 id: string;
-                                firstName: string;
-                                lastName: string;
-                                /** Format: email */
-                                email?: string | null;
-                                companyId?: string | null;
-                            };
-                            company: {
-                                id: string;
-                                name: string;
-                                businessOwnerFullName: string;
-                                lastQuickBooksInvoiceImportTime?: string | null;
-                                lastQuickBooksPurchaseImportTime?: string | null;
-                                externals?: {
+                                key: string;
+                                s3DocumentId: string;
+                                /** @enum {string|null} */
+                                category?: "Expenses" | "Revenues" | "Insurance" | "Other" | null;
+                                createdAt?: string;
+                                lastModified?: string | unknown;
+                                user?: {
                                     id: string;
-                                    source: string;
-                                    externalId: string;
-                                    companyId: string;
-                                    createdAt: string;
-                                    updatedAt: string;
-                                    importTime?: string;
-                                }[];
-                                createdAt: string;
-                                updatedAt: string;
-                            };
-                            claim?: {
-                                id: string;
-                                /**
-                                 * @default ACTIVE
-                                 * @enum {string}
-                                 */
-                                status:
-                                    | "ACTIVE"
-                                    | "FILED"
-                                    | "IN_PROGRESS_DISASTER"
-                                    | "IN_PROGRESS_PERSONAL"
-                                    | "IN_PROGRESS_BUSINESS"
-                                    | "IN_PROGRESS_INSURANCE"
-                                    | "IN_PROGRESS_EXPORT";
-                                createdAt: string;
-                                /** Format: date-time */
-                                updatedAt?: string;
-                                femaDisaster?: {
-                                    /** Format: uuid */
-                                    id: string;
-                                    disasterNumber: number;
-                                    fipsStateCode: number;
-                                    declarationDate: string;
-                                    incidentBeginDate?: string | null;
-                                    incidentEndDate?: string | null;
-                                    fipsCountyCode: number;
-                                    declarationType: string;
-                                    designatedArea: string;
-                                    designatedIncidentTypes: string | null;
+                                    firstName: string;
+                                    lastName: string;
+                                    /** Format: email */
+                                    email?: string | null;
+                                    companyId?: string | null;
                                 };
-                                selfDisaster?: {
+                                company: {
                                     id: string;
                                     name: string;
-                                    description: string;
-                                    startDate: string;
-                                    endDate?: string;
+                                    businessOwnerFullName: string;
+                                    lastQuickBooksInvoiceImportTime?: string | unknown;
+                                    lastQuickBooksPurchaseImportTime?: string | unknown;
+                                    externals?: {
+                                        id: string;
+                                        source: string;
+                                        externalId: string;
+                                        companyId: string;
+                                        createdAt: string;
+                                        updatedAt: string;
+                                        importTime?: string;
+                                    }[];
                                     createdAt: string;
                                     updatedAt: string;
                                 };
-                                insurancePolicy?: {
+                                claim?: {
                                     id: string;
-                                    policyName: string;
-                                    policyHolderFirstName: string;
-                                    policyHolderLastName: string;
-                                    insuranceCompanyName: string;
-                                    policyNumber: string;
-                                    insuranceType: string;
-                                    updatedAt: string;
+                                    /**
+                                     * @default ACTIVE
+                                     * @enum {string}
+                                     */
+                                    status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                                     createdAt: string;
+                                    updatedAt?: string;
+                                    femaDisaster?: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        disasterNumber: number;
+                                        fipsStateCode: number;
+                                        declarationDate: string;
+                                        incidentBeginDate?: string | unknown;
+                                        incidentEndDate?: string | unknown;
+                                        fipsCountyCode: number;
+                                        declarationType: string;
+                                        designatedArea: string;
+                                        designatedIncidentTypes: string | null;
+                                    };
+                                    selfDisaster?: {
+                                        id: string;
+                                        name: string;
+                                        description: string;
+                                        startDate: string;
+                                        endDate?: string;
+                                        createdAt: string;
+                                        updatedAt: string;
+                                    };
+                                    insurancePolicy?: {
+                                        id: string;
+                                        policyName: string;
+                                        policyHolderFirstName: string;
+                                        policyHolderLastName: string;
+                                        insuranceCompanyName: string;
+                                        policyNumber: string;
+                                        insuranceType: string;
+                                        updatedAt: string;
+                                        createdAt: string;
+                                    };
+                                    lastModified?: string;
                                 };
-                                lastModified?: string;
                             };
+                            downloadUrl: string;
                         }[];
                     };
                 };
@@ -5708,7 +5664,7 @@ export interface paths {
                         /** @description The database ID of the document */
                         documentId: string;
                         /** @enum {string} */
-                        category: "Expenses" | "Revenues" | "Insurance";
+                        category: "Expenses" | "Revenues" | "Insurance" | "Other";
                     };
                 };
             };

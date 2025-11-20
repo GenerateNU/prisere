@@ -11,8 +11,9 @@ import { createHash } from "crypto";
 import { DocumentTypes, GetUploadUrlResponse, PdfListItem, UploadResult } from "../../types/S3Types";
 import { logMessageToFile } from "../../utilities/logger";
 import { DataSource } from "typeorm";
-import { DocumentCategories } from "../../types/DocumentType";
+import { DocumentCategories, DocumentWithUrl, DocumentWithUrlSchema } from "../../types/DocumentType";
 import { Document } from "../../entities/Document";
+import { IDocumentTransaction } from "../documents/transaction";
 
 const S3_BUCKET_NAME = process.env.OBJECTS_STORAGE_BUCKET_NAME;
 const PRESIGNED_URL_EXPIRY = 3600; // 1 hour
@@ -79,7 +80,7 @@ export interface IS3Service {
 
     uploadToS3(uploadUrl: string, file: File): Promise<void>;
 
-    getAllDocuments(documentType: DocumentTypes, companyId?: string, userId?: string): Promise<Document[] | null>;
+    getAllDocuments(documentType: DocumentTypes, companyId?: string, userId?: string): Promise<DocumentWithUrl[] | null>;
 
     updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void>;
 }
@@ -155,14 +156,14 @@ export class S3Service implements IS3Service {
         return this.documentTransaction.updateDocumentCategory(documentId, category);
     }
 
-    async getAllDocuments(documentType: DocumentTypes, companyId?: string, userId?: string): Promise<Document[]> {
+    async getAllDocuments(documentType: DocumentTypes, companyId: string, userId?: string): Promise<DocumentWithUrl[]> {
         try {
             const repository = this.db.getRepository(Document);
 
             // Query documents from database based on type
             let dbDocuments: Document[];
 
-            if (documentType === DocumentTypes.GENERAL_BUSINESS) {
+            if (documentType === DocumentTypes.GENERAL_BUSINESS || documentType === DocumentTypes.CLAIM) {
                 dbDocuments = await repository.find({
                     where: { companyId: companyId },
                     relations: ["user", "company", "claim"],
@@ -171,13 +172,6 @@ export class S3Service implements IS3Service {
                 dbDocuments = await repository.find({
                     where: { userId: userId },
                     relations: ["user", "company"],
-                });
-            } else if (documentType === DocumentTypes.CLAIM) {
-                dbDocuments = await repository.find({
-                    where: {
-                        companyId: companyId,
-                    },
-                    relations: ["user", "company", "claim"],
                 });
             } else {
                 throw new Error(`Unsupported document type: ${documentType}`);
@@ -191,14 +185,18 @@ export class S3Service implements IS3Service {
             // Enrich with fresh presigned URLs from S3
             const enrichedDocuments = await Promise.all(
                 dbDocuments.map(async (doc) => {
+                    console.log(doc)
                     try {
                         // Generate fresh presigned URL
-                        doc.downloadUrl = await this.getPresignedDownloadUrl(doc.key);
+                        const downloadUrl = await this.getPresignedDownloadUrl(doc.key);
+
+                        return { document: doc, downloadUrl };
                     } catch (error) {
                         console.error(`Error generating URL for ${doc.key}:`, error);
                         // Keep existing URL or set to empty string
+                        
                     }
-                    return doc;
+                    return { document: doc, downloadUrl: "" };
                 })
             );
 
