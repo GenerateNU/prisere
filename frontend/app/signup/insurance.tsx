@@ -6,15 +6,13 @@ import { Spinner } from "@/components/ui/spinner";
 import { CreateInsurancePolicyBulkRequest, CreateInsurancePolicyRequest } from "@/types/insurance-policy";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
-import { Dispatch } from "react";
-import { SetStateAction } from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
 
 interface InsuranceInfoProps {
-   handleNext: () => void;
+    handleNext: () => void;
 }
 
-export default function Insurance({ handleNext:incrementProgress }: InsuranceInfoProps) {
+export default function Insurance({ handleNext: incrementProgress }: InsuranceInfoProps) {
     const [insurancePayload, setInsurancePayload] = React.useState<CreateInsurancePolicyBulkRequest>([
         {
             policyName: "",
@@ -29,7 +27,7 @@ export default function Insurance({ handleNext:incrementProgress }: InsuranceInf
     const { mutate: bulkCreateInsurance, isPending: createInsurancePending } = useMutation({
         mutationFn: () => createInsurancePolicyBulk(insurancePayload),
         onSuccess: () => {
-            incrementProgress()
+            incrementProgress();
         },
         onError: (error: Error) => {
             setError(error.message || "An error occurred while creating insurance policies.");

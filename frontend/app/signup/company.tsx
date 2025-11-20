@@ -10,7 +10,6 @@ import { CreateLocationBulkRequest, CreateLocationRequest } from "@/types/locati
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { Dispatch, SetStateAction } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { Card } from "@/components/ui/card";
 import { IoAddCircleOutline } from "react-icons/io5";
@@ -19,7 +18,7 @@ interface CompanyInfoProps {
     handleNext: () => void;
 }
 
-export default function Company({handleNext:incrementNext }: CompanyInfoProps) {
+export default function Company({ handleNext: incrementNext }: CompanyInfoProps) {
     const [companyError, setCompanyError] = useState<string | null>(null);
     const [locError, setLocError] = useState<string | null>(null);
 
@@ -73,7 +72,7 @@ export default function Company({handleNext:incrementNext }: CompanyInfoProps) {
         onSuccess: () => {
             incrementNext();
         },
-        onError: (error: Error) => {
+        onError: (_error: Error) => {
             setLocError("Error creating locations. Check required fields and try again");
         },
     });

@@ -26,16 +26,16 @@ export default function Onboarding({ email }: OnboardingProps) {
 
     const infoSteps = [0, 2, 4, 7];
 
-    function getStep(stage:number): number {
-        switch(stage){
+    function getStep(stage: number): number {
+        switch (stage) {
             case 0:
-                return 2
+                return 2;
             case 1:
-                return 3
+                return 3;
             case 2:
-                return 7
-            default :
-                return 0
+                return 7;
+            default:
+                return 0;
         }
     }
 
@@ -73,7 +73,7 @@ export default function Onboarding({ email }: OnboardingProps) {
             optional={true}
         />,
         <Insurance key={5} handleNext={incrementProgress} />,
-        <Quickbooks key={6} handleNext={incrementProgress}/>,
+        <Quickbooks key={6} handleNext={incrementProgress} />,
         <InfoPage
             key={7}
             handleNext={() => router.push("/")}

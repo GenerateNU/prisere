@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Dispatch, SetStateAction } from "react";
 import { GoSync } from "react-icons/go";
 import { FiUpload } from "react-icons/fi";
 
