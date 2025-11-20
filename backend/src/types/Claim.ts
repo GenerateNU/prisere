@@ -16,8 +16,8 @@ import { LocationAddressSchema } from "./Location";
 export const ClaimSchema = z.object({
     id: z.string().nonempty(),
     status: z.nativeEnum(ClaimStatusType).default(ClaimStatusType.ACTIVE),
-    createdAt: z.union([z.date(), z.string()]),
-    updatedAt: z.union([z.date(), z.string()]).optional(),
+    createdAt: z.iso.datetime(),
+    updatedAt: z.iso.datetime().optional(),
     femaDisaster: GetAllDisastersResponseSchema.element.optional(), // .element extracts the item schema
     selfDisaster: GetSelfDisasterForCompanyResponseSchema.optional(),
     insurancePolicy: SingleInsurancePolicyResponseSchema.optional(),

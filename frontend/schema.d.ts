@@ -814,15 +814,10 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                            /** Format: date-time */
                             createdAt: string;
+                            /** Format: date-time */
                             updatedAt?: string;
                             femaDisaster?: {
                                 /** Format: uuid */
@@ -2928,12 +2923,7 @@ export interface paths {
                                 amountCents: number;
                                 category?: string | null;
                                 /** @enum {string} */
-                                type:
-                                    | "extraneous"
-                                    | "typical"
-                                    | "pending"
-                                    | "suggested extraneous"
-                                    | "suggested typical";
+                                type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                                 dateCreated: string;
                                 lastUpdated: string;
                                 /** Format: date-time */
@@ -3198,14 +3188,7 @@ export interface paths {
                          * @default ACTIVE
                          * @enum {string}
                          */
-                        status?:
-                            | "ACTIVE"
-                            | "FILED"
-                            | "IN_PROGRESS_DISASTER"
-                            | "IN_PROGRESS_PERSONAL"
-                            | "IN_PROGRESS_BUSINESS"
-                            | "IN_PROGRESS_INSURANCE"
-                            | "IN_PROGRESS_EXPORT";
+                        status?: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                     };
                 };
             };
@@ -3222,14 +3205,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3352,15 +3328,10 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                            /** Format: date-time */
                             createdAt: string;
+                            /** Format: date-time */
                             updatedAt?: string;
                             femaDisaster?: {
                                 /** Format: uuid */
@@ -3491,14 +3462,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3508,7 +3472,6 @@ export interface paths {
                                 id: string;
                                 disasterNumber: number;
                                 fipsStateCode: number;
-                                /** Format: date-time */
                                 declarationDate: string;
                                 incidentBeginDate?: string;
                                 incidentEndDate?: string;
@@ -3678,14 +3641,7 @@ export interface paths {
                 content: {
                     "application/json": {
                         /** @enum {string} */
-                        status:
-                            | "ACTIVE"
-                            | "FILED"
-                            | "IN_PROGRESS_DISASTER"
-                            | "IN_PROGRESS_PERSONAL"
-                            | "IN_PROGRESS_BUSINESS"
-                            | "IN_PROGRESS_INSURANCE"
-                            | "IN_PROGRESS_EXPORT";
+                        status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                         insurancePolicyId?: string;
                     };
                 };
@@ -3703,14 +3659,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3720,7 +3669,6 @@ export interface paths {
                                 id: string;
                                 disasterNumber: number;
                                 fipsStateCode: number;
-                                /** Format: date-time */
                                 declarationDate: string;
                                 incidentBeginDate?: string;
                                 incidentEndDate?: string;
@@ -6013,6 +5961,7 @@ export interface paths {
                                     /** Format: email */
                                     email?: string | null;
                                     companyId?: string | null;
+                                    phoneNumber: string;
                                 };
                                 company: {
                                     id: string;
@@ -6029,6 +5978,10 @@ export interface paths {
                                         updatedAt: string;
                                         importTime?: string;
                                     }[];
+                                    /** Format: email */
+                                    alternateEmail?: string;
+                                    /** @enum {string} */
+                                    companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                                     createdAt: string;
                                     updatedAt: string;
                                 };
@@ -6038,15 +5991,9 @@ export interface paths {
                                      * @default ACTIVE
                                      * @enum {string}
                                      */
-                                    status:
-                                        | "ACTIVE"
-                                        | "FILED"
-                                        | "IN_PROGRESS_DISASTER"
-                                        | "IN_PROGRESS_PERSONAL"
-                                        | "IN_PROGRESS_BUSINESS"
-                                        | "IN_PROGRESS_INSURANCE"
-                                        | "IN_PROGRESS_EXPORT";
+                                    status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                                     createdAt: string;
+                                    /** Format: date-time */
                                     updatedAt?: string;
                                     femaDisaster?: {
                                         /** Format: uuid */
@@ -6081,8 +6028,22 @@ export interface paths {
                                         updatedAt: string;
                                         createdAt: string;
                                     };
+                                    claimLocations?: {
+                                        id: string;
+                                        alias: string;
+                                        country: string;
+                                        stateProvince: string;
+                                        city: string;
+                                        streetAddress: string;
+                                        postalCode: string;
+                                        county?: string;
+                                        /** Format: uuid */
+                                        companyId: string;
+                                        fipsStateCode: number;
+                                        fipsCountyCode: number;
+                                    }[];
                                     lastModified?: string;
-                                };
+                                } | null;
                             };
                             downloadUrl: string;
                         }[];

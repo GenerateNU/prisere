@@ -1724,26 +1724,12 @@
                       "default": "ACTIVE"
                     },
                     "createdAt": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "type": "string"
-                        }
-                      ]
+                      "type": "string",
+                      "format": "date-time"
                     },
                     "updatedAt": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "type": "string"
-                        }
-                      ]
+                      "type": "string",
+                      "format": "date-time"
                     },
                     "femaDisaster": {
                       "type": "object",
@@ -6255,26 +6241,12 @@
                         "default": "ACTIVE"
                       },
                       "createdAt": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "date"
-                          },
-                          {
-                            "type": "string"
-                          }
-                        ]
+                        "type": "string",
+                        "format": "date-time"
                       },
                       "updatedAt": {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "format": "date"
-                          },
-                          {
-                            "type": "string"
-                          }
-                        ]
+                        "type": "string",
+                        "format": "date-time"
                       },
                       "femaDisaster": {
                         "type": "object",
@@ -6598,8 +6570,15 @@
                           "maximum": 56
                         },
                         "declarationDate": {
-                          "type": "string",
-                          "format": "date-time"
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ]
                         },
                         "incidentBeginDate": {
                           "type": "string"
@@ -7000,8 +6979,15 @@
                           "maximum": 56
                         },
                         "declarationDate": {
-                          "type": "string",
-                          "format": "date-time"
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ]
                         },
                         "incidentBeginDate": {
                           "type": "string"
@@ -10631,12 +10617,16 @@
                               "companyId": {
                                 "type": "string",
                                 "nullable": true
+                              },
+                              "phoneNumber": {
+                                "type": "string"
                               }
                             },
                             "required": [
                               "id",
                               "firstName",
-                              "lastName"
+                              "lastName",
+                              "phoneNumber"
                             ]
                           },
                           "company": {
@@ -10742,6 +10732,19 @@
                                   ]
                                 }
                               },
+                              "alternateEmail": {
+                                "type": "string",
+                                "format": "email"
+                              },
+                              "companyType": {
+                                "type": "string",
+                                "enum": [
+                                  "LLC",
+                                  "Sole Proprietorship",
+                                  "Corporation",
+                                  "Partnership"
+                                ]
+                              },
                               "createdAt": {
                                 "anyOf": [
                                   {
@@ -10769,12 +10772,14 @@
                               "id",
                               "name",
                               "businessOwnerFullName",
+                              "companyType",
                               "createdAt",
                               "updatedAt"
                             ]
                           },
                           "claim": {
                             "type": "object",
+                            "nullable": true,
                             "properties": {
                               "id": {
                                 "type": "string",
@@ -10805,15 +10810,8 @@
                                 ]
                               },
                               "updatedAt": {
-                                "anyOf": [
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  },
-                                  {
-                                    "type": "string"
-                                  }
-                                ]
+                                "type": "string",
+                                "format": "date-time"
                               },
                               "femaDisaster": {
                                 "type": "object",
@@ -11025,6 +11023,62 @@
                                   "updatedAt",
                                   "createdAt"
                                 ]
+                              },
+                              "claimLocations": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "string"
+                                    },
+                                    "alias": {
+                                      "type": "string"
+                                    },
+                                    "country": {
+                                      "type": "string"
+                                    },
+                                    "stateProvince": {
+                                      "type": "string"
+                                    },
+                                    "city": {
+                                      "type": "string"
+                                    },
+                                    "streetAddress": {
+                                      "type": "string"
+                                    },
+                                    "postalCode": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "pattern": "^\\d+$"
+                                    },
+                                    "county": {
+                                      "type": "string"
+                                    },
+                                    "companyId": {
+                                      "type": "string",
+                                      "format": "uuid"
+                                    },
+                                    "fipsStateCode": {
+                                      "type": "number"
+                                    },
+                                    "fipsCountyCode": {
+                                      "type": "number"
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "alias",
+                                    "country",
+                                    "stateProvince",
+                                    "city",
+                                    "streetAddress",
+                                    "postalCode",
+                                    "companyId",
+                                    "fipsStateCode",
+                                    "fipsCountyCode"
+                                  ]
+                                }
                               },
                               "lastModified": {
                                 "anyOf": [
