@@ -16,3 +16,4 @@ terraform/.terraform.lock.hcl
 **/terraform/
 **/index.mjs
 src/tests/claim/pdf-generation/test-outputs/**
+backend/src/modules/fema-risk-index-data/tmp/**

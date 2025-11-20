@@ -16,6 +16,7 @@ import { addOpenApiInvoiceLineItemRoutes } from "./invoice-line-item-routes";
 import { addOpenApiPurchaseLineItemRoutes } from "./purchase-line-item";
 import { addOpenApiSelfDisasterRoutes } from "./self-declared-disasters";
 import { addOpenApiInsurancePolicyRoutes } from "./insurance-policy-routes";
+import { addOpenApiFemaRiskIndexRoutes } from "./fema-risk-index-data";
 
 export const setUpOpenApiRoutes = (db: DataSource) => {
     const openApiApp = openApiRoutes(db);
@@ -55,6 +56,7 @@ const openApiRoutes = (db: DataSource): OpenAPIHono => {
     addOpenApiPurchaseLineItemRoutes(openApi, db);
     addOpenApiSelfDisasterRoutes(openApi, db);
     addOpenApiInsurancePolicyRoutes(openApi, db);
+    addOpenApiFemaRiskIndexRoutes(openApi, db);
 
     return openApi;
 };

@@ -8497,6 +8497,157 @@
           }
         }
       }
+    },
+    "/fema-risk-index": {
+      "get": {
+        "summary": "Get all of the fema risk index data",
+        "description": "Get all of the fema risk index data",
+        "tags": [
+          "fema-risk-data"
+        ],
+        "responses": {
+          "200": {
+            "description": "Fema risk index data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "countyFipsCode": {
+                        "type": "string"
+                      },
+                      "riskRating": {
+                        "type": "string"
+                      },
+                      "ealRating": {
+                        "type": "string"
+                      },
+                      "socialVuln": {
+                        "type": "string"
+                      },
+                      "communityResilience": {
+                        "type": "string"
+                      },
+                      "coastalFlooding": {
+                        "type": "string"
+                      },
+                      "drought": {
+                        "type": "string"
+                      },
+                      "wildFire": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "countyFipsCode",
+                      "riskRating",
+                      "ealRating",
+                      "socialVuln",
+                      "communityResilience",
+                      "coastalFlooding",
+                      "drought",
+                      "wildFire"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fetching fema index data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fetching fema index data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Updates all of the fema risk index data",
+        "description": "Will delete the existing fema risk index data in the table and re import all of the index data",
+        "tags": [
+          "Disaster"
+        ],
+        "responses": {
+          "200": {
+            "description": "Update risk index data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Getting Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Getting Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
