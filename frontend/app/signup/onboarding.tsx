@@ -46,7 +46,7 @@ export default function Onboarding({ email }: OnboardingProps) {
             title={"First we'll need some basic\ninformation to set up your account."}
             description="This information will help set up your profile."
         />,
-        <UserInfoPage key={1} email={email} progress={progress} setProgress={setProgress} />,
+        <UserInfoPage key={1} email={email} handleNext={incrementProgress} />,
         <InfoPage
             key={2}
             handleNext={incrementProgress}
@@ -64,7 +64,7 @@ export default function Onboarding({ email }: OnboardingProps) {
                 />
             }
         />,
-        <Company key={3} progress={progress} setProgress={setProgress} />,
+        <Company key={3} handleNext={incrementProgress} />,
         <InfoPage
             key={4}
             handleNext={incrementProgress}
@@ -72,8 +72,8 @@ export default function Onboarding({ email }: OnboardingProps) {
             description="This is an optional step but will be helpful if you choose to file a claim report."
             optional={true}
         />,
-        <Insurance key={5} progress={progress} setProgress={setProgress} />,
-        <Quickbooks key={6} progress={progress} setProgress={setProgress} />,
+        <Insurance key={5} handleNext={incrementProgress} />,
+        <Quickbooks key={6} handleNext={incrementProgress}/>,
         <InfoPage
             key={7}
             handleNext={() => router.push("/")}

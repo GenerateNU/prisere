@@ -16,11 +16,10 @@ import { Card } from "@/components/ui/card";
 import { IoAddCircleOutline } from "react-icons/io5";
 
 interface CompanyInfoProps {
-    progress: number;
-    setProgress: Dispatch<SetStateAction<number>>;
+    handleNext: () => void;
 }
 
-export default function Company({ progress, setProgress }: CompanyInfoProps) {
+export default function Company({handleNext:incrementNext }: CompanyInfoProps) {
     const [companyError, setCompanyError] = useState<string | null>(null);
     const [locError, setLocError] = useState<string | null>(null);
 
@@ -72,7 +71,7 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
     const { isPending: isLocationPending, mutate: mutateLocation } = useMutation({
         mutationFn: (payload: CreateLocationBulkRequest) => createLocationBulk(payload),
         onSuccess: () => {
-            setProgress(progress + 1);
+            incrementNext();
         },
         onError: (error: Error) => {
             setLocError("Error creating locations. Check required fields and try again");

@@ -11,11 +11,10 @@ import { SetStateAction } from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
 
 interface InsuranceInfoProps {
-    progress: number;
-    setProgress: Dispatch<SetStateAction<number>>;
+   handleNext: () => void;
 }
 
-export default function Insurance({ progress, setProgress }: InsuranceInfoProps) {
+export default function Insurance({ handleNext:incrementProgress }: InsuranceInfoProps) {
     const [insurancePayload, setInsurancePayload] = React.useState<CreateInsurancePolicyBulkRequest>([
         {
             policyName: "",
@@ -30,7 +29,7 @@ export default function Insurance({ progress, setProgress }: InsuranceInfoProps)
     const { mutate: bulkCreateInsurance, isPending: createInsurancePending } = useMutation({
         mutationFn: () => createInsurancePolicyBulk(insurancePayload),
         onSuccess: () => {
-            setProgress(progress + 1);
+            incrementProgress()
         },
         onError: (error: Error) => {
             setError(error.message || "An error occurred while creating insurance policies.");
@@ -145,7 +144,7 @@ export default function Insurance({ progress, setProgress }: InsuranceInfoProps)
                     <Button
                         type="button"
                         variant="link"
-                        onClick={() => setProgress(progress + 1)}
+                        onClick={() => incrementProgress()}
                         className="underline hover:text-stone-200 h-fit w-fit text-[12px] font-bold p-0"
                     >
                         Skip for now
