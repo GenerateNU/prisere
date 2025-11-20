@@ -194,11 +194,11 @@ export default function ViewDocuments() {
         if (!deleteConfirmation.document) return;
 
         try {
-            await deleteBusinessDocument(deleteConfirmation.document.document.key, deleteConfirmation.document.document.id);
+            await deleteBusinessDocument(deleteConfirmation.document.key, deleteConfirmation.document.documentId);
 
             // Remove from local state
             setDocuments((prevDocs) =>
-                prevDocs.filter((doc) => doc.document.id !== deleteConfirmation.document!.document.id)
+                prevDocs.filter((doc) => doc.documentId !== deleteConfirmation.document?.documentId)
             );
 
             // Close confirmation dialog
