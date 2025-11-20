@@ -13,10 +13,10 @@ export const DisasterNotification = z.object({
     isWeb: z.boolean(),
     isEmail: z.boolean(),
     notificationStatus: z.enum(notificationStatus).optional().nullable(),
-    firstSentAt: z.union([z.date(), z.string()]).optional().nullable(),
-    lastSentAt: z.union([z.date(), z.string()]).optional().nullable(),
-    acknowledgedAt: z.union([z.date(), z.string()]).optional().nullable(),
-    createdAt: z.union([z.date(), z.string()]),
+    firstSentAt: z.string().optional().nullable(),
+    lastSentAt: z.string().optional().nullable(),
+    acknowledgedAt: z.string().optional().nullable(),
+    createdAt: z.string(),
 });
 
 export const DisasterNotificationWithRelations = z.object({
@@ -26,10 +26,10 @@ export const DisasterNotificationWithRelations = z.object({
     isWeb: z.boolean(),
     isEmail: z.boolean(),
     notificationStatus: z.enum(notificationStatus),
-    firstSentAt: z.union([z.date(), z.string()]).optional().nullable(),
-    lastSentAt: z.union([z.date(), z.string()]).optional().nullable(),
-    acknowledgedAt: z.union([z.date(), z.string()]).optional().nullable(),
-    createdAt: z.union([z.date(), z.string()]),
+    firstSentAt: z.string().optional().nullable(),
+    lastSentAt: z.string().optional().nullable(),
+    acknowledgedAt: z.string().optional().nullable(),
+    createdAt: z.string(),
     user: CreateUpdateUserResponseSchema,
     femaDisaster: z.object({
         id: z.uuid(),

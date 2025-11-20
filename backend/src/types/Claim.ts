@@ -28,8 +28,8 @@ export const ClaimSchemaResponse = ClaimSchema.extend({
     femaDisaster: GetAllDisastersDocumentResponseSchema.element.optional(),
     selfDisaster: GetSelfDisasterForDocumentResponseSchema.optional(),
     insurancePolicy: SingleInsurancePolicyDocumentResponseSchema.optional(),
-    createdAt: z.union([z.date(), z.string()]),
-    lastModified: z.union([z.date(), z.string()]).optional(),
+    createdAt: z.string(),
+    lastModified: z.string().optional(),
 });
 
 // A company might not have a claim in progress
@@ -38,8 +38,8 @@ export const GetClaimInProgressForCompanySchema = ClaimSchema.nullable();
 const stringClaimSchema = z.object({
     id: z.string().nonempty(),
     status: z.nativeEnum(ClaimStatusType).default(ClaimStatusType.ACTIVE),
-    createdAt: z.iso.datetime(),
-    updatedAt: z.iso.datetime().optional(),
+    createdAt: z.string(),
+    updatedAt: z.string().optional(),
     femaDisaster: GetAllDisastersResponseSchema.element.optional(),
     selfDisaster: GetSelfDisasterForCompanyResponseSchema.optional(),
     insurancePolicy: SingleInsurancePolicyResponseSchema.optional(),

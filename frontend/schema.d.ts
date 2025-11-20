@@ -304,8 +304,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | unknown;
-                            lastQuickBooksPurchaseImportTime?: string | unknown;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -390,8 +390,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | unknown;
-                            lastQuickBooksPurchaseImportTime?: string | unknown;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -478,8 +478,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | unknown;
-                            lastQuickBooksPurchaseImportTime?: string | unknown;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -571,8 +571,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | unknown;
-                            lastQuickBooksPurchaseImportTime?: string | unknown;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -664,8 +664,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | unknown;
-                            lastQuickBooksPurchaseImportTime?: string | unknown;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -814,7 +814,14 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -1569,9 +1576,9 @@ export interface paths {
                             isEmail: boolean;
                             /** @enum {string} */
                             notificationStatus: "unread" | "read";
-                            firstSentAt?: string | unknown;
-                            lastSentAt?: string | unknown;
-                            acknowledgedAt?: string | unknown;
+                            firstSentAt?: string | null;
+                            lastSentAt?: string | null;
+                            acknowledgedAt?: string | null;
                             createdAt: string;
                             user: {
                                 id: string;
@@ -1612,8 +1619,8 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksInvoiceImportTime?: string | unknown;
-                                    lastQuickBooksPurchaseImportTime?: string | unknown;
+                                    lastQuickBooksInvoiceImportTime?: string | null;
+                                    lastQuickBooksPurchaseImportTime?: string | null;
                                     externals?: {
                                         id: string;
                                         source: string;
@@ -1708,9 +1715,9 @@ export interface paths {
                             isEmail: boolean;
                             /** @enum {string|null} */
                             notificationStatus?: "unread" | "read" | null;
-                            firstSentAt?: string | unknown;
-                            lastSentAt?: string | unknown;
-                            acknowledgedAt?: string | unknown;
+                            firstSentAt?: string | null;
+                            lastSentAt?: string | null;
+                            acknowledgedAt?: string | null;
                             createdAt: string;
                         };
                     };
@@ -1783,9 +1790,9 @@ export interface paths {
                             isEmail: boolean;
                             /** @enum {string|null} */
                             notificationStatus?: "unread" | "read" | null;
-                            firstSentAt?: string | unknown;
-                            lastSentAt?: string | unknown;
-                            acknowledgedAt?: string | unknown;
+                            firstSentAt?: string | null;
+                            lastSentAt?: string | null;
+                            acknowledgedAt?: string | null;
                             createdAt: string;
                         };
                     };
@@ -1863,9 +1870,9 @@ export interface paths {
                             isEmail: boolean;
                             /** @enum {string|null} */
                             notificationStatus?: "unread" | "read" | null;
-                            firstSentAt?: string | unknown;
-                            lastSentAt?: string | unknown;
-                            acknowledgedAt?: string | unknown;
+                            firstSentAt?: string | null;
+                            lastSentAt?: string | null;
+                            acknowledgedAt?: string | null;
                             createdAt: string;
                         }[];
                     };
@@ -2923,7 +2930,12 @@ export interface paths {
                                 amountCents: number;
                                 category?: string | null;
                                 /** @enum {string} */
-                                type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
+                                type:
+                                    | "extraneous"
+                                    | "typical"
+                                    | "pending"
+                                    | "suggested extraneous"
+                                    | "suggested typical";
                                 dateCreated: string;
                                 lastUpdated: string;
                                 /** Format: date-time */
@@ -3188,7 +3200,14 @@ export interface paths {
                          * @default ACTIVE
                          * @enum {string}
                          */
-                        status?: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                        status?:
+                            | "ACTIVE"
+                            | "FILED"
+                            | "IN_PROGRESS_DISASTER"
+                            | "IN_PROGRESS_PERSONAL"
+                            | "IN_PROGRESS_BUSINESS"
+                            | "IN_PROGRESS_INSURANCE"
+                            | "IN_PROGRESS_EXPORT";
                     };
                 };
             };
@@ -3205,10 +3224,15 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
-                            /** Format: date-time */
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
                             createdAt: string;
-                            /** Format: date-time */
                             updatedAt?: string;
                             femaDisaster?: {
                                 /** Format: uuid */
@@ -3328,7 +3352,14 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3462,7 +3493,14 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3641,7 +3679,14 @@ export interface paths {
                 content: {
                     "application/json": {
                         /** @enum {string} */
-                        status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                        status:
+                            | "ACTIVE"
+                            | "FILED"
+                            | "IN_PROGRESS_DISASTER"
+                            | "IN_PROGRESS_PERSONAL"
+                            | "IN_PROGRESS_BUSINESS"
+                            | "IN_PROGRESS_INSURANCE"
+                            | "IN_PROGRESS_EXPORT";
                         insurancePolicyId?: string;
                     };
                 };
@@ -3659,7 +3704,14 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -5953,7 +6005,7 @@ export interface paths {
                                 /** @enum {string|null} */
                                 category?: "Expenses" | "Revenues" | "Insurance" | "Other" | null;
                                 createdAt?: string;
-                                lastModified?: string | unknown;
+                                lastModified?: string | null;
                                 user?: {
                                     id: string;
                                     firstName: string;
@@ -5967,8 +6019,8 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksInvoiceImportTime?: string | unknown;
-                                    lastQuickBooksPurchaseImportTime?: string | unknown;
+                                    lastQuickBooksInvoiceImportTime?: string | null;
+                                    lastQuickBooksPurchaseImportTime?: string | null;
                                     externals?: {
                                         id: string;
                                         source: string;
@@ -5991,7 +6043,14 @@ export interface paths {
                                      * @default ACTIVE
                                      * @enum {string}
                                      */
-                                    status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                                    status:
+                                        | "ACTIVE"
+                                        | "FILED"
+                                        | "IN_PROGRESS_DISASTER"
+                                        | "IN_PROGRESS_PERSONAL"
+                                        | "IN_PROGRESS_BUSINESS"
+                                        | "IN_PROGRESS_INSURANCE"
+                                        | "IN_PROGRESS_EXPORT";
                                     createdAt: string;
                                     /** Format: date-time */
                                     updatedAt?: string;
@@ -6001,8 +6060,8 @@ export interface paths {
                                         disasterNumber: number;
                                         fipsStateCode: number;
                                         declarationDate: string;
-                                        incidentBeginDate?: string | unknown;
-                                        incidentEndDate?: string | unknown;
+                                        incidentBeginDate?: string | null;
+                                        incidentEndDate?: string | null;
                                         fipsCountyCode: number;
                                         declarationType: string;
                                         designatedArea: string;

@@ -10,9 +10,9 @@ export const CompanyExternalSchema = z.object({
     source: z.string(),
     externalId: z.string(),
     companyId: z.string(),
-    createdAt: z.union([z.date(), z.string()]),
-    updatedAt: z.union([z.date(), z.string()]),
-    importTime: z.union([z.date(), z.string()]).optional(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+    importTime: z.string().optional(),
 });
 
 export const CompanyExternalOptionalSchema = z.object({
@@ -20,22 +20,22 @@ export const CompanyExternalOptionalSchema = z.object({
     source: z.string().optional(),
     externalId: z.string().optional(),
     companyId: z.string().optional(),
-    createdAt: z.union([z.date(), z.string()]).optional(),
-    updatedAt: z.union([z.date(), z.string()]).optional(),
-    importTime: z.union([z.date(), z.string()]).optional(),
+    createdAt: z.string().optional(),
+    updatedAt: z.string().optional(),
+    importTime: z.string().optional(),
 });
 
 export const CompanySchema = z.object({
     id: z.string(),
     name: z.string().nonempty(),
     businessOwnerFullName: z.string().nonempty(),
-    lastQuickBooksInvoiceImportTime: z.union([z.date(), z.string()]).optional().nullable(),
-    lastQuickBooksPurchaseImportTime: z.union([z.date(), z.string()]).optional().nullable(),
+    lastQuickBooksInvoiceImportTime: z.string().optional().nullable(),
+    lastQuickBooksPurchaseImportTime: z.string().optional().nullable(),
     externals: z.array(CompanyExternalSchema).optional(),
     alternateEmail: z.email().optional(),
     companyType: z.enum(CompanyTypesEnum),
-    createdAt: z.union([z.date(), z.string()]),
-    updatedAt: z.union([z.date(), z.string()]),
+    createdAt: z.string(),
+    updatedAt: z.string(),
 });
 
 /* Zod schema for POST company */
