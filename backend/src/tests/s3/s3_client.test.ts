@@ -14,7 +14,7 @@ import CompanySeeder from "../../database/seeds/company.seed";
 import UserSeeder from "../../database/seeds/user.seed";
 import { DocumentTransaction } from "../../modules/documents/transaction";
 import { DocumentCategories } from "../../types/DocumentType";
-import { Company } from "../../entities/Company";
+import { Company, CompanyTypesEnum } from "../../entities/Company";
 import { User } from "../../entities/User";
 import { Document } from "../../entities/Document";
 import { DocumentTypes } from "../../types/S3Types";
@@ -215,6 +215,7 @@ describe("S3 Service - Document Management", () => {
             const newCompany = await newCompanyRepo.save({
                 name: "New Company",
                 businessOwnerFullName: "Test Owner",
+                companyType: CompanyTypesEnum.LLC,
             });
 
             const result = await s3Service.getAllDocuments(DocumentTypes.GENERAL_BUSINESS, newCompany.id);

@@ -42,6 +42,7 @@
     "pg": "^8.16.3",
     "pg-mem": "^3.0.5",
     "puppeteer": "^24.29.1",
+    "react-pdf": "^10.2.0",
     "reflect-metadata": "^0.2.2",
     "sharp": "^0.34.4",
     "supabase": "^2.39.2",

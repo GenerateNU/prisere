@@ -19,7 +19,7 @@ export const DocumentSchema = z.object({
     lastModified: z.union([z.date(), z.string()]).optional().nullable(),
     user: UserSchema.optional(),
     company: CompanySchema,
-    claim: ClaimSchemaResponse.optional(),
+    claim: ClaimSchemaResponse.optional().nullable(),
 });
 
 export const DocumentWithUrlSchema = z.object({
