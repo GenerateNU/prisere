@@ -59,6 +59,16 @@ export const GetSelfDisasterForCompanyResponseSchema = z.object({
     updatedAt: z.iso.date(),
 });
 
+export const GetSelfDisasterForDocumentResponseSchema = z.object({
+    id: z.string(),
+    name: z.string().max(250).min(1),
+    description: z.string(),
+    startDate: z.string(),
+    endDate: z.string().optional(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+});
+
 export const GetFemaDisasterForCompanyResponseSchema = z.object({
     id: z.uuid(),
     disasterNumber: z.number(),

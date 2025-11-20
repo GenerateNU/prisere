@@ -304,8 +304,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | null;
-                            lastQuickBooksPurchaseImportTime?: string | null;
+                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
+                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -320,7 +320,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt: string;
+                            updatedAt?: string;
                         };
                     };
                 };
@@ -390,8 +390,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | null;
-                            lastQuickBooksPurchaseImportTime?: string | null;
+                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
+                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -406,7 +406,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt: string;
+                            updatedAt?: string;
                         };
                     };
                 };
@@ -478,8 +478,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | null;
-                            lastQuickBooksPurchaseImportTime?: string | null;
+                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
+                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -494,7 +494,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt: string;
+                            updatedAt?: string;
                         };
                     };
                 };
@@ -571,8 +571,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | null;
-                            lastQuickBooksPurchaseImportTime?: string | null;
+                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
+                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -587,7 +587,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt: string;
+                            updatedAt?: string;
                         };
                     };
                 };
@@ -664,8 +664,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | null;
-                            lastQuickBooksPurchaseImportTime?: string | null;
+                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
+                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -680,7 +680,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt: string;
+                            updatedAt?: string;
                         };
                     };
                 };
@@ -831,7 +831,6 @@ export interface paths {
                                 id: string;
                                 disasterNumber: number;
                                 fipsStateCode: number;
-                                /** Format: date-time */
                                 declarationDate: string;
                                 incidentBeginDate?: string;
                                 incidentEndDate?: string;
@@ -1009,7 +1008,6 @@ export interface paths {
                             id: string;
                             disasterNumber: number;
                             fipsStateCode: number;
-                            /** Format: date-time */
                             declarationDate: string;
                             incidentBeginDate?: string;
                             incidentEndDate?: string;
@@ -1578,9 +1576,9 @@ export interface paths {
                             isEmail: boolean;
                             /** @enum {string} */
                             notificationStatus: "unread" | "read";
-                            firstSentAt?: string | unknown;
-                            lastSentAt?: string | unknown;
-                            acknowledgedAt?: string | unknown;
+                            firstSentAt?: string | null;
+                            lastSentAt?: string | null;
+                            acknowledgedAt?: string | null;
                             createdAt: string;
                             user: {
                                 id: string;
@@ -1621,8 +1619,8 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksInvoiceImportTime?: string | null;
-                                    lastQuickBooksPurchaseImportTime?: string | null;
+                                    lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
+                                    lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
                                     externals?: {
                                         id: string;
                                         source: string;
@@ -1637,7 +1635,7 @@ export interface paths {
                                     /** @enum {string} */
                                     companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                                     createdAt: string;
-                                    updatedAt: string;
+                                    updatedAt?: string;
                                 };
                             };
                         }[];
@@ -1717,9 +1715,9 @@ export interface paths {
                             isEmail: boolean;
                             /** @enum {string|null} */
                             notificationStatus?: "unread" | "read" | null;
-                            firstSentAt?: string | unknown;
-                            lastSentAt?: string | unknown;
-                            acknowledgedAt?: string | unknown;
+                            firstSentAt?: string | null;
+                            lastSentAt?: string | null;
+                            acknowledgedAt?: string | null;
                             createdAt: string;
                         };
                     };
@@ -1792,9 +1790,9 @@ export interface paths {
                             isEmail: boolean;
                             /** @enum {string|null} */
                             notificationStatus?: "unread" | "read" | null;
-                            firstSentAt?: string | unknown;
-                            lastSentAt?: string | unknown;
-                            acknowledgedAt?: string | unknown;
+                            firstSentAt?: string | null;
+                            lastSentAt?: string | null;
+                            acknowledgedAt?: string | null;
                             createdAt: string;
                         };
                     };
@@ -1872,9 +1870,9 @@ export interface paths {
                             isEmail: boolean;
                             /** @enum {string|null} */
                             notificationStatus?: "unread" | "read" | null;
-                            firstSentAt?: string | unknown;
-                            lastSentAt?: string | unknown;
-                            acknowledgedAt?: string | unknown;
+                            firstSentAt?: string | null;
+                            lastSentAt?: string | null;
+                            acknowledgedAt?: string | null;
                             createdAt: string;
                         }[];
                     };
@@ -3234,16 +3232,13 @@ export interface paths {
                                 | "IN_PROGRESS_BUSINESS"
                                 | "IN_PROGRESS_INSURANCE"
                                 | "IN_PROGRESS_EXPORT";
-                            /** Format: date-time */
                             createdAt: string;
-                            /** Format: date-time */
                             updatedAt?: string;
                             femaDisaster?: {
                                 /** Format: uuid */
                                 id: string;
                                 disasterNumber: number;
                                 fipsStateCode: number;
-                                /** Format: date-time */
                                 declarationDate: string;
                                 incidentBeginDate?: string;
                                 incidentEndDate?: string;
@@ -3374,7 +3369,6 @@ export interface paths {
                                 id: string;
                                 disasterNumber: number;
                                 fipsStateCode: number;
-                                /** Format: date-time */
                                 declarationDate: string;
                                 incidentBeginDate?: string;
                                 incidentEndDate?: string;
@@ -3516,7 +3510,6 @@ export interface paths {
                                 id: string;
                                 disasterNumber: number;
                                 fipsStateCode: number;
-                                /** Format: date-time */
                                 declarationDate: string;
                                 incidentBeginDate?: string;
                                 incidentEndDate?: string;
@@ -3728,7 +3721,6 @@ export interface paths {
                                 id: string;
                                 disasterNumber: number;
                                 fipsStateCode: number;
-                                /** Format: date-time */
                                 declarationDate: string;
                                 incidentBeginDate?: string;
                                 incidentEndDate?: string;
@@ -5751,6 +5743,531 @@ export interface paths {
                     };
                 };
                 /** @description Update Insurance in Bulk Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/s3/getUploadUrl": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Get presigned URL for document upload
+         * @description Generates a presigned URL that allows direct upload to S3 from the client. The URL expires after 1 hour.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @description Original file name */
+                        fileName: string;
+                        /** @description MIME type of the file (e.g., application/pdf, image/jpeg) */
+                        fileType: string;
+                        /**
+                         * @default GENERAL_BUSINESS
+                         * @enum {string}
+                         */
+                        documentType?: "CLAIM" | "GENERAL_BUSINESS" | "IMAGES";
+                        /** @description Optional claim ID for claim-specific documents */
+                        claimId?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Presigned URL generated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            uploadUrl: string;
+                            key: string;
+                            documentId: string;
+                            expiresIn: number;
+                        };
+                    };
+                };
+                /** @description Invalid request - missing or invalid parameters */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description User authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/s3/confirmUpload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm document upload completion
+         * @description Verifies that a file was successfully uploaded to S3 and returns file details including a presigned download URL.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @description S3 key of the uploaded file */
+                        key: string;
+                        /** @description Document ID returned from getUploadUrl */
+                        documentId: string;
+                        /**
+                         * @default GENERAL_BUSINESS
+                         * @enum {string}
+                         */
+                        documentType?: "CLAIM" | "GENERAL_BUSINESS" | "IMAGES";
+                        /** @description Optional claim ID for claim-specific documents */
+                        claimId?: string;
+                        /** @enum {string|null} */
+                        category: "Expenses" | "Revenues" | "Insurance" | "Other" | null;
+                    };
+                };
+            };
+            responses: {
+                /** @description Upload confirmed successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description S3 key of the uploaded file */
+                            key: string;
+                            /**
+                             * Format: uri
+                             * @description Presigned download URL for the file
+                             */
+                            url: string;
+                            /** @description File size in bytes */
+                            size: number;
+                            /** @description SHA-256 hash of the file */
+                            hash: string;
+                            /** @description Whether this file is a duplicate */
+                            isDuplicate?: boolean;
+                            /** @description Key of the original file if duplicate */
+                            duplicateKey?: string;
+                        };
+                    };
+                };
+                /** @description Invalid request - missing or invalid parameters */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description User authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description File not found in S3 */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/s3/getAllDocuments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all documents of a specific type
+         * @description Retrieves all documents of the specified type for a company or user.
+         */
+        get: {
+            parameters: {
+                query: {
+                    companyId: string;
+                    documentType: "CLAIM" | "GENERAL_BUSINESS" | "IMAGES";
+                    userId?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Documents retrieved successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            document: {
+                                id: string;
+                                key: string;
+                                s3DocumentId: string;
+                                /** @enum {string|null} */
+                                category?: "Expenses" | "Revenues" | "Insurance" | "Other" | null;
+                                createdAt?: string;
+                                lastModified?: string | null;
+                                user?: {
+                                    id: string;
+                                    firstName: string;
+                                    lastName: string;
+                                    /** Format: email */
+                                    email?: string | null;
+                                    companyId?: string | null;
+                                    phoneNumber: string;
+                                };
+                                company: {
+                                    id: string;
+                                    name: string;
+                                    businessOwnerFullName: string;
+                                    lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
+                                    lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
+                                    externals?: {
+                                        id: string;
+                                        source: string;
+                                        externalId: string;
+                                        companyId: string;
+                                        createdAt: string;
+                                        updatedAt: string;
+                                        importTime?: string;
+                                    }[];
+                                    /** Format: email */
+                                    alternateEmail?: string;
+                                    /** @enum {string} */
+                                    companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
+                                    createdAt: string;
+                                    updatedAt?: string;
+                                };
+                                claim?: {
+                                    id: string;
+                                    /**
+                                     * @default ACTIVE
+                                     * @enum {string}
+                                     */
+                                    status:
+                                        | "ACTIVE"
+                                        | "FILED"
+                                        | "IN_PROGRESS_DISASTER"
+                                        | "IN_PROGRESS_PERSONAL"
+                                        | "IN_PROGRESS_BUSINESS"
+                                        | "IN_PROGRESS_INSURANCE"
+                                        | "IN_PROGRESS_EXPORT";
+                                    createdAt: string;
+                                    /** Format: date-time */
+                                    updatedAt?: string;
+                                    femaDisaster?: {
+                                        /** Format: uuid */
+                                        id: string;
+                                        disasterNumber: number;
+                                        fipsStateCode: number;
+                                        declarationDate: string;
+                                        incidentBeginDate?: string | null;
+                                        incidentEndDate?: string | null;
+                                        fipsCountyCode: number;
+                                        declarationType: string;
+                                        designatedArea: string;
+                                        designatedIncidentTypes: string | null;
+                                    };
+                                    selfDisaster?: {
+                                        id: string;
+                                        name: string;
+                                        description: string;
+                                        startDate: string;
+                                        endDate?: string;
+                                        createdAt: string;
+                                        updatedAt: string;
+                                    };
+                                    insurancePolicy?: {
+                                        id: string;
+                                        policyName: string;
+                                        policyHolderFirstName: string;
+                                        policyHolderLastName: string;
+                                        insuranceCompanyName: string;
+                                        policyNumber: string;
+                                        insuranceType: string;
+                                        updatedAt: string;
+                                        createdAt: string;
+                                    };
+                                    claimLocations?: {
+                                        id: string;
+                                        alias: string;
+                                        country: string;
+                                        stateProvince: string;
+                                        city: string;
+                                        streetAddress: string;
+                                        postalCode: string;
+                                        county?: string;
+                                        /** Format: uuid */
+                                        companyId: string;
+                                        fipsStateCode: number;
+                                        fipsCountyCode: number;
+                                    }[];
+                                    lastModified?: string;
+                                } | null;
+                            };
+                            downloadUrl: string;
+                        }[];
+                    };
+                };
+                /** @description Invalid request - missing or invalid parameters */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/s3/deleteDocument": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete a document
+         * @description Deletes a document from both S3 storage and the database. This action cannot be undone.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        key: string;
+                        documentId: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Document deleted successfully from both S3 and database */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            success: boolean;
+                        };
+                    };
+                };
+                /** @description Invalid request - missing key or documentId */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Internal server error - failed to delete document */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/s3/updateDocumentCategory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update document category
+         * @description Updates the category of a document
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @description The database ID of the document */
+                        documentId: string;
+                        /** @enum {string} */
+                        category: "Expenses" | "Revenues" | "Insurance" | "Other";
+                    };
+                };
+            };
+            responses: {
+                /** @description Category updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            success: boolean;
+                        };
+                    };
+                };
+                /** @description Invalid request - missing documentId or category */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Internal server error */
                 500: {
                     headers: {
                         [name: string]: unknown;

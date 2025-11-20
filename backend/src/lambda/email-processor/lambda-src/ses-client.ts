@@ -20,6 +20,7 @@ export class SESEmailService {
             };
         }
 
+        // this.client = new SESClient({}); <- SE THIS FOR REAL RUN - AWS will grab config from OS env vars
         this.client = new SESClient(config);
         this.fromEmail = fromEmail;
     }

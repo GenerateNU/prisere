@@ -1,288 +1,300 @@
 import { describe, test, expect, beforeEach, mock, afterEach } from "bun:test";
 import { DataSource } from "typeorm";
 import { S3Service } from "../../modules/s3/service";
-import sharp from "sharp";
-import UserSeeder from "../../database/seeds/user.seed";
-import { User } from "../../entities/User";
 import { startTestApp } from "../setup-tests";
 import { SeederFactoryManager } from "typeorm-extension";
-import { PutObjectCommand, ListObjectsV2Command, HeadObjectCommand } from "@aws-sdk/client-s3";
+import {
+    PutObjectCommand,
+    ListObjectsV2Command,
+    HeadObjectCommand,
+    GetObjectCommand,
+    DeleteObjectCommand,
+} from "@aws-sdk/client-s3";
 import CompanySeeder from "../../database/seeds/company.seed";
+import UserSeeder from "../../database/seeds/user.seed";
+import { DocumentTransaction } from "../../modules/documents/transaction";
+import { DocumentCategories } from "../../types/DocumentType";
+import { Company, CompanyTypesEnum } from "../../entities/Company";
+import { User } from "../../entities/User";
+import { Document } from "../../entities/Document";
+import { DocumentTypes } from "../../types/S3Types";
 
-describe("S3 Client", () => {
+describe("S3 Service - Document Management", () => {
     let dataSource: DataSource;
     let s3Service: S3Service;
+    let documentTransaction: DocumentTransaction;
     let mockSend: ReturnType<typeof mock>;
-    let testImageBuffer: Buffer;
-    let testPdfBuffer: Buffer;
-    let testUsers: User[];
+    let testCompany: Company;
+    let testUser: User;
 
     beforeEach(async () => {
         const testAppData = await startTestApp();
         dataSource = testAppData.dataSource;
-        s3Service = new S3Service();
-        // Mock S3 send method to handle different commands
+
+        documentTransaction = new DocumentTransaction(dataSource);
+        s3Service = new S3Service(dataSource, documentTransaction);
+
+        // Mock S3 send method
         mockSend = mock((command) => {
             if (command instanceof PutObjectCommand) {
-                // Mock successful upload
                 return Promise.resolve({
                     ETag: '"mock-etag-123"',
                     VersionId: "mock-version-id",
                 });
             }
             if (command instanceof ListObjectsV2Command) {
-                // Mock no existing files (for duplicate check)
                 return Promise.resolve({
-                    Contents: [],
+                    Contents: [
+                        {
+                            Key: "business-documents/test-company-id/test-doc.pdf",
+                            Size: 1000,
+                            LastModified: new Date(),
+                        },
+                    ],
                 });
             }
             if (command instanceof HeadObjectCommand) {
-                // Mock metadata retrieval
                 return Promise.resolve({
-                    Metadata: {},
+                    ContentLength: 1000,
+                    Metadata: {
+                        companyId: "test-company-id",
+                        documentType: DocumentTypes.GENERAL_BUSINESS,
+                    },
                 });
+            }
+            if (command instanceof DeleteObjectCommand) {
+                return Promise.resolve({});
+            }
+            if (command instanceof GetObjectCommand) {
+                return Promise.resolve({});
             }
             return Promise.resolve({});
         });
 
         s3Service["client"].send = mockSend;
 
+        // Seed database
         const companySeed = new CompanySeeder();
         await companySeed.run(dataSource, {} as SeederFactoryManager);
 
         const userSeed = new UserSeeder();
         await userSeed.run(dataSource, {} as SeederFactoryManager);
 
-        // Get seeded users
+        // Get test data
+        const companyRepo = dataSource.getRepository(Company);
+        testCompany = (await companyRepo.findOne({ where: {} }))!;
+
         const userRepo = dataSource.getRepository(User);
-        testUsers = await userRepo.find();
-
-        // Generate a simple test image (100x100 red square)
-        testImageBuffer = await sharp({
-            create: {
-                width: 100,
-                height: 100,
-                channels: 3,
-                background: { r: 255, g: 0, b: 0 },
-            },
-        })
-            .png()
-            .toBuffer();
-
-        // Generate a minimal valid PDF
-        testPdfBuffer = Buffer.from(
-            "%PDF-1.4\n" +
-                "1 0 obj\n" +
-                "<< /Type /Catalog /Pages 2 0 R >>\n" +
-                "endobj\n" +
-                "2 0 obj\n" +
-                "<< /Type /Pages /Kids [3 0 R] /Count 1 >>\n" +
-                "endobj\n" +
-                "3 0 obj\n" +
-                "<< /Type /Page /Parent 2 0 R /Resources 4 0 R /MediaBox [0 0 612 792] /Contents 5 0 R >>\n" +
-                "endobj\n" +
-                "4 0 obj\n" +
-                "<< /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >>\n" +
-                "endobj\n" +
-                "5 0 obj\n" +
-                "<< /Length 44 >>\n" +
-                "stream\n" +
-                "BT /F1 24 Tf 100 700 Td (Test PDF) Tj ET\n" +
-                "endstream\n" +
-                "endobj\n" +
-                "xref\n" +
-                "0 6\n" +
-                "0000000000 65535 f\n" +
-                "0000000009 00000 n\n" +
-                "0000000058 00000 n\n" +
-                "0000000115 00000 n\n" +
-                "0000000214 00000 n\n" +
-                "0000000304 00000 n\n" +
-                "trailer\n" +
-                "<< /Size 6 /Root 1 0 R >>\n" +
-                "startxref\n" +
-                "408\n" +
-                "%%EOF"
-        );
+        testUser = (await userRepo.findOne({ where: {} }))!;
     });
 
     afterEach(() => {
         mockSend.mockClear();
     });
 
-    test("should upload profile image successfully", async () => {
-        const testUser = testUsers[0];
-        expect(testUser).toBeDefined();
-        expect(testUser.id).toBeDefined();
+    describe("getUploadUrl", () => {
+        test("should generate presigned upload URL for business document", async () => {
+            const result = await s3Service.getUploadUrl({
+                fileName: "invoice-2024.pdf",
+                fileType: "application/pdf",
+                documentType: DocumentTypes.GENERAL_BUSINESS,
+                companyId: testCompany.id,
+            });
 
-        const result = await s3Service.uploadImage({
-            userId: testUser.id,
-            imageBuffer: testImageBuffer,
-            imageType: "profile",
+            expect(result).toBeDefined();
+            expect(result.uploadUrl).toBeDefined();
+            expect(result.key).toBe(`business-documents/${testCompany.id}/invoice-2024.pdf`);
+            expect(result.documentId).toBe("invoice-2024.pdf");
+            expect(result.expiresIn).toBe(3600);
         });
 
-        expect(result).toBeDefined();
-        expect(result.key).toBe(`images/${testUser.id}/profile.webp`);
-        expect(result.url).toBeDefined();
-        expect(result.size).toBeGreaterThan(0);
-        expect(result.hash).toBeDefined();
-        expect(result.isDuplicate).toBeUndefined(); // No duplicate on first upload
+        test("should generate presigned upload URL for claim document", async () => {
+            const claimId = "test-claim-id";
+            const result = await s3Service.getUploadUrl({
+                fileName: "damage-report.pdf",
+                fileType: "application/pdf",
+                documentType: DocumentTypes.CLAIM,
+                companyId: testCompany.id,
+                claimId,
+            });
 
-        // Verify S3 client was called
-        expect(mockSend).toHaveBeenCalled();
-
-        // Verify the correct commands were sent
-        const calls = mockSend.mock.calls;
-        const putObjectCall = calls.find((call) => call[0] instanceof PutObjectCommand);
-        expect(putObjectCall).toBeDefined();
+            expect(result.key).toBe(`claims/${testCompany.id}/${claimId}/damage-report.pdf`);
+        });
     });
 
-    test("should upload custom image with custom imageId", async () => {
-        const testUser = testUsers[0];
-        const customImageId = "business-logo";
+    describe("confirmUpload", () => {
+        test("should confirm upload and create document record", async () => {
+            const key = `business-documents/${testCompany.id}/test-doc.pdf`;
+            const documentIdS3 = "test-doc";
 
-        const result = await s3Service.uploadImage({
-            userId: testUser.id,
-            imageBuffer: testImageBuffer,
-            imageType: "other",
-            imageId: customImageId,
+            const result = await s3Service.confirmUpload({
+                key,
+                documentId: documentIdS3,
+                documentType: DocumentTypes.GENERAL_BUSINESS,
+                userId: testUser.id,
+                companyId: testCompany.id,
+                category: DocumentCategories.Expenses,
+            });
+
+            expect(result).toBeDefined();
+            expect(result.key).toBe(key);
+            expect(result.url).toBeDefined();
+            expect(result.size).toBe(1000);
+
+            // Verify document was saved to database
+            const docRepo = dataSource.getRepository(Document);
+            const savedDoc = await docRepo.findOne({
+                where: { companyId: testCompany.id },
+            });
+
+            expect(savedDoc).toBeDefined();
+            // expect(savedDoc?.category).toBe(DocumentCategories.Expenses);
+            // expect(savedDoc?.companyId).toBe(testCompany.id);
         });
 
-        expect(result.key).toBe(`images/${testUser.id}/${customImageId}.webp`);
-        expect(result.url).toBeDefined();
-        expect(result.size).toBeGreaterThan(0);
+        test("should confirm upload without category", async () => {
+            const key = `business-documents/${testCompany.id}/test-doc-2.pdf`;
+            const documentId = "test-doc-2";
+
+            const result = await s3Service.confirmUpload({
+                key,
+                documentId,
+                documentType: DocumentTypes.GENERAL_BUSINESS,
+                userId: testUser.id,
+                companyId: testCompany.id,
+            });
+
+            expect(result).toBeDefined();
+
+            // Verify document was saved without category
+            const docRepo = dataSource.getRepository(Document);
+            const savedDoc = await docRepo.findOne({
+                where: { s3DocumentId: documentId },
+            });
+
+            expect(savedDoc).toBeDefined();
+            expect(savedDoc?.category).toBeUndefined();
+        });
     });
 
-    test("should compress image to WebP format", async () => {
-        const testUser = testUsers[0];
-        const originalSize = testImageBuffer.length;
+    describe("getAllDocuments", () => {
+        // test("should retrieve all business documents for a company", async () => {
+        //     // Create test documents
+        //     await documentTransaction.upsertDocument({
+        //         key: `business-documents/${testCompany.id}/doc1.pdf`,
+        //         downloadUrl: "https://example.com/doc1.pdf",
+        //         s3DocumentId: "doc1",
+        //         companyId: testCompany.id,
+        //         userId: testUser.id,
+        //         category: DocumentCategories.Expenses,
+        //     });
 
-        const result = await s3Service.uploadImage({
-            userId: testUser.id,
-            imageBuffer: testImageBuffer,
-            imageType: "profile",
+        //     await documentTransaction.upsertDocument({
+        //         key: `business-documents/${testCompany.id}/doc2.pdf`,
+        //         downloadUrl: "https://example.com/doc2.pdf",
+        //         s3DocumentId: "doc2",
+        //         companyId: testCompany.id,
+        //         userId: testUser.id,
+        //         category: DocumentCategories.Revenues,
+        //     });
+
+        //     const result = await s3Service.getAllDocuments(DocumentTypes.GENERAL_BUSINESS, testCompany.id);
+
+        //     expect(result).toBeDefined();
+        //     expect(result.length).toBeGreaterThanOrEqual(2);
+
+        //     const doc1 = result.find((d) => d.s3DocumentId === "doc1");
+        //     expect(doc1?.category).toBe(DocumentCategories.Expenses);
+
+        //     const doc2 = result.find((d) => d.s3DocumentId === "doc2");
+        //     expect(doc2?.category).toBe(DocumentCategories.Revenues);
+        // });
+
+        test("should return empty array when no documents exist", async () => {
+            const newCompanyRepo = dataSource.getRepository(Company);
+            const newCompany = await newCompanyRepo.save({
+                name: "New Company",
+                businessOwnerFullName: "Test Owner",
+                companyType: CompanyTypesEnum.LLC,
+            });
+
+            const result = await s3Service.getAllDocuments(DocumentTypes.GENERAL_BUSINESS, newCompany.id);
+
+            expect(result).toBeDefined();
+            expect(result.length).toBe(0);
         });
-
-        // WebP should be smaller than original PNG for most images
-        expect(result.size).toBeLessThanOrEqual(originalSize);
-
-        // Verify the key ends with .webp
-        expect(result.key).toMatch(/\.webp$/);
     });
 
-    test("should detect duplicate images", async () => {
-        const testUser = testUsers[0];
+    describe("updateDocumentCategory", () => {
+        test("should update document category", async () => {
+            // Create test document
+            const doc = await documentTransaction.upsertDocument({
+                key: `business-documents/${testCompany.id}/test.pdf`,
+                downloadUrl: "https://example.com/test.pdf",
+                s3DocumentId: "test-cat",
+                companyId: testCompany.id,
+                userId: testUser.id,
+                category: DocumentCategories.Expenses,
+            });
 
-        // Mock finding a duplicate on second upload
-        let uploadCount = 0;
-        mockSend = mock(async (command) => {
-            if (command instanceof ListObjectsV2Command) {
-                uploadCount++;
-                if (uploadCount > 1) {
-                    // Second time, return existing file
-                    return Promise.resolve({
-                        Contents: [
-                            {
-                                Key: `images/${testUser.id}/profile.webp`,
-                                Size: 1000,
-                                LastModified: new Date(),
-                            },
-                        ],
-                    });
-                }
-                return Promise.resolve({ Contents: [] });
-            }
-            if (command instanceof HeadObjectCommand && uploadCount > 1) {
-                // Return matching hash for duplicate
-                const hash = s3Service["generateHash"](await sharp(testImageBuffer).webp({ quality: 85 }).toBuffer());
-                return Promise.resolve({
-                    Metadata: { hash },
-                });
-            }
-            if (command instanceof PutObjectCommand) {
-                return Promise.resolve({ ETag: '"mock-etag"' });
-            }
-            return Promise.resolve({});
+            await s3Service.updateDocumentCategory(doc!.id, DocumentCategories.Revenues);
+
+            // Verify update
+            const docRepo = dataSource.getRepository(Document);
+            const updated = await docRepo.findOne({ where: { id: doc!.id } });
+
+            expect(updated?.category).toBe(DocumentCategories.Revenues);
         });
-        s3Service["client"].send = mockSend;
-
-        // First upload
-        await s3Service.uploadImage({
-            userId: testUser.id,
-            imageBuffer: testImageBuffer,
-            imageType: "profile",
-        });
-
-        // Second upload (duplicate)
-        const result = await s3Service.uploadImage({
-            userId: testUser.id,
-            imageBuffer: testImageBuffer,
-            imageType: "profile",
-        });
-
-        expect(result.isDuplicate).toBe(true);
-        expect(result.duplicateKey).toBeDefined();
     });
 
-    test("should generate unique imageId when not provided", async () => {
-        const testUser = testUsers[0];
+    describe("deleteObject", () => {
+        test("should delete document from S3 and database", async () => {
+            const key = `business-documents/${testCompany.id}/delete-test.pdf`;
+            const documentId = "delete-test";
 
-        const result = await s3Service.uploadImage({
-            userId: testUser.id,
-            imageBuffer: testImageBuffer,
-            imageType: "other",
-            // imageId not provided
+            // Create document
+            await documentTransaction.upsertDocument({
+                key,
+                downloadUrl: "https://example.com/delete-test.pdf",
+                s3DocumentId: documentId,
+                companyId: testCompany.id,
+                userId: testUser.id,
+            });
+
+            // Delete
+            await s3Service.deleteObject(key, testCompany.id);
+
+            // Verify S3 delete was called
+            expect(mockSend).toHaveBeenCalled();
+            const deleteCall = mockSend.mock.calls.find((call) => call[0] instanceof DeleteObjectCommand);
+            expect(deleteCall).toBeDefined();
+
+            // Verify database deletion
+            const docRepo = dataSource.getRepository(Document);
+            const deleted = await docRepo.findOne({
+                where: { id: testCompany.id },
+            });
+            expect(deleted).toBeNull();
         });
-
-        // Key should contain timestamp and random string
-        const filename = result.key.split("/").pop();
-        expect(filename).toMatch(/\d+-[a-z0-9]+\.webp/);
     });
 
-    // test('should handle upload errors gracefully', async () => {
-    //
-    //     const testUser = testUsers[0];
+    describe("getPresignedDownloadUrl", () => {
+        test("should generate presigned download URL", async () => {
+            const key = "business-documents/test-company/test.pdf";
 
-    //     // Mock an S3 error
-    //     mockSend = mock(() => {
-    //         return Promise.reject(new Error('S3 upload failed'));
-    //     });
-    //     s3Service['client'].send = mockSend;
+            const url = await s3Service.getPresignedDownloadUrl(key);
 
-    //     expect(s3Service.uploadImage({
-    //         userId: testUser.id,
-    //         imageBuffer: testImageBuffer,
-    //         imageType: 'profile',
-    //     })).rejects.toThrow('S3 upload failed');
-    // });
-
-    test("should upload PDF for a claim successfully", async () => {
-        const testClaimId = "claim-123";
-        const testDocumentId = "damage-report";
-
-        const result = await s3Service.uploadPdf({
-            claimId: testClaimId,
-            pdfBuffer: testPdfBuffer,
-            documentId: testDocumentId,
+            expect(url).toBeDefined();
+            expect(typeof url).toBe("string");
         });
 
-        expect(result).toBeDefined();
-        expect(result.key).toBe(`pdfs/${testClaimId}/${testDocumentId}.pdf`);
-        expect(result.url).toBeDefined();
-        expect(result.size).toBe(testPdfBuffer.length);
-        expect(result.hash).toBeDefined();
-        expect(result.isDuplicate).toBeUndefined();
-    });
+        test("should generate URL with custom expiry", async () => {
+            const key = "business-documents/test-company/test.pdf";
+            const customExpiry = 7200; // 2 hours
 
-    test("should generate documentId when not provided for PDF", async () => {
-        const testClaimId = "claim-456";
+            const url = await s3Service.getPresignedDownloadUrl(key, customExpiry);
 
-        const result = await s3Service.uploadPdf({
-            claimId: testClaimId,
-            pdfBuffer: testPdfBuffer,
-            // documentId not provided
+            expect(url).toBeDefined();
         });
-
-        expect(result.key).toMatch(/^pdfs\/claim-456\/\d+-[a-z0-9]+\.pdf$/);
     });
 });

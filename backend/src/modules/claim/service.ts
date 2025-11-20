@@ -20,6 +20,9 @@ import { S3Service } from "../s3/service";
 import { IClaimTransaction } from "./transaction";
 import { ClaimData, ClaimDataForPDF, ClaimPDFGenerationResponse } from "./types";
 import { restructureClaimDataForPdf } from "./utilities/pdf-mapper";
+import { DataSource } from "typeorm";
+import { DocumentTypes } from "../../types/S3Types";
+import { IDocumentTransaction } from "../documents/transaction";
 import { generatePdfToBuffer } from "./utilities/react-pdf-handler";
 
 export interface IClaimService {
@@ -30,7 +33,7 @@ export interface IClaimService {
     linkClaimToPurchaseItems(payload: LinkClaimToPurchaseDTO): Promise<LinkClaimToPurchaseResponse>;
     getLinkedPurchaseLineItems(claimId: string): Promise<GetPurchaseLineItemsForClaimResponse>;
     deletePurchaseLineItem(claimId: string, lineItemId: string): Promise<DeletePurchaseLineItemResponse>;
-    createClaimPDF(claimId: string, userId: string): Promise<ClaimPDFGenerationResponse>;
+    createClaimPDF(claimId: string, userId: string, companyId: string): Promise<ClaimPDFGenerationResponse>;
     getClaimById(claimId: string, companyId: string): Promise<GetClaimByIdResponse>;
     updateClaimStatus(
         claimId: string,
@@ -41,9 +44,13 @@ export interface IClaimService {
 
 export class ClaimService implements IClaimService {
     private claimTransaction: IClaimTransaction;
+    private documentTransaction: IDocumentTransaction;
+    private db: DataSource;
 
-    constructor(claimTransaction: IClaimTransaction) {
+    constructor(claimTransaction: IClaimTransaction, documentTransaction: IDocumentTransaction, db: DataSource) {
         this.claimTransaction = claimTransaction;
+        this.documentTransaction = documentTransaction;
+        this.db = db;
     }
 
     createClaim = withServiceErrorHandling(
@@ -135,22 +142,33 @@ export class ClaimService implements IClaimService {
     );
 
     createClaimPDF = withServiceErrorHandling(
-        async (claimId: string, userId: string): Promise<ClaimPDFGenerationResponse> => {
+        async (claimId: string, userId: string, companyId: string): Promise<ClaimPDFGenerationResponse> => {
             const pdfData: ClaimDataForPDF = await this.claimTransaction.retrieveDataForPDF(claimId, userId);
             if (!pdfData.company) {
                 throw Boom.notFound("Claim does not have an associated company");
             }
             const claimData: ClaimData = restructureClaimDataForPdf(pdfData);
-
             // Uncomment to Generate PDF in a test file locally to see file output
             // await generatePdfToFile(claimData);
             // return { url: "test" };
 
             const pdfBuffer = await generatePdfToBuffer(claimData);
 
-            const s3 = new S3Service();
-            const uploadResponse = await s3.uploadPdf({ claimId, pdfBuffer });
-            return { url: uploadResponse.url };
+            const s3 = new S3Service(this.db, this.documentTransaction);
+            const timestamp = new Date().toISOString();
+            const documentId = `${claimId}-${timestamp}`;
+            const key = `claims/${companyId}/${claimId}/${documentId}`;
+            const uploadResponseUrl = await s3.getPresignedUploadUrl(key);
+            await s3.uploadBufferToS3(uploadResponseUrl, pdfBuffer);
+            const confirmUploadResponse = await s3.confirmUpload({
+                key: key,
+                documentId: documentId,
+                documentType: DocumentTypes.CLAIM,
+                claimId: claimId,
+                userId: userId,
+                companyId: companyId,
+            });
+            return { url: confirmUploadResponse.url };
         }
     );
 

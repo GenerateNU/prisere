@@ -1,9 +1,13 @@
 import { z } from "zod";
-import { SingleInsurancePolicyResponseSchema } from "../modules/insurance-policy/types";
 import { GetPurchaseLineItemResponseSchema } from "../modules/purchase-line-item/types";
 import { GetSelfDisasterForCompanyResponseSchema } from "../modules/self-disaster/types";
 import { ClaimStatusType } from "./ClaimStatusType";
-import { GetAllDisastersResponseSchema } from "./fema-disaster";
+import { GetAllDisastersDocumentResponseSchema, GetAllDisastersResponseSchema } from "./fema-disaster";
+import { GetSelfDisasterForDocumentResponseSchema } from "../modules/self-disaster/types";
+import {
+    SingleInsurancePolicyDocumentResponseSchema,
+    SingleInsurancePolicyResponseSchema,
+} from "../modules/insurance-policy/types";
 import { LocationAddressSchema } from "./Location";
 /* Zod schemas for OpenAPI docs */
 
@@ -20,14 +24,22 @@ export const ClaimSchema = z.object({
     claimLocations: z.array(LocationAddressSchema).optional(),
 });
 
+export const ClaimSchemaResponse = ClaimSchema.extend({
+    femaDisaster: GetAllDisastersDocumentResponseSchema.element.optional(),
+    selfDisaster: GetSelfDisasterForDocumentResponseSchema.optional(),
+    insurancePolicy: SingleInsurancePolicyDocumentResponseSchema.optional(),
+    createdAt: z.string(),
+    lastModified: z.string().optional(),
+});
+
 // A company might not have a claim in progress
 export const GetClaimInProgressForCompanySchema = ClaimSchema.nullable();
 
 const stringClaimSchema = z.object({
     id: z.string().nonempty(),
     status: z.nativeEnum(ClaimStatusType).default(ClaimStatusType.ACTIVE),
-    createdAt: z.iso.datetime(),
-    updatedAt: z.iso.datetime().optional(),
+    createdAt: z.string(),
+    updatedAt: z.string().optional(),
     femaDisaster: GetAllDisastersResponseSchema.element.optional(),
     selfDisaster: GetSelfDisasterForCompanyResponseSchema.optional(),
     insurancePolicy: SingleInsurancePolicyResponseSchema.optional(),
