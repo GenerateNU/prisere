@@ -25,11 +25,12 @@ export const createUser = async (payload: CreateUserRequest): Promise<User> => {
             body: payload,
         });
         if (response.ok) {
-            await supabase.auth.updateUser({
+            const {data:progressData, error:responseError} = await supabase.auth.updateUser({
                 data: {
                     onboarding_step: requiredOnboardingProgress.COMPANY,
                 },
             });
+            console.log(error)
             return data!;
         } else {
             throw Error(error?.error);

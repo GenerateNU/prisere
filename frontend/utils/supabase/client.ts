@@ -20,6 +20,7 @@ export function createSupabaseClient() {
  */
 export async function getAuthToken(): Promise<string> {
     const supabase = createSupabaseClient();
+    // @ts-ignore - manually validating session
     const { data, error } = await supabase.auth.getSession();
 
     if (error) {

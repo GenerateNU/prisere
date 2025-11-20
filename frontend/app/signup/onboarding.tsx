@@ -18,13 +18,26 @@ export default function Onboarding({ email }: OnboardingProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const stage = parseInt(searchParams.get("stage") || "0");
-    const [progress, setProgress] = useState(stage);
+    const [progress, setProgress] = useState(getStep(stage));
 
     const incrementProgress = () => {
         setProgress((prev) => prev + 1);
     };
 
     const infoSteps = [0, 2, 4, 7];
+
+    function getStep(stage:number): number {
+        switch(stage){
+            case 0:
+                return 2
+            case 1:
+                return 3
+            case 2:
+                return 7
+            default :
+                return 0
+        }
+    }
 
     const components = [
         <InfoPage

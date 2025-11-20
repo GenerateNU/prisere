@@ -75,10 +75,7 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
             setProgress(progress + 1);
         },
         onError: (error: Error) => {
-            console.error("Error creating locations:", error);
-            if (error.message.includes("postalCode")) {
-                setLocError("Error creating locations. Please check postal code details and try again.");
-            }
+            setLocError("Error creating locations. Check required fields and try again");
         },
     });
 
@@ -175,7 +172,6 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
                         >
                             <SelectTrigger
                                 id="businessType"
-                                //className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
                                 style={{
                                     height: "45px",
                                     width: "100%",
@@ -213,13 +209,12 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
                 </div>
                 <div className="flex flex-col gap-[8px] w-full mb-[30px]">
                     <Label htmlFor="owner" className="text-[16px]">
-                        Secondary Email (Optional) <span className="text-red-500 text-[16px]">*</span>
+                        Secondary Email (Optional)
                     </Label>
                     <Input
                         id="owner"
                         name="owner"
                         type="text"
-                        required
                         className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
                         onChange={(e) => setCompanyPayload({ ...companyPayload, alternateEmail: e.target.value })}
                     />

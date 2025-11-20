@@ -39,10 +39,14 @@ export async function updateSession(request: NextRequest) {
 
     const isOnSignupPage = request.nextUrl.pathname === "/signup" && request.nextUrl.searchParams.has("stage");
     if (
-        !isOnSignupPage &&
+        (!isOnSignupPage &&
         user &&
         user.user_metadata.onboarding_step &&
-        user.user_metadata.onboarding_step != requiredOnboardingProgress.FINISHED
+        user.user_metadata.onboarding_step != requiredOnboardingProgress.FINISHED) ||
+        (isOnSignupPage &&
+        user &&
+        user.user_metadata.onboarding_step &&
+        progressToNumber[user.user_metadata.onboarding_step as requiredOnboardingProgress] != parseInt(request.nextUrl.searchParams.get("stage")!))
     ) {
         const url = request.nextUrl.clone();
         url.pathname = `/signup`;
@@ -57,16 +61,19 @@ export async function updateSession(request: NextRequest) {
     ) {
         const url = request.nextUrl.clone();
         url.pathname = `/`;
+        url.search = "";
         return NextResponse.redirect(url);
     }
     if (
-        !user &&
+        (!user &&
         !request.nextUrl.pathname.startsWith("/login") &&
         !request.nextUrl.pathname.startsWith("/signup") &&
-        !request.nextUrl.pathname.startsWith("/error")
+        !request.nextUrl.pathname.startsWith("/error"))
+        || !user && (isOnSignupPage)
     ) {
         const url = request.nextUrl.clone();
         url.pathname = "/login";
+        url.search = "";
         return NextResponse.redirect(url);
     }
     return supabaseResponse;
