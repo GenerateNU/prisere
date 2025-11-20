@@ -26,6 +26,9 @@ export class Purchase {
     @Column()
     companyId!: string;
 
+    @Column({ nullable: true })
+    vendor?: string | null;
+
     //QuickBooks's internal ID for the purchase that was made
     @Column({ nullable: true })
     quickBooksId?: number;

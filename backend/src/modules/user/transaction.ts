@@ -1,8 +1,8 @@
-import { User } from "../../entities/User";
-import { DataSource } from "typeorm";
 import { plainToClass } from "class-transformer";
-import { GetUserDTO, CreateUserDTO, GetUserCompanyDTO } from "../../types/User";
+import { DataSource } from "typeorm";
+import { User } from "../../entities/User";
 import { UserPreferences } from "../../entities/UserPreferences";
+import { CreateUserDTO, GetUserCompanyDTO, GetUserDTO, UpdateUserDTO } from "../../types/User";
 
 export interface IUserTransaction {
     /**
@@ -25,6 +25,13 @@ export interface IUserTransaction {
      * @returns The found company ID and name
      */
     getCompany(payload: GetUserCompanyDTO): Promise<NonNullCompanyUser | null>;
+
+    /**
+     * Updates the user with the given id
+     * @param payload The id of the user to be updated and the data to be updated
+     * @returns The updated User or null if failed
+     */
+    updateUser(payload: UpdateUserDTO): Promise<User | null>;
 }
 
 type NonNullCompanyUser = Omit<User, "company" | "companyId"> & {
@@ -72,5 +79,19 @@ export class UserTransaction implements IUserTransaction {
         }
 
         return null;
+    }
+
+    async updateUser(payload: UpdateUserDTO) {
+        const { id: givenId, ...data } = payload;
+
+        const result = await this.db
+            .createQueryBuilder()
+            .update(User)
+            .set(data)
+            .where("id = :id", { id: givenId })
+            .returning("*")
+            .execute();
+
+        return result.raw[0] as User;
     }
 }

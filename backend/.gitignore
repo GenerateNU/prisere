@@ -3,7 +3,6 @@ node_modules/
 lib/
 .DS_Store
 package-lock.json
-bun.lock
 log/
 *.log
 dist/

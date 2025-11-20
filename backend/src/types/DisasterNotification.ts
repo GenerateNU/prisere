@@ -1,16 +1,17 @@
 import { z } from "zod";
-import { CreateUserResponseSchema } from "../types/User";
+import { CreateUpdateUserResponseSchema } from "../types/User";
 import { LocationAddressSchemaType } from "./Location";
 import { FIPSCounty, FIPSState, incidentTypeString } from "./fema-disaster";
 
-const notificationTypes = ["web", "email"] as const;
+const _notificationTypes = ["web", "email"] as const;
 const notificationStatus = ["unread", "read"] as const;
 
 export const DisasterNotification = z.object({
     id: z.string(),
     userId: z.string(),
     femaDisasterId: z.string(),
-    notificationType: z.enum(notificationTypes),
+    isWeb: z.boolean(),
+    isEmail: z.boolean(),
     notificationStatus: z.enum(notificationStatus).optional().nullable(),
     firstSentAt: z.union([z.date(), z.string()]).optional().nullable(),
     lastSentAt: z.union([z.date(), z.string()]).optional().nullable(),
@@ -22,13 +23,14 @@ export const DisasterNotificationWithRelations = z.object({
     id: z.string(),
     userId: z.string(),
     femaDisasterId: z.string(),
-    notificationType: z.enum(notificationTypes),
+    isWeb: z.boolean(),
+    isEmail: z.boolean(),
     notificationStatus: z.enum(notificationStatus),
     firstSentAt: z.union([z.date(), z.string()]).optional().nullable(),
     lastSentAt: z.union([z.date(), z.string()]).optional().nullable(),
     acknowledgedAt: z.union([z.date(), z.string()]).optional().nullable(),
     createdAt: z.union([z.date(), z.string()]),
-    user: CreateUserResponseSchema,
+    user: CreateUpdateUserResponseSchema,
     femaDisaster: z.object({
         id: z.uuid(),
         disasterNumber: z.number(),
@@ -47,7 +49,7 @@ export const DisasterNotificationWithRelations = z.object({
 export type DisasterNotificationType = z.infer<typeof DisasterNotification>;
 export type DisasterNotificationWithRealtionsType = z.infer<typeof DisasterNotificationWithRelations>;
 
-export type NotificationTypeFilter = z.infer<typeof notificationTypes>;
+export type NotificationTypeFilter = z.infer<typeof _notificationTypes>;
 
 // GET /api/notifications/{user-id}
 export const GetUsersDisasterNotificationsResponseSchema = z.array(DisasterNotificationWithRelations);
@@ -71,7 +73,8 @@ export const BulkCreateNotificationsRequestSchema = z.array(
     z.object({
         userId: z.string(),
         femaDisasterId: z.string(),
-        notificationType: z.enum(notificationTypes),
+        isWeb: z.boolean().optional().default(true),
+        isEmail: z.boolean().optional().default(true),
         // Only created with these 3 attributes set, rest start null
     })
 );
@@ -97,6 +100,7 @@ export type MarkAllAsReadResponse = z.infer<typeof MarkAllAsReadResponseSchema>;
 
 export const DisasterEmailMessageSchema = z.object({
     to: z.string(),
+    alt: z.string().optional(),
     from: z.string(),
     subject: z.string(),
     firstName: z.string(),

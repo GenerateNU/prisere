@@ -46,7 +46,14 @@ export class MockQBClient implements IQuickbooksClient {
 }
 
 export async function setupData(app: Hono, service: QuickbooksService) {
-    const user = (await createUserWithCompany(app, { id: randomUUID(), firstName: "test", lastName: "user" })).data;
+    const user = (
+        await createUserWithCompany(app, {
+            id: randomUUID(),
+            firstName: "test",
+            lastName: "user",
+            phoneNumber: "1234567890",
+        })
+    ).data;
 
     const { state } = await service.generateAuthUrl({ userId: user.id });
 

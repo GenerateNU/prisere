@@ -1,19 +1,22 @@
 import { Context, TypedResponse } from "hono";
-import { ControllerResponse } from "../../utilities/response";
+import { validate } from "uuid";
 import {
-    GetClaimsByCompanyIdResponse,
-    CreateClaimResponse,
     CreateClaimDTOSchema,
+    CreateClaimResponse,
     DeleteClaimResponse,
-    LinkClaimToLineItemResponse,
-    LinkClaimToLineItemDTOSchema,
-    LinkClaimToPurchaseResponse,
-    LinkClaimToPurchaseDTOSchema,
-    GetPurchaseLineItemsForClaimResponse,
     DeletePurchaseLineItemResponse,
+    GetClaimByIdResponse,
+    GetClaimsByCompanyIdResponse,
+    GetPurchaseLineItemsForClaimResponse,
+    LinkClaimToLineItemDTOSchema,
+    LinkClaimToLineItemResponse,
+    LinkClaimToPurchaseDTOSchema,
+    LinkClaimToPurchaseResponse,
+    UpdateClaimStatusDTOSchema,
+    UpdateClaimStatusResponse,
 } from "../../types/Claim";
 import { withControllerErrorHandling } from "../../utilities/error";
-import { validate } from "uuid";
+import { ControllerResponse } from "../../utilities/response";
 import { IClaimService } from "./service";
 import { ClaimPDFGenerationResponse } from "./types";
 
@@ -28,6 +31,8 @@ export interface IClaimController {
     ): ControllerResponse<TypedResponse<GetPurchaseLineItemsForClaimResponse, 200>>;
     deletePurchaseLineItem(_ctx: Context): ControllerResponse<TypedResponse<DeletePurchaseLineItemResponse, 200>>;
     createClaimPDF(_ctx: Context): ControllerResponse<TypedResponse<ClaimPDFGenerationResponse, 200>>;
+    getClaimById(_ctx: Context): ControllerResponse<TypedResponse<GetClaimByIdResponse, 200>>;
+    updateClaimStatus(_ctx: Context): ControllerResponse<TypedResponse<UpdateClaimStatusResponse, 200>>;
 }
 
 export class ClaimController {
@@ -148,6 +153,38 @@ export class ClaimController {
             const pdfUrl = await this.claimService.createClaimPDF(claimId, userId, companyId);
 
             return ctx.json(pdfUrl, 200);
+        }
+    );
+
+    getClaimById = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<GetClaimByIdResponse, 200>> => {
+            const claimId = ctx.req.param("id");
+            const companyId = ctx.get("companyId");
+
+            if (!validate(claimId)) {
+                return ctx.json({ error: "Invalid claim ID format" }, 400);
+            }
+
+            const claim = await this.claimService.getClaimById(claimId, companyId);
+
+            return ctx.json(claim, 200);
+        }
+    );
+
+    updateClaimStatus = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<UpdateClaimStatusResponse, 200>> => {
+            const claimId = ctx.req.param("id");
+            const companyId = ctx.get("companyId");
+            const json = await ctx.req.json();
+            const payload = UpdateClaimStatusDTOSchema.parse(json);
+
+            if (!validate(claimId)) {
+                return ctx.json({ error: "Invalid claim ID format" }, 400);
+            }
+
+            const claim = await this.claimService.updateClaimStatus(claimId, payload, companyId);
+
+            return ctx.json(claim, 200);
         }
     );
 }

@@ -1,4 +1,4 @@
-import { UpdateCompanyRequest, businessTypes } from "@/types/company";
+import { CompanyTypesEnum, UpdateCompanyRequest, businessTypes } from "@/types/company";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -81,8 +81,9 @@ export default function CompanyEditor({
                                 Business Type<span className="text-red-500 text-[16px]">*</span>
                             </Label>
                             <Select
-                                onValueChange={() => {
-                                    /*setCompany({ ...company, companyType: value }) + add value={company.businessType}*/
+                                defaultValue={company.companyType}
+                                onValueChange={(value: CompanyTypesEnum) => {
+                                    setCompany({ ...company, companyType: value });
                                 }}
                             >
                                 <SelectTrigger
@@ -96,7 +97,7 @@ export default function CompanyEditor({
                                         backgroundColor: "transparent",
                                     }}
                                 >
-                                    <SelectValue placeholder="Select company type" />
+                                    <SelectValue placeholder={company.companyType} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {businessTypes.map((type) => (
@@ -137,6 +138,20 @@ export default function CompanyEditor({
                                 onChange={(e) => setUser({ ...user, email: e.target.value })}
                             />
                         </div>
+                        <div className="flex flex-col gap-[8px] w-full">
+                            <Label htmlFor="businessOwnerFullName" className="text-[16px]">
+                                Secondary Email<span className="text-red-500 text-[16px]">*</span>
+                            </Label>
+                            <Input
+                                id="alternateEmail"
+                                name="alternateEmail"
+                                type="text"
+                                required
+                                className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
+                                value={company.alternateEmail ?? ""}
+                                onChange={(e) => setCompany({ ...company, alternateEmail: e.target.value })}
+                            />
+                        </div>
                     </div>
                     {error || saveError ? (
                         <p className="text-red-400 text-[14px] self-center">{error || saveError}</p>
@@ -163,7 +178,7 @@ export default function CompanyEditor({
                             </div>
                             <div className="flex flex-col gap-[4px]">
                                 <p className="font-bold text-[16px]">Business Type</p>
-                                <p>--None-- {/* temp until business type is added */}</p>
+                                <p>{company.companyType}</p>
                             </div>
                             <div className="flex flex-col gap-[4px] overflow-hidden truncate text-ellipsis">
                                 <p className="font-bold text-[16px]">Phone Number</p>
@@ -172,6 +187,10 @@ export default function CompanyEditor({
                             <div className="flex flex-col gap-[4px] overflow-hidden truncate text-ellipsis">
                                 <p className="font-bold text-[16px]">Email</p>
                                 <p>{user.email}</p>
+                            </div>
+                            <div className="flex flex-col gap-[4px] overflow-hidden truncate text-ellipsis">
+                                <p className="font-bold text-[16px]">Secondary Email</p>
+                                <p>{company.alternateEmail}</p>
                             </div>
                         </div>
                     )}

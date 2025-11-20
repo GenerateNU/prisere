@@ -28,8 +28,25 @@ describe("SQSService", () => {
         : "https://sqs.us-east-1.amazonaws.com/1234/test";
 
     const createMockMessage = (id: string): DisasterEmailMessage => ({
+        to: `test@test.com`,
+        from: "priseregenerate@gmail.com",
+        subject: "FEMA Disaster Alert",
+        firstName: `Zainab`,
+        declarationDate: new Date("2025-01-01"),
+        declarationType: "EM",
+        declarationTypeMeaning: "Emergency declaration",
+        incidentTypes: "A,F",
+        incidentTypeMeanings: ["Tsunami", "Flood"],
+        city: "Boston",
+        notificationId: `fake-uuid`,
+        disasterId: id,
+        companyName: "Test Company",
+    });
+
+    const createMockMessageWithAltEmail = (id: string): DisasterEmailMessage => ({
         to: `example@test.com`,
         from: "priseregenerate@gmail.com",
+        alt: "isaacpolite2795@gmail.com",
         subject: "FEMA Disaster Alert",
         firstName: `Abby`,
         declarationDate: new Date("2025-01-01"),
@@ -49,6 +66,21 @@ describe("SQSService", () => {
 
             const response = await sqsService.sendBatchMessages(messages);
             logMessageToFile(`${response}`);
+
+            expect(mockSend).toHaveBeenCalledTimes(1);
+
+            // Verify the command
+            const command = mockSend.mock.calls[0][0] as SendMessageBatchCommand;
+            expect(command.input.QueueUrl).toBe(queueUrl);
+            expect(command.input.Entries).toHaveLength(2);
+            expect(command.input.Entries![0].Id).toBe("0");
+            expect(command.input.Entries![0].MessageBody).toBe(JSON.stringify(messages[0]));
+        });
+
+        test("should send a batch to alternate emails successfully", async () => {
+            const messages = [createMockMessageWithAltEmail("1"), createMockMessageWithAltEmail("2")];
+
+            await sqsService.sendBatchMessages(messages);
 
             expect(mockSend).toHaveBeenCalledTimes(1);
 

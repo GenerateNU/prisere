@@ -49,11 +49,12 @@ export const addOpenApiInvoiceRoutes = (openApi: OpenAPIHono, db: DataSource): O
 const bulkCreateOrUpdateInvoiceRoute = createRoute({
     method: "post",
     path: "/invoice/bulk",
-    summary: "Bulk create or update new invoices",
+    summary: "Bulk create or update new invoices ",
     description:
         "Creates new invoices according to the schema. If there is an invoice in the database with the same quickbooks_id, company_id pairing, then it will overwrite it's attributes",
     request: {
         body: {
+            required: true,
             content: {
                 "application/json": {
                     schema: CreateOrUpdateInvoicesRequestSchema,

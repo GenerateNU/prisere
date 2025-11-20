@@ -75,7 +75,7 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
             .leftJoinAndSelect("notifications.locationAddress", "location")
             .leftJoinAndSelect("location.company", "company")
             .where("notifications.notificationStatus = :status", { status: "unread" })
-            .andWhere("notifications.notificationType = :type", { type: "email" })
+            .andWhere("notifications.isEmail IS TRUE")
             .getMany();
 
         return result;
@@ -99,8 +99,10 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
             .where("notifications.userId = :id", { id: payload.id })
             .orderBy("notifications.createdAt", "DESC"); // Added sorting since we will show most recent notif as banner
 
-        if (type) {
-            queryBuilder.andWhere("notifications.notificationType = :type", { type });
+        if (type === "web") {
+            queryBuilder.andWhere("notifications.isWeb IS TRUE");
+        } else if (type === "email") {
+            queryBuilder.andWhere("notifications.isEmail IS TRUE");
         }
         if (status) {
             queryBuilder.andWhere("notifications.notificationStatus = :status", { status });

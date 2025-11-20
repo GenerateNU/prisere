@@ -37,6 +37,7 @@ const bulkCreateOrUpdateInvoiceLineItemRoute = createRoute({
         "Creates new invoice line items according to the schema. If there is an invoice line item in the database with the same quickbooks_id, invoice_id pairing, then it will overwrite it's attributes",
     request: {
         body: {
+            required: true,
             content: {
                 "application/json": {
                     schema: CreateOrUpdateInvoiceLineItemsDTOSchema,

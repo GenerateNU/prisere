@@ -100,25 +100,6 @@ describe("SQSService", () => {
             expect(lastCall.input.Entries).toHaveLength(5);
         });
 
-        test("should include message attributes", async () => {
-            const messages = [createMockMessage("1")];
-
-            mockSend.mockResolvedValueOnce({
-                Successful: [{ Id: "0", MessageId: "msg-1" }],
-                Failed: [],
-            });
-
-            await sqsService.sendBatchMessages(messages);
-
-            const command = mockSend.mock.calls[0][0] as SendMessageBatchCommand;
-            const entry = command.input.Entries![0];
-
-            expect(entry.MessageAttributes).toBeDefined();
-            expect(entry.MessageAttributes!["email"].StringValue).toBe("user1@example.com");
-            expect(entry.MessageAttributes!["notificationId"].StringValue).toBe("notif-1");
-            expect(entry.MessageAttributes!["disasterId"].StringValue).toBe("disaster-1");
-        });
-
         test("should handle partial failures", async () => {
             const messages = [createMockMessage("1"), createMockMessage("2"), createMockMessage("3")];
 

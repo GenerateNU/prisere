@@ -1,15 +1,16 @@
-import { DataSource } from "typeorm";
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
+import { DataSource } from "typeorm";
 import {
-    CreateUserResponseSchema,
-    GetUserResponseSchema,
-    GetUserCompanyResponseSchema,
+    CreateUpdateUserResponseSchema,
     createUserRequestBody,
+    GetUserCompanyResponseSchema,
+    GetUserResponseSchema,
+    UpdateUserRequestBodySchema,
 } from "../../types/User";
+import { openApiErrorCodes } from "../../utilities/error";
 import { IUserController, UserController } from "../user/controller";
 import { IUserService, UserService } from "../user/service";
 import { IUserTransaction, UserTransaction } from "../user/transaction";
-import { openApiErrorCodes } from "../../utilities/error";
 
 export const addOpenApiUserRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const userTransaction: IUserTransaction = new UserTransaction(db);
@@ -19,6 +20,7 @@ export const addOpenApiUserRoutes = (openApi: OpenAPIHono, db: DataSource): Open
     openApi.openapi(createUserRoute, (ctx) => userController.createUser(ctx));
     openApi.openapi(getUserCompanyRoute, (ctx) => userController.getCompany(ctx));
     openApi.openapi(getUserRoute, (ctx) => userController.getUser(ctx));
+    openApi.openapi(updateUserRoute, (ctx) => userController.updateUser(ctx));
     return openApi;
 };
 
@@ -41,7 +43,7 @@ const createUserRoute = createRoute({
         201: {
             content: {
                 "application/json": {
-                    schema: CreateUserResponseSchema,
+                    schema: CreateUpdateUserResponseSchema,
                 },
             },
             description: "Create user response",
@@ -95,5 +97,34 @@ const getUserCompanyRoute = createRoute({
         ...openApiErrorCodes("Get Company from User"),
     },
 
+    tags: ["Users"],
+});
+
+const updateUserRoute = createRoute({
+    method: "patch",
+    path: "/users",
+    summary: "Updates a user by the given ID",
+    description: "Updates the user with the given ID in the database",
+    request: {
+        body: {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: UpdateUserRequestBodySchema,
+                },
+            },
+        },
+    },
+    responses: {
+        201: {
+            content: {
+                "application/json": {
+                    schema: CreateUpdateUserResponseSchema,
+                },
+            },
+            description: "Successfully updated user",
+        },
+        ...openApiErrorCodes("Update user error"),
+    },
     tags: ["Users"],
 });

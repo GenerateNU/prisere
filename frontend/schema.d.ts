@@ -35,6 +35,7 @@ export interface paths {
                             firstName: string;
                             lastName: string;
                             email?: string;
+                            phoneNumber: string;
                         };
                     };
                 };
@@ -89,6 +90,7 @@ export interface paths {
                         /** Format: email */
                         email?: string;
                         companyId?: string | null;
+                        phoneNumber: string;
                     };
                 };
             };
@@ -105,6 +107,7 @@ export interface paths {
                             lastName: string;
                             email?: string;
                             companyId?: string | null;
+                            phoneNumber: string;
                         };
                     };
                 };
@@ -135,7 +138,69 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Updates a user by the given ID
+         * @description Updates the user with the given ID in the database
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        firstName?: string;
+                        lastName?: string;
+                        /** Format: email */
+                        email?: string;
+                        phoneNumber?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Successfully updated user */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            firstName: string;
+                            lastName: string;
+                            email?: string;
+                            companyId?: string | null;
+                            phoneNumber: string;
+                        };
+                    };
+                };
+                /** @description Update user error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Update user error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/users/company": {
@@ -250,6 +315,10 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** Format: email */
+                            alternateEmail?: string;
+                            /** @enum {string} */
+                            companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
                             updatedAt: string;
                         };
@@ -303,6 +372,10 @@ export interface paths {
                     "application/json": {
                         name: string;
                         businessOwnerFullName: string;
+                        /** @enum {string} */
+                        companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
+                        /** Format: email */
+                        alternateEmail?: string;
                     };
                 };
             };
@@ -328,6 +401,10 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** Format: email */
+                            alternateEmail?: string;
+                            /** @enum {string} */
+                            companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
                             updatedAt: string;
                         };
@@ -383,6 +460,10 @@ export interface paths {
                     "application/json": {
                         name?: string;
                         businessOwnerFullName?: string;
+                        /** Format: email */
+                        alternateEmail?: string;
+                        /** @enum {string} */
+                        companyType?: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                     };
                 };
             };
@@ -408,6 +489,10 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** Format: email */
+                            alternateEmail?: string;
+                            /** @enum {string} */
+                            companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
                             updatedAt: string;
                         };
@@ -497,6 +582,10 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** Format: email */
+                            alternateEmail?: string;
+                            /** @enum {string} */
+                            companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
                             updatedAt: string;
                         };
@@ -586,6 +675,10 @@ export interface paths {
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
+                            /** Format: email */
+                            alternateEmail?: string;
+                            /** @enum {string} */
+                            companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
                             updatedAt: string;
                         };
@@ -770,6 +863,20 @@ export interface paths {
                                 /** Format: date-time */
                                 createdAt: string;
                             };
+                            claimLocations?: {
+                                id: string;
+                                alias: string;
+                                country: string;
+                                stateProvince: string;
+                                city: string;
+                                streetAddress: string;
+                                postalCode: string;
+                                county?: string;
+                                /** Format: uuid */
+                                companyId: string;
+                                fipsStateCode: number;
+                                fipsCountyCode: number;
+                            }[];
                         } | null;
                     };
                 };
@@ -1463,8 +1570,8 @@ export interface paths {
                             id: string;
                             userId: string;
                             femaDisasterId: string;
-                            /** @enum {string} */
-                            notificationType: "web" | "email";
+                            isWeb: boolean;
+                            isEmail: boolean;
                             /** @enum {string} */
                             notificationStatus: "unread" | "read";
                             firstSentAt?: string | unknown;
@@ -1477,6 +1584,7 @@ export interface paths {
                                 lastName: string;
                                 email?: string;
                                 companyId?: string | null;
+                                phoneNumber: string;
                             };
                             femaDisaster: {
                                 /** Format: uuid */
@@ -1520,6 +1628,10 @@ export interface paths {
                                         updatedAt: string;
                                         importTime?: string;
                                     }[];
+                                    /** Format: email */
+                                    alternateEmail?: string;
+                                    /** @enum {string} */
+                                    companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                                     createdAt: string;
                                     updatedAt: string;
                                 };
@@ -1597,8 +1709,8 @@ export interface paths {
                             id: string;
                             userId: string;
                             femaDisasterId: string;
-                            /** @enum {string} */
-                            notificationType: "web" | "email";
+                            isWeb: boolean;
+                            isEmail: boolean;
                             /** @enum {string|null} */
                             notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
@@ -1672,8 +1784,8 @@ export interface paths {
                             id: string;
                             userId: string;
                             femaDisasterId: string;
-                            /** @enum {string} */
-                            notificationType: "web" | "email";
+                            isWeb: boolean;
+                            isEmail: boolean;
                             /** @enum {string|null} */
                             notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
@@ -1734,8 +1846,10 @@ export interface paths {
                     "application/json": {
                         userId: string;
                         femaDisasterId: string;
-                        /** @enum {string} */
-                        notificationType: "web" | "email";
+                        /** @default true */
+                        isWeb?: boolean;
+                        /** @default true */
+                        isEmail?: boolean;
                     }[];
                 };
             };
@@ -1750,8 +1864,8 @@ export interface paths {
                             id: string;
                             userId: string;
                             femaDisasterId: string;
-                            /** @enum {string} */
-                            notificationType: "web" | "email";
+                            isWeb: boolean;
+                            isEmail: boolean;
                             /** @enum {string|null} */
                             notificationStatus?: "unread" | "read" | null;
                             firstSentAt?: string | unknown;
@@ -2118,14 +2232,16 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
-                        quickbooksId?: number;
-                        totalAmountCents: number;
-                        /** Format: date-time */
-                        quickbooksDateCreated?: string;
-                    }[];
+                        items: {
+                            quickbooksId?: number;
+                            totalAmountCents: number;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string;
+                        }[];
+                    };
                 };
             };
             responses: {
@@ -2590,15 +2706,18 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
-                        quickBooksId?: number;
-                        totalAmountCents: number;
-                        isRefund: boolean;
-                        /** Format: date-time */
-                        quickbooksDateCreated?: string;
-                    }[];
+                        items: {
+                            quickBooksId?: number;
+                            totalAmountCents: number;
+                            isRefund: boolean;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string;
+                            vendor?: string;
+                        }[];
+                    };
                 };
             };
             responses: {
@@ -2616,6 +2735,7 @@ export interface paths {
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
                             dateCreated: string;
+                            vendor?: string;
                         }[];
                     };
                 };
@@ -2633,6 +2753,7 @@ export interface paths {
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
                             dateCreated: string;
+                            vendor?: string;
                         }[];
                     };
                 };
@@ -2708,6 +2829,7 @@ export interface paths {
                             totalAmountCents: number;
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
+                            vendor?: string;
                             dateCreated: string;
                             lastUpdated: string;
                         };
@@ -2771,7 +2893,7 @@ export interface paths {
                     sortBy?: "date" | "totalAmountCents";
                     sortOrder?: "ASC" | "DESC";
                     categories?: string[];
-                    type?: "extraneous" | "typical";
+                    type?: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                     dateFrom?: string;
                     dateTo?: string;
                     search?: string;
@@ -2795,6 +2917,7 @@ export interface paths {
                             totalAmountCents: number;
                             quickbooksDateCreated?: string;
                             isRefund: boolean;
+                            vendor?: string;
                             dateCreated: string;
                             lastUpdated: string;
                             lineItems: {
@@ -2805,7 +2928,12 @@ export interface paths {
                                 amountCents: number;
                                 category?: string | null;
                                 /** @enum {string} */
-                                type: "extraneous" | "typical";
+                                type:
+                                    | "extraneous"
+                                    | "typical"
+                                    | "pending"
+                                    | "suggested extraneous"
+                                    | "suggested typical";
                                 dateCreated: string;
                                 lastUpdated: string;
                                 /** Format: date-time */
@@ -3145,6 +3273,20 @@ export interface paths {
                                 /** Format: date-time */
                                 createdAt: string;
                             };
+                            claimLocations?: {
+                                id: string;
+                                alias: string;
+                                country: string;
+                                stateProvince: string;
+                                city: string;
+                                streetAddress: string;
+                                postalCode: string;
+                                county?: string;
+                                /** Format: uuid */
+                                companyId: string;
+                                fipsStateCode: number;
+                                fipsCountyCode: number;
+                            }[];
                         };
                     };
                 };
@@ -3259,6 +3401,20 @@ export interface paths {
                                 /** Format: date-time */
                                 createdAt: string;
                             };
+                            claimLocations?: {
+                                id: string;
+                                alias: string;
+                                country: string;
+                                stateProvince: string;
+                                city: string;
+                                streetAddress: string;
+                                postalCode: string;
+                                county?: string;
+                                /** Format: uuid */
+                                companyId: string;
+                                fipsStateCode: number;
+                                fipsCountyCode: number;
+                            }[];
                         }[];
                     };
                 };
@@ -3308,7 +3464,133 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Get a single claim by ID
+         * @description Retrieves a claim with all its relations (selfDisaster, femaDisaster, insurancePolicy, locations)
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Claim retrieved successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            /**
+                             * @default ACTIVE
+                             * @enum {string}
+                             */
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt?: string;
+                            femaDisaster?: {
+                                /** Format: uuid */
+                                id: string;
+                                disasterNumber: number;
+                                fipsStateCode: number;
+                                /** Format: date-time */
+                                declarationDate: string;
+                                incidentBeginDate?: string;
+                                incidentEndDate?: string;
+                                fipsCountyCode: number;
+                                declarationType: string;
+                                designatedArea: string;
+                                designatedIncidentTypes: string | null;
+                            };
+                            selfDisaster?: {
+                                id: string;
+                                name: string;
+                                description: string;
+                                /** Format: date */
+                                startDate: string;
+                                /** Format: date */
+                                endDate?: string;
+                                /** Format: date */
+                                createdAt: string;
+                                /** Format: date */
+                                updatedAt: string;
+                            };
+                            insurancePolicy?: {
+                                id: string;
+                                policyName: string;
+                                policyHolderFirstName: string;
+                                policyHolderLastName: string;
+                                insuranceCompanyName: string;
+                                policyNumber: string;
+                                insuranceType: string;
+                                /** Format: date-time */
+                                updatedAt: string;
+                                /** Format: date-time */
+                                createdAt: string;
+                            };
+                            claimLocations?: {
+                                id: string;
+                                alias: string;
+                                country: string;
+                                stateProvince: string;
+                                city: string;
+                                streetAddress: string;
+                                postalCode: string;
+                                county?: string;
+                                /** Format: uuid */
+                                companyId: string;
+                                fipsStateCode: number;
+                                fipsCountyCode: number;
+                            }[];
+                        };
+                    };
+                };
+                /** @description Get Claim Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Claim not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Get Claim Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         put?: never;
         post?: never;
         /**
@@ -3364,6 +3646,163 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/claims/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update a claim's status
+         * @description Updates a claim's status and optionally the insurance policy ID
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        status:
+                            | "ACTIVE"
+                            | "FILED"
+                            | "IN_PROGRESS_DISASTER"
+                            | "IN_PROGRESS_PERSONAL"
+                            | "IN_PROGRESS_BUSINESS"
+                            | "IN_PROGRESS_INSURANCE"
+                            | "IN_PROGRESS_EXPORT";
+                        insurancePolicyId?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Claim status updated successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            /**
+                             * @default ACTIVE
+                             * @enum {string}
+                             */
+                            status:
+                                | "ACTIVE"
+                                | "FILED"
+                                | "IN_PROGRESS_DISASTER"
+                                | "IN_PROGRESS_PERSONAL"
+                                | "IN_PROGRESS_BUSINESS"
+                                | "IN_PROGRESS_INSURANCE"
+                                | "IN_PROGRESS_EXPORT";
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt?: string;
+                            femaDisaster?: {
+                                /** Format: uuid */
+                                id: string;
+                                disasterNumber: number;
+                                fipsStateCode: number;
+                                /** Format: date-time */
+                                declarationDate: string;
+                                incidentBeginDate?: string;
+                                incidentEndDate?: string;
+                                fipsCountyCode: number;
+                                declarationType: string;
+                                designatedArea: string;
+                                designatedIncidentTypes: string | null;
+                            };
+                            selfDisaster?: {
+                                id: string;
+                                name: string;
+                                description: string;
+                                /** Format: date */
+                                startDate: string;
+                                /** Format: date */
+                                endDate?: string;
+                                /** Format: date */
+                                createdAt: string;
+                                /** Format: date */
+                                updatedAt: string;
+                            };
+                            insurancePolicy?: {
+                                id: string;
+                                policyName: string;
+                                policyHolderFirstName: string;
+                                policyHolderLastName: string;
+                                insuranceCompanyName: string;
+                                policyNumber: string;
+                                insuranceType: string;
+                                /** Format: date-time */
+                                updatedAt: string;
+                                /** Format: date-time */
+                                createdAt: string;
+                            };
+                            claimLocations?: {
+                                id: string;
+                                alias: string;
+                                country: string;
+                                stateProvince: string;
+                                city: string;
+                                streetAddress: string;
+                                postalCode: string;
+                                county?: string;
+                                /** Format: uuid */
+                                companyId: string;
+                                fipsStateCode: number;
+                                fipsCountyCode: number;
+                            }[];
+                        };
+                    };
+                };
+                /** @description Update Claim Status Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Claim not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Update Claim Status Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/claims/line-item": {
@@ -3566,7 +4005,7 @@ export interface paths {
                             amountCents: number;
                             category?: string | null;
                             /** @enum {string} */
-                            type: "extraneous" | "typical";
+                            type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                             dateCreated: string;
                             lastUpdated: string;
                             /** Format: date-time */
@@ -3986,7 +4425,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/notifications/preferences": {
+    "/preferences": {
         parameters: {
             query?: never;
             header?: never;
@@ -4147,17 +4586,19 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
-                        description?: string;
-                        invoiceId: string;
-                        quickbooksId?: number;
-                        amountCents: number;
-                        category?: string;
-                        /** Format: date-time */
-                        quickbooksDateCreated?: string | null;
-                    }[];
+                        items: {
+                            description?: string;
+                            invoiceId: string;
+                            quickbooksId?: number;
+                            amountCents: number;
+                            category?: string;
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string | null;
+                        }[];
+                    };
                 };
             };
             responses: {
@@ -4320,19 +4761,21 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
-                        description?: string;
-                        quickBooksId?: number;
-                        purchaseId: string;
-                        amountCents: number;
-                        category?: string | null;
-                        /** @enum {string} */
-                        type: "extraneous" | "typical";
-                        /** Format: date-time */
-                        quickbooksDateCreated?: string;
-                    }[];
+                        items: {
+                            description?: string;
+                            quickBooksId?: number;
+                            purchaseId: string;
+                            amountCents: number;
+                            category?: string | null;
+                            /** @enum {string} */
+                            type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
+                            /** Format: date-time */
+                            quickbooksDateCreated?: string;
+                        }[];
+                    };
                 };
             };
             responses: {
@@ -4350,7 +4793,7 @@ export interface paths {
                             amountCents: number;
                             category?: string | null;
                             /** @enum {string} */
-                            type: "extraneous" | "typical";
+                            type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                             dateCreated: string;
                             lastUpdated: string;
                             /** Format: date-time */
@@ -4431,7 +4874,7 @@ export interface paths {
                             amountCents: number;
                             category?: string | null;
                             /** @enum {string} */
-                            type: "extraneous" | "typical";
+                            type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                             dateCreated: string;
                             lastUpdated: string;
                             /** Format: date-time */
@@ -4514,7 +4957,7 @@ export interface paths {
                             amountCents: number;
                             category?: string | null;
                             /** @enum {string} */
-                            type: "extraneous" | "typical";
+                            type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                             dateCreated: string;
                             lastUpdated: string;
                             /** Format: date-time */
@@ -4610,7 +5053,7 @@ export interface paths {
                             amountCents: number;
                             category?: string | null;
                             /** @enum {string} */
-                            type: "extraneous" | "typical";
+                            type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                             dateCreated: string;
                             lastUpdated: string;
                             /** Format: date-time */
@@ -4674,7 +5117,7 @@ export interface paths {
                         /** Format: uuid */
                         id: string;
                         /** @enum {string} */
-                        type: "extraneous" | "typical";
+                        type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                     };
                 };
             };
@@ -4693,7 +5136,7 @@ export interface paths {
                             amountCents: number;
                             category?: string | null;
                             /** @enum {string} */
-                            type: "extraneous" | "typical";
+                            type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                             dateCreated: string;
                             lastUpdated: string;
                             /** Format: date-time */
@@ -4870,7 +5313,85 @@ export interface paths {
         };
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update a self-reported disaster
+         * @description Updates a self-reported disaster's information (name, description, dates)
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description The ID of the self-reported disaster to update */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        name?: string;
+                        description?: string;
+                        /** Format: date */
+                        startDate?: string;
+                        /** Format: date */
+                        endDate?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Self-reported disaster was successfully updated */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            name: string;
+                            description: string;
+                            /** Format: date */
+                            startDate: string;
+                            /** Format: date */
+                            endDate?: string;
+                            /** Format: date */
+                            createdAt: string;
+                            /** Format: date */
+                            updatedAt: string;
+                        };
+                    };
+                };
+                /** @description Updating Self Disaster Error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Self-reported disaster not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Updating Self Disaster Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/insurance": {

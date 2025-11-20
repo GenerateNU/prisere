@@ -21,6 +21,26 @@ export const CreateSelfDisasterResponseSchema = z.object({
 export type CreateSelfDisasterDTO = z.infer<typeof CreateSelfDisasterDTOSchema>;
 export type CreateSelfDisasterResponse = z.infer<typeof CreateSelfDisasterResponseSchema>;
 
+export const UpdateSelfDisasterDTOSchema = z.object({
+    name: z.string().max(250).min(1).optional(),
+    description: z.string().optional(),
+    startDate: z.iso.date().optional(),
+    endDate: z.iso.date().optional(),
+});
+
+export const UpdateSelfDisasterResponseSchema = z.object({
+    id: z.string(),
+    name: z.string().max(250).min(1),
+    description: z.string(),
+    startDate: z.iso.date(),
+    endDate: z.iso.date().optional(),
+    createdAt: z.iso.date(),
+    updatedAt: z.iso.date(),
+});
+
+export type UpdateSelfDisasterDTO = z.infer<typeof UpdateSelfDisasterDTOSchema>;
+export type UpdateSelfDisasterResponse = z.infer<typeof UpdateSelfDisasterResponseSchema>;
+
 //Types not needed for deletion
 
 export const GetDisastersForCompanyDTOSchema = z.object({

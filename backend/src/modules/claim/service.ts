@@ -5,14 +5,18 @@ import {
     DeleteClaimDTO,
     DeleteClaimResponse,
     DeletePurchaseLineItemResponse,
+    GetClaimByIdResponse,
     GetClaimsByCompanyIdResponse,
     GetPurchaseLineItemsForClaimResponse,
     LinkClaimToLineItemDTO,
     LinkClaimToLineItemResponse,
     LinkClaimToPurchaseDTO,
     LinkClaimToPurchaseResponse,
+    UpdateClaimStatusDTO,
+    UpdateClaimStatusResponse,
 } from "../../types/Claim";
 import { withServiceErrorHandling } from "../../utilities/error";
+import { S3Service } from "../s3/service";
 import { IClaimTransaction } from "./transaction";
 import { ClaimData, ClaimDataForPDF, ClaimPDFGenerationResponse } from "./types";
 import { restructureClaimDataForPdf } from "./utilities/pdf-mapper";
@@ -22,6 +26,7 @@ import { S3Service } from "../s3/service";
 import { DataSource } from "typeorm";
 import { DocumentTypes } from "../../types/S3Types";
 import { IDocumentTransaction } from "../documents/transaction";
+import { generatePdfToBuffer } from "./utilities/react-pdf-handler";
 
 export interface IClaimService {
     createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse>;
@@ -32,6 +37,12 @@ export interface IClaimService {
     getLinkedPurchaseLineItems(claimId: string): Promise<GetPurchaseLineItemsForClaimResponse>;
     deletePurchaseLineItem(claimId: string, lineItemId: string): Promise<DeletePurchaseLineItemResponse>;
     createClaimPDF(claimId: string, userId: string, companyId: string): Promise<ClaimPDFGenerationResponse>;
+    getClaimById(claimId: string, companyId: string): Promise<GetClaimByIdResponse>;
+    updateClaimStatus(
+        claimId: string,
+        payload: UpdateClaimStatusDTO,
+        companyId: string
+    ): Promise<UpdateClaimStatusResponse>;
 }
 
 export class ClaimService implements IClaimService {
@@ -140,8 +151,12 @@ export class ClaimService implements IClaimService {
                 throw Boom.notFound("Claim does not have an associated company");
             }
             const claimData: ClaimData = restructureClaimDataForPdf(pdfData);
-            const claimHtml = buildClaimPdfHtml(claimData);
-            const pdfBuffer = await generatePDFfromHTML(claimHtml);
+            // Uncomment to Generate PDF in a test file locally to see file output
+            // await generatePdfToFile(claimData);
+            // return { url: "test" };
+
+            const pdfBuffer = await generatePdfToBuffer(claimData);
+
             const s3 = new S3Service(this.db, this.documentTransaction);
             const timestamp = new Date().toISOString();
             const documentId = `${claimId}-${timestamp}`;
@@ -157,6 +172,30 @@ export class ClaimService implements IClaimService {
                 companyId: companyId,
             });
             return { url: confirmUploadResponse.url };
+        }
+    );
+
+    getClaimById = withServiceErrorHandling(
+        async (claimId: string, companyId: string): Promise<GetClaimByIdResponse> => {
+            const claim = await this.claimTransaction.getClaimById(claimId, companyId);
+            if (!claim) {
+                throw Boom.notFound("Claim not found");
+            }
+            return claim;
+        }
+    );
+
+    updateClaimStatus = withServiceErrorHandling(
+        async (
+            claimId: string,
+            payload: UpdateClaimStatusDTO,
+            companyId: string
+        ): Promise<UpdateClaimStatusResponse> => {
+            const claim = await this.claimTransaction.updateClaimStatus(claimId, payload, companyId);
+            if (!claim) {
+                throw Boom.notFound("Claim not found or update failed");
+            }
+            return claim;
         }
     );
 }
