@@ -42,7 +42,6 @@ export type BusinessDocument = {
     documentId: string;
     key: string;
     url: string;
-    size: number;
 };
 
 export type DocumentWithDates = Omit<DocumentResponse, "createdAt" | "lastModified"> & {

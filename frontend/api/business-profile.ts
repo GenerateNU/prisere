@@ -20,8 +20,6 @@ export const getAllDocuments = async (): Promise<DocumentResponse[]> => {
             },
         });
 
-        console.log(data)
-
         if (!response.ok || !data) {
             throw new Error(error?.error || "Failed to fetch documents");
         }

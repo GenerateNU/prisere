@@ -63,7 +63,7 @@ export class DocumentTransaction implements IDocumentTransaction {
     async updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void> {
         try {
             const repository = this.db.getRepository(Document);
-            await repository.update({ id: documentId }, { category: category });
+            await repository.update({ id: documentId }, { category: category || null });
         } catch (error) {
             console.error(`Error updating category for document ${documentId}:`, error);
             throw error;

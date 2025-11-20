@@ -11,7 +11,7 @@ import { createHash } from "crypto";
 import { DocumentTypes, GetUploadUrlResponse, PdfListItem, UploadResult } from "../../types/S3Types";
 import { logMessageToFile } from "../../utilities/logger";
 import { DataSource } from "typeorm";
-import { DocumentCategories, DocumentWithUrl, DocumentWithUrlSchema } from "../../types/DocumentType";
+import { DocumentCategories, DocumentWithUrl } from "../../types/DocumentType";
 import { Document } from "../../entities/Document";
 import { IDocumentTransaction } from "../documents/transaction";
 
@@ -80,7 +80,11 @@ export interface IS3Service {
 
     uploadToS3(uploadUrl: string, file: File): Promise<void>;
 
-    getAllDocuments(documentType: DocumentTypes, companyId?: string, userId?: string): Promise<DocumentWithUrl[] | null>;
+    getAllDocuments(
+        documentType: DocumentTypes,
+        companyId?: string,
+        userId?: string
+    ): Promise<DocumentWithUrl[] | null>;
 
     updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void>;
 }
@@ -185,7 +189,7 @@ export class S3Service implements IS3Service {
             // Enrich with fresh presigned URLs from S3
             const enrichedDocuments = await Promise.all(
                 dbDocuments.map(async (doc) => {
-                    console.log(doc)
+                    console.log(doc);
                     try {
                         // Generate fresh presigned URL
                         const downloadUrl = await this.getPresignedDownloadUrl(doc.key);
@@ -194,7 +198,6 @@ export class S3Service implements IS3Service {
                     } catch (error) {
                         console.error(`Error generating URL for ${doc.key}:`, error);
                         // Keep existing URL or set to empty string
-                        
                     }
                     return { document: doc, downloadUrl: "" };
                 })

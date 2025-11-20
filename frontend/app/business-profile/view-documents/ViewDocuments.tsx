@@ -19,7 +19,6 @@ import { BusinessDocument, DocumentCategories } from "@/types/documents";
 
 type SortOrder = "asc" | "desc";
 
-
 export default function ViewDocuments() {
     // Replace hardcoded documents with state
     const [documents, setDocuments] = useState<BusinessDocument[]>([]);
@@ -45,12 +44,8 @@ export default function ViewDocuments() {
 
             // Fetch documents from the backend
             const docs = await getAllDocuments();
-            console.log("Getting docs: ", docs);
-
             // Transform the response into the BusinessDocument type
             const transformedDocs: BusinessDocument[] = docs.map((doc) => {
-                console.log(`Received document:`, doc);
-
                 // Access the nested document object
                 const { document, downloadUrl } = doc;
 
@@ -58,14 +53,20 @@ export default function ViewDocuments() {
                 const filename = document.key.split("/").pop() || document.id;
                 const extension = "." + (document.key.split(".").pop() || "pdf");
 
+                let date = new Date();
+                if (document.lastModified && typeof document.lastModified === "string") {
+                    date = new Date(document.lastModified);
+                } else if (document.createdAt && typeof document.createdAt === "string") {
+                    date = new Date(document.createdAt);
+                }
+
                 return {
-                    title: filename.replace(extension, ""), 
-                    fileType: extension, 
+                    title: filename.replace(extension, ""),
+                    fileType: extension,
                     category: (document.category as DocumentCategories | null) ?? "",
-                    date: document.lastModified ? new Date(document.lastModified) : new Date(),
+                    date: date,
                     key: document.key,
                     url: downloadUrl,
-                    size: document.size || 0, 
                     documentId: document.id,
                 };
             });

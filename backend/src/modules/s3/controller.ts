@@ -8,7 +8,7 @@ import {
     GetUploadUrlResponse,
     UploadResult,
 } from "../../types/S3Types";
-import { DocumentCategories, DocumentResponse, DocumentWithUrl } from "../../types/DocumentType";
+import { DocumentCategories, DocumentWithUrl } from "../../types/DocumentType";
 
 export interface IS3Controller {
     getUploadUrl(ctx: Context): Promise<TypedResponse<GetUploadUrlResponse | ErrorResponse>>;

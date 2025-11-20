@@ -24,8 +24,8 @@ export const DocumentSchema = z.object({
 
 export const DocumentWithUrlSchema = z.object({
     document: DocumentSchema,
-    downloadUrl: z.string()
-})
+    downloadUrl: z.string(),
+});
 
 export const UpsertDocumentSchema = z.object({
     key: z.string(),

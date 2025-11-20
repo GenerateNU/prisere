@@ -14,7 +14,7 @@ import {
     DeleteDocumentRequestSchema,
 } from "../../types/S3Types";
 import { DocumentTransaction } from "../documents/transaction";
-import { DocumentCategories, DocumentResponseSchema, DocumentWithUrlSchema } from "../../types/DocumentType";
+import { DocumentCategories, DocumentWithUrlSchema } from "../../types/DocumentType";
 
 export const addOpenApiS3Routes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const documentTransaction = new DocumentTransaction(db);
