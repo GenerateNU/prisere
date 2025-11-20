@@ -24,10 +24,10 @@ export class Document {
     category?: DocumentCategories;
 
     @Column({ nullable: true })
-    createdAt?: Date;
+    createdAt?: string;
 
     @Column({ nullable: true })
-    lastModified?: Date | null;
+    lastModified?: string;
 
     @Column({ name: "userId", nullable: true })
     userId?: string;

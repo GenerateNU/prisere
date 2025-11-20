@@ -163,8 +163,6 @@ export class S3Service implements IS3Service {
     async getAllDocuments(documentType: DocumentTypes, companyId: string, userId?: string): Promise<DocumentWithUrl[]> {
         try {
             const repository = this.db.getRepository(Document);
-
-            // Query documents from database based on type
             let dbDocuments: Document[];
 
             if (documentType === DocumentTypes.GENERAL_BUSINESS || documentType === DocumentTypes.CLAIM) {
@@ -186,20 +184,88 @@ export class S3Service implements IS3Service {
                 return [];
             }
 
-            // Enrich with fresh presigned URLs from S3
             const enrichedDocuments = await Promise.all(
                 dbDocuments.map(async (doc) => {
-                    console.log(doc);
                     try {
-                        // Generate fresh presigned URL
                         const downloadUrl = await this.getPresignedDownloadUrl(doc.key);
 
-                        return { document: doc, downloadUrl };
+                        return {
+                            document: {
+                                id: doc.id,
+                                key: doc.key,
+                                s3DocumentId: doc.s3DocumentId,
+                                category: doc.category,
+                                createdAt: doc.createdAt,
+                                lastModified: doc.lastModified || null,
+                                company: {
+                                    id: doc.company.id,
+                                    name: doc.company.name,
+                                    businessOwnerFullName: doc.company.businessOwnerFullName,
+                                    companyType: doc.company.companyType,
+                                    createdAt: doc.company.createdAt.toISOString(),
+                                    updatedAt: doc.company.updatedAt.toISOString(),
+                                    lastQuickBooksInvoiceImportTime:
+                                        doc.company.lastQuickBooksInvoiceImportTime?.toISOString() || null,
+                                    lastQuickBooksPurchaseImportTime:
+                                        doc.company.lastQuickBooksPurchaseImportTime?.toISOString() || null,
+                                    alternateEmail: doc.company.alternateEmail,
+                                },
+                                user: doc.user,
+                                claim: doc.claim
+                                    ? {
+                                          id: doc.claim.id,
+                                          status: doc.claim.status,
+                                          createdAt: doc.claim.createdAt.toISOString(),
+                                          updatedAt: doc.claim.updatedAt?.toISOString(),
+                                          femaDisaster: doc.claim.femaDisaster,
+                                          selfDisaster: doc.claim.selfDisaster,
+                                          insurancePolicy: doc.claim.insurancePolicy,
+                                          claimLocations: doc.claim.claimLocations,
+                                      }
+                                    : undefined,
+                            },
+                            downloadUrl,
+                        } as DocumentWithUrl;
                     } catch (error) {
                         console.error(`Error generating URL for ${doc.key}:`, error);
-                        // Keep existing URL or set to empty string
+                        return {
+                            document: {
+                                id: doc.id,
+                                key: doc.key,
+                                s3DocumentId: doc.s3DocumentId,
+                                category: doc.category,
+                                createdAt: doc.createdAt,
+                                lastModified: doc.lastModified || null,
+                                company: {
+                                    id: doc.company.id,
+                                    name: doc.company.name,
+                                    businessOwnerFullName: doc.company.businessOwnerFullName,
+                                    companyType: doc.company.companyType,
+                                    createdAt: doc.company.createdAt.toISOString(),
+                                    updatedAt: doc.company.updatedAt.toISOString(),
+                                    lastQuickBooksInvoiceImportTime:
+                                        doc.company.lastQuickBooksInvoiceImportTime?.toISOString() || null,
+                                    lastQuickBooksPurchaseImportTime:
+                                        doc.company.lastQuickBooksPurchaseImportTime?.toISOString() || null,
+                                    alternateEmail: doc.company.alternateEmail,
+                                },
+                                user: doc.user,
+                                claim: doc.claim
+                                    ? {
+                                          id: doc.claim.id,
+                                          status: doc.claim.status,
+                                          createdAt: doc.claim.createdAt.toISOString(),
+                                          updatedAt: doc.claim.updatedAt?.toISOString(),
+                                          femaDisaster: doc.claim.femaDisaster,
+                                          selfDisaster: doc.claim.selfDisaster,
+                                          insurancePolicy: doc.claim.insurancePolicy,
+                                          claimLocations: doc.claim.claimLocations,
+                                      }
+                                    : undefined,
+                            },
+                            downloadUrl: "",
+                        } as DocumentWithUrl;
                     }
-                    return { document: doc, downloadUrl: "" };
                 })
             );
 

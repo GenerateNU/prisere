@@ -304,8 +304,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | null;
-                            lastQuickBooksPurchaseImportTime?: string | null;
+                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
+                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -320,7 +320,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt: string;
+                            updatedAt?: string;
                         };
                     };
                 };
@@ -390,8 +390,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | null;
-                            lastQuickBooksPurchaseImportTime?: string | null;
+                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
+                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -406,7 +406,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt: string;
+                            updatedAt?: string;
                         };
                     };
                 };
@@ -478,8 +478,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | null;
-                            lastQuickBooksPurchaseImportTime?: string | null;
+                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
+                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -494,7 +494,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt: string;
+                            updatedAt?: string;
                         };
                     };
                 };
@@ -571,8 +571,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | null;
-                            lastQuickBooksPurchaseImportTime?: string | null;
+                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
+                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -587,7 +587,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt: string;
+                            updatedAt?: string;
                         };
                     };
                 };
@@ -664,8 +664,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | null;
-                            lastQuickBooksPurchaseImportTime?: string | null;
+                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
+                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -680,7 +680,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt: string;
+                            updatedAt?: string;
                         };
                     };
                 };
@@ -814,14 +814,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -1619,8 +1612,8 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksInvoiceImportTime?: string | null;
-                                    lastQuickBooksPurchaseImportTime?: string | null;
+                                    lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
+                                    lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
                                     externals?: {
                                         id: string;
                                         source: string;
@@ -1635,7 +1628,7 @@ export interface paths {
                                     /** @enum {string} */
                                     companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                                     createdAt: string;
-                                    updatedAt: string;
+                                    updatedAt?: string;
                                 };
                             };
                         }[];
@@ -2930,12 +2923,7 @@ export interface paths {
                                 amountCents: number;
                                 category?: string | null;
                                 /** @enum {string} */
-                                type:
-                                    | "extraneous"
-                                    | "typical"
-                                    | "pending"
-                                    | "suggested extraneous"
-                                    | "suggested typical";
+                                type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                                 dateCreated: string;
                                 lastUpdated: string;
                                 /** Format: date-time */
@@ -3200,14 +3188,7 @@ export interface paths {
                          * @default ACTIVE
                          * @enum {string}
                          */
-                        status?:
-                            | "ACTIVE"
-                            | "FILED"
-                            | "IN_PROGRESS_DISASTER"
-                            | "IN_PROGRESS_PERSONAL"
-                            | "IN_PROGRESS_BUSINESS"
-                            | "IN_PROGRESS_INSURANCE"
-                            | "IN_PROGRESS_EXPORT";
+                        status?: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                     };
                 };
             };
@@ -3224,14 +3205,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             createdAt: string;
                             updatedAt?: string;
                             femaDisaster?: {
@@ -3352,14 +3326,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3493,14 +3460,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3679,14 +3639,7 @@ export interface paths {
                 content: {
                     "application/json": {
                         /** @enum {string} */
-                        status:
-                            | "ACTIVE"
-                            | "FILED"
-                            | "IN_PROGRESS_DISASTER"
-                            | "IN_PROGRESS_PERSONAL"
-                            | "IN_PROGRESS_BUSINESS"
-                            | "IN_PROGRESS_INSURANCE"
-                            | "IN_PROGRESS_EXPORT";
+                        status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                         insurancePolicyId?: string;
                     };
                 };
@@ -3704,14 +3657,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -6019,8 +5965,8 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksInvoiceImportTime?: string | null;
-                                    lastQuickBooksPurchaseImportTime?: string | null;
+                                    lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
+                                    lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
                                     externals?: {
                                         id: string;
                                         source: string;
@@ -6035,7 +5981,7 @@ export interface paths {
                                     /** @enum {string} */
                                     companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                                     createdAt: string;
-                                    updatedAt: string;
+                                    updatedAt?: string;
                                 };
                                 claim?: {
                                     id: string;
@@ -6043,14 +5989,7 @@ export interface paths {
                                      * @default ACTIVE
                                      * @enum {string}
                                      */
-                                    status:
-                                        | "ACTIVE"
-                                        | "FILED"
-                                        | "IN_PROGRESS_DISASTER"
-                                        | "IN_PROGRESS_PERSONAL"
-                                        | "IN_PROGRESS_BUSINESS"
-                                        | "IN_PROGRESS_INSURANCE"
-                                        | "IN_PROGRESS_EXPORT";
+                                    status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                                     createdAt: string;
                                     /** Format: date-time */
                                     updatedAt?: string;

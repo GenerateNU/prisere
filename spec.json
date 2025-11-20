@@ -463,12 +463,38 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "nullable": true
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "nullable": true
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "externals": {
                       "type": "array",
@@ -521,10 +547,26 @@
                       ]
                     },
                     "createdAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        }
+                      ]
                     },
                     "updatedAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        }
+                      ]
                     }
                   },
                   "required": [
@@ -532,8 +574,7 @@
                     "name",
                     "businessOwnerFullName",
                     "companyType",
-                    "createdAt",
-                    "updatedAt"
+                    "createdAt"
                   ]
                 }
               }
@@ -606,12 +647,38 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "nullable": true
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "nullable": true
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "externals": {
                       "type": "array",
@@ -664,10 +731,26 @@
                       ]
                     },
                     "createdAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        }
+                      ]
                     },
                     "updatedAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        }
+                      ]
                     }
                   },
                   "required": [
@@ -675,8 +758,7 @@
                     "name",
                     "businessOwnerFullName",
                     "companyType",
-                    "createdAt",
-                    "updatedAt"
+                    "createdAt"
                   ]
                 }
               }
@@ -778,12 +860,38 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "nullable": true
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "nullable": true
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "externals": {
                       "type": "array",
@@ -836,10 +944,26 @@
                       ]
                     },
                     "createdAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        }
+                      ]
                     },
                     "updatedAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        }
+                      ]
                     }
                   },
                   "required": [
@@ -847,8 +971,7 @@
                     "name",
                     "businessOwnerFullName",
                     "companyType",
-                    "createdAt",
-                    "updatedAt"
+                    "createdAt"
                   ]
                 }
               }
@@ -949,12 +1072,38 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "nullable": true
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "nullable": true
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "externals": {
                       "type": "array",
@@ -1007,10 +1156,26 @@
                       ]
                     },
                     "createdAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        }
+                      ]
                     },
                     "updatedAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        }
+                      ]
                     }
                   },
                   "required": [
@@ -1018,8 +1183,7 @@
                     "name",
                     "businessOwnerFullName",
                     "companyType",
-                    "createdAt",
-                    "updatedAt"
+                    "createdAt"
                   ]
                 }
               }
@@ -1120,12 +1284,38 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "nullable": true
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "type": "string",
-                      "nullable": true
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        },
+                        {
+                          "nullable": true
+                        },
+                        {
+                          "nullable": true
+                        }
+                      ]
                     },
                     "externals": {
                       "type": "array",
@@ -1178,10 +1368,26 @@
                       ]
                     },
                     "createdAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        }
+                      ]
                     },
                     "updatedAt": {
-                      "type": "string"
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "string",
+                          "format": "date"
+                        }
+                      ]
                     }
                   },
                   "required": [
@@ -1189,8 +1395,7 @@
                     "name",
                     "businessOwnerFullName",
                     "companyType",
-                    "createdAt",
-                    "updatedAt"
+                    "createdAt"
                   ]
                 }
               }
@@ -2936,12 +3141,38 @@
                                 "minLength": 1
                               },
                               "lastQuickBooksInvoiceImportTime": {
-                                "type": "string",
-                                "nullable": true
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  {
+                                    "nullable": true
+                                  },
+                                  {
+                                    "nullable": true
+                                  }
+                                ]
                               },
                               "lastQuickBooksPurchaseImportTime": {
-                                "type": "string",
-                                "nullable": true
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  {
+                                    "nullable": true
+                                  },
+                                  {
+                                    "nullable": true
+                                  }
+                                ]
                               },
                               "externals": {
                                 "type": "array",
@@ -2994,10 +3225,26 @@
                                 ]
                               },
                               "createdAt": {
-                                "type": "string"
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  }
+                                ]
                               },
                               "updatedAt": {
-                                "type": "string"
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  }
+                                ]
                               }
                             },
                             "required": [
@@ -3005,8 +3252,7 @@
                               "name",
                               "businessOwnerFullName",
                               "companyType",
-                              "createdAt",
-                              "updatedAt"
+                              "createdAt"
                             ]
                           }
                         },
@@ -10016,12 +10262,38 @@
                                 "minLength": 1
                               },
                               "lastQuickBooksInvoiceImportTime": {
-                                "type": "string",
-                                "nullable": true
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  {
+                                    "nullable": true
+                                  },
+                                  {
+                                    "nullable": true
+                                  }
+                                ]
                               },
                               "lastQuickBooksPurchaseImportTime": {
-                                "type": "string",
-                                "nullable": true
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  },
+                                  {
+                                    "nullable": true
+                                  },
+                                  {
+                                    "nullable": true
+                                  }
+                                ]
                               },
                               "externals": {
                                 "type": "array",
@@ -10074,10 +10346,26 @@
                                 ]
                               },
                               "createdAt": {
-                                "type": "string"
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  }
+                                ]
                               },
                               "updatedAt": {
-                                "type": "string"
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "string",
+                                    "format": "date"
+                                  }
+                                ]
                               }
                             },
                             "required": [
@@ -10085,8 +10373,7 @@
                               "name",
                               "businessOwnerFullName",
                               "companyType",
-                              "createdAt",
-                              "updatedAt"
+                              "createdAt"
                             ]
                           },
                           "claim": {
