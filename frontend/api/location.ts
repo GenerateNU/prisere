@@ -9,6 +9,7 @@ import {
     UpdateLocationResponse,
 } from "@/types/location";
 import { authHeader, authWrapper, getClient } from "./client";
+import { GetCompanyLocationsResponse } from "@/types/company";
 
 export const createLocation = async (payload: CreateLocationRequest): Promise<Location> => {
     const req = async (token: string): Promise<Location> => {

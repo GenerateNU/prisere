@@ -1,11 +1,26 @@
 import { useEffect, useRef } from "react";
 import { useCountyLevelGEOJSONData } from "./useCountyLevelGEOJSONData";
-import { useFEMARiskScore } from "./useFEMARiskScore";
 
 /**
  * Hook to add GeoJSON layers to map
  */
-export const useGeoJSONLayers = (map: any, isMapReady: boolean) => {
+export const useGeoJSONLayers = (
+    map: any,
+    isMapReady: boolean,
+    femaRiskCountyLookup: Map<
+        string,
+        {
+            countyFipsCode: string;
+            riskRating: string;
+            ealRating: string;
+            socialVuln: string;
+            communityResilience: string;
+            coastalFlooding: string;
+            drought: string;
+            wildFire: string;
+        }
+    >
+) => {
     const hasAddedLayersRef = useRef(false);
 
     const {
@@ -14,8 +29,6 @@ export const useGeoJSONLayers = (map: any, isMapReady: boolean) => {
         error: errorsLoadingGeoJson,
         loadCountyData: loadGeoJson,
     } = useCountyLevelGEOJSONData();
-
-    const { data: femaRiskScores, loading: isLoadingFemaData, countyLookup } = useFEMARiskScore();
 
     //On mount, force load the county data
     useEffect(() => {
@@ -30,7 +43,7 @@ export const useGeoJSONLayers = (map: any, isMapReady: boolean) => {
             hasAddedLayersRef.current ||
             isLoadingGeoJsonData ||
             !geoJsonCountyData ||
-            !femaRiskScores
+            !femaRiskCountyLookup
         )
             return;
 
@@ -38,10 +51,12 @@ export const useGeoJSONLayers = (map: any, isMapReady: boolean) => {
             window.L.geoJSON(geoJsonCountyData, {
                 style: (feature: any) => ({
                     color: colorFromSevarity(
-                        countyLookup.get(`${feature.properties.STATEFP}${feature.properties.COUNTYFP}`)?.riskRating
+                        femaRiskCountyLookup.get(`${feature.properties.STATEFP}${feature.properties.COUNTYFP}`)
+                            ?.riskRating
                     ),
                     fillColor: colorFromSevarity(
-                        countyLookup.get(`${feature.properties.STATEFP}${feature.properties.COUNTYFP}`)?.riskRating
+                        femaRiskCountyLookup.get(`${feature.properties.STATEFP}${feature.properties.COUNTYFP}`)
+                            ?.riskRating
                     ),
                     fillOpacity: 0.7,
                     weight: 2,
@@ -50,7 +65,7 @@ export const useGeoJSONLayers = (map: any, isMapReady: boolean) => {
                 onEachFeature: (feature: any, layer: any) => {
                     if (feature.properties) {
                         layer.bindPopup(
-                            `<b>${feature.properties.NAME}: ${countyLookup.get(`${feature.properties.STATEFP}${feature.properties.COUNTYFP}`)?.riskRating || "Unknown"}</b>`
+                            `<b>${feature.properties.NAME}: ${femaRiskCountyLookup.get(`${feature.properties.STATEFP}${feature.properties.COUNTYFP}`)?.riskRating || "Unknown"}</b>`
                         );
                     }
                 },
@@ -60,7 +75,7 @@ export const useGeoJSONLayers = (map: any, isMapReady: boolean) => {
         } catch (err) {
             console.error("Error adding GeoJSON layers:", err);
         }
-    }, [geoJsonCountyData, femaRiskScores]);
+    }, [geoJsonCountyData, femaRiskCountyLookup, map]);
 };
 
 function colorFromSevarity(value: string | undefined): string {
@@ -68,21 +83,21 @@ function colorFromSevarity(value: string | undefined): string {
 
     switch (value?.toLowerCase()) {
         case "very high":
-            return "#C7445D";
+            return "var(--fuchsia)";
         case "relatively high":
-            return "#E07069";
+            return "var(--fuchsia)";
         case "relatively moderate":
-            return "#F0D55D";
+            return "var(--gold)";
         case "relatively low":
-            return "#509BC7";
+            return "var(--teal)";
         case "very low":
-            return "#4D6DBD";
+            return "var(--teal)";
         case "no rating":
-            return "white";
+            return "var(--slate)";
         case "not applicable":
-            return "#CCCCCC";
+            return "var(--slate)";
         case "insufficient data":
-            return "#858585";
+            return "var(--slate)";
         default:
             return "green";
     }

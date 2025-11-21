@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 /**
  * Hook to initialize and manage Leaflet map instance
@@ -46,10 +46,6 @@ export const useLeafletMap = (
         // Cleanup
         return () => {
             clearTimeout(timer);
-            // if (mapInstanceRef.current) {
-            //     mapInstanceRef.current.remove();
-            //     mapInstanceRef.current = null;
-            // }
         };
     }, [isLeafletLoaded]);
 
@@ -60,5 +56,18 @@ export const useLeafletMap = (
         }
     }, [currentLocation, isReady]);
 
-    return { map: mapInstanceRef.current, isReady };
+    const panTo = useCallback(
+        (lat: number, lng: number) => {
+            if (mapInstanceRef.current && isReady) {
+                mapInstanceRef.current.panTo([lat, lng]);
+            }
+        },
+        [isReady]
+    );
+
+    return {
+        map: mapInstanceRef.current,
+        isReady,
+        panTo,
+    };
 };

@@ -24,8 +24,7 @@ export const useCountyLevelGEOJSONData = () => {
                 throw new Error("Invalid GeoJSON format");
             }
 
-            console.log(geojsonData.features);
-            setData(geojsonData); // Store the entire FeatureCollection, not just features
+            setData(geojsonData);
             return geojsonData;
         } catch (err) {
             setError(JSON.stringify(err));

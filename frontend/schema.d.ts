@@ -747,6 +747,10 @@ export interface paths {
                             county?: string;
                             /** Format: uuid */
                             companyId: string;
+                            fipsStateCode: number;
+                            fipsCountyCode: number;
+                            lat: number;
+                            long: number;
                         }[];
                     };
                 };
@@ -872,6 +876,8 @@ export interface paths {
                                 companyId: string;
                                 fipsStateCode: number;
                                 fipsCountyCode: number;
+                                lat: number;
+                                long: number;
                             }[];
                         } | null;
                     };
@@ -1307,6 +1313,8 @@ export interface paths {
                             companyId: string;
                             fipsStateCode: number;
                             fipsCountyCode: number;
+                            lat: number;
+                            long: number;
                         };
                     };
                 };
@@ -2925,12 +2933,7 @@ export interface paths {
                                 amountCents: number;
                                 category?: string | null;
                                 /** @enum {string} */
-                                type:
-                                    | "extraneous"
-                                    | "typical"
-                                    | "pending"
-                                    | "suggested extraneous"
-                                    | "suggested typical";
+                                type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                                 dateCreated: string;
                                 lastUpdated: string;
                                 /** Format: date-time */
@@ -3270,6 +3273,8 @@ export interface paths {
                                 companyId: string;
                                 fipsStateCode: number;
                                 fipsCountyCode: number;
+                                lat: number;
+                                long: number;
                             }[];
                         };
                     };
@@ -3394,6 +3399,8 @@ export interface paths {
                                 companyId: string;
                                 fipsStateCode: number;
                                 fipsCountyCode: number;
+                                lat: number;
+                                long: number;
                             }[];
                         }[];
                     };
@@ -3471,14 +3478,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3536,6 +3536,8 @@ export interface paths {
                                 companyId: string;
                                 fipsStateCode: number;
                                 fipsCountyCode: number;
+                                lat: number;
+                                long: number;
                             }[];
                         };
                     };
@@ -3658,14 +3660,7 @@ export interface paths {
                 content: {
                     "application/json": {
                         /** @enum {string} */
-                        status:
-                            | "ACTIVE"
-                            | "FILED"
-                            | "IN_PROGRESS_DISASTER"
-                            | "IN_PROGRESS_PERSONAL"
-                            | "IN_PROGRESS_BUSINESS"
-                            | "IN_PROGRESS_INSURANCE"
-                            | "IN_PROGRESS_EXPORT";
+                        status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                         insurancePolicyId?: string;
                     };
                 };
@@ -3683,14 +3678,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3748,6 +3736,8 @@ export interface paths {
                                 companyId: string;
                                 fipsStateCode: number;
                                 fipsCountyCode: number;
+                                lat: number;
+                                long: number;
                             }[];
                         };
                     };
@@ -4297,6 +4287,8 @@ export interface paths {
                             companyId: string;
                             fipsStateCode: number;
                             fipsCountyCode: number;
+                            lat: number;
+                            long: number;
                         }[];
                     };
                 };

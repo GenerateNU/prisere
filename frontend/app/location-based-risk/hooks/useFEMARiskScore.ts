@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { getFemaRiskIndexData, refreshFemaRiskIndexData } from "@/api/fema-risk-index";
+import { getFemaRiskIndexData } from "@/api/fema-risk-index";
 import { FemaRisKIndexCountiesFemaDisaster } from "@/types/fema-risk-index";
 
 export function useFEMARiskScore() {

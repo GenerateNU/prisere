@@ -21,7 +21,7 @@ export const getFemaRiskIndexData = async (): Promise<FemaRisKIndexCountiesFemaD
 export const refreshFemaRiskIndexData = async (): Promise<void> => {
     const req = async (token: string): Promise<void> => {
         const client = getClient();
-        const { data, error, response } = await client.POST("/fema-risk-index", {
+        const { error, response } = await client.POST("/fema-risk-index", {
             headers: authHeader(token),
         });
         if (!response.ok) {

@@ -1286,6 +1286,18 @@
                       "companyId": {
                         "type": "string",
                         "format": "uuid"
+                      },
+                      "fipsStateCode": {
+                        "type": "number"
+                      },
+                      "fipsCountyCode": {
+                        "type": "number"
+                      },
+                      "lat": {
+                        "type": "number"
+                      },
+                      "long": {
+                        "type": "number"
                       }
                     },
                     "required": [
@@ -1296,7 +1308,11 @@
                       "city",
                       "streetAddress",
                       "postalCode",
-                      "companyId"
+                      "companyId",
+                      "fipsStateCode",
+                      "fipsCountyCode",
+                      "lat",
+                      "long"
                     ]
                   }
                 }
@@ -1563,6 +1579,12 @@
                           },
                           "fipsCountyCode": {
                             "type": "number"
+                          },
+                          "lat": {
+                            "type": "number"
+                          },
+                          "long": {
+                            "type": "number"
                           }
                         },
                         "required": [
@@ -1575,7 +1597,9 @@
                           "postalCode",
                           "companyId",
                           "fipsStateCode",
-                          "fipsCountyCode"
+                          "fipsCountyCode",
+                          "lat",
+                          "long"
                         ]
                       }
                     }
@@ -2303,6 +2327,12 @@
                     },
                     "fipsCountyCode": {
                       "type": "number"
+                    },
+                    "lat": {
+                      "type": "number"
+                    },
+                    "long": {
+                      "type": "number"
                     }
                   },
                   "required": [
@@ -2315,7 +2345,9 @@
                     "postalCode",
                     "companyId",
                     "fipsStateCode",
-                    "fipsCountyCode"
+                    "fipsCountyCode",
+                    "lat",
+                    "long"
                   ]
                 }
               }
@@ -5713,6 +5745,12 @@
                           },
                           "fipsCountyCode": {
                             "type": "number"
+                          },
+                          "lat": {
+                            "type": "number"
+                          },
+                          "long": {
+                            "type": "number"
                           }
                         },
                         "required": [
@@ -5725,7 +5763,9 @@
                           "postalCode",
                           "companyId",
                           "fipsStateCode",
-                          "fipsCountyCode"
+                          "fipsCountyCode",
+                          "lat",
+                          "long"
                         ]
                       }
                     }
@@ -5999,6 +6039,12 @@
                             },
                             "fipsCountyCode": {
                               "type": "number"
+                            },
+                            "lat": {
+                              "type": "number"
+                            },
+                            "long": {
+                              "type": "number"
                             }
                           },
                           "required": [
@@ -6011,7 +6057,9 @@
                             "postalCode",
                             "companyId",
                             "fipsStateCode",
-                            "fipsCountyCode"
+                            "fipsCountyCode",
+                            "lat",
+                            "long"
                           ]
                         }
                       }
@@ -6298,6 +6346,12 @@
                           },
                           "fipsCountyCode": {
                             "type": "number"
+                          },
+                          "lat": {
+                            "type": "number"
+                          },
+                          "long": {
+                            "type": "number"
                           }
                         },
                         "required": [
@@ -6310,7 +6364,9 @@
                           "postalCode",
                           "companyId",
                           "fipsStateCode",
-                          "fipsCountyCode"
+                          "fipsCountyCode",
+                          "lat",
+                          "long"
                         ]
                       }
                     }
@@ -6700,6 +6756,12 @@
                           },
                           "fipsCountyCode": {
                             "type": "number"
+                          },
+                          "lat": {
+                            "type": "number"
+                          },
+                          "long": {
+                            "type": "number"
                           }
                         },
                         "required": [
@@ -6712,7 +6774,9 @@
                           "postalCode",
                           "companyId",
                           "fipsStateCode",
-                          "fipsCountyCode"
+                          "fipsCountyCode",
+                          "lat",
+                          "long"
                         ]
                       }
                     }
@@ -7414,6 +7478,12 @@
                       },
                       "fipsCountyCode": {
                         "type": "number"
+                      },
+                      "lat": {
+                        "type": "number"
+                      },
+                      "long": {
+                        "type": "number"
                       }
                     },
                     "required": [
@@ -7426,7 +7496,9 @@
                       "postalCode",
                       "companyId",
                       "fipsStateCode",
-                      "fipsCountyCode"
+                      "fipsCountyCode",
+                      "lat",
+                      "long"
                     ]
                   }
                 }
