@@ -61,97 +61,98 @@ export default function CompanyEditor({
             <hr className="mt-[-16px] mb-[-16px]" />
             {isExpanded ? (
                 <div className="flex flex-col gap-[16px]">
-                    <div className="flex gap-[16px]">
-                        <div className="flex flex-col gap-[8px] w-full">
-                            <Label htmlFor="businessOwnerFullName" className="text-[16px]">
-                                Business Name<span className="text-red-500 text-[16px]">*</span>
-                            </Label>
-                            <Input
-                                id="businessOwnerFullName"
-                                name="businessOwnerFullName"
-                                type="text"
-                                required
-                                className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
-                                value={company.name ?? ""}
-                                onChange={(e) => setCompany({ ...company, name: e.target.value })}
-                            />
-                        </div>
-                        <div className="flex flex-col gap-[8px] w-full">
-                            <Label htmlFor="companyType" className="text-[16px]">
-                                Business Type<span className="text-red-500 text-[16px]">*</span>
-                            </Label>
-                            <Select
-                                defaultValue={company.companyType}
-                                onValueChange={(value: CompanyTypesEnum) => {
-                                    setCompany({ ...company, companyType: value });
-                                }}
-                            >
-                                <SelectTrigger
-                                    id="companyType"
-                                    style={{
-                                        height: "45px",
-                                        width: "100%",
-                                        padding: "16px 28px",
-                                        fontSize: "16px",
-                                        borderRadius: "10px",
-                                        backgroundColor: "transparent",
+                    <div className="grid grid-cols-2 gap-[16px]">
+                    
+                            <div className="flex flex-col gap-[8px] w-full">
+                                <Label htmlFor="businessOwnerFullName" className="text-[16px]">
+                                    Business Name<span className="text-red-500 text-[16px]">*</span>
+                                </Label>
+                                <Input
+                                    id="businessOwnerFullName"
+                                    name="businessOwnerFullName"
+                                    type="text"
+                                    required
+                                    className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
+                                    value={company.name ?? ""}
+                                    onChange={(e) => setCompany({ ...company, name: e.target.value })}
+                                />
+                            </div>
+                            <div className="flex flex-col gap-[8px] w-full">
+                                <Label htmlFor="companyType" className="text-[16px]">
+                                    Business Type<span className="text-red-500 text-[16px]">*</span>
+                                </Label>
+                                <Select
+                                    defaultValue={company.companyType}
+                                    onValueChange={(value: CompanyTypesEnum) => {
+                                        setCompany({ ...company, companyType: value });
                                     }}
                                 >
-                                    <SelectValue placeholder={company.companyType} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {businessTypes.map((type) => (
-                                        <SelectItem key={type} value={type} className="text-[16px]">
-                                            {type}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                    <div className="flex gap-[16px]">
-                        <div className="flex flex-col gap-[8px] w-full">
-                            <Label htmlFor="phone" className="text-[16px]">
-                                Phone Number<span className="text-red-500 text-[16px]">*</span>
-                            </Label>
-                            <Input
-                                id="phone"
-                                name="phone"
-                                type="text"
-                                required
-                                className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
-                                value={user.phoneNumber ?? ""}
-                                onChange={(e) => setUser({ ...user, phoneNumber: e.target.value })}
-                            />
-                        </div>
-                        <div className="flex flex-col gap-[8px] w-full">
-                            <Label htmlFor="email" className="text-[16px]">
-                                Email<span className="text-red-500 text-[16px]">*</span>
-                            </Label>
-                            <Input
-                                id="email"
-                                name="email"
-                                type="text"
-                                required
-                                className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
-                                value={user.email ?? ""}
-                                onChange={(e) => setUser({ ...user, email: e.target.value })}
-                            />
-                        </div>
-                        <div className="flex flex-col gap-[8px] w-full">
-                            <Label htmlFor="businessOwnerFullName" className="text-[16px]">
-                                Secondary Email<span className="text-red-500 text-[16px]">*</span>
-                            </Label>
-                            <Input
-                                id="alternateEmail"
-                                name="alternateEmail"
-                                type="text"
-                                required
-                                className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
-                                value={company.alternateEmail ?? ""}
-                                onChange={(e) => setCompany({ ...company, alternateEmail: e.target.value })}
-                            />
-                        </div>
+                                    <SelectTrigger
+                                        id="companyType"
+                                        style={{
+                                            height: "45px",
+                                            width: "100%",
+                                            padding: "16px 28px",
+                                            fontSize: "16px",
+                                            borderRadius: "10px",
+                                            backgroundColor: "transparent",
+                                        }}
+                                    >
+                                        <SelectValue placeholder={company.companyType} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {businessTypes.map((type) => (
+                                            <SelectItem key={type} value={type} className="text-[16px]">
+                                                {type}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+            
+                        
+                            <div className="flex flex-col gap-[8px] w-full">
+                                <Label htmlFor="phone" className="text-[16px]">
+                                    Phone Number<span className="text-red-500 text-[16px]">*</span>
+                                </Label>
+                                <Input
+                                    id="phone"
+                                    name="phone"
+                                    type="text"
+                                    required
+                                    className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
+                                    value={user.phoneNumber ?? ""}
+                                    onChange={(e) => setUser({ ...user, phoneNumber: e.target.value })}
+                                />
+                            </div>
+                            <div className="flex flex-col gap-[8px] w-full">
+                                <Label htmlFor="email" className="text-[16px]">
+                                    Email<span className="text-red-500 text-[16px]">*</span>
+                                </Label>
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    type="text"
+                                    required
+                                    className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
+                                    value={user.email ?? ""}
+                                    onChange={(e) => setUser({ ...user, email: e.target.value })}
+                                />
+                            </div>
+                            <div className="flex flex-col gap-[8px] w-full">
+                                <Label htmlFor="businessOwnerFullName" className="text-[16px]">
+                                    Secondary Email<span className="text-red-500 text-[16px]">*</span>
+                                </Label>
+                                <Input
+                                    id="alternateEmail"
+                                    name="alternateEmail"
+                                    type="text"
+                                    required
+                                    className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
+                                    value={company.alternateEmail ?? ""}
+                                    onChange={(e) => setCompany({ ...company, alternateEmail: e.target.value })}
+                                />
+                            </div>
                     </div>
                     {error || saveError ? (
                         <p className="text-red-400 text-[14px] self-center">{error || saveError}</p>
@@ -159,7 +160,7 @@ export default function CompanyEditor({
                         ""
                     )}
                     <Button
-                        className="text-[14px] py-[7px] bg-[var(--pink)] text-[var(--fuchsia)] self-end w-fit h-fit flex justify-center items-center gap-[8px] hover:text-[white]"
+                        className="relative bottom-0 right-0 text-[14px] bg-pink text-fuchsia self-end justify-self-end w-fit h-fit flex justify-center items-center gap-[8px] hover:text-[white]"
                         onClick={handleCollapse}
                         style={{ paddingInline: "25px" }}
                     >

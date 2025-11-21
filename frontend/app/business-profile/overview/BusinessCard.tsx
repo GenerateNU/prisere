@@ -23,7 +23,7 @@ export default function BusinessCard() {
     const [error, setError] = useState<string | null>(null);
     const [editing, setEditing] = useState<boolean>(false);
 
-    const { mutate: updateBusinessMutate } = useMutation({
+    const { mutate: updateBusinessMutate} = useMutation({
         mutationFn: (businessInfo: UpdateCompanyRequest) => updateCompany(businessInfo),
         onError: (error: Error) => {
             setError(error.message);
@@ -32,7 +32,9 @@ export default function BusinessCard() {
 
     const handleSave = () => {
         updateBusinessMutate(businessInfo);
-        setEditing(false);
+        if(!error) {
+            setEditing(false);
+        }
     };
 
     const { data: businessQuery, isPending: businessPending } = useQuery({
