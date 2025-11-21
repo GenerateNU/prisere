@@ -1,15 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Dispatch, SetStateAction } from "react";
 import { GoSync } from "react-icons/go";
 import { FiUpload } from "react-icons/fi";
 
 interface QuickbooksInfoProps {
-    progress: number;
-    setProgress: Dispatch<SetStateAction<number>>;
+    handleNext: () => void;
 }
 
-export default function Quickbooks({ progress, setProgress }: QuickbooksInfoProps) {
+export default function Quickbooks({ handleNext }: QuickbooksInfoProps) {
     return (
         <Card className="w-full px-[163px] py-[127px]">
             <div className="flex justify-center">
@@ -46,7 +44,7 @@ export default function Quickbooks({ progress, setProgress }: QuickbooksInfoProp
                     <Button
                         type="button"
                         variant="link"
-                        onClick={() => setProgress(progress + 1)}
+                        onClick={() => handleNext()}
                         className="underline hover:text-stone-200 h-fit w-fit text-[12px] font-bold p-0"
                     >
                         Skip for now

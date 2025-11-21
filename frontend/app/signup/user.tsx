@@ -8,14 +8,12 @@ import { Spinner } from "@/components/ui/spinner";
 import { CreateUserRequest } from "@/types/user";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { Dispatch, SetStateAction } from "react";
 
 interface UserInfoProps {
     email: string;
-    progress: number;
-    setProgress: Dispatch<SetStateAction<number>>;
+    handleNext: () => void;
 }
-export default function UserInfoPage({ email, progress, setProgress }: UserInfoProps) {
+export default function UserInfoPage({ email, handleNext }: UserInfoProps) {
     const [payload, setPayload] = useState<CreateUserRequest>({
         firstName: "",
         lastName: "",
@@ -25,7 +23,7 @@ export default function UserInfoPage({ email, progress, setProgress }: UserInfoP
     const { isPending, mutate } = useMutation({
         mutationFn: (payload: CreateUserRequest) => createUser(payload),
         onSuccess: () => {
-            setProgress(progress + 1);
+            handleNext();
         },
         onError: (error: Error) => {
             setFieldError(error.message || "An error occurred while creating the user.");

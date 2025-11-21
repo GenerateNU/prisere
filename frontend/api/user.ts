@@ -30,6 +30,7 @@ export const createUser = async (payload: CreateUserRequest): Promise<User> => {
                     onboarding_step: requiredOnboardingProgress.COMPANY,
                 },
             });
+            console.log(error);
             return data!;
         } else {
             throw Error(error?.error);
