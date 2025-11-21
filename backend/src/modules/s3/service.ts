@@ -7,7 +7,6 @@ import {
     ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { createHash } from "crypto";
 import { DocumentTypes, GetUploadUrlResponse, PdfListItem, UploadResult } from "../../types/S3Types";
 import { logMessageToFile } from "../../utilities/logger";
 import { DataSource } from "typeorm";
@@ -130,6 +129,7 @@ export class S3Service implements IS3Service {
                 Key: key,
                 ContentType: contentType,
                 Metadata: metadata,
+                ContentEncoding: 'gzip',
             });
 
             const url = await getSignedUrl(this.client, command, { expiresIn });
@@ -490,12 +490,17 @@ export class S3Service implements IS3Service {
     }
 
     async uploadToS3(uploadUrl: string, file: File): Promise<void> {
+        const arrayBuffer = await file.arrayBuffer();
+        const body = Bun.gzipSync(new Uint8Array(arrayBuffer));
+
+        const headers: HeadersInit = {
+            "Content-Type": file.type,
+            "Content-Encoding": "gzip"
+        };
         const response = await fetch(uploadUrl, {
             method: "PUT",
-            body: file,
-            headers: {
-                "Content-Type": file.type,
-            },
+            body,
+            headers,
         });
 
         if (!response.ok) {
@@ -504,37 +509,22 @@ export class S3Service implements IS3Service {
     }
 
     async uploadBufferToS3(uploadUrl: string, file: Buffer): Promise<void> {
-        // const arrayBuffer = file.subarray(0, file.length).buffer;
+        const body = Bun.gzipSync(new Uint8Array(file));
+        const headers: HeadersInit = {
+            'Content-Encoding': 'gzip',
+        };
 
         const response = await fetch(uploadUrl, {
             method: "PUT",
-            body: new Uint8Array(file),
+            body,
+            headers,
         });
 
         if (!response.ok) {
-            throw new Error(`Upload failed: ${response.statusText}`);
+            const errorText = await response.text();
+            throw new Error(
+                `Upload failed: ${response.status} ${response.statusText}. ${errorText}`
+            );
         }
-    }
-
-    /**
-     * Helper method to get file extension from filename
-     */
-    private getFileExtension(fileName: string): string {
-        const lastDot = fileName.lastIndexOf(".");
-        return lastDot !== -1 ? fileName.substring(lastDot) : "";
-    }
-
-    /**
-     * Generates a SHA-256 hash of a buffer for duplicate detection
-     */
-    private generateHash(buffer: Buffer): string {
-        return createHash("sha256").update(buffer).digest("hex");
-    }
-
-    /**
-     * Generates a unique ID using timestamp and random string
-     */
-    private generateUniqueId(): string {
-        return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
     }
 }
