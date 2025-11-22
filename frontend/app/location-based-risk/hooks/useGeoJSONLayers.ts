@@ -1,11 +1,12 @@
 import { useEffect, useRef } from "react";
 import { useCountyLevelGEOJSONData } from "./useCountyLevelGEOJSONData";
+import type { Map as LeafletMap } from "leaflet";
 
 /**
  * Hook to add GeoJSON layers to map
  */
 export const useGeoJSONLayers = (
-    map: any,
+    map: LeafletMap,
     isMapReady: boolean,
     femaRiskCountyLookup: Map<
         string,
@@ -26,7 +27,6 @@ export const useGeoJSONLayers = (
     const {
         data: geoJsonCountyData,
         isLoading: isLoadingGeoJsonData,
-        error: errorsLoadingGeoJson,
         loadCountyData: loadGeoJson,
     } = useCountyLevelGEOJSONData();
 
@@ -49,20 +49,20 @@ export const useGeoJSONLayers = (
 
         try {
             window.L.geoJSON(geoJsonCountyData, {
-                style: (feature: any) => ({
+                style: (feature) => ({
                     color: colorFromSevarity(
-                        femaRiskCountyLookup.get(`${feature.properties.STATEFP}${feature.properties.COUNTYFP}`)
+                        femaRiskCountyLookup.get(`${feature?.properties.STATEFP}${feature?.properties.COUNTYFP}`)
                             ?.riskRating
                     ),
                     fillColor: colorFromSevarity(
-                        femaRiskCountyLookup.get(`${feature.properties.STATEFP}${feature.properties.COUNTYFP}`)
+                        femaRiskCountyLookup.get(`${feature?.properties.STATEFP}${feature?.properties.COUNTYFP}`)
                             ?.riskRating
                     ),
                     fillOpacity: 0.7,
                     weight: 2,
                     opacity: 1,
                 }),
-                onEachFeature: (feature: any, layer: any) => {
+                onEachFeature: (feature, layer) => {
                     if (feature.properties) {
                         layer.bindPopup(
                             `<b>${feature.properties.NAME}: ${femaRiskCountyLookup.get(`${feature.properties.STATEFP}${feature.properties.COUNTYFP}`)?.riskRating || "Unknown"}</b>`

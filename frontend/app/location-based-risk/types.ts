@@ -1,4 +1,4 @@
-import { Feature, FeatureCollection, Point, Polygon, LineString, GeoJsonObject } from "geojson";
+import { FeatureCollection } from "geojson";
 
 export interface LayerStyle {
     radius?: number;

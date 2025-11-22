@@ -20,7 +20,7 @@ export default function LocationRisk() {
                         <div className="relative group">
                             <InfoIcon className="stroke-fuchsia" />
                             <div className="absolute hidden group-hover:block w-max max-w-xs bg-white font-thin text-sm rounded px-3 py-2 z-50">
-                                This data is taken from FEMA's National Risk Map
+                                {"This data is taken from FEMA\'s National Risk Map"}
                             </div>
                         </div>
                     </div>

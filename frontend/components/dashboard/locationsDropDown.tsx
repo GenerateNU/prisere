@@ -1,4 +1,4 @@
-import { CalendarIcon, ChevronDown, MapIcon, PinIcon } from "lucide-react";
+import { ChevronDown, MapIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { GetCompanyLocationsResponse } from "@/types/company";

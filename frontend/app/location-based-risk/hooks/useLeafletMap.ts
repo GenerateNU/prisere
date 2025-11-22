@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
+import type { Map } from "leaflet";
 
 /**
  * Hook to initialize and manage Leaflet map instance
@@ -8,7 +9,7 @@ export const useLeafletMap = (
     isLeafletLoaded: boolean,
     currentLocation: [number, number]
 ) => {
-    const mapInstanceRef = useRef<any>(null);
+    const mapInstanceRef = useRef<Map | null>(null);
     const [isReady, setIsReady] = useState(false);
 
     // Initialize map
