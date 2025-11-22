@@ -3,7 +3,6 @@
 import { createInsurancePolicy, getInsurancePolicies, updateInsurancePolicy } from "@/api/insurance";
 import InsuranceEditor from "@/components/InsuranceEditor";
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
 import { CreateInsurancePolicyRequest, UpdateInsurancePolicyRequest } from "@/types/insurance-policy";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -87,34 +86,46 @@ export default function InsuranceCard() {
     return (
         <div>
             {insurancePending ? (
-                <Spinner className="mb-[16px]" />
+                <LoadingInsuranceCard />
             ) : (
-                <div className="flex gap-[38px]">
-                    {insuranceInfo.map((insurance, index) => (
-                        <div key={index} className="w-1/2">
-                            <InsuranceEditor
-                                insurance={insurance}
-                                setInsurance={(i) => updateInsurance(index, i)}
-                                removeInsurance={() => removeInsurance(index)}
-                                isExpanded={editingInsuranceIndex === index}
-                                onExpand={() =>
-                                    editingInsuranceIndex === index
-                                        ? setEditingInsuranceIndex(null)
-                                        : setEditingInsuranceIndex(index)
-                                }
-                                onCollapse={() => handleSave()}
-                                saveError={saveError}
-                            />
-                        </div>
-                    ))}
+                <div>
+                    <div className="flex gap-[38px]">
+                        {insuranceInfo.map((insurance, index) => (
+                            <div key={index} className="w-1/2">
+                                <InsuranceEditor
+                                    insurance={insurance}
+                                    setInsurance={(i) => updateInsurance(index, i)}
+                                    removeInsurance={() => removeInsurance(index)}
+                                    isExpanded={editingInsuranceIndex === index}
+                                    onExpand={() =>
+                                        editingInsuranceIndex === index
+                                            ? setEditingInsuranceIndex(null)
+                                            : setEditingInsuranceIndex(index)
+                                    }
+                                    onCollapse={() => handleSave()}
+                                    saveError={saveError}
+                                />
+                            </div>
+                        ))}
+                    </div>
+
+                    <Button
+                        className="w-[196px] flex items-center text-[16px] h-[34px] self-start px-[12px] py-[4px] underline bg-slate hover:text-gray-600"
+                        onClick={addInsurance}
+                    >
+                        <IoAddCircleOutline /> Add an Insurance
+                    </Button>
                 </div>
             )}
-            <Button
-                className="w-[196px] flex items-center text-[16px] h-[34px] self-start px-[12px] py-[4px] underline bg-slate hover:text-gray-600"
-                onClick={addInsurance}
-            >
-                <IoAddCircleOutline /> Add an Insurance
-            </Button>
+        </div>
+    );
+}
+
+export function LoadingInsuranceCard() {
+    return (
+        <div className="flex flex-col space-y-3">
+            <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
         </div>
     );
 }
