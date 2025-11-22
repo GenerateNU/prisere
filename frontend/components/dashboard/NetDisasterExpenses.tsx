@@ -117,9 +117,8 @@ export default function NetDisasterExpense({ bannerData }: Props) {
                     ))}
                 </div>
 
-                {/* Button */}
                 <div className="flex justify-center pt-4">
-                    <Link href={"/expense-tracker"} className="text-sm font-semibold underline no-underline">
+                    <Link href={"/expense-tracker"} className="text-sm font-semibold no-underline">
                         <Button className="h-10 text-sm text-white rounded-full w-fit px-6 mt-6 bg-fuchsia">
                             See Expense Tracker
                         </Button>

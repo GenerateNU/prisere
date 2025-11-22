@@ -5,6 +5,8 @@ import { logMessageToFile } from "../../../utilities/logger";
 export interface LocationFips {
     fipsStateCode: string;
     fipsCountyCode: string;
+    lat: number;
+    long: number;
 }
 
 export interface CensusGeocodeResponse {
@@ -83,6 +85,8 @@ export class FEMALocationMatcher implements IFEMALocationMatcher {
                     return {
                         fipsStateCode: geo.STATE,
                         fipsCountyCode: geo.COUNTY,
+                        lat: parseFloat(geo.CENTLAT),
+                        long: parseFloat(geo.CENTLON),
                     };
                 } else {
                     logMessageToFile("No census blocks data found in match");

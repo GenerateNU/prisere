@@ -68,7 +68,7 @@ const STEPS = {
     businessProfile: {
         icon: Building,
         title: "Ensure business profile is up to date",
-        link: "/business-profile", // Double check/update this
+        link: "/business-profile",
         linkText: "Go to Business Profile",
     },
 };
