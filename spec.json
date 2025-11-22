@@ -18,7 +18,9 @@
       "post": {
         "summary": "Create a new user",
         "description": "Creates a new user with the provided information",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -47,7 +49,11 @@
                     "pattern": "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$"
                   }
                 },
-                "required": ["firstName", "lastName", "phoneNumber"]
+                "required": [
+                  "firstName",
+                  "lastName",
+                  "phoneNumber"
+                ]
               }
             }
           }
@@ -80,7 +86,12 @@
                       "type": "string"
                     }
                   },
-                  "required": ["id", "firstName", "lastName", "phoneNumber"]
+                  "required": [
+                    "id",
+                    "firstName",
+                    "lastName",
+                    "phoneNumber"
+                  ]
                 }
               }
             }
@@ -96,7 +107,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -112,7 +125,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -122,7 +137,9 @@
       "get": {
         "summary": "Fetches a user by the given ID",
         "description": "Finds the user with the given ID in the database",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "responses": {
           "200": {
             "description": "Successfull fetch of a user from the databse",
@@ -147,7 +164,12 @@
                       "type": "string"
                     }
                   },
-                  "required": ["id", "firstName", "lastName", "phoneNumber"]
+                  "required": [
+                    "id",
+                    "firstName",
+                    "lastName",
+                    "phoneNumber"
+                  ]
                 }
               }
             }
@@ -163,7 +185,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -182,7 +206,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -192,7 +218,9 @@
       "patch": {
         "summary": "Updates a user by the given ID",
         "description": "Updates the user with the given ID in the database",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -249,7 +277,12 @@
                       "type": "string"
                     }
                   },
-                  "required": ["id", "firstName", "lastName", "phoneNumber"]
+                  "required": [
+                    "id",
+                    "firstName",
+                    "lastName",
+                    "phoneNumber"
+                  ]
                 }
               }
             }
@@ -265,7 +298,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -281,7 +316,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -293,7 +330,9 @@
       "get": {
         "summary": "Fetches a user's associated company by the given user ID",
         "description": "Finds the user's company with the given user's ID in the database",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "responses": {
           "200": {
             "description": "Successfull fetch of a user's company from the database",
@@ -309,7 +348,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["companyId", "companyName"]
+                  "required": [
+                    "companyId",
+                    "companyName"
+                  ]
                 }
               }
             }
@@ -325,7 +367,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -344,7 +388,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -356,7 +402,9 @@
       "post": {
         "summary": "Create a new company",
         "description": "Creates a new company using a company name and optional Quickbooks import time",
-        "tags": ["Companies"],
+        "tags": [
+          "Companies"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -374,14 +422,23 @@
                   },
                   "companyType": {
                     "type": "string",
-                    "enum": ["LLC", "Sole Proprietorship", "Corporation", "Partnership"]
+                    "enum": [
+                      "LLC",
+                      "Sole Proprietorship",
+                      "Corporation",
+                      "Partnership"
+                    ]
                   },
                   "alternateEmail": {
                     "type": "string",
                     "format": "email"
                   }
                 },
-                "required": ["name", "businessOwnerFullName", "companyType"]
+                "required": [
+                  "name",
+                  "businessOwnerFullName",
+                  "companyType"
+                ]
               }
             }
           }
@@ -406,38 +463,12 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "externals": {
                       "type": "array",
@@ -466,7 +497,14 @@
                             "type": "string"
                           }
                         },
-                        "required": ["id", "source", "externalId", "companyId", "createdAt", "updatedAt"]
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
                       }
                     },
                     "alternateEmail": {
@@ -475,32 +513,28 @@
                     },
                     "companyType": {
                       "type": "string",
-                      "enum": ["LLC", "Sole Proprietorship", "Corporation", "Partnership"]
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
                     },
                     "createdAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     },
                     "updatedAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     }
                   },
-                  "required": ["id", "name", "businessOwnerFullName", "companyType", "createdAt"]
+                  "required": [
+                    "id",
+                    "name",
+                    "businessOwnerFullName",
+                    "companyType",
+                    "createdAt",
+                    "updatedAt"
+                  ]
                 }
               }
             }
@@ -516,7 +550,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -535,7 +571,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -545,7 +583,9 @@
       "get": {
         "summary": "Gets a company from the database",
         "description": "Gets a company using the company ID",
-        "tags": ["Companies"],
+        "tags": [
+          "Companies"
+        ],
         "responses": {
           "200": {
             "description": "Company fetched successfully",
@@ -566,38 +606,12 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "externals": {
                       "type": "array",
@@ -626,7 +640,14 @@
                             "type": "string"
                           }
                         },
-                        "required": ["id", "source", "externalId", "companyId", "createdAt", "updatedAt"]
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
                       }
                     },
                     "alternateEmail": {
@@ -635,32 +656,28 @@
                     },
                     "companyType": {
                       "type": "string",
-                      "enum": ["LLC", "Sole Proprietorship", "Corporation", "Partnership"]
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
                     },
                     "createdAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     },
                     "updatedAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     }
                   },
-                  "required": ["id", "name", "businessOwnerFullName", "companyType", "createdAt"]
+                  "required": [
+                    "id",
+                    "name",
+                    "businessOwnerFullName",
+                    "companyType",
+                    "createdAt",
+                    "updatedAt"
+                  ]
                 }
               }
             }
@@ -676,7 +693,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -695,7 +714,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -725,7 +746,12 @@
                   },
                   "companyType": {
                     "type": "string",
-                    "enum": ["LLC", "Sole Proprietorship", "Corporation", "Partnership"]
+                    "enum": [
+                      "LLC",
+                      "Sole Proprietorship",
+                      "Corporation",
+                      "Partnership"
+                    ]
                   }
                 }
               }
@@ -752,38 +778,12 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "externals": {
                       "type": "array",
@@ -812,7 +812,14 @@
                             "type": "string"
                           }
                         },
-                        "required": ["id", "source", "externalId", "companyId", "createdAt", "updatedAt"]
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
                       }
                     },
                     "alternateEmail": {
@@ -821,32 +828,28 @@
                     },
                     "companyType": {
                       "type": "string",
-                      "enum": ["LLC", "Sole Proprietorship", "Corporation", "Partnership"]
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
                     },
                     "createdAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     },
                     "updatedAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     }
                   },
-                  "required": ["id", "name", "businessOwnerFullName", "companyType", "createdAt"]
+                  "required": [
+                    "id",
+                    "name",
+                    "businessOwnerFullName",
+                    "companyType",
+                    "createdAt",
+                    "updatedAt"
+                  ]
                 }
               }
             }
@@ -862,7 +865,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -878,7 +883,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -890,7 +897,9 @@
       "patch": {
         "summary": "Update a company's lastQuickBooksInvoiceImportTime",
         "description": "Updates the lastQuickBooksInvoiceImportTime for a company by ID",
-        "tags": ["Companies"],
+        "tags": [
+          "Companies"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -940,38 +949,12 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "externals": {
                       "type": "array",
@@ -1000,7 +983,14 @@
                             "type": "string"
                           }
                         },
-                        "required": ["id", "source", "externalId", "companyId", "createdAt", "updatedAt"]
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
                       }
                     },
                     "alternateEmail": {
@@ -1009,32 +999,28 @@
                     },
                     "companyType": {
                       "type": "string",
-                      "enum": ["LLC", "Sole Proprietorship", "Corporation", "Partnership"]
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
                     },
                     "createdAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     },
                     "updatedAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     }
                   },
-                  "required": ["id", "name", "businessOwnerFullName", "companyType", "createdAt"]
+                  "required": [
+                    "id",
+                    "name",
+                    "businessOwnerFullName",
+                    "companyType",
+                    "createdAt",
+                    "updatedAt"
+                  ]
                 }
               }
             }
@@ -1050,7 +1036,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1066,7 +1054,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1078,7 +1068,9 @@
       "patch": {
         "summary": "Update a company's lastQuickBooksPurcahseImportTime",
         "description": "Updates the lastQuickBooksPurcahseImportTime for a company by ID",
-        "tags": ["Companies"],
+        "tags": [
+          "Companies"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1128,38 +1120,12 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "externals": {
                       "type": "array",
@@ -1188,7 +1154,14 @@
                             "type": "string"
                           }
                         },
-                        "required": ["id", "source", "externalId", "companyId", "createdAt", "updatedAt"]
+                        "required": [
+                          "id",
+                          "source",
+                          "externalId",
+                          "companyId",
+                          "createdAt",
+                          "updatedAt"
+                        ]
                       }
                     },
                     "alternateEmail": {
@@ -1197,32 +1170,28 @@
                     },
                     "companyType": {
                       "type": "string",
-                      "enum": ["LLC", "Sole Proprietorship", "Corporation", "Partnership"]
+                      "enum": [
+                        "LLC",
+                        "Sole Proprietorship",
+                        "Corporation",
+                        "Partnership"
+                      ]
                     },
                     "createdAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     },
                     "updatedAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     }
                   },
-                  "required": ["id", "name", "businessOwnerFullName", "companyType", "createdAt"]
+                  "required": [
+                    "id",
+                    "name",
+                    "businessOwnerFullName",
+                    "companyType",
+                    "createdAt",
+                    "updatedAt"
+                  ]
                 }
               }
             }
@@ -1238,7 +1207,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1254,7 +1225,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1266,7 +1239,9 @@
       "get": {
         "summary": "Gets a company's location from the database",
         "description": "Gets a company's locations using the company ID",
-        "tags": ["Companies"],
+        "tags": [
+          "Companies"
+        ],
         "responses": {
           "200": {
             "description": "Company locations fetched successfully",
@@ -1355,7 +1330,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1371,7 +1348,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1383,7 +1362,9 @@
       "get": {
         "summary": "Get a company's claim in progress, if one exists",
         "description": "Gets the company's current claim in progress. Companies can only have up to one claim in progress at a time.",
-        "tags": ["Companies"],
+        "tags": [
+          "Companies"
+        ],
         "responses": {
           "200": {
             "description": "Claim fetched successfully",
@@ -1503,7 +1484,14 @@
                           "format": "date"
                         }
                       },
-                      "required": ["id", "name", "description", "startDate", "createdAt", "updatedAt"]
+                      "required": [
+                        "id",
+                        "name",
+                        "description",
+                        "startDate",
+                        "createdAt",
+                        "updatedAt"
+                      ]
                     },
                     "insurancePolicy": {
                       "type": "object",
@@ -1615,7 +1603,10 @@
                       }
                     }
                   },
-                  "required": ["id", "createdAt"]
+                  "required": [
+                    "id",
+                    "createdAt"
+                  ]
                 }
               }
             }
@@ -1631,7 +1622,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1647,7 +1640,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1659,7 +1654,9 @@
       "get": {
         "summary": "Check if a company has data (either connected to quickbooks or has purchase/invoice data)",
         "description": "Gets the company's data if it is present.",
-        "tags": ["Companies"],
+        "tags": [
+          "Companies"
+        ],
         "responses": {
           "200": {
             "description": "Company data successfullly set",
@@ -1672,7 +1669,9 @@
                       "type": "boolean"
                     }
                   },
-                  "required": ["hasData"]
+                  "required": [
+                    "hasData"
+                  ]
                 }
               }
             }
@@ -1688,7 +1687,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1704,7 +1705,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1716,7 +1719,9 @@
       "post": {
         "summary": "Create a new disaster",
         "description": "Creates a new disaster with the provided information",
-        "tags": ["Disaster"],
+        "tags": [
+          "Disaster"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1819,7 +1824,13 @@
                       "nullable": true
                     }
                   },
-                  "required": ["id", "fipsStateCode", "declarationDate", "declarationType", "designatedIncidentTypes"]
+                  "required": [
+                    "id",
+                    "fipsStateCode",
+                    "declarationDate",
+                    "declarationType",
+                    "designatedIncidentTypes"
+                  ]
                 }
               }
             }
@@ -1835,7 +1846,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1851,7 +1864,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1861,7 +1876,9 @@
       "get": {
         "summary": "Get all disasters",
         "description": "Gets all disasters stored in the database",
-        "tags": ["Disaster"],
+        "tags": [
+          "Disaster"
+        ],
         "responses": {
           "200": {
             "description": "Retrieved all disasters",
@@ -1938,7 +1955,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1954,7 +1973,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -1966,7 +1987,9 @@
       "post": {
         "summary": "Create an address for some location of a company",
         "description": "Creates a new location address with the provided information",
-        "tags": ["Location Address"],
+        "tags": [
+          "Location Address"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -2003,7 +2026,14 @@
                     "minLength": 1
                   }
                 },
-                "required": ["alias", "country", "stateProvince", "city", "streetAddress", "postalCode"]
+                "required": [
+                  "alias",
+                  "country",
+                  "stateProvince",
+                  "city",
+                  "streetAddress",
+                  "postalCode"
+                ]
               }
             }
           }
@@ -2048,7 +2078,15 @@
                       "minLength": 1
                     }
                   },
-                  "required": ["id", "alias", "country", "stateProvince", "city", "streetAddress", "postalCode"]
+                  "required": [
+                    "id",
+                    "alias",
+                    "country",
+                    "stateProvince",
+                    "city",
+                    "streetAddress",
+                    "postalCode"
+                  ]
                 }
               }
             }
@@ -2064,7 +2102,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -2080,7 +2120,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -2124,7 +2166,9 @@
                     "nullable": true
                   }
                 },
-                "required": ["id"]
+                "required": [
+                  "id"
+                ]
               }
             }
           }
@@ -2169,7 +2213,15 @@
                       "minLength": 1
                     }
                   },
-                  "required": ["id", "alias", "country", "stateProvince", "city", "streetAddress", "postalCode"]
+                  "required": [
+                    "id",
+                    "alias",
+                    "country",
+                    "stateProvince",
+                    "city",
+                    "streetAddress",
+                    "postalCode"
+                  ]
                 }
               }
             }
@@ -2185,7 +2237,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -2201,7 +2255,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -2213,7 +2269,9 @@
       "get": {
         "summary": "Gets an address for some location of a company",
         "description": "Creates a new location address with the provided information",
-        "tags": ["Location Address"],
+        "tags": [
+          "Location Address"
+        ],
         "parameters": [
           {
             "schema": {
@@ -2304,7 +2362,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -2323,7 +2383,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -2333,7 +2395,9 @@
       "delete": {
         "summary": "Removes location of a company",
         "description": "Removes the location address with the provided id",
-        "tags": ["Location Address"],
+        "tags": [
+          "Location Address"
+        ],
         "parameters": [
           {
             "schema": {
@@ -2359,7 +2423,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -2371,7 +2437,9 @@
       "post": {
         "summary": "Create many addresses for locations of a company",
         "description": "Creates new location addresses with the provided information",
-        "tags": ["Location Address"],
+        "tags": [
+          "Location Address"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -2410,7 +2478,14 @@
                       "minLength": 1
                     }
                   },
-                  "required": ["alias", "country", "stateProvince", "city", "streetAddress", "postalCode"]
+                  "required": [
+                    "alias",
+                    "country",
+                    "stateProvince",
+                    "city",
+                    "streetAddress",
+                    "postalCode"
+                  ]
                 },
                 "minItems": 1
               }
@@ -2459,7 +2534,15 @@
                         "minLength": 1
                       }
                     },
-                    "required": ["id", "alias", "country", "stateProvince", "city", "streetAddress", "postalCode"]
+                    "required": [
+                      "id",
+                      "alias",
+                      "country",
+                      "stateProvince",
+                      "city",
+                      "streetAddress",
+                      "postalCode"
+                    ]
                   }
                 }
               }
@@ -2476,7 +2559,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -2492,7 +2577,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -2538,7 +2625,9 @@
                       "nullable": true
                     }
                   },
-                  "required": ["id"]
+                  "required": [
+                    "id"
+                  ]
                 },
                 "minItems": 1
               }
@@ -2587,7 +2676,15 @@
                         "minLength": 1
                       }
                     },
-                    "required": ["id", "alias", "country", "stateProvince", "city", "streetAddress", "postalCode"]
+                    "required": [
+                      "id",
+                      "alias",
+                      "country",
+                      "stateProvince",
+                      "city",
+                      "streetAddress",
+                      "postalCode"
+                    ]
                   }
                 }
               }
@@ -2604,7 +2701,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -2620,7 +2719,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -2632,12 +2733,17 @@
       "get": {
         "summary": "Get user notifications",
         "description": "Retrieves all disaster notifications for a specific user with optional filtering and pagination",
-        "tags": ["Disaster Notifications"],
+        "tags": [
+          "Disaster Notifications"
+        ],
         "parameters": [
           {
             "schema": {
               "type": "string",
-              "enum": ["web", "email"]
+              "enum": [
+                "web",
+                "email"
+              ]
             },
             "required": false,
             "name": "type",
@@ -2646,7 +2752,10 @@
           {
             "schema": {
               "type": "string",
-              "enum": ["unread", "read"]
+              "enum": [
+                "unread",
+                "read"
+              ]
             },
             "required": false,
             "name": "status",
@@ -2696,7 +2805,10 @@
                       },
                       "notificationStatus": {
                         "type": "string",
-                        "enum": ["unread", "read"]
+                        "enum": [
+                          "unread",
+                          "read"
+                        ]
                       },
                       "firstSentAt": {
                         "type": "string",
@@ -2736,7 +2848,12 @@
                             "type": "string"
                           }
                         },
-                        "required": ["id", "firstName", "lastName", "phoneNumber"]
+                        "required": [
+                          "id",
+                          "firstName",
+                          "lastName",
+                          "phoneNumber"
+                        ]
                       },
                       "femaDisaster": {
                         "type": "object",
@@ -2851,38 +2968,12 @@
                                 "minLength": 1
                               },
                               "lastQuickBooksInvoiceImportTime": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  },
-                                  {
-                                    "nullable": true
-                                  },
-                                  {
-                                    "nullable": true
-                                  }
-                                ]
+                                "type": "string",
+                                "nullable": true
                               },
                               "lastQuickBooksPurchaseImportTime": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  },
-                                  {
-                                    "nullable": true
-                                  },
-                                  {
-                                    "nullable": true
-                                  }
-                                ]
+                                "type": "string",
+                                "nullable": true
                               },
                               "externals": {
                                 "type": "array",
@@ -2911,7 +3002,14 @@
                                       "type": "string"
                                     }
                                   },
-                                  "required": ["id", "source", "externalId", "companyId", "createdAt", "updatedAt"]
+                                  "required": [
+                                    "id",
+                                    "source",
+                                    "externalId",
+                                    "companyId",
+                                    "createdAt",
+                                    "updatedAt"
+                                  ]
                                 }
                               },
                               "alternateEmail": {
@@ -2920,32 +3018,28 @@
                               },
                               "companyType": {
                                 "type": "string",
-                                "enum": ["LLC", "Sole Proprietorship", "Corporation", "Partnership"]
+                                "enum": [
+                                  "LLC",
+                                  "Sole Proprietorship",
+                                  "Corporation",
+                                  "Partnership"
+                                ]
                               },
                               "createdAt": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  }
-                                ]
+                                "type": "string"
                               },
                               "updatedAt": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  }
-                                ]
+                                "type": "string"
                               }
                             },
-                            "required": ["id", "name", "businessOwnerFullName", "companyType", "createdAt"]
+                            "required": [
+                              "id",
+                              "name",
+                              "businessOwnerFullName",
+                              "companyType",
+                              "createdAt",
+                              "updatedAt"
+                            ]
                           }
                         },
                         "required": [
@@ -2991,7 +3085,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3007,7 +3103,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3019,7 +3117,9 @@
       "patch": {
         "summary": "Mark notification as read",
         "description": "Marks a specific notification as read and updates readAt timestamp",
-        "tags": ["Disaster Notifications"],
+        "tags": [
+          "Disaster Notifications"
+        ],
         "parameters": [
           {
             "schema": {
@@ -3058,7 +3158,10 @@
                     "notificationStatus": {
                       "type": "string",
                       "nullable": true,
-                      "enum": ["unread", "read"]
+                      "enum": [
+                        "unread",
+                        "read"
+                      ]
                     },
                     "firstSentAt": {
                       "type": "string",
@@ -3076,7 +3179,14 @@
                       "type": "string"
                     }
                   },
-                  "required": ["id", "userId", "femaDisasterId", "isWeb", "isEmail", "createdAt"]
+                  "required": [
+                    "id",
+                    "userId",
+                    "femaDisasterId",
+                    "isWeb",
+                    "isEmail",
+                    "createdAt"
+                  ]
                 }
               }
             }
@@ -3092,7 +3202,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3108,7 +3220,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3120,7 +3234,9 @@
       "patch": {
         "summary": "Mark notification as unread",
         "description": "Marks a specific notification as unread and clears the readAt timestamp",
-        "tags": ["Disaster Notifications"],
+        "tags": [
+          "Disaster Notifications"
+        ],
         "parameters": [
           {
             "schema": {
@@ -3159,7 +3275,10 @@
                     "notificationStatus": {
                       "type": "string",
                       "nullable": true,
-                      "enum": ["unread", "read"]
+                      "enum": [
+                        "unread",
+                        "read"
+                      ]
                     },
                     "firstSentAt": {
                       "type": "string",
@@ -3177,7 +3296,14 @@
                       "type": "string"
                     }
                   },
-                  "required": ["id", "userId", "femaDisasterId", "isWeb", "isEmail", "createdAt"]
+                  "required": [
+                    "id",
+                    "userId",
+                    "femaDisasterId",
+                    "isWeb",
+                    "isEmail",
+                    "createdAt"
+                  ]
                 }
               }
             }
@@ -3193,7 +3319,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3209,7 +3337,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3221,7 +3351,9 @@
       "post": {
         "summary": "Bulk create notifications",
         "description": "Creates multiple disaster notifications at once for impacted users",
-        "tags": ["Disaster Notifications"],
+        "tags": [
+          "Disaster Notifications"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -3245,7 +3377,10 @@
                       "default": true
                     }
                   },
-                  "required": ["userId", "femaDisasterId"]
+                  "required": [
+                    "userId",
+                    "femaDisasterId"
+                  ]
                 }
               }
             }
@@ -3279,7 +3414,10 @@
                       "notificationStatus": {
                         "type": "string",
                         "nullable": true,
-                        "enum": ["unread", "read"]
+                        "enum": [
+                          "unread",
+                          "read"
+                        ]
                       },
                       "firstSentAt": {
                         "type": "string",
@@ -3297,7 +3435,14 @@
                         "type": "string"
                       }
                     },
-                    "required": ["id", "userId", "femaDisasterId", "isWeb", "isEmail", "createdAt"]
+                    "required": [
+                      "id",
+                      "userId",
+                      "femaDisasterId",
+                      "isWeb",
+                      "isEmail",
+                      "createdAt"
+                    ]
                   }
                 }
               }
@@ -3314,7 +3459,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3330,7 +3477,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3346,7 +3495,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3358,7 +3509,9 @@
       "delete": {
         "summary": "Delete notification",
         "description": "Permanently deletes a specific notification",
-        "tags": ["Disaster Notifications"],
+        "tags": [
+          "Disaster Notifications"
+        ],
         "parameters": [
           {
             "schema": {
@@ -3386,7 +3539,10 @@
                       "type": "string"
                     }
                   },
-                  "required": ["success", "deletedId"]
+                  "required": [
+                    "success",
+                    "deletedId"
+                  ]
                 }
               }
             }
@@ -3402,7 +3558,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3418,7 +3576,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3430,7 +3590,9 @@
       "patch": {
         "summary": "Mark all notifications as read",
         "description": "Marks all unread notifications for a specific user as read",
-        "tags": ["Disaster Notifications"],
+        "tags": [
+          "Disaster Notifications"
+        ],
         "responses": {
           "200": {
             "description": "All notifications successfully marked as read",
@@ -3446,7 +3608,10 @@
                       "type": "number"
                     }
                   },
-                  "required": ["success", "updatedCount"]
+                  "required": [
+                    "success",
+                    "updatedCount"
+                  ]
                 }
               }
             }
@@ -3462,7 +3627,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3478,7 +3645,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3489,7 +3658,9 @@
     "/quickbooks": {
       "get": {
         "summary": "Generates an OAuth URL for the user and redirects them",
-        "tags": ["quickbooks"],
+        "tags": [
+          "quickbooks"
+        ],
         "responses": {
           "302": {
             "description": "Redirected to QuickBooks OAuth url"
@@ -3501,7 +3672,9 @@
       "get": {
         "summary": "Syncs a QB OAuth session to our DB",
         "description": "The path where the QuickBooks OAuth server redirects to upon a completed (successful or not) OAuth connection",
-        "tags": ["quickbooks"],
+        "tags": [
+          "quickbooks"
+        ],
         "parameters": [
           {
             "schema": {
@@ -3538,10 +3711,14 @@
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "enum": [true]
+                      "enum": [
+                        true
+                      ]
                     }
                   },
-                  "required": ["success"]
+                  "required": [
+                    "success"
+                  ]
                 }
               }
             }
@@ -3557,7 +3734,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3569,7 +3748,9 @@
       "post": {
         "summary": "Import quickbooks (invoice and purchase) data for a company, based off of the userId/user owner of the company",
         "description": "mport quickbooks (invoice and purchase) data for a company, based off of the userId/user owner of the company",
-        "tags": ["quickbooks"],
+        "tags": [
+          "quickbooks"
+        ],
         "responses": {
           "201": {
             "description": "Successfully imported new QuickBooks data",
@@ -3580,10 +3761,14 @@
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "enum": [true]
+                      "enum": [
+                        true
+                      ]
                     }
                   },
-                  "required": ["success"]
+                  "required": [
+                    "success"
+                  ]
                 }
               }
             }
@@ -3599,7 +3784,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3615,7 +3802,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3631,7 +3820,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3643,7 +3834,9 @@
       "post": {
         "summary": "Bulk create or update new invoices ",
         "description": "Creates new invoices according to the schema. If there is an invoice in the database with the same quickbooks_id, company_id pairing, then it will overwrite it's attributes",
-        "tags": ["Invoice"],
+        "tags": [
+          "Invoice"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -3670,11 +3863,15 @@
                           "format": "date-time"
                         }
                       },
-                      "required": ["totalAmountCents"]
+                      "required": [
+                        "totalAmountCents"
+                      ]
                     }
                   }
                 },
-                "required": ["items"]
+                "required": [
+                  "items"
+                ]
               }
             }
           }
@@ -3717,7 +3914,13 @@
                         "format": "date-time"
                       }
                     },
-                    "required": ["id", "companyId", "totalAmountCents", "dateCreated", "lastUpdated"]
+                    "required": [
+                      "id",
+                      "companyId",
+                      "totalAmountCents",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
                   }
                 }
               }
@@ -3734,7 +3937,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3750,7 +3955,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3762,7 +3969,9 @@
       "get": {
         "summary": "Get invoice by id",
         "description": "Get invoice with matching ID from the database",
-        "tags": ["Invoice"],
+        "tags": [
+          "Invoice"
+        ],
         "parameters": [
           {
             "schema": {
@@ -3810,7 +4019,13 @@
                       "format": "date-time"
                     }
                   },
-                  "required": ["id", "companyId", "totalAmountCents", "dateCreated", "lastUpdated"]
+                  "required": [
+                    "id",
+                    "companyId",
+                    "totalAmountCents",
+                    "dateCreated",
+                    "lastUpdated"
+                  ]
                 }
               }
             }
@@ -3826,7 +4041,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3842,7 +4059,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3858,7 +4077,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3870,7 +4091,9 @@
       "get": {
         "summary": "Get invoices for a company",
         "description": "Get invoices for a company with pagination params. Note page numbes are 0-indexed.",
-        "tags": ["Invoice"],
+        "tags": [
+          "Invoice"
+        ],
         "parameters": [
           {
             "schema": {
@@ -3929,7 +4152,13 @@
                         "format": "date-time"
                       }
                     },
-                    "required": ["id", "companyId", "totalAmountCents", "dateCreated", "lastUpdated"]
+                    "required": [
+                      "id",
+                      "companyId",
+                      "totalAmountCents",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
                   }
                 }
               }
@@ -3946,7 +4175,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3962,7 +4193,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3978,7 +4211,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -3990,7 +4225,9 @@
       "get": {
         "summary": "Get the summation of invoices for a company in a date range",
         "description": "Get the summation of invoices for a company that were made after the start date and before the end date",
-        "tags": ["Invoice"],
+        "tags": [
+          "Invoice"
+        ],
         "parameters": [
           {
             "schema": {
@@ -4024,7 +4261,9 @@
                       "minimum": 0
                     }
                   },
-                  "required": ["total"]
+                  "required": [
+                    "total"
+                  ]
                 }
               }
             }
@@ -4040,7 +4279,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4056,7 +4297,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4068,7 +4311,9 @@
       "get": {
         "summary": "Get all line items for a given invoice",
         "description": "Get all line item for a given invoice",
-        "tags": ["Invoice"],
+        "tags": [
+          "Invoice"
+        ],
         "parameters": [
           {
             "schema": {
@@ -4127,7 +4372,13 @@
                         "format": "date-time"
                       }
                     },
-                    "required": ["id", "invoiceId", "amountCents", "dateCreated", "lastUpdated"]
+                    "required": [
+                      "id",
+                      "invoiceId",
+                      "amountCents",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
                   }
                 }
               }
@@ -4144,7 +4395,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4160,7 +4413,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4176,7 +4431,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4188,7 +4445,9 @@
       "get": {
         "summary": "Get the total invoice amounts broken down by months",
         "description": "Get the summation of invoices for a company that were made after the start date and before the end date split into each month that exists in the date range",
-        "tags": ["Invoice"],
+        "tags": [
+          "Invoice"
+        ],
         "parameters": [
           {
             "schema": {
@@ -4227,7 +4486,10 @@
                         "minimum": 0
                       }
                     },
-                    "required": ["month", "total"]
+                    "required": [
+                      "month",
+                      "total"
+                    ]
                   }
                 }
               }
@@ -4244,7 +4506,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4260,7 +4524,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4272,7 +4538,9 @@
       "post": {
         "summary": "Create or update a purchase",
         "description": "Creates a new purchase or updates an existing purchase with the provided information",
-        "tags": ["Purchases"],
+        "tags": [
+          "Purchases"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -4303,12 +4571,17 @@
                           "type": "string"
                         }
                       },
-                      "required": ["totalAmountCents", "isRefund"]
+                      "required": [
+                        "totalAmountCents",
+                        "isRefund"
+                      ]
                     },
                     "minItems": 1
                   }
                 },
-                "required": ["items"]
+                "required": [
+                  "items"
+                ]
               }
             }
           }
@@ -4351,7 +4624,13 @@
                         "type": "string"
                       }
                     },
-                    "required": ["id", "companyId", "totalAmountCents", "isRefund", "dateCreated"]
+                    "required": [
+                      "id",
+                      "companyId",
+                      "totalAmountCents",
+                      "isRefund",
+                      "dateCreated"
+                    ]
                   }
                 }
               }
@@ -4394,7 +4673,13 @@
                         "type": "string"
                       }
                     },
-                    "required": ["id", "companyId", "totalAmountCents", "isRefund", "dateCreated"]
+                    "required": [
+                      "id",
+                      "companyId",
+                      "totalAmountCents",
+                      "isRefund",
+                      "dateCreated"
+                    ]
                   }
                 }
               }
@@ -4411,7 +4696,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4430,7 +4717,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4442,7 +4731,9 @@
       "get": {
         "summary": "Fetches a purchase by the given ID",
         "description": "Finds the purchase with the given ID in the database",
-        "tags": ["Purchases"],
+        "tags": [
+          "Purchases"
+        ],
         "parameters": [
           {
             "schema": {
@@ -4493,7 +4784,14 @@
                       "type": "string"
                     }
                   },
-                  "required": ["id", "companyId", "totalAmountCents", "isRefund", "dateCreated", "lastUpdated"]
+                  "required": [
+                    "id",
+                    "companyId",
+                    "totalAmountCents",
+                    "isRefund",
+                    "dateCreated",
+                    "lastUpdated"
+                  ]
                 }
               }
             }
@@ -4509,7 +4807,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4528,7 +4828,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4540,7 +4842,9 @@
       "get": {
         "summary": "Fetches all purchases for a company",
         "description": "Retrieves a paginated, sorted and filtered list of purchases for the specified company",
-        "tags": ["Purchases"],
+        "tags": [
+          "Purchases"
+        ],
         "parameters": [
           {
             "schema": {
@@ -4566,7 +4870,10 @@
           {
             "schema": {
               "type": "string",
-              "enum": ["date", "totalAmountCents"]
+              "enum": [
+                "date",
+                "totalAmountCents"
+              ]
             },
             "required": false,
             "name": "sortBy",
@@ -4575,7 +4882,10 @@
           {
             "schema": {
               "type": "string",
-              "enum": ["ASC", "DESC"],
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
               "default": "DESC"
             },
             "required": false,
@@ -4598,7 +4908,13 @@
           {
             "schema": {
               "type": "string",
-              "enum": ["extraneous", "typical", "pending", "suggested extraneous", "suggested typical"]
+              "enum": [
+                "extraneous",
+                "typical",
+                "pending",
+                "suggested extraneous",
+                "suggested typical"
+              ]
             },
             "required": false,
             "name": "type",
@@ -4699,7 +5015,13 @@
                             },
                             "type": {
                               "type": "string",
-                              "enum": ["extraneous", "typical", "pending", "suggested extraneous", "suggested typical"]
+                              "enum": [
+                                "extraneous",
+                                "typical",
+                                "pending",
+                                "suggested extraneous",
+                                "suggested typical"
+                              ]
                             },
                             "dateCreated": {
                               "type": "string"
@@ -4712,7 +5034,14 @@
                               "format": "date-time"
                             }
                           },
-                          "required": ["id", "purchaseId", "amountCents", "type", "dateCreated", "lastUpdated"]
+                          "required": [
+                            "id",
+                            "purchaseId",
+                            "amountCents",
+                            "type",
+                            "dateCreated",
+                            "lastUpdated"
+                          ]
                         }
                       }
                     },
@@ -4741,7 +5070,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4757,7 +5088,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4769,7 +5102,9 @@
       "get": {
         "summary": "Get the summation of purchases for a company in a date range",
         "description": "Get the summation of purchases for a company that were made after the start date and before the end date",
-        "tags": ["Purchases"],
+        "tags": [
+          "Purchases"
+        ],
         "parameters": [
           {
             "schema": {
@@ -4803,7 +5138,9 @@
                       "minimum": 0
                     }
                   },
-                  "required": ["total"]
+                  "required": [
+                    "total"
+                  ]
                 }
               }
             }
@@ -4819,7 +5156,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4835,7 +5174,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4847,7 +5188,9 @@
       "get": {
         "summary": "Get the total purchase amounts broken down by months",
         "description": "Get the summation of purchases for a company that were made after the start date and before the end date split into each month that exists in the date range",
-        "tags": ["Purchases"],
+        "tags": [
+          "Purchases"
+        ],
         "parameters": [
           {
             "schema": {
@@ -4886,7 +5229,10 @@
                         "minimum": 0
                       }
                     },
-                    "required": ["month", "total"]
+                    "required": [
+                      "month",
+                      "total"
+                    ]
                   }
                 }
               }
@@ -4903,7 +5249,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4919,7 +5267,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4931,7 +5281,9 @@
       "get": {
         "summary": "Fetches all the categories of a company's purchase line items",
         "description": "Retrieves an array of categories that contain the categories of all purchase line items linked to a company",
-        "tags": ["Purchases"],
+        "tags": [
+          "Purchases"
+        ],
         "responses": {
           "200": {
             "description": "Successful fetch of categories",
@@ -4958,7 +5310,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4974,7 +5328,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -4986,7 +5342,9 @@
       "post": {
         "summary": "Create a new claim",
         "description": "Creates a new claim using a given company ID and disaster ID",
-        "tags": ["Claims"],
+        "tags": [
+          "Claims"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -5136,7 +5494,14 @@
                           "format": "date"
                         }
                       },
-                      "required": ["id", "name", "description", "startDate", "createdAt", "updatedAt"]
+                      "required": [
+                        "id",
+                        "name",
+                        "description",
+                        "startDate",
+                        "createdAt",
+                        "updatedAt"
+                      ]
                     },
                     "insurancePolicy": {
                       "type": "object",
@@ -5248,7 +5613,10 @@
                       }
                     }
                   },
-                  "required": ["id", "createdAt"]
+                  "required": [
+                    "id",
+                    "createdAt"
+                  ]
                 }
               }
             }
@@ -5264,7 +5632,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -5280,7 +5650,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -5292,7 +5664,9 @@
       "get": {
         "summary": "Gets all the claims associated with a company",
         "description": "Gets all the claims for a company using a company ID",
-        "tags": ["Claims"],
+        "tags": [
+          "Claims"
+        ],
         "responses": {
           "200": {
             "description": "Claims fetched successfully",
@@ -5413,7 +5787,14 @@
                             "format": "date"
                           }
                         },
-                        "required": ["id", "name", "description", "startDate", "createdAt", "updatedAt"]
+                        "required": [
+                          "id",
+                          "name",
+                          "description",
+                          "startDate",
+                          "createdAt",
+                          "updatedAt"
+                        ]
                       },
                       "insurancePolicy": {
                         "type": "object",
@@ -5525,7 +5906,10 @@
                         }
                       }
                     },
-                    "required": ["id", "createdAt"]
+                    "required": [
+                      "id",
+                      "createdAt"
+                    ]
                   }
                 }
               }
@@ -5542,7 +5926,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -5561,7 +5947,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -5573,7 +5961,9 @@
       "get": {
         "summary": "Get a single claim by ID",
         "description": "Retrieves a claim with all its relations (selfDisaster, femaDisaster, insurancePolicy, locations)",
-        "tags": ["Claims"],
+        "tags": [
+          "Claims"
+        ],
         "parameters": [
           {
             "schema": {
@@ -5703,7 +6093,14 @@
                           "format": "date"
                         }
                       },
-                      "required": ["id", "name", "description", "startDate", "createdAt", "updatedAt"]
+                      "required": [
+                        "id",
+                        "name",
+                        "description",
+                        "startDate",
+                        "createdAt",
+                        "updatedAt"
+                      ]
                     },
                     "insurancePolicy": {
                       "type": "object",
@@ -5815,7 +6212,10 @@
                       }
                     }
                   },
-                  "required": ["id", "createdAt"]
+                  "required": [
+                    "id",
+                    "createdAt"
+                  ]
                 }
               }
             }
@@ -5831,7 +6231,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -5850,7 +6252,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -5860,7 +6264,9 @@
       "delete": {
         "summary": "Deletes a claim from the database",
         "description": "Deletes a claim based off a claim ID",
-        "tags": ["Claims"],
+        "tags": [
+          "Claims"
+        ],
         "parameters": [
           {
             "schema": {
@@ -5885,7 +6291,9 @@
                       "minLength": 1
                     }
                   },
-                  "required": ["id"]
+                  "required": [
+                    "id"
+                  ]
                 }
               }
             }
@@ -5901,7 +6309,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -5917,7 +6327,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -5929,7 +6341,9 @@
       "patch": {
         "summary": "Update a claim's status",
         "description": "Updates a claim's status and optionally the insurance policy ID",
-        "tags": ["Claims"],
+        "tags": [
+          "Claims"
+        ],
         "parameters": [
           {
             "schema": {
@@ -5963,7 +6377,9 @@
                     "type": "string"
                   }
                 },
-                "required": ["status"]
+                "required": [
+                  "status"
+                ]
               }
             }
           }
@@ -6086,7 +6502,14 @@
                           "format": "date"
                         }
                       },
-                      "required": ["id", "name", "description", "startDate", "createdAt", "updatedAt"]
+                      "required": [
+                        "id",
+                        "name",
+                        "description",
+                        "startDate",
+                        "createdAt",
+                        "updatedAt"
+                      ]
                     },
                     "insurancePolicy": {
                       "type": "object",
@@ -6198,7 +6621,10 @@
                       }
                     }
                   },
-                  "required": ["id", "createdAt"]
+                  "required": [
+                    "id",
+                    "createdAt"
+                  ]
                 }
               }
             }
@@ -6214,7 +6640,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6233,7 +6661,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6245,7 +6675,9 @@
       "post": {
         "summary": "Creates a link between a claim and a purchase line item",
         "description": "Creates a link between a claim with a given id and a purchase line item with a given id",
-        "tags": ["Claims"],
+        "tags": [
+          "Claims"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -6261,7 +6693,10 @@
                     "format": "uuid"
                   }
                 },
-                "required": ["claimId", "purchaseLineItemId"]
+                "required": [
+                  "claimId",
+                  "purchaseLineItemId"
+                ]
               }
             }
           }
@@ -6283,7 +6718,10 @@
                       "format": "uuid"
                     }
                   },
-                  "required": ["claimId", "purchaseLineItemId"]
+                  "required": [
+                    "claimId",
+                    "purchaseLineItemId"
+                  ]
                 }
               }
             }
@@ -6299,7 +6737,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6318,7 +6758,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6330,7 +6772,9 @@
       "post": {
         "summary": "Creates a link between a claim and a purchase's line items",
         "description": "Creates a link between a claim with a given id and a purchase's line items with a given id",
-        "tags": ["Claims"],
+        "tags": [
+          "Claims"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -6346,7 +6790,10 @@
                     "format": "uuid"
                   }
                 },
-                "required": ["claimId", "purchaseId"]
+                "required": [
+                  "claimId",
+                  "purchaseId"
+                ]
               }
             }
           }
@@ -6370,7 +6817,10 @@
                         "format": "uuid"
                       }
                     },
-                    "required": ["claimId", "purchaseLineItemId"]
+                    "required": [
+                      "claimId",
+                      "purchaseLineItemId"
+                    ]
                   }
                 }
               }
@@ -6387,7 +6837,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6406,7 +6858,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6418,7 +6872,9 @@
       "get": {
         "summary": "Gets all purchase line items linked to a claim",
         "description": "Gets all purchase line items linked to a claim with a given id",
-        "tags": ["Claims"],
+        "tags": [
+          "Claims"
+        ],
         "parameters": [
           {
             "schema": {
@@ -6463,7 +6919,13 @@
                       },
                       "type": {
                         "type": "string",
-                        "enum": ["extraneous", "typical", "pending", "suggested extraneous", "suggested typical"]
+                        "enum": [
+                          "extraneous",
+                          "typical",
+                          "pending",
+                          "suggested extraneous",
+                          "suggested typical"
+                        ]
                       },
                       "dateCreated": {
                         "type": "string"
@@ -6476,7 +6938,14 @@
                         "format": "date-time"
                       }
                     },
-                    "required": ["id", "purchaseId", "amountCents", "type", "dateCreated", "lastUpdated"]
+                    "required": [
+                      "id",
+                      "purchaseId",
+                      "amountCents",
+                      "type",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
                   }
                 }
               }
@@ -6493,7 +6962,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6512,7 +6983,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6524,7 +6997,9 @@
       "delete": {
         "summary": "Deletes the link between a claim and a purchase line item",
         "description": "Deletes the link between a claim with a given claimId and a purchase line itemwith a given purchaseLineItemId",
-        "tags": ["Claims"],
+        "tags": [
+          "Claims"
+        ],
         "parameters": [
           {
             "schema": {
@@ -6562,7 +7037,10 @@
                       "format": "uuid"
                     }
                   },
-                  "required": ["claimId", "purchaseLineItemId"]
+                  "required": [
+                    "claimId",
+                    "purchaseLineItemId"
+                  ]
                 }
               }
             }
@@ -6578,7 +7056,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6597,7 +7077,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6609,7 +7091,9 @@
       "get": {
         "summary": "Generates the pdf for the claim with the given ID",
         "description": "Compiles the necessary information from the db and builds the appropriate PDF",
-        "tags": ["Claims"],
+        "tags": [
+          "Claims"
+        ],
         "parameters": [
           {
             "schema": {
@@ -6634,7 +7118,9 @@
                       "format": "uri"
                     }
                   },
-                  "required": ["url"]
+                  "required": [
+                    "url"
+                  ]
                 }
               }
             }
@@ -6650,7 +7136,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6669,7 +7157,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6681,7 +7171,9 @@
       "post": {
         "summary": "Create a new claim-location link",
         "description": "Creates a link between a claim and a location using given IDs",
-        "tags": ["Claim-Locations"],
+        "tags": [
+          "Claim-Locations"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -6697,7 +7189,10 @@
                     "format": "uuid"
                   }
                 },
-                "required": ["claimId", "locationAddressId"]
+                "required": [
+                  "claimId",
+                  "locationAddressId"
+                ]
               }
             }
           }
@@ -6723,7 +7218,11 @@
                       "format": "uuid"
                     }
                   },
-                  "required": ["id", "claimId", "locationAddressId"]
+                  "required": [
+                    "id",
+                    "claimId",
+                    "locationAddressId"
+                  ]
                 }
               }
             }
@@ -6739,7 +7238,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6755,7 +7256,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6767,7 +7270,9 @@
       "get": {
         "summary": "Gets all the locations affected by claims for a company",
         "description": "Gets all the locations affected by claims for a company based on the given ID",
-        "tags": ["Claim-Locations"],
+        "tags": [
+          "Claim-Locations"
+        ],
         "responses": {
           "200": {
             "description": "Locations fetched successfully",
@@ -6851,7 +7356,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6870,7 +7377,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6882,7 +7391,9 @@
       "delete": {
         "summary": "Deletes a claim-location link from the database",
         "description": "Deletes a claim-location link based off the given claim ID and location ID",
-        "tags": ["Claim-Locations"],
+        "tags": [
+          "Claim-Locations"
+        ],
         "parameters": [
           {
             "schema": {
@@ -6915,7 +7426,9 @@
                       "type": "boolean"
                     }
                   },
-                  "required": ["success"]
+                  "required": [
+                    "success"
+                  ]
                 }
               }
             }
@@ -6931,7 +7444,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6947,7 +7462,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -6958,7 +7475,9 @@
     "/preferences": {
       "get": {
         "summary": "Get a user's notificiation preferences",
-        "tags": ["Preferences"],
+        "tags": [
+          "Preferences"
+        ],
         "responses": {
           "200": {
             "description": "Successfully retreived user preferences",
@@ -6975,10 +7494,17 @@
                     },
                     "notificationFrequency": {
                       "type": "string",
-                      "enum": ["daily", "weekly"]
+                      "enum": [
+                        "daily",
+                        "weekly"
+                      ]
                     }
                   },
-                  "required": ["emailEnabled", "webNotificationsEnabled", "notificationFrequency"]
+                  "required": [
+                    "emailEnabled",
+                    "webNotificationsEnabled",
+                    "notificationFrequency"
+                  ]
                 }
               }
             }
@@ -6994,7 +7520,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7010,7 +7538,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7026,7 +7556,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7035,7 +7567,9 @@
       },
       "put": {
         "summary": "Update a user's notificiation preferences",
-        "tags": ["Preferences"],
+        "tags": [
+          "Preferences"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -7050,7 +7584,10 @@
                   },
                   "notificationFrequency": {
                     "type": "string",
-                    "enum": ["daily", "weekly"]
+                    "enum": [
+                      "daily",
+                      "weekly"
+                    ]
                   }
                 }
               }
@@ -7073,10 +7610,17 @@
                     },
                     "notificationFrequency": {
                       "type": "string",
-                      "enum": ["daily", "weekly"]
+                      "enum": [
+                        "daily",
+                        "weekly"
+                      ]
                     }
                   },
-                  "required": ["emailEnabled", "webNotificationsEnabled", "notificationFrequency"]
+                  "required": [
+                    "emailEnabled",
+                    "webNotificationsEnabled",
+                    "notificationFrequency"
+                  ]
                 }
               }
             }
@@ -7092,7 +7636,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7108,7 +7654,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7124,7 +7672,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7136,7 +7686,9 @@
       "post": {
         "summary": "Bulk create or update new invoice line items",
         "description": "Creates new invoice line items according to the schema. If there is an invoice line item in the database with the same quickbooks_id, invoice_id pairing, then it will overwrite it's attributes",
-        "tags": ["InvoiceLineItem"],
+        "tags": [
+          "InvoiceLineItem"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -7175,11 +7727,16 @@
                           "format": "date-time"
                         }
                       },
-                      "required": ["invoiceId", "amountCents"]
+                      "required": [
+                        "invoiceId",
+                        "amountCents"
+                      ]
                     }
                   }
                 },
-                "required": ["items"]
+                "required": [
+                  "items"
+                ]
               }
             }
           }
@@ -7231,7 +7788,13 @@
                         "format": "date-time"
                       }
                     },
-                    "required": ["id", "invoiceId", "amountCents", "dateCreated", "lastUpdated"]
+                    "required": [
+                      "id",
+                      "invoiceId",
+                      "amountCents",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
                   }
                 }
               }
@@ -7248,7 +7811,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7264,7 +7829,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7276,7 +7843,9 @@
       "get": {
         "summary": "Get invoice line item by id",
         "description": "Get invoice line item with matching ID from the database",
-        "tags": ["InvoiceLineItem"],
+        "tags": [
+          "InvoiceLineItem"
+        ],
         "parameters": [
           {
             "schema": {
@@ -7333,7 +7902,13 @@
                       "format": "date-time"
                     }
                   },
-                  "required": ["id", "invoiceId", "amountCents", "dateCreated", "lastUpdated"]
+                  "required": [
+                    "id",
+                    "invoiceId",
+                    "amountCents",
+                    "dateCreated",
+                    "lastUpdated"
+                  ]
                 }
               }
             }
@@ -7349,7 +7924,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7365,7 +7942,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7381,7 +7960,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7393,7 +7974,9 @@
       "post": {
         "summary": "Create or update purchase line items",
         "description": "Creates new purchase line items or updates existing ones. If an id is provided in the payload, the line item will be updated; otherwise, a new line item will be created. Multiple line items can be created or updated in a single request.",
-        "tags": ["Purchase Line Items"],
+        "tags": [
+          "Purchase Line Items"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -7428,19 +8011,31 @@
                         },
                         "type": {
                           "type": "string",
-                          "enum": ["extraneous", "typical", "pending", "suggested extraneous", "suggested typical"]
+                          "enum": [
+                            "extraneous",
+                            "typical",
+                            "pending",
+                            "suggested extraneous",
+                            "suggested typical"
+                          ]
                         },
                         "quickbooksDateCreated": {
                           "type": "string",
                           "format": "date-time"
                         }
                       },
-                      "required": ["purchaseId", "amountCents", "type"]
+                      "required": [
+                        "purchaseId",
+                        "amountCents",
+                        "type"
+                      ]
                     },
                     "minItems": 1
                   }
                 },
-                "required": ["items"]
+                "required": [
+                  "items"
+                ]
               }
             }
           }
@@ -7478,7 +8073,13 @@
                       },
                       "type": {
                         "type": "string",
-                        "enum": ["extraneous", "typical", "pending", "suggested extraneous", "suggested typical"]
+                        "enum": [
+                          "extraneous",
+                          "typical",
+                          "pending",
+                          "suggested extraneous",
+                          "suggested typical"
+                        ]
                       },
                       "dateCreated": {
                         "type": "string"
@@ -7491,7 +8092,14 @@
                         "format": "date-time"
                       }
                     },
-                    "required": ["id", "purchaseId", "amountCents", "type", "dateCreated", "lastUpdated"]
+                    "required": [
+                      "id",
+                      "purchaseId",
+                      "amountCents",
+                      "type",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
                   }
                 }
               }
@@ -7508,7 +8116,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7527,7 +8137,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7539,7 +8151,9 @@
       "get": {
         "summary": "Fetches a purchase line item by the given ID",
         "description": "Finds the purchase line item with the given ID in the database",
-        "tags": ["Purchase Line Items"],
+        "tags": [
+          "Purchase Line Items"
+        ],
         "parameters": [
           {
             "schema": {
@@ -7582,7 +8196,13 @@
                     },
                     "type": {
                       "type": "string",
-                      "enum": ["extraneous", "typical", "pending", "suggested extraneous", "suggested typical"]
+                      "enum": [
+                        "extraneous",
+                        "typical",
+                        "pending",
+                        "suggested extraneous",
+                        "suggested typical"
+                      ]
                     },
                     "dateCreated": {
                       "type": "string"
@@ -7595,7 +8215,14 @@
                       "format": "date-time"
                     }
                   },
-                  "required": ["id", "purchaseId", "amountCents", "type", "dateCreated", "lastUpdated"]
+                  "required": [
+                    "id",
+                    "purchaseId",
+                    "amountCents",
+                    "type",
+                    "dateCreated",
+                    "lastUpdated"
+                  ]
                 }
               }
             }
@@ -7611,7 +8238,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7630,7 +8259,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7642,7 +8273,9 @@
       "get": {
         "summary": "Fetches all line items for a purchase by the given purchase ID",
         "description": "Finds all purchase line items associated with the given purchase ID in the database. Returns an empty array if the purchase exists but has no line items.",
-        "tags": ["Purchase Line Items"],
+        "tags": [
+          "Purchase Line Items"
+        ],
         "parameters": [
           {
             "schema": {
@@ -7687,7 +8320,13 @@
                       },
                       "type": {
                         "type": "string",
-                        "enum": ["extraneous", "typical", "pending", "suggested extraneous", "suggested typical"]
+                        "enum": [
+                          "extraneous",
+                          "typical",
+                          "pending",
+                          "suggested extraneous",
+                          "suggested typical"
+                        ]
                       },
                       "dateCreated": {
                         "type": "string"
@@ -7700,7 +8339,14 @@
                         "format": "date-time"
                       }
                     },
-                    "required": ["id", "purchaseId", "amountCents", "type", "dateCreated", "lastUpdated"]
+                    "required": [
+                      "id",
+                      "purchaseId",
+                      "amountCents",
+                      "type",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
                   }
                 }
               }
@@ -7717,7 +8363,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7736,7 +8384,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7748,7 +8398,9 @@
       "patch": {
         "summary": "Updates a purchase line item's category",
         "description": "Updates the category of the purchase line item with the given Id to the given category",
-        "tags": ["Purchase Line Items"],
+        "tags": [
+          "Purchase Line Items"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -7768,7 +8420,11 @@
                     "type": "boolean"
                   }
                 },
-                "required": ["id", "category", "removeCategory"]
+                "required": [
+                  "id",
+                  "category",
+                  "removeCategory"
+                ]
               }
             }
           }
@@ -7804,7 +8460,13 @@
                     },
                     "type": {
                       "type": "string",
-                      "enum": ["extraneous", "typical", "pending", "suggested extraneous", "suggested typical"]
+                      "enum": [
+                        "extraneous",
+                        "typical",
+                        "pending",
+                        "suggested extraneous",
+                        "suggested typical"
+                      ]
                     },
                     "dateCreated": {
                       "type": "string"
@@ -7818,7 +8480,14 @@
                       "format": "date-time"
                     }
                   },
-                  "required": ["id", "purchaseId", "amountCents", "type", "dateCreated", "lastUpdated"]
+                  "required": [
+                    "id",
+                    "purchaseId",
+                    "amountCents",
+                    "type",
+                    "dateCreated",
+                    "lastUpdated"
+                  ]
                 }
               }
             }
@@ -7834,7 +8503,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7850,7 +8521,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7862,7 +8535,9 @@
       "patch": {
         "summary": "Updates a purchase line item's type",
         "description": "Updates the type of the purchase line item with the given Id to the given type",
-        "tags": ["Purchase Line Items"],
+        "tags": [
+          "Purchase Line Items"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -7875,10 +8550,19 @@
                   },
                   "type": {
                     "type": "string",
-                    "enum": ["extraneous", "typical", "pending", "suggested extraneous", "suggested typical"]
+                    "enum": [
+                      "extraneous",
+                      "typical",
+                      "pending",
+                      "suggested extraneous",
+                      "suggested typical"
+                    ]
                   }
                 },
-                "required": ["id", "type"]
+                "required": [
+                  "id",
+                  "type"
+                ]
               }
             }
           }
@@ -7914,7 +8598,13 @@
                     },
                     "type": {
                       "type": "string",
-                      "enum": ["extraneous", "typical", "pending", "suggested extraneous", "suggested typical"]
+                      "enum": [
+                        "extraneous",
+                        "typical",
+                        "pending",
+                        "suggested extraneous",
+                        "suggested typical"
+                      ]
                     },
                     "dateCreated": {
                       "type": "string"
@@ -7928,7 +8618,14 @@
                       "format": "date-time"
                     }
                   },
-                  "required": ["id", "purchaseId", "amountCents", "type", "dateCreated", "lastUpdated"]
+                  "required": [
+                    "id",
+                    "purchaseId",
+                    "amountCents",
+                    "type",
+                    "dateCreated",
+                    "lastUpdated"
+                  ]
                 }
               }
             }
@@ -7944,7 +8641,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7960,7 +8659,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -7972,7 +8673,9 @@
       "post": {
         "summary": "Create a new self-reported disaster",
         "description": "Creates a new self-reported disaster for a company with the provided information",
-        "tags": ["Self Disaster"],
+        "tags": [
+          "Self Disaster"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -7996,7 +8699,11 @@
                     "format": "date"
                   }
                 },
-                "required": ["name", "description", "startDate"]
+                "required": [
+                  "name",
+                  "description",
+                  "startDate"
+                ]
               }
             }
           }
@@ -8037,7 +8744,14 @@
                       "format": "date"
                     }
                   },
-                  "required": ["id", "name", "description", "startDate", "createdAt", "updatedAt"]
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "startDate",
+                    "createdAt",
+                    "updatedAt"
+                  ]
                 }
               }
             }
@@ -8053,7 +8767,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8069,7 +8785,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8081,7 +8799,9 @@
       "patch": {
         "summary": "Update a self-reported disaster",
         "description": "Updates a self-reported disaster's information (name, description, dates)",
-        "tags": ["Self Disaster"],
+        "tags": [
+          "Self Disaster"
+        ],
         "parameters": [
           {
             "schema": {
@@ -8158,7 +8878,14 @@
                       "format": "date"
                     }
                   },
-                  "required": ["id", "name", "description", "startDate", "createdAt", "updatedAt"]
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "startDate",
+                    "createdAt",
+                    "updatedAt"
+                  ]
                 }
               }
             }
@@ -8174,7 +8901,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8193,7 +8922,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8203,7 +8934,9 @@
       "delete": {
         "summary": "Delete a self-reported disaster",
         "description": "Deletes a self-reported disaster by its ID",
-        "tags": ["Self Disaster"],
+        "tags": [
+          "Self Disaster"
+        ],
         "parameters": [
           {
             "schema": {
@@ -8232,7 +8965,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8248,7 +8983,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8260,7 +8997,9 @@
       "post": {
         "summary": "Create data about the company's insurance policy",
         "description": "Creates a new entity with data about the company's insurance policy",
-        "tags": ["Insurance Policy"],
+        "tags": [
+          "Insurance Policy"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -8369,7 +9108,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8385,7 +9126,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8395,7 +9138,9 @@
       "get": {
         "summary": "Gets all of the insurance policies for a company",
         "description": "Will get all of the insurance policies that have been created for a Company",
-        "tags": ["Insurance Policy"],
+        "tags": [
+          "Insurance Policy"
+        ],
         "responses": {
           "200": {
             "description": "Result includes all of the insurance policies for the user's company",
@@ -8463,7 +9208,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8479,7 +9226,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8518,7 +9267,9 @@
                     "type": "string"
                   }
                 },
-                "required": ["id"]
+                "required": [
+                  "id"
+                ]
               }
             }
           }
@@ -8587,7 +9338,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8603,7 +9356,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8615,7 +9370,9 @@
       "post": {
         "summary": "Creates data about the company's insurance policy",
         "description": "Can create many new entities with data about the company's insurance policy",
-        "tags": ["Insurance Policy"],
+        "tags": [
+          "Insurance Policy"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -8732,7 +9489,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8748,7 +9507,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8789,7 +9550,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["id"]
+                  "required": [
+                    "id"
+                  ]
                 },
                 "minItems": 1
               }
@@ -8864,7 +9627,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8880,7 +9645,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8892,7 +9659,9 @@
       "get": {
         "summary": "Get all of the fema risk index data",
         "description": "Get all of the fema risk index data",
-        "tags": ["fema-risk-data"],
+        "tags": [
+          "fema-risk-data"
+        ],
         "responses": {
           "200": {
             "description": "Fema risk index data",
@@ -8954,7 +9723,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8970,7 +9741,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -8980,7 +9753,9 @@
       "post": {
         "summary": "Updates all of the fema risk index data",
         "description": "Will delete the existing fema risk index data in the table and re import all of the index data",
-        "tags": ["Disaster"],
+        "tags": [
+          "Disaster"
+        ],
         "responses": {
           "200": {
             "description": "Update risk index data",
@@ -8991,168 +9766,187 @@
                 }
               }
             }
-          }
-        }
-      }
-    }
-  },
-  "/s3/getUploadUrl": {
-    "post": {
-      "summary": "Get presigned URL for document upload",
-      "description": "Generates a presigned URL that allows direct upload to S3 from the client. The URL expires after 1 hour.",
-      "tags": ["S3"],
-      "requestBody": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "fileName": {
-                  "type": "string",
-                  "minLength": 1,
-                  "description": "Original file name"
-                },
-                "fileType": {
-                  "type": "string",
-                  "minLength": 1,
-                  "description": "MIME type of the file (e.g., application/pdf, image/jpeg)"
-                },
-                "documentType": {
-                  "type": "string",
-                  "enum": ["CLAIM", "GENERAL_BUSINESS", "IMAGES"],
-                  "default": "GENERAL_BUSINESS"
-                },
-                "claimId": {
-                  "type": "string",
-                  "description": "Optional claim ID for claim-specific documents"
+          },
+          "400": {
+            "description": "Getting Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
                 }
-              },
-              "required": ["fileName", "fileType"]
-            }
-          }
-        }
-      },
-      "responses": {
-        "200": {
-          "description": "Presigned URL generated successfully",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "uploadUrl": {
-                    "type": "string"
-                  },
-                  "key": {
-                    "type": "string"
-                  },
-                  "documentId": {
-                    "type": "string"
-                  },
-                  "expiresIn": {
-                    "type": "number"
-                  }
-                },
-                "required": ["uploadUrl", "key", "documentId", "expiresIn"]
               }
             }
-          }
-        },
-        "400": {
-          "description": "Invalid request - missing or invalid parameters",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "error": {
-                    "type": "string"
-                  }
-                },
-                "required": ["error"]
-              }
-            }
-          }
-        },
-        "401": {
-          "description": "User authentication required",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "error": {
-                    "type": "string"
-                  }
-                },
-                "required": ["error"]
-              }
-            }
-          }
-        },
-        "500": {
-          "description": "Internal server error",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "error": {
-                    "type": "string"
-                  }
-                },
-                "required": ["error"]
+          },
+          "500": {
+            "description": "Getting Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
               }
             }
           }
         }
       }
-    }
-  },
-  "/s3/confirmUpload": {
-    "post": {
-      "summary": "Confirm document upload completion",
-      "description": "Verifies that a file was successfully uploaded to S3 and returns file details including a presigned download URL.",
-      "tags": ["S3"],
-      "requestBody": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "key": {
-                  "type": "string",
-                  "minLength": 1,
-                  "description": "S3 key of the uploaded file"
+    },
+    "/s3/getUploadUrl": {
+      "post": {
+        "summary": "Get presigned URL for document upload",
+        "description": "Generates a presigned URL that allows direct upload to S3 from the client. The URL expires after 1 hour.",
+        "tags": [
+          "S3"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fileName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Original file name"
+                  },
+                  "fileType": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "MIME type of the file (e.g., application/pdf, image/jpeg)"
+                  },
+                  "documentType": {
+                    "type": "string",
+                    "enum": [
+                      "CLAIM",
+                      "GENERAL_BUSINESS",
+                      "IMAGES"
+                    ],
+                    "default": "GENERAL_BUSINESS"
+                  },
+                  "claimId": {
+                    "type": "string",
+                    "description": "Optional claim ID for claim-specific documents"
+                  }
                 },
-                "documentId": {
-                  "type": "string",
-                  "minLength": 1,
-                  "description": "Document ID returned from getUploadUrl"
-                },
-                "documentType": {
-                  "type": "string",
-                  "enum": ["CLAIM", "GENERAL_BUSINESS", "IMAGES"],
-                  "default": "GENERAL_BUSINESS"
-                },
-                "claimId": {
-                  "type": "string",
-                  "description": "Optional claim ID for claim-specific documents"
-                },
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "enum": ["Expenses", "Revenues", "Insurance", "Other"]
+                "required": [
+                  "fileName",
+                  "fileType"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Presigned URL generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uploadUrl": {
+                      "type": "string"
+                    },
+                    "key": {
+                      "type": "string"
+                    },
+                    "documentId": {
+                      "type": "string"
+                    },
+                    "expiresIn": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "uploadUrl",
+                    "key",
+                    "documentId",
+                    "expiresIn"
+                  ]
                 }
-              },
-              "required": ["key", "documentId", "category"]
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing or invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
             }
           }
         }
-      },
-      "responses": {
-        "200": {
-          "description": "Upload confirmed successfully",
+      }
+    },
+    "/s3/confirmUpload": {
+      "post": {
+        "summary": "Confirm document upload completion",
+        "description": "Verifies that a file was successfully uploaded to S3 and returns file details including a presigned download URL.",
+        "tags": [
+          "S3"
+        ],
+        "requestBody": {
           "content": {
             "application/json": {
               "schema": {
@@ -9160,95 +9954,160 @@
                 "properties": {
                   "key": {
                     "type": "string",
+                    "minLength": 1,
                     "description": "S3 key of the uploaded file"
                   },
-                  "url": {
+                  "documentId": {
                     "type": "string",
-                    "format": "uri",
-                    "description": "Presigned download URL for the file"
+                    "minLength": 1,
+                    "description": "Document ID returned from getUploadUrl"
                   },
-                  "size": {
-                    "type": "number",
-                    "description": "File size in bytes"
-                  },
-                  "hash": {
+                  "documentType": {
                     "type": "string",
-                    "description": "SHA-256 hash of the file"
+                    "enum": [
+                      "CLAIM",
+                      "GENERAL_BUSINESS",
+                      "IMAGES"
+                    ],
+                    "default": "GENERAL_BUSINESS"
                   },
-                  "isDuplicate": {
-                    "type": "boolean",
-                    "description": "Whether this file is a duplicate"
-                  },
-                  "duplicateKey": {
+                  "claimId": {
                     "type": "string",
-                    "description": "Key of the original file if duplicate"
+                    "description": "Optional claim ID for claim-specific documents"
+                  },
+                  "category": {
+                    "type": "string",
+                    "nullable": true,
+                    "enum": [
+                      "Expenses",
+                      "Revenues",
+                      "Insurance",
+                      "Other"
+                    ]
                   }
                 },
-                "required": ["key", "url", "size", "hash"]
+                "required": [
+                  "key",
+                  "documentId",
+                  "category"
+                ]
               }
             }
           }
         },
-        "400": {
-          "description": "Invalid request - missing or invalid parameters",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "error": {
-                    "type": "string"
-                  }
-                },
-                "required": ["error"]
+        "responses": {
+          "200": {
+            "description": "Upload confirmed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "description": "S3 key of the uploaded file"
+                    },
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "Presigned download URL for the file"
+                    },
+                    "size": {
+                      "type": "number",
+                      "description": "File size in bytes"
+                    },
+                    "hash": {
+                      "type": "string",
+                      "description": "SHA-256 hash of the file"
+                    },
+                    "isDuplicate": {
+                      "type": "boolean",
+                      "description": "Whether this file is a duplicate"
+                    },
+                    "duplicateKey": {
+                      "type": "string",
+                      "description": "Key of the original file if duplicate"
+                    }
+                  },
+                  "required": [
+                    "key",
+                    "url",
+                    "size",
+                    "hash"
+                  ]
+                }
               }
             }
-          }
-        },
-        "401": {
-          "description": "User authentication required",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "error": {
-                    "type": "string"
-                  }
-                },
-                "required": ["error"]
+          },
+          "400": {
+            "description": "Invalid request - missing or invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
               }
             }
-          }
-        },
-        "404": {
-          "description": "File not found in S3",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "error": {
-                    "type": "string"
-                  }
-                },
-                "required": ["error"]
+          },
+          "401": {
+            "description": "User authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
               }
             }
-          }
-        },
-        "500": {
-          "description": "Internal server error",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "error": {
-                    "type": "string"
-                  }
-                },
-                "required": ["error"]
+          },
+          "404": {
+            "description": "File not found in S3",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
               }
             }
           }
@@ -9259,7 +10118,9 @@
       "get": {
         "summary": "Get all documents of a specific type",
         "description": "Retrieves all documents of the specified type for a company or user.",
-        "tags": ["S3"],
+        "tags": [
+          "S3"
+        ],
         "parameters": [
           {
             "schema": {
@@ -9273,7 +10134,11 @@
           {
             "schema": {
               "type": "string",
-              "enum": ["CLAIM", "GENERAL_BUSINESS", "IMAGES"]
+              "enum": [
+                "CLAIM",
+                "GENERAL_BUSINESS",
+                "IMAGES"
+              ]
             },
             "required": true,
             "name": "documentType",
@@ -9313,7 +10178,12 @@
                           "category": {
                             "type": "string",
                             "nullable": true,
-                            "enum": ["Expenses", "Revenues", "Insurance", "Other"]
+                            "enum": [
+                              "Expenses",
+                              "Revenues",
+                              "Insurance",
+                              "Other"
+                            ]
                           },
                           "createdAt": {
                             "type": "string"
@@ -9347,7 +10217,12 @@
                                 "type": "string"
                               }
                             },
-                            "required": ["id", "firstName", "lastName", "phoneNumber"]
+                            "required": [
+                              "id",
+                              "firstName",
+                              "lastName",
+                              "phoneNumber"
+                            ]
                           },
                           "company": {
                             "type": "object",
@@ -9364,38 +10239,12 @@
                                 "minLength": 1
                               },
                               "lastQuickBooksInvoiceImportTime": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  },
-                                  {
-                                    "nullable": true
-                                  },
-                                  {
-                                    "nullable": true
-                                  }
-                                ]
+                                "type": "string",
+                                "nullable": true
                               },
                               "lastQuickBooksPurchaseImportTime": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  },
-                                  {
-                                    "nullable": true
-                                  },
-                                  {
-                                    "nullable": true
-                                  }
-                                ]
+                                "type": "string",
+                                "nullable": true
                               },
                               "externals": {
                                 "type": "array",
@@ -9424,7 +10273,14 @@
                                       "type": "string"
                                     }
                                   },
-                                  "required": ["id", "source", "externalId", "companyId", "createdAt", "updatedAt"]
+                                  "required": [
+                                    "id",
+                                    "source",
+                                    "externalId",
+                                    "companyId",
+                                    "createdAt",
+                                    "updatedAt"
+                                  ]
                                 }
                               },
                               "alternateEmail": {
@@ -9433,32 +10289,28 @@
                               },
                               "companyType": {
                                 "type": "string",
-                                "enum": ["LLC", "Sole Proprietorship", "Corporation", "Partnership"]
+                                "enum": [
+                                  "LLC",
+                                  "Sole Proprietorship",
+                                  "Corporation",
+                                  "Partnership"
+                                ]
                               },
                               "createdAt": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  }
-                                ]
+                                "type": "string"
                               },
                               "updatedAt": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  }
-                                ]
+                                "type": "string"
                               }
                             },
-                            "required": ["id", "name", "businessOwnerFullName", "companyType", "createdAt"]
+                            "required": [
+                              "id",
+                              "name",
+                              "businessOwnerFullName",
+                              "companyType",
+                              "createdAt",
+                              "updatedAt"
+                            ]
                           },
                           "claim": {
                             "type": "object",
@@ -9571,7 +10423,14 @@
                                     "type": "string"
                                   }
                                 },
-                                "required": ["id", "name", "description", "startDate", "createdAt", "updatedAt"]
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "description",
+                                  "startDate",
+                                  "createdAt",
+                                  "updatedAt"
+                                ]
                               },
                               "insurancePolicy": {
                                 "type": "object",
@@ -9656,6 +10515,12 @@
                                     },
                                     "fipsCountyCode": {
                                       "type": "number"
+                                    },
+                                    "lat": {
+                                      "type": "number"
+                                    },
+                                    "long": {
+                                      "type": "number"
                                     }
                                   },
                                   "required": [
@@ -9668,7 +10533,9 @@
                                     "postalCode",
                                     "companyId",
                                     "fipsStateCode",
-                                    "fipsCountyCode"
+                                    "fipsCountyCode",
+                                    "lat",
+                                    "long"
                                   ]
                                 }
                               },
@@ -9676,16 +10543,27 @@
                                 "type": "string"
                               }
                             },
-                            "required": ["id", "createdAt"]
+                            "required": [
+                              "id",
+                              "createdAt"
+                            ]
                           }
                         },
-                        "required": ["id", "key", "s3DocumentId", "company"]
+                        "required": [
+                          "id",
+                          "key",
+                          "s3DocumentId",
+                          "company"
+                        ]
                       },
                       "downloadUrl": {
                         "type": "string"
                       }
                     },
-                    "required": ["document", "downloadUrl"]
+                    "required": [
+                      "document",
+                      "downloadUrl"
+                    ]
                   }
                 }
               }
@@ -9702,7 +10580,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -9718,7 +10598,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -9730,7 +10612,9 @@
       "delete": {
         "summary": "Delete a document",
         "description": "Deletes a document from both S3 storage and the database. This action cannot be undone.",
-        "tags": ["S3"],
+        "tags": [
+          "S3"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -9746,7 +10630,10 @@
                     "minLength": 1
                   }
                 },
-                "required": ["key", "documentId"]
+                "required": [
+                  "key",
+                  "documentId"
+                ]
               }
             }
           }
@@ -9763,7 +10650,9 @@
                       "type": "boolean"
                     }
                   },
-                  "required": ["success"]
+                  "required": [
+                    "success"
+                  ]
                 }
               }
             }
@@ -9779,7 +10668,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -9795,7 +10686,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -9807,7 +10700,9 @@
       "patch": {
         "summary": "Update document category",
         "description": "Updates the category of a document",
-        "tags": ["S3"],
+        "tags": [
+          "S3"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -9821,10 +10716,18 @@
                   },
                   "category": {
                     "type": "string",
-                    "enum": ["Expenses", "Revenues", "Insurance", "Other"]
+                    "enum": [
+                      "Expenses",
+                      "Revenues",
+                      "Insurance",
+                      "Other"
+                    ]
                   }
                 },
-                "required": ["documentId", "category"]
+                "required": [
+                  "documentId",
+                  "category"
+                ]
               }
             }
           }
@@ -9841,7 +10744,9 @@
                       "type": "boolean"
                     }
                   },
-                  "required": ["success"]
+                  "required": [
+                    "success"
+                  ]
                 }
               }
             }
@@ -9857,7 +10762,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
@@ -9873,7 +10780,9 @@
                       "type": "string"
                     }
                   },
-                  "required": ["error"]
+                  "required": [
+                    "error"
+                  ]
                 }
               }
             }
