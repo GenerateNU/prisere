@@ -6,7 +6,7 @@ import type { Map as LeafletMap } from "leaflet";
  * Hook to add GeoJSON layers to map
  */
 export const useGeoJSONLayers = (
-    map: LeafletMap,
+    map: LeafletMap | null,
     isMapReady: boolean,
     femaRiskCountyLookup: Map<
         string,
