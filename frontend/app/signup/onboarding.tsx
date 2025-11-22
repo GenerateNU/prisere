@@ -29,13 +29,11 @@ export default function Onboarding({ email }: OnboardingProps) {
     function getStep(stage: number): number {
         switch (stage) {
             case 0:
-                return 2;
-            case 1:
-                return 3;
-            case 2:
-                return 7;
-            default:
                 return 0;
+            case 1:
+                return 2;
+            default:
+                return 6;
         }
     }
 
