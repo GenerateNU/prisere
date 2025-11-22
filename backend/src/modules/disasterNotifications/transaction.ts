@@ -114,9 +114,6 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
 
             // If requesting a page beyond available data, return empty array
             if (page > maxPage && totalCount > 0) {
-                console.log(
-                    `Page ${page} exceeds maximum page ${maxPage} for user ${payload.id}. Returning empty results.`
-                );
                 logMessageToFile(
                     `Page ${page} exceeds maximum page ${maxPage} for user ${payload.id}. Returning empty results.`
                 );
@@ -134,7 +131,6 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
                 select: ["id"], // Only select from id field
             });
             if (!existing) {
-                console.log(`User ${payload.id} not found.`);
                 logMessageToFile(`User ${payload.id} not found.`);
                 throw Boom.notFound("User not found");
             }

@@ -1,0 +1,52 @@
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import type { Relation } from "typeorm";
+import { User } from "./User";
+import { Company } from "./Company";
+import { Claim } from "./Claim";
+import { DocumentCategories } from "../types/DocumentType";
+
+@Entity("document")
+export class Document {
+    @PrimaryGeneratedColumn("uuid")
+    id!: string;
+
+    @Column()
+    key!: string;
+
+    @Column()
+    s3DocumentId!: string;
+
+    @Column({
+        type: "enum",
+        enum: DocumentCategories,
+        nullable: true,
+    })
+    category?: DocumentCategories;
+
+    @Column({ nullable: true })
+    createdAt?: string;
+
+    @Column({ nullable: true })
+    lastModified?: string;
+
+    @Column({ name: "userId", nullable: true })
+    userId?: string;
+
+    @ManyToOne(() => User)
+    @JoinColumn({ name: "userId" })
+    user?: Relation<User>;
+
+    @Column({ name: "companyId" })
+    companyId!: string;
+
+    @ManyToOne(() => Company)
+    @JoinColumn({ name: "companyId" })
+    company!: Relation<Company>;
+
+    @Column({ name: "claimId", nullable: true })
+    claimId?: string;
+
+    @OneToOne(() => Claim)
+    @JoinColumn({ name: "claimId" })
+    claim?: Relation<Claim>;
+}

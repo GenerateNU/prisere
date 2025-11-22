@@ -6,13 +6,28 @@ export const GetAllDisastersResponseSchema = z.array(
         id: z.uuid(),
         disasterNumber: z.number(),
         fipsStateCode: FIPSState,
-        declarationDate: z.iso.datetime(),
+        declarationDate: z.string(),
         incidentBeginDate: z.string().optional(),
         incidentEndDate: z.string().optional(),
         fipsCountyCode: FIPSCounty,
         declarationType: z.string().length(2),
         designatedArea: z.string(),
         designatedIncidentTypes: incidentTypeString,
+    })
+);
+
+export const GetAllDisastersDocumentResponseSchema = z.array(
+    z.object({
+        id: z.uuid(),
+        disasterNumber: z.number(),
+        fipsStateCode: FIPSState,
+        declarationDate: z.string(),
+        incidentBeginDate: z.string().optional().nullable(),
+        incidentEndDate: z.string().optional().nullable(),
+        fipsCountyCode: FIPSCounty,
+        declarationType: z.string().length(2),
+        designatedArea: z.string(),
+        designatedIncidentTypes: incidentTypeString.nullable(),
     })
 );
 

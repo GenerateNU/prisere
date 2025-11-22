@@ -2,6 +2,7 @@ import { describe, test, expect, beforeEach, mock } from "bun:test";
 import { SendMessageBatchCommand } from "@aws-sdk/client-sqs";
 import { SQSService } from "../../modules/sqs/service";
 import { DisasterEmailMessage } from "../../types/DisasterNotification";
+import { logMessageToFile } from "../../utilities/logger";
 
 describe("SQSService", () => {
     let sqsService: SQSService;
@@ -63,7 +64,8 @@ describe("SQSService", () => {
         test("should send a single batch of messages successfully", async () => {
             const messages = [createMockMessage("1"), createMockMessage("2")];
 
-            await sqsService.sendBatchMessages(messages);
+            const response = await sqsService.sendBatchMessages(messages);
+            logMessageToFile(`${response}`);
 
             expect(mockSend).toHaveBeenCalledTimes(1);
 

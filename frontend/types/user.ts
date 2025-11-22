@@ -26,6 +26,7 @@ export type signupInitialState = {
 export enum requiredOnboardingProgress {
     USER = "user",
     COMPANY = "company",
+
     FINISHED = "finished",
 }
 

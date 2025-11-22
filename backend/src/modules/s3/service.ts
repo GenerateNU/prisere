@@ -7,47 +7,24 @@ import {
     ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import sharp from "sharp";
 import { createHash } from "crypto";
-import { PdfListItem, UploadImageOptions, UploadPdfOptions, UploadResult } from "../../types/S3Types";
+import { DocumentTypes, GetUploadUrlResponse, PdfListItem, UploadResult } from "../../types/S3Types";
 import { logMessageToFile } from "../../utilities/logger";
+import { DataSource } from "typeorm";
+import { DocumentCategories, DocumentWithUrl } from "../../types/DocumentType";
+import { Document } from "../../entities/Document";
+import { IDocumentTransaction } from "../documents/transaction";
 
 const S3_BUCKET_NAME = process.env.OBJECTS_STORAGE_BUCKET_NAME;
-const IMAGE_QUALITY = 85; // Compress the image at 85% quality
 const PRESIGNED_URL_EXPIRY = 3600; // 1 hour
 
 export interface IS3Service {
-    /**
-     * Uploads a profile picture or other user image to S3 with automatic WebP compression
-     * Profile pictures are stored at /images/{userId}/profile.webp
-     * Other images can have custom IDs, Options include:
-     * userId: required - (user of the profile picture)
-     * imageBuffer: required - image buffer from API endpoint (endpoint should convert from image -> buffer (raw binary data))
-     * imageType: optional - purpose of image, default is 'profile'
-     * imageId: optional - 'profile' will always be used for profile pic, custom image ID name (generated uuid will be used otherwise)
-     */
-    uploadImage(options: UploadImageOptions): Promise<UploadResult>;
-    /**
-     * Uploads a PDF document for a specific claim to S3. PDFs are stored at /pdfs/{claimId}/{documentId}.pdf
-     * PDFs are typically already compressed, so no additional compression is applied
-     * Options include:
-     * claimId: required - ID of claim the PDF is created for
-     * pdfBuffer: required - Buffer of PDF to upload
-     * documentId: optional - ID to use for document name in S3
-     * originalFileName: optional - original file name to use for metadata
-     */
-    uploadPdf(options: UploadPdfOptions): Promise<UploadResult>;
-    /**
-     * Generates a presigned URL for downloading an object from S3. URL expires after the specified time (default: 1 hour)
-     * key: required - path of object to get presigned URL for
-     * expiresIn: optional - time (in seconds) the URL expires in
-     */
     getPresignedDownloadUrl(key: string, expiresIn?: number): Promise<string>;
     /**
      * Deletes an object from S3
      * key: requied - path of object to get
      */
-    deleteObject(key: string): Promise<void>;
+    deleteObject(key: string, documentId: string): Promise<void>;
     /**
      * Checks if a file with the same hash already exists in the specified prefix
      * Returns the key of the duplicate if found, null otherwise
@@ -62,13 +39,65 @@ export interface IS3Service {
      * claimId: required - ID of claim to get the PDF of
      */
     getClaimPdf(claimId: string): Promise<PdfListItem | null>;
+
+    /**
+     * Generates a presigned URL for uploading an object to S3. URL expires after the specified time (default: 1 hour)
+     * key: required - path where the object will be uploaded
+     * contentType: optional - MIME type of the file being uploaded
+     * expiresIn: optional - time (in seconds) the URL expires in
+     * metadata: optional - custom metadata to attach to the uploaded object
+     */
+    getPresignedUploadUrl(
+        key: string,
+        contentType?: string,
+        expiresIn?: number,
+        metadata?: Record<string, string>
+    ): Promise<string>;
+    /**
+     * Generates a presigned URL for uploading and returns upload details
+     */
+    getUploadUrl(options: {
+        fileName: string;
+        fileType: string;
+        documentType: DocumentTypes;
+        claimId?: string;
+        userId?: string;
+        companyId: string;
+    }): Promise<GetUploadUrlResponse>;
+
+    /**
+     * Confirms an upload was successful and returns file details
+     */
+    confirmUpload(options: {
+        key: string;
+        documentId: string;
+        documentType: DocumentTypes;
+        claimId?: string;
+        userId: string;
+        companyId: string;
+        category?: DocumentCategories;
+    }): Promise<UploadResult>;
+
+    uploadToS3(uploadUrl: string, file: File): Promise<void>;
+
+    getAllDocuments(
+        documentType: DocumentTypes,
+        companyId?: string,
+        userId?: string
+    ): Promise<DocumentWithUrl[] | null>;
+
+    updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void>;
 }
 
 export class S3Service implements IS3Service {
     private client: S3Client;
-    private bucketName: string | undefined; // Would only be undefined in not in .env
+    private bucketName: string | undefined; // undefined if not in env vars
+    private db: DataSource;
+    private documentTransaction: IDocumentTransaction;
 
-    constructor() {
+    constructor(db: DataSource, documentTransaction: IDocumentTransaction) {
+        this.db = db;
+        this.documentTransaction = documentTransaction;
         const config: any = {
             region: process.env.AWS_REGION || "us-east-1",
         };
@@ -89,102 +118,24 @@ export class S3Service implements IS3Service {
         }
     }
 
-    async uploadImage(options: UploadImageOptions): Promise<UploadResult> {
-        const { userId, imageBuffer, imageType = "profile", imageId } = options;
-
+    async getPresignedUploadUrl(
+        key: string,
+        contentType?: string,
+        expiresIn: number = PRESIGNED_URL_EXPIRY,
+        metadata?: Record<string, string>
+    ): Promise<string> {
         try {
-            // Compress image to WebP format using sharp library
-            const compressedBuffer = await sharp(imageBuffer).webp({ quality: IMAGE_QUALITY }).toBuffer();
-
-            // Generate hash of the buffer for duplicate detection
-            const hash = this.generateHash(compressedBuffer);
-
-            // Check for duplicates in user's images folder
-            // If object is already found, return this
-            const duplicateKey = await this.checkDuplicate(hash, `images/${userId}/`);
-            if (duplicateKey) {
-                const url = await this.getPresignedDownloadUrl(duplicateKey);
-                return {
-                    key: duplicateKey,
-                    url,
-                    size: compressedBuffer.length,
-                    hash,
-                    isDuplicate: true,
-                    duplicateKey,
-                };
-            }
-
-            // Generate key based on image type (always /profile for profile picture)
-            const filename = imageType === "profile" ? "profile.webp" : `${imageId || this.generateUniqueId()}.webp`;
-            const key = `images/${userId}/${filename}`;
-
-            // Upload image using AWS SDK S3 client
-            await this.uploadToS3(key, compressedBuffer, "image/webp", {
-                hash,
-                userId,
-                imageType,
+            const command = new PutObjectCommand({
+                Bucket: this.bucketName,
+                Key: key,
+                ContentType: contentType,
+                Metadata: metadata,
             });
 
-            const url = await this.getPresignedDownloadUrl(key);
-
-            logMessageToFile(`Successfully uploaded image: ${key}`);
-            return {
-                key,
-                url,
-                size: compressedBuffer.length,
-                hash,
-            };
+            const url = await getSignedUrl(this.client, command, { expiresIn });
+            return url;
         } catch (error) {
-            //   console.error("Error uploading image:", error);
-            logMessageToFile(`Error uploading image: ${error}`);
-            throw error;
-        }
-    }
-
-    async uploadPdf(options: UploadPdfOptions): Promise<UploadResult> {
-        const { claimId, pdfBuffer, documentId, originalFilename } = options;
-
-        try {
-            // Generate hash for duplicate detection
-            const hash = this.generateHash(pdfBuffer);
-
-            // Check for duplicates in claim's pdfs folder
-            // If a duplicate already exists, return the existing object
-            const duplicateKey = await this.checkDuplicate(hash, `pdfs/${claimId}/`);
-            if (duplicateKey) {
-                const url = await this.getPresignedDownloadUrl(duplicateKey);
-                return {
-                    key: duplicateKey,
-                    url,
-                    size: pdfBuffer.length,
-                    hash,
-                    isDuplicate: true,
-                    duplicateKey,
-                };
-            }
-
-            // Use provided documentId or generate one
-            const docId = documentId || this.generateUniqueId();
-            const key = `pdfs/${claimId}/${docId}.pdf`;
-
-            // Upload PDF
-            await this.uploadToS3(key, pdfBuffer, "application/pdf", {
-                hash,
-                claimId,
-                originalFilename: originalFilename || "",
-            });
-
-            const url = await this.getPresignedDownloadUrl(key);
-
-            logMessageToFile(`Successfully uploaded PDF: ${key}`);
-            return {
-                key,
-                url,
-                size: pdfBuffer.length,
-                hash,
-            };
-        } catch (error) {
-            console.error("Error uploading PDF:", error);
+            console.error(`Error generating presigned upload URL for ${key}:`, error);
             throw error;
         }
     }
@@ -205,7 +156,127 @@ export class S3Service implements IS3Service {
         }
     }
 
-    async deleteObject(key: string): Promise<void> {
+    async updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void> {
+        return this.documentTransaction.updateDocumentCategory(documentId, category);
+    }
+
+    async getAllDocuments(documentType: DocumentTypes, companyId: string, userId?: string): Promise<DocumentWithUrl[]> {
+        try {
+            const repository = this.db.getRepository(Document);
+            let dbDocuments: Document[];
+
+            if (documentType === DocumentTypes.GENERAL_BUSINESS || documentType === DocumentTypes.CLAIM) {
+                dbDocuments = await repository.find({
+                    where: { companyId: companyId },
+                    relations: ["user", "company", "claim"],
+                });
+            } else if (documentType === DocumentTypes.IMAGES) {
+                dbDocuments = await repository.find({
+                    where: { userId: userId },
+                    relations: ["user", "company"],
+                });
+            } else {
+                throw new Error(`Unsupported document type: ${documentType}`);
+            }
+
+            if (dbDocuments.length === 0) {
+                logMessageToFile(`No documents found for type ${documentType}`);
+                return [];
+            }
+
+            const enrichedDocuments = await Promise.all(
+                dbDocuments.map(async (doc) => {
+                    try {
+                        const downloadUrl = await this.getPresignedDownloadUrl(doc.key);
+
+                        return {
+                            document: {
+                                id: doc.id,
+                                key: doc.key,
+                                s3DocumentId: doc.s3DocumentId,
+                                category: doc.category,
+                                createdAt: doc.createdAt,
+                                lastModified: doc.lastModified || null,
+                                company: {
+                                    id: doc.company.id,
+                                    name: doc.company.name,
+                                    businessOwnerFullName: doc.company.businessOwnerFullName,
+                                    companyType: doc.company.companyType,
+                                    createdAt: doc.company.createdAt.toISOString(),
+                                    updatedAt: doc.company.updatedAt.toISOString(),
+                                    lastQuickBooksInvoiceImportTime:
+                                        doc.company.lastQuickBooksInvoiceImportTime?.toISOString() || null,
+                                    lastQuickBooksPurchaseImportTime:
+                                        doc.company.lastQuickBooksPurchaseImportTime?.toISOString() || null,
+                                    alternateEmail: doc.company.alternateEmail,
+                                },
+                                user: doc.user,
+                                claim: doc.claim
+                                    ? {
+                                          id: doc.claim.id,
+                                          status: doc.claim.status,
+                                          createdAt: doc.claim.createdAt.toISOString(),
+                                          updatedAt: doc.claim.updatedAt?.toISOString(),
+                                          femaDisaster: doc.claim.femaDisaster,
+                                          selfDisaster: doc.claim.selfDisaster,
+                                          insurancePolicy: doc.claim.insurancePolicy,
+                                          claimLocations: doc.claim.claimLocations,
+                                      }
+                                    : undefined,
+                            },
+                            downloadUrl,
+                        } as DocumentWithUrl;
+                    } catch (error) {
+                        console.error(`Error generating URL for ${doc.key}:`, error);
+                        return {
+                            document: {
+                                id: doc.id,
+                                key: doc.key,
+                                s3DocumentId: doc.s3DocumentId,
+                                category: doc.category,
+                                createdAt: doc.createdAt,
+                                lastModified: doc.lastModified || null,
+                                company: {
+                                    id: doc.company.id,
+                                    name: doc.company.name,
+                                    businessOwnerFullName: doc.company.businessOwnerFullName,
+                                    companyType: doc.company.companyType,
+                                    createdAt: doc.company.createdAt.toISOString(),
+                                    updatedAt: doc.company.updatedAt.toISOString(),
+                                    lastQuickBooksInvoiceImportTime:
+                                        doc.company.lastQuickBooksInvoiceImportTime?.toISOString() || null,
+                                    lastQuickBooksPurchaseImportTime:
+                                        doc.company.lastQuickBooksPurchaseImportTime?.toISOString() || null,
+                                    alternateEmail: doc.company.alternateEmail,
+                                },
+                                user: doc.user,
+                                claim: doc.claim
+                                    ? {
+                                          id: doc.claim.id,
+                                          status: doc.claim.status,
+                                          createdAt: doc.claim.createdAt.toISOString(),
+                                          updatedAt: doc.claim.updatedAt?.toISOString(),
+                                          femaDisaster: doc.claim.femaDisaster,
+                                          selfDisaster: doc.claim.selfDisaster,
+                                          insurancePolicy: doc.claim.insurancePolicy,
+                                          claimLocations: doc.claim.claimLocations,
+                                      }
+                                    : undefined,
+                            },
+                            downloadUrl: "",
+                        } as DocumentWithUrl;
+                    }
+                })
+            );
+
+            return enrichedDocuments;
+        } catch (error) {
+            console.error(`Error getting documents for type ${documentType}:`, error);
+            throw error;
+        }
+    }
+
+    async deleteObject(key: string, documentId: string): Promise<void> {
         try {
             const command = new DeleteObjectCommand({
                 Bucket: this.bucketName,
@@ -213,7 +284,8 @@ export class S3Service implements IS3Service {
             });
 
             await this.client.send(command);
-            console.log(`Successfully deleted object: ${key}`);
+            // Delete from database
+            await this.documentTransaction.deleteDocumentRecord(documentId);
         } catch (error) {
             console.error(`Error deleting object ${key}:`, error);
             throw error;
@@ -233,7 +305,7 @@ export class S3Service implements IS3Service {
             const response = await this.client.send(command);
 
             if (!response.Contents || response.Contents.length === 0) {
-                console.log(`No PDF found for claim ${claimId}`);
+                logMessageToFile(`No PDF found for claim ${claimId}`);
                 return null;
             }
 
@@ -306,26 +378,150 @@ export class S3Service implements IS3Service {
         }
     }
 
-    /**
-     * Private helper method to upload a buffer to S3
-     */
-    private async uploadToS3(
-        key: string,
-        buffer: Buffer,
-        contentType: string,
-        metadata: Record<string, string>
-    ): Promise<void> {
-        const command = new PutObjectCommand({
-            Bucket: this.bucketName,
-            Key: key,
-            Body: buffer,
-            ContentType: contentType,
-            Metadata: metadata,
-            // Storage class will change based on access pattern, see s3.tf for more information/lifecycle policy
-            StorageClass: "STANDARD",
+    async getUploadUrl(options: {
+        fileName: string;
+        fileType: string;
+        documentType: DocumentTypes;
+        claimId?: string;
+        userId?: string;
+        companyId: string;
+    }): Promise<GetUploadUrlResponse> {
+        const { fileName, fileType, documentType, claimId, userId, companyId } = options;
+
+        try {
+            // Generate unique document ID
+            const documentId = fileName;
+
+            // Determine the S3 key based on document type
+            // business-documents, claims, images
+            let key: string;
+            if (claimId) {
+                // For claim-specific documents
+                key = `claims/${companyId}/${claimId}/${documentId}`;
+            } else if (documentType === DocumentTypes.GENERAL_BUSINESS) {
+                // For general business documents
+                key = `business-documents/${companyId}/${documentId}`;
+            } else {
+                key = `images/${userId}/${documentId}`;
+            }
+
+            // Prepare metadata, we could remove this
+            const metadata: Record<string, string> = {
+                companyId,
+                documentType,
+                originalFilename: fileName,
+                uploadedAt: new Date().toISOString(),
+            };
+
+            if (claimId) {
+                metadata.claimId = claimId;
+            }
+
+            // Generate presigned URL
+            const uploadUrl = await this.getPresignedUploadUrl(key, fileType, PRESIGNED_URL_EXPIRY, metadata);
+
+            logMessageToFile(`Generated upload URL for: ${key}`);
+
+            return {
+                uploadUrl,
+                key,
+                documentId,
+                expiresIn: PRESIGNED_URL_EXPIRY,
+            };
+        } catch (error) {
+            logMessageToFile(`Error generating upload URL: ${error}`);
+            throw error;
+        }
+    }
+
+    async confirmUpload(options: {
+        key: string;
+        documentId: string;
+        documentType: DocumentTypes;
+        claimId?: string;
+        userId: string;
+        companyId: string;
+        category?: DocumentCategories;
+    }): Promise<UploadResult> {
+        const { key, documentId, claimId, userId, companyId, category } = options;
+
+        try {
+            // Verify the file exists in S3
+            const headCommand = new HeadObjectCommand({
+                Bucket: this.bucketName,
+                Key: key,
+            });
+
+            const metadata = await this.client.send(headCommand);
+
+            if (!metadata.ContentLength) {
+                throw new Error("File not found in S3");
+            }
+            // Generate download URL
+            const url = await this.getPresignedDownloadUrl(key);
+
+            logMessageToFile(`Upload confirmed for: ${key}`);
+
+            this.documentTransaction.upsertDocument({
+                key: key,
+                downloadUrl: url,
+                s3DocumentId: documentId,
+                userId: userId,
+                companyId: companyId,
+                claimId: claimId,
+                category: category ?? undefined,
+            });
+
+            return {
+                key,
+                url,
+                size: metadata.ContentLength,
+                hash: metadata.Metadata?.hash || "",
+            };
+        } catch (error) {
+            logMessageToFile(`Error confirming upload: ${error}`);
+            throw error;
+        }
+    }
+
+    async saveDocument(documentData: Partial<Document>): Promise<Document> {
+        const document = await this.db.manager.save(Document, documentData);
+        return document;
+    }
+
+    async uploadToS3(uploadUrl: string, file: File): Promise<void> {
+        const response = await fetch(uploadUrl, {
+            method: "PUT",
+            body: file,
+            headers: {
+                "Content-Type": file.type,
+            },
         });
 
-        await this.client.send(command);
+        if (!response.ok) {
+            throw new Error(`Upload failed: ${response.statusText}`);
+        }
+    }
+
+    async uploadBufferToS3(uploadUrl: string, file: Buffer): Promise<void> {
+        // const arrayBuffer = file.subarray(0, file.length).buffer;
+
+        const response = await fetch(uploadUrl, {
+            method: "PUT",
+            body: new Uint8Array(file),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Upload failed: ${response.statusText}`);
+        }
+    }
+
+    /**
+     * Helper method to get file extension from filename
+     */
+    private getFileExtension(fileName: string): string {
+        const lastDot = fileName.lastIndexOf(".");
+        return lastDot !== -1 ? fileName.substring(lastDot) : "";
     }
 
     /**

@@ -10,17 +10,15 @@ import { CreateLocationBulkRequest, CreateLocationRequest } from "@/types/locati
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { Dispatch, SetStateAction } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { Card } from "@/components/ui/card";
 import { IoAddCircleOutline } from "react-icons/io5";
 
 interface CompanyInfoProps {
-    progress: number;
-    setProgress: Dispatch<SetStateAction<number>>;
+    handleNext: () => void;
 }
 
-export default function Company({ progress, setProgress }: CompanyInfoProps) {
+export default function Company({ handleNext: incrementNext }: CompanyInfoProps) {
     const [companyError, setCompanyError] = useState<string | null>(null);
     const [locError, setLocError] = useState<string | null>(null);
 
@@ -72,13 +70,10 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
     const { isPending: isLocationPending, mutate: mutateLocation } = useMutation({
         mutationFn: (payload: CreateLocationBulkRequest) => createLocationBulk(payload),
         onSuccess: () => {
-            setProgress(progress + 1);
+            incrementNext();
         },
-        onError: (error: Error) => {
-            console.error("Error creating locations:", error);
-            if (error.message.includes("postalCode")) {
-                setLocError("Error creating locations. Please check postal code details and try again.");
-            }
+        onError: (_error: Error) => {
+            setLocError("Error creating locations. Check required fields and try again");
         },
     });
 
@@ -175,7 +170,6 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
                         >
                             <SelectTrigger
                                 id="businessType"
-                                //className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
                                 style={{
                                     height: "45px",
                                     width: "100%",
@@ -213,13 +207,12 @@ export default function Company({ progress, setProgress }: CompanyInfoProps) {
                 </div>
                 <div className="flex flex-col gap-[8px] w-full mb-[30px]">
                     <Label htmlFor="owner" className="text-[16px]">
-                        Secondary Email (Optional) <span className="text-red-500 text-[16px]">*</span>
+                        Secondary Email (Optional)
                     </Label>
                     <Input
                         id="owner"
                         name="owner"
                         type="text"
-                        required
                         className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
                         onChange={(e) => setCompanyPayload({ ...companyPayload, alternateEmail: e.target.value })}
                     />

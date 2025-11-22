@@ -43,7 +43,7 @@ export const CreateCompanyDTOSchema = z.object({
     name: z.string().min(1),
     businessOwnerFullName: z.string().nonempty(),
     companyType: z.enum(CompanyTypesEnum),
-    alternateEmail: z.email().optional(),
+    alternateEmail: z.preprocess((val) => (val === "" ? undefined : val), z.email().optional()),
 });
 
 export const CreateCompanyResponseSchema = CompanySchema;
