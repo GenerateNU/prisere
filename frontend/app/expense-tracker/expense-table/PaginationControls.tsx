@@ -19,7 +19,9 @@ export default function PaginationControls({
         <Pagination>
             <PaginationContent>
                 <PaginationItem>
-                    <PaginationPrevious className="text-sm" onClick={() => onPageChange(Math.max(0, page - 1))} />
+                    <PaginationPrevious 
+                    className="text-sm" 
+                    onClick={() => onPageChange(Math.max(0, page - 1))} />
                 </PaginationItem>
                 <PaginationItem>
                     <PaginationNext
