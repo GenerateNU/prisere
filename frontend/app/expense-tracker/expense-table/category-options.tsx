@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 
 interface CategoryLabelProps {
     category: string;
-    updateCategory: (category: string, lineItems: string[], removeCategory: boolean) => void;
+    updateCategory?: (category: string, lineItems: string[], removeCategory: boolean) => void;
     lineItemIds: string[];
     editableTags: boolean;
     hasLineItems?: boolean;
@@ -53,6 +53,11 @@ export default function CategoryLabel({
     );
 
     function AddCategoryButton({ disabled }: { disabled: boolean }) {
+
+        if (!updateCategory) {
+            throw new Error("Cannot add categories for a readonly tag")
+        }
+
         const [searchValue, setSearchValue] = useState("");
         return (
             <Popover>
@@ -88,11 +93,11 @@ export default function CategoryLabel({
     }
 }
 
-function CategoryBadge({ category, allCategories, updateCategory, lineItemIds, editableTags }: CategoryBadgeProps) {
+export function CategoryBadge({ category, allCategories, updateCategory, lineItemIds, editableTags }: CategoryBadgeProps) {
     const [searchValue, setSearchValue] = useState("");
     const displayCategory = category.length > 20 ? `${category.substring(0, 20)}...` : category;
 
-    if (!editableTags) {
+    if (!editableTags || !updateCategory) {
         return (
             <span
                 className="px-3 py-1 mr-1 mb-1 rounded-md text-sm font-semibold inline-block"

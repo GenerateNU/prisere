@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { FilteredPurchases } from "@/types/purchase";
+import { FilteredPurchases, PurchaseWithLineItems } from "@/types/purchase";
 import { FileUp, Filter, Printer } from "lucide-react";
 import { useState } from "react";
 import { Filters } from "./filters";
@@ -12,6 +12,7 @@ import { FilterDisplay } from "./filter-display-bar";
 import TableContent from "./table-content";
 import { getClientAuthToken, getClient, authHeader, authWrapper } from "@/api/client";
 import { useQuery } from "@tanstack/react-query";
+import ExpenseSideView from "./side-view";
 
 interface ExpenseTableConfig {
     title: string;
@@ -22,6 +23,7 @@ interface ExpenseTableConfig {
 export default function ExpenseTable({ title, editableTags, rowOption }: ExpenseTableConfig) {
     const [filters, setFilters] = useState<FilteredPurchases>({ pageNumber: 0, resultsPerPage: 5 });
     const [showFilters, setShowFilters] = useState(false);
+    const [selectedPurchase, setSelectedPurchase] = useState<PurchaseWithLineItems | null>(null);
 
     const updateFilter = (field: string) => (value: unknown) => {
         setFilters((prev) => ({ ...prev, [field]: value }));
@@ -104,7 +106,14 @@ export default function ExpenseTable({ title, editableTags, rowOption }: Expense
                     setSort={setSort}
                     rowOption={rowOption}
                     editableTags={editableTags}
+                    onRowClick={(purchase) => setSelectedPurchase(purchase)}
                 />
+                <ExpenseSideView 
+                 purchase={selectedPurchase} 
+                 open={!!selectedPurchase}
+                 onOpenChange={() => setSelectedPurchase(null)}
+                />
+
             </CardContent>
             <CardFooter>
                 <PaginationControls

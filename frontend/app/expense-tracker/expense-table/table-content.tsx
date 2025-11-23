@@ -18,17 +18,20 @@ export default function TableContent({
     setSort,
     rowOption,
     editableTags,
+    onRowClick,
 }: {
     purchases: UseQueryResult<Purchases | undefined>;
     filters: FilteredPurchases;
     setSort: (column: SortByColumn, sortOrder?: "ASC" | "DESC") => void;
     rowOption: "collapsible" | "checkbox";
-    editableTags: boolean;
+    editableTags: boolean,
+    onRowClick?: (purchase: any) => void;
 }) {
     const standardizedData = useMemo(
         () =>
             purchases.data?.map((purchase) => {
                 return {
+                    originalPurchase: purchase,
                     vendor: purchase.vendor || "Unknown Vendor",
                     amount: purchase.totalAmountCents,
                     date: new Date(purchase.dateCreated),
@@ -84,6 +87,7 @@ export default function TableContent({
             row.lineItems?.map((item) => ({
                 ...item,
                 vendor: row.vendor, // inherit from parent
+                originalPurchase: row.originalPurchase
             })) ?? [],
         enableSubRowSelection(row) {
             return row.original.lineItems.length > 0;
@@ -207,5 +211,5 @@ export default function TableContent({
 
     if (purchases.error) return <div>Error loading expenses</div>;
 
-    return <Table table={table} />;
+    return <Table table={table} onRowClick={(row) => onRowClick?.(row.originalPurchase)}/>;
 }

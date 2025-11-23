@@ -9,7 +9,7 @@ interface DisasterLabelProps {
     editableTags: boolean;
 }
 
-const DISASTER_TYPE_LABELS = new Map<DisasterType, string>([
+export const DISASTER_TYPE_LABELS = new Map<DisasterType, string>([
     ["typical", "Non-Disaster"],
     ["extraneous", "Disaster"],
     ["suggested extraneous", "Suggested: Disaster"],
@@ -17,7 +17,7 @@ const DISASTER_TYPE_LABELS = new Map<DisasterType, string>([
     ["pending", "Pending"],
 ]);
 
-const DISASTER_TYPE_COLORS = new Map([
+export const DISASTER_TYPE_COLORS = new Map([
     ["typical", "bg-teal-100 text-teal-800 border border-teal-200"],
     ["extraneous", "bg-pink-100 text-pink-800 border border-pink-200"],
     ["pending", "bg-grey-100 text-grey-800 border border-grey-200"],
