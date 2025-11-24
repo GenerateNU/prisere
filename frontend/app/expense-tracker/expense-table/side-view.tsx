@@ -3,10 +3,15 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { getPurchaseTypeString, getCategoriesString } from "../utility-functions";
 import { CategoryBadge } from "./category-options";
-import { DisasterType } from "@/types/purchase";
-import { DISASTER_TYPE_COLORS, DISASTER_TYPE_LABELS } from "./disaster-options";
+import { DisasterType, PurchaseWithLineItems } from "@/types/purchase";
 import SideViewTable from "./side-view-table";
-import { SideViewProps } from "@/types/Utils";
+import { DISASTER_TYPE_COLORS, DISASTER_TYPE_LABELS } from "@/types/disaster";
+
+interface SideViewProps {
+    purchase: PurchaseWithLineItems | null;
+    open: boolean;
+    onOpenChange: () => void;
+}
 
 export default function ExpenseSideView({ purchase, open, onOpenChange }: SideViewProps) {
     if (!purchase) return null;
