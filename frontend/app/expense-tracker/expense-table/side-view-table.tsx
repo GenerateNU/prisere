@@ -36,7 +36,12 @@ export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineI
                 accessorKey: "description",
                 cell: ({ getValue }) => {
                     const value = getValue() as string | null;
-                    return <div className="flex items-center min-h-[2.0rem]"> {value && value.trim().length > 0 ? value : "Unknown"} </div>
+                    return (
+                        <div className="flex items-center min-h-[2.0rem]">
+                            {" "}
+                            {value && value.trim().length > 0 ? value : "Unknown"}{" "}
+                        </div>
+                    );
                 },
             },
             {

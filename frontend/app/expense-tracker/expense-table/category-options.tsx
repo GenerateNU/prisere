@@ -22,36 +22,23 @@ interface CreateCategoryProps {
     lineItemIds: string[];
 }
 
-export default function CategoryLabel({
-    category,
-    updateCategory,
-    lineItemIds,
-    editableTags,
-}: CategoryLabelProps) {
+export default function CategoryLabel({ category, updateCategory, lineItemIds, editableTags }: CategoryLabelProps) {
     const categories = category.length > 0 ? category.split(",") : [];
 
     if (editableTags && updateCategory && categories.length === 0) {
         return (
-            <div
-                className="inline-flex flex-wrap items-center gap-1"
-                onClick={(e) => e.stopPropagation()}
-            >
+            <div className="inline-flex flex-wrap items-center gap-1" onClick={(e) => e.stopPropagation()}>
                 {lineItemIds.length > 0 ? (
                     <AddCategoryButton />
                 ) : (
-                    <span className="text-muted-foreground text-xs italic">
-                No line items to categorize
-            </span>
+                    <span className="text-muted-foreground text-xs italic">No line items to categorize</span>
                 )}
             </div>
         );
     }
 
     return (
-        <div
-            className="inline-flex flex-wrap items-center gap-1"
-            onClick={(e) => e.stopPropagation()}
-        >
+        <div className="inline-flex flex-wrap items-center gap-1" onClick={(e) => e.stopPropagation()}>
             {categories.slice(0, 3).map((cat, index) => (
                 <CategoryBadge
                     key={index}
@@ -71,9 +58,7 @@ export default function CategoryLabel({
         return (
             <Popover>
                 <PopoverTrigger asChild>
-                    <button className="text-gray-400 text-sm hover:text-gray-600 underline">
-                        + Add category
-                    </button>
+                    <button className="text-gray-400 text-sm hover:text-gray-600 underline">+ Add category</button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[200px] p-4">
                     <div className="space-y-2">
