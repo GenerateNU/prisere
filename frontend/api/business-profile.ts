@@ -1,7 +1,7 @@
-// In your api/business-profile.ts
 import { DocumentResponse, PresignedUploadResponse, DocumentCategories, DocumentTypes } from "@/types/documents";
 import { authHeader, authWrapper, getClient } from "./client";
 import { getCompany } from "./company";
+import { gzip } from "pako";
 
 export const getAllDocuments = async (): Promise<DocumentResponse[]> => {
     const req = async (token: string): Promise<DocumentResponse[]> => {
@@ -121,11 +121,15 @@ export async function deleteBusinessDocument(key: string, documentId: string): P
 }
 
 export async function uploadToS3(uploadUrl: string, file: File): Promise<void> {
+    const arrayBuffer = await file.arrayBuffer();
+    const compressed = gzip(new Uint8Array(arrayBuffer));
+    
     const response = await fetch(uploadUrl, {
         method: "PUT",
-        body: file,
+        body: compressed,
         headers: {
             "Content-Type": file.type,
+            "Content-Encoding": "gzip",
         },
     });
 
