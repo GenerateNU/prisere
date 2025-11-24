@@ -79,7 +79,6 @@ export default function Onboarding({ email }: OnboardingProps) {
             handleNext={() => router.push("/")}
             title={"You're all set!"}
             description="You can now start using Prisere."
-            image={<Card className="h-[220px] w-[362px]"></Card>}
             buttonText="Go to Dashboard"
         />,
     ];
