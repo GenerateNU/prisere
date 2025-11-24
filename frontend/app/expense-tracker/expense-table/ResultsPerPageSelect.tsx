@@ -8,14 +8,19 @@ export default function ResultsPerPageSelect({
     onValueChange: (value: number) => void;
 }) {
     const pageSizeOptions = [5, 10, 15, 20];
+
     return (
-        <div className="flex items-center gap-2">
-            <p className="text-sm">Results per page</p>
+        <div className="flex items-center gap-2 text-sm">
+            <span className="text-muted-foreground whitespace-nowrap">Rows per page:</span>
             <Select value={value.toString()} onValueChange={(val) => onValueChange(Number(val))}>
-                <SelectTrigger>
+                <SelectTrigger
+                    className="w-auto h-auto px-1 py-0 border-none bg-transparent shadow-none
+                    focus-visible:ring-0 focus-visible:ring-offset-0"
+                >
                     <SelectValue placeholder={value.toString()} />
                 </SelectTrigger>
-                <SelectContent>
+
+                <SelectContent className="min-w-[3rem]">
                     {pageSizeOptions.map((i) => (
                         <SelectItem key={i} value={i.toString()}>
                             {i}

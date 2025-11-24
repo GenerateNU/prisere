@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { PurchaseLineItemType } from "../../entities/PurchaseLineItem";
 import { GetPurchaseLineItemResponseSchema } from "../purchase-line-item/types";
+import { Purchase } from "../../entities/Purchase";
 
 export const CreateOrChangePurchaseRequestSchema = z.object({
     items: z
@@ -95,7 +96,10 @@ export const GetCompanyPurchasesByDateDTOSchema = z.object({
     endDate: z.iso.datetime(),
 });
 
-export const GetCompanyPurchasesResponseSchema = z.array(GetPurchaseWithLineItems);
+export const GetCompanyPurchasesResponseSchema = z.object({
+    purchases: z.array(GetPurchaseWithLineItems),
+    numPurchases: z.number().nonnegative(),
+});
 
 export const GetCompanyPurchasesSummationResponseSchema = z.object({
     total: z.number().nonnegative(),
@@ -124,3 +128,11 @@ export type CreateOrChangePurchaseDTO = z.infer<typeof CreateOrChangePurchaseDTO
 export type GetCompanyPurchasesDTO = z.infer<typeof GetCompanyPurchasesDTOSchema>;
 export type GetCompanyPurchasesByDateDTO = z.infer<typeof GetCompanyPurchasesByDateDTOSchema>;
 export type GetPurchaseDTO = z.infer<typeof GetPurchaseDTOSchema>;
+
+/**
+ * Types for the transaction layer
+ */
+export type PurchasesWithCount = {
+    purchases: Purchase[];
+    numPurchases: number;
+};

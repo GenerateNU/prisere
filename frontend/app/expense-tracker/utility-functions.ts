@@ -16,7 +16,7 @@ export function getPurchaseTypeString(lineItems: { type?: string | null }[]): Di
     } else if (types.includes("extraneous")) {
         return "extraneous";
     } else if (types.includes("typical")) {
-        return "extraneous";
+        return "typical";
     } else if (types.includes("suggested extraneous")) {
         return "suggested extraneous";
     } else if (types.includes("suggested typical")) {
