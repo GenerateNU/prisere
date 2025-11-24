@@ -9,7 +9,6 @@ interface CategoryLabelProps {
     updateCategory?: (category: string, lineItems: string[], removeCategory: boolean) => void;
     lineItemIds: string[];
     editableTags: boolean;
-    hasLineItems?: boolean;
 }
 
 interface CategoryBadgeProps extends CategoryLabelProps {
@@ -28,16 +27,31 @@ export default function CategoryLabel({
     updateCategory,
     lineItemIds,
     editableTags,
-    hasLineItems = true,
 }: CategoryLabelProps) {
     const categories = category.length > 0 ? category.split(",") : [];
 
-    if (editableTags && categories.length === 0) {
-        return <AddCategoryButton disabled={!hasLineItems} />;
+    if (editableTags && updateCategory && categories.length === 0) {
+        return (
+            <div
+                className="inline-flex flex-wrap items-center gap-1"
+                onClick={(e) => e.stopPropagation()}
+            >
+                {lineItemIds.length > 0 ? (
+                    <AddCategoryButton />
+                ) : (
+                    <span className="text-muted-foreground text-xs italic">
+                No line items to categorize
+            </span>
+                )}
+            </div>
+        );
     }
 
     return (
-        <>
+        <div
+            className="inline-flex flex-wrap items-center gap-1"
+            onClick={(e) => e.stopPropagation()}
+        >
             {categories.slice(0, 3).map((cat, index) => (
                 <CategoryBadge
                     key={index}
@@ -49,19 +63,15 @@ export default function CategoryLabel({
                 />
             ))}
             {categories.length > 3 && <span className="px-3 py-1 text-sm">...</span>}
-        </>
+        </div>
     );
 
-    function AddCategoryButton({ disabled }: { disabled: boolean }) {
-        if (!updateCategory) {
-            throw new Error("Cannot add categories for a readonly tag");
-        }
-
+    function AddCategoryButton() {
         const [searchValue, setSearchValue] = useState("");
         return (
             <Popover>
                 <PopoverTrigger asChild>
-                    <button className="text-gray-400 text-sm hover:text-gray-600 underline" disabled={disabled}>
+                    <button className="text-gray-400 text-sm hover:text-gray-600 underline">
                         + Add category
                     </button>
                 </PopoverTrigger>
@@ -82,7 +92,7 @@ export default function CategoryLabel({
                         <Create
                             searchValue={searchValue}
                             setSearchValue={setSearchValue}
-                            updateCategory={updateCategory}
+                            updateCategory={updateCategory!}
                             lineItemIds={lineItemIds}
                         />
                     </div>

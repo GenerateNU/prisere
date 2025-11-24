@@ -36,7 +36,7 @@ export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineI
                 accessorKey: "description",
                 cell: ({ getValue }) => {
                     const value = getValue() as string | null;
-                    return value && value.trim().length > 0 ? value : "Unknown";
+                    return <div className="flex items-center min-h-[2.0rem]"> {value && value.trim().length > 0 ? value : "Unknown"} </div>
                 },
             },
             {
@@ -108,17 +108,7 @@ export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineI
 }
 
 function SortableHeader({ column, label }: { column: Column<PurchaseLineItem>; label: string }) {
-    const handleSort = () => {
-        const currentSort = column.getIsSorted();
-        if (currentSort === "asc") {
-            column.toggleSorting(true);
-        } else if (currentSort === "desc") {
-            column.clearSorting(); //
-        } else {
-            column.toggleSorting(false);
-        }
-    };
-
+    const handleSort = () => column.toggleSorting();
     return (
         <button onClick={handleSort} className="flex items-center gap-2 hover:text-foreground">
             {column.getIsSorted() === "asc" && <ArrowUp className="h-4 w-4" />}

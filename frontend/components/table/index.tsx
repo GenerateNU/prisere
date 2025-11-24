@@ -22,7 +22,10 @@ export function Table<T>({ table, onRowClick }: { table: ReactTable<T>; onRowCli
                     <TableRow
                         key={row.id}
                         onClick={() => onRowClick?.(row.original)}
-                        className={onRowClick ? "cursor-pointer hover:bg-muted/50" : ""}
+                        className={[
+                            onRowClick ? "cursor-pointer hover:bg-muted/50" : "",
+                            row.depth > 0 ? "bg-muted/100" : "",
+                        ].join(" ")}
                     >
                         {row.getVisibleCells().map((cell) => (
                             <TableCell key={cell.id}>

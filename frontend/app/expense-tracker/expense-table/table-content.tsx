@@ -8,7 +8,7 @@ import { updateCategory, updateType } from "../../../api/purchase";
 import CategoryLabel from "./category-options";
 import DisasterLabel from "./disaster-options";
 import { SortByColumn } from "../../../types/purchase";
-import { getCategoriesString, getLineItemDescriptions, getPurchaseTypeString } from "../utility-functions";
+import { getCategoriesString, getPurchaseTypeString } from "../utility-functions";
 import { SortableHeader } from "./sortable-header";
 import { CollapsibleArrow } from "@/components/table/collapsibleArrow";
 
@@ -35,12 +35,11 @@ export default function TableContent({
                     vendor: purchase.vendor || "Unknown Vendor",
                     amount: purchase.totalAmountCents,
                     date: new Date(purchase.dateCreated),
-                    description: getLineItemDescriptions(purchase.lineItems),
                     category: getCategoriesString(purchase.lineItems),
                     disasterRelated: getPurchaseTypeString(purchase.lineItems),
                     lineItemIds: purchase.lineItems.map((li) => li.id),
                     lineItems: purchase.lineItems.map((lineItem, index) => ({
-                        description: lineItem.description ?? "",
+                        vendor: lineItem.description ?? "Unknown Item",
                         amount: lineItem.amountCents,
                         category: lineItem.category ?? "",
                         date: new Date(lineItem.dateCreated),
@@ -86,7 +85,6 @@ export default function TableContent({
         getSubRows: (row) =>
             row.lineItems?.map((item) => ({
                 ...item,
-                vendor: row.vendor, // inherit from parent
                 originalPurchase: row.originalPurchase,
             })) ?? [],
         enableSubRowSelection(row) {
@@ -102,7 +100,7 @@ export default function TableContent({
                     const cellVal = cell.getValue();
                     const displayVendor = cellVal.length > 20 ? `${cellVal.substring(0, 20)}...` : cellVal;
                     return (
-                        <div className={cn("flex items-center", row.depth > 0 && "pl-8")}>
+                        <div className={cn("flex items-center min-h-[2.25rem]", row.depth > 0 && "pl-8")}>
                             {rowOption === "collapsible" ? (
                                 row.getCanExpand() ? (
                                     <CollapsibleArrow
@@ -120,20 +118,6 @@ export default function TableContent({
                                 />
                             )}
                             <span className="align-middle">{displayVendor}</span>
-                        </div>
-                    );
-                },
-            },
-            {
-                id: "description",
-                header: () => "Description",
-                accessorFn: (row) => row.description,
-                cell: ({ row, cell }) => {
-                    const cellVal = cell.getValue();
-                    const displayMerchant = cellVal.length > 20 ? `${cellVal.substring(0, 20)}...` : cellVal;
-                    return (
-                        <div className={cn("flex items-center", row.depth > 0 && "pl-8")}>
-                            <span className="align-middle">{displayMerchant.length > 0 ? displayMerchant : ""}</span>
                         </div>
                     );
                 },
@@ -159,7 +143,6 @@ export default function TableContent({
                             }}
                             lineItemIds={row.lineItemIds}
                             editableTags={editableTags}
-                            hasLineItems={row.lineItems.length > 0}
                         />
                     );
                 },
@@ -195,5 +178,6 @@ export default function TableContent({
 
     if (purchases.error) return <div>Error loading expenses</div>;
 
-    return <Table table={table} onRowClick={(row) => onRowClick?.(row.originalPurchase)} />;
+    return <Table table={table}
+                  onRowClick={(row) => onRowClick?.(row.originalPurchase)} />;
 }

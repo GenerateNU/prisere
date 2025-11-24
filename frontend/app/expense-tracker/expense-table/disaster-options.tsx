@@ -17,6 +17,11 @@ export const DISASTER_TYPE_LABELS = new Map<DisasterType, string>([
     ["pending", "Pending"],
 ]);
 
+export const DISASTER_TYPE_LABELS_TO_CHANGE = new Map<DisasterType, string>([
+    ["typical", "Non-Disaster"],
+    ["extraneous", "Disaster"],
+]);
+
 export const DISASTER_TYPE_COLORS = new Map([
     ["typical", "bg-teal-100 text-teal-800 border border-teal-200"],
     ["extraneous", "bg-pink-100 text-pink-800 border border-pink-200"],
@@ -24,6 +29,7 @@ export const DISASTER_TYPE_COLORS = new Map([
     ["suggested extraneous", "bg-yellow-100 text-yellow-800 border border-yellow-200"],
     ["suggested typical", "bg-blue-100 text-blue-800 border border-blue-200"],
 ]);
+
 
 export default function DisasterLabel({
     disasterType,
@@ -42,6 +48,7 @@ export default function DisasterLabel({
     }
 
     return (
+        <div onClick={(e) => e.stopPropagation()}>
         <Popover>
             <PopoverTrigger asChild>
                 <span
@@ -61,7 +68,7 @@ export default function DisasterLabel({
                         <div className="flex-1 text-sm text-gray-500 py-3">Select an option</div>
                     </div>
                     <CommandGroup>
-                        {Array.from(DISASTER_TYPE_LABELS.keys()).map((type) => (
+                        {Array.from(DISASTER_TYPE_LABELS_TO_CHANGE.keys()).map((type) => (
                             <CommandItem key={type} onSelect={() => updateDisasterType(type, lineItemIds)}>
                                 <span
                                     className={`px-3 py-1 rounded-md text-xs font-semibold ${DISASTER_TYPE_COLORS.get(type)}`}
@@ -74,5 +81,6 @@ export default function DisasterLabel({
                 </Command>
             </PopoverContent>
         </Popover>
+        </div>
     );
 }
