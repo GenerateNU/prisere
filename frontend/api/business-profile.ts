@@ -1,3 +1,4 @@
+"use server";
 import { DocumentResponse, PresignedUploadResponse, DocumentCategories, DocumentTypes } from "@/types/documents";
 import { authHeader, authWrapper, getClient } from "./client";
 import { getCompany } from "./company";
