@@ -123,7 +123,7 @@ export async function deleteBusinessDocument(key: string, documentId: string): P
 export async function uploadToS3(uploadUrl: string, file: File): Promise<void> {
     const arrayBuffer = await file.arrayBuffer();
     const compressed = gzip(new Uint8Array(arrayBuffer));
-    
+
     const response = await fetch(uploadUrl, {
         method: "PUT",
         body: compressed,

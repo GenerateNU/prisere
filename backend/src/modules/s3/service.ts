@@ -129,7 +129,7 @@ export class S3Service implements IS3Service {
                 Key: key,
                 ContentType: contentType,
                 Metadata: metadata,
-                ContentEncoding: 'gzip',
+                ContentEncoding: "gzip",
             });
 
             const url = await getSignedUrl(this.client, command, { expiresIn });
@@ -495,7 +495,7 @@ export class S3Service implements IS3Service {
 
         const headers: HeadersInit = {
             "Content-Type": file.type,
-            "Content-Encoding": "gzip"
+            "Content-Encoding": "gzip",
         };
         const response = await fetch(uploadUrl, {
             method: "PUT",
@@ -511,7 +511,7 @@ export class S3Service implements IS3Service {
     async uploadBufferToS3(uploadUrl: string, file: Buffer): Promise<void> {
         const body = Bun.gzipSync(new Uint8Array(file));
         const headers: HeadersInit = {
-            'Content-Encoding': 'gzip',
+            "Content-Encoding": "gzip",
         };
 
         const response = await fetch(uploadUrl, {
@@ -522,9 +522,7 @@ export class S3Service implements IS3Service {
 
         if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(
-                `Upload failed: ${response.status} ${response.statusText}. ${errorText}`
-            );
+            throw new Error(`Upload failed: ${response.status} ${response.statusText}. ${errorText}`);
         }
     }
 }
