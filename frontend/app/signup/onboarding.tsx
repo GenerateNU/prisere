@@ -7,7 +7,6 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Quickbooks from "./quickbooks";
 import InfoPage from "./infoPage";
-import { Card } from "@/components/ui/card";
 import Image from "next/image";
 
 interface OnboardingProps {
