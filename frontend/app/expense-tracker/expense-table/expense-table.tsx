@@ -57,8 +57,6 @@ export default function ExpenseTable({ title, editableTags, rowOption }: Expense
 
     const categories = useFetchAllCategories();
 
-    const isLastPage = (purchases.data?.length ?? 0) < filters.resultsPerPage;
-
     return (
         <Card>
             <CardHeader>
@@ -116,12 +114,20 @@ export default function ExpenseTable({ title, editableTags, rowOption }: Expense
 
             </CardContent>
             <CardFooter>
-                <PaginationControls
-                    page={filters.pageNumber}
-                    onPageChange={updateFilter("pageNumber")}
-                    isLastPage={isLastPage}
-                />
-                <ResultsPerPageSelect value={filters.resultsPerPage} onValueChange={updateFilter("resultsPerPage")} />
+                <div className="w-full border-t px-4 py-2 flex justify-end">
+                    <div className="flex items-center gap-6 shrink-0">
+                        <ResultsPerPageSelect
+                            value={filters.resultsPerPage}
+                            onValueChange={updateFilter("resultsPerPage")}
+                        />
+                        <PaginationControls
+                            page={filters.pageNumber}
+                            onPageChange={updateFilter("pageNumber")}
+                            resultsPerPage={filters.resultsPerPage}
+                            totalNumPurchases={purchases.data?.numPurchases}
+                        />
+                    </div>
+                </div>
             </CardFooter>
         </Card>
     );

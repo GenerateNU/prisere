@@ -61,25 +61,28 @@ export class PurchaseService implements IPurchaseService {
         async (payload: GetCompanyPurchasesDTO): Promise<GetCompanyPurchasesResponse> => {
             const qbPurchases = await this.PurchaseTransaction.getPurchasesForCompany(payload);
 
-            return qbPurchases.map((qbPurchase) => ({
-                companyId: qbPurchase.companyId,
-                dateCreated: qbPurchase.dateCreated.toUTCString(),
-                id: qbPurchase.id,
-                isRefund: qbPurchase.isRefund,
-                quickBooksId: qbPurchase.quickBooksId,
-                vendor: qbPurchase.vendor ? qbPurchase.vendor : undefined,
-                totalAmountCents: Math.round(qbPurchase.totalAmountCents),
-                quickbooksDateCreated: qbPurchase.quickbooksDateCreated?.toUTCString(),
-                lastUpdated: qbPurchase.lastUpdated.toUTCString(),
-                lineItems: qbPurchase.lineItems
-                    ? qbPurchase.lineItems.map((item) => ({
-                          ...item,
-                          dateCreated: item.dateCreated.toISOString(),
-                          lastUpdated: item.lastUpdated.toISOString(),
-                          quickbooksDateCreated: item.quickbooksDateCreated?.toISOString(),
-                      }))
-                    : [],
-            }));
+            return {
+                purchases: qbPurchases.purchases.map((qbPurchase) => ({
+                    companyId: qbPurchase.companyId,
+                    dateCreated: qbPurchase.dateCreated.toUTCString(),
+                    id: qbPurchase.id,
+                    isRefund: qbPurchase.isRefund,
+                    quickBooksId: qbPurchase.quickBooksId,
+                    vendor: qbPurchase.vendor ? qbPurchase.vendor : undefined,
+                    totalAmountCents: Math.round(qbPurchase.totalAmountCents),
+                    quickbooksDateCreated: qbPurchase.quickbooksDateCreated?.toUTCString(),
+                    lastUpdated: qbPurchase.lastUpdated.toUTCString(),
+                    lineItems: qbPurchase.lineItems
+                        ? qbPurchase.lineItems.map((item) => ({
+                            ...item,
+                            dateCreated: item.dateCreated.toISOString(),
+                            lastUpdated: item.lastUpdated.toISOString(),
+                            quickbooksDateCreated: item.quickbooksDateCreated?.toISOString(),
+                        }))
+                        : [],
+                })),
+                numPurchases: qbPurchases.numPurchases,
+            }
         }
     );
 

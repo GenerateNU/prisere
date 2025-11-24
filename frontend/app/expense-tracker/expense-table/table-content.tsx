@@ -1,6 +1,6 @@
 import { Table } from "@/components/table";
 import { cn } from "@/lib/utils";
-import { DisasterType, FilteredPurchases, Purchases } from "@/types/purchase";
+import { DisasterType, FilteredPurchases, Purchases, PurchasesWithCount } from "@/types/purchase";
 import { useMutation, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/react-table";
 import { useMemo } from "react";
@@ -20,7 +20,7 @@ export default function TableContent({
     editableTags,
     onRowClick,
 }: {
-    purchases: UseQueryResult<Purchases | undefined>;
+    purchases: UseQueryResult<PurchasesWithCount | undefined>;
     filters: FilteredPurchases;
     setSort: (column: SortByColumn, sortOrder?: "ASC" | "DESC") => void;
     rowOption: "collapsible" | "checkbox";
@@ -29,7 +29,7 @@ export default function TableContent({
 }) {
     const standardizedData = useMemo(
         () =>
-            purchases.data?.map((purchase) => {
+            purchases.data?.purchases.map((purchase) => {
                 return {
                     originalPurchase: purchase,
                     vendor: purchase.vendor || "Unknown Vendor",
@@ -100,14 +100,15 @@ export default function TableContent({
                 accessorFn: (row) => row.vendor,
                 cell: ({ row, cell }) => {
                     const cellVal = cell.getValue();
-                    const displayMerchant = cellVal.length > 20 ? `${cellVal.substring(0, 20)}...` : cellVal;
+                    const displayVendor = cellVal.length > 20 ? `${cellVal.substring(0, 20)}...` : cellVal;
                     return (
                         <div className={cn("flex items-center", row.depth > 0 && "pl-8")}>
                             {rowOption === "collapsible" ? (
                                 row.getCanExpand() ? (
                                     <CollapsibleArrow
                                         onClick={() => row.toggleExpanded()}
-                                        isOpen={row.getIsExpanded()}
+                                        isOpen={row
+                                            .getIsExpanded()}
                                     />
                                 ) : null
                             ) : (
@@ -119,7 +120,7 @@ export default function TableContent({
                                     }}
                                 />
                             )}
-                            <span className="align-middle">{displayMerchant}</span>
+                            <span className="align-middle">{displayVendor}</span>
                         </div>
                     );
                 },
@@ -133,22 +134,6 @@ export default function TableContent({
                     const displayMerchant = cellVal.length > 20 ? `${cellVal.substring(0, 20)}...` : cellVal;
                     return (
                         <div className={cn("flex items-center", row.depth > 0 && "pl-8")}>
-                            {rowOption === "collapsible" ? (
-                                row.getCanExpand() ? (
-                                    <CollapsibleArrow
-                                        onClick={() => row.toggleExpanded()}
-                                        isOpen={row.getIsExpanded()}
-                                    />
-                                ) : null
-                            ) : (
-                                <input
-                                    type="checkbox"
-                                    className="w-4 h-4 cursor-pointer mr-2 accent-black align-middle"
-                                    onChange={(e) => {
-                                        e.stopPropagation();
-                                    }}
-                                />
-                            )}
                             <span className="align-middle">{displayMerchant.length > 0 ? displayMerchant : ""}</span>
                         </div>
                     );

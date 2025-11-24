@@ -18,6 +18,14 @@ export default function LineItemsTable({
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  if (lineItems.length === 0) {
+      return (
+        <div className="text-muted-foreground text-sm italic bg-muted/30 py-6 px-4 rounded-lg border border-muted">
+            No line items found for this expense.
+        </div>
+    );
+  }
+
   const table = useReactTable({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -27,11 +35,15 @@ export default function LineItemsTable({
     onSortingChange: setSorting,
     onPaginationChange: setPagination,
     columns: [
-      {
-        id: "description",
-        header: "Item",
-        accessorKey: "description",
-      },
+        {
+            id: "description",
+            header: "Item",
+            accessorKey: "description",
+            cell: ({ getValue }) => {
+                const value = getValue() as string | null;
+                return value && value.trim().length > 0 ? value : "Unknown";
+            },
+        },
       {
         id: "amount",
         header: ({ column }) => <SortableHeader column={column} label="Amount" />,
@@ -44,7 +56,7 @@ export default function LineItemsTable({
         header: "Category",
         accessorKey: "category",
         cell: (ctx) => <CategoryLabel 
-            category={ctx.getValue() as string}
+            category={ctx.getValue() ? ctx.getValue() as string : ""}
             lineItemIds={[]} 
             editableTags={false} />,
       },
@@ -64,23 +76,31 @@ export default function LineItemsTable({
     ],
   });
 
+    const pageIndex = table.getState().pagination.pageIndex;
+    const pageSize = table.getState().pagination.pageSize;
+    const totalRows = table.getPrePaginationRowModel().rows.length;
+
   return (
-    <div>
-      <Table table={table} />
-      <div className="flex items-center justify-between mt-[0.2%] border-t">
-        <PaginationControls 
-          onPageChange={(newPage) => table.setPageIndex(newPage)}
-          page={table.getState().pagination.pageIndex}
-          isLastPage={!table.getCanNextPage()}
-        />
-        <ResultsPerPageSelect 
-          value={pagination.pageSize}
-          onValueChange={(newSize) => 
-            setPagination({ pageIndex: 0, pageSize: newSize })
-          }
-        />
+      <div>
+          <Table table={table} />
+          <div className="flex w-full justify-end mt-[0.2%] border-t px-4 py-2">
+              <div className="flex items-center gap-4 shrink-0">
+                  <ResultsPerPageSelect
+                      value={pagination.pageSize}
+                      onValueChange={(newSize) =>
+                          setPagination({ pageIndex: 0, pageSize: newSize })
+                      }
+                  />
+                  <PaginationControls
+                      page={pageIndex}
+                      resultsPerPage={pageSize}
+                      totalNumPurchases={totalRows}
+                      onPageChange={(newPage) => table.setPageIndex(newPage)}
+                  />
+              </div>
+          </div>
       </div>
-    </div>
+
   );
 }
 
