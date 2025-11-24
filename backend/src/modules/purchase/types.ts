@@ -129,11 +129,10 @@ export type GetCompanyPurchasesDTO = z.infer<typeof GetCompanyPurchasesDTOSchema
 export type GetCompanyPurchasesByDateDTO = z.infer<typeof GetCompanyPurchasesByDateDTOSchema>;
 export type GetPurchaseDTO = z.infer<typeof GetPurchaseDTOSchema>;
 
-
 /**
  * Types for the transaction layer
  */
 export type PurchasesWithCount = {
-    purchases: Purchase[],
-    numPurchases: number,
-}
+    purchases: Purchase[];
+    numPurchases: number;
+};

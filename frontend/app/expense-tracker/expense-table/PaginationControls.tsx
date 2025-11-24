@@ -2,13 +2,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type PaginationProps = {
     page: number;
-    resultsPerPage: number,
+    resultsPerPage: number;
     onPageChange: (page: number) => void;
     totalNumPurchases?: number;
 };
 
-export default function PaginationControls({ page, resultsPerPage, onPageChange, totalNumPurchases, }
-                                           : PaginationProps) {
+export default function PaginationControls({ page, resultsPerPage, onPageChange, totalNumPurchases }: PaginationProps) {
     const isFirstPage = page === 0;
     const total = totalNumPurchases ?? 0;
     const isLastPage = (page + 1) * resultsPerPage >= total;

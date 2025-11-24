@@ -106,12 +106,11 @@ export default function ExpenseTable({ title, editableTags, rowOption }: Expense
                     editableTags={editableTags}
                     onRowClick={(purchase) => setSelectedPurchase(purchase)}
                 />
-                <ExpenseSideView 
-                 purchase={selectedPurchase} 
-                 open={!!selectedPurchase}
-                 onOpenChange={() => setSelectedPurchase(null)}
+                <ExpenseSideView
+                    purchase={selectedPurchase}
+                    open={!!selectedPurchase}
+                    onOpenChange={() => setSelectedPurchase(null)}
                 />
-
             </CardContent>
             <CardFooter>
                 <div className="w-full border-t px-4 py-2 flex justify-end">

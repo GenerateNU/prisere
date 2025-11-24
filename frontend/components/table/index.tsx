@@ -1,7 +1,7 @@
 import { flexRender, Table as ReactTable } from "@tanstack/react-table";
 import { Table as CTable, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
-export function Table<T>({ table, onRowClick }: { table: ReactTable<T>, onRowClick?: (row: T) => void }) {
+export function Table<T>({ table, onRowClick }: { table: ReactTable<T>; onRowClick?: (row: T) => void }) {
     return (
         <CTable>
             <TableHeader>
@@ -19,10 +19,11 @@ export function Table<T>({ table, onRowClick }: { table: ReactTable<T>, onRowCli
             </TableHeader>
             <TableBody>
                 {table.getRowModel().rows.map((row) => (
-                    <TableRow 
-                    key={row.id}
-                    onClick={() => onRowClick?.(row.original)}
-                    className={onRowClick ? "cursor-pointer hover:bg-muted/50" : ""}>
+                    <TableRow
+                        key={row.id}
+                        onClick={() => onRowClick?.(row.original)}
+                        className={onRowClick ? "cursor-pointer hover:bg-muted/50" : ""}
+                    >
                         {row.getVisibleCells().map((cell) => (
                             <TableCell key={cell.id}>
                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}

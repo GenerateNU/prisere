@@ -1,6 +1,6 @@
 import { Table } from "@/components/table";
 import { cn } from "@/lib/utils";
-import { DisasterType, FilteredPurchases, Purchases, PurchasesWithCount } from "@/types/purchase";
+import { DisasterType, FilteredPurchases, PurchasesWithCount, PurchaseWithLineItems } from "@/types/purchase";
 import { useMutation, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/react-table";
 import { useMemo } from "react";
@@ -24,8 +24,8 @@ export default function TableContent({
     filters: FilteredPurchases;
     setSort: (column: SortByColumn, sortOrder?: "ASC" | "DESC") => void;
     rowOption: "collapsible" | "checkbox";
-    editableTags: boolean,
-    onRowClick?: (purchase: any) => void;
+    editableTags: boolean;
+    onRowClick?: (purchase: PurchaseWithLineItems) => void;
 }) {
     const standardizedData = useMemo(
         () =>
@@ -87,7 +87,7 @@ export default function TableContent({
             row.lineItems?.map((item) => ({
                 ...item,
                 vendor: row.vendor, // inherit from parent
-                originalPurchase: row.originalPurchase
+                originalPurchase: row.originalPurchase,
             })) ?? [],
         enableSubRowSelection(row) {
             return row.original.lineItems.length > 0;
@@ -107,8 +107,7 @@ export default function TableContent({
                                 row.getCanExpand() ? (
                                     <CollapsibleArrow
                                         onClick={() => row.toggleExpanded()}
-                                        isOpen={row
-                                            .getIsExpanded()}
+                                        isOpen={row.getIsExpanded()}
                                     />
                                 ) : null
                             ) : (
@@ -196,5 +195,5 @@ export default function TableContent({
 
     if (purchases.error) return <div>Error loading expenses</div>;
 
-    return <Table table={table} onRowClick={(row) => onRowClick?.(row.originalPurchase)}/>;
+    return <Table table={table} onRowClick={(row) => onRowClick?.(row.originalPurchase)} />;
 }

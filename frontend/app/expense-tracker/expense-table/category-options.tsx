@@ -53,9 +53,8 @@ export default function CategoryLabel({
     );
 
     function AddCategoryButton({ disabled }: { disabled: boolean }) {
-
         if (!updateCategory) {
-            throw new Error("Cannot add categories for a readonly tag")
+            throw new Error("Cannot add categories for a readonly tag");
         }
 
         const [searchValue, setSearchValue] = useState("");
@@ -93,7 +92,13 @@ export default function CategoryLabel({
     }
 }
 
-export function CategoryBadge({ category, allCategories, updateCategory, lineItemIds, editableTags }: CategoryBadgeProps) {
+export function CategoryBadge({
+    category,
+    allCategories,
+    updateCategory,
+    lineItemIds,
+    editableTags,
+}: CategoryBadgeProps) {
     const [searchValue, setSearchValue] = useState("");
     const displayCategory = category.length > 20 ? `${category.substring(0, 20)}...` : category;
 

@@ -2,7 +2,11 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { CreateOrChangePurchaseRequest, GetCompanyPurchasesResponse, PurchasesWithCount } from "../../modules/purchase/types";
+import {
+    CreateOrChangePurchaseRequest,
+    GetCompanyPurchasesResponse,
+    PurchasesWithCount,
+} from "../../modules/purchase/types";
 import { TESTING_PREFIX } from "../../utilities/constants";
 import CompanySeeder, { seededCompanies } from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
@@ -405,7 +409,7 @@ describe("GET /purchase - Filtered and Sorted", () => {
         });
 
         expect(response.status).toBe(200);
-        const body = (await response.json())
+        const body = await response.json();
         expect(body.purchases.length).toBe(6);
 
         const purchaseIds = body.purchases.map((p: Purchase) => p.id);

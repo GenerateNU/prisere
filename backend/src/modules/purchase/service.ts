@@ -74,15 +74,15 @@ export class PurchaseService implements IPurchaseService {
                     lastUpdated: qbPurchase.lastUpdated.toUTCString(),
                     lineItems: qbPurchase.lineItems
                         ? qbPurchase.lineItems.map((item) => ({
-                            ...item,
-                            dateCreated: item.dateCreated.toISOString(),
-                            lastUpdated: item.lastUpdated.toISOString(),
-                            quickbooksDateCreated: item.quickbooksDateCreated?.toISOString(),
-                        }))
+                              ...item,
+                              dateCreated: item.dateCreated.toISOString(),
+                              lastUpdated: item.lastUpdated.toISOString(),
+                              quickbooksDateCreated: item.quickbooksDateCreated?.toISOString(),
+                          }))
                         : [],
                 })),
                 numPurchases: qbPurchases.numPurchases,
-            }
+            };
         }
     );
 

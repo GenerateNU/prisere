@@ -3,10 +3,9 @@ export type Purchase = paths["/purchase/{id}"]["get"]["responses"]["200"]["conte
 export type CreatePurchaseInput = paths["/purchase/bulk"]["post"]["requestBody"]["content"]["application/json"];
 export type CreatePurchaseResponse = paths["/purchase/bulk"]["post"]["responses"]["200"]["content"]["application/json"];
 export type PurchasesWithCount = paths["/purchase"]["get"]["responses"]["200"]["content"]["application/json"];
-export type Purchases = PurchasesWithCount["purchases"]
+export type Purchases = PurchasesWithCount["purchases"];
 export type PurchaseLineItem = paths["/purchase/line/{id}"]["get"]["responses"]["200"]["content"]["application/json"];
-export type PurchaseWithLineItems = Purchases[number]
-
+export type PurchaseWithLineItems = Purchases[number];
 
 export enum PurchaseLineItemType {
     EXTRANEOUS = "extraneous",

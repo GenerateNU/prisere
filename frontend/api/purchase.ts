@@ -1,9 +1,5 @@
 "use server";
-import {
-    CreatePurchaseInput,
-    CreatePurchaseResponse,
-    PurchaseLineItemType,
-} from "../types/purchase";
+import { CreatePurchaseInput, CreatePurchaseResponse, PurchaseLineItemType } from "../types/purchase";
 import { authHeader, authWrapper, getClient } from "./client";
 
 export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate: Date): Promise<{ total: number }> => {

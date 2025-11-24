@@ -6,7 +6,8 @@ import {
     CreateOrChangePurchaseDTO,
     GetCompanyPurchasesByDateDTO,
     GetCompanyPurchasesDTO,
-    GetCompanyPurchasesInMonthBinsResponse, PurchasesWithCount,
+    GetCompanyPurchasesInMonthBinsResponse,
+    PurchasesWithCount,
 } from "./types";
 
 export interface IPurchaseTransaction {
@@ -147,7 +148,7 @@ export class PurchaseTransaction implements IPurchaseTransaction {
         // to guarantee that line items do not move in the table rows
         queryBuilderForIds.addOrderBy("li.dateCreated", "ASC");
         const paginatedPurchases = await queryBuilderForIds.getMany();
-        return { purchases: paginatedPurchases, numPurchases: totalPurchases}
+        return { purchases: paginatedPurchases, numPurchases: totalPurchases };
     }
 
     async sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number> {
