@@ -7,7 +7,6 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Quickbooks from "./quickbooks";
 import InfoPage from "./infoPage";
-import { Card } from "@/components/ui/card";
 import Image from "next/image";
 
 interface OnboardingProps {
@@ -77,7 +76,6 @@ export default function Onboarding({ email }: OnboardingProps) {
             handleNext={() => router.push("/")}
             title={"You're all set!"}
             description="You can now start using Prisere."
-            image={<Card className="h-[220px] w-[362px]"></Card>}
             buttonText="Go to Dashboard"
         />,
     ];
