@@ -11,7 +11,6 @@ import { authHeader, authWrapper, getClient } from "./client";
 
 export const createUser = async (payload: CreateUserRequest): Promise<User> => {
     const req = async (token: string): Promise<User> => {
-        console.log("Create user frontend API");
         const supabase = await createSupabaseClient();
         if (!payload.email) {
             const { data, error } = await supabase.auth.getUser();
