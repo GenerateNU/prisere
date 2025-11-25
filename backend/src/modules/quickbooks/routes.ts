@@ -22,7 +22,7 @@ export function quickbooksRoutes(db: DataSource) {
     const client = new QuickbooksClient({
         clientId: process.env.QUICKBOOKS_CLIENT_ID!,
         clientSecret: process.env.QUICKBOOKS_CLIENT_SECRET!,
-        environment: "sandbox", // TODO: dev vs. prod
+        environment: process.env.NODE_ENV === "dev" ? "sandbox" : "production",
     });
 
     const service = new QuickbooksService(

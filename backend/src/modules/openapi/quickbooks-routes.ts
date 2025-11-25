@@ -72,22 +72,15 @@ const generateSessionRoute = createRoute({
         params: RedirectEndpointSuccessParams,
     },
     responses: {
-        200: {
-            description: "Successfully logged in through QB",
-            content: {
-                "application/json": {
-                    schema: z.object({
-                        success: z.literal(true),
-                    }),
-                },
-            },
+        302: {
+            description: "Successfully authenticated, redirecting",
         },
         400: {
-            description: "Did not grant permissions",
+            description: "Authentication failed",
             content: {
                 "application/json": {
                     schema: z.object({
-                        error: z.string(),
+                        error: z.string()
                     }),
                 },
             },

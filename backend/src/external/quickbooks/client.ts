@@ -11,6 +11,9 @@ import {
 const PROD_BASE_URL = "https://quickbooks.api.intuit.com";
 const SANDBOX_BASE_URL = "https://sandbox-quickbooks.api.intuit.com";
 
+const PROD_PRISERE_API_URL = process.env.PROD_PRISERE_API_URL;
+const DEV_PRISERE_API_URL = process.env.DEV_PRISERE_API_URL;
+
 export const QB_SCOPES = {
     accounting: "com.intuit.quickbooks.accounting",
     payment: "com.intuit.quickbooks.payment",
@@ -57,7 +60,7 @@ export class QuickbooksClient implements IQuickbooksClient {
     constructor({
         clientId,
         clientSecret,
-        environment, // Abby to do: make changes to get this done
+        environment,
     }: {
         clientId: string;
         clientSecret: string;
@@ -71,11 +74,9 @@ export class QuickbooksClient implements IQuickbooksClient {
         this.BASE_URL = environment === "production" ? PROD_BASE_URL : SANDBOX_BASE_URL;
         this.redirectUri =
             environment === "production"
-                ? // TODO: get a real redirect for prod
-                  "https://walrus-app-kwuoe.ondigitalocean.app/api/prisere/quickbooks/redirect"
-                : // TODO: finalize if this is the real route we want to redirect to, I think we need a better frontend page or something,
-                  // maybe we redirect from the server after going here?
-                  "http://localhost:3001/api/prisere/quickbooks/redirect";
+                ? // Note: Quickbooks Redirect URI was updated to match these URLs:
+                  `${PROD_PRISERE_API_URL}/quickbooks/redirect`
+                : `${DEV_PRISERE_API_URL}/quickbooks/redirect`;
     }
 
     public generateUrl({ scopes }: { scopes: (keyof typeof QB_SCOPES)[] }) {

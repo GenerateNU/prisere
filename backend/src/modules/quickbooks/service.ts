@@ -39,8 +39,6 @@ export class QuickbooksService implements IQuickbooksService {
     generateAuthUrl = withServiceErrorHandling(async ({ userId }: { userId: string }) => {
         const { state, url } = this.qbClient.generateUrl({ scopes: ["accounting"] });
 
-        console.log(`Using user ID: ${userId}`)
-
         await this.transaction.storeOAuth({ stateId: state, initiatorId: userId });
 
         return { state, url };
@@ -80,7 +78,6 @@ export class QuickbooksService implements IQuickbooksService {
             if (maybeToken?.stateId !== state) {
                 throw Boom.internal("State mismatch");
             }
-            console.log("About to generate token")
 
             const { access_token, expires_in, x_refresh_token_expires_in, refresh_token } =
                 await this.qbClient.generateToken({
@@ -88,8 +85,6 @@ export class QuickbooksService implements IQuickbooksService {
                 });
 
             const external = await this.transaction.getCompanyByRealm({ realmId });
-
-            console.log(`Got external: ${external}`)
 
             let companyId = external?.companyId;
 
