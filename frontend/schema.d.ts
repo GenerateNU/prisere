@@ -907,7 +907,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/companies/": {
+    "/companies/has-company-data": {
         parameters: {
             query?: never;
             header?: never;
@@ -2914,11 +2914,10 @@ export interface paths {
                                 id: string;
                                 companyId: string;
                                 quickBooksId?: number;
-                                purchaseId: string;
-                                amountCents: number;
-                                category?: string | null;
-                                /** @enum {string} */
-                                type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
+                                totalAmountCents: number;
+                                quickbooksDateCreated?: string;
+                                isRefund: boolean;
+                                vendor?: string;
                                 dateCreated: string;
                                 lastUpdated: string;
                                 lineItems: {
@@ -2929,12 +2928,7 @@ export interface paths {
                                     amountCents: number;
                                     category?: string | null;
                                     /** @enum {string} */
-                                    type:
-                                        | "extraneous"
-                                        | "typical"
-                                        | "pending"
-                                        | "suggested extraneous"
-                                        | "suggested typical";
+                                    type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                                     dateCreated: string;
                                     lastUpdated: string;
                                     /** Format: date-time */
