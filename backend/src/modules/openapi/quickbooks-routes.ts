@@ -22,7 +22,7 @@ export const addOpenApiQBRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAP
     const client = new QuickbooksClient({
         clientId: process.env.QUICKBOOKS_CLIENT_ID!,
         clientSecret: process.env.QUICKBOOKS_CLIENT_SECRET!,
-        environment: "sandbox",
+        environment: process.env.NODE_ENV === "development" ? "sandbox" : "production",
     });
 
     const service = new QuickbooksService(
@@ -53,7 +53,7 @@ const generateAuthRoute = createRoute({
             content: {
                 "application/json": {
                     schema: z.object({
-                        url: z.string()
+                        url: z.string(),
                     }),
                 },
             },
@@ -80,7 +80,7 @@ const generateSessionRoute = createRoute({
             content: {
                 "application/json": {
                     schema: z.object({
-                        error: z.string()
+                        error: z.string(),
                     }),
                 },
             },

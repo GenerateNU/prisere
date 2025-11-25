@@ -13,7 +13,7 @@ export function LinkedAccountsSettings() {
         } else {
             console.error("Failed to retrieve QuickBooks URL");
         }
-    }
+    };
 
     return (
         <ProfileSettingsCard

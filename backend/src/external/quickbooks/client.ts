@@ -75,8 +75,9 @@ export class QuickbooksClient implements IQuickbooksClient {
         this.redirectUri =
             environment === "production"
                 ? // Note: Quickbooks Redirect URI was updated to match these URLs:
-                  `${PROD_PRISERE_API_URL}/quickbooks/redirect`
-                : `${DEV_PRISERE_API_URL}/quickbooks/redirect`;
+                  `${PROD_PRISERE_API_URL}quickbooks/redirect`
+                : `${DEV_PRISERE_API_URL}quickbooks/redirect`;
+        console.log("ASDASDADDSa ", this.redirectUri);
     }
 
     public generateUrl({ scopes }: { scopes: (keyof typeof QB_SCOPES)[] }) {

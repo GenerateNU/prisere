@@ -7,9 +7,7 @@ import { validate } from "uuid";
 
 export interface IQuickbooksController {
     redirectToAuthorization(ctx: Context): ControllerResponse<TypedResponse<{ url: string }, 200>>;
-    generateSession(
-        ctx: Context
-    ): Promise<Response>;
+    generateSession(ctx: Context): Promise<Response>;
     updateUnprocessedInvoices(ctx: Context): ControllerResponse<TypedResponse<{ success: true }, 200>>;
     importQuickbooksData(ctx: Context): ControllerResponse<TypedResponse<{ success: true }, 201>>;
 }
@@ -21,6 +19,7 @@ export class QuickbooksController implements IQuickbooksController {
         const userId = ctx.get("userId");
 
         const { url } = await this.service.generateAuthUrl({ userId });
+        console.log(url);
 
         return ctx.json({ url }, 200);
     }
@@ -36,7 +35,7 @@ export class QuickbooksController implements IQuickbooksController {
 
         await this.service.createQuickbooksSession(params);
 
-        return ctx.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}`)
+        return ctx.redirect(`${process.env.FRONTEND_URL || "http://localhost:3000"}`);
     }
 
     async updateUnprocessedInvoices(ctx: Context) {

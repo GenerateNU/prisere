@@ -3685,29 +3685,11 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Successfully logged in through QB",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "enum": [
-                        true
-                      ]
-                    }
-                  },
-                  "required": [
-                    "success"
-                  ]
-                }
-              }
-            }
+          "302": {
+            "description": "Successfully authenticated, redirecting"
           },
           "400": {
-            "description": "Did not grant permissions",
+            "description": "Authentication failed",
             "content": {
               "application/json": {
                 "schema": {

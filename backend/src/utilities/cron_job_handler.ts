@@ -54,7 +54,7 @@ export class FemaFetching implements CronJobHandler {
         this.qbClient = new QuickbooksClient({
             clientId: process.env.QUICKBOOKS_CLIENT_ID!,
             clientSecret: process.env.QUICKBOOKS_CLIENT_SECRET!,
-            environment: process.env.NODE_ENV === "dev" ? "sandbox" : "production",
+            environment: process.env.NODE_ENV === "development" ? "sandbox" : "production",
         });
 
         this.quickbooksService = new QuickbooksService(
