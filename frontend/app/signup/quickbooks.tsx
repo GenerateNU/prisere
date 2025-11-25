@@ -2,12 +2,22 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { GoSync } from "react-icons/go";
 import { FiUpload } from "react-icons/fi";
+import { redirectToQuickbooks } from "@/api/quickbooks";
 
 interface QuickbooksInfoProps {
     handleNext: () => void;
 }
 
 export default function Quickbooks({ handleNext }: QuickbooksInfoProps) {
+    const quickbooksAuth = async () => {
+        const url = await redirectToQuickbooks();
+        if (url) {
+            window.location.href = url;
+        } else {
+            console.error("Failed to retrieve QuickBooks URL");
+        }
+    }
+        
     return (
         <Card className="w-full px-[163px] py-[127px]">
             <div className="flex justify-center">
@@ -27,6 +37,9 @@ export default function Quickbooks({ handleNext }: QuickbooksInfoProps) {
                         type="button"
                         className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white py-[12px] text-[16px]"
                         style={{ paddingInline: "20px" }}
+                        onClick={async () => {
+                        await quickbooksAuth();
+                    }}
                     >
                         <GoSync /> Sync Quickbooks
                     </Button>

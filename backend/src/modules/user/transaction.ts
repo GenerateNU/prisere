@@ -52,6 +52,7 @@ export class UserTransaction implements IUserTransaction {
         await this.db.getRepository(UserPreferences).insert({
             userId: result.id,
         });
+        console.log(`CREATED USER: ${result}, ${result.id}`)
         return result;
     }
 

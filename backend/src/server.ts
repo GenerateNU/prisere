@@ -39,7 +39,15 @@ const app = new Hono();
 
         const apiPrefix = process.env.NODE_ENV === "production" ? "/prisere" : "/api/prisere";
 
-        app.use(`${apiPrefix}/*`, isAuthorized());
+        app.use(`${apiPrefix}/*`, async (ctx, next) => {
+            // Skip the middleware for the /quickbooks/redirect route
+            if (ctx.req.path === `${apiPrefix}/quickbooks/redirect`) {
+                return next();
+            }
+
+            // Apply the isAuthorized middleware for all other routes
+            return isAuthorized()(ctx, next);
+        });
 
         setUpRoutes(app, AppDataSource, apiPrefix);
 

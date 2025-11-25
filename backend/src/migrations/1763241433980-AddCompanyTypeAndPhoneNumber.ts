@@ -5,8 +5,8 @@ export class AddCompanyTypeAndPhoneNumber1763241433980 implements MigrationInter
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TYPE "public"."company_companytype_enum" AS ENUM('LLC', 'Sole Proprietorship', 'Corporation', 'Partnership')`);
-        await queryRunner.query(`ALTER TABLE "company" ADD "companyType" "public"."company_companytype_enum" NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "user" ADD "phoneNumber" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "company" ADD "companyType" "public"."company_companytype_enum" NOT NULL DEFAULT 'LLC'`);
+        await queryRunner.query(`ALTER TABLE "user" ADD "phoneNumber" character varying NOT NULL DEFAULT '123'`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {

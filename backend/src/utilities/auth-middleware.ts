@@ -25,7 +25,9 @@ const jwk = JSON.parse(
  */
 export const isAuthorized = () => {
     return async (ctx: Context, next: Next) => {
+        
         const header = ctx.req.header("Authorization");
+        console.log(`Header: ${header}`)
         if (!header) {
             return ctx.json({ error: "User is not authenticated" }, 401);
         }

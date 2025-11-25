@@ -18,3 +18,22 @@ export const importQuickbooksData = async (): Promise<{ success: true } | undefi
     };
     return authWrapper<{ success: true } | undefined>()(req);
 };
+
+export const redirectToQuickbooks = async (): Promise<string | undefined> => {
+    const req = async (token: string): Promise<string | undefined> => {
+        const client = getClient();
+        const { data, response } = await client.GET("/quickbooks", {
+            headers: authHeader(token),
+        });
+
+        if (response.ok && data?.url) {
+            return data.url;
+        } else if (response.status === 401) {
+            console.log("Warning: Unauthorized access to QuickBooks");
+        } else {
+            console.log("Error: Unable to fetch QuickBooks URL");
+        }
+    };
+
+    return authWrapper<string | undefined>()(req);
+};

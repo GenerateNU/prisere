@@ -6,7 +6,7 @@ import Boom from "@hapi/boom";
 import { validate } from "uuid";
 
 export interface IQuickbooksController {
-    redirectToAuthorization(ctx: Context): ControllerResponse<TypedResponse<undefined, 302>>;
+    redirectToAuthorization(ctx: Context): ControllerResponse<TypedResponse<{ url: string }, 200>>;
     generateSession(
         ctx: Context
     ): ControllerResponse<TypedResponse<{ success: true }, 200> | TypedResponse<{ error: string }, 400>>;
@@ -19,10 +19,13 @@ export class QuickbooksController implements IQuickbooksController {
 
     async redirectToAuthorization(ctx: Context) {
         const userId = ctx.get("userId");
+        console.log(`USER ID: ${userId}`)
+        // const userId = 'a73ee92f-b83c-43c8-ba2f-f63121275343'
 
         const { url } = await this.service.generateAuthUrl({ userId });
+        console.log(`Redirct URL: ${url}`)
 
-        return ctx.redirect(url);
+        return ctx.json({ url }, 200);
     }
 
     async generateSession(ctx: Context) {

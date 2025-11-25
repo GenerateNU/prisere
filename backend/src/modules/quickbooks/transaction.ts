@@ -29,6 +29,7 @@ export class QuickbooksTransaction implements IQuickbooksTransaction {
     constructor(private db: DataSource) {}
 
     async storeOAuth({ stateId, initiatorId }: { stateId: string; initiatorId: string }) {
+        console.log(`Got initiator ID: ${initiatorId}`)
         const res = await this.db
             .createQueryBuilder()
             .insert()

@@ -3630,8 +3630,23 @@
           "quickbooks"
         ],
         "responses": {
-          "302": {
-            "description": "Redirected to QuickBooks OAuth url"
+          "200": {
+            "description": "Successfully redirected to quickbooks auth",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "url"
+                  ]
+                }
+              }
+            }
           }
         }
       }

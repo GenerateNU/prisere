@@ -28,6 +28,7 @@ export class UserController implements IUserController {
 
     createUser = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<CreateUserResponse, 201>> => {
+            console.log("CReate user was called")
             const json = await ctx.req.json();
             const userId = ctx.get("userId");
             const payload = CreateUserDTOSchema.parse({ ...json, id: userId });

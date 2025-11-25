@@ -48,8 +48,15 @@ const generateAuthRoute = createRoute({
     summary: "Generates an OAuth URL for the user and redirects them",
     tags: ["quickbooks"],
     responses: {
-        302: {
-            description: "Redirected to QuickBooks OAuth url",
+        200: {
+            description: "Successfully redirected to quickbooks auth",
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        url: z.string()
+                    }),
+                },
+            },
         },
     },
 });

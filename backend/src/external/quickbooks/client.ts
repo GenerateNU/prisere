@@ -57,7 +57,7 @@ export class QuickbooksClient implements IQuickbooksClient {
     constructor({
         clientId,
         clientSecret,
-        environment,
+        environment, // Abby to do: make changes to get this done
     }: {
         clientId: string;
         clientSecret: string;
@@ -72,10 +72,10 @@ export class QuickbooksClient implements IQuickbooksClient {
         this.redirectUri =
             environment === "production"
                 ? // TODO: get a real redirect for prod
-                  ""
+                  "https://walrus-app-kwuoe.ondigitalocean.app/api/prisere/quickbooks/redirect"
                 : // TODO: finalize if this is the real route we want to redirect to, I think we need a better frontend page or something,
                   // maybe we redirect from the server after going here?
-                  "http://localhost:3001/quickbooks/redirect";
+                  "http://localhost:3001/api/prisere/quickbooks/redirect";
     }
 
     public generateUrl({ scopes }: { scopes: (keyof typeof QB_SCOPES)[] }) {

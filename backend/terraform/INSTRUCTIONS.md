@@ -41,6 +41,7 @@ export TF_VAR_ses_from_email=$(grep SES_FROM_EMAIL ../.env | cut -d '=' -f2 | tr
 export TF_VAR_sqs_queue_url=$(grep SQS_QUEUE_URL_PROD ../.env | cut -d '=' -f2 | tr -d '"')
 ```
 ## Deploying the resources
+NOTE: We can only have 2 Access key ID/secrets per account
 - Only necesarry to do when the resources:
 1) Dont exist in AWS (need to be created)
 2) You need to update any AWS resources (It does not matter what you need to change/update)
