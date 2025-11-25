@@ -22,7 +22,7 @@ export const addOpenApiQBRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAP
     const client = new QuickbooksClient({
         clientId: process.env.QUICKBOOKS_CLIENT_ID!,
         clientSecret: process.env.QUICKBOOKS_CLIENT_SECRET!,
-        environment: process.env.NODE_ENV === "development" ? "sandbox" : "production",
+        environment: process.env.NODE_ENV === "production" ? "production" : "sandbox",
     });
 
     const service = new QuickbooksService(
