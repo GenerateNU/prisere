@@ -907,7 +907,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/companies/has-company-data": {
+    "/companies/": {
         parameters: {
             query?: never;
             header?: never;
