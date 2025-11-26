@@ -818,14 +818,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -2938,12 +2931,7 @@ export interface paths {
                                 amountCents: number;
                                 category?: string | null;
                                 /** @enum {string} */
-                                type:
-                                    | "extraneous"
-                                    | "typical"
-                                    | "pending"
-                                    | "suggested extraneous"
-                                    | "suggested typical";
+                                type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                                 dateCreated: string;
                                 lastUpdated: string;
                                 /** Format: date-time */
@@ -3208,14 +3196,7 @@ export interface paths {
                          * @default ACTIVE
                          * @enum {string}
                          */
-                        status?:
-                            | "ACTIVE"
-                            | "FILED"
-                            | "IN_PROGRESS_DISASTER"
-                            | "IN_PROGRESS_PERSONAL"
-                            | "IN_PROGRESS_BUSINESS"
-                            | "IN_PROGRESS_INSURANCE"
-                            | "IN_PROGRESS_EXPORT";
+                        status?: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                     };
                 };
             };
@@ -3232,14 +3213,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             createdAt: string;
                             updatedAt?: string;
                             femaDisaster?: {
@@ -3362,14 +3336,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3505,14 +3472,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -3693,14 +3653,7 @@ export interface paths {
                 content: {
                     "application/json": {
                         /** @enum {string} */
-                        status:
-                            | "ACTIVE"
-                            | "FILED"
-                            | "IN_PROGRESS_DISASTER"
-                            | "IN_PROGRESS_PERSONAL"
-                            | "IN_PROGRESS_BUSINESS"
-                            | "IN_PROGRESS_INSURANCE"
-                            | "IN_PROGRESS_EXPORT";
+                        status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                         insurancePolicyId?: string;
                     };
                 };
@@ -3718,14 +3671,7 @@ export interface paths {
                              * @default ACTIVE
                              * @enum {string}
                              */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
+                            status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                             /** Format: date-time */
                             createdAt: string;
                             /** Format: date-time */
@@ -5810,6 +5756,10 @@ export interface paths {
                             coastalFlooding: string;
                             drought: string;
                             wildFire: string;
+                            /** Format: date */
+                            updatedAt: string;
+                            /** Format: date */
+                            createdAt: string;
                         }[];
                     };
                 };
@@ -6176,14 +6126,7 @@ export interface paths {
                                      * @default ACTIVE
                                      * @enum {string}
                                      */
-                                    status:
-                                        | "ACTIVE"
-                                        | "FILED"
-                                        | "IN_PROGRESS_DISASTER"
-                                        | "IN_PROGRESS_PERSONAL"
-                                        | "IN_PROGRESS_BUSINESS"
-                                        | "IN_PROGRESS_INSURANCE"
-                                        | "IN_PROGRESS_EXPORT";
+                                    status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
                                     createdAt: string;
                                     /** Format: date-time */
                                     updatedAt?: string;

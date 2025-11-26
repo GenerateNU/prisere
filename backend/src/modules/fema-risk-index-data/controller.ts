@@ -1,11 +1,11 @@
 import { Context, TypedResponse } from "hono";
 import { withControllerErrorHandling } from "../../utilities/error";
 import { IFemaRiskIndexService } from "./service";
-import { InsertFemaRiskIndexDataInput } from "./types";
+import { FemaRiskIndexDataResult } from "./types";
 
 export interface IFemaRiskIndex {
     updateFemaRiskIndexData(ctx: Context): Promise<TypedResponse<number, 200> | Response>;
-    getFemaRiskIndexData(ctx: Context): Promise<TypedResponse<InsertFemaRiskIndexDataInput, 200> | Response>;
+    getFemaRiskIndexData(ctx: Context): Promise<TypedResponse<FemaRiskIndexDataResult, 200> | Response>;
 }
 
 export class FemaRiskIndexController implements IFemaRiskIndex {
@@ -21,7 +21,7 @@ export class FemaRiskIndexController implements IFemaRiskIndex {
     });
 
     getFemaRiskIndexData = withControllerErrorHandling(
-        async (ctx: Context): Promise<TypedResponse<InsertFemaRiskIndexDataInput, 200>> => {
+        async (ctx: Context): Promise<TypedResponse<FemaRiskIndexDataResult, 200>> => {
             const result = await this.femaRiskIndexService.getFemaRiskIndexData();
             return ctx.json(result, 200);
         }

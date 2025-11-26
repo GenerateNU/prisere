@@ -9,7 +9,7 @@ import { useFEMARiskScore } from "@/app/location-based-risk/hooks/useFEMARiskSco
 
 export default function LocationRisk() {
     const { availableLocations, selectedLocation, setSelectedLocation } = useSelectedLocation();
-    const { countyLookup: femaRiskCountyLookup } = useFEMARiskScore();
+    const { countyLookup: femaRiskCountyLookup, lastUpdated } = useFEMARiskScore();
 
     return (
         <Card className="h-full p-[25px] border-[1px] ">
@@ -32,22 +32,36 @@ export default function LocationRisk() {
                 </div>
             </CardTitle>
             <CardContent className="w-[100%] flex flex-row px-0">
-                <LeafletGeoJSONMap
-                    lat={selectedLocation?.lat}
-                    long={selectedLocation?.long}
-                    femaRiskCountyLookup={femaRiskCountyLookup}
-                />
-                <div className="w-full pl-4 flex flex-col gap-2">
-                    <RiskIndexOverviewCard
-                        riskAttributes={femaRiskCountyLookup.get(
-                            `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
-                        )}
-                    />
-                    <HazardIndexOverviewCard
-                        riskAttributes={femaRiskCountyLookup.get(
-                            `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
-                        )}
-                    />
+                <div className="w-[100%] flex flex-col">
+                    <div className="w-[100%] flex flex-row">
+                        <LeafletGeoJSONMap
+                            lat={selectedLocation?.lat}
+                            long={selectedLocation?.long}
+                            femaRiskCountyLookup={femaRiskCountyLookup}
+                        />
+                        <div className="w-full pl-4 flex flex-col gap-2">
+                            <RiskIndexOverviewCard
+                                riskAttributes={femaRiskCountyLookup.get(
+                                    `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
+                                )}
+                            />
+                            <HazardIndexOverviewCard
+                                riskAttributes={femaRiskCountyLookup.get(
+                                    `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
+                                )}
+                            />
+                        </div>
+                    </div>
+                    {lastUpdated && (
+                        <p className="text-sm text-gray-600 italic">
+                            This data was last updated{" "}
+                            {lastUpdated.toLocaleString("en-US", {
+                                timeZone: "America/New_York",
+                                dateStyle: "medium",
+                                timeStyle: "short",
+                            })}
+                        </p>
+                    )}
                 </div>
             </CardContent>
         </Card>

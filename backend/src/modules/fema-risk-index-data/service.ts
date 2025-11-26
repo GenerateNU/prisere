@@ -3,12 +3,12 @@ import { IFemaRiskIndexTransaction } from "./transaction";
 import * as fs from "fs";
 import * as path from "path";
 import Papa from "papaparse";
-import { InsertFemaRiskIndexDataInput } from "./types";
+import { FemaRiskIndexDataResult, InsertFemaRiskIndexDataInput } from "./types";
 import AdmZip from "adm-zip";
 
 export interface IFemaRiskIndexService {
     updateFemaRiskIndexData(): Promise<void>;
-    getFemaRiskIndexData(): Promise<InsertFemaRiskIndexDataInput>;
+    getFemaRiskIndexData(): Promise<FemaRiskIndexDataResult>;
 }
 
 export class FemaRiskIndexService implements IFemaRiskIndexService {
@@ -19,7 +19,7 @@ export class FemaRiskIndexService implements IFemaRiskIndexService {
         this.femaRiskIndexTransaction = transaction;
     }
 
-    async getFemaRiskIndexData(): Promise<InsertFemaRiskIndexDataInput> {
+    async getFemaRiskIndexData(): Promise<FemaRiskIndexDataResult> {
         return await this.femaRiskIndexTransaction.fetchFemaIndexData();
     }
 

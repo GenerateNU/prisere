@@ -9695,6 +9695,14 @@
                       },
                       "wildFire": {
                         "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date"
                       }
                     },
                     "required": [
@@ -9705,7 +9713,9 @@
                       "communityResilience",
                       "coastalFlooding",
                       "drought",
-                      "wildFire"
+                      "wildFire",
+                      "updatedAt",
+                      "createdAt"
                     ]
                   }
                 }

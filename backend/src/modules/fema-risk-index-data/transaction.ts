@@ -1,11 +1,11 @@
 import { DataSource } from "typeorm";
 import { CountyFemaRisk } from "../../entities/CountyFemaRiskData";
-import { InsertFemaRiskIndexDataInput } from "./types";
+import { FemaRiskIndexDataResult, InsertFemaRiskIndexDataInput } from "./types";
 
 export interface IFemaRiskIndexTransaction {
     insertFemaRiskIndexData(payload: InsertFemaRiskIndexDataInput): Promise<void>;
     dropFemaRiskIndexData(): Promise<void>;
-    fetchFemaIndexData(): Promise<InsertFemaRiskIndexDataInput>;
+    fetchFemaIndexData(): Promise<FemaRiskIndexDataResult>;
 }
 
 export class FemaRiskTransaction implements IFemaRiskIndexTransaction {
@@ -15,8 +15,12 @@ export class FemaRiskTransaction implements IFemaRiskIndexTransaction {
         this.db = db;
     }
 
-    async fetchFemaIndexData(): Promise<InsertFemaRiskIndexDataInput> {
-        return await this.db.manager.find(CountyFemaRisk, {});
+    async fetchFemaIndexData(): Promise<FemaRiskIndexDataResult> {
+        return (await this.db.manager.find(CountyFemaRisk, {})).map((countyData) => ({
+            ...countyData,
+            updatedAt: new Date(countyData.updatedAt).toISOString(),
+            createdAt: new Date(countyData.createdAt).toISOString(),
+        }));
     }
 
     async dropFemaRiskIndexData(): Promise<void> {

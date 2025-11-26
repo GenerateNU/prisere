@@ -45,7 +45,6 @@ export const createLocationBulk = async (payload: CreateLocationBulkRequest): Pr
 export const updateLocationAddress = async (payload: UpdateLocationRequest): Promise<UpdateLocationResponse> => {
     const req = async (token: string): Promise<UpdateLocationResponse> => {
         const client = getClient();
-        console.log(payload);
         const { data, error, response } = await client.PATCH("/location-address", {
             headers: authHeader(token),
             body: payload,

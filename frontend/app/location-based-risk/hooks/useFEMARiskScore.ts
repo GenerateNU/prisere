@@ -12,6 +12,7 @@ export function useFEMARiskScore() {
             const res = await getFemaRiskIndexData();
             setData(res);
             setLoading(false);
+            console.log(res[0].updatedAt);
         };
         fetchRiskData();
     }, []);
@@ -22,5 +23,8 @@ export function useFEMARiskScore() {
         );
     }, [data]);
 
-    return { data, loading, countyLookup };
+    const lastUpdated = new Date(data?.[0]?.updatedAt);
+    lastUpdated.setHours(lastUpdated.getHours() - 5);
+
+    return { data, loading, countyLookup, lastUpdated };
 }

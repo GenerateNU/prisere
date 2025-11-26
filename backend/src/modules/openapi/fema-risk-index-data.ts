@@ -4,7 +4,7 @@ import { openApiErrorCodes } from "../../utilities/error";
 import { FemaRiskIndexController } from "../fema-risk-index-data/controller";
 import { FemaRiskIndexService } from "../fema-risk-index-data/service";
 import { FemaRiskTransaction } from "../fema-risk-index-data/transaction";
-import { insertFemaRiskIndexDataInputSchema } from "../fema-risk-index-data/types";
+import { femaRiskIndexDataResultSchema } from "../fema-risk-index-data/types";
 
 export const addOpenApiFemaRiskIndexRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const transaction = new FemaRiskTransaction(db);
@@ -25,7 +25,7 @@ const getFemaRiskData = createRoute({
         200: {
             content: {
                 "application/json": {
-                    schema: insertFemaRiskIndexDataInputSchema,
+                    schema: femaRiskIndexDataResultSchema,
                 },
             },
             description: "Fema risk index data",
