@@ -12,7 +12,6 @@ describe("Remove Insurance Tests", () => {
     let app: Hono;
     let backup: IBackup;
     let dataSource: DataSource;
-    let companyId: string;
 
     beforeAll(async () => {
         const testAppData = await startTestApp();
