@@ -2914,30 +2914,33 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            id: string;
-                            companyId: string;
-                            quickBooksId?: number;
-                            totalAmountCents: number;
-                            quickbooksDateCreated?: string;
-                            isRefund: boolean;
-                            vendor?: string;
-                            dateCreated: string;
-                            lastUpdated: string;
-                            lineItems: {
+                            purchases: {
                                 id: string;
-                                description?: string;
+                                companyId: string;
                                 quickBooksId?: number;
-                                purchaseId: string;
-                                amountCents: number;
-                                category?: string | null;
-                                /** @enum {string} */
-                                type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
+                                totalAmountCents: number;
+                                quickbooksDateCreated?: string;
+                                isRefund: boolean;
+                                vendor?: string;
                                 dateCreated: string;
                                 lastUpdated: string;
-                                /** Format: date-time */
-                                quickbooksDateCreated?: string;
+                                lineItems: {
+                                    id: string;
+                                    description?: string;
+                                    quickBooksId?: number;
+                                    purchaseId: string;
+                                    amountCents: number;
+                                    category?: string | null;
+                                    /** @enum {string} */
+                                    type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
+                                    dateCreated: string;
+                                    lastUpdated: string;
+                                    /** Format: date-time */
+                                    quickbooksDateCreated?: string;
+                                }[];
                             }[];
-                        }[];
+                            numPurchases: number;
+                        };
                     };
                 };
                 /** @description Get company purchases error */

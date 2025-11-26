@@ -6,10 +6,9 @@ import { Input } from "@/components/ui/input";
 
 interface CategoryLabelProps {
     category: string;
-    updateCategory: (category: string, lineItems: string[], removeCategory: boolean) => void;
+    updateCategory?: (category: string, lineItems: string[], removeCategory: boolean) => void;
     lineItemIds: string[];
     editableTags: boolean;
-    hasLineItems?: boolean;
 }
 
 interface CategoryBadgeProps extends CategoryLabelProps {
@@ -23,21 +22,23 @@ interface CreateCategoryProps {
     lineItemIds: string[];
 }
 
-export default function CategoryLabel({
-    category,
-    updateCategory,
-    lineItemIds,
-    editableTags,
-    hasLineItems = true,
-}: CategoryLabelProps) {
+export default function CategoryLabel({ category, updateCategory, lineItemIds, editableTags }: CategoryLabelProps) {
     const categories = category.length > 0 ? category.split(",") : [];
 
-    if (editableTags && categories.length === 0) {
-        return <AddCategoryButton disabled={!hasLineItems} />;
+    if (editableTags && updateCategory && categories.length === 0) {
+        return (
+            <div className="inline-flex flex-wrap items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                {lineItemIds.length > 0 ? (
+                    <AddCategoryButton />
+                ) : (
+                    <span className="text-muted-foreground text-xs italic">No line items to categorize</span>
+                )}
+            </div>
+        );
     }
 
     return (
-        <>
+        <div className="inline-flex flex-wrap items-center gap-1" onClick={(e) => e.stopPropagation()}>
             {categories.slice(0, 3).map((cat, index) => (
                 <CategoryBadge
                     key={index}
@@ -49,17 +50,15 @@ export default function CategoryLabel({
                 />
             ))}
             {categories.length > 3 && <span className="px-3 py-1 text-sm">...</span>}
-        </>
+        </div>
     );
 
-    function AddCategoryButton({ disabled }: { disabled: boolean }) {
+    function AddCategoryButton() {
         const [searchValue, setSearchValue] = useState("");
         return (
             <Popover>
                 <PopoverTrigger asChild>
-                    <button className="text-gray-400 text-sm hover:text-gray-600 underline" disabled={disabled}>
-                        + Add category
-                    </button>
+                    <button className="text-gray-400 text-sm hover:text-gray-600 underline">+ Add category</button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[200px] p-4">
                     <div className="space-y-2">
@@ -78,7 +77,7 @@ export default function CategoryLabel({
                         <Create
                             searchValue={searchValue}
                             setSearchValue={setSearchValue}
-                            updateCategory={updateCategory}
+                            updateCategory={updateCategory!}
                             lineItemIds={lineItemIds}
                         />
                     </div>
@@ -88,11 +87,17 @@ export default function CategoryLabel({
     }
 }
 
-function CategoryBadge({ category, allCategories, updateCategory, lineItemIds, editableTags }: CategoryBadgeProps) {
+export function CategoryBadge({
+    category,
+    allCategories,
+    updateCategory,
+    lineItemIds,
+    editableTags,
+}: CategoryBadgeProps) {
     const [searchValue, setSearchValue] = useState("");
     const displayCategory = category.length > 20 ? `${category.substring(0, 20)}...` : category;
 
-    if (!editableTags) {
+    if (!editableTags || !updateCategory) {
         return (
             <span
                 className="px-3 py-1 mr-1 mb-1 rounded-md text-sm font-semibold inline-block"

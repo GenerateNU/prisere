@@ -4953,108 +4953,121 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "minLength": 1
-                      },
-                      "companyId": {
-                        "type": "string",
-                        "minLength": 1
-                      },
-                      "quickBooksId": {
-                        "type": "number"
-                      },
-                      "totalAmountCents": {
-                        "type": "number",
-                        "minimum": 0
-                      },
-                      "quickbooksDateCreated": {
-                        "type": "string"
-                      },
-                      "isRefund": {
-                        "type": "boolean"
-                      },
-                      "vendor": {
-                        "type": "string"
-                      },
-                      "dateCreated": {
-                        "type": "string"
-                      },
-                      "lastUpdated": {
-                        "type": "string"
-                      },
-                      "lineItems": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "minLength": 1
-                            },
-                            "description": {
-                              "type": "string"
-                            },
-                            "quickBooksId": {
-                              "type": "number"
-                            },
-                            "purchaseId": {
-                              "type": "string"
-                            },
-                            "amountCents": {
-                              "type": "number"
-                            },
-                            "category": {
-                              "type": "string",
-                              "nullable": true,
-                              "minLength": 1
-                            },
-                            "type": {
-                              "type": "string",
-                              "enum": [
-                                "extraneous",
-                                "typical",
-                                "pending",
-                                "suggested extraneous",
-                                "suggested typical"
-                              ]
-                            },
-                            "dateCreated": {
-                              "type": "string"
-                            },
-                            "lastUpdated": {
-                              "type": "string"
-                            },
-                            "quickbooksDateCreated": {
-                              "type": "string",
-                              "format": "date-time"
-                            }
+                  "type": "object",
+                  "properties": {
+                    "purchases": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1
                           },
-                          "required": [
-                            "id",
-                            "purchaseId",
-                            "amountCents",
-                            "type",
-                            "dateCreated",
-                            "lastUpdated"
-                          ]
-                        }
+                          "companyId": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "quickBooksId": {
+                            "type": "number"
+                          },
+                          "totalAmountCents": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "quickbooksDateCreated": {
+                            "type": "string"
+                          },
+                          "isRefund": {
+                            "type": "boolean"
+                          },
+                          "vendor": {
+                            "type": "string"
+                          },
+                          "dateCreated": {
+                            "type": "string"
+                          },
+                          "lastUpdated": {
+                            "type": "string"
+                          },
+                          "lineItems": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "minLength": 1
+                                },
+                                "description": {
+                                  "type": "string"
+                                },
+                                "quickBooksId": {
+                                  "type": "number"
+                                },
+                                "purchaseId": {
+                                  "type": "string"
+                                },
+                                "amountCents": {
+                                  "type": "number"
+                                },
+                                "category": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "minLength": 1
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "extraneous",
+                                    "typical",
+                                    "pending",
+                                    "suggested extraneous",
+                                    "suggested typical"
+                                  ]
+                                },
+                                "dateCreated": {
+                                  "type": "string"
+                                },
+                                "lastUpdated": {
+                                  "type": "string"
+                                },
+                                "quickbooksDateCreated": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "purchaseId",
+                                "amountCents",
+                                "type",
+                                "dateCreated",
+                                "lastUpdated"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "companyId",
+                          "totalAmountCents",
+                          "isRefund",
+                          "dateCreated",
+                          "lastUpdated",
+                          "lineItems"
+                        ]
                       }
                     },
-                    "required": [
-                      "id",
-                      "companyId",
-                      "totalAmountCents",
-                      "isRefund",
-                      "dateCreated",
-                      "lastUpdated",
-                      "lineItems"
-                    ]
-                  }
+                    "numPurchases": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "purchases",
+                    "numPurchases"
+                  ]
                 }
               }
             }
