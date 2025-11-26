@@ -5,6 +5,7 @@ import { createLocation, updateLocationAddress } from "@/api/location";
 import LocationEditor from "@/components/LocationEditor";
 import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { CreateLocationRequest, UpdateLocationRequest } from "@/types/location";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
@@ -92,9 +93,10 @@ export default function LocationsCard() {
     }, [locationsQuery]);
 
     return (
-        <div>
+        <Card className="p-[28px] flex gap-[12px] border-none shadow-none">
+            <p className="font-bold text-[20px]">Locations</p>
             {businessPending ? (
-                <Loading lines={6} />
+                <Loading lines={2} />
             ) : (
                 <div>
                     <div className="grid grid-cols-2 gap-x-[38px] gap-y-[16px]">
@@ -125,6 +127,6 @@ export default function LocationsCard() {
                     </Button>
                 </div>
             )}
-        </div>
+        </Card>
     );
 }

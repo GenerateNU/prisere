@@ -4,6 +4,7 @@ import { createInsurancePolicy, getInsurancePolicies, updateInsurancePolicy } fr
 import InsuranceEditor from "@/components/InsuranceEditor";
 import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { CreateInsurancePolicyRequest, UpdateInsurancePolicyRequest } from "@/types/insurance-policy";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -85,7 +86,8 @@ export default function InsuranceCard() {
     }, [insuranceQuery]);
 
     return (
-        <div>
+        <Card className="p-[28px] flex gap-[12px] border-none shadow-none">
+            <p className="font-bold text-[20px]">Insurance Information</p>
             {insurancePending ? (
                 <Loading lines={3} />
             ) : (
@@ -118,6 +120,6 @@ export default function InsuranceCard() {
                     </Button>
                 </div>
             )}
-        </div>
+        </Card>
     );
 }

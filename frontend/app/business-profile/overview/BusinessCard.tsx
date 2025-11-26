@@ -64,7 +64,7 @@ export default function BusinessCard() {
     return (
         <div>
             {businessPending ? (
-                <Card className="w-full px-[28px] py-[20px]">
+                <Card className="w-full px-[28px] py-[20px] border-none shadow-none">
                     <div className="flex items-center w-3/4">
                         <p className="text-[20px] font-bold">Business Information</p>
                     </div>

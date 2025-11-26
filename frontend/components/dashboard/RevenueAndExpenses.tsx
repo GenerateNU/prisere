@@ -8,8 +8,6 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { ChartContainer, ChartTooltipContent, ChartTooltip, ChartConfig } from "@/components/ui/chart";
 import Link from "next/link";
 import { FaCircle } from "react-icons/fa";
-import Loading from "../loading";
-import { Spinner } from "../ui/spinner";
 
 export function RevenueAndExpensesNoData() {
     return (
@@ -114,7 +112,7 @@ export default function RevenueAndExpenses() {
             <div className="flex flex-col mb-4 gap-2">
                 <CardTitle className="text-2xl font-bold">Revenue and Expenses</CardTitle>
 
-                {!(expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading)) && (
+                {(expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading)) && (
                     <div className="flex items-center gap-2 text-sm py-1 rounded">
                         <div
                             className={`flex items-center rounded py-1 px-2 ${percentChange >= 0 ? "bg-seafoam" : "bg-pink"}`}
@@ -129,10 +127,23 @@ export default function RevenueAndExpenses() {
                 )}
             </div>
 
-            {(expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading)) ? (
-               <div className="flex items-center justify-center">
-                    <Spinner/>
-               </div>
+            {!(expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading)) ? (
+                 <CardContent className="p-0 flex-1 flex gap-6">
+                 <div className="w-full flex flex-col justify-between" style={{ minHeight: '300px' }}>
+                     <div className="space-y-3">
+                         <div className="h-5 bg-gray-200 rounded-full animate-pulse"></div>
+                         <div className="h-5 bg-gray-200 rounded-full animate-pulse w-5/6"></div>
+                         <div className="h-5 bg-gray-200 rounded-full animate-pulse w-4/6"></div>
+                     </div>
+                     
+                     <div className="flex-1"></div>
+                     
+                     <div className="flex gap-3">
+                         <div style={{ height: '20px', width: '180px', backgroundColor: '#d1d5db' }} className="rounded-full animate-pulse"></div>
+                         <div style={{ height: '20px', width: '180px', backgroundColor: '#d1d5db' }} className="rounded-full animate-pulse"></div>
+                     </div>
+                 </div>
+             </CardContent>
             ) : (
                 <CardContent className="p-0 flex-1 flex gap-6">
                     <div className="flex flex-col justify-between min-w-[200px]">

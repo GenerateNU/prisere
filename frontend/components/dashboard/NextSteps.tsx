@@ -27,7 +27,7 @@ const NextStepItem = ({
     <li className="rounded-lg border p-4 transition-colors">
         <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-full bg-pink flex items-center justify-center">
-                <Icon className="w-5 h-5 text-fuchsia" strokeWidth={1.25}/>
+                <Icon className="w-5 h-5 text-fuchsia" strokeWidth={1.25} />
             </div>
             <div className="flex-1">
                 <p className="text-sm font-medium mb-1">{title}</p>

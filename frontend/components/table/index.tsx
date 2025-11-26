@@ -18,13 +18,13 @@ export function Table<T>({ table, isLoading }: { table: ReactTable<T>; isLoading
                     </TableRow>
                 ))}
             </TableHeader>
-            {!isLoading ? (
+            {isLoading ? (
                 <TableBody>
                     <TableRow>
                         <TableCell colSpan={table.getAllColumns().length} className="text-center py-10">
-                        <div className="flex items-center justify-center w-full">
-                    <Spinner />
-                </div>
+                            <div className="flex items-center justify-center w-full">
+                                <Spinner />
+                            </div>
                         </TableCell>
                     </TableRow>
                 </TableBody>

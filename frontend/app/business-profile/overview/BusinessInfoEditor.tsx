@@ -43,7 +43,7 @@ export default function CompanyEditor({
     };
 
     return (
-        <Card className="w-full px-[28px] py-[20px]">
+        <Card className="w-full px-[28px] py-[20px] border-none shadow-none">
             <div className="flex items-center justify-between">
                 <div className="flex gap-[10px] items-center w-3/4">
                     <p className="text-[20px] font-bold">Business Information</p>
