@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import CompanyEditor from "./BusinessInfoEditor";
 import { getUser } from "@/api/user";
 import { Card } from "@/components/ui/card";
+import Loading from "@/components/loading";
 
 export default function BusinessCard() {
     const [businessInfo, setBusinessInfo] = useState<UpdateCompanyRequest>({
@@ -63,7 +64,12 @@ export default function BusinessCard() {
     return (
         <div>
             {businessPending ? (
-                <LoadingBusinessProfile />
+                <Card className="w-full px-[28px] py-[20px]">
+                    <div className="flex items-center w-3/4">
+                        <p className="text-[20px] font-bold">Business Information</p>
+                    </div>
+                    <Loading lines={2} />
+                </Card>
             ) : (
                 <div className="flex gap-[38px]">
                     <CompanyEditor
@@ -80,19 +86,5 @@ export default function BusinessCard() {
                 </div>
             )}
         </div>
-    );
-}
-
-export function LoadingBusinessProfile() {
-    return (
-        <Card className="w-full px-[28px] py-[20px]">
-            <div className="flex items-center w-3/4">
-                <p className="text-[20px] font-bold">Business Information</p>
-            </div>
-            <div className="space-y-3">
-                <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
-            </div>
-        </Card>
     );
 }

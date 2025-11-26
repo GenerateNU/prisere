@@ -2,6 +2,7 @@
 
 import { createInsurancePolicy, getInsurancePolicies, updateInsurancePolicy } from "@/api/insurance";
 import InsuranceEditor from "@/components/InsuranceEditor";
+import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { CreateInsurancePolicyRequest, UpdateInsurancePolicyRequest } from "@/types/insurance-policy";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -86,7 +87,7 @@ export default function InsuranceCard() {
     return (
         <div>
             {insurancePending ? (
-                <LoadingInsuranceCard />
+                <Loading lines={3} />
             ) : (
                 <div>
                     <div className="flex gap-[38px]">
@@ -117,15 +118,6 @@ export default function InsuranceCard() {
                     </Button>
                 </div>
             )}
-        </div>
-    );
-}
-
-export function LoadingInsuranceCard() {
-    return (
-        <div className="flex flex-col space-y-3">
-            <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-            <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
         </div>
     );
 }

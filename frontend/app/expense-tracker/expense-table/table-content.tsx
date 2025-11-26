@@ -108,7 +108,6 @@ export default function TableContent({
                                 ) : null
                             ) : (
                                 <input
-                                    type="checkbox"
                                     className="w-4 h-4 cursor-pointer mr-2 accent-black align-middle"
                                     onChange={(e) => {
                                         e.stopPropagation();
@@ -122,33 +121,8 @@ export default function TableContent({
             },
             {
                 id: "description",
-                header: () => "Description",
+                header: "Description",
                 accessorFn: (row) => row.description,
-                cell: ({ row, cell }) => {
-                    const cellVal = cell.getValue();
-                    const displayMerchant = cellVal.length > 20 ? `${cellVal.substring(0, 20)}...` : cellVal;
-                    return (
-                        <div className={cn("flex items-center", row.depth > 0 && "pl-8")}>
-                            {rowOption === "collapsible" ? (
-                                row.getCanExpand() ? (
-                                    <CollapsibleArrow
-                                        onClick={() => row.toggleExpanded()}
-                                        isOpen={row.getIsExpanded()}
-                                    />
-                                ) : null
-                            ) : (
-                                <input
-                                    type="checkbox"
-                                    className="w-4 h-4 cursor-pointer mr-2 accent-black align-middle"
-                                    onChange={(e) => {
-                                        e.stopPropagation();
-                                    }}
-                                />
-                            )}
-                            <span className="align-middle">{displayMerchant.length > 0 ? displayMerchant : ""}</span>
-                        </div>
-                    );
-                },
             },
             {
                 id: "amount",
@@ -203,9 +177,7 @@ export default function TableContent({
         ],
     });
 
-    if (purchases.isPending) return <div>Loading expenses...</div>;
-
     if (purchases.error) return <div>Error loading expenses</div>;
 
-    return <Table table={table} />;
+    return <Table table={table} isLoading={purchases.isLoading} />;
 }
