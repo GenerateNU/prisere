@@ -13,6 +13,7 @@ import {
     UpdateInsurancePolicyDTOSchema,
     UpdateInsurancePolicyResponse,
 } from "./types";
+import { validate } from "uuid";
 
 export interface IInsurancePolicyController {
     getAllPolicies(_ctx: Context): ControllerResponse<TypedResponse<GetInsurancePoliciesResponse, 200>>;
@@ -20,6 +21,7 @@ export interface IInsurancePolicyController {
     createInsureancePolicyBulk(ctx: Context): ControllerResponse<TypedResponse<CreateInsurancePolicyBulkResponse, 201>>;
     updateInsurancePolicy(_ctx: Context): ControllerResponse<TypedResponse<UpdateInsurancePolicyResponse, 200>>;
     updateInsurancePolicyBulk(ctx: Context): ControllerResponse<TypedResponse<UpdateInsurancePolicyBulkResponse, 200>>;
+    removeInsurancePolicyById(ctx: Context): Promise<Response>;
 }
 
 export class InsurancePolicyController implements IInsurancePolicyController {
@@ -84,4 +86,20 @@ export class InsurancePolicyController implements IInsurancePolicyController {
             return ctx.json(updateInsurancePolicyBulkResponse, 200);
         }
     );
+
+    removeInsurancePolicyById = withControllerErrorHandling(async (ctx: Context): Promise<Response> => {
+        const maybeId = ctx.req.param("id");
+
+        if (!validate(maybeId)) {
+            return ctx.json({ error: "Invalid Insurance Policy ID was provided" }, 400);
+        }
+
+        const removal = await this.insurancePolicyService.removeInsurancePolicyById({ id: maybeId });
+        if (removal.affected === 0) {
+            return ctx.json({ error: "No insurance policy with that ID was found" }, 400);
+        } else {
+            ctx.status(204);
+            return ctx.body(null);
+        }
+    });
 }

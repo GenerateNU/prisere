@@ -9668,6 +9668,48 @@
         }
       }
     },
+    "/insurance/{id}": {
+      "delete": {
+        "summary": "Removes insurance policy of a company",
+        "description": "Removes the insurance policy with the provided id",
+        "tags": [
+          "Location Address"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Insurance policy successfully deleted"
+          },
+          "400": {
+            "description": "Invalid insurance policy ID or no Company with that ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/fema-risk-index": {
       "get": {
         "summary": "Get all of the fema risk index data",

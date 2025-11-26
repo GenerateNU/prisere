@@ -81,14 +81,20 @@ export default function InsuranceEditor({
                 </div>
                 <div className="flex gap-[8px] self-start">
                     <Button
-                        onClick={onExpand}
+                        onClick={() => {
+                            if (isExpanded) {
+                                handleCollapse();
+                            } else {
+                                onExpand();
+                            }
+                        }}
                         style={{ paddingInline: 0 }}
                         className={`p-0 flex items-center justify-center h-[35px] w-[35px] ${isExpanded ? "bg-[var(--fuchsia)]" : "bg-[var(--slate)]"}`}
                     >
                         <FiEdit className={`${isExpanded ? "text-white" : "text-black"} text-[20px]`} />
                     </Button>
                     <Button
-                        onClick={removeInsurance}
+                        onClick={() => removeInsurance()}
                         style={{ paddingInline: 0 }}
                         className="p-0 flex items-center justify-center h-[35px] w-[35px] bg-[var(--slate)]"
                     >
