@@ -75,3 +75,21 @@ export const updateLocationAddressBulk = async (
     };
     return authWrapper<UpdateLocationBulkResponse>()(req);
 };
+
+export const deleteLocation = async (locationId: string): Promise<void> => {
+    const req = async (token: string): Promise<void> => {
+        const client = getClient();
+        const { error, response } = await client.DELETE("/location-address/{id}", {
+            headers: authHeader(token),
+            params: {
+                path: {
+                    id: locationId,
+                },
+            },
+        });
+        if (!response.ok) {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<void>()(req);
+};

@@ -95,3 +95,21 @@ export const updateInsurancePolicyBulk = async (
     };
     return authWrapper<UpdateInsurancePolicyBulkResponse>()(req);
 };
+
+// export const deleteInsurancePolicy = async (insurancePolicyId: string): Promise<void> => {
+//     const req = async (token: string): Promise<void> => {
+//         const client = getClient();
+//         const { error, response } = await client.DELETE("/insurance/{id}", {
+//             headers: authHeader(token),
+//             params: {
+//                 path: {
+//                     id: insurancePolicyId,
+//                 },
+//             },
+//         });
+//         if (!response.ok) {
+//             throw Error(error?.error);
+//         }
+//     };
+//     return authWrapper<void>()(req);
+// };
