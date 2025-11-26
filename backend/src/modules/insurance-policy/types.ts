@@ -69,4 +69,4 @@ export type CreateInsurancePolicyDTO = z.infer<typeof CreateInsurancePolicyDTOSc
 export type CreateInsurancePolicyBulkDTO = z.infer<typeof CreateInsurancePolicyBulkDTOSchema>;
 export type UpdateInsurancePolicyDTO = z.infer<typeof UpdateInsurancePolicyDTOSchema>;
 export type UpdateInsurancePolicyBulkDTO = z.infer<typeof UpdateInsurancePolicyBulkDTOSchema>;
-export type DelteInsurancePolicyDTO = z.infer<typeof DeleteInsurancePolicySchema>;
+export type DeleteInsurancePolicyDTO = z.infer<typeof DeleteInsurancePolicySchema>;
