@@ -56,7 +56,7 @@ export default function LocationsCard() {
             setSaveError(null);
             setEditingLocationIndex(null);
         },
-        onError: (error: Error) => {
+        onError: (_error: Error) => {
             setSaveError("An error occurred while deleting the location.");
         },
     });
@@ -69,11 +69,11 @@ export default function LocationsCard() {
 
     const removeLocation = (index: number) => {
         const location = locationInfo[index];
-    
+
         if ("id" in location && location.id) {
             deleteLocationMutate(location.id);
         }
-        
+
         setLocationInfo((prev) => prev.filter((_, i) => i !== index));
         setEditingLocationIndex(null);
     };
@@ -96,15 +96,21 @@ export default function LocationsCard() {
     const handleSave = () => {
         console.log("HITTING HERE");
         if (editingLocationIndex === null) return;
-        
+
         const location = locationInfo[editingLocationIndex];
-        
-        if (!location.alias || !location.streetAddress || !location.city || 
-            !location.stateProvince || !location.postalCode || !location.country) {
-                setSaveError("Please fill in all required fields before saving.");
-                return;
+
+        if (
+            !location.alias ||
+            !location.streetAddress ||
+            !location.city ||
+            !location.stateProvince ||
+            !location.postalCode ||
+            !location.country
+        ) {
+            setSaveError("Please fill in all required fields before saving.");
+            return;
         }
-        
+
         if ("id" in location) {
             updateLocationsMutate(location as UpdateLocationRequest);
         } else {

@@ -1,6 +1,11 @@
 "use client";
 
-import { createInsurancePolicy, deleteInsurancePolicy, getInsurancePolicies, updateInsurancePolicy } from "@/api/insurance";
+import {
+    createInsurancePolicy,
+    deleteInsurancePolicy,
+    getInsurancePolicies,
+    updateInsurancePolicy,
+} from "@/api/insurance";
 import InsuranceEditor from "@/components/InsuranceEditor";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -49,7 +54,7 @@ export default function InsuranceCard() {
             setSaveError(null);
             setEditingInsuranceIndex(null);
         },
-        onError: (error: Error) => {
+        onError: (_error: Error) => {
             setSaveError("An error occurred while deleting the insurance policy.");
         },
     });
@@ -66,7 +71,7 @@ export default function InsuranceCard() {
         if ("id" in insurance && insurance.id) {
             deleteInsuranceMutate(insurance.id);
         }
-        
+
         setInsuranceInfo((prev) => prev.filter((_, i) => i !== index));
         setEditingInsuranceIndex(null);
     };
