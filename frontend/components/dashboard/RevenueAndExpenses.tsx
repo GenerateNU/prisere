@@ -9,6 +9,7 @@ import { ChartContainer, ChartTooltipContent, ChartTooltip, ChartConfig } from "
 import Link from "next/link";
 import { FaCircle } from "react-icons/fa";
 import Loading from "../loading";
+import { Spinner } from "../ui/spinner";
 
 export function RevenueAndExpensesNoData() {
     return (
@@ -109,7 +110,7 @@ export default function RevenueAndExpenses() {
     } satisfies ChartConfig;
 
     return (
-        <Card className="h-full min-h-[371px] p-6 border flex flex-col">
+        <Card className="h-full min-h-[371px] p-6 border-none shadow-none flex flex-col">
             <div className="flex flex-col mb-4 gap-2">
                 <CardTitle className="text-2xl font-bold">Revenue and Expenses</CardTitle>
 
@@ -128,8 +129,10 @@ export default function RevenueAndExpenses() {
                 )}
             </div>
 
-            {expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading) ? (
-                <Loading lines={13} />
+            {(expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading)) ? (
+               <div className="flex items-center justify-center">
+                    <Spinner/>
+               </div>
             ) : (
                 <CardContent className="p-0 flex-1 flex gap-6">
                     <div className="flex flex-col justify-between min-w-[200px]">

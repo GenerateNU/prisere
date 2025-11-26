@@ -19,7 +19,7 @@ export default function DisasterStatusBanner({ bannerData }: Props) {
                         There are currently no disasters affecting your business.
                     </BannerTitle>
                     <Link href="/claims">
-                        <BannerAction className="max-w-xs rounded-lg hover:bg-pink bg-fuchsia text-white">
+                        <BannerAction className="max-w-xs rounded-full hover:bg-pink bg-fuchsia text-white text-sm font-medium">
                             File a claim report
                         </BannerAction>
                     </Link>
@@ -55,7 +55,7 @@ export default function DisasterStatusBanner({ bannerData }: Props) {
                         rel="noopener noreferrer"
                         className="self-end"
                     >
-                        <BannerAction className="px-6 py-3 rounded-full hover:bg-pink bg-fuchsia text-white whitespace-nowrap ">
+                        <BannerAction className="px-6 py-3 rounded-full hover:bg-pink bg-fuchsia text-white whitespace-nowrap text-sm font-medium">
                             Register on FEMA&apos;s website
                             {/* Escaped quote character */}
                         </BannerAction>
@@ -91,7 +91,7 @@ export default function DisasterStatusBanner({ bannerData }: Props) {
                         />
                     </div>
                     <Link href={"/claims"} className="text-sm font-semibold underline no-underline">
-                        <BannerAction className="max-w-xs rounded-lg hover:bg-pink bg-fuchsia text-white">
+                        <BannerAction className="max-w-xs rounded-full hover:bg-pink bg-fuchsia text-white text-sm font-medium">
                             Continue filing claim report
                         </BannerAction>
                     </Link>
