@@ -17,6 +17,8 @@ export const LocationAddressSchema = z.object({
     companyId: z.uuid(),
     fipsStateCode: z.number(),
     fipsCountyCode: z.number(),
+    lat: z.number(),
+    long: z.number(),
 });
 
 export const LocationAddressSchemaType = z.object({
@@ -74,6 +76,10 @@ export const GetAllLocationAddressesSchema = z.array(
         }),
         county: z.string().nonempty().optional(),
         companyId: z.uuid(),
+        fipsStateCode: z.number(),
+        fipsCountyCode: z.number(),
+        lat: z.number(),
+        long: z.number(),
     })
 );
 

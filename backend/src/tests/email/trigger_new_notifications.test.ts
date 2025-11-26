@@ -75,12 +75,9 @@ describe("Email Notification Integration Test", () => {
 
         // erify the flow worked
         expect(result).toBe(true);
-        // console.log(result)
 
         // Verify SQS was called (if user's location matches any disaster)
         if (mockSend.mock.calls.length > 0) {
-            // console.log(`SQS called ${mockSend.mock.calls.length} times`);
-
             // Verify the message structure
             const command = mockSend.mock.calls[0][0];
             expect(command.input.QueueUrl).toBeDefined();
@@ -94,8 +91,6 @@ describe("Email Notification Integration Test", () => {
             expect(firstMessage.firstName).toBe("Jane");
             expect(firstMessage.disasterId).toBeDefined();
             expect(firstMessage.notificationId).toBeDefined();
-        } else {
-            // console.log('No SQS messages sent');
         }
     });
 });

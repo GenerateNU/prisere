@@ -747,6 +747,10 @@ export interface paths {
                             county?: string;
                             /** Format: uuid */
                             companyId: string;
+                            fipsStateCode: number;
+                            fipsCountyCode: number;
+                            lat: number;
+                            long: number;
                         }[];
                     };
                 };
@@ -878,6 +882,8 @@ export interface paths {
                                 companyId: string;
                                 fipsStateCode: number;
                                 fipsCountyCode: number;
+                                lat: number;
+                                long: number;
                             }[];
                         } | null;
                     };
@@ -1312,6 +1318,8 @@ export interface paths {
                             companyId: string;
                             fipsStateCode: number;
                             fipsCountyCode: number;
+                            lat: number;
+                            long: number;
                         };
                     };
                 };
@@ -3289,6 +3297,8 @@ export interface paths {
                                 companyId: string;
                                 fipsStateCode: number;
                                 fipsCountyCode: number;
+                                lat: number;
+                                long: number;
                             }[];
                         };
                     };
@@ -3419,6 +3429,8 @@ export interface paths {
                                 companyId: string;
                                 fipsStateCode: number;
                                 fipsCountyCode: number;
+                                lat: number;
+                                long: number;
                             }[];
                         }[];
                     };
@@ -3560,6 +3572,8 @@ export interface paths {
                                 companyId: string;
                                 fipsStateCode: number;
                                 fipsCountyCode: number;
+                                lat: number;
+                                long: number;
                             }[];
                         };
                     };
@@ -3771,6 +3785,8 @@ export interface paths {
                                 companyId: string;
                                 fipsStateCode: number;
                                 fipsCountyCode: number;
+                                lat: number;
+                                long: number;
                             }[];
                         };
                     };
@@ -4320,6 +4336,8 @@ export interface paths {
                             companyId: string;
                             fipsStateCode: number;
                             fipsCountyCode: number;
+                            lat: number;
+                            long: number;
                         }[];
                     };
                 };
@@ -5760,6 +5778,125 @@ export interface paths {
         };
         trace?: never;
     };
+    "/fema-risk-index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all of the fema risk index data
+         * @description Get all of the fema risk index data
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Fema risk index data */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            countyFipsCode: string;
+                            riskRating: string;
+                            ealRating: string;
+                            socialVuln: string;
+                            communityResilience: string;
+                            coastalFlooding: string;
+                            drought: string;
+                            wildFire: string;
+                            /** Format: date */
+                            updatedAt: string;
+                            /** Format: date */
+                            createdAt: string;
+                        }[];
+                    };
+                };
+                /** @description Fetching fema index data */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Fetching fema index data */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Updates all of the fema risk index data
+         * @description Will delete the existing fema risk index data in the table and re import all of the index data
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Update risk index data */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": number;
+                    };
+                };
+                /** @description Getting Disaster Error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Getting Disaster Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/s3/getUploadUrl": {
         parameters: {
             query?: never;
@@ -6103,6 +6240,8 @@ export interface paths {
                                         companyId: string;
                                         fipsStateCode: number;
                                         fipsCountyCode: number;
+                                        lat: number;
+                                        long: number;
                                     }[];
                                     lastModified?: string;
                                 } | null;
