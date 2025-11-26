@@ -2,7 +2,7 @@ import { flexRender, Table as ReactTable } from "@tanstack/react-table";
 import { Table as CTable, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Spinner } from "../ui/spinner";
 
-export function Table<T>({ table, isLoading }: { table: ReactTable<T>; isLoading: boolean }) {
+export function Table<T>({ table, isLoading, onRowClick }: { table: ReactTable<T>; isLoading: boolean; onRowClick?: (row: T) => void }) {
     return (
         <CTable>
             <TableHeader>
@@ -31,7 +31,14 @@ export function Table<T>({ table, isLoading }: { table: ReactTable<T>; isLoading
             ) : (
                 <TableBody>
                     {table.getRowModel().rows.map((row) => (
-                        <TableRow key={row.id}>
+                        <TableRow
+                        key={row.id}
+                        onClick={() => onRowClick?.(row.original)}
+                        className={[
+                            onRowClick ? "cursor-pointer hover:bg-muted/50" : "",
+                            row.depth > 0 ? "bg-muted/100" : "",
+                        ].join(" ")}
+                    >
                             {row.getVisibleCells().map((cell) => (
                                 <TableCell key={cell.id}>
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

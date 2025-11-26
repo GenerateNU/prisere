@@ -284,17 +284,19 @@ export class QuickbooksService implements IQuickbooksService {
             }));
         });
 
-        const result: PurchaseLineItem[] = await this.purchaseLineItemTransaction.createOrUpdatePurchaseLineItems({
-            items: lineItemData,
-        });
-        for (const val of result) {
-            if (val.type === null) {
-                const type = await classifyLineItem(val);
-                await this.purchaseLineItemTransaction.updatePurchaseLineItemType(val.id, type);
+        if (lineItemData.length !== 0) {
+            const result: PurchaseLineItem[] = await this.purchaseLineItemTransaction.createOrUpdatePurchaseLineItems({
+                items: lineItemData,
+            });
+            for (const val of result) {
+                if (val.type === null) {
+                    const type = await classifyLineItem(val);
+                    await this.purchaseLineItemTransaction.updatePurchaseLineItemType(val.id, type);
+                }
             }
-        }
 
-        await this.transaction.updateCompanyPurchaseQuickbooksSync({ date: new Date(), companyId: user.companyId });
+            await this.transaction.updateCompanyPurchaseQuickbooksSync({ date: new Date(), companyId: user.companyId });
+        }
     });
 
     importQuickbooksData = withServiceErrorHandling(async ({ userId }: { userId: string }) => {

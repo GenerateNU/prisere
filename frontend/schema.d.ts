@@ -304,8 +304,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
-                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -320,7 +320,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt?: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -390,8 +390,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
-                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -406,7 +406,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt?: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -478,8 +478,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
-                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -494,7 +494,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt?: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -571,8 +571,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
-                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -587,7 +587,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt?: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -664,8 +664,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
-                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -680,7 +680,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt?: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -747,6 +747,10 @@ export interface paths {
                             county?: string;
                             /** Format: uuid */
                             companyId: string;
+                            fipsStateCode: number;
+                            fipsCountyCode: number;
+                            lat: number;
+                            long: number;
                         }[];
                     };
                 };
@@ -878,6 +882,8 @@ export interface paths {
                                 companyId: string;
                                 fipsStateCode: number;
                                 fipsCountyCode: number;
+                                lat: number;
+                                long: number;
                             }[];
                         } | null;
                     };
@@ -1312,6 +1318,8 @@ export interface paths {
                             companyId: string;
                             fipsStateCode: number;
                             fipsCountyCode: number;
+                            lat: number;
+                            long: number;
                         };
                     };
                 };
@@ -1619,8 +1627,8 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
-                                    lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
+                                    lastQuickBooksInvoiceImportTime?: string | null;
+                                    lastQuickBooksPurchaseImportTime?: string | null;
                                     externals?: {
                                         id: string;
                                         source: string;
@@ -1635,7 +1643,7 @@ export interface paths {
                                     /** @enum {string} */
                                     companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                                     createdAt: string;
-                                    updatedAt?: string;
+                                    updatedAt: string;
                                 };
                             };
                         }[];
@@ -2913,35 +2921,38 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            id: string;
-                            companyId: string;
-                            quickBooksId?: number;
-                            totalAmountCents: number;
-                            quickbooksDateCreated?: string;
-                            isRefund: boolean;
-                            vendor?: string;
-                            dateCreated: string;
-                            lastUpdated: string;
-                            lineItems: {
+                            purchases: {
                                 id: string;
-                                description?: string;
+                                companyId: string;
                                 quickBooksId?: number;
-                                purchaseId: string;
-                                amountCents: number;
-                                category?: string | null;
-                                /** @enum {string} */
-                                type:
-                                    | "extraneous"
-                                    | "typical"
-                                    | "pending"
-                                    | "suggested extraneous"
-                                    | "suggested typical";
+                                totalAmountCents: number;
+                                quickbooksDateCreated?: string;
+                                isRefund: boolean;
+                                vendor?: string;
                                 dateCreated: string;
                                 lastUpdated: string;
-                                /** Format: date-time */
-                                quickbooksDateCreated?: string;
+                                lineItems: {
+                                    id: string;
+                                    description?: string;
+                                    quickBooksId?: number;
+                                    purchaseId: string;
+                                    amountCents: number;
+                                    category?: string | null;
+                                    /** @enum {string} */
+                                    type:
+                                        | "extraneous"
+                                        | "typical"
+                                        | "pending"
+                                        | "suggested extraneous"
+                                        | "suggested typical";
+                                    dateCreated: string;
+                                    lastUpdated: string;
+                                    /** Format: date-time */
+                                    quickbooksDateCreated?: string;
+                                }[];
                             }[];
-                        }[];
+                            numPurchases: number;
+                        };
                     };
                 };
                 /** @description Get company purchases error */
@@ -3286,6 +3297,8 @@ export interface paths {
                                 companyId: string;
                                 fipsStateCode: number;
                                 fipsCountyCode: number;
+                                lat: number;
+                                long: number;
                             }[];
                         };
                     };
@@ -3416,6 +3429,8 @@ export interface paths {
                                 companyId: string;
                                 fipsStateCode: number;
                                 fipsCountyCode: number;
+                                lat: number;
+                                long: number;
                             }[];
                         }[];
                     };
@@ -3557,6 +3572,8 @@ export interface paths {
                                 companyId: string;
                                 fipsStateCode: number;
                                 fipsCountyCode: number;
+                                lat: number;
+                                long: number;
                             }[];
                         };
                     };
@@ -3768,6 +3785,8 @@ export interface paths {
                                 companyId: string;
                                 fipsStateCode: number;
                                 fipsCountyCode: number;
+                                lat: number;
+                                long: number;
                             }[];
                         };
                     };
@@ -4317,6 +4336,8 @@ export interface paths {
                             companyId: string;
                             fipsStateCode: number;
                             fipsCountyCode: number;
+                            lat: number;
+                            long: number;
                         }[];
                     };
                 };
@@ -5757,6 +5778,125 @@ export interface paths {
         };
         trace?: never;
     };
+    "/fema-risk-index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all of the fema risk index data
+         * @description Get all of the fema risk index data
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Fema risk index data */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            countyFipsCode: string;
+                            riskRating: string;
+                            ealRating: string;
+                            socialVuln: string;
+                            communityResilience: string;
+                            coastalFlooding: string;
+                            drought: string;
+                            wildFire: string;
+                            /** Format: date */
+                            updatedAt: string;
+                            /** Format: date */
+                            createdAt: string;
+                        }[];
+                    };
+                };
+                /** @description Fetching fema index data */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Fetching fema index data */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Updates all of the fema risk index data
+         * @description Will delete the existing fema risk index data in the table and re import all of the index data
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Update risk index data */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": number;
+                    };
+                };
+                /** @description Getting Disaster Error */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Getting Disaster Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/s3/getUploadUrl": {
         parameters: {
             query?: never;
@@ -6019,8 +6159,8 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
-                                    lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
+                                    lastQuickBooksInvoiceImportTime?: string | null;
+                                    lastQuickBooksPurchaseImportTime?: string | null;
                                     externals?: {
                                         id: string;
                                         source: string;
@@ -6035,7 +6175,7 @@ export interface paths {
                                     /** @enum {string} */
                                     companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                                     createdAt: string;
-                                    updatedAt?: string;
+                                    updatedAt: string;
                                 };
                                 claim?: {
                                     id: string;
@@ -6100,6 +6240,8 @@ export interface paths {
                                         companyId: string;
                                         fipsStateCode: number;
                                         fipsCountyCode: number;
+                                        lat: number;
+                                        long: number;
                                     }[];
                                     lastModified?: string;
                                 } | null;

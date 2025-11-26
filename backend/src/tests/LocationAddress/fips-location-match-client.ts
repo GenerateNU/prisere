@@ -10,22 +10,32 @@ export class MockFEMALocationMatcher implements IFEMALocationMatcher {
         "123 Ocean Drive, Miami, Florida, 33139": {
             fipsStateCode: "12",
             fipsCountyCode: "086",
+            lat: 25.7817,
+            long: -80.1298,
         },
         "456 Main Street, Houston, Texas, 77002": {
             fipsStateCode: "48",
             fipsCountyCode: "201",
+            lat: 29.7604,
+            long: -95.3698,
         },
         "789 Sunset Blvd, Los Angeles, California, 90028": {
             fipsStateCode: "06",
             fipsCountyCode: "037",
+            lat: 34.0928,
+            long: -118.3287,
         },
         "321 Broadway, New York, New York, 10007": {
             fipsStateCode: "36",
             fipsCountyCode: "061",
+            lat: 40.7128,
+            long: -74.006,
         },
         "123 Main Street, San Francisco, California, 94105": {
             fipsStateCode: "06",
             fipsCountyCode: "075",
+            lat: 37.7749,
+            long: -122.4194,
         },
     };
 

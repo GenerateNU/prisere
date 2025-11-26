@@ -5,11 +5,11 @@ import { BannerData } from "@/types/user";
 import Link from "next/link";
 import Progress from "../progress";
 
-type Props = {
+type DisasterStatusBannerProps = {
     bannerData: BannerData;
 };
 
-export default function DisasterStatusBanner({ bannerData }: Props) {
+export default function DisasterStatusBanner({ bannerData }: DisasterStatusBannerProps) {
     // No disaster affecting business
     if (bannerData.status === "no-disaster") {
         return (
@@ -90,8 +90,8 @@ export default function DisasterStatusBanner({ bannerData }: Props) {
                             ]}
                         />
                     </div>
-                    <Link href={"/claims"} className="text-sm font-semibold underline no-underline">
-                        <BannerAction className="max-w-xs rounded-full hover:bg-pink bg-fuchsia text-white text-sm font-medium">
+                    <Link href={"/claims"} className="text-sm font-semibold">
+                        <BannerAction className="max-w-xs rounded-full hover:bg-pink bg-fuchsia text-white font-medium">
                             Continue filing claim report
                         </BannerAction>
                     </Link>

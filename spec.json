@@ -463,38 +463,12 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "externals": {
                       "type": "array",
@@ -547,26 +521,10 @@
                       ]
                     },
                     "createdAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     },
                     "updatedAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -574,7 +532,8 @@
                     "name",
                     "businessOwnerFullName",
                     "companyType",
-                    "createdAt"
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -647,38 +606,12 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "externals": {
                       "type": "array",
@@ -731,26 +664,10 @@
                       ]
                     },
                     "createdAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     },
                     "updatedAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -758,7 +675,8 @@
                     "name",
                     "businessOwnerFullName",
                     "companyType",
-                    "createdAt"
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -860,38 +778,12 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "externals": {
                       "type": "array",
@@ -944,26 +836,10 @@
                       ]
                     },
                     "createdAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     },
                     "updatedAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -971,7 +847,8 @@
                     "name",
                     "businessOwnerFullName",
                     "companyType",
-                    "createdAt"
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -1072,38 +949,12 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "externals": {
                       "type": "array",
@@ -1156,26 +1007,10 @@
                       ]
                     },
                     "createdAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     },
                     "updatedAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -1183,7 +1018,8 @@
                     "name",
                     "businessOwnerFullName",
                     "companyType",
-                    "createdAt"
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -1284,38 +1120,12 @@
                       "minLength": 1
                     },
                     "lastQuickBooksInvoiceImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "lastQuickBooksPurchaseImportTime": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        },
-                        {
-                          "nullable": true
-                        },
-                        {
-                          "nullable": true
-                        }
-                      ]
+                      "type": "string",
+                      "nullable": true
                     },
                     "externals": {
                       "type": "array",
@@ -1368,26 +1178,10 @@
                       ]
                     },
                     "createdAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     },
                     "updatedAt": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "string",
-                          "format": "date"
-                        }
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -1395,7 +1189,8 @@
                     "name",
                     "businessOwnerFullName",
                     "companyType",
-                    "createdAt"
+                    "createdAt",
+                    "updatedAt"
                   ]
                 }
               }
@@ -1491,6 +1286,18 @@
                       "companyId": {
                         "type": "string",
                         "format": "uuid"
+                      },
+                      "fipsStateCode": {
+                        "type": "number"
+                      },
+                      "fipsCountyCode": {
+                        "type": "number"
+                      },
+                      "lat": {
+                        "type": "number"
+                      },
+                      "long": {
+                        "type": "number"
                       }
                     },
                     "required": [
@@ -1501,7 +1308,11 @@
                       "city",
                       "streetAddress",
                       "postalCode",
-                      "companyId"
+                      "companyId",
+                      "fipsStateCode",
+                      "fipsCountyCode",
+                      "lat",
+                      "long"
                     ]
                   }
                 }
@@ -1767,6 +1578,12 @@
                           },
                           "fipsCountyCode": {
                             "type": "number"
+                          },
+                          "lat": {
+                            "type": "number"
+                          },
+                          "long": {
+                            "type": "number"
                           }
                         },
                         "required": [
@@ -1779,7 +1596,9 @@
                           "postalCode",
                           "companyId",
                           "fipsStateCode",
-                          "fipsCountyCode"
+                          "fipsCountyCode",
+                          "lat",
+                          "long"
                         ]
                       }
                     }
@@ -2506,6 +2325,12 @@
                     },
                     "fipsCountyCode": {
                       "type": "number"
+                    },
+                    "lat": {
+                      "type": "number"
+                    },
+                    "long": {
+                      "type": "number"
                     }
                   },
                   "required": [
@@ -2518,7 +2343,9 @@
                     "postalCode",
                     "companyId",
                     "fipsStateCode",
-                    "fipsCountyCode"
+                    "fipsCountyCode",
+                    "lat",
+                    "long"
                   ]
                 }
               }
@@ -3141,38 +2968,12 @@
                                 "minLength": 1
                               },
                               "lastQuickBooksInvoiceImportTime": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  },
-                                  {
-                                    "nullable": true
-                                  },
-                                  {
-                                    "nullable": true
-                                  }
-                                ]
+                                "type": "string",
+                                "nullable": true
                               },
                               "lastQuickBooksPurchaseImportTime": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  },
-                                  {
-                                    "nullable": true
-                                  },
-                                  {
-                                    "nullable": true
-                                  }
-                                ]
+                                "type": "string",
+                                "nullable": true
                               },
                               "externals": {
                                 "type": "array",
@@ -3225,26 +3026,10 @@
                                 ]
                               },
                               "createdAt": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  }
-                                ]
+                                "type": "string"
                               },
                               "updatedAt": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  }
-                                ]
+                                "type": "string"
                               }
                             },
                             "required": [
@@ -3252,7 +3037,8 @@
                               "name",
                               "businessOwnerFullName",
                               "companyType",
-                              "createdAt"
+                              "createdAt",
+                              "updatedAt"
                             ]
                           }
                         },
@@ -5167,108 +4953,121 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "minLength": 1
-                      },
-                      "companyId": {
-                        "type": "string",
-                        "minLength": 1
-                      },
-                      "quickBooksId": {
-                        "type": "number"
-                      },
-                      "totalAmountCents": {
-                        "type": "number",
-                        "minimum": 0
-                      },
-                      "quickbooksDateCreated": {
-                        "type": "string"
-                      },
-                      "isRefund": {
-                        "type": "boolean"
-                      },
-                      "vendor": {
-                        "type": "string"
-                      },
-                      "dateCreated": {
-                        "type": "string"
-                      },
-                      "lastUpdated": {
-                        "type": "string"
-                      },
-                      "lineItems": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "minLength": 1
-                            },
-                            "description": {
-                              "type": "string"
-                            },
-                            "quickBooksId": {
-                              "type": "number"
-                            },
-                            "purchaseId": {
-                              "type": "string"
-                            },
-                            "amountCents": {
-                              "type": "number"
-                            },
-                            "category": {
-                              "type": "string",
-                              "nullable": true,
-                              "minLength": 1
-                            },
-                            "type": {
-                              "type": "string",
-                              "enum": [
-                                "extraneous",
-                                "typical",
-                                "pending",
-                                "suggested extraneous",
-                                "suggested typical"
-                              ]
-                            },
-                            "dateCreated": {
-                              "type": "string"
-                            },
-                            "lastUpdated": {
-                              "type": "string"
-                            },
-                            "quickbooksDateCreated": {
-                              "type": "string",
-                              "format": "date-time"
-                            }
+                  "type": "object",
+                  "properties": {
+                    "purchases": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1
                           },
-                          "required": [
-                            "id",
-                            "purchaseId",
-                            "amountCents",
-                            "type",
-                            "dateCreated",
-                            "lastUpdated"
-                          ]
-                        }
+                          "companyId": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "quickBooksId": {
+                            "type": "number"
+                          },
+                          "totalAmountCents": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "quickbooksDateCreated": {
+                            "type": "string"
+                          },
+                          "isRefund": {
+                            "type": "boolean"
+                          },
+                          "vendor": {
+                            "type": "string"
+                          },
+                          "dateCreated": {
+                            "type": "string"
+                          },
+                          "lastUpdated": {
+                            "type": "string"
+                          },
+                          "lineItems": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "minLength": 1
+                                },
+                                "description": {
+                                  "type": "string"
+                                },
+                                "quickBooksId": {
+                                  "type": "number"
+                                },
+                                "purchaseId": {
+                                  "type": "string"
+                                },
+                                "amountCents": {
+                                  "type": "number"
+                                },
+                                "category": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "minLength": 1
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "extraneous",
+                                    "typical",
+                                    "pending",
+                                    "suggested extraneous",
+                                    "suggested typical"
+                                  ]
+                                },
+                                "dateCreated": {
+                                  "type": "string"
+                                },
+                                "lastUpdated": {
+                                  "type": "string"
+                                },
+                                "quickbooksDateCreated": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "purchaseId",
+                                "amountCents",
+                                "type",
+                                "dateCreated",
+                                "lastUpdated"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "companyId",
+                          "totalAmountCents",
+                          "isRefund",
+                          "dateCreated",
+                          "lastUpdated",
+                          "lineItems"
+                        ]
                       }
                     },
-                    "required": [
-                      "id",
-                      "companyId",
-                      "totalAmountCents",
-                      "isRefund",
-                      "dateCreated",
-                      "lastUpdated",
-                      "lineItems"
-                    ]
-                  }
+                    "numPurchases": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "purchases",
+                    "numPurchases"
+                  ]
                 }
               }
             }
@@ -5802,6 +5601,12 @@
                           },
                           "fipsCountyCode": {
                             "type": "number"
+                          },
+                          "lat": {
+                            "type": "number"
+                          },
+                          "long": {
+                            "type": "number"
                           }
                         },
                         "required": [
@@ -5814,7 +5619,9 @@
                           "postalCode",
                           "companyId",
                           "fipsStateCode",
-                          "fipsCountyCode"
+                          "fipsCountyCode",
+                          "lat",
+                          "long"
                         ]
                       }
                     }
@@ -6087,6 +5894,12 @@
                             },
                             "fipsCountyCode": {
                               "type": "number"
+                            },
+                            "lat": {
+                              "type": "number"
+                            },
+                            "long": {
+                              "type": "number"
                             }
                           },
                           "required": [
@@ -6099,7 +5912,9 @@
                             "postalCode",
                             "companyId",
                             "fipsStateCode",
-                            "fipsCountyCode"
+                            "fipsCountyCode",
+                            "lat",
+                            "long"
                           ]
                         }
                       }
@@ -6385,6 +6200,12 @@
                           },
                           "fipsCountyCode": {
                             "type": "number"
+                          },
+                          "lat": {
+                            "type": "number"
+                          },
+                          "long": {
+                            "type": "number"
                           }
                         },
                         "required": [
@@ -6397,7 +6218,9 @@
                           "postalCode",
                           "companyId",
                           "fipsStateCode",
-                          "fipsCountyCode"
+                          "fipsCountyCode",
+                          "lat",
+                          "long"
                         ]
                       }
                     }
@@ -6786,6 +6609,12 @@
                           },
                           "fipsCountyCode": {
                             "type": "number"
+                          },
+                          "lat": {
+                            "type": "number"
+                          },
+                          "long": {
+                            "type": "number"
                           }
                         },
                         "required": [
@@ -6798,7 +6627,9 @@
                           "postalCode",
                           "companyId",
                           "fipsStateCode",
-                          "fipsCountyCode"
+                          "fipsCountyCode",
+                          "lat",
+                          "long"
                         ]
                       }
                     }
@@ -7500,6 +7331,12 @@
                       },
                       "fipsCountyCode": {
                         "type": "number"
+                      },
+                      "lat": {
+                        "type": "number"
+                      },
+                      "long": {
+                        "type": "number"
                       }
                     },
                     "required": [
@@ -7512,7 +7349,9 @@
                       "postalCode",
                       "companyId",
                       "fipsStateCode",
-                      "fipsCountyCode"
+                      "fipsCountyCode",
+                      "lat",
+                      "long"
                     ]
                   }
                 }
@@ -9829,6 +9668,167 @@
         }
       }
     },
+    "/fema-risk-index": {
+      "get": {
+        "summary": "Get all of the fema risk index data",
+        "description": "Get all of the fema risk index data",
+        "tags": [
+          "fema-risk-data"
+        ],
+        "responses": {
+          "200": {
+            "description": "Fema risk index data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "countyFipsCode": {
+                        "type": "string"
+                      },
+                      "riskRating": {
+                        "type": "string"
+                      },
+                      "ealRating": {
+                        "type": "string"
+                      },
+                      "socialVuln": {
+                        "type": "string"
+                      },
+                      "communityResilience": {
+                        "type": "string"
+                      },
+                      "coastalFlooding": {
+                        "type": "string"
+                      },
+                      "drought": {
+                        "type": "string"
+                      },
+                      "wildFire": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date"
+                      }
+                    },
+                    "required": [
+                      "countyFipsCode",
+                      "riskRating",
+                      "ealRating",
+                      "socialVuln",
+                      "communityResilience",
+                      "coastalFlooding",
+                      "drought",
+                      "wildFire",
+                      "updatedAt",
+                      "createdAt"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fetching fema index data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fetching fema index data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Updates all of the fema risk index data",
+        "description": "Will delete the existing fema risk index data in the table and re import all of the index data",
+        "tags": [
+          "Disaster"
+        ],
+        "responses": {
+          "200": {
+            "description": "Update risk index data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Getting Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Getting Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/s3/getUploadUrl": {
       "post": {
         "summary": "Get presigned URL for document upload",
@@ -10262,38 +10262,12 @@
                                 "minLength": 1
                               },
                               "lastQuickBooksInvoiceImportTime": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  },
-                                  {
-                                    "nullable": true
-                                  },
-                                  {
-                                    "nullable": true
-                                  }
-                                ]
+                                "type": "string",
+                                "nullable": true
                               },
                               "lastQuickBooksPurchaseImportTime": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  },
-                                  {
-                                    "nullable": true
-                                  },
-                                  {
-                                    "nullable": true
-                                  }
-                                ]
+                                "type": "string",
+                                "nullable": true
                               },
                               "externals": {
                                 "type": "array",
@@ -10346,26 +10320,10 @@
                                 ]
                               },
                               "createdAt": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  }
-                                ]
+                                "type": "string"
                               },
                               "updatedAt": {
-                                "anyOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "format": "date"
-                                  }
-                                ]
+                                "type": "string"
                               }
                             },
                             "required": [
@@ -10373,7 +10331,8 @@
                               "name",
                               "businessOwnerFullName",
                               "companyType",
-                              "createdAt"
+                              "createdAt",
+                              "updatedAt"
                             ]
                           },
                           "claim": {
@@ -10579,6 +10538,12 @@
                                     },
                                     "fipsCountyCode": {
                                       "type": "number"
+                                    },
+                                    "lat": {
+                                      "type": "number"
+                                    },
+                                    "long": {
+                                      "type": "number"
                                     }
                                   },
                                   "required": [
@@ -10591,7 +10556,9 @@
                                     "postalCode",
                                     "companyId",
                                     "fipsStateCode",
-                                    "fipsCountyCode"
+                                    "fipsCountyCode",
+                                    "lat",
+                                    "long"
                                   ]
                                 }
                               },

@@ -34,6 +34,8 @@ describe("FEMA Location Matcher - getLocationFips", () => {
             expect(result).toEqual({
                 fipsStateCode: "12",
                 fipsCountyCode: "086",
+                lat: 25.7817,
+                long: -80.1298,
             });
         });
 
@@ -51,6 +53,8 @@ describe("FEMA Location Matcher - getLocationFips", () => {
             expect(result).toEqual({
                 fipsStateCode: "48",
                 fipsCountyCode: "201",
+                lat: 29.7604,
+                long: -95.3698,
             });
         });
     });
@@ -69,6 +73,8 @@ describe("FEMA Location Matcher - getLocationFips", () => {
             expect(result).toEqual({
                 fipsStateCode: "06",
                 fipsCountyCode: "075",
+                lat: NaN,
+                long: NaN,
             });
         });
 
