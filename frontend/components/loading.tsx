@@ -9,3 +9,22 @@ export default function Loading({ lines = 6 }) {
         </div>
     );
 }
+
+export function LargeLoading() {
+    return (
+    <div className="w-full flex h-full flex-col justify-between">
+    <div className="space-y-3">
+        <div className="h-5 bg-gray-200 rounded-full animate-pulse"></div>
+        <div className="h-5 bg-gray-200 rounded-full animate-pulse w-5/6"></div>
+        <div className="h-5 bg-gray-200 rounded-full animate-pulse w-4/6"></div>
+    </div>
+    
+    <div className="flex-1"></div>
+    
+    <div className="flex gap-3">
+        <div style={{ height: '20px', width: '180px', backgroundColor: '#d1d5db'}} className="rounded-full animate-pulse"></div>
+        <div style={{ height: '20px', width: '180px', backgroundColor: '#d1d5db' }} className="rounded-full animate-pulse"></div>
+    </div>
+</div>
+    )
+}

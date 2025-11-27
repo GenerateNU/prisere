@@ -22,11 +22,10 @@ interface LeafletGeoJSONMapProps {
     >;
 }
 
-const LeafletGeoJSONMap = ({ lat, long, femaRiskCountyLookup }: LeafletGeoJSONMapProps) => {
+const LeafletGeoJSONMap = ({ lat, long, femaRiskCountyLookup}: LeafletGeoJSONMapProps) => {
     const mapRef = useRef<HTMLDivElement>(null);
     const { isLoaded: leafletLoaded, error: leafletError } = useLeafletLoader();
     const [userLocation, setUserLocation] = useState<[number, number]>([lat || 0, long || 0]);
-
     const { map, isReady: mapReady, panTo } = useLeafletMap(mapRef, leafletLoaded, userLocation);
     useGeoJSONLayers(map, mapReady, femaRiskCountyLookup);
 

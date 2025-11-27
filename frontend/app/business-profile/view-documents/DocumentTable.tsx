@@ -49,20 +49,22 @@ export default function DocumentTable({
         <div>
             <Table>
                 <TableHeader>
-                    <TableHead className="text-[14px]">Title</TableHead>
-                    <TableHead className="text-[14px]">File Type</TableHead>
-                    <TableHead className="text-[14px]">Category</TableHead>
-                    <TableHead className="text-[14px]">
-                        <div className="flex items-center hover:text-slate-700" onClick={handleDateSort}>
-                            {dateSort === "asc" ? (
-                                <IoIosArrowRoundUp style={{ width: "18px", height: "18px" }} />
-                            ) : (
-                                <IoIosArrowRoundDown style={{ width: "18px", height: "18px" }} />
-                            )}
-                            Date
-                        </div>
-                    </TableHead>
-                    <TableHead className="text-[14px]"></TableHead>
+                    <TableRow>
+                        <TableHead className="text-[14px]">Title</TableHead>
+                        <TableHead className="text-[14px]">File Type</TableHead>
+                        <TableHead className="text-[14px]">Category</TableHead>
+                        <TableHead className="text-[14px]">
+                            <div className="flex items-center hover:text-slate-700" onClick={handleDateSort}>
+                                {dateSort === "asc" ? (
+                                    <IoIosArrowRoundUp style={{ width: "18px", height: "18px" }} />
+                                ) : (
+                                    <IoIosArrowRoundDown style={{ width: "18px", height: "18px" }} />
+                                )}
+                                Date
+                            </div>
+                        </TableHead>
+                        <TableHead className="text-[14px]"></TableHead>
+                    </TableRow>
                 </TableHeader>
                 <TableBody>
                     {documents.length !== 0 &&

@@ -6,13 +6,20 @@ import { HazardIndexOverviewCard, RiskIndexOverviewCard } from "../../app/locati
 import { useSelectedLocation } from "@/app/location-based-risk/hooks/useSelectedLocation";
 import { LocationsDropDown } from "./locationsDropDown";
 import { useFEMARiskScore } from "@/app/location-based-risk/hooks/useFEMARiskScore";
+import { useEffect, useState } from "react";
+import { LargeLoading } from "../loading";
 
 export default function LocationRisk() {
     const { availableLocations, selectedLocation, setSelectedLocation } = useSelectedLocation();
     const { countyLookup: femaRiskCountyLookup, lastUpdated } = useFEMARiskScore();
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        console.log("Loading", loading)
+    }, [loading])
 
     return (
-        <Card className="h-full p-[25px] border-[1px] ">
+        <Card className="h-full p-[25px] border-[1px]">
             <CardTitle className="text-[25px]">
                 <div className="flex gap-2 -top-2 items-center justify-between">
                     <div className="flex flex-row gap-2 items-center">

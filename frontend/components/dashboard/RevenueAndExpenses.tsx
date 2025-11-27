@@ -8,27 +8,28 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { ChartContainer, ChartTooltipContent, ChartTooltip, ChartConfig } from "@/components/ui/chart";
 import Link from "next/link";
 import { FaCircle } from "react-icons/fa";
+import { LargeLoading } from "../loading";
+import { FaExclamation } from "react-icons/fa6";
 
 export function RevenueAndExpensesNoData() {
     return (
-        <Card className="h-full min-h-[371px] p-6 border flex flex-col items-center justify-center">
-            <div className="flex flex-col items-center gap-4 max-w-md text-center">
-                <div className="w-16 h-16 bg-fuchsia rounded-full flex items-center justify-center">
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                        <path
-                            d="M16 8v8m0 4h.01M28 16c0 6.627-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4s12 5.373 12 12z"
-                            stroke="white"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                        />
-                    </svg>
-                </div>
+        <Card className="h-full min-h-[371px] border-none shadow-none flex flex-col p-6">
+            <CardTitle className="text-2xl font-bold">Revenue and Expenses</CardTitle>
+            <div className="relative flex items-center justify-center w-full h-full flex-1">
+                <CardContent className="p-0 z-0 absolute w-full h-full">
+                    <LargeLoading/>
+                </CardContent>
+                <div className="flex flex-col items-center justify-center h-full text-center gap-4 z-10 relative">
+                    <div className="flex w-16 h-16 bg-fuchsia rounded-full items-center justify-center">
+                        <FaExclamation color="white" size={50}/>
+                    </div>
 
-                <div>
-                    <h3 className="text-lg font-bold mb-2">No data shown in this range</h3>
-                    <p className="text-sm text-gray-600">
-                        You need to connect QuickBooks or upload a CSV for your data
-                    </p>
+                    <div>
+                        <h3 className="text-lg font-bold mb-2">No data shown in this range</h3>
+                        <p className="text-sm text-gray-600">
+                            You need to connect QuickBooks or upload a CSV for your data
+                        </p>
+                    </div>
                 </div>
             </div>
         </Card>
@@ -112,7 +113,7 @@ export default function RevenueAndExpenses() {
             <div className="flex flex-col mb-4 gap-2">
                 <CardTitle className="text-2xl font-bold">Revenue and Expenses</CardTitle>
 
-                {(expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading)) && (
+                {!(expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading)) && (
                     <div className="flex items-center gap-2 text-sm py-1 rounded">
                         <div
                             className={`flex items-center rounded py-1 px-2 ${percentChange >= 0 ? "bg-seafoam" : "bg-pink"}`}
@@ -127,23 +128,10 @@ export default function RevenueAndExpenses() {
                 )}
             </div>
 
-            {!(expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading)) ? (
+            {(expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading)) ? (
                  <CardContent className="p-0 flex-1 flex gap-6">
-                 <div className="w-full flex flex-col justify-between" style={{ minHeight: '300px' }}>
-                     <div className="space-y-3">
-                         <div className="h-5 bg-gray-200 rounded-full animate-pulse"></div>
-                         <div className="h-5 bg-gray-200 rounded-full animate-pulse w-5/6"></div>
-                         <div className="h-5 bg-gray-200 rounded-full animate-pulse w-4/6"></div>
-                     </div>
-                     
-                     <div className="flex-1"></div>
-                     
-                     <div className="flex gap-3">
-                         <div style={{ height: '20px', width: '180px', backgroundColor: '#d1d5db' }} className="rounded-full animate-pulse"></div>
-                         <div style={{ height: '20px', width: '180px', backgroundColor: '#d1d5db' }} className="rounded-full animate-pulse"></div>
-                     </div>
-                 </div>
-             </CardContent>
+                    <LargeLoading/>
+                </CardContent>
             ) : (
                 <CardContent className="p-0 flex-1 flex gap-6">
                     <div className="flex flex-col justify-between min-w-[200px]">
