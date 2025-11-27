@@ -30,11 +30,9 @@ export default function CategorySelector({
     const portalDropdownRef = useRef<HTMLDivElement>(null);
     const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
 
-
-
     useEffect(() => {
         setPortalRoot(document.getElementById("portal-root"));
-      }, []);
+    }, []);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -50,13 +48,11 @@ export default function CategorySelector({
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as Node;
 
-    
-    if (dropdownRef.current?.contains(target)) return;
+            if (dropdownRef.current?.contains(target)) return;
 
-  
-    if (portalDropdownRef.current?.contains(target)) return;
+            if (portalDropdownRef.current?.contains(target)) return;
 
-    setIsOpen(false);
+            setIsOpen(false);
         };
         if (isOpen) {
             document.addEventListener("mousedown", handleClickOutside);
@@ -106,82 +102,87 @@ export default function CategorySelector({
             </div>
 
             {/* Dropdown */}
-            {isOpen && portalRoot &&
+            {isOpen &&
+                portalRoot &&
                 createPortal(
-                <div ref={portalDropdownRef} className=" top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-[999999] max-h-[400px] overflow-hidden"
-                style={{
-                    position: "absolute",
-                    top: coords.top,
-                    left: coords.left,
-                    width: coords.width,
-                }}>
-                    {/* Search Input */}
-                    <div className="p-4 border-b border-gray-200">
-                        <input
-                            type="text"
-                            placeholder="Select an option or create one"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
-                            autoFocus
-                        />
-                    </div>
+                    <div
+                        ref={portalDropdownRef}
+                        className=" top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-[999999] max-h-[400px] overflow-hidden"
+                        style={{
+                            position: "absolute",
+                            top: coords.top,
+                            left: coords.left,
+                            width: coords.width,
+                        }}
+                    >
+                        {/* Search Input */}
+                        <div className="p-4 border-b border-gray-200">
+                            <input
+                                type="text"
+                                placeholder="Select an option or create one"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                                autoFocus
+                            />
+                        </div>
 
-                    {/* Category List */}
-                    <div className="overflow-y-auto max-h-[300px]">
-                        {filteredCategories.length > 0 ? (
-                            filteredCategories.map((category) => (
-                                <div
-                                    key={category}
-                                    onClick={() => handleCategorySelect(category)}
-                                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors"
-                                >
-                                    {/* Drag Handle */}
-                                    <div className="flex flex-col gap-[2px]">
-                                        <div className="flex gap-[2px]">
-                                            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-                                            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-                                        </div>
-                                        <div className="flex gap-[2px]">
-                                            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-                                            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-                                        </div>
-                                        <div className="flex gap-[2px]">
-                                            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-                                            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-                                        </div>
-                                    </div>
-
-                                    {/* Category */}
-                                    <span
-                                        className={`px-3 py-1 rounded-md text-sm font-medium ${defaultCategoryColors[category] || "bg-gray-100 text-gray-700"}`}
+                        {/* Category List */}
+                        <div className="overflow-y-auto max-h-[300px]">
+                            {filteredCategories.length > 0 ? (
+                                filteredCategories.map((category) => (
+                                    <div
+                                        key={category}
+                                        onClick={() => handleCategorySelect(category)}
+                                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors"
                                     >
-                                        {category}
-                                    </span>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="px-4 py-8 text-center text-gray-500 text-sm">
-                                {searchQuery ? (
-                                    <div>
-                                        <p>No matching categories</p>
-                                        <button
-                                            onClick={() => {
-                                                handleCategorySelect(searchQuery);
-                                            }}
-                                            className="mt-2 text-purple-600 hover:text-purple-700 font-medium"
+                                        {/* Drag Handle */}
+                                        <div className="flex flex-col gap-[2px]">
+                                            <div className="flex gap-[2px]">
+                                                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                                                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                                            </div>
+                                            <div className="flex gap-[2px]">
+                                                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                                                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                                            </div>
+                                            <div className="flex gap-[2px]">
+                                                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                                                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                                            </div>
+                                        </div>
+
+                                        {/* Category */}
+                                        <span
+                                            className={`px-3 py-1 rounded-md text-sm font-medium ${defaultCategoryColors[category] || "bg-gray-100 text-gray-700"}`}
                                         >
-                                            Create &quot;{searchQuery}&quot;
-                                        </button>
+                                            {category}
+                                        </span>
                                     </div>
-                                ) : (
-                                    "No categories available"
-                                )}
-                            </div>
-                        )}
-                    </div>
-                </div>
-            ,portalRoot)}
+                                ))
+                            ) : (
+                                <div className="px-4 py-8 text-center text-gray-500 text-sm">
+                                    {searchQuery ? (
+                                        <div>
+                                            <p>No matching categories</p>
+                                            <button
+                                                onClick={() => {
+                                                    handleCategorySelect(searchQuery);
+                                                }}
+                                                className="mt-2 text-purple-600 hover:text-purple-700 font-medium"
+                                            >
+                                                Create &quot;{searchQuery}&quot;
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        "No categories available"
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>,
+                    portalRoot
+                )}
         </div>
     );
 }

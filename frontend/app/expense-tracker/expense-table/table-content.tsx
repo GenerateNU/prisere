@@ -175,5 +175,7 @@ export default function TableContent({
 
     if (purchases.error) return <div>Error loading expenses</div>;
 
-    return <Table table={table} isLoading={purchases.isLoading} onRowClick={(row) => onRowClick?.(row.originalPurchase)} />;
+    return (
+        <Table table={table} isLoading={purchases.isLoading} onRowClick={(row) => onRowClick?.(row.originalPurchase)} />
+    );
 }

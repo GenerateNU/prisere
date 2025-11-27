@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useMutation } from "@tanstack/react-query";
 import { updateNotificationStatus } from "@/api/notifications";
 import { useState } from "react";
+import Loading from "@/components/loading";
 
 interface NotificationProps {
     notification: NotificationType;
@@ -70,8 +71,8 @@ export default function Notification({ notification }: NotificationProps) {
 export function LoadingNotification() {
     return (
         <div className="rounded-2xl p-6 max-w-full bg-white">
-            <div className="w-full flex justify-between">
-                <h2 className="text-2xl font-bold text-charcoal-900 mb-2">Notification Loading...</h2>
+            <div className="w-full flex justify-between pb-2">
+                <h2 className="text-2xl font-bold text-charcoal-900 mb-2">Notification</h2>
 
                 <Button
                     rounded="icon"
@@ -83,8 +84,7 @@ export function LoadingNotification() {
                     <RiMore2Fill />
                 </Button>
             </div>
-            <p className="text-sm text-fuchsia font-medium mb-4">Time Declared</p>
-            <p className="text-charcoal leading-relaxed">Description</p>
+            <Loading lines={2}/>
         </div>
     );
 }

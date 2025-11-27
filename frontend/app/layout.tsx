@@ -39,7 +39,7 @@ export default function RootLayout({
                     {!hideNavbar && <NavBar />}
                     <main className={!hideNavbar ? "ml-[300px]" : ""}>
                         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-                        <div id="portal-root"/>
+                        <div id="portal-root" />
                     </main>
                 </div>
             </body>

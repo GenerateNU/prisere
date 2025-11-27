@@ -17,11 +17,11 @@ export function RevenueAndExpensesNoData() {
             <CardTitle className="text-2xl font-bold">Revenue and Expenses</CardTitle>
             <div className="relative flex items-center justify-center w-full h-full flex-1">
                 <CardContent className="p-0 z-0 absolute w-full h-full">
-                    <LargeLoading/>
+                    <LargeLoading />
                 </CardContent>
                 <div className="flex flex-col items-center justify-center h-full text-center gap-4 z-10 relative">
                     <div className="flex w-16 h-16 bg-fuchsia rounded-full items-center justify-center">
-                        <FaExclamation color="white" size={50}/>
+                        <FaExclamation color="white" size={50} />
                     </div>
 
                     <div>
@@ -128,9 +128,9 @@ export default function RevenueAndExpenses() {
                 )}
             </div>
 
-            {(expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading)) ? (
-                 <CardContent className="p-0 flex-1 flex gap-6">
-                    <LargeLoading/>
+            {expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading) ? (
+                <CardContent className="p-0 flex-1 flex gap-6">
+                    <LargeLoading />
                 </CardContent>
             ) : (
                 <CardContent className="p-0 flex-1 flex gap-6">
