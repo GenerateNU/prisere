@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 interface CategorySelectorProps {
     selectedCategory: string;
@@ -25,15 +26,38 @@ export default function CategorySelector({
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
+    const portalDropdownRef = useRef<HTMLDivElement>(null);
+    const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
+
+
+
+    useEffect(() => {
+        setPortalRoot(document.getElementById("portal-root"));
+      }, []);
 
     // Close dropdown when clicking outside
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
-            }
-        };
+        if (isOpen && dropdownRef.current) {
+            const rect = dropdownRef.current.getBoundingClientRect();
+            setCoords({
+                top: rect.bottom + window.scrollY,
+                left: rect.left + window.scrollX,
+                width: rect.width,
+            });
+        }
 
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as Node;
+
+    
+    if (dropdownRef.current?.contains(target)) return;
+
+  
+    if (portalDropdownRef.current?.contains(target)) return;
+
+    setIsOpen(false);
+        };
         if (isOpen) {
             document.addEventListener("mousedown", handleClickOutside);
         }
@@ -82,8 +106,15 @@ export default function CategorySelector({
             </div>
 
             {/* Dropdown */}
-            {isOpen && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-[400px] overflow-hidden">
+            {isOpen && portalRoot &&
+                createPortal(
+                <div ref={portalDropdownRef} className=" top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-[999999] max-h-[400px] overflow-hidden"
+                style={{
+                    position: "absolute",
+                    top: coords.top,
+                    left: coords.left,
+                    width: coords.width,
+                }}>
                     {/* Search Input */}
                     <div className="p-4 border-b border-gray-200">
                         <input
@@ -150,7 +181,7 @@ export default function CategorySelector({
                         )}
                     </div>
                 </div>
-            )}
+            ,portalRoot)}
         </div>
     );
 }
