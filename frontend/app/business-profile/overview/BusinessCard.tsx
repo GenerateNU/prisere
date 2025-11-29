@@ -6,6 +6,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import CompanyEditor from "./BusinessInfoEditor";
 import { getUser } from "@/api/user";
+import { Card } from "@/components/ui/card";
+import Loading from "@/components/loading";
 
 export default function BusinessCard() {
     const [businessInfo, setBusinessInfo] = useState<UpdateCompanyRequest>({
@@ -32,7 +34,9 @@ export default function BusinessCard() {
 
     const handleSave = () => {
         updateBusinessMutate(businessInfo);
-        setEditing(false);
+        if (!error) {
+            setEditing(false);
+        }
     };
 
     const { data: businessQuery, isPending: businessPending } = useQuery({
@@ -59,19 +63,28 @@ export default function BusinessCard() {
 
     return (
         <div>
-            <div className="flex gap-[38px]">
-                <CompanyEditor
-                    company={businessInfo}
-                    user={user}
-                    setCompany={(company: UpdateCompanyRequest) => setBusinessInfo(company)}
-                    setUser={(userInfo) => setUser(userInfo)}
-                    isExpanded={editing}
-                    onExpand={() => (editing ? setEditing(false) : setEditing(true))}
-                    onCollapse={() => handleSave()}
-                    saveError={error}
-                    initialPending={businessPending}
-                />
-            </div>
+            {businessPending ? (
+                <Card className="w-full px-[28px] py-[20px] border-none shadow-none">
+                    <div className="flex items-center w-3/4">
+                        <p className="text-[20px] font-bold">Business Information</p>
+                    </div>
+                    <Loading lines={2} />
+                </Card>
+            ) : (
+                <div className="flex gap-[38px]">
+                    <CompanyEditor
+                        company={businessInfo}
+                        user={user}
+                        setCompany={(company: UpdateCompanyRequest) => setBusinessInfo(company)}
+                        setUser={(userInfo) => setUser(userInfo)}
+                        isExpanded={editing}
+                        onExpand={() => (editing ? setEditing(false) : setEditing(true))}
+                        onCollapse={() => handleSave()}
+                        saveError={error}
+                        initialPending={businessPending}
+                    />
+                </div>
+            )}
         </div>
     );
 }

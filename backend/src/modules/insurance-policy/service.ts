@@ -5,6 +5,7 @@ import {
     CreateInsurancePolicyBulkResponse,
     CreateInsurancePolicyDTO,
     CreateInsurancePolicyResponse,
+    DeleteInsurancePolicyDTO,
     GetInsurancePoliciesResponse,
     UpdateInsurancePolicyBulkDTO,
     UpdateInsurancePolicyBulkResponse,
@@ -12,6 +13,7 @@ import {
 } from "./types";
 import { IInsurancePolicyTransaction } from "./transaction";
 import { InsurancePolicy } from "../../entities/InsurancePolicy";
+import { DeleteResult } from "typeorm";
 
 export interface IInsurancePolicyService {
     createPolicy(payload: CreateInsurancePolicyDTO, companyId: string): Promise<CreateInsurancePolicyResponse>;
@@ -25,6 +27,7 @@ export interface IInsurancePolicyService {
         payload: UpdateInsurancePolicyBulkDTO,
         companyId: string
     ): Promise<CreateInsurancePolicyBulkResponse>;
+    removeInsurancePolicyById(payload: DeleteInsurancePolicyDTO): Promise<DeleteResult>;
 }
 
 export class InsurancePolicyService implements IInsurancePolicyService {
@@ -102,4 +105,11 @@ export class InsurancePolicyService implements IInsurancePolicyService {
             createdAt: policy.createdAt.toISOString(),
         };
     };
+
+    removeInsurancePolicyById = withServiceErrorHandling(
+        async (payload: DeleteInsurancePolicyDTO): Promise<DeleteResult> => {
+            const result = await this.policyTransaction.removeInsurancePolicyById(payload);
+            return result;
+        }
+    );
 }

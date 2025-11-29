@@ -1,9 +1,15 @@
 "use client";
 
-import { createInsurancePolicy, getInsurancePolicies, updateInsurancePolicy } from "@/api/insurance";
+import {
+    createInsurancePolicy,
+    deleteInsurancePolicy,
+    getInsurancePolicies,
+    updateInsurancePolicy,
+} from "@/api/insurance";
 import InsuranceEditor from "@/components/InsuranceEditor";
+import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
+import { Card } from "@/components/ui/card";
 import { CreateInsurancePolicyRequest, UpdateInsurancePolicyRequest } from "@/types/insurance-policy";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -43,6 +49,17 @@ export default function InsuranceCard() {
         },
     });
 
+    const { mutate: deleteInsuranceMutate } = useMutation({
+        mutationFn: (insurancePolicyId: string) => deleteInsurancePolicy(insurancePolicyId),
+        onSuccess: () => {
+            setSaveError(null);
+            setEditingInsuranceIndex(null);
+        },
+        onError: (_error: Error) => {
+            setSaveError("An error occurred while deleting the insurance policy.");
+        },
+    });
+
     const updateInsurance = (index: number, insurance: CreateInsurancePolicyRequest | UpdateInsurancePolicyRequest) => {
         const newInsurance = [...insuranceInfo];
         newInsurance[index] = insurance;
@@ -50,6 +67,12 @@ export default function InsuranceCard() {
     };
 
     const removeInsurance = (index: number) => {
+        const insurance = insuranceInfo[index];
+
+        if ("id" in insurance && insurance.id) {
+            deleteInsuranceMutate(insurance.id);
+        }
+
         setInsuranceInfo((prev) => prev.filter((_, i) => i !== index));
         setEditingInsuranceIndex(null);
     };
@@ -85,36 +108,40 @@ export default function InsuranceCard() {
     }, [insuranceQuery]);
 
     return (
-        <div>
+        <Card className="p-[28px] flex gap-[12px] border-none shadow-none">
+            <p className="font-bold text-[20px]">Insurance Information</p>
             {insurancePending ? (
-                <Spinner className="mb-[16px]" />
+                <Loading lines={3} />
             ) : (
-                <div className="flex gap-[38px]">
-                    {insuranceInfo.map((insurance, index) => (
-                        <div key={index} className="w-1/2">
-                            <InsuranceEditor
-                                insurance={insurance}
-                                setInsurance={(i) => updateInsurance(index, i)}
-                                removeInsurance={() => removeInsurance(index)}
-                                isExpanded={editingInsuranceIndex === index}
-                                onExpand={() =>
-                                    editingInsuranceIndex === index
-                                        ? setEditingInsuranceIndex(null)
-                                        : setEditingInsuranceIndex(index)
-                                }
-                                onCollapse={() => handleSave()}
-                                saveError={saveError}
-                            />
-                        </div>
-                    ))}
+                <div>
+                    <div className="flex gap-[38px]">
+                        {insuranceInfo.map((insurance, index) => (
+                            <div key={index} className="w-1/2">
+                                <InsuranceEditor
+                                    insurance={insurance}
+                                    setInsurance={(i) => updateInsurance(index, i)}
+                                    removeInsurance={() => removeInsurance(index)}
+                                    isExpanded={editingInsuranceIndex === index}
+                                    onExpand={() =>
+                                        editingInsuranceIndex === index
+                                            ? setEditingInsuranceIndex(null)
+                                            : setEditingInsuranceIndex(index)
+                                    }
+                                    onCollapse={() => handleSave()}
+                                    saveError={saveError}
+                                />
+                            </div>
+                        ))}
+                    </div>
+
+                    <Button
+                        className="w-[196px] flex items-center text-[16px] h-[34px] self-start px-[12px] py-[4px] underline bg-slate hover:text-gray-600"
+                        onClick={addInsurance}
+                    >
+                        <IoAddCircleOutline /> Add an Insurance
+                    </Button>
                 </div>
             )}
-            <Button
-                className="w-[196px] flex items-center text-[16px] h-[34px] self-start px-[12px] py-[4px] underline bg-slate hover:text-gray-600"
-                onClick={addInsurance}
-            >
-                <IoAddCircleOutline /> Add an Insurance
-            </Button>
-        </div>
+        </Card>
     );
 }

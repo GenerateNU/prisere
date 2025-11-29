@@ -1,8 +1,9 @@
-import { DataSource, In } from "typeorm";
+import { DataSource, In, DeleteResult } from "typeorm";
 import { InsurancePolicy } from "../../entities/InsurancePolicy";
 import {
     CreateInsurancePolicyBulkDTO,
     CreateInsurancePolicyDTO,
+    DeleteInsurancePolicyDTO,
     UpdateInsurancePolicyBulkDTO,
     UpdateInsurancePolicyDTO,
 } from "./types";
@@ -14,6 +15,7 @@ export interface IInsurancePolicyTransaction {
     getAllPolicies(companyId: string): Promise<InsurancePolicy[]>;
     updatePolicy(payload: UpdateInsurancePolicyDTO, companyId: string): Promise<InsurancePolicy | null>;
     updatePolicyBulk(payload: UpdateInsurancePolicyBulkDTO, companyId: string): Promise<InsurancePolicy[]>;
+    removeInsurancePolicyById(payload: DeleteInsurancePolicyDTO): Promise<DeleteResult>;
 }
 
 export class InsurancePolicyTransaction implements IInsurancePolicyTransaction {
@@ -76,5 +78,11 @@ export class InsurancePolicyTransaction implements IInsurancePolicyTransaction {
         });
 
         return updatedPolicies;
+    }
+
+    async removeInsurancePolicyById(payload: DeleteInsurancePolicyDTO): Promise<DeleteResult> {
+        const id = payload.id;
+        const result = await this.db.manager.delete(InsurancePolicy, { id: id });
+        return result;
     }
 }

@@ -26,8 +26,8 @@ const NextStepItem = ({
 }) => (
     <li className="rounded-lg border p-4 transition-colors">
         <div className="flex items-start gap-3">
-            <div className="shrink-0 w-10 h-10 rounded-full bg-pink flex items-center justify-center">
-                <Icon className="w-5 h-5 text-fuchsia" />
+            <div className="w-10 h-10 rounded-full bg-pink flex items-center justify-center">
+                <Icon className="w-5 h-5 text-fuchsia" strokeWidth={1.25} />
             </div>
             <div className="flex-1">
                 <p className="text-sm font-medium mb-1">{title}</p>
@@ -68,7 +68,7 @@ const STEPS = {
     businessProfile: {
         icon: Building,
         title: "Ensure business profile is up to date",
-        link: "/business-profile", // Double check/update this
+        link: "/business-profile",
         linkText: "Go to Business Profile",
     },
 };
@@ -90,7 +90,7 @@ export default function NextSteps({ bannerData }: Props) {
     }
 
     return (
-        <Card className="h-full min-h-[371px] p-6 border flex flex-col">
+        <Card className="h-full min-h-[371px] p-6 border-none flex flex-col shadow-none">
             <CardTitle className="text-2xl font-bold">Next Steps</CardTitle>
 
             <p className="text-sm text-charcoal">{headerText}</p>

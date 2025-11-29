@@ -1286,6 +1286,18 @@
                       "companyId": {
                         "type": "string",
                         "format": "uuid"
+                      },
+                      "fipsStateCode": {
+                        "type": "number"
+                      },
+                      "fipsCountyCode": {
+                        "type": "number"
+                      },
+                      "lat": {
+                        "type": "number"
+                      },
+                      "long": {
+                        "type": "number"
                       }
                     },
                     "required": [
@@ -1296,7 +1308,11 @@
                       "city",
                       "streetAddress",
                       "postalCode",
-                      "companyId"
+                      "companyId",
+                      "fipsStateCode",
+                      "fipsCountyCode",
+                      "lat",
+                      "long"
                     ]
                   }
                 }
@@ -1562,6 +1578,12 @@
                           },
                           "fipsCountyCode": {
                             "type": "number"
+                          },
+                          "lat": {
+                            "type": "number"
+                          },
+                          "long": {
+                            "type": "number"
                           }
                         },
                         "required": [
@@ -1574,7 +1596,9 @@
                           "postalCode",
                           "companyId",
                           "fipsStateCode",
-                          "fipsCountyCode"
+                          "fipsCountyCode",
+                          "lat",
+                          "long"
                         ]
                       }
                     }
@@ -2301,6 +2325,12 @@
                     },
                     "fipsCountyCode": {
                       "type": "number"
+                    },
+                    "lat": {
+                      "type": "number"
+                    },
+                    "long": {
+                      "type": "number"
                     }
                   },
                   "required": [
@@ -2313,7 +2343,9 @@
                     "postalCode",
                     "companyId",
                     "fipsStateCode",
-                    "fipsCountyCode"
+                    "fipsCountyCode",
+                    "lat",
+                    "long"
                   ]
                 }
               }
@@ -5566,6 +5598,12 @@
                           },
                           "fipsCountyCode": {
                             "type": "number"
+                          },
+                          "lat": {
+                            "type": "number"
+                          },
+                          "long": {
+                            "type": "number"
                           }
                         },
                         "required": [
@@ -5578,7 +5616,9 @@
                           "postalCode",
                           "companyId",
                           "fipsStateCode",
-                          "fipsCountyCode"
+                          "fipsCountyCode",
+                          "lat",
+                          "long"
                         ]
                       }
                     }
@@ -5851,6 +5891,12 @@
                             },
                             "fipsCountyCode": {
                               "type": "number"
+                            },
+                            "lat": {
+                              "type": "number"
+                            },
+                            "long": {
+                              "type": "number"
                             }
                           },
                           "required": [
@@ -5863,7 +5909,9 @@
                             "postalCode",
                             "companyId",
                             "fipsStateCode",
-                            "fipsCountyCode"
+                            "fipsCountyCode",
+                            "lat",
+                            "long"
                           ]
                         }
                       }
@@ -6149,6 +6197,12 @@
                           },
                           "fipsCountyCode": {
                             "type": "number"
+                          },
+                          "lat": {
+                            "type": "number"
+                          },
+                          "long": {
+                            "type": "number"
                           }
                         },
                         "required": [
@@ -6161,7 +6215,9 @@
                           "postalCode",
                           "companyId",
                           "fipsStateCode",
-                          "fipsCountyCode"
+                          "fipsCountyCode",
+                          "lat",
+                          "long"
                         ]
                       }
                     }
@@ -6550,6 +6606,12 @@
                           },
                           "fipsCountyCode": {
                             "type": "number"
+                          },
+                          "lat": {
+                            "type": "number"
+                          },
+                          "long": {
+                            "type": "number"
                           }
                         },
                         "required": [
@@ -6562,7 +6624,9 @@
                           "postalCode",
                           "companyId",
                           "fipsStateCode",
-                          "fipsCountyCode"
+                          "fipsCountyCode",
+                          "lat",
+                          "long"
                         ]
                       }
                     }
@@ -7264,6 +7328,12 @@
                       },
                       "fipsCountyCode": {
                         "type": "number"
+                      },
+                      "lat": {
+                        "type": "number"
+                      },
+                      "long": {
+                        "type": "number"
                       }
                     },
                     "required": [
@@ -7276,7 +7346,9 @@
                       "postalCode",
                       "companyId",
                       "fipsStateCode",
-                      "fipsCountyCode"
+                      "fipsCountyCode",
+                      "lat",
+                      "long"
                     ]
                   }
                 }
@@ -9593,6 +9665,209 @@
         }
       }
     },
+    "/insurance/{id}": {
+      "delete": {
+        "summary": "Removes insurance policy of a company",
+        "description": "Removes the insurance policy with the provided id",
+        "tags": [
+          "Location Address"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Insurance policy successfully deleted"
+          },
+          "400": {
+            "description": "Invalid insurance policy ID or no Company with that ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fema-risk-index": {
+      "get": {
+        "summary": "Get all of the fema risk index data",
+        "description": "Get all of the fema risk index data",
+        "tags": [
+          "fema-risk-data"
+        ],
+        "responses": {
+          "200": {
+            "description": "Fema risk index data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "countyFipsCode": {
+                        "type": "string"
+                      },
+                      "riskRating": {
+                        "type": "string"
+                      },
+                      "ealRating": {
+                        "type": "string"
+                      },
+                      "socialVuln": {
+                        "type": "string"
+                      },
+                      "communityResilience": {
+                        "type": "string"
+                      },
+                      "coastalFlooding": {
+                        "type": "string"
+                      },
+                      "drought": {
+                        "type": "string"
+                      },
+                      "wildFire": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date"
+                      }
+                    },
+                    "required": [
+                      "countyFipsCode",
+                      "riskRating",
+                      "ealRating",
+                      "socialVuln",
+                      "communityResilience",
+                      "coastalFlooding",
+                      "drought",
+                      "wildFire",
+                      "updatedAt",
+                      "createdAt"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Fetching fema index data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Fetching fema index data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Updates all of the fema risk index data",
+        "description": "Will delete the existing fema risk index data in the table and re import all of the index data",
+        "tags": [
+          "Disaster"
+        ],
+        "responses": {
+          "200": {
+            "description": "Update risk index data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Getting Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Getting Disaster Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/s3/getUploadUrl": {
       "post": {
         "summary": "Get presigned URL for document upload",
@@ -10302,6 +10577,12 @@
                                     },
                                     "fipsCountyCode": {
                                       "type": "number"
+                                    },
+                                    "lat": {
+                                      "type": "number"
+                                    },
+                                    "long": {
+                                      "type": "number"
                                     }
                                   },
                                   "required": [
@@ -10314,7 +10595,9 @@
                                     "postalCode",
                                     "companyId",
                                     "fipsStateCode",
-                                    "fipsCountyCode"
+                                    "fipsCountyCode",
+                                    "lat",
+                                    "long"
                                   ]
                                 }
                               },
