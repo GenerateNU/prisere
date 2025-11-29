@@ -24,7 +24,7 @@ export const withServiceErrorHandling = <T extends any[], R>(handler: (...args: 
                     case "23502":
                         throw Boom.badRequest("Missing required field");
                     default:
-                        throw Boom.internal(error, { message: "An expected error occured" });
+                        throw Boom.internal(error, { message: "An unexpected error occured" });
                 }
             } else {
                 throw Boom.boomify(error);

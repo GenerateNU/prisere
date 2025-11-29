@@ -1,0 +1,233 @@
+<?xml version="1.0"?>
+<mdb:MD_Metadata xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cat="http://standards.iso.org/iso/19115/-3/cat/1.0" xmlns:cit="http://standards.iso.org/iso/19115/-3/cit/1.0" xmlns:gcx="http://standards.iso.org/iso/19115/-3/gcx/1.0" xmlns:gex="http://standards.iso.org/iso/19115/-3/gex/1.0" xmlns:lan="http://standards.iso.org/iso/19115/-3/lan/1.0" xmlns:srv="http://standards.iso.org/iso/19115/-3/srv/2.0" xmlns:mac="http://standards.iso.org/iso/19115/-3/mac/1.0" xmlns:mas="http://standards.iso.org/iso/19115/-3/mas/1.0" xmlns:mcc="http://standards.iso.org/iso/19115/-3/mcc/1.0" xmlns:mco="http://standards.iso.org/iso/19115/-3/mco/1.0" xmlns:mda="http://standards.iso.org/iso/19115/-3/mda/1.0" xmlns:mdb="http://standards.iso.org/iso/19115/-3/mdb/1.0" xmlns:mdt="http://standards.iso.org/iso/19115/-3/mdt/1.0" xmlns:mex="http://standards.iso.org/iso/19115/-3/mex/1.0" xmlns:mrl="http://standards.iso.org/iso/19115/-3/mrl/1.0" xmlns:mds="http://standards.iso.org/iso/19115/-3/mds/1.0" xmlns:mmi="http://standards.iso.org/iso/19115/-3/mmi/1.0" xmlns:mpc="http://standards.iso.org/iso/19115/-3/mpc/1.0" xmlns:mrc="http://standards.iso.org/iso/19115/-3/mrc/1.0" xmlns:mrd="http://standards.iso.org/iso/19115/-3/mrd/1.0" xmlns:mri="http://standards.iso.org/iso/19115/-3/mri/1.0" xmlns:mrs="http://standards.iso.org/iso/19115/-3/mrs/1.0" xmlns:msr="http://standards.iso.org/iso/19115/-3/msr/1.0" xmlns:mdq="http://standards.iso.org/iso/19157/-2/mdq/1.0" xmlns:dqc="http://standards.iso.org/iso/19157/-2/dqc/1.0" xmlns:gco="http://standards.iso.org/iso/19115/-3/gco/1.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<mdb:defaultLocale>
+		<lan:PT_Locale>
+			<lan:language>
+				<lan:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng">eng</lan:LanguageCode>
+			</lan:language>
+			<lan:country>
+				<lan:CountryCode codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="US">US</lan:CountryCode>
+			</lan:country>
+			<lan:characterEncoding>
+				<lan:MD_CharacterSetCode codeList="standards.iso.org/19115/-3/lan/1.0/codelists.xml#MD_CharacterSetCode" codeListValue="utf8">utf8</lan:MD_CharacterSetCode>
+			</lan:characterEncoding>
+		</lan:PT_Locale>
+	</mdb:defaultLocale>
+	<mdb:metadataScope>
+		<mdb:MD_MetadataScope>
+			<mdb:resourceScope>
+				<mcc:MD_ScopeCode codeList="standards.iso.org/19115/-3/lan/1.0/codelists.xml#MD_ScopeCode" codeListValue="dataset">dataset</mcc:MD_ScopeCode>
+			</mdb:resourceScope>
+		</mdb:MD_MetadataScope>
+	</mdb:metadataScope>
+	<mdb:contact>
+		<cit:CI_Responsibility>
+			<cit:role>
+				<cit:CI_RoleCode codeList="standards.iso.org/19115/-3/lan/1.0/codelists.xml#CI_RoleCode" codeListValue="pointOfContact">pointOfContact</cit:CI_RoleCode>
+			</cit:role>
+			<cit:party>
+				<cit:CI_Organisation>
+					<cit:name>
+						<gco:CharacterString>Federal Emergency Management Agency</gco:CharacterString>
+					</cit:name>
+					<cit:contactInfo>
+						<cit:CI_Contact>
+							<cit:address>
+								<cit:CI_Address>
+									<cit:electronicMailAddress>
+										<gco:CharacterString>FEMA-NRI@fema.dhs.gov</gco:CharacterString>
+									</cit:electronicMailAddress>
+								</cit:CI_Address>
+							</cit:address>
+						</cit:CI_Contact>
+					</cit:contactInfo>
+					<cit:individual>
+						<cit:CI_Individual>
+							<cit:name>
+								<gco:CharacterString>National Risk Index</gco:CharacterString>
+							</cit:name>
+						</cit:CI_Individual>
+					</cit:individual>
+				</cit:CI_Organisation>
+			</cit:party>
+		</cit:CI_Responsibility>
+	</mdb:contact>
+	<mdb:dateInfo>
+		<cit:CI_Date>
+			<cit:date>
+				<gco:DateTime>2023-03-13T00:00:00</gco:DateTime>
+			</cit:date>
+			<cit:dateType>
+				<cit:CI_DateTypeCode codeList="standards.iso.org/19115/-3/lan/1.0/codelists.xml#CI_DateTypeCode" codeListValue="revision">revision</cit:CI_DateTypeCode>
+			</cit:dateType>
+		</cit:CI_Date>
+	</mdb:dateInfo>
+	<mdb:metadataStandard>
+		<cit:CI_Citation>
+			<cit:title>
+				<gco:CharacterString>ISO 19115-3 Geographic Information - Metadata - Part 1: Fundamentals</gco:CharacterString>
+			</cit:title>
+			<cit:edition>
+				<gco:CharacterString>2014</gco:CharacterString>
+			</cit:edition>
+		</cit:CI_Citation>
+	</mdb:metadataStandard>
+	<mdb:identificationInfo>
+		<mri:MD_DataIdentification>
+			<mri:citation>
+				<cit:CI_Citation>
+					<cit:title>
+						<gco:CharacterString>National Risk Index</gco:CharacterString>
+					</cit:title>
+					<cit:edition>
+						<gco:CharacterString>March 2023 (version 1.19.0)</gco:CharacterString>
+					</cit:edition>
+				</cit:CI_Citation>
+			</mri:citation>
+			<mri:abstract>
+				<gco:CharacterString>The National Risk Index is a dataset and online tool that helps to illustrate the communities most at risk for 18 natural hazards across the United States and territories: Avalanche, Coastal Flooding, Cold Wave, Drought, Earthquake, Hail, Heat Wave, Hurricane, Ice Storm, Landslide, Lightning, Riverine Flooding, Strong Wind, Tornado, Tsunami, Volcanic Activity, Wildfire, and Winter Weather. The National Risk Index provides Risk Index values, scores and ratings based on data for Expected Annual Loss due to natural hazards, Social Vulnerability, and Community Resilience. Separate values, scores and ratings are also provided for Expected Annual Loss, Social Vulnerability, and Community Resilience. For the Risk Index and Expected Annual Loss, values, scores and ratings can be viewed as a composite score for all hazards or individually for each of the 18 hazard types.Sources for Expected Annual Loss data include: Alaska Department of Natural Resources, Arizona State University’s (ASU) Center for Emergency Management and Homeland Security (CEMHS), California Department of Conservation, California Office of Emergency Services California Geological Survey, Colorado Avalanche Information Center, CoreLogic’s Flood Services, Federal Emergency Management Agency (FEMA) National Flood Insurance Program, Humanitarian Data Exchange (HDX), Iowa State University's Iowa Environmental Mesonet, Multi-Resolution Land Characteristics (MLRC) Consortium, National Aeronautics and Space Administration’s (NASA) Cooperative Open Online Landslide Repository (COOLR), National Earthquake Hazards Reduction Program (NEHRP), National Oceanic and Atmospheric Administration’s National Centers for Environmental Information (NCEI), National Oceanic and Atmospheric Administration's National Hurricane Center, National Oceanic and Atmospheric Administration's National Weather Service (NWS), National Oceanic and Atmospheric Administration's Office for Coastal Management, National Oceanic and Atmospheric Administration's National Geophysical Data Center, National Oceanic and Atmospheric Administration's Storm Prediction Center, Oregon Department of Geology and Mineral Industries, Pacific Islands Ocean Observing System, Puerto Rico Seismic Network, Smithsonian Institution's Global Volcanism Program, State of Hawaii’s Office of Planning’s Statewide GIS Program, U.S. Army Corps of Engineers’ Cold Regions Research and Engineering Laboratory (CRREL), U.S. Census Bureau, U.S. Department of Agriculture's (USDA) National Agricultural Statistics Service (NASS), U.S. Forest Service's Fire Modeling Institute's Missoula Fire Sciences Lab, U.S. Forest Service's National Avalanche Center (NAC), U.S. Geological Survey (USGS), U.S. Geological Survey's Landslide Hazards Program, United Nations Office for Disaster Risk Reduction (UNDRR), University of Alaska – Fairbanks' Alaska Earthquake Center, University of Nebraska-Lincoln's National Drought Mitigation Center (NDMC), University of Southern California's Tsunami Research Center, and Washington State Department of Natural Resources.Data for Social Vulnerability are provided by the Centers for Disease Control (CDC) Agency for Toxic Substances and Disease Registry (ATSDR) Social Vulnerability Index, and data for Community Resilience are provided by University of South Carolina's Hazards and Vulnerability Research Institute’s (HVRI) 2020 Baseline Resilience Indicators for Communities.The source of the boundaries for counties and Census tracts are based on the U.S. Census Bureau’s 2021 TIGER/Line shapefiles.  Building value and population exposures for communities are based on FEMA’s Hazus 6.0.  Agriculture values are based on the USDA 2017 Census of Agriculture.</gco:CharacterString>
+			</mri:abstract>
+			<mri:purpose>
+				<gco:CharacterString>The National Risk Index is a dataset and online tool that helps to illustrate the communities most at risk for 18 natural hazards across the United States and territories. It was designed and built by FEMA in close collaboration with various stakeholders and partners in academia; local, state and federal government; and private industry. The Risk Index leverages available source data for natural hazard and community risk factors to develop a baseline relative risk measurement for each U.S. county and Census tract. The National Risk Index is intended to help users better understand the natural hazard risk of their communities.</gco:CharacterString>
+			</mri:purpose>
+			<mri:credit>
+				<gco:CharacterString>FEMA, Compass, CDM Smith, ABS Consulting, Factor, Inc., Arizona State University (for Spatial Hazard Events and Losses Database for the United States), the Centers for Disease Control Agency for Toxic Substances and Disease Registry (for the Social Vulnerability Index), the University of South Carolina's Hazards and Vulnerability Research Institute (for Baseline Resilience Indicators for Communities), and all the other data providers and subject matter experts that have helped guide the National Risk Index over the years.</gco:CharacterString>
+			</mri:credit>
+			<mri:status>
+				<mcc:MD_ProgressCode codeList="standards.iso.org/19115/-3/lan/1.0/codelists.xml#MD_ProgressCode" codeListValue="completed">completed</mcc:MD_ProgressCode>
+			</mri:status>
+			<mri:pointOfContact>
+				<cit:CI_Responsibility>
+					<cit:role>
+						<cit:CI_RoleCode codeList="standards.iso.org/19115/-3/lan/1.0/codelists.xml#CI_RoleCode" codeListValue="pointOfContact">pointOfContact</cit:CI_RoleCode>
+					</cit:role>
+					<cit:party>
+						<cit:CI_Organisation>
+							<cit:name>
+								<gco:CharacterString>Federal Emergency Management Agency</gco:CharacterString>
+							</cit:name>
+							<cit:contactInfo>
+								<cit:CI_Contact>
+									<cit:address>
+										<cit:CI_Address>
+											<cit:electronicMailAddress>
+												<gco:CharacterString>FEMA-NRI@fema.dhs.gov</gco:CharacterString>
+											</cit:electronicMailAddress>
+										</cit:CI_Address>
+									</cit:address>
+								</cit:CI_Contact>
+							</cit:contactInfo>
+							<cit:individual>
+								<cit:CI_Individual>
+									<cit:name>
+										<gco:CharacterString>National Risk Index</gco:CharacterString>
+									</cit:name>
+								</cit:CI_Individual>
+							</cit:individual>
+						</cit:CI_Organisation>
+					</cit:party>
+				</cit:CI_Responsibility>
+			</mri:pointOfContact>
+			<mri:topicCategory>
+				<mri:MD_TopicCategoryCode>environment</mri:MD_TopicCategoryCode>
+			</mri:topicCategory>
+			<mri:topicCategory>
+				<mri:MD_TopicCategoryCode>planningCadastre</mri:MD_TopicCategoryCode>
+			</mri:topicCategory>
+			<mri:topicCategory>
+				<mri:MD_TopicCategoryCode>society</mri:MD_TopicCategoryCode>
+			</mri:topicCategory>
+			<mri:extent>
+				<gex:EX_Extent>
+					<gex:geographicElement>
+						<gex:EX_GeographicBoundingBox>
+							<gex:extentTypeCode>
+								<gco:Boolean>true</gco:Boolean>
+							</gex:extentTypeCode>
+							<gex:westBoundLongitude>
+								<gco:Decimal>-179.2</gco:Decimal>
+							</gex:westBoundLongitude>
+							<gex:eastBoundLongitude>
+								<gco:Decimal>179.8</gco:Decimal>
+							</gex:eastBoundLongitude>
+							<gex:southBoundLatitude>
+								<gco:Decimal>-14.5</gco:Decimal>
+							</gex:southBoundLatitude>
+							<gex:northBoundLatitude>
+								<gco:Decimal>71.4</gco:Decimal>
+							</gex:northBoundLatitude>
+						</gex:EX_GeographicBoundingBox>
+					</gex:geographicElement>
+				</gex:EX_Extent>
+			</mri:extent>
+			<mri:resourceMaintenance>
+				<mmi:MD_MaintenanceInformation>
+					<mmi:maintenanceAndUpdateFrequency>
+						<mmi:MD_MaintenanceFrequencyCode codeList="standards.iso.org/19115/-3/lan/1.0/codelists.xml#MD_MaintenanceFrequencyCode" codeListValue="irregular">irregular</mmi:MD_MaintenanceFrequencyCode>
+					</mmi:maintenanceAndUpdateFrequency>
+				</mmi:MD_MaintenanceInformation>
+			</mri:resourceMaintenance>
+			<mri:descriptiveKeywords>
+				<mri:MD_Keywords>
+					<mri:keyword>
+						<gco:CharacterString>National Risk Index</gco:CharacterString>
+					</mri:keyword>
+					<mri:keyword>
+						<gco:CharacterString>NRI</gco:CharacterString>
+					</mri:keyword>
+					<mri:keyword>
+						<gco:CharacterString>The National Risk Index</gco:CharacterString>
+					</mri:keyword>
+					<mri:keyword>
+						<gco:CharacterString>The NRI</gco:CharacterString>
+					</mri:keyword>
+					<mri:keyword>
+						<gco:CharacterString>Flood Risk</gco:CharacterString>
+					</mri:keyword>
+					<mri:keyword>
+						<gco:CharacterString>Risk Assessment</gco:CharacterString>
+					</mri:keyword>
+					<mri:keyword>
+						<gco:CharacterString>Natural Hazard Risk</gco:CharacterString>
+					</mri:keyword>
+					<mri:keyword>
+						<gco:CharacterString>Planning</gco:CharacterString>
+					</mri:keyword>
+					<mri:keyword>
+						<gco:CharacterString>Mitigation</gco:CharacterString>
+					</mri:keyword>
+					<mri:keyword>
+						<gco:CharacterString>March 2023 Release</gco:CharacterString>
+					</mri:keyword>
+				</mri:MD_Keywords>
+			</mri:descriptiveKeywords>
+			<mri:resourceConstraints>
+				<mco:MD_Constraints>
+					<mco:useLimitation>
+						<gco:CharacterString>The National Risk Index (the Risk Index or the Index) and its associated data are meant for planning purposes only. This tool was created for broad nationwide comparisons and is not a substitute for localized risk assessment analysis. Nationwide datasets used as inputs for the National Risk Index are, in many cases, not as accurate as available local data. Users with access to local data for each National Risk Index risk factor should consider substituting the Risk Index data with local data to recalculate a more accurate risk index. If you decide to download the National Risk Index data and substitute it with local data, you assume responsibility for the accuracy of the data and any resulting data index.The methodology used by the National Risk Index has been reviewed by subject matter experts in the fields of natural hazard risk research, risk analysis, mitigation planning, and emergency management. The processing methods used to create the National Risk Index have produced results similar to those from other natural hazard risk analyses conducted on a smaller scale. The breadth and combination of geographic information systems (GIS) and data processing techniques leveraged by the National Risk Index enable it to incorporate multiple hazard types and risk factors, manage its nationwide scope, and capture what might have been missed using other methods.The National Risk Index does not consider the intricate economic and physical interdependencies that exist across geographic regions. Keep in mind that hazard impacts in surrounding counties or Census tracts can cause indirect losses in your community regardless of your community's risk profile.Nationwide data available for some risk factors are rudimentary at this time. The National Risk Index will be continuously updated as new data become available and improved methodologies are identified. For comprehensive details about how the Risk Index can help you and its limitations, see the National Risk Index Technical Documentation (available for download at: https://www.fema.gov/national-risk-index).</gco:CharacterString>
+					</mco:useLimitation>
+				</mco:MD_Constraints>
+			</mri:resourceConstraints>
+			<mri:defaultLocale>
+				<lan:PT_Locale>
+					<lan:language>
+						<lan:LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng">eng</lan:LanguageCode>
+					</lan:language>
+					<lan:country>
+						<lan:CountryCode codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="US">US</lan:CountryCode>
+					</lan:country>
+					<lan:characterEncoding>
+						<lan:MD_CharacterSetCode codeList="standards.iso.org/19115/-3/lan/1.0/codelists.xml#MD_CharacterSetCode" codeListValue="utf8">utf8</lan:MD_CharacterSetCode>
+					</lan:characterEncoding>
+				</lan:PT_Locale>
+			</mri:defaultLocale>
+		</mri:MD_DataIdentification>
+	</mdb:identificationInfo>
+	<mdb:metadataMaintenance>
+		<mmi:MD_MaintenanceInformation>
+			<mmi:maintenanceAndUpdateFrequency>
+				<mmi:MD_MaintenanceFrequencyCode codeList="standards.iso.org/19115/-3/lan/1.0/codelists.xml#MD_MaintenanceFrequencyCode" codeListValue="irregular">irregular</mmi:MD_MaintenanceFrequencyCode>
+			</mmi:maintenanceAndUpdateFrequency>
+		</mmi:MD_MaintenanceInformation>
+	</mdb:metadataMaintenance>
+</mdb:MD_Metadata>
