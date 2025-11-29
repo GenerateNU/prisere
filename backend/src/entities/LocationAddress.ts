@@ -43,6 +43,12 @@ export class LocationAddress {
     @Column()
     fipsCountyCode!: number;
 
+    @Column({ type: "float", default: 0 })
+    lat!: number;
+
+    @Column({ type: "float", default: 0 })
+    long!: number;
+
     @OneToMany(() => DisasterNotification, (notification: { locationAddress: any }) => notification.locationAddress)
     disasterNotifications?: DisasterNotification[];
 

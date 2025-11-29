@@ -90,6 +90,8 @@ export class LocationAddressService implements ILocationAddressService {
                 ...payload,
                 fipsStateCode: Number(fipsLocation.fipsStateCode),
                 fipsCountyCode: Number(fipsLocation.fipsCountyCode),
+                lat: fipsLocation.lat,
+                long: fipsLocation.long,
             };
             // Pass complete data with fips codes to transaction layer
             const locationAddress = await this.locationAddressTransaction.createLocationAddress(
@@ -183,6 +185,8 @@ export class LocationAddressService implements ILocationAddressService {
                 ...payload,
                 fipsStateCode: Number(fipsLocation.fipsStateCode),
                 fipsCountyCode: Number(fipsLocation.fipsCountyCode),
+                lat: fipsLocation.lat,
+                long: fipsLocation.long,
             };
 
             const updatedLocationAddress = await this.locationAddressTransaction.updateLocationAddressById(

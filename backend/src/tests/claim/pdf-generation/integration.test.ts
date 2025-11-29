@@ -30,7 +30,6 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
         // Mock getPresignedUploadUrl - PDF gen calls this first
         getPresignedUploadUrlSpy = spyOn(S3Service.prototype, "getPresignedUploadUrl").mockImplementation(
             async (key: string) => {
-                console.log("Mock: getPresignedUploadUrl called with key:", key);
                 return `https://test-bucket.s3.amazonaws.com/upload/${key}?mock=true`;
             }
         );
@@ -42,7 +41,6 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
             "uploadBufferToS3"
             /* eslint-disable @typescript-eslint/no-unused-vars */
         ).mockImplementation(async (uploadUrl: string, buffer: Buffer) => {
-            console.log("Mock: uploadBufferToS3 called");
             // Just resolve without actually uploading
             return Promise.resolve();
         });
@@ -50,7 +48,6 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
         // Mock confirmUpload - PDF gen calls this after upload
         /* eslint-disable @typescript-eslint/no-unused-vars */
         const confirmUploadSpy = spyOn(S3Service.prototype, "confirmUpload").mockImplementation(async (options) => {
-            console.log("Mock: confirmUpload called with key:", options.key);
             return {
                 key: options.key,
                 url: `https://test-bucket.s3.amazonaws.com/${options.key}`,
@@ -62,14 +59,12 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
         // Mock getPresignedDownloadUrl
         getPresignedDownloadUrlSpy = spyOn(S3Service.prototype, "getPresignedDownloadUrl").mockImplementation(
             async (key: string) => {
-                console.log("Mock: getPresignedDownloadUrl called with key:", key);
                 return `https://test-bucket.s3.amazonaws.com/${key}`;
             }
         );
 
         // Mock getClaimPdf - checks for existing PDF
         getClaimPdfSpy = spyOn(S3Service.prototype, "getClaimPdf").mockImplementation(async (claimId: string) => {
-            console.log("Mock: getClaimPdf called with claimId:", claimId);
             return null; // No existing PDF
         });
     });

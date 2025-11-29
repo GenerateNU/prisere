@@ -43,12 +43,8 @@ describe("Test get unread notifications (for email)", () => {
         expect(notifications?.notification1.firstSentAt?.getDate === notifications?.notification1.lastSentAt?.getDate);
         expect(notifications?.notification2.firstSentAt?.getDate === notifications?.notification2.lastSentAt?.getDate);
         const result = await disasterNotificationTransaction.markNotificationsAsSent(notificationArray);
-        // console.log(testData);
-        // console.log(result);
 
         const result2 = await disasterNotificationTransaction.markNotificationsAsSent(notificationArray);
-        // console.log(testData);
-        // console.log(result2);
 
         expect(result);
         expect(result2);

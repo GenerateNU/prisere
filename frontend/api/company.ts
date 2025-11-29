@@ -18,7 +18,6 @@ export const createCompany = async (payload: CreateCompanyRequest): Promise<Comp
             body: payload,
         });
         if (response.ok) {
-            console.log(data);
             return data!;
         } else {
             throw Error(error?.error);
@@ -34,7 +33,6 @@ export const getCompanyLocations = async (): Promise<GetCompanyLocationsResponse
             headers: authHeader(token),
         });
         if (response.ok) {
-            console.log(data);
             return data!;
         } else {
             throw Error(error?.error);

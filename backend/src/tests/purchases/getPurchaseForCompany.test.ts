@@ -2,13 +2,18 @@ import { Hono } from "hono";
 import { describe, test, expect, beforeAll, afterEach, beforeEach } from "bun:test";
 import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { CreateOrChangePurchaseRequest, GetCompanyPurchasesResponse } from "../../modules/purchase/types";
+import {
+    CreateOrChangePurchaseRequest,
+    GetCompanyPurchasesResponse,
+    PurchasesWithCount,
+} from "../../modules/purchase/types";
 import { TESTING_PREFIX } from "../../utilities/constants";
 import CompanySeeder, { seededCompanies } from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
 import { DataSource } from "typeorm";
 import { PurchaseSeeder, seededPurchases } from "../../database/seeds/purchase.seed";
 import { PurchaseLineItemSeeder } from "../../database/seeds/purchaseLineItem.seed";
+import { Purchase } from "../../entities/Purchase";
 
 describe("GET /purchase", () => {
     let app: Hono;
@@ -63,10 +68,10 @@ describe("GET /purchase", () => {
         });
 
         expect(response.status).toBe(200);
-        const body = await response.json();
-        expect(Array.isArray(body)).toBe(true);
-        expect(body.length).toBeGreaterThan(0);
-        body.forEach((purchase: GetCompanyPurchasesResponse[number]) => {
+        const body: PurchasesWithCount = await response.json();
+        expect(Array.isArray(body.purchases)).toBe(true);
+        expect(body.purchases.length).toBeGreaterThan(0);
+        body.purchases.forEach((purchase) => {
             expect(purchase.id).toBeDefined();
             expect(purchase.companyId).toBeDefined();
             expect(purchase.quickBooksId).toBeDefined();
@@ -100,7 +105,7 @@ describe("GET /purchase", () => {
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(Array.isArray(body)).toBe(true);
+        expect(Array.isArray(body.purchases)).toBe(true);
     });
 
     test("GET /purchase - With resultsPerPage", async () => {
@@ -126,8 +131,8 @@ describe("GET /purchase", () => {
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(Array.isArray(body)).toBe(true);
-        expect(body.length).toBeLessThanOrEqual(10);
+        expect(Array.isArray(body.purchases)).toBe(true);
+        expect(body.purchases.length).toBeLessThanOrEqual(10);
     });
 
     test("GET /purchase - With pageNumber and resultsPerPage", async () => {
@@ -153,8 +158,8 @@ describe("GET /purchase", () => {
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(Array.isArray(body)).toBe(true);
-        expect(body.length).toBeLessThanOrEqual(5);
+        expect(Array.isArray(body.purchases)).toBe(true);
+        expect(body.purchases.length).toBeLessThanOrEqual(5);
     });
 
     test("GET /purchase - Default Pagination Values", async () => {
@@ -181,8 +186,8 @@ describe("GET /purchase", () => {
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(Array.isArray(body)).toBe(true);
-        expect(body.length).toBeLessThanOrEqual(20);
+        expect(Array.isArray(body.purchases)).toBe(true);
+        expect(body.purchases.length).toBeLessThanOrEqual(20);
     });
 
     test("GET /purchase - Non-Existent companyId", async () => {
@@ -195,8 +200,8 @@ describe("GET /purchase", () => {
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(Array.isArray(body)).toBe(true);
-        expect(body.length).toBe(0);
+        expect(Array.isArray(body.purchases)).toBe(true);
+        expect(body.purchases.length).toBe(0);
     });
 
     test("GET /purchase - Missing companyId", async () => {
@@ -299,8 +304,8 @@ describe("GET /purchase", () => {
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(Array.isArray(body)).toBe(true);
-        expect(body.length).toBe(0);
+        expect(Array.isArray(body.purchases)).toBe(true);
+        expect(body.purchases.length).toBe(0);
     });
 
     test("GET /purchase - Very Large resultsPerPage", async () => {
@@ -326,7 +331,7 @@ describe("GET /purchase", () => {
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(Array.isArray(body)).toBe(true);
+        expect(Array.isArray(body.purchases)).toBe(true);
     });
 
     test("GET /purchase - Multiple Purchases Same Company", async () => {
@@ -354,11 +359,11 @@ describe("GET /purchase", () => {
 
         expect(response.status).toBe(200);
         const body = await response.json();
-        expect(Array.isArray(body)).toBe(true);
-        expect(body.length).toBe(purchaseCount);
+        expect(Array.isArray(body.purchases)).toBe(true);
+        expect(body.purchases.length).toBe(purchaseCount);
 
         // Verify all purchases belong to the same company
-        body.forEach((purchase: GetCompanyPurchasesResponse[number]) => {
+        body.purchases.forEach((purchase: Purchase) => {
             expect(purchase.companyId).toBe("ffc8243b-876e-4b6d-8b80-ffc73522a838");
         });
     });
@@ -404,10 +409,10 @@ describe("GET /purchase - Filtered and Sorted", () => {
         });
 
         expect(response.status).toBe(200);
-        const body = (await response.json()) as GetCompanyPurchasesResponse;
-        expect(body.length).toBe(6);
+        const body = await response.json();
+        expect(body.purchases.length).toBe(6);
 
-        const purchaseIds = body.map((p) => p.id);
+        const purchaseIds = body.purchases.map((p: Purchase) => p.id);
         expect(purchaseIds).toContain(seededPurchases[0].id);
         expect(purchaseIds).toContain(seededPurchases[1].id);
         expect(purchaseIds).toContain(seededPurchases[2].id);
@@ -427,12 +432,12 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(2);
-        expect(body[0].id).toBe(seededPurchases[0].id);
-        expect(body[1].id).toBe(seededPurchases[4].id);
+        expect(body.purchases.length).toBe(2);
+        expect(body.purchases[0].id).toBe(seededPurchases[0].id);
+        expect(body.purchases[1].id).toBe(seededPurchases[4].id);
 
-        expect(body[0].lineItems.some((li) => li.category === "Supplies")).toBe(true);
-        expect(body[1].lineItems.some((li) => li.category === "Supplies")).toBe(true);
+        expect(body.purchases[0].lineItems.some((li) => li.category === "Supplies")).toBe(true);
+        expect(body.purchases[1].lineItems.some((li) => li.category === "Supplies")).toBe(true);
     });
 
     test("GET /purchase - Filter by Technology category ", async () => {
@@ -446,12 +451,12 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(2);
-        expect(body[0].id).toBe(seededPurchases[0].id);
-        expect(body[1].id).toBe(seededPurchases[5].id);
+        expect(body.purchases.length).toBe(2);
+        expect(body.purchases[0].id).toBe(seededPurchases[0].id);
+        expect(body.purchases[1].id).toBe(seededPurchases[5].id);
 
-        expect(body[0].lineItems.some((li) => li.category === "Technology")).toBe(true);
-        expect(body[1].lineItems.some((li) => li.category === "Technology")).toBe(true);
+        expect(body.purchases[0].lineItems.some((li) => li.category === "Technology")).toBe(true);
+        expect(body.purchases[1].lineItems.some((li) => li.category === "Technology")).toBe(true);
     });
 
     test("GET /purchase - Filter by multiple categories ", async () => {
@@ -465,9 +470,9 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(3);
+        expect(body.purchases.length).toBe(3);
 
-        const returnedIds = body.map((p) => p.id).sort();
+        const returnedIds = body.purchases.map((p) => p.id).sort();
         expect(returnedIds).toEqual(
             [
                 seededPurchases[0].id,
@@ -476,22 +481,22 @@ describe("GET /purchase - Filtered and Sorted", () => {
             ].sort()
         );
 
-        body.forEach((purchase) => {
+        body.purchases.forEach((purchase) => {
             const hasMatchingCategory = purchase.lineItems.some(
                 (li) => li.category === "Supplies" || li.category === "Technology"
             );
             expect(hasMatchingCategory).toBe(true);
         });
 
-        const purchase0 = body.find((p) => p.id === seededPurchases[0].id);
+        const purchase0 = body.purchases.find((p) => p.id === seededPurchases[0].id);
         expect(purchase0?.lineItems.some((li) => li.category === "Supplies")).toBe(true);
         expect(purchase0?.lineItems.some((li) => li.category === "Technology")).toBe(true);
 
-        const suppliesOnly = body.find((p) => p.id === "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d");
+        const suppliesOnly = body.purchases.find((p) => p.id === "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d");
         expect(suppliesOnly?.lineItems.some((li) => li.category === "Supplies")).toBe(true);
         expect(suppliesOnly?.lineItems.every((li) => li.category !== "Technology")).toBe(true);
 
-        const technologyOnly = body.find((p) => p.id === "b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e");
+        const technologyOnly = body.purchases.find((p) => p.id === "b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e");
         expect(technologyOnly?.lineItems.some((li) => li.category === "Technology")).toBe(true);
         expect(technologyOnly?.lineItems.every((li) => li.category !== "Supplies")).toBe(true);
     });
@@ -506,7 +511,7 @@ describe("GET /purchase - Filtered and Sorted", () => {
 
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
-        expect(body.length).toBe(0);
+        expect(body.purchases.length).toBe(0);
     });
 
     test("GET /purchase - Filter by type typical", async () => {
@@ -520,8 +525,8 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(3);
-        const returnedIds = body.map((p) => p.id).sort();
+        expect(body.purchases.length).toBe(3);
+        const returnedIds = body.purchases.map((p) => p.id).sort();
         expect(returnedIds).toEqual([seededPurchases[0].id, seededPurchases[4].id, seededPurchases[5].id].sort());
     });
 
@@ -536,9 +541,9 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(1);
-        expect(body[0].id).toBe(seededPurchases[0].id);
-        expect(body[0].lineItems.some((li) => li.type === "extraneous")).toBe(true);
+        expect(body.purchases.length).toBe(1);
+        expect(body.purchases[0].id).toBe(seededPurchases[0].id);
+        expect(body.purchases[0].lineItems.some((li) => li.type === "extraneous")).toBe(true);
     });
 
     test("GET /purchase - Invalid type returns 400", async () => {
@@ -566,8 +571,8 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
         // Should return all seeded purchases since dateFrom is missing
-        expect(body.length).toBe(6);
-        const returnedIds = body.map((p) => p.id).sort();
+        expect(body.purchases.length).toBe(6);
+        const returnedIds = body.purchases.map((p) => p.id).sort();
         expect(returnedIds).toEqual(
             [
                 seededPurchases[0].id,
@@ -594,8 +599,8 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
         // Should return all seeded purchases since dateTo is missing
-        expect(body.length).toBe(6);
-        const returnedIds = body.map((p) => p.id).sort();
+        expect(body.purchases.length).toBe(6);
+        const returnedIds = body.purchases.map((p) => p.id).sort();
         expect(returnedIds).toEqual(
             [
                 seededPurchases[0].id,
@@ -657,8 +662,8 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(2);
-        expect(body.map((p) => p.id).sort()).toEqual([seededPurchases[1].id, seededPurchases[2].id].sort());
+        expect(body.purchases.length).toBe(2);
+        expect(body.purchases.map((p) => p.id).sort()).toEqual([seededPurchases[1].id, seededPurchases[2].id].sort());
     });
 
     test("GET /purchase - dateFrom undefined should not filter", async () => {
@@ -674,8 +679,8 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(6);
-        const returnedIds = body.map((p) => p.id).sort();
+        expect(body.purchases.length).toBe(6);
+        const returnedIds = body.purchases.map((p) => p.id).sort();
         expect(returnedIds).toEqual(
             [
                 seededPurchases[0].id,
@@ -701,8 +706,8 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(6);
-        const returnedIds = body.map((p) => p.id).sort();
+        expect(body.purchases.length).toBe(6);
+        const returnedIds = body.purchases.map((p) => p.id).sort();
         expect(returnedIds).toEqual(
             [
                 seededPurchases[0].id,
@@ -746,9 +751,9 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(1);
-        expect(body[0].id).toBe(seededPurchases[0].id);
-        expect(body[0].lineItems.some((li) => li.description?.includes("Office"))).toBe(true);
+        expect(body.purchases.length).toBe(1);
+        expect(body.purchases[0].id).toBe(seededPurchases[0].id);
+        expect(body.purchases[0].lineItems.some((li) => li.description?.includes("Office"))).toBe(true);
     });
 
     test("GET /purchase - Search by 'Software' in description", async () => {
@@ -762,9 +767,9 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(1);
-        expect(body[0].id).toBe(seededPurchases[0].id);
-        expect(body[0].lineItems.some((li) => li.description?.includes("Software"))).toBe(true);
+        expect(body.purchases.length).toBe(1);
+        expect(body.purchases[0].id).toBe(seededPurchases[0].id);
+        expect(body.purchases[0].lineItems.some((li) => li.description?.includes("Software"))).toBe(true);
     });
 
     test("GET /purchase - Search with no results", async () => {
@@ -777,7 +782,7 @@ describe("GET /purchase - Filtered and Sorted", () => {
 
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
-        expect(body.length).toBe(0);
+        expect(body.purchases.length).toBe(0);
     });
 
     test("GET /purchase - Sort by date DESC", async () => {
@@ -791,16 +796,16 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(6);
-        expect(body[0].id).toBe("b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e"); // 2025-03-02
-        expect(body[1].id).toBe("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"); // 2025-03-01
-        expect(body[2].id).toBe(seededPurchases[0].id); // 2025-02-05
-        expect(body[3].id).toBe(seededPurchases[1].id); // 2025-01-11
-        expect(body[4].id).toBe(seededPurchases[2].id); // 2025-01-09
-        expect(body[5].id).toBe(seededPurchases[3].id); // 2024-04-11
+        expect(body.purchases.length).toBe(6);
+        expect(body.purchases[0].id).toBe("b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e"); // 2025-03-02
+        expect(body.purchases[1].id).toBe("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"); // 2025-03-01
+        expect(body.purchases[2].id).toBe(seededPurchases[0].id); // 2025-02-05
+        expect(body.purchases[3].id).toBe(seededPurchases[1].id); // 2025-01-11
+        expect(body.purchases[4].id).toBe(seededPurchases[2].id); // 2025-01-09
+        expect(body.purchases[5].id).toBe(seededPurchases[3].id); // 2024-04-11
 
-        for (let i = 1; i < body.length; i++) {
-            expect(new Date(body[i - 1].dateCreated) >= new Date(body[i].dateCreated)).toBe(true);
+        for (let i = 1; i < body.purchases.length; i++) {
+            expect(new Date(body.purchases[i - 1].dateCreated) >= new Date(body.purchases[i].dateCreated)).toBe(true);
         }
     });
 
@@ -815,16 +820,16 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(6);
-        expect(body[0].id).toBe(seededPurchases[3].id); // 2024-04-11
-        expect(body[1].id).toBe(seededPurchases[2].id); // 2025-01-09
-        expect(body[2].id).toBe(seededPurchases[1].id); // 2025-01-11
-        expect(body[3].id).toBe(seededPurchases[0].id); // 2025-02-05
-        expect(body[4].id).toBe("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"); // 2025-03-01
-        expect(body[5].id).toBe("b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e"); // 2025-03-02
+        expect(body.purchases.length).toBe(6);
+        expect(body.purchases[0].id).toBe(seededPurchases[3].id); // 2024-04-11
+        expect(body.purchases[1].id).toBe(seededPurchases[2].id); // 2025-01-09
+        expect(body.purchases[2].id).toBe(seededPurchases[1].id); // 2025-01-11
+        expect(body.purchases[3].id).toBe(seededPurchases[0].id); // 2025-02-05
+        expect(body.purchases[4].id).toBe("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"); // 2025-03-01
+        expect(body.purchases[5].id).toBe("b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e"); // 2025-03-02
 
-        for (let i = 1; i < body.length; i++) {
-            expect(new Date(body[i - 1].dateCreated) <= new Date(body[i].dateCreated)).toBe(true);
+        for (let i = 1; i < body.purchases.length; i++) {
+            expect(new Date(body.purchases[i - 1].dateCreated) <= new Date(body.purchases[i].dateCreated)).toBe(true);
         }
     });
 
@@ -839,22 +844,22 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(6);
-        expect(body[0].id).toBe(seededPurchases[3].id);
-        expect(body[0].totalAmountCents).toBe(50);
-        expect(body[1].id).toBe(seededPurchases[2].id);
-        expect(body[1].totalAmountCents).toBe(456);
-        expect(body[2].id).toBe(seededPurchases[0].id);
-        expect(body[2].totalAmountCents).toBe(1234);
-        expect(body[3].id).toBe("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d");
-        expect(body[3].totalAmountCents).toBe(2000);
-        expect(body[4].id).toBe("b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e");
-        expect(body[4].totalAmountCents).toBe(3000);
-        expect(body[5].id).toBe(seededPurchases[1].id);
-        expect(body[5].totalAmountCents).toBe(5678);
+        expect(body.purchases.length).toBe(6);
+        expect(body.purchases[0].id).toBe(seededPurchases[3].id);
+        expect(body.purchases[0].totalAmountCents).toBe(50);
+        expect(body.purchases[1].id).toBe(seededPurchases[2].id);
+        expect(body.purchases[1].totalAmountCents).toBe(456);
+        expect(body.purchases[2].id).toBe(seededPurchases[0].id);
+        expect(body.purchases[2].totalAmountCents).toBe(1234);
+        expect(body.purchases[3].id).toBe("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d");
+        expect(body.purchases[3].totalAmountCents).toBe(2000);
+        expect(body.purchases[4].id).toBe("b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e");
+        expect(body.purchases[4].totalAmountCents).toBe(3000);
+        expect(body.purchases[5].id).toBe(seededPurchases[1].id);
+        expect(body.purchases[5].totalAmountCents).toBe(5678);
 
-        for (let i = 1; i < body.length; i++) {
-            expect(body[i - 1].totalAmountCents <= body[i].totalAmountCents).toBe(true);
+        for (let i = 1; i < body.purchases.length; i++) {
+            expect(body.purchases[i - 1].totalAmountCents <= body.purchases[i].totalAmountCents).toBe(true);
         }
     });
 
@@ -869,22 +874,22 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(6);
-        expect(body[0].id).toBe(seededPurchases[1].id);
-        expect(body[0].totalAmountCents).toBe(5678);
-        expect(body[1].id).toBe("b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e");
-        expect(body[1].totalAmountCents).toBe(3000);
-        expect(body[2].id).toBe("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d");
-        expect(body[2].totalAmountCents).toBe(2000);
-        expect(body[3].id).toBe(seededPurchases[0].id);
-        expect(body[3].totalAmountCents).toBe(1234);
-        expect(body[4].id).toBe(seededPurchases[2].id);
-        expect(body[4].totalAmountCents).toBe(456);
-        expect(body[5].id).toBe(seededPurchases[3].id);
-        expect(body[5].totalAmountCents).toBe(50);
+        expect(body.purchases.length).toBe(6);
+        expect(body.purchases[0].id).toBe(seededPurchases[1].id);
+        expect(body.purchases[0].totalAmountCents).toBe(5678);
+        expect(body.purchases[1].id).toBe("b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e");
+        expect(body.purchases[1].totalAmountCents).toBe(3000);
+        expect(body.purchases[2].id).toBe("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d");
+        expect(body.purchases[2].totalAmountCents).toBe(2000);
+        expect(body.purchases[3].id).toBe(seededPurchases[0].id);
+        expect(body.purchases[3].totalAmountCents).toBe(1234);
+        expect(body.purchases[4].id).toBe(seededPurchases[2].id);
+        expect(body.purchases[4].totalAmountCents).toBe(456);
+        expect(body.purchases[5].id).toBe(seededPurchases[3].id);
+        expect(body.purchases[5].totalAmountCents).toBe(50);
 
-        for (let i = 1; i < body.length; i++) {
-            expect(body[i - 1].totalAmountCents >= body[i].totalAmountCents).toBe(true);
+        for (let i = 1; i < body.purchases.length; i++) {
+            expect(body.purchases[i - 1].totalAmountCents >= body.purchases[i].totalAmountCents).toBe(true);
         }
     });
 
@@ -924,9 +929,9 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(2);
-        expect(body[0].id).toBe("b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e");
-        expect(body[1].id).toBe("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d");
+        expect(body.purchases.length).toBe(2);
+        expect(body.purchases[0].id).toBe("b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e");
+        expect(body.purchases[1].id).toBe("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d");
     });
 
     test("GET /purchase - Pagination all pages, resultsPerPage = 2", async () => {
@@ -942,10 +947,10 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(responsePage0.status).toBe(200);
         const bodyPage0 = (await responsePage0.json()) as GetCompanyPurchasesResponse;
 
-        expect(Array.isArray(bodyPage0)).toBe(true);
-        expect(bodyPage0.length).toBe(2);
-        expect(bodyPage0[0].id).toBe(seededPurchases[5].id);
-        expect(bodyPage0[1].id).toBe(seededPurchases[4].id);
+        expect(Array.isArray(bodyPage0.purchases)).toBe(true);
+        expect(bodyPage0.purchases.length).toBe(2);
+        expect(bodyPage0.purchases[0].id).toBe(seededPurchases[5].id);
+        expect(bodyPage0.purchases[1].id).toBe(seededPurchases[4].id);
 
         // PAGE 1
         const responsePage1 = await app.request(
@@ -959,13 +964,13 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(responsePage1.status).toBe(200);
         const bodyPage1 = (await responsePage1.json()) as GetCompanyPurchasesResponse;
 
-        expect(Array.isArray(bodyPage1)).toBe(true);
-        expect(bodyPage1.length).toBe(2);
-        expect(bodyPage1[0].id).toBe(seededPurchases[0].id);
-        expect(bodyPage1[1].id).toBe(seededPurchases[1].id);
+        expect(Array.isArray(bodyPage1.purchases)).toBe(true);
+        expect(bodyPage1.purchases.length).toBe(2);
+        expect(bodyPage1.purchases[0].id).toBe(seededPurchases[0].id);
+        expect(bodyPage1.purchases[1].id).toBe(seededPurchases[1].id);
 
-        const page0Ids = bodyPage0.map((p) => p.id);
-        const page1Ids = bodyPage1.map((p) => p.id);
+        const page0Ids = bodyPage0.purchases.map((p) => p.id);
+        const page1Ids = bodyPage1.purchases.map((p) => p.id);
         page1Ids.forEach((id) => expect(page0Ids).not.toContain(id));
 
         // PAGE 2
@@ -980,10 +985,10 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(responsePage2.status).toBe(200);
         const bodyPage2 = (await responsePage2.json()) as GetCompanyPurchasesResponse;
 
-        expect(Array.isArray(bodyPage2)).toBe(true);
-        expect(bodyPage2.length).toBe(2);
-        expect(bodyPage2[0].id).toBe(seededPurchases[2].id);
-        expect(bodyPage2[1].id).toBe(seededPurchases[3].id);
+        expect(Array.isArray(bodyPage2.purchases)).toBe(true);
+        expect(bodyPage2.purchases.length).toBe(2);
+        expect(bodyPage2.purchases[0].id).toBe(seededPurchases[2].id);
+        expect(bodyPage2.purchases[1].id).toBe(seededPurchases[3].id);
 
         // PAGE 3 (should be empty)
         const responsePage3 = await app.request(
@@ -997,8 +1002,8 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(responsePage3.status).toBe(200);
         const bodyPage3 = (await responsePage3.json()) as GetCompanyPurchasesResponse;
 
-        expect(Array.isArray(bodyPage3)).toBe(true);
-        expect(bodyPage3.length).toBe(0);
+        expect(Array.isArray(bodyPage3.purchases)).toBe(true);
+        expect(bodyPage3.purchases.length).toBe(0);
     });
 
     test("GET /purchase - Combined: category + type + dateRange + sort", async () => {
@@ -1021,7 +1026,7 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(2);
+        expect(body.purchases.length).toBe(2);
         const returnedIds = body.map((p) => p.id).sort();
         expect(returnedIds).toEqual(["89cac778-b8d8-48c2-a2da-77019c57944e", "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"]);
     });
@@ -1047,6 +1052,6 @@ describe("GET /purchase - Filtered and Sorted", () => {
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
         expect(Array.isArray(body)).toBe(true);
-        expect(body.length).toBe(1);
+        expect(body.purchases.length).toBe(1);
     });
 });

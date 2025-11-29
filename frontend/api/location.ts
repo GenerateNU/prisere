@@ -45,7 +45,6 @@ export const createLocationBulk = async (payload: CreateLocationBulkRequest): Pr
 export const updateLocationAddress = async (payload: UpdateLocationRequest): Promise<UpdateLocationResponse> => {
     const req = async (token: string): Promise<UpdateLocationResponse> => {
         const client = getClient();
-        console.log(payload);
         const { data, error, response } = await client.PATCH("/location-address", {
             headers: authHeader(token),
             body: payload,
@@ -75,4 +74,22 @@ export const updateLocationAddressBulk = async (
         }
     };
     return authWrapper<UpdateLocationBulkResponse>()(req);
+};
+
+export const deleteLocation = async (locationId: string): Promise<void> => {
+    const req = async (token: string): Promise<void> => {
+        const client = getClient();
+        const { error, response } = await client.DELETE("/location-address/{id}", {
+            headers: authHeader(token),
+            params: {
+                path: {
+                    id: locationId,
+                },
+            },
+        });
+        if (!response.ok) {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<void>()(req);
 };

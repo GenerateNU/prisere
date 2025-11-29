@@ -45,6 +45,10 @@ export const UpdateInsurancePolicyDTOSchema = z.object({
     insuranceType: z.string().optional(),
 });
 
+export const DeleteInsurancePolicySchema = z.object({
+    id: z.string(),
+});
+
 export const UpdateInsurancePolicyBulkDTOSchema = z.array(UpdateInsurancePolicyDTOSchema).nonempty();
 
 export const CreateInsurancePolicyResponseSchema = SingleInsurancePolicyResponseSchema;
@@ -65,3 +69,4 @@ export type CreateInsurancePolicyDTO = z.infer<typeof CreateInsurancePolicyDTOSc
 export type CreateInsurancePolicyBulkDTO = z.infer<typeof CreateInsurancePolicyBulkDTOSchema>;
 export type UpdateInsurancePolicyDTO = z.infer<typeof UpdateInsurancePolicyDTOSchema>;
 export type UpdateInsurancePolicyBulkDTO = z.infer<typeof UpdateInsurancePolicyBulkDTOSchema>;
+export type DeleteInsurancePolicyDTO = z.infer<typeof DeleteInsurancePolicySchema>;

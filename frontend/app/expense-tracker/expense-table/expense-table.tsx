@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { FilteredPurchases, PurchaseLineItemType } from "@/types/purchase";
+import { FilteredPurchases, PurchaseLineItemType, PurchaseWithLineItems } from "@/types/purchase";
 import { FileUp, Filter, Printer } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Filters } from "./filters";
@@ -12,6 +12,7 @@ import { FilterDisplay } from "./filter-display-bar";
 import TableContent from "./table-content";
 import { getClientAuthToken, getClient, authHeader, authWrapper } from "@/api/client";
 import { useQuery } from "@tanstack/react-query";
+import ExpenseSideView from "./side-view";
 
 interface ExpenseTableConfig {
     title: string;
@@ -38,6 +39,7 @@ export default function ExpenseTable({
             setFilters((prev) => ({ ...prev, type: PurchaseLineItemType.PENDING, pageNumber: 0 }));
         }
     }, [filterPending]);
+    const [selectedPurchase, setSelectedPurchase] = useState<PurchaseWithLineItems | null>(null);
 
     const updateFilter = (field: string) => (value: unknown) => {
         if (setFilterPending) setFilterPending(false);
@@ -71,8 +73,6 @@ export default function ExpenseTable({
     const purchases = useFetchPurchases(filters);
 
     const categories = useFetchAllCategories();
-
-    const isLastPage = (purchases.data?.length ?? 0) < filters.resultsPerPage;
 
     return (
         <>
@@ -123,18 +123,29 @@ export default function ExpenseTable({
                             setSort={setSort}
                             rowOption={rowOption}
                             editableTags={editableTags}
+                            onRowClick={(purchase) => setSelectedPurchase(purchase)}
+                        />
+                        <ExpenseSideView
+                            purchase={selectedPurchase}
+                            open={!!selectedPurchase}
+                            onOpenChange={() => setSelectedPurchase(null)}
                         />
                     </CardContent>
                     <CardFooter>
-                        <PaginationControls
-                            page={filters.pageNumber}
-                            onPageChange={updateFilter("pageNumber")}
-                            isLastPage={isLastPage}
-                        />
-                        <ResultsPerPageSelect
-                            value={filters.resultsPerPage}
-                            onValueChange={updateFilter("resultsPerPage")}
-                        />
+                        <div className="w-full border-t px-4 py-2 flex justify-end">
+                            <div className="flex items-center gap-6 shrink-0">
+                                <ResultsPerPageSelect
+                                    value={filters.resultsPerPage}
+                                    onValueChange={updateFilter("resultsPerPage")}
+                                />
+                                <PaginationControls
+                                    page={filters.pageNumber}
+                                    onPageChange={updateFilter("pageNumber")}
+                                    resultsPerPage={filters.resultsPerPage}
+                                    totalNumPurchases={purchases.data?.numPurchases}
+                                />
+                            </div>
+                        </div>
                     </CardFooter>
                 </Card>
             ) : (

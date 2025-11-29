@@ -7,12 +7,13 @@ import {
     GetCompanyPurchasesByDateDTO,
     GetCompanyPurchasesDTO,
     GetCompanyPurchasesInMonthBinsResponse,
+    PurchasesWithCount,
 } from "./types";
 
 export interface IPurchaseTransaction {
     createOrUpdatePurchase(payload: CreateOrChangePurchaseDTO): Promise<Purchase[]>;
     getPurchase(id: string): Promise<Purchase>;
-    getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<Purchase[]>;
+    getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<PurchasesWithCount>;
     sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number>;
     sumPurchasesByCompanyInMonthBins(
         payload: GetCompanyPurchasesByDateDTO
@@ -59,7 +60,7 @@ export class PurchaseTransaction implements IPurchaseTransaction {
         return existingQBPurchase;
     }
 
-    async getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<Purchase[]> {
+    async getPurchasesForCompany(payload: GetCompanyPurchasesDTO): Promise<PurchasesWithCount> {
         const { companyId, pageNumber, resultsPerPage, categories, type, dateFrom, dateTo, search, sortBy, sortOrder } =
             payload;
 
@@ -118,10 +119,12 @@ export class PurchaseTransaction implements IPurchaseTransaction {
             queryBuilder.orderBy(sortColumnMap[sortBy], sortOrder);
         }
 
+        const totalPurchases = await queryBuilder.getCount();
+
         const idRows = await queryBuilder.skip(numToSkip).take(resultsPerPage).getMany();
         const ids = idRows.map((row) => row.id);
         if (ids.length === 0) {
-            return [];
+            return { purchases: [], numPurchases: 0 };
         }
 
         const queryBuilderForIds = this.db.manager
@@ -134,7 +137,8 @@ export class PurchaseTransaction implements IPurchaseTransaction {
         }
         // to guarantee that line items do not move in the table rows
         queryBuilderForIds.addOrderBy("li.dateCreated", "ASC");
-        return await queryBuilderForIds.getMany();
+        const paginatedPurchases = await queryBuilderForIds.getMany();
+        return { purchases: paginatedPurchases, numPurchases: totalPurchases };
     }
 
     async sumPurchasesByCompanyAndDateRange(payload: GetCompanyPurchasesByDateDTO): Promise<number> {
