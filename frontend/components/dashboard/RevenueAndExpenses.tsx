@@ -12,8 +12,9 @@ import { FaCircle } from "react-icons/fa";
 // No Data Component
 export function RevenueAndExpensesNoData() {
     return (
-        <Card className="h-full min-h-[371px] p-6 border flex flex-col items-center justify-center">
-            <div className="flex flex-col items-center gap-4 max-w-md text-center">
+        <Card className="h-full p-6 flex flex-col items-center justify-start">
+            <CardTitle className="text-2xl font-bold self-start">Revenue and Expenses</CardTitle>
+            <div className="flex flex-1 flex-col items-center justify-center gap-4 max-w-md text-center">
                 <div className="w-16 h-16 bg-fuchsia rounded-full flex items-center justify-center">
                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                         <path
@@ -36,7 +37,7 @@ export function RevenueAndExpensesNoData() {
     );
 }
 
-export default function RevenueAndExpenses() {
+export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard?: boolean }) {
     const today = new Date();
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth();
@@ -109,7 +110,7 @@ export default function RevenueAndExpenses() {
     } satisfies ChartConfig;
 
     return (
-        <Card className="h-full min-h-[371px] p-6 border flex flex-col">
+        <Card className="h-full p-6 border flex flex-col">
             {/* Header with title and percentage change */}
             <div className="flex flex-col mb-4 gap-2">
                 <CardTitle className="text-2xl font-bold">Revenue and Expenses</CardTitle>
@@ -127,7 +128,7 @@ export default function RevenueAndExpenses() {
                 </div>
             </div>
 
-            <CardContent className="p-0 flex-1 flex gap-6">
+            <CardContent className="p-0 flex-1 flex gap-6 min-h-0">
                 {/* Left side - Stats */}
                 <div className="flex flex-col justify-between min-w-[200px]">
                     <div className="space-y-6">
@@ -138,7 +139,9 @@ export default function RevenueAndExpenses() {
                                 </div>
                                 Total Revenue this Month
                             </div>
-                            <div className="text-4xl font-bold">${(revenueQueries[0].data?.total ?? 0) / 100.0}</div>
+                            <div className="text-[25px] font-bold">
+                                ${((revenueQueries[0].data?.total ?? 0) / 100.0).toLocaleString()}
+                            </div>
                         </div>
 
                         <div>
@@ -148,19 +151,23 @@ export default function RevenueAndExpenses() {
                                 </div>
                                 Total Expenses this Month
                             </div>
-                            <div className="text-4xl font-bold">${(expensesQueries[0].data?.total ?? 0) / 100.0}</div>
+                            <div className="text-[25px] font-bold">
+                                ${((expensesQueries[0].data?.total ?? 0) / 100.0).toLocaleString()}
+                            </div>
                         </div>
                     </div>
 
-                    <Link href={"/expense-tracker"} className="text-sm font-semibold underline no-underline">
-                        <Button className="h-10 text-sm text-white rounded-full w-fit px-6 mt-6 bg-fuchsia">
-                            See Expense Tracker
-                        </Button>
-                    </Link>
+                    {onDashboard && (
+                        <Link href={"/expense-tracker"} className="text-sm font-semibold underline no-underline">
+                            <Button className="h-10 text-sm text-white rounded-full w-fit px-6 mt-6 bg-fuchsia">
+                                See Expense Tracker
+                            </Button>
+                        </Link>
+                    )}
                 </div>
 
                 {/* Right side - Chart with legend */}
-                <div className="flex-1 flex flex-col min-w-0">
+                <div className="flex-1 flex flex-col min-w-0 min-h-0">
                     {/* Legend */}
                     <div className="flex justify-end items-center gap-4 mb-2">
                         <div className="flex items-center gap-2 text-sm">

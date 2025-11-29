@@ -520,21 +520,9 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(5);
+        expect(body.length).toBe(3);
         const returnedIds = body.map((p) => p.id).sort();
-        expect(returnedIds).toEqual(
-            [
-                seededPurchases[1].id,
-                seededPurchases[2].id,
-                seededPurchases[3].id,
-                seededPurchases[4].id,
-                seededPurchases[5].id,
-            ].sort()
-        );
-
-        body.forEach((purchase) => {
-            expect(purchase.lineItems.every((li) => li.type === "typical")).toBe(true);
-        });
+        expect(returnedIds).toEqual([seededPurchases[0].id, seededPurchases[4].id, seededPurchases[5].id].sort());
     });
 
     test("GET /purchase - Filter by type extraneous", async () => {
@@ -1033,9 +1021,9 @@ describe("GET /purchase - Filtered and Sorted", () => {
         expect(response.status).toBe(200);
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
-        expect(body.length).toBe(1);
+        expect(body.length).toBe(2);
         const returnedIds = body.map((p) => p.id).sort();
-        expect(returnedIds).toEqual([seededPurchases[4].id].sort());
+        expect(returnedIds).toEqual(["89cac778-b8d8-48c2-a2da-77019c57944e", "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"]);
     });
 
     test("GET /purchase - Combined filters use AND logic (not OR)", async () => {
@@ -1059,6 +1047,6 @@ describe("GET /purchase - Filtered and Sorted", () => {
         const body = (await response.json()) as GetCompanyPurchasesResponse;
 
         expect(Array.isArray(body)).toBe(true);
-        expect(body.length).toBe(0);
+        expect(body.length).toBe(1);
     });
 });

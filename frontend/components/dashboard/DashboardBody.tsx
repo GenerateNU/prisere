@@ -1,4 +1,4 @@
-"use server";
+"use client";
 import DisasterStatusBanner from "./DisasterStatusBanner";
 import { getDashboardBannerData } from "@/api/dashboard";
 import RevenueAndExpenses, { RevenueAndExpensesNoData } from "./RevenueAndExpenses";
@@ -7,30 +7,43 @@ import NetDisasterExpense, { NetDisasterExpenseNoData } from "./NetDisasterExpen
 import LocationRisk from "./LocationRisk";
 import { companyHasData } from "@/api/company";
 import NoDataPopupWrapper from "./NoDataPopupWrapper";
+import { useQuery } from "@tanstack/react-query";
 
-export default async function DashboardBody() {
-    const bannerData = await getDashboardBannerData();
-    const hasData = await companyHasData();
+export default function DashboardBody() {
+    const { data: bannerData } = useQuery({
+        queryKey: ["banner-data"],
+        queryFn: getDashboardBannerData,
+    });
+
+    const { data: hasData } = useQuery({
+        queryKey: ["company-has-data"],
+        queryFn: companyHasData,
+    });
+
     return (
         <div className="flex flex-col gap-8">
             {/* No Data Popup - only shows when hasData is false */}
-            <NoDataPopupWrapper hasData={hasData} />
+            <NoDataPopupWrapper hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false} />
 
             {/* Banner - Full Width */}
             <div className="w-full">
-                <DisasterStatusBanner bannerData={bannerData} />
+                <DisasterStatusBanner bannerData={bannerData ?? { status: "no-disaster" }} />
             </div>
 
             {/* Two Column Grid for Revenue and Next Steps */}
             <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
                 {/* Left Column - Revenue & Expenses */}
                 <div className="w-full lg:col-span-4 relative">
-                    {hasData ? <RevenueAndExpenses /> : <RevenueAndExpensesNoData />}
+                    {hasData?.hasExternalData || hasData?.hasFinancialData ? (
+                        <RevenueAndExpenses />
+                    ) : (
+                        <RevenueAndExpensesNoData />
+                    )}
                 </div>
 
                 {/* Right Column - Next Steps */}
                 <div className="w-full lg:col-span-2">
-                    <NextSteps bannerData={bannerData} />
+                    <NextSteps bannerData={bannerData ?? { status: "no-disaster" }} />
                 </div>
             </div>
 
@@ -43,8 +56,12 @@ export default async function DashboardBody() {
 
                 {/* Right Column - Net Disaster Expense */}
                 <div className="w-full lg:col-span-2">
-                    {bannerData.status === "has-claim" &&
-                        (hasData ? <NetDisasterExpense bannerData={bannerData} /> : <NetDisasterExpenseNoData />)}
+                    {bannerData?.status === "has-claim" &&
+                        (hasData?.hasExternalData || hasData?.hasFinancialData ? (
+                            <NetDisasterExpense bannerData={bannerData ?? { status: "no-disaster" }} />
+                        ) : (
+                            <NetDisasterExpenseNoData />
+                        ))}
                 </div>
             </div>
         </div>

@@ -304,8 +304,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
-                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -320,7 +320,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt?: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -390,8 +390,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
-                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -406,7 +406,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt?: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -478,8 +478,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
-                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -494,7 +494,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt?: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -571,8 +571,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
-                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -587,7 +587,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt?: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -664,8 +664,8 @@ export interface paths {
                             id: string;
                             name: string;
                             businessOwnerFullName: string;
-                            lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
-                            lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
+                            lastQuickBooksInvoiceImportTime?: string | null;
+                            lastQuickBooksPurchaseImportTime?: string | null;
                             externals?: {
                                 id: string;
                                 source: string;
@@ -680,7 +680,7 @@ export interface paths {
                             /** @enum {string} */
                             companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                             createdAt: string;
-                            updatedAt?: string;
+                            updatedAt: string;
                         };
                     };
                 };
@@ -941,7 +941,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            hasData: boolean;
+                            hasExternalData: boolean;
+                            hasFinancialData: boolean;
                         };
                     };
                 };
@@ -1619,8 +1620,8 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
-                                    lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
+                                    lastQuickBooksInvoiceImportTime?: string | null;
+                                    lastQuickBooksPurchaseImportTime?: string | null;
                                     externals?: {
                                         id: string;
                                         source: string;
@@ -1635,7 +1636,7 @@ export interface paths {
                                     /** @enum {string} */
                                     companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                                     createdAt: string;
-                                    updatedAt?: string;
+                                    updatedAt: string;
                                 };
                             };
                         }[];
@@ -6019,8 +6020,8 @@ export interface paths {
                                     id: string;
                                     name: string;
                                     businessOwnerFullName: string;
-                                    lastQuickBooksInvoiceImportTime?: string | unknown | unknown;
-                                    lastQuickBooksPurchaseImportTime?: string | unknown | unknown;
+                                    lastQuickBooksInvoiceImportTime?: string | null;
+                                    lastQuickBooksPurchaseImportTime?: string | null;
                                     externals?: {
                                         id: string;
                                         source: string;
@@ -6035,7 +6036,7 @@ export interface paths {
                                     /** @enum {string} */
                                     companyType: "LLC" | "Sole Proprietorship" | "Corporation" | "Partnership";
                                     createdAt: string;
-                                    updatedAt?: string;
+                                    updatedAt: string;
                                 };
                                 claim?: {
                                     id: string;

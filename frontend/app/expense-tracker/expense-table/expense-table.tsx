@@ -1,8 +1,8 @@
 "use client";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { FilteredPurchases } from "@/types/purchase";
+import { FilteredPurchases, PurchaseLineItemType } from "@/types/purchase";
 import { FileUp, Filter, Printer } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Filters } from "./filters";
 import PaginationControls from "./PaginationControls";
 import ResultsPerPageSelect from "./ResultsPerPageSelect";
@@ -17,13 +17,30 @@ interface ExpenseTableConfig {
     title: string;
     editableTags: boolean;
     rowOption: "collapsible" | "checkbox";
+    filterPending?: boolean;
+    hasData: boolean;
+    setFilterPending?: (fp: boolean) => void;
 }
 
-export default function ExpenseTable({ title, editableTags, rowOption }: ExpenseTableConfig) {
+export default function ExpenseTable({
+    title,
+    editableTags,
+    rowOption,
+    filterPending = false,
+    setFilterPending,
+    hasData,
+}: ExpenseTableConfig) {
     const [filters, setFilters] = useState<FilteredPurchases>({ pageNumber: 0, resultsPerPage: 5 });
-    const [showFilters, setShowFilters] = useState(false);
+    const [showFilters, setShowFilters] = useState(true);
+
+    useEffect(() => {
+        if (filterPending) {
+            setFilters((prev) => ({ ...prev, type: PurchaseLineItemType.PENDING, pageNumber: 0 }));
+        }
+    }, [filterPending]);
 
     const updateFilter = (field: string) => (value: unknown) => {
+        if (setFilterPending) setFilterPending(false);
         setFilters((prev) => ({ ...prev, [field]: value }));
     };
 
@@ -58,63 +75,93 @@ export default function ExpenseTable({ title, editableTags, rowOption }: Expense
     const isLastPage = (purchases.data?.length ?? 0) < filters.resultsPerPage;
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle className="text-2xl font-bold">{title}</CardTitle>
-                <CardAction>
-                    <div className="flex items-center justify-end gap-2">
-                        <Button
-                            variant={showFilters ? "secondary" : "default"}
-                            size="sm"
-                            onClick={() => setShowFilters(!showFilters)}
-                            className="h-8 rounded-full px-3 flex items-center gap-2 text-sm"
-                        >
-                            <Filter className="h-4 w-4" />
-                            <span>Filters</span>
-                        </Button>
-                        <Button variant="default" size="icon" className="h-8 w-8 rounded-full border-0">
-                            <Printer className="h-4 w-4" />
-                        </Button>
-                        <Button variant="default" size="icon" className="h-8 w-8 rounded-full border-0">
-                            <FileUp className="h-4 w-4" />
-                        </Button>
+        <>
+            {hasData ? (
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+                        <CardAction>
+                            <div className="flex items-center justify-end gap-2">
+                                <Button
+                                    variant={showFilters ? "secondary" : "default"}
+                                    size="sm"
+                                    onClick={() => setShowFilters(!showFilters)}
+                                    className="h-8 rounded-full px-3 flex items-center gap-2 text-sm"
+                                >
+                                    <Filter className="h-4 w-4" />
+                                    <span>Filters</span>
+                                </Button>
+                                <Button variant="default" size="icon" className="h-8 w-8 rounded-full border-0">
+                                    <Printer className="h-4 w-4" />
+                                </Button>
+                                <Button variant="default" size="icon" className="h-8 w-8 rounded-full border-0">
+                                    <FileUp className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        </CardAction>
+                    </CardHeader>
+                    <CardContent>
+                        {showFilters && (
+                            <Filters
+                                onFilterChange={updateFilter}
+                                allCategories={categories.data ?? []}
+                                selectedCategories={filters.categories ?? []}
+                            ></Filters>
+                        )}
+                        <div className="py-2">
+                            <FilterDisplay
+                                filters={filters}
+                                removeCategory={removeCategory}
+                                removeType={removeType}
+                                removeDate={removeDate}
+                                clearFilters={clearFilters}
+                            />
+                        </div>
+                        <TableContent
+                            purchases={purchases}
+                            filters={filters}
+                            setSort={setSort}
+                            rowOption={rowOption}
+                            editableTags={editableTags}
+                        />
+                    </CardContent>
+                    <CardFooter>
+                        <PaginationControls
+                            page={filters.pageNumber}
+                            onPageChange={updateFilter("pageNumber")}
+                            isLastPage={isLastPage}
+                        />
+                        <ResultsPerPageSelect
+                            value={filters.resultsPerPage}
+                            onValueChange={updateFilter("resultsPerPage")}
+                        />
+                    </CardFooter>
+                </Card>
+            ) : (
+                <Card className="h-full p-6 flex flex-col items-center justify-start min-h-[300px]">
+                    <CardTitle className="text-2xl font-bold self-start">{title}</CardTitle>
+                    <div className="flex flex-1 flex-col items-center justify-center gap-4 max-w-md text-center">
+                        <div className="w-16 h-16 bg-fuchsia rounded-full flex items-center justify-center">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                <path
+                                    d="M16 8v8m0 4h.01M28 16c0 6.627-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4s12 5.373 12 12z"
+                                    stroke="white"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                />
+                            </svg>
+                        </div>
+
+                        <div>
+                            <h3 className="text-lg font-bold mb-2">No data shown in this range</h3>
+                            <p className="text-sm text-gray-600">
+                                You need to connect QuickBooks or upload a CSV for your data
+                            </p>
+                        </div>
                     </div>
-                </CardAction>
-            </CardHeader>
-            <CardContent>
-                {showFilters && (
-                    <Filters
-                        onFilterChange={updateFilter}
-                        allCategories={categories.data ?? []}
-                        selectedCategories={filters.categories ?? []}
-                    ></Filters>
-                )}
-                <div className="py-2">
-                    <FilterDisplay
-                        filters={filters}
-                        removeCategory={removeCategory}
-                        removeType={removeType}
-                        removeDate={removeDate}
-                        clearFilters={clearFilters}
-                    />
-                </div>
-                <TableContent
-                    purchases={purchases}
-                    filters={filters}
-                    setSort={setSort}
-                    rowOption={rowOption}
-                    editableTags={editableTags}
-                />
-            </CardContent>
-            <CardFooter>
-                <PaginationControls
-                    page={filters.pageNumber}
-                    onPageChange={updateFilter("pageNumber")}
-                    isLastPage={isLastPage}
-                />
-                <ResultsPerPageSelect value={filters.resultsPerPage} onValueChange={updateFilter("resultsPerPage")} />
-            </CardFooter>
-        </Card>
+                </Card>
+            )}
+        </>
     );
 }
 
@@ -122,6 +169,10 @@ export function useFetchPurchases(filters: FilteredPurchases) {
     return useQuery({
         queryKey: ["purchases-for-company", filters],
         queryFn: async ({ signal }) => {
+            console.log("=== FETCH PURCHASES ===");
+            console.log("Full filters object:", filters);
+            console.log("Type filter value:", filters.type);
+            console.log("Type filter typeof:", typeof filters.type);
             const token = await getClientAuthToken();
             const client = getClient();
             const { data, error, response } = await client.GET("/purchase", {
