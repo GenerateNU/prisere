@@ -8,28 +8,28 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { ChartContainer, ChartTooltipContent, ChartTooltip, ChartConfig } from "@/components/ui/chart";
 import Link from "next/link";
 import { FaCircle } from "react-icons/fa";
+import { LargeLoading } from "../loading";
+import { FaExclamation } from "react-icons/fa6";
 
-// No Data Component
 export function RevenueAndExpensesNoData() {
     return (
-        <Card className="h-full min-h-[371px] p-6 border flex flex-col items-center justify-center">
-            <div className="flex flex-col items-center gap-4 max-w-md text-center">
-                <div className="w-16 h-16 bg-fuchsia rounded-full flex items-center justify-center">
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                        <path
-                            d="M16 8v8m0 4h.01M28 16c0 6.627-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4s12 5.373 12 12z"
-                            stroke="white"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                        />
-                    </svg>
-                </div>
+        <Card className="h-full min-h-[371px] border-none shadow-none flex flex-col p-6">
+            <CardTitle className="text-2xl font-bold">Revenue and Expenses</CardTitle>
+            <div className="relative flex items-center justify-center w-full h-full flex-1">
+                <CardContent className="p-0 z-0 absolute w-full h-full">
+                    <LargeLoading />
+                </CardContent>
+                <div className="flex flex-col items-center justify-center h-full text-center gap-4 z-10 relative">
+                    <div className="flex w-16 h-16 bg-fuchsia rounded-full items-center justify-center">
+                        <FaExclamation color="white" size={50} />
+                    </div>
 
-                <div>
-                    <h3 className="text-lg font-bold mb-2">No data shown in this range</h3>
-                    <p className="text-sm text-gray-600">
-                        You need to connect QuickBooks or upload a CSV for your data
-                    </p>
+                    <div>
+                        <h3 className="text-lg font-bold mb-2">No data shown in this range</h3>
+                        <p className="text-sm text-gray-600">
+                            You need to connect QuickBooks or upload a CSV for your data
+                        </p>
+                    </div>
                 </div>
             </div>
         </Card>
@@ -109,84 +109,91 @@ export default function RevenueAndExpenses() {
     } satisfies ChartConfig;
 
     return (
-        <Card className="h-full min-h-[371px] p-6 border flex flex-col">
-            {/* Header with title and percentage change */}
+        <Card className="h-full min-h-[371px] p-6 border-none shadow-none flex flex-col">
             <div className="flex flex-col mb-4 gap-2">
                 <CardTitle className="text-2xl font-bold">Revenue and Expenses</CardTitle>
 
-                <div className="flex items-center gap-2 text-sm py-1 rounded">
-                    <div
-                        className={`flex items-center rounded py-1 px-2 ${percentChange >= 0 ? "bg-seafoam" : "bg-pink"}`}
-                    >
-                        <span className={`text-center ${percentChange >= 0 ? "text-teal" : "text-fuchsia"}`}>
-                            {percentChange >= 0 ? "+" : ""}
-                            {percentChange.toFixed(2)}%
-                        </span>
+                {!(expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading)) && (
+                    <div className="flex items-center gap-2 text-sm py-1 rounded">
+                        <div
+                            className={`flex items-center rounded py-1 px-2 ${percentChange >= 0 ? "bg-seafoam" : "bg-pink"}`}
+                        >
+                            <span className={`text-center ${percentChange >= 0 ? "text-teal" : "text-fuchsia"}`}>
+                                {percentChange >= 0 ? "+" : ""}
+                                {percentChange.toFixed(2)}%
+                            </span>
+                        </div>
+                        <span className="text-charcoal">revenue since last month</span>
                     </div>
-                    <span className="text-charcoal">revenue since last month</span>
-                </div>
+                )}
             </div>
 
-            <CardContent className="p-0 flex-1 flex gap-6">
-                {/* Left side - Stats */}
-                <div className="flex flex-col justify-between min-w-[200px]">
-                    <div className="space-y-6">
-                        <div>
-                            <div className="flex items-center gap-2 text-sm text-charcoal mb-2">
-                                <div className="text-seafoam">
-                                    <FaCircle size={10} color="var(--seafoam)" />
+            {expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading) ? (
+                <CardContent className="p-0 flex-1 flex gap-6">
+                    <LargeLoading />
+                </CardContent>
+            ) : (
+                <CardContent className="p-0 flex-1 flex gap-6">
+                    <div className="flex flex-col justify-between min-w-[200px]">
+                        <div className="space-y-6">
+                            <div>
+                                <div className="flex items-center gap-2 text-sm text-charcoal mb-2">
+                                    <div className="text-seafoam">
+                                        <FaCircle size={10} color="var(--seafoam)" />
+                                    </div>
+                                    Total Revenue this Month
                                 </div>
-                                Total Revenue this Month
-                            </div>
-                            <div className="text-4xl font-bold">${(revenueQueries[0].data?.total ?? 0) / 100.0}</div>
-                        </div>
-
-                        <div>
-                            <div className="flex items-center gap-2 text-sm text-charcoal mb-2">
-                                <div className="text-teal">
-                                    <FaCircle size={10} color="var(--teal)" />
+                                <div className="text-4xl font-bold">
+                                    ${(revenueQueries[0].data?.total ?? 0) / 100.0}
                                 </div>
-                                Total Expenses this Month
                             </div>
-                            <div className="text-4xl font-bold">${(expensesQueries[0].data?.total ?? 0) / 100.0}</div>
+
+                            <div>
+                                <div className="flex items-center gap-2 text-sm text-charcoal mb-2">
+                                    <div className="text-teal">
+                                        <FaCircle size={10} color="var(--teal)" />
+                                    </div>
+                                    Total Expenses this Month
+                                </div>
+                                <div className="text-4xl font-bold">
+                                    ${(expensesQueries[0].data?.total ?? 0) / 100.0}
+                                </div>
+                            </div>
                         </div>
+
+                        <Link href={"/expense-tracker"} className="text-sm font-semibold underline no-underline">
+                            <Button className="h-10 text-sm text-white rounded-full w-fit px-6 mt-6 bg-fuchsia">
+                                See Expense Tracker
+                            </Button>
+                        </Link>
                     </div>
 
-                    <Link href={"/expense-tracker"} className="text-sm font-semibold underline no-underline">
-                        <Button className="h-10 text-sm text-white rounded-full w-fit px-6 mt-6 bg-fuchsia">
-                            See Expense Tracker
-                        </Button>
-                    </Link>
-                </div>
-
-                {/* Right side - Chart with legend */}
-                <div className="flex-1 flex flex-col min-w-0">
-                    {/* Legend */}
-                    <div className="flex justify-end items-center gap-4 mb-2">
-                        <div className="flex items-center gap-2 text-sm">
-                            <div className="w-3 h-3 rounded-full bg-seafoam"></div>
-                            <span>Revenues</span>
+                    <div className="flex-1 flex flex-col min-w-0">
+                        <div className="flex justify-end items-center gap-4 mb-2">
+                            <div className="flex items-center gap-2 text-sm">
+                                <div className="w-3 h-3 rounded-full bg-seafoam"></div>
+                                <span>Revenues</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm">
+                                <div className="w-3 h-3 rounded-full bg-teal-600"></div>
+                                <span>Expenses</span>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2 text-sm">
-                            <div className="w-3 h-3 rounded-full bg-teal-600"></div>
-                            <span>Expenses</span>
+
+                        <div className="flex-1 min-h-0">
+                            <ChartContainer config={chartConfig} className="h-full w-full">
+                                <BarChart accessibilityLayer data={chartData}>
+                                    <CartesianGrid vertical={false} />
+                                    <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
+                                    <Bar dataKey="expenses" fill="var(--color-expenses)" radius={4} />
+                                </BarChart>
+                            </ChartContainer>
                         </div>
                     </div>
-
-                    {/* Chart */}
-                    <div className="flex-1 min-h-0">
-                        <ChartContainer config={chartConfig} className="h-full w-full">
-                            <BarChart accessibilityLayer data={chartData}>
-                                <CartesianGrid vertical={false} />
-                                <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                                <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
-                                <Bar dataKey="expenses" fill="var(--color-expenses)" radius={4} />
-                            </BarChart>
-                        </ChartContainer>
-                    </div>
-                </div>
-            </CardContent>
+                </CardContent>
+            )}
         </Card>
     );
 }

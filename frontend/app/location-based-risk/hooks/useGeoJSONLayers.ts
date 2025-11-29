@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCountyLevelGEOJSONData } from "./useCountyLevelGEOJSONData";
 import type { Map as LeafletMap } from "leaflet";
 import { colorFromSevarity } from "./colorFromSeverityLevel";
@@ -25,6 +25,7 @@ export const useGeoJSONLayers = (
 ) => {
     const hasAddedLayersRef = useRef(false);
 
+    const [loading, setLoading] = useState(true);
     const {
         data: geoJsonCountyData,
         isLoading: isLoadingGeoJsonData,
@@ -37,17 +38,13 @@ export const useGeoJSONLayers = (
     }, []);
 
     useEffect(() => {
-        if (
-            !map ||
-            !window.L ||
-            !isMapReady ||
-            hasAddedLayersRef.current ||
-            isLoadingGeoJsonData ||
-            !geoJsonCountyData ||
-            !femaRiskCountyLookup
-        )
+        if (!map || !window.L || !isMapReady || isLoadingGeoJsonData || !geoJsonCountyData || !femaRiskCountyLookup) {
+            setLoading(true);
             return;
-
+        }
+        if (hasAddedLayersRef.current) {
+            return;
+        }
         try {
             window.L.geoJSON(geoJsonCountyData, {
                 style: (feature) => ({
@@ -71,10 +68,13 @@ export const useGeoJSONLayers = (
                     }
                 },
             }).addTo(map);
-
+            setLoading(false);
             hasAddedLayersRef.current = true;
         } catch (err) {
+            setLoading(false);
             console.error("Error adding GeoJSON layers:", err);
         }
     }, [geoJsonCountyData, femaRiskCountyLookup, map]);
+
+    return { loading };
 };
