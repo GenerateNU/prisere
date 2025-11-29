@@ -27,7 +27,7 @@ const LeafletGeoJSONMap = ({ lat, long, femaRiskCountyLookup}: LeafletGeoJSONMap
     const { isLoaded: leafletLoaded, error: leafletError } = useLeafletLoader();
     const [userLocation, setUserLocation] = useState<[number, number]>([lat || 0, long || 0]);
     const { map, isReady: mapReady, panTo } = useLeafletMap(mapRef, leafletLoaded, userLocation);
-    useGeoJSONLayers(map, mapReady, femaRiskCountyLookup);
+    const {loading} = useGeoJSONLayers(map, mapReady, femaRiskCountyLookup);
 
     // Pan to new location whenever lat or long changes
     useEffect(() => {
