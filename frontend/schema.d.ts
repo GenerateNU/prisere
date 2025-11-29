@@ -2073,12 +2073,16 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Redirected to QuickBooks OAuth url */
-                302: {
+                /** @description Successfully redirected to quickbooks auth */
+                200: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": {
+                            url: string;
+                        };
+                    };
                 };
             };
         };
@@ -2114,19 +2118,14 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Successfully logged in through QB */
-                200: {
+                /** @description Successfully authenticated, redirecting */
+                302: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": {
-                            /** @enum {boolean} */
-                            success: true;
-                        };
-                    };
+                    content?: never;
                 };
-                /** @description Did not grant permissions */
+                /** @description Authentication failed */
                 400: {
                     headers: {
                         [name: string]: unknown;

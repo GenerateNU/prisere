@@ -90,7 +90,7 @@ export class QuickbooksService implements IQuickbooksService {
 
             if (!external) {
                 if (!maybeToken.initiatorUser.companyId) {
-                    throw Boom.badRequest("The requesting user deos not belong to a company");
+                    throw Boom.badRequest("The requesting user does not belong to a company");
                 }
 
                 await this.transaction.createCompanyRealm({

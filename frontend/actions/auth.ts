@@ -1,10 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { createSupabaseClient } from "@/utils/supabase/server";
 import { loginInitialState, requiredOnboardingProgress, signupInitialState } from "@/types/user";
 import { createClient } from "@supabase/supabase-js";
+import { importQuickbooksData } from "@/api/quickbooks";
+import { getCompany } from "@/api/company";
 
 export async function login(prevState: loginInitialState, formData: FormData) {
     const supabase = await createSupabaseClient();
@@ -19,8 +20,14 @@ export async function login(prevState: loginInitialState, formData: FormData) {
             message: error.message || "Login failed",
         };
     }
+
+    const company = await getCompany();
+    if (company?.externals) {
+        importQuickbooksData();
+    }
+
     revalidatePath("/", "layout");
-    redirect("/");
+    return { success: true, message: "Login successful" };
 }
 
 export async function logoutUser() {

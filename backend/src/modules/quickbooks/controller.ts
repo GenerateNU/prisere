@@ -6,10 +6,8 @@ import Boom from "@hapi/boom";
 import { validate } from "uuid";
 
 export interface IQuickbooksController {
-    redirectToAuthorization(ctx: Context): ControllerResponse<TypedResponse<undefined, 302>>;
-    generateSession(
-        ctx: Context
-    ): ControllerResponse<TypedResponse<{ success: true }, 200> | TypedResponse<{ error: string }, 400>>;
+    redirectToAuthorization(ctx: Context): ControllerResponse<TypedResponse<{ url: string }, 200>>;
+    generateSession(ctx: Context): Promise<Response>;
     updateUnprocessedInvoices(ctx: Context): ControllerResponse<TypedResponse<{ success: true }, 200>>;
     importQuickbooksData(ctx: Context): ControllerResponse<TypedResponse<{ success: true }, 201>>;
 }
@@ -22,7 +20,7 @@ export class QuickbooksController implements IQuickbooksController {
 
         const { url } = await this.service.generateAuthUrl({ userId });
 
-        return ctx.redirect(url);
+        return ctx.json({ url }, 200);
     }
 
     async generateSession(ctx: Context) {
@@ -36,7 +34,7 @@ export class QuickbooksController implements IQuickbooksController {
 
         await this.service.createQuickbooksSession(params);
 
-        return ctx.json({ success: true }, 200);
+        return ctx.redirect(`${process.env.FRONTEND_URL || "http://localhost:3000"}`);
     }
 
     async updateUnprocessedInvoices(ctx: Context) {
