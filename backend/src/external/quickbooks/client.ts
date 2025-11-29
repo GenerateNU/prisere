@@ -75,8 +75,8 @@ export class QuickbooksClient implements IQuickbooksClient {
         this.redirectUri =
             environment === "production"
                 ? // Note: Quickbooks Redirect URI was updated to match these URLs:
-                  `${PROD_PRISERE_API_URL}quickbooks/redirect`
-                : `${DEV_PRISERE_API_URL}quickbooks/redirect`;
+                  `${PROD_PRISERE_API_URL}/quickbooks/redirect`
+                : `${DEV_PRISERE_API_URL}/quickbooks/redirect`;
     }
 
     public generateUrl({ scopes }: { scopes: (keyof typeof QB_SCOPES)[] }) {
@@ -98,6 +98,7 @@ export class QuickbooksClient implements IQuickbooksClient {
     }
 
     public async generateToken({ code }: { code: string }) {
+        console.log(`GENREATING token`)
         const response = await fetch(QuickbooksClient.TOKEN_ENDPOINT, {
             method: "POST",
             headers: {
@@ -112,6 +113,7 @@ export class QuickbooksClient implements IQuickbooksClient {
                 redirect_uri: this.redirectUri,
             }),
         }).then((res) => res.json() as unknown as QBOAuthTokenResponse);
+        console.log(`GENREATING token RESPONse: ${response.access_token} ${response.expires_in} ${response.token_type}`)
 
         return response;
     }

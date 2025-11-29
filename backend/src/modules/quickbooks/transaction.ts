@@ -9,6 +9,7 @@ export interface IQuickbooksTransaction {
     fetchOAuth(args: { stateId: string }): Promise<QuickbooksPendingOAuth | null>;
     clearPendingOAuth(args: { stateId: string }): Promise<void>;
     getCompanyByRealm(args: { realmId: string }): Promise<CompanyExternal | null>;
+    getCompanyExternalByCompanyId(args: { companyId: string }): Promise<CompanyExternal | null>;
     createCompanyRealm(args: { companyId: string; realmId: string }): Promise<void>;
     upsertQuickbooksSession(args: {
         accessToken: string;
@@ -65,6 +66,7 @@ export class QuickbooksTransaction implements IQuickbooksTransaction {
     }
 
     async getCompanyByRealm({ realmId }: { realmId: string }) {
+        console.log(`IN getCompanyByRealm method ----------- REALM ID: ${realmId} ---------------`)
         const quickbooksExternal = await this.db
             .createQueryBuilder()
             .select("company_external")
@@ -73,9 +75,22 @@ export class QuickbooksTransaction implements IQuickbooksTransaction {
             .where("company_external.source = :source", { source: "quickbooks" satisfies CompanyExternalSource })
             .andWhere("company_external.externalId = :id", { id: realmId })
             .getOne();
+        console.log(`IN getCompanyByRealm method, ::: ${quickbooksExternal}`)
 
         return quickbooksExternal;
     }
+
+    async getCompanyExternalByCompanyId({ companyId }: { companyId: string }) {
+        const quickbooksExternal = await this.db.getRepository(CompanyExternal).findOne({
+            where: {
+                companyId,
+                source: "quickbooks",
+            }
+        });
+        console.log(`IN getCompanyExternalByCompanyId method, ::: ${quickbooksExternal}`)
+        return quickbooksExternal;
+    }
+
 
     async createCompanyRealm({ companyId, realmId }: { companyId: string; realmId: string }) {
         await this.db.getRepository(CompanyExternal).insert({
@@ -83,6 +98,7 @@ export class QuickbooksTransaction implements IQuickbooksTransaction {
             externalId: realmId,
             source: "quickbooks",
         });
+        console.log(`Created company externallllll`)
     }
 
     async upsertQuickbooksSession({

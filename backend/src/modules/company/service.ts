@@ -92,14 +92,22 @@ export class CompanyService implements CompanyService {
     });
 
     hasCompanyData = withServiceErrorHandling(async (companyId: string): Promise<boolean> => {
+        console.log(`Checking company data for ID: ${companyId}`)
         const external = await this.companyTransaction.getCompanyExternal({ id: companyId });
         if (external) {
+            console.log(`Company has external---------------------------------`)
+
             return true;
+
         }
         const financialData = await this.companyTransaction.getCompanyFinancialData({ id: companyId });
         if (financialData) {
+            console.log(`Company has financial data---------------------------------`)
+
             return true;
         }
+        console.log(`Company has NO DATA---------------------------------`)
+
         return false;
     });
 

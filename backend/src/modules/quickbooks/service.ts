@@ -59,6 +59,7 @@ export class QuickbooksService implements IQuickbooksService {
     }) {
         const accessExpiryTime = dayjs().add(accessExpiresIn, "seconds");
         const refreshExpiryTime = dayjs().add(refreshExpiresIn, "seconds");
+        console.log(`Upserting for Comp ID:::::::::::::::: ${companyId}`)
 
         const session = await this.transaction.upsertQuickbooksSession({
             accessToken,
@@ -73,7 +74,10 @@ export class QuickbooksService implements IQuickbooksService {
 
     createQuickbooksSession = withServiceErrorHandling(
         async ({ code, state, realmId }: { code: string; state: string; realmId: string }) => {
+            console.log("CREATING QB SESSION")
             const maybeToken = await this.transaction.fetchOAuth({ stateId: state });
+
+            console.log(`Creating QB session, got mayber token: ${maybeToken}`)
 
             if (maybeToken?.stateId !== state) {
                 throw Boom.internal("State mismatch");
@@ -84,11 +88,29 @@ export class QuickbooksService implements IQuickbooksService {
                     code,
                 });
 
-            const external = await this.transaction.getCompanyByRealm({ realmId });
+            console.log(`Got access token: ${access_token}. About to create company external`)
 
-            let companyId = external?.companyId;
+            if (!maybeToken.initiatorUser.companyId) {
+                    throw Boom.badRequest("The requesting user does not belong to a company");
+            }
+            let companyId = maybeToken.initiatorUser.companyId;
+            console.log(`Company ID is now ************* ${companyId} *********`)
+
+            const external = await this.transaction.getCompanyExternalByCompanyId({ 
+                companyId 
+            });
+
+            // const external = await this.transaction.getCompanyByRealm({ realmId });
+            console.log(`Maybe got external: ${external}`)
+
+
+            companyId = external?.companyId;
+            console.log(`Company ID is now ************* ${companyId} *********`)
+
+            // let companyId = external?.companyId;
 
             if (!external) {
+                console.log(`NO EXTERNAL COMPANY`)
                 if (!maybeToken.initiatorUser.companyId) {
                     throw Boom.badRequest("The requesting user does not belong to a company");
                 }
@@ -97,11 +119,14 @@ export class QuickbooksService implements IQuickbooksService {
                     companyId: maybeToken.initiatorUser.companyId,
                     realmId,
                 });
+                
+
                 companyId = maybeToken.initiatorUser.companyId;
             }
 
             await this.transaction.clearPendingOAuth({ stateId: state });
 
+            console.log(`About to upsert QB session`)
             const session = await this.upsertQBSession({
                 accessToken: access_token,
                 refreshToken: refresh_token,
@@ -109,6 +134,7 @@ export class QuickbooksService implements IQuickbooksService {
                 refreshExpiresIn: x_refresh_token_expires_in,
                 companyId: companyId!, // see above, it must be not undefined
             });
+            console.log(` QB session: ${session.accessToken}, for comp ID: ${session.companyId}`)
 
             return session;
         }
@@ -308,7 +334,8 @@ export class QuickbooksService implements IQuickbooksService {
             const now = dayjs();
 
             if (!session || !externalId) {
-                throw Boom.unauthorized("Quickbooks session not found");
+                console.log("Quickbooks session not found");
+                return;
             }
             if (now.isSameOrAfter(session.refreshExpiryTimestamp)) {
                 // Redirect to quickbooks auth?
