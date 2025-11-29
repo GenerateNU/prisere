@@ -4,11 +4,11 @@ import { Spinner } from "../ui/spinner";
 
 export function Table<T>({
     table,
-    isLoading,
+    isLoading = false,
     onRowClick,
 }: {
     table: ReactTable<T>;
-    isLoading: boolean;
+    isLoading?: boolean;
     onRowClick?: (row: T) => void;
 }) {
     return (
