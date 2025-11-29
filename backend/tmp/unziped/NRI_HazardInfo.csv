@@ -1,0 +1,19 @@
+﻿OID_,Hazard,Prefix,Service,Start,End_,TotalYears,FrequencyModel,EAL_Building,EAL_Population,EAL_Agriculture,PeriodOfRecord,NRI_VER
+1,Avalanche,AVLN,Avalanche,1960,2019,60,Annualized Frequency,1,1,0,1960-2019 (60 years),March 2023
+2,Coastal Flooding,CFLD,CoastalFlooding,N/A,N/A,N/A,Annualized Frequency,1,1,0,Various (see documentation),March 2023
+3,Cold Wave,CWAV,ColdWave,2005,2021,16,Annualized Frequency,1,1,1,2005-2021 (16 years),March 2023
+4,Drought,DRGT,Drought,2000,2021,22,Annualized Frequency,0,0,1,2000-2021 (22 years),March 2023
+5,Earthquake,ERQK,Earthquake,2021,2021,1,Probability,1,1,0,2021 dataset,March 2023
+6,Hail,HAIL,Hail,1986,2021,34,Annualized Frequency,1,1,1,1986-2021 (34 years),March 2023
+7,Heat Wave,HWAV,HeatWave,2005,2021,16,Annualized Frequency,1,1,1,2005-2021 (16 years),March 2023
+8,Hurricane,HRCN,Hurricane,1851/1949,2021,171/73,Annualized Frequency,1,1,1,East 1851-2021 (171 years) / West 1949-2021 (73 years),March 2023
+9,Ice Storm,ISTM,IceStorm,1946,2014,67,Annualized Frequency,1,1,0,1946-2014 (67 years),March 2023
+10,Landslide,LNDS,Landslide,2010,2021,12,Annualized Frequency,1,1,0,2010-2021 (12 years),March 2023
+11,Lightning,LTNG,Lightning,1991,2012,22,Annualized Frequency,1,1,0,1991-2012 (22 years),March 2023
+12,Riverine Flooding,RFLD,RiverineFlooding,1996,2019,24,Annualized Frequency,1,1,1,1996-2019 (24 years),March 2023
+13,Strong Wind,SWND,StrongWind,1986,2021,34,Annualized Frequency,1,1,1,1986-2021 (34 years),March 2023
+14,Tornado,TRND,Tornado,1950,2021,72,Annualized Frequency,1,1,1,1950-2021 (72 years),March 2023
+15,Tsunami,TSUN,Tsunami,1800,2021,222,Annualized Frequency,1,1,0,1800-2021 (222 years),March 2023
+16,Volcanic Activity,VLCN,VolcanicActivity,9310BC,2022,11331,Annualized Frequency,1,1,0,9310BC-2022 (11331 years),March 2023
+17,Wildfire,WFIR,Wildfire,2021,2021,1,Probability,1,1,1,2021 dataset,March 2023
+18,Winter Weather,WNTW,WinterWeather,2005,2021,16,Annualized Frequency,1,1,1,2005-2021 (16 years),March 2023

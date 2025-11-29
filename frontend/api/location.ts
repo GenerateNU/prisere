@@ -36,7 +36,10 @@ export const createLocationBulk = async (payload: CreateLocationBulkRequest): Pr
         if (response.ok) {
             return data!;
         } else {
-            throw Error(error?.error);
+            const apiError = new Error(error?.error || "Failed to create locations - Unkown Error");
+            (apiError as any).status = response.status;
+            (apiError as any).statusText = response.statusText;
+            throw apiError;
         }
     };
     return authWrapper<Location[]>()(req);

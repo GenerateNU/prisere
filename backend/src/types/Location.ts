@@ -11,7 +11,7 @@ export const LocationAddressSchema = z.object({
     city: z.string(),
     streetAddress: z.string(),
     postalCode: z.string().nonempty().regex(/^\d+$/, {
-        message: "Must be a non-negative number string",
+        message: "Please enter a valid Postal Code. Must be a non-negative number.",
     }),
     county: z.string().optional(),
     companyId: z.uuid(),
@@ -29,7 +29,7 @@ export const LocationAddressSchemaType = z.object({
     city: z.string(),
     streetAddress: z.string(),
     postalCode: z.string().nonempty().regex(/^\d+$/, {
-        message: "Must be a non-negative number string",
+        message: "Please enter a valid Postal Code. Must be a non-negative number.",
     }),
     county: z.string().optional(),
     companyId: z.uuid(),
@@ -45,7 +45,7 @@ export const CreateLocationAddressSchema = z.object({
     city: z.string().nonempty(),
     streetAddress: z.string().nonempty(),
     postalCode: z.string().nonempty().regex(/^\d+$/, {
-        message: "Must be a non-negative number string",
+        message: "Please enter a valid Postal Code. Must be a non-negative number.",
     }),
     county: z.string().nonempty().optional(),
 });
@@ -72,7 +72,7 @@ export const GetAllLocationAddressesSchema = z.array(
         city: z.string().nonempty(),
         streetAddress: z.string().nonempty(),
         postalCode: z.string().nonempty().regex(/^\d+$/, {
-            message: "Must be a non-negative number string",
+            message: "Please enter a valid Postal Code. Must be a non-negative number.",
         }),
         county: z.string().nonempty().optional(),
         companyId: z.uuid(),
@@ -93,7 +93,7 @@ export const UpdateLocationAddressDTOSchema = z.object({
     postalCode: z
         .string()
         .regex(/^\d+$/, {
-            message: "Must be a non-negative number string",
+            message: "Please enter a valid Postal Code. Must be a non-negative number.",
         })
         .optional(),
     county: z.string().optional().nullable(),

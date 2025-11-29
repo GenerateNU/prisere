@@ -73,7 +73,8 @@ export default function Company({ handleNext: incrementNext }: CompanyInfoProps)
             incrementNext();
         },
         onError: (_error: Error) => {
-            setLocError("Error creating locations. Check required fields and try again");
+            const errorMessage = _error.message || "Error creating locations. Check required fields and try again";
+            setLocError(errorMessage);
         },
     });
 
