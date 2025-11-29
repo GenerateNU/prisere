@@ -19,7 +19,6 @@ export class QuickbooksController implements IQuickbooksController {
         const userId = ctx.get("userId");
 
         const { url } = await this.service.generateAuthUrl({ userId });
-        console.log(url);
 
         return ctx.json({ url }, 200);
     }
