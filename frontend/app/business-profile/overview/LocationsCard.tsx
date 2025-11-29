@@ -1,7 +1,7 @@
 "use client";
 
 import { getCompanyLocations } from "@/api/company";
-import { createLocation, updateLocationAddress } from "@/api/location";
+import { createLocation, deleteLocation, updateLocationAddress } from "@/api/location";
 import LocationEditor from "@/components/LocationEditor";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -50,6 +50,17 @@ export default function LocationsCard() {
         },
     });
 
+    const { mutate: deleteLocationMutate } = useMutation({
+        mutationFn: (locationId: string) => deleteLocation(locationId),
+        onSuccess: () => {
+            setSaveError(null);
+            setEditingLocationIndex(null);
+        },
+        onError: (_error: Error) => {
+            setSaveError("An error occurred while deleting the location.");
+        },
+    });
+
     const updateLocation = (index: number, location: CreateLocationRequest | UpdateLocationRequest) => {
         const newLocations = [...locationInfo];
         newLocations[index] = location;
@@ -57,6 +68,12 @@ export default function LocationsCard() {
     };
 
     const removeLocation = (index: number) => {
+        const location = locationInfo[index];
+
+        if ("id" in location && location.id) {
+            deleteLocationMutate(location.id);
+        }
+
         setLocationInfo((prev) => prev.filter((_, i) => i !== index));
         setEditingLocationIndex(null);
     };
@@ -77,11 +94,27 @@ export default function LocationsCard() {
     };
 
     const handleSave = () => {
+        console.log("HITTING HERE");
         if (editingLocationIndex === null) return;
-        if ("id" in locationInfo[editingLocationIndex]) {
-            updateLocationsMutate(locationInfo[editingLocationIndex] as UpdateLocationRequest);
+
+        const location = locationInfo[editingLocationIndex];
+
+        if (
+            !location.alias ||
+            !location.streetAddress ||
+            !location.city ||
+            !location.stateProvince ||
+            !location.postalCode ||
+            !location.country
+        ) {
+            setSaveError("Please fill in all required fields before saving.");
+            return;
+        }
+
+        if ("id" in location) {
+            updateLocationsMutate(location as UpdateLocationRequest);
         } else {
-            createLocationMutate(locationInfo[editingLocationIndex] as CreateLocationRequest);
+            createLocationMutate(location as CreateLocationRequest);
         }
     };
 

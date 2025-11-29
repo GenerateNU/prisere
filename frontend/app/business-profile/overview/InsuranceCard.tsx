@@ -1,6 +1,11 @@
 "use client";
 
-import { createInsurancePolicy, getInsurancePolicies, updateInsurancePolicy } from "@/api/insurance";
+import {
+    createInsurancePolicy,
+    deleteInsurancePolicy,
+    getInsurancePolicies,
+    updateInsurancePolicy,
+} from "@/api/insurance";
 import InsuranceEditor from "@/components/InsuranceEditor";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -43,6 +48,17 @@ export default function InsuranceCard() {
         },
     });
 
+    const { mutate: deleteInsuranceMutate } = useMutation({
+        mutationFn: (insurancePolicyId: string) => deleteInsurancePolicy(insurancePolicyId),
+        onSuccess: () => {
+            setSaveError(null);
+            setEditingInsuranceIndex(null);
+        },
+        onError: (_error: Error) => {
+            setSaveError("An error occurred while deleting the insurance policy.");
+        },
+    });
+
     const updateInsurance = (index: number, insurance: CreateInsurancePolicyRequest | UpdateInsurancePolicyRequest) => {
         const newInsurance = [...insuranceInfo];
         newInsurance[index] = insurance;
@@ -50,6 +66,12 @@ export default function InsuranceCard() {
     };
 
     const removeInsurance = (index: number) => {
+        const insurance = insuranceInfo[index];
+
+        if ("id" in insurance && insurance.id) {
+            deleteInsuranceMutate(insurance.id);
+        }
+
         setInsuranceInfo((prev) => prev.filter((_, i) => i !== index));
         setEditingInsuranceIndex(null);
     };

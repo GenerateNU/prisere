@@ -9,12 +9,14 @@ import {
     CreateInsurancePolicyBulkResponseSchema,
     CreateInsurancePolicyDTOSchema,
     CreateInsurancePolicyResponseSchema,
+    DeleteInsurancePolicySchema,
     GetInsurancePoliciesResponseSchema,
     UpdateInsurancePolicyBulkDTOSchema,
     UpdateInsurancePolicyBulkResponseSchema,
     UpdateInsurancePolicyDTOSchema,
     UpdateInsurancePolicyResponseSchema,
 } from "../insurance-policy/types";
+import { ErrorResponseSchema } from "../../types/Utils";
 
 export const addOpenApiInsurancePolicyRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const transaction: IInsurancePolicyTransaction = new InsurancePolicyTransaction(db);
@@ -26,6 +28,7 @@ export const addOpenApiInsurancePolicyRoutes = (openApi: OpenAPIHono, db: DataSo
     openApi.openapi(getInsurancePolicyRoute, (ctx) => controller.getAllPolicies(ctx));
     openApi.openapi(updateInsurancePolicy, (ctx) => controller.updateInsurancePolicy(ctx));
     openApi.openapi(updateInsurancePolicyBulk, (ctx) => controller.updateInsurancePolicyBulk(ctx));
+    openApi.openapi(removeInsurancePolicyRoute, (ctx) => controller.removeInsurancePolicyById(ctx));
 
     return openApi;
 };
@@ -161,4 +164,28 @@ const updateInsurancePolicyBulk = createRoute({
         },
         ...openApiErrorCodes("Update Insurance in Bulk Errors"),
     },
+});
+
+const removeInsurancePolicyRoute = createRoute({
+    method: "delete",
+    path: "/insurance/{id}",
+    summary: "Removes insurance policy of a company",
+    description: "Removes the insurance policy with the provided id",
+    request: {
+        params: DeleteInsurancePolicySchema,
+    },
+    responses: {
+        204: {
+            description: "Insurance policy successfully deleted",
+        },
+        400: {
+            description: "Invalid insurance policy ID or no Company with that ID",
+            content: {
+                "application/json": {
+                    schema: ErrorResponseSchema,
+                },
+            },
+        },
+    },
+    tags: ["Location Address"],
 });

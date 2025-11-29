@@ -16,6 +16,7 @@ export const insurancePolicyRoutes = (db: DataSource): Hono => {
     insurancePolicy.post("/bulk", (ctx) => insurancePolicyController.createInsureancePolicyBulk(ctx));
     insurancePolicy.patch("/", (ctx) => insurancePolicyController.updateInsurancePolicy(ctx));
     insurancePolicy.patch("/bulk", (ctx) => insurancePolicyController.updateInsurancePolicyBulk(ctx));
+    insurancePolicy.delete("/:id", (ctx) => insurancePolicyController.removeInsurancePolicyById(ctx));
 
     return insurancePolicy;
 };
