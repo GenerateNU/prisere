@@ -19,12 +19,12 @@ export class QuickbooksController implements IQuickbooksController {
         const userId = ctx.get("userId");
 
         const { url } = await this.service.generateAuthUrl({ userId });
+        console.log(url);
 
         return ctx.json({ url }, 200);
     }
 
     async generateSession(ctx: Context) {
-        console.log(`Generating QB Session`)
         const params = RedirectEndpointParams.parse(ctx.req.query());
 
         if ("error" in params) {
