@@ -15,7 +15,7 @@ export default function DashboardBody() {
         queryFn: getDashboardBannerData,
     });
 
-    const { data: hasData } = useQuery({
+    const { data: hasData, isPending: hasDataLoading } = useQuery({
         queryKey: ["company-has-data"],
         queryFn: companyHasData,
     });
@@ -23,7 +23,11 @@ export default function DashboardBody() {
     return (
         <div className="flex flex-col gap-8">
             {/* No Data Popup - only shows when hasData is false */}
-            <NoDataPopupWrapper hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false} />
+            {!hasDataLoading && (
+                <NoDataPopupWrapper
+                    hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false}
+                />
+            )}
 
             {/* Banner - Full Width */}
             <div className="w-full">

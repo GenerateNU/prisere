@@ -21,7 +21,7 @@ export default function ExpenseTracker() {
     const onOpenImportModal = () => setImportModalOpen(true);
     const onCloseImportModal = () => setImportModalOpen(false);
 
-    const { data: hasData } = useQuery({
+    const { data: hasData, isPending: hasDataLoading } = useQuery({
         queryKey: ["company-has-data"],
         queryFn: companyHasData,
     });
@@ -69,7 +69,11 @@ export default function ExpenseTracker() {
 
     return (
         <div className="p-[50px] flex flex-col gap-[23px] bg-[var(--slate)] min-h-screen w-full">
-            <NoDataPopupWrapper hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false} />
+            {!hasDataLoading && (
+                <NoDataPopupWrapper
+                    hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false}
+                />
+            )}
             <div className="flex justify-between">
                 <h2 className="text-[30px] font-bold">Expense Tracker</h2>
                 {hasData?.hasFinancialData && (
