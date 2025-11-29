@@ -198,7 +198,7 @@ export class CompanyController implements ICompanyController {
             const hasData = await this.companyService.hasCompanyData(companyId);
 
             // Had to create primitive boolean because zod types use that
-            return ctx.json({ hasData }, 200);
+            return ctx.json(hasData, 200);
         }
     );
 

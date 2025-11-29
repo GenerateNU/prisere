@@ -1,6 +1,7 @@
 import {
     CreateCompanyDTO,
     GetCompanyByIdDTO,
+    HasCompanyDataDTOResponse,
     UpdateCompanyDTO,
     UpdateQuickBooksImportTimeDTO,
 } from "../../types/Company";
@@ -21,7 +22,7 @@ export interface ICompanyService {
     getCompanyLocationsById(payload: GetCompanyByIdDTO): Promise<LocationAddress[]>;
     getClaimInProgress(companyId: string): Promise<GetClaimInProgressForCompanyResponse>;
     getCompanyExternal(companyId: string): Promise<CompanyExternal | null>;
-    hasCompanyData(companyId: string): Promise<boolean>;
+    hasCompanyData(companyId: string): Promise<HasCompanyDataDTOResponse>;
     updateCompanyById(companyId: string, payload: UpdateCompanyDTO): Promise<Company>;
 }
 
@@ -91,16 +92,18 @@ export class CompanyService implements CompanyService {
         return external;
     });
 
-    hasCompanyData = withServiceErrorHandling(async (companyId: string): Promise<boolean> => {
+    hasCompanyData = withServiceErrorHandling(async (companyId: string): Promise<HasCompanyDataDTOResponse> => {
+        let externalData = false;
+        let financialData = false;
         const external = await this.companyTransaction.getCompanyExternal({ id: companyId });
         if (external) {
-            return true;
+            externalData = true;
         }
-        const financialData = await this.companyTransaction.getCompanyFinancialData({ id: companyId });
-        if (financialData) {
-            return true;
+        const financial = await this.companyTransaction.getCompanyFinancialData({ id: companyId });
+        if (financial) {
+            financialData = true;
         }
-        return false;
+        return { hasExternalData: externalData, hasFinancialData: financialData };
     });
 
     updateCompanyById = withServiceErrorHandling(

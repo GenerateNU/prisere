@@ -85,25 +85,15 @@ export class PurchaseTransaction implements IPurchaseTransaction {
             });
         }
 
-        if (type === "extraneous") {
+        if (type !== undefined) {
             queryBuilder.andWhere((qb) => {
                 const subQuery = qb
                     .subQuery()
                     .select("li_sub.purchaseId")
                     .from("purchase_line_item", "li_sub")
-                    .where("li_sub.type = 'extraneous'")
+                    .where("li_sub.type = :type", { type })
                     .getQuery();
                 return `p.id IN ${subQuery}`;
-            });
-        } else if (type === "typical") {
-            queryBuilder.andWhere((qb) => {
-                const subQuery = qb
-                    .subQuery()
-                    .select("li_sub.purchaseId")
-                    .from("purchase_line_item", "li_sub")
-                    .where("li_sub.type = 'extraneous'")
-                    .getQuery();
-                return `p.id NOT IN ${subQuery}`;
             });
         }
 

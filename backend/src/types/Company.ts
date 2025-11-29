@@ -61,7 +61,8 @@ export const GetCompanyExternalDTOSchema = z.object({
 });
 
 export const HasCompanyDataDTOSchemaResponse = z.object({
-    hasData: z.boolean(),
+    hasExternalData: z.boolean(),
+    hasFinancialData: z.boolean(),
 });
 
 export const GetCompanyByIdResponseSchema = CompanySchema;
