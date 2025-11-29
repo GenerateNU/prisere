@@ -57,7 +57,7 @@ export default function ExpenseTracker() {
         type: PurchaseLineItemType.PENDING,
     });
     const pendingExpensesLineItems =
-        pendingExpenses.data
+        pendingExpenses.data?.purchases
             ?.flatMap((purchase) => purchase.lineItems)
             .filter((lineItem) => {
                 return lineItem.type === "pending";
