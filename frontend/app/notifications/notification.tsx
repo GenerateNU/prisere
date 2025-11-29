@@ -84,7 +84,7 @@ export function LoadingNotification() {
                     <RiMore2Fill />
                 </Button>
             </div>
-            <Loading lines={2}/>
+            <Loading lines={2} />
         </div>
     );
 }

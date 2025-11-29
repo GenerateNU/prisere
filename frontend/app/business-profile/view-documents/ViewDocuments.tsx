@@ -16,6 +16,7 @@ import {
     uploadToS3,
 } from "@/api/business-profile";
 import { BusinessDocument, DocumentCategories } from "@/types/documents";
+import { Spinner } from "@/components/ui/spinner";
 
 type SortOrder = "asc" | "desc";
 
@@ -219,10 +220,7 @@ export default function ViewDocuments() {
             <CardHeader className="flex justify-between">
                 <div className="flex flex-col gap-[10px]">
                     <h3 className="text-[24px]">Business Documents</h3>
-                    <p className="text-[14px]">
-                        Upload general business documents below.
-                        {isLoadingDocuments && " Loading documents..."}
-                    </p>
+                    <p className="text-[14px]">Upload general business documents below.</p>
                 </div>
                 <div className="flex gap-[6px]">
                     <Button
@@ -257,7 +255,9 @@ export default function ViewDocuments() {
 
                 {/* Show loading state or documents */}
                 {isLoadingDocuments ? (
-                    <div className="text-center py-8 text-gray-500">Loading documents...</div>
+                    <div className="text-center py-8 text-gray-500 flex items-center justify-center">
+                        <Spinner />
+                    </div>
                 ) : documents.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
                         No documents found. Upload your first document to get started!

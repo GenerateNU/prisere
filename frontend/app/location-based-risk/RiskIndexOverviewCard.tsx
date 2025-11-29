@@ -14,7 +14,7 @@ interface RiskIndexOverviewCardProps {
               wildFire: string;
           }
         | undefined;
-    loading: boolean
+    loading: boolean;
 }
 
 export const RiskIndexOverviewCard = ({ riskAttributes, loading = false }: RiskIndexOverviewCardProps) => {
@@ -41,9 +41,9 @@ export const RiskIndexOverviewCard = ({ riskAttributes, loading = false }: RiskI
     );
 };
 
-export const HazardIndexOverviewCard = ({ riskAttributes, loading=false }: RiskIndexOverviewCardProps) => {
+export const HazardIndexOverviewCard = ({ riskAttributes, loading = false }: RiskIndexOverviewCardProps) => {
     return (
-        <Card  className={`${loading && "shadow-none border-none"}`}>
+        <Card className={`${loading && "shadow-none border-none"}`}>
             <div className="flex flex-col gap-4 p-4 pt-0">
                 <div className="flex flex-row justify-between">
                     <p className="font-bold">Hazard Risk Rating</p>

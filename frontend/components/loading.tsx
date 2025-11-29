@@ -23,11 +23,11 @@ export function LargeLoading() {
 
             <div className="flex gap-3">
                 <div
-                    style={{ height: "20px", width: "180px", backgroundColor: "#d1d5db" }}
+                    style={{ height: "20px", width: "180px", backgroundColor: "#e5e7eb" }}
                     className="rounded-full animate-pulse"
                 ></div>
                 <div
-                    style={{ height: "20px", width: "180px", backgroundColor: "#d1d5db" }}
+                    style={{ height: "20px", width: "180px", backgroundColor: "#e5e7eb" }}
                     className="rounded-full animate-pulse"
                 ></div>
             </div>

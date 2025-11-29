@@ -1,9 +1,7 @@
-
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { InfoIcon } from "lucide-react";
-import { Spinner } from "@/components/ui/spinner";
 import { HazardIndexOverviewCard, RiskIndexOverviewCard } from "../../app/location-based-risk/RiskIndexOverviewCard";
 import { useSelectedLocation } from "@/app/location-based-risk/hooks/useSelectedLocation";
 import { LocationsDropDown } from "./locationsDropDown";
@@ -16,15 +14,15 @@ import { LargeLoading } from "../loading";
 export default function LocationRisk() {
     const { availableLocations, selectedLocation, setSelectedLocation } = useSelectedLocation();
     const { countyLookup: femaRiskCountyLookup, lastUpdated } = useFEMARiskScore();
-    
+
     const mapRef = useRef<HTMLDivElement>(null);
-    const { isLoaded: leafletLoaded, error: leafletError } = useLeafletLoader();
+    const { isLoaded: leafletLoaded } = useLeafletLoader();
     const [userLocation, setUserLocation] = useState<[number, number]>([
         selectedLocation?.lat || 0,
-        selectedLocation?.long || 0
+        selectedLocation?.long || 0,
     ]);
     const { map, isReady: mapReady, panTo } = useLeafletMap(mapRef, leafletLoaded, userLocation);
-    const { loading:geoJsonLoading } = useGeoJSONLayers(map, mapReady, femaRiskCountyLookup);
+    const { loading: geoJsonLoading } = useGeoJSONLayers(map, mapReady, femaRiskCountyLookup);
 
     // Pan to new location whenever selectedLocation changes
     useEffect(() => {
@@ -41,9 +39,9 @@ export default function LocationRisk() {
             leafletLoaded,
             mapReady,
             geoJsonLoading,
-            isLoading
+            isLoading,
         });
-    }, [isLoading])
+    }, [isLoading]);
 
     return (
         <Card className="h-full p-[25px] border-[1px]">
@@ -66,44 +64,44 @@ export default function LocationRisk() {
                 </div>
             </CardTitle>
             <div className="relative">
-            {isLoading  && 
-             <CardContent className="absolute inset-0 z-10 flex items-center justify-center bg-white w-[100%] border-none shadow-none p-0">
-             <LargeLoading/>
-         </CardContent>
-            }
-            <CardContent className="w-[100%] flex flex-row px-0">
-                <div className="w-[100%] flex flex-col">
-                    <div className="w-[100%] flex flex-row">
-                        <div>
-                            <div ref={mapRef} className="w-96 h-full rounded-xl z-0" />
+                {isLoading && (
+                    <CardContent className="absolute inset-0 z-10 flex items-center justify-center bg-white w-[100%] border-none shadow-none p-0">
+                        <LargeLoading />
+                    </CardContent>
+                )}
+                <CardContent className="w-[100%] flex flex-row px-0">
+                    <div className="w-[100%] flex flex-col">
+                        <div className="w-[100%] flex flex-row">
+                            <div>
+                                <div ref={mapRef} className="w-96 h-full rounded-xl z-0" />
+                            </div>
+                            <div className="w-full pl-4 flex flex-col gap-2">
+                                <RiskIndexOverviewCard
+                                    riskAttributes={femaRiskCountyLookup.get(
+                                        `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
+                                    )}
+                                    loading={isLoading}
+                                />
+                                <HazardIndexOverviewCard
+                                    riskAttributes={femaRiskCountyLookup.get(
+                                        `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
+                                    )}
+                                    loading={isLoading}
+                                />
+                            </div>
                         </div>
-                        <div className="w-full pl-4 flex flex-col gap-2">
-                            <RiskIndexOverviewCard
-                                riskAttributes={femaRiskCountyLookup.get(
-                                    `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
-                                )}
-                                loading={isLoading}
-                            />
-                            <HazardIndexOverviewCard
-                                riskAttributes={femaRiskCountyLookup.get(
-                                    `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
-                                )}
-                                loading={isLoading}
-                            />
-                        </div>
+                        {lastUpdated && (
+                            <p className="text-sm text-gray-600 italic">
+                                This data was last updated{" "}
+                                {lastUpdated.toLocaleString("en-US", {
+                                    timeZone: "America/New_York",
+                                    dateStyle: "medium",
+                                    timeStyle: "short",
+                                })}
+                            </p>
+                        )}
                     </div>
-                    {lastUpdated && (
-                        <p className="text-sm text-gray-600 italic">
-                            This data was last updated{" "}
-                            {lastUpdated.toLocaleString("en-US", {
-                                timeZone: "America/New_York",
-                                dateStyle: "medium",
-                                timeStyle: "short",
-                            })}
-                        </p>
-                    )}
-                </div>
-            </CardContent>
+                </CardContent>
             </div>
         </Card>
     );

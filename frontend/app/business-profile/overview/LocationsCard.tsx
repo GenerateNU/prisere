@@ -16,7 +16,7 @@ export default function LocationsCard() {
     const [editingLocationIndex, setEditingLocationIndex] = useState<number | null>(null);
     const [saveError, setSaveError] = useState<string | null>(null);
 
-    const { data: locationsQuery, isPending: businessPending } = useQuery({
+    const { data: locationsQuery, isPending: locationPending } = useQuery({
         queryKey: ["locations"],
         queryFn: getCompanyLocations,
     });
@@ -95,7 +95,7 @@ export default function LocationsCard() {
     return (
         <Card className="p-[28px] flex gap-[12px] border-none shadow-none">
             <p className="font-bold text-[20px]">Locations</p>
-            {businessPending ? (
+            {locationPending ? (
                 <Loading lines={2} />
             ) : (
                 <div>

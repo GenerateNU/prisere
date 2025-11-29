@@ -38,24 +38,14 @@ export const useGeoJSONLayers = (
     }, []);
 
     useEffect(() => {
-        if (
-            !map ||
-            !window.L ||
-            !isMapReady ||
-            isLoadingGeoJsonData ||
-            !geoJsonCountyData ||
-            !femaRiskCountyLookup
-        ) {
+        if (!map || !window.L || !isMapReady || isLoadingGeoJsonData || !geoJsonCountyData || !femaRiskCountyLookup) {
             setLoading(true);
             return;
         }
-        if (
-            hasAddedLayersRef.current
-        ) {
+        if (hasAddedLayersRef.current) {
             return;
         }
         try {
-            
             window.L.geoJSON(geoJsonCountyData, {
                 style: (feature) => ({
                     color: colorFromSevarity(
@@ -86,5 +76,5 @@ export const useGeoJSONLayers = (
         }
     }, [geoJsonCountyData, femaRiskCountyLookup, map]);
 
-    return {loading}
+    return { loading };
 };
