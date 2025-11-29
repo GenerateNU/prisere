@@ -24,9 +24,7 @@ export default function DashboardBody() {
         <div className="flex flex-col gap-8">
             {/* No Data Popup - only shows when hasData is false */}
             {!hasDataLoading && (
-                <NoDataPopupWrapper
-                    hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false}
-                />
+                <NoDataPopupWrapper hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false} />
             )}
 
             {/* Banner - Full Width */}

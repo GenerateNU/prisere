@@ -70,9 +70,7 @@ export default function ExpenseTracker() {
     return (
         <div className="p-[50px] flex flex-col gap-[23px] bg-[var(--slate)] min-h-screen w-full">
             {!hasDataLoading && (
-                <NoDataPopupWrapper
-                    hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false}
-                />
+                <NoDataPopupWrapper hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false} />
             )}
             <div className="flex justify-between">
                 <h2 className="text-[30px] font-bold">Expense Tracker</h2>
