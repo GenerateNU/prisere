@@ -1,7 +1,7 @@
 "use client";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { FilteredPurchases, PurchaseLineItemType, PurchaseWithLineItems } from "@/types/purchase";
-import { FileUp, Filter, Printer } from "lucide-react";
+import { FileUp, Printer } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Filters } from "./filters";
 import PaginationControls from "./PaginationControls";
@@ -13,6 +13,9 @@ import TableContent from "./table-content";
 import { getClientAuthToken, getClient, authHeader, authWrapper } from "@/api/client";
 import { useQuery } from "@tanstack/react-query";
 import ExpenseSideView from "./side-view";
+import { LargeLoading } from "@/components/loading";
+import { FaExclamation } from "react-icons/fa6";
+import { IoFilterOutline } from "react-icons/io5";
 
 interface ExpenseTableConfig {
     title: string;
@@ -77,30 +80,30 @@ export default function ExpenseTable({
     return (
         <>
             {hasData ? (
-                <Card>
-                    <CardHeader>
+                <Card className="border-none shadow-none flex flex-col gap-0 p-[28px] pb-[18px]">
+                    <CardHeader className="mb-[16px] p-0">
                         <CardTitle className="text-2xl font-bold">{title}</CardTitle>
                         <CardAction>
                             <div className="flex items-center justify-end gap-2">
                                 <Button
-                                    variant={showFilters ? "secondary" : "default"}
                                     size="sm"
                                     onClick={() => setShowFilters(!showFilters)}
-                                    className="h-8 rounded-full px-3 flex items-center gap-2 text-sm"
+                                    className="h-[34px] bg-slate text-black rounded-full px-3 flex items-center gap-2 text-sm w-fit"
+                                    style={{ color: "000000" }}
                                 >
-                                    <Filter className="h-4 w-4" />
-                                    <span>Filters</span>
+                                    <IoFilterOutline className="h-4 w-4 text-black" />
+                                    Filters
                                 </Button>
-                                <Button variant="default" size="icon" className="h-8 w-8 rounded-full border-0">
+                                <Button size="icon" className="h-[34px] w-8 bg-slate rounded-full border-0">
                                     <Printer className="h-4 w-4" />
                                 </Button>
-                                <Button variant="default" size="icon" className="h-8 w-8 rounded-full border-0">
+                                <Button size="icon" className="h-[34px] w-8 bg-slate rounded-full border-0">
                                     <FileUp className="h-4 w-4" />
                                 </Button>
                             </div>
                         </CardAction>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-0">
                         {showFilters && (
                             <Filters
                                 onFilterChange={updateFilter}
@@ -108,7 +111,7 @@ export default function ExpenseTable({
                                 selectedCategories={filters.categories ?? []}
                             ></Filters>
                         )}
-                        <div className="py-2">
+                        <div className="">
                             <FilterDisplay
                                 filters={filters}
                                 removeCategory={removeCategory}
@@ -149,25 +152,22 @@ export default function ExpenseTable({
                     </CardFooter>
                 </Card>
             ) : (
-                <Card className="h-full p-6 flex flex-col items-center justify-start min-h-[300px]">
+                <Card className="h-full p-6 flex flex-col items-center border-none shadow-none justify-start min-h-[300px]">
                     <CardTitle className="text-2xl font-bold self-start">{title}</CardTitle>
-                    <div className="flex flex-1 flex-col items-center justify-center gap-4 max-w-md text-center">
-                        <div className="w-16 h-16 bg-fuchsia rounded-full flex items-center justify-center">
-                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                                <path
-                                    d="M16 8v8m0 4h.01M28 16c0 6.627-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4s12 5.373 12 12z"
-                                    stroke="white"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                            </svg>
-                        </div>
-
-                        <div>
-                            <h3 className="text-lg font-bold mb-2">No data shown in this range</h3>
-                            <p className="text-sm text-gray-600">
-                                You need to connect QuickBooks or upload a CSV for your data
-                            </p>
+                    <div className="relative flex items-center justify-center w-full h-full flex-1">
+                        <CardContent className="p-0 z-0 absolute w-full h-full flex-1">
+                            <LargeLoading />
+                        </CardContent>
+                        <div className="flex flex-1 flex-col items-center justify-center h-full text-center gap-4 z-10 relative">
+                            <div className="flex w-16 h-16 bg-fuchsia rounded-full items-center justify-center">
+                                <FaExclamation color="white" size={50} />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold mb-2">No data shown in this range</h3>
+                                <p className="text-sm text-gray-600">
+                                    You need to connect QuickBooks or upload a CSV for your data
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </Card>

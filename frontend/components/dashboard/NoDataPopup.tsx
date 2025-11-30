@@ -39,10 +39,12 @@ export default function NoDataPopup({ isOpen, onClose }: Props) {
 
                     <div className="flex gap-3">
                         <Link href="/quickbooks">
-                            <Button className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
+                            <Button
+                                className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
                                 onClick={async () => {
                                     await quickbooksAuth();
-                                }}>
+                                }}
+                            >
                                 <GoSync className="text-white" style={{ width: "14px" }} /> Sync Quickbooks
                             </Button>
                         </Link>

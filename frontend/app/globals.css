@@ -53,6 +53,7 @@
     --color-light-fuchsia: var(--light-fuchsia);
     --color-gold: var(--gold);
     --color-deep-gold: var(--deep-gold);
+    --color-gray: var(--gray);
 }
 
 :root {
@@ -100,6 +101,7 @@
     --light-fuchsia: #f7dce5;
     --gold: #edce8e;
     --deep-gold: #69573a;
+    --gray: #dbdbdb;
 }
 
 .dark {

@@ -100,7 +100,7 @@ export function CategoryBadge({
     if (!editableTags || !updateCategory) {
         return (
             <span
-                className="px-3 py-1 mr-1 mb-1 rounded-md text-sm font-semibold inline-block"
+                className="px-[8px] py-[4px] rounded-[4px] text-[12px] font-bold h-[24px] inline-block"
                 style={{ backgroundColor: getTagColor(category).backgroundColor }}
             >
                 {displayCategory}
@@ -112,7 +112,7 @@ export function CategoryBadge({
         <Popover>
             <PopoverTrigger asChild>
                 <span
-                    className="px-3 py-1 mr-1 mb-1 rounded-md text-sm font-semibold cursor-pointer inline-block"
+                    className="px-[8px] py-[4px] rounded-[4px] text-[12px] h-[24px] font-bold cursor-pointer inline-block"
                     style={{ backgroundColor: getTagColor(category).backgroundColor }}
                 >
                     {displayCategory}
@@ -122,7 +122,7 @@ export function CategoryBadge({
                 <Command>
                     <div className="flex items-center gap-2 border-b bg-muted/60 px-2 py-0" cmdk-input-wrapper="">
                         <span
-                            className="flex items-center gap-1 px-3 py-1 mr-1 mb-1 rounded-md text-xs font-semibold text-black flex-shrink-0"
+                            className="flex items-center gap-1 px-[8px] py-[4px] h-[24px] rounded-[4px] text-[12px] font-bold text-black flex-shrink-0"
                             style={getTagColor(category)}
                         >
                             {category}
@@ -174,7 +174,7 @@ export function CategoryBadge({
                                 className="flex items-center gap-2"
                             >
                                 <span
-                                    className="px-3 py-1 rounded-md text-xs font-semibold text-black"
+                                    className="px-[8px] py-[4px] h-[24px] rounded-[4px] text-[12px] font-bold text-black"
                                     style={getTagColor(cat)}
                                 >
                                     {cat}

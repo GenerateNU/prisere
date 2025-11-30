@@ -80,7 +80,9 @@ export function DisasterTypeTag({ type }: { type: DisasterType | null }) {
     }
     const displayType = DISASTER_TYPE_LABELS.get(type);
     return (
-        <span className={`px-3 py-1 rounded-md text-sm font-semibold cursor-pointer ${DISASTER_TYPE_COLORS.get(type)}`}>
+        <span
+            className={`px-[8px] py-[4px] rounded-[4px] text-[12px] font-bold cursor-pointer ${DISASTER_TYPE_COLORS.get(type)}`}
+        >
             {displayType}
         </span>
     );

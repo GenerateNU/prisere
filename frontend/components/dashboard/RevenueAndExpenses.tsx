@@ -108,7 +108,7 @@ export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard
     } satisfies ChartConfig;
 
     return (
-        <Card className="h-full min-h-[371px] p-6 border-none shadow-none flex flex-col">
+        <Card className="h-full p-6 border-none shadow-none flex flex-col">
             <div className="flex flex-col mb-4 gap-2">
                 <CardTitle className="text-2xl font-bold">Revenue and Expenses</CardTitle>
 
@@ -132,7 +132,7 @@ export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard
                     <LargeLoading />
                 </CardContent>
             ) : (
-                    <CardContent className="p-0 flex-1 flex gap-6 min-h-0">
+                <CardContent className="p-0 flex-1 flex gap-6 min-h-0">
                     <div className="flex flex-col justify-between min-w-[200px]">
                         <div className="space-y-6">
                             <div>
@@ -142,45 +142,45 @@ export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard
                                     </div>
                                     Total Revenue this Month
                                 </div>
-                                    <div className="text-[25px] font-bold">
-                                        ${((revenueQueries[0].data?.total ?? 0) / 100.0).toLocaleString()}
+                                <div className="text-[25px] font-bold">
+                                    ${((revenueQueries[0].data?.total ?? 0) / 100.0).toLocaleString()}
                                 </div>
                             </div>
 
-                        <div>
-                            <div className="flex items-center gap-2 text-sm text-charcoal mb-2">
-                                <div className="text-teal">
-                                    <FaCircle size={10} color="var(--teal)" />
+                            <div>
+                                <div className="flex items-center gap-2 text-sm text-charcoal mb-2">
+                                    <div className="text-teal">
+                                        <FaCircle size={10} color="var(--teal)" />
+                                    </div>
+                                    Total Expenses this Month
                                 </div>
-                                Total Expenses this Month
-                            </div>
-                            <div className="text-[25px] font-bold">
-                                ${((expensesQueries[0].data?.total ?? 0) / 100.0).toLocaleString()}
+                                <div className="text-[25px] font-bold">
+                                    ${((expensesQueries[0].data?.total ?? 0) / 100.0).toLocaleString()}
+                                </div>
                             </div>
                         </div>
+
+                        {onDashboard && (
+                            <Link href={"/expense-tracker"} className="text-sm font-semibold underline no-underline">
+                                <Button className="h-10 text-sm text-white rounded-full w-fit px-6 mt-6 bg-fuchsia">
+                                    See Expense Tracker
+                                </Button>
+                            </Link>
+                        )}
                     </div>
 
-                    {onDashboard && (
-                        <Link href={"/expense-tracker"} className="text-sm font-semibold underline no-underline">
-                            <Button className="h-10 text-sm text-white rounded-full w-fit px-6 mt-6 bg-fuchsia">
-                                See Expense Tracker
-                            </Button>
-                        </Link>
-                    )}
-                </div>
-
-                <div className="flex-1 flex flex-col min-w-0 min-h-0">
-                    {/* Legend */}
-                    <div className="flex justify-end items-center gap-4 mb-2">
-                        <div className="flex items-center gap-2 text-sm">
-                            <div className="w-3 h-3 rounded-full bg-seafoam"></div>
-                            <span>Revenues</span>
+                    <div className="flex-1 flex flex-col min-w-0 min-h-0">
+                        {/* Legend */}
+                        <div className="flex justify-end items-center gap-4 mb-2">
+                            <div className="flex items-center gap-2 text-sm">
+                                <div className="w-3 h-3 rounded-full bg-seafoam"></div>
+                                <span>Revenues</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm">
+                                <div className="w-3 h-3 rounded-full bg-teal-600"></div>
+                                <span>Expenses</span>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2 text-sm">
-                            <div className="w-3 h-3 rounded-full bg-teal-600"></div>
-                            <span>Expenses</span>
-                        </div>
-                    </div>
 
                         <div className="flex-1 min-h-0">
                             <ChartContainer config={chartConfig} className="h-full w-full">

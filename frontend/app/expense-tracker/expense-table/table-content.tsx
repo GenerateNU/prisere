@@ -126,7 +126,7 @@ export default function TableContent({
                 header: () => <SortableHeader column={SortByColumn.AMOUNT} filters={filters} setSort={setSort} />,
                 enableSorting: true,
                 accessorFn: (row) => row.amount / 100,
-                cell: (ctx) => `$${(ctx.getValue() as number).toFixed(2)}`,
+                cell: (ctx) => <p className="text-[12px]">{`$${(ctx.getValue() as number).toLocaleString()}`}</p>,
             },
             {
                 id: "category",
@@ -151,10 +151,11 @@ export default function TableContent({
                 header: () => <SortableHeader column={SortByColumn.DATE} filters={filters} setSort={setSort} />,
                 enableSorting: true,
                 accessorFn: (row) => row.date.toLocaleDateString(),
+                cell: (ctx) => <div className="text-[12px] h-[40px] flex items-center">{ctx.getValue() as string}</div>,
             },
             {
                 id: "disasterRelated",
-                header: "Disaster Related",
+                header: () => <div className="flex items-center h-[56px]">Disaster Related</div>,
                 accessorFn: (row) => row.disasterRelated,
                 cell: (ctx) => {
                     const row = ctx.row.original;

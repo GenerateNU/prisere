@@ -21,7 +21,7 @@ export default function ReviewExpenses({
     const totalItems = lineItemsPending + lineItemsConfirmed;
 
     return (
-        <Card className="h-full p-[24px] gap-[24px] flex flex-col">
+        <Card className="h-full p-[24px] gap-[24px] flex flex-col border-none shadow-none">
             <CardHeader className="w-full p-0">
                 <div className="flex items-center justify-between">
                     <div className="">
