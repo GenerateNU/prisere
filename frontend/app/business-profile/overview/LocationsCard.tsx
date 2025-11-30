@@ -3,8 +3,9 @@
 import { getCompanyLocations } from "@/api/company";
 import { createLocation, deleteLocation, updateLocationAddress } from "@/api/location";
 import LocationEditor from "@/components/LocationEditor";
+import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
+import { Card } from "@/components/ui/card";
 import { CreateLocationRequest, UpdateLocationRequest } from "@/types/location";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
@@ -15,7 +16,7 @@ export default function LocationsCard() {
     const [editingLocationIndex, setEditingLocationIndex] = useState<number | null>(null);
     const [saveError, setSaveError] = useState<string | null>(null);
 
-    const { data: locationsQuery, isPending: businessPending } = useQuery({
+    const { data: locationsQuery, isPending: locationPending } = useQuery({
         queryKey: ["locations"],
         queryFn: getCompanyLocations,
     });
@@ -125,36 +126,40 @@ export default function LocationsCard() {
     }, [locationsQuery]);
 
     return (
-        <div>
-            {businessPending ? (
-                <Spinner className="mb-[16px]" />
+        <Card className="p-[28px] flex gap-[12px] border-none shadow-none">
+            <p className="font-bold text-[20px]">Locations</p>
+            {locationPending ? (
+                <Loading lines={2} />
             ) : (
-                <div className="grid grid-cols-2 gap-x-[38px] gap-y-[16px]">
-                    {locationInfo.map((location, index) => (
-                        <div key={index}>
-                            <LocationEditor
-                                location={location}
-                                setLocation={(loc) => updateLocation(index, loc)}
-                                removeLocation={() => removeLocation(index)}
-                                isExpanded={editingLocationIndex === index}
-                                onExpand={() =>
-                                    editingLocationIndex === index
-                                        ? setEditingLocationIndex(null)
-                                        : setEditingLocationIndex(index)
-                                }
-                                onCollapse={() => handleSave()}
-                                saveError={saveError}
-                            />
-                        </div>
-                    ))}
+                <div>
+                    <div className="grid grid-cols-2 gap-x-[38px] gap-y-[16px]">
+                        {locationInfo.map((location, index) => (
+                            <div key={index}>
+                                <LocationEditor
+                                    location={location}
+                                    setLocation={(loc) => updateLocation(index, loc)}
+                                    removeLocation={() => removeLocation(index)}
+                                    isExpanded={editingLocationIndex === index}
+                                    onExpand={() =>
+                                        editingLocationIndex === index
+                                            ? setEditingLocationIndex(null)
+                                            : setEditingLocationIndex(index)
+                                    }
+                                    onCollapse={() => handleSave()}
+                                    saveError={saveError}
+                                />
+                            </div>
+                        ))}
+                    </div>
+
+                    <Button
+                        className="w-[196px] flex items-center text-[16px] h-[34px] self-start px-[12px] py-[4px] underline bg-slate hover:text-gray-600"
+                        onClick={addLocation}
+                    >
+                        <IoAddCircleOutline /> Add a location
+                    </Button>
                 </div>
             )}
-            <Button
-                className="w-[196px] flex items-center text-[16px] h-[34px] self-start px-[12px] py-[4px] underline bg-slate hover:text-gray-600"
-                onClick={addLocation}
-            >
-                <IoAddCircleOutline /> Add a location
-            </Button>
-        </div>
+        </Card>
     );
 }

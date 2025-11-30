@@ -1,7 +1,5 @@
 "use client";
 import { login } from "@/actions/auth";
-import { getCompany } from "@/api/company";
-import { importQuickbooksData } from "@/api/quickbooks";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -53,13 +51,6 @@ export default function LoginPage() {
 
     useEffect(() => {
         if (state?.success) {
-            // Start import in the background, do not wait before redirect happens
-            (async () => {
-                const company = await getCompany();
-                if (company?.externals) {
-                    importQuickbooksData();
-                }
-            })();
             redirect("/");
         }
     }, [state?.success]);

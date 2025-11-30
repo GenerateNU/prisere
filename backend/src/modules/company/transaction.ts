@@ -93,7 +93,12 @@ export class CompanyTransaction implements ICompanyTransaction {
         }
 
         try {
-            const result: Company | null = await this.db.getRepository(Company).findOneBy({ id: payload.id });
+            const result: Company | null = await this.db.getRepository(Company).findOne({
+                where: { id: payload.id },
+                relations: {
+                    externals: true,
+                },
+            });
 
             return result;
         } catch (error) {

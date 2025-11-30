@@ -110,7 +110,6 @@ export default function TableContent({
                                 ) : null
                             ) : (
                                 <input
-                                    type="checkbox"
                                     className="w-4 h-4 cursor-pointer mr-2 accent-black align-middle"
                                     onChange={(e) => {
                                         e.stopPropagation();
@@ -174,9 +173,9 @@ export default function TableContent({
         ],
     });
 
-    if (purchases.isPending) return <div>Loading expenses...</div>;
-
     if (purchases.error) return <div>Error loading expenses</div>;
 
-    return <Table table={table} onRowClick={(row) => onRowClick?.(row.originalPurchase)} />;
+    return (
+        <Table table={table} isLoading={purchases.isLoading} onRowClick={(row) => onRowClick?.(row.originalPurchase)} />
+    );
 }

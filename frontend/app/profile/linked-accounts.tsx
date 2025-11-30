@@ -1,9 +1,20 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { QuickBooksIcon } from "@/icons/quickbooks";
 import { CirclePlusIcon } from "lucide-react";
 import { ProfileSettingsCard } from "./common";
+import { redirectToQuickbooks } from "@/api/quickbooks";
 
 export function LinkedAccountsSettings() {
+    const quickbooksAuth = async () => {
+        const url = await redirectToQuickbooks();
+        if (url) {
+            window.location.href = url;
+        } else {
+            console.error("Failed to retrieve QuickBooks URL");
+        }
+    };
+
     return (
         <ProfileSettingsCard
             title="Linked Accounts"
@@ -17,7 +28,9 @@ export function LinkedAccountsSettings() {
                 <Button
                     className="bg-light-fuchsia hover:bg-light-fuchsia/80 text-fuchsia w-40 cursor-pointer"
                     size="sm"
-                    // TODO: Connect up QB signin logic
+                    onClick={async () => {
+                        await quickbooksAuth();
+                    }}
                 >
                     Connect account
                 </Button>

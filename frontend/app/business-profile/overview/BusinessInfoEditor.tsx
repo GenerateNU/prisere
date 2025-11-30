@@ -43,7 +43,7 @@ export default function CompanyEditor({
     };
 
     return (
-        <Card className="w-full px-[28px] py-[20px]">
+        <Card className="w-full px-[28px] py-[20px] border-none shadow-none">
             <div className="flex items-center justify-between">
                 <div className="flex gap-[10px] items-center w-3/4">
                     <p className="text-[20px] font-bold">Business Information</p>
@@ -61,7 +61,7 @@ export default function CompanyEditor({
             <hr className="mt-[-16px] mb-[-16px]" />
             {isExpanded ? (
                 <div className="flex flex-col gap-[16px]">
-                    <div className="flex gap-[16px]">
+                    <div className="grid grid-cols-2 gap-[16px]">
                         <div className="flex flex-col gap-[8px] w-full">
                             <Label htmlFor="businessOwnerFullName" className="text-[16px]">
                                 Business Name<span className="text-red-500 text-[16px]">*</span>
@@ -108,8 +108,7 @@ export default function CompanyEditor({
                                 </SelectContent>
                             </Select>
                         </div>
-                    </div>
-                    <div className="flex gap-[16px]">
+
                         <div className="flex flex-col gap-[8px] w-full">
                             <Label htmlFor="phone" className="text-[16px]">
                                 Phone Number<span className="text-red-500 text-[16px]">*</span>
@@ -159,7 +158,7 @@ export default function CompanyEditor({
                         ""
                     )}
                     <Button
-                        className="text-[14px] py-[7px] bg-[var(--pink)] text-[var(--fuchsia)] self-end w-fit h-fit flex justify-center items-center gap-[8px] hover:text-[white]"
+                        className="relative bottom-0 right-0 text-[14px] bg-pink text-fuchsia self-end justify-self-end w-fit h-fit flex justify-center items-center gap-[8px] hover:text-[white]"
                         onClick={handleCollapse}
                         style={{ paddingInline: "25px" }}
                     >

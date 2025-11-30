@@ -8,29 +8,27 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { ChartContainer, ChartTooltipContent, ChartTooltip, ChartConfig } from "@/components/ui/chart";
 import Link from "next/link";
 import { FaCircle } from "react-icons/fa";
+import { LargeLoading } from "../loading";
+import { FaExclamation } from "react-icons/fa6";
 
-// No Data Component
 export function RevenueAndExpensesNoData() {
     return (
-        <Card className="h-full p-6 flex flex-col items-center justify-start">
+        <Card className="h-full border-none shadow-none flex flex-col p-6 justify-start">
             <CardTitle className="text-2xl font-bold self-start">Revenue and Expenses</CardTitle>
-            <div className="flex flex-1 flex-col items-center justify-center gap-4 max-w-md text-center">
-                <div className="w-16 h-16 bg-fuchsia rounded-full flex items-center justify-center">
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                        <path
-                            d="M16 8v8m0 4h.01M28 16c0 6.627-5.373 12-12 12S4 22.627 4 16 9.373 4 16 4s12 5.373 12 12z"
-                            stroke="white"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                        />
-                    </svg>
-                </div>
-
-                <div>
-                    <h3 className="text-lg font-bold mb-2">No data shown in this range</h3>
-                    <p className="text-sm text-gray-600">
-                        You need to connect QuickBooks or upload a CSV for your data
-                    </p>
+            <div className="relative flex items-center justify-center w-full h-full flex-1">
+                <CardContent className="p-0 z-0 absolute w-full h-full flex-1">
+                    <LargeLoading />
+                </CardContent>
+                <div className="flex flex-1 flex-col items-center justify-center h-full text-center gap-4 z-10 relative">
+                    <div className="flex w-16 h-16 bg-fuchsia rounded-full items-center justify-center">
+                        <FaExclamation color="white" size={50} />
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-bold mb-2">No data shown in this range</h3>
+                        <p className="text-sm text-gray-600">
+                            You need to connect QuickBooks or upload a CSV for your data
+                        </p>
+                    </div>
                 </div>
             </div>
         </Card>
@@ -110,39 +108,44 @@ export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard
     } satisfies ChartConfig;
 
     return (
-        <Card className="h-full p-6 border flex flex-col">
-            {/* Header with title and percentage change */}
+        <Card className="h-full min-h-[371px] p-6 border-none shadow-none flex flex-col">
             <div className="flex flex-col mb-4 gap-2">
                 <CardTitle className="text-2xl font-bold">Revenue and Expenses</CardTitle>
 
-                <div className="flex items-center gap-2 text-sm py-1 rounded">
-                    <div
-                        className={`flex items-center rounded py-1 px-2 ${percentChange >= 0 ? "bg-seafoam" : "bg-pink"}`}
-                    >
-                        <span className={`text-center ${percentChange >= 0 ? "text-teal" : "text-fuchsia"}`}>
-                            {percentChange >= 0 ? "+" : ""}
-                            {percentChange.toFixed(2)}%
-                        </span>
+                {!(expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading)) && (
+                    <div className="flex items-center gap-2 text-sm py-1 rounded">
+                        <div
+                            className={`flex items-center rounded py-1 px-2 ${percentChange >= 0 ? "bg-seafoam" : "bg-pink"}`}
+                        >
+                            <span className={`text-center ${percentChange >= 0 ? "text-teal" : "text-fuchsia"}`}>
+                                {percentChange >= 0 ? "+" : ""}
+                                {percentChange.toFixed(2)}%
+                            </span>
+                        </div>
+                        <span className="text-charcoal">revenue since last month</span>
                     </div>
-                    <span className="text-charcoal">revenue since last month</span>
-                </div>
+                )}
             </div>
 
-            <CardContent className="p-0 flex-1 flex gap-6 min-h-0">
-                {/* Left side - Stats */}
-                <div className="flex flex-col justify-between min-w-[200px]">
-                    <div className="space-y-6">
-                        <div>
-                            <div className="flex items-center gap-2 text-sm text-charcoal mb-2">
-                                <div className="text-seafoam">
-                                    <FaCircle size={10} color="var(--seafoam)" />
+            {expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading) ? (
+                <CardContent className="p-0 flex-1 flex gap-6">
+                    <LargeLoading />
+                </CardContent>
+            ) : (
+                    <CardContent className="p-0 flex-1 flex gap-6 min-h-0">
+                    <div className="flex flex-col justify-between min-w-[200px]">
+                        <div className="space-y-6">
+                            <div>
+                                <div className="flex items-center gap-2 text-sm text-charcoal mb-2">
+                                    <div className="text-seafoam">
+                                        <FaCircle size={10} color="var(--seafoam)" />
+                                    </div>
+                                    Total Revenue this Month
                                 </div>
-                                Total Revenue this Month
+                                    <div className="text-[25px] font-bold">
+                                        ${((revenueQueries[0].data?.total ?? 0) / 100.0).toLocaleString()}
+                                </div>
                             </div>
-                            <div className="text-[25px] font-bold">
-                                ${((revenueQueries[0].data?.total ?? 0) / 100.0).toLocaleString()}
-                            </div>
-                        </div>
 
                         <div>
                             <div className="flex items-center gap-2 text-sm text-charcoal mb-2">
@@ -166,7 +169,6 @@ export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard
                     )}
                 </div>
 
-                {/* Right side - Chart with legend */}
                 <div className="flex-1 flex flex-col min-w-0 min-h-0">
                     {/* Legend */}
                     <div className="flex justify-end items-center gap-4 mb-2">
@@ -180,20 +182,20 @@ export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard
                         </div>
                     </div>
 
-                    {/* Chart */}
-                    <div className="flex-1 min-h-0">
-                        <ChartContainer config={chartConfig} className="h-full w-full">
-                            <BarChart accessibilityLayer data={chartData}>
-                                <CartesianGrid vertical={false} />
-                                <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                                <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
-                                <Bar dataKey="expenses" fill="var(--color-expenses)" radius={4} />
-                            </BarChart>
-                        </ChartContainer>
+                        <div className="flex-1 min-h-0">
+                            <ChartContainer config={chartConfig} className="h-full w-full">
+                                <BarChart accessibilityLayer data={chartData}>
+                                    <CartesianGrid vertical={false} />
+                                    <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
+                                    <Bar dataKey="expenses" fill="var(--color-expenses)" radius={4} />
+                                </BarChart>
+                            </ChartContainer>
+                        </div>
                     </div>
-                </div>
-            </CardContent>
+                </CardContent>
+            )}
         </Card>
     );
 }

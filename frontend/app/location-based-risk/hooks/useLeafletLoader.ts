@@ -39,6 +39,5 @@ export const useLeafletLoader = () => {
 
         loadLeaflet();
     }, []);
-
     return { isLoaded, error };
 };

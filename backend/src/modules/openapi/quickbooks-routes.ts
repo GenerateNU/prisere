@@ -22,7 +22,7 @@ export const addOpenApiQBRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAP
     const client = new QuickbooksClient({
         clientId: process.env.QUICKBOOKS_CLIENT_ID!,
         clientSecret: process.env.QUICKBOOKS_CLIENT_SECRET!,
-        environment: "sandbox",
+        environment: process.env.NODE_ENV === "production" ? "production" : "sandbox",
     });
 
     const service = new QuickbooksService(
@@ -48,8 +48,15 @@ const generateAuthRoute = createRoute({
     summary: "Generates an OAuth URL for the user and redirects them",
     tags: ["quickbooks"],
     responses: {
-        302: {
-            description: "Redirected to QuickBooks OAuth url",
+        200: {
+            description: "Successfully redirected to quickbooks auth",
+            content: {
+                "application/json": {
+                    schema: z.object({
+                        url: z.string(),
+                    }),
+                },
+            },
         },
     },
 });
@@ -65,18 +72,11 @@ const generateSessionRoute = createRoute({
         params: RedirectEndpointSuccessParams,
     },
     responses: {
-        200: {
-            description: "Successfully logged in through QB",
-            content: {
-                "application/json": {
-                    schema: z.object({
-                        success: z.literal(true),
-                    }),
-                },
-            },
+        302: {
+            description: "Successfully authenticated, redirecting",
         },
         400: {
-            description: "Did not grant permissions",
+            description: "Authentication failed",
             content: {
                 "application/json": {
                     schema: z.object({
