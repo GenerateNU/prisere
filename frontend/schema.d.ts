@@ -947,7 +947,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            hasData: boolean;
+                            hasExternalData: boolean;
+                            hasFinancialData: boolean;
                         };
                     };
                 };

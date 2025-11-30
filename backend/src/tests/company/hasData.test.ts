@@ -153,21 +153,21 @@ describe("Company - Update lastQuickBooksImportTime", () => {
 
     test("GET company that does not have data", async () => {
         const hasData = await companyService.hasCompanyData(companyWithNoData.id);
-        expect(hasData).toBe(false);
+        expect(hasData).toEqual({ hasExternalData: false, hasFinancialData: false });
     });
 
     test("GET company that does have data from purchase data", async () => {
         const hasData = await companyService.hasCompanyData(companyWithPurchaseData.id);
-        expect(hasData).toBe(true);
+        expect(hasData).toEqual({ hasExternalData: false, hasFinancialData: true });
     });
 
     test("GET company that does have data with company external", async () => {
         const hasData = await companyService.hasCompanyData(companyWithExternal.id);
-        expect(hasData).toBe(true);
+        expect(hasData).toEqual({ hasExternalData: true, hasFinancialData: false });
     });
 
     test("GET company that does have data from invoice", async () => {
         const hasData = await companyService.hasCompanyData(companyWithInvoiceData.id);
-        expect(hasData).toBe(true);
+        expect(hasData).toEqual({ hasExternalData: false, hasFinancialData: true });
     });
 });

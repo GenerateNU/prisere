@@ -20,7 +20,9 @@ export default function DisasterLabel({
 
     if (!editableTags) {
         return (
-            <span className={`px-3 py-1 rounded-md text-sm font-semibold ${DISASTER_TYPE_COLORS.get(disasterType)}`}>
+            <span
+                className={`px-[8px] py-[4px] rounded-[4px] text-[12px] h-[24px] font-bold ${DISASTER_TYPE_COLORS.get(disasterType)}`}
+            >
                 {displayType}
             </span>
         );
@@ -31,7 +33,7 @@ export default function DisasterLabel({
             <Popover>
                 <PopoverTrigger asChild>
                     <span
-                        className={`px-3 py-1 rounded-md text-sm font-semibold cursor-pointer ${DISASTER_TYPE_COLORS.get(disasterType)}`}
+                        className={`px-[8px] py-[4px] rounded-[4px] text-[12px] font-bold h-[24px] cursor-pointer ${DISASTER_TYPE_COLORS.get(disasterType)}`}
                     >
                         {displayType}
                     </span>
@@ -40,7 +42,7 @@ export default function DisasterLabel({
                     <Command>
                         <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
                             <span
-                                className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold mr-2 flex-shrink-0 ${DISASTER_TYPE_COLORS.get(disasterType)}`}
+                                className={`flex items-center gap-1 px-[8px] py-[4px] rounded-[4px] text-[12px] font-bold mr-2 flex-shrink-0 h-[24px] ${DISASTER_TYPE_COLORS.get(disasterType)}`}
                             >
                                 {displayType}
                             </span>
@@ -50,7 +52,7 @@ export default function DisasterLabel({
                             {Array.from(DISASTER_TYPE_LABELS_TO_CHANGE.keys()).map((type) => (
                                 <CommandItem key={type} onSelect={() => updateDisasterType(type, lineItemIds)}>
                                     <span
-                                        className={`px-3 py-1 rounded-md text-xs font-semibold ${DISASTER_TYPE_COLORS.get(type)}`}
+                                        className={`px-[8px] py-[4px] rounded-[4px] text-[12px] h-[24px] font-bold ${DISASTER_TYPE_COLORS.get(type)}`}
                                     >
                                         {DISASTER_TYPE_LABELS.get(type)}
                                     </span>

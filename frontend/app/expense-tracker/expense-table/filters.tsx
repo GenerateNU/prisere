@@ -11,7 +11,9 @@ import { PurchaseLineItemType } from "@/types/purchase";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
-import { Calendar as CalendarIcon, Zap, Tags, Search, ChevronDown } from "lucide-react";
+import { Calendar as CalendarIcon, Search, ChevronDown } from "lucide-react";
+import { WiRainMix } from "react-icons/wi";
+import { LuShapes } from "react-icons/lu";
 
 export function Filters({
     onFilterChange,
@@ -116,12 +118,11 @@ function DateFilter({ onDateRangeChange }: { onDateRangeChange: (range: DateRang
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button
-                        variant="outline"
                         size="sm"
-                        className="h-8 w-full justify-start gap-2 rounded-full bg-muted text-black text-sm border border-border/40 hover:bg-muted/80"
+                        className="h-[34px] px-2 w-full justify-between gap-2 rounded-full bg-muted text-black text-sm  hover:bg-muted/80 aria-expanded:border"
                     >
-                        <div className="flex items-center gap-1">
-                            <CalendarIcon className="h-4 w-4" />
+                        <div className="flex items-center gap-2">
+                            <CalendarIcon style={{ height: "16px", width: "16px", strokeWidth: "1px" }} />
                             <span className="truncate">All Dates</span>
                         </div>
                         <ChevronDown className="h-4 w-4 opacity-70" />
@@ -168,12 +169,11 @@ function DisasterRelatedFilter({ onTypeChange }: { onTypeChange: (type: Purchase
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button
-                    variant="outline"
                     size="sm"
-                    className="h-8 w-full justify-start gap-2 rounded-full bg-muted text-black text-sm border border-border/40 hover:bg-muted/80"
+                    className="h-[34px] w-full justify-between px-2 gap-2 rounded-full bg-muted text-black text-sm hover:bg-muted/80 aria-expanded:border"
                 >
-                    <div className="flex items-center gap-1">
-                        <Zap className="h-4 w-4" />
+                    <div className="flex items-center gap-2">
+                        <WiRainMix style={{ height: "20px", width: "20px" }} />
                         <span className="truncate">Disaster Related</span>
                     </div>
                     <ChevronDown className="h-4 w-4 opacity-70" />
@@ -221,11 +221,10 @@ function CategoryFilter({
             <DropdownMenuTrigger asChild>
                 <Button
                     size="sm"
-                    variant="outline"
-                    className="h-8 w-full justify-start gap-2 rounded-full bg-muted text-black text-sm border border-border/40 hover:bg-muted/80"
+                    className="h-[34px] w-full justify-between px-2 gap-2 rounded-full bg-muted text-black text-sm  hover:bg-muted/80 aria-expanded:border"
                 >
-                    <div className="flex items-center gap-1">
-                        <Tags className="h-4 w-4" />
+                    <div className="flex items-center gap-2">
+                        <LuShapes style={{ height: "20px", width: "20px", strokeWidth: "1px" }} />
                         <span className="truncate">All Categories</span>
                     </div>
                     <ChevronDown className="h-4 w-4 opacity-70" />
@@ -260,6 +259,8 @@ function SearchBy({ onSearchChange }: { onSearchChange: (search: string) => void
           !bg-muted
           !text-black !text-sm
           placeholder:!text-sm placeholder:text-black
+          border-none
+          !h-[32px]
         "
                 type="search"
                 placeholder="Search By..."

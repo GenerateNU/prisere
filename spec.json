@@ -1665,12 +1665,16 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "hasData": {
+                    "hasExternalData": {
+                      "type": "boolean"
+                    },
+                    "hasFinancialData": {
                       "type": "boolean"
                     }
                   },
                   "required": [
-                    "hasData"
+                    "hasExternalData",
+                    "hasFinancialData"
                   ]
                 }
               }

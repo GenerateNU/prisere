@@ -37,7 +37,7 @@ export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineI
                 cell: ({ getValue }) => {
                     const value = getValue() as string | null;
                     return (
-                        <div className="flex items-center min-h-[2.0rem]">
+                        <div className="flex text-[12px] items-center min-h-[2.0rem]">
                             {" "}
                             {value && value.trim().length > 0 ? value : "Unknown"}{" "}
                         </div>
@@ -49,7 +49,7 @@ export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineI
                 header: ({ column }) => <SortableHeader column={column} label="Amount" />,
                 enableSorting: true,
                 accessorFn: (row) => row.amountCents / 100,
-                cell: (ctx) => `$${(ctx.getValue() as number).toFixed(2)}`,
+                cell: (ctx) => <p className="text-[12px]">{`$${(ctx.getValue() as number).toLocaleString()}`}</p>,
             },
             {
                 id: "category",
@@ -67,8 +67,8 @@ export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineI
                 id: "date",
                 header: ({ column }) => <SortableHeader column={column} label="Date" />,
                 enableSorting: true,
-                accessorFn: (row) => new Date(row.dateCreated),
-                cell: (ctx) => (ctx.getValue() as Date).toLocaleDateString(),
+                accessorFn: (row) => new Date(row.dateCreated).toLocaleDateString(),
+                cell: (ctx) => <div className="text-[12px] h-[40px] flex items-center">{ctx.getValue() as string}</div>,
             },
             {
                 id: "disasterRelated",

@@ -1,5 +1,8 @@
 import type { paths } from "../schema";
 
+export type CompanyHasDataResponse =
+    paths["/companies/has-company-data"]["get"]["responses"][200]["content"]["application/json"];
+
 export type CreateCompanyRequest = paths["/companies"]["post"]["requestBody"]["content"]["application/json"];
 export type CreateCompanyResponse = paths["/companies"]["post"]["responses"];
 

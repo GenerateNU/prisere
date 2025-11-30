@@ -13,17 +13,16 @@ import { FaExclamation } from "react-icons/fa6";
 
 export function RevenueAndExpensesNoData() {
     return (
-        <Card className="h-full min-h-[371px] border-none shadow-none flex flex-col p-6">
-            <CardTitle className="text-2xl font-bold">Revenue and Expenses</CardTitle>
+        <Card className="h-full border-none shadow-none flex flex-col p-6 justify-start">
+            <CardTitle className="text-2xl font-bold self-start">Revenue and Expenses</CardTitle>
             <div className="relative flex items-center justify-center w-full h-full flex-1">
-                <CardContent className="p-0 z-0 absolute w-full h-full">
+                <CardContent className="p-0 z-0 absolute w-full h-full flex-1">
                     <LargeLoading />
                 </CardContent>
-                <div className="flex flex-col items-center justify-center h-full text-center gap-4 z-10 relative">
+                <div className="flex flex-1 flex-col items-center justify-center h-full text-center gap-4 z-10 relative">
                     <div className="flex w-16 h-16 bg-fuchsia rounded-full items-center justify-center">
                         <FaExclamation color="white" size={50} />
                     </div>
-
                     <div>
                         <h3 className="text-lg font-bold mb-2">No data shown in this range</h3>
                         <p className="text-sm text-gray-600">
@@ -36,7 +35,7 @@ export function RevenueAndExpensesNoData() {
     );
 }
 
-export default function RevenueAndExpenses() {
+export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard?: boolean }) {
     const today = new Date();
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth();
@@ -109,7 +108,7 @@ export default function RevenueAndExpenses() {
     } satisfies ChartConfig;
 
     return (
-        <Card className="h-full min-h-[371px] p-6 border-none shadow-none flex flex-col">
+        <Card className="h-full p-6 border-none shadow-none flex flex-col">
             <div className="flex flex-col mb-4 gap-2">
                 <CardTitle className="text-2xl font-bold">Revenue and Expenses</CardTitle>
 
@@ -133,7 +132,7 @@ export default function RevenueAndExpenses() {
                     <LargeLoading />
                 </CardContent>
             ) : (
-                <CardContent className="p-0 flex-1 flex gap-6">
+                <CardContent className="p-0 flex-1 flex gap-6 min-h-0">
                     <div className="flex flex-col justify-between min-w-[200px]">
                         <div className="space-y-6">
                             <div>
@@ -143,8 +142,8 @@ export default function RevenueAndExpenses() {
                                     </div>
                                     Total Revenue this Month
                                 </div>
-                                <div className="text-4xl font-bold">
-                                    ${(revenueQueries[0].data?.total ?? 0) / 100.0}
+                                <div className="text-[25px] font-bold">
+                                    ${((revenueQueries[0].data?.total ?? 0) / 100.0).toLocaleString()}
                                 </div>
                             </div>
 
@@ -155,20 +154,23 @@ export default function RevenueAndExpenses() {
                                     </div>
                                     Total Expenses this Month
                                 </div>
-                                <div className="text-4xl font-bold">
-                                    ${(expensesQueries[0].data?.total ?? 0) / 100.0}
+                                <div className="text-[25px] font-bold">
+                                    ${((expensesQueries[0].data?.total ?? 0) / 100.0).toLocaleString()}
                                 </div>
                             </div>
                         </div>
 
-                        <Link href={"/expense-tracker"} className="text-sm font-semibold underline no-underline">
-                            <Button className="h-10 text-sm text-white rounded-full w-fit px-6 mt-6 bg-fuchsia">
-                                See Expense Tracker
-                            </Button>
-                        </Link>
+                        {onDashboard && (
+                            <Link href={"/expense-tracker"} className="text-sm font-semibold underline no-underline">
+                                <Button className="h-10 text-sm text-white rounded-full w-fit px-6 mt-6 bg-fuchsia">
+                                    See Expense Tracker
+                                </Button>
+                            </Link>
+                        )}
                     </div>
 
-                    <div className="flex-1 flex flex-col min-w-0">
+                    <div className="flex-1 flex flex-col min-w-0 min-h-0">
+                        {/* Legend */}
                         <div className="flex justify-end items-center gap-4 mb-2">
                             <div className="flex items-center gap-2 text-sm">
                                 <div className="w-3 h-3 rounded-full bg-seafoam"></div>
