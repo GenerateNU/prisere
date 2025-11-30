@@ -31,7 +31,8 @@ export default function LocationsCard() {
             if (error.message.includes("postalCode")) {
                 setSaveError("Error updating location. Please check postal code details and try again.");
             } else {
-                setSaveError("An error occurred while saving the location.");
+                const errorMessage = error.message || "Error creating locations. Check required fields and try again";
+                setSaveError(errorMessage);
             }
         },
     });
