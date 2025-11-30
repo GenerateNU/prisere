@@ -80,6 +80,11 @@ export class LocationAddressService implements ILocationAddressService {
     createLocationAddress = withServiceErrorHandling(
         async (payload: CreateLocationAddressDTO, companyId: string): Promise<CreateLocationAddressResponse> => {
             const fipsLocation = await this.locationMatcher.getLocationFips(payload);
+            if (!fipsLocation || fipsLocation.fipsStateCode === null || fipsLocation.fipsCountyCode === null) {
+                throw Boom.badRequest(
+                    `Please enter a valid address. Unable to validate address: ${payload.streetAddress}, ${payload.city}, ${payload.stateProvince}.`
+                );
+            }
 
             if (fipsLocation === null) {
                 throw Boom.badRequest("Fips state and county code cannot be null");
