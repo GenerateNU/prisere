@@ -34,7 +34,8 @@ export default function InsuranceCard() {
             setEditingInsuranceIndex(null);
         },
         onError: (error: Error) => {
-            setSaveError("An error occurred while saving the location: " + error.message);
+            const errorMessage = error.message || "Error updating policy. Check required fields and try again";
+            setSaveError(errorMessage);
         },
     });
 
@@ -45,7 +46,8 @@ export default function InsuranceCard() {
             setEditingInsuranceIndex(null);
         },
         onError: (error: Error) => {
-            setSaveError("An error occurred while saving the location: " + error.message);
+            const errorMessage = error.message || "Error creating policy. Check required fields and try again";
+            setSaveError(errorMessage);
         },
     });
 

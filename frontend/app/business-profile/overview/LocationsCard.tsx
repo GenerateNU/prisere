@@ -31,7 +31,7 @@ export default function LocationsCard() {
             if (error.message.includes("postalCode")) {
                 setSaveError("Error updating location. Please check postal code details and try again.");
             } else {
-                const errorMessage = error.message || "Error creating locations. Check required fields and try again";
+                const errorMessage = error.message || "Error updating location. Check required fields and try again";
                 setSaveError(errorMessage);
             }
         },
@@ -47,7 +47,8 @@ export default function LocationsCard() {
             if (error.message.includes("postalCode")) {
                 setSaveError("Error creating location. Please check postal code details and try again.");
             } else {
-                setSaveError("An error occurred while creating the location.");
+                const errorMessage = error.message || "Error creating location. Check required fields and try again";
+                setSaveError(errorMessage);
             }
         },
     });
@@ -59,7 +60,8 @@ export default function LocationsCard() {
             setEditingLocationIndex(null);
         },
         onError: (_error: Error) => {
-            setSaveError("An error occurred while deleting the location.");
+            const errorMessage = _error.message || "Error removing location. Check required fields and try again";
+            setSaveError(errorMessage);
         },
     });
 
