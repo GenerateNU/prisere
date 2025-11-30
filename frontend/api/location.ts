@@ -20,7 +20,13 @@ export const createLocation = async (payload: CreateLocationRequest): Promise<Lo
         if (response.ok) {
             return data!;
         } else {
-            throw Error(error?.error);
+            const apiError = new Error(error?.error || "Failed to create locations - Unkown Error") as Error & {
+                status: number;
+                statusText: string;
+            };
+            apiError.status = response.status;
+            apiError.statusText = response.statusText;
+            throw apiError;
         }
     };
     return authWrapper<Location>()(req);
@@ -36,7 +42,13 @@ export const createLocationBulk = async (payload: CreateLocationBulkRequest): Pr
         if (response.ok) {
             return data!;
         } else {
-            throw Error(error?.error);
+            const apiError = new Error(error?.error || "Failed to create locations - Unkown Error") as Error & {
+                status: number;
+                statusText: string;
+            };
+            apiError.status = response.status;
+            apiError.statusText = response.statusText;
+            throw apiError;
         }
     };
     return authWrapper<Location[]>()(req);

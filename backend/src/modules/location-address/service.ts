@@ -80,9 +80,15 @@ export class LocationAddressService implements ILocationAddressService {
     createLocationAddress = withServiceErrorHandling(
         async (payload: CreateLocationAddressDTO, companyId: string): Promise<CreateLocationAddressResponse> => {
             const fipsLocation = await this.locationMatcher.getLocationFips(payload);
-
-            if (fipsLocation === null) {
-                throw Boom.badRequest("Fips state and county code cannot be null");
+            if (
+                fipsLocation === null ||
+                !fipsLocation ||
+                fipsLocation.fipsStateCode === null ||
+                fipsLocation.fipsCountyCode === null
+            ) {
+                throw Boom.badRequest(
+                    `Please enter a valid address. Unable to validate address: ${payload.streetAddress}, ${payload.city}, ${payload.stateProvince}.`
+                );
             }
 
             // Add FIPS codes into payload to send to transaction layer
@@ -137,6 +143,11 @@ export class LocationAddressService implements ILocationAddressService {
             const transformedPayload = await Promise.all(
                 payload.map(async (element) => {
                     const currFips = await this.locationMatcher.getLocationFips(element);
+                    if (!currFips || currFips.fipsStateCode === null || currFips.fipsCountyCode === null) {
+                        throw Boom.badRequest(
+                            `Please enter a valid address. Unable to validate address: ${element.streetAddress}, ${element.city}, ${element.stateProvince}.`
+                        );
+                    }
                     return { ...element, ...currFips };
                 })
             );
@@ -177,8 +188,15 @@ export class LocationAddressService implements ILocationAddressService {
             // get the new fips codes if any of the address fields have changed
             const fipsLocation = await this.locationMatcher.getLocationFips(locationForMatching);
 
-            if (fipsLocation === null) {
-                throw Boom.badRequest("Fips state and county code cannot be null");
+            if (
+                fipsLocation === null ||
+                !fipsLocation ||
+                fipsLocation.fipsStateCode === null ||
+                fipsLocation.fipsCountyCode === null
+            ) {
+                throw Boom.badRequest(
+                    `Please enter a valid address. Unable to validate address: ${payload.streetAddress}, ${payload.city}, ${payload.stateProvince}.`
+                );
             }
 
             const updatedLocationWithFips = {
