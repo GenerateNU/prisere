@@ -138,7 +138,9 @@ export class LocationAddressService implements ILocationAddressService {
                 payload.map(async (element) => {
                     const currFips = await this.locationMatcher.getLocationFips(element);
                     if (!currFips || currFips.fipsStateCode === null || currFips.fipsCountyCode === null) {
-                        throw Boom.badRequest(`Please enter a valid address. Unable to validate address: ${element.streetAddress}, ${element.city}, ${element.stateProvince}.`);
+                        throw Boom.badRequest(
+                            `Please enter a valid address. Unable to validate address: ${element.streetAddress}, ${element.city}, ${element.stateProvince}.`
+                        );
                     }
                     return { ...element, ...currFips };
                 })

@@ -36,9 +36,12 @@ export const createLocationBulk = async (payload: CreateLocationBulkRequest): Pr
         if (response.ok) {
             return data!;
         } else {
-            const apiError = new Error(error?.error || "Failed to create locations - Unkown Error");
-            (apiError as any).status = response.status;
-            (apiError as any).statusText = response.statusText;
+            const apiError = new Error(error?.error || "Failed to create locations - Unkown Error") as Error & {
+                status: number;
+                statusText: string;
+            };
+            apiError.status = response.status;
+            apiError.statusText = response.statusText;
             throw apiError;
         }
     };
