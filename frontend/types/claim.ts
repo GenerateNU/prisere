@@ -86,7 +86,7 @@ export interface BusinessInfo {
  * Insurer info for step 3
  */
 export interface InsurerInfo {
-    name: string;
+    id: string;
 }
 
 const MIN_STEP = -2;
