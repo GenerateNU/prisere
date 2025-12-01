@@ -7,18 +7,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { GetCompanyLocationsResponse } from "@/types/company";
 import React from "react";
-import { FaCircle } from "react-icons/fa";
 import { validateDisasterInfo } from "./utils/validationUtils";
+import { UploadIcon, UserIcon } from "lucide-react";
+import { useModal } from "@/components/ui/modal/useModal";
+import { Modal } from "@/components/ui/modal/Modal";
+import { UploadDocument } from "./UploadDocument";
+import { DisasterInfo } from "@/types/claim";
 
-type DisasterInfo = {
-    name: string;
-    endDate: Date | null;
-    startDate: Date | null;
-    location: string;
-    description: string;
-};
-
-type Props = {
+type DisasterInfoStepProps = {
     disasterInfo: DisasterInfo;
     setDisasterInfo: (info: Partial<DisasterInfo>) => void;
     handleStepForward: (data: Partial<DisasterInfo>) => void;
@@ -32,8 +28,9 @@ export default function DisasterInfoStep({
     handleStepForward,
     handleStepBack,
     locations,
-}: Props) {
+}: DisasterInfoStepProps) {
     const [errors, setErrors] = React.useState<{ [key: string]: string }>({});
+    const { openModal: openUploadModal, isOpen: isUploadModalOpen, closeModal: closeUploadModal } = useModal({});
 
     const validateForm = () => validateDisasterInfo(disasterInfo.name, disasterInfo.location, setErrors);
 
@@ -106,15 +103,15 @@ export default function DisasterInfoStep({
             <Card className="p-[25px] border-[1px] flex flex-col gap-[10px]">
                 <h4 className="text-[24px] font-bold">Upload additional documents</h4>
                 <div className="flex flex-col gap-[16px]">
-                    <Button className="w-fit h-fit rounded-full py-[12px] px-[20px]">
+                    <Button className="w-fit h-fit rounded-full py-[12px] px-[20px]" onClick={openUploadModal}>
                         <Label>
-                            <FaCircle size={24} color="white" />
-                            <p>Upload from computer</p>
+                            <UploadIcon size={24} color="black" />
+                            <p>Upload from your computer</p>
                         </Label>
                     </Button>
                     <Button className="w-fit h-fit rounded-full py-[12px] px-[20px]">
                         <Label>
-                            <FaCircle size={24} color="white" />
+                            <UserIcon size={24} color="black" />
                             <p>Select from business profile</p>
                         </Label>
                     </Button>
@@ -131,6 +128,13 @@ export default function DisasterInfoStep({
                     Proceed to Personal Information
                 </Button>
             </div>
+            <Modal isOpen={isUploadModalOpen} onClose={closeUploadModal}>
+                <UploadDocument
+                    handleUploadFiles={(files: File[]) => {
+                        setDisasterInfo({ additionalDocumets: files });
+                    }}
+                />
+            </Modal>
         </div>
     );
 }

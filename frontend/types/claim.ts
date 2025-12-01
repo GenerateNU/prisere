@@ -26,6 +26,11 @@ export type UpdateClaimStatusRequest = NonNullable<
 export type UpdateClaimStatusResponse =
     paths["/claims/{id}/status"]["patch"]["responses"][200]["content"]["application/json"];
 
+// export type uploadClaimRelatedDocumentsRequest =
+//     paths["/s3/getUploadUrl"]["patch"]["requestBody"][200]["content"]["application/json"];
+// export type uploadClaimRelatedDocumentsResponse =
+//     paths["/s3/getUploadUrl"]["patch"]["responses"][200]["content"]["application/json"];
+
 /**
  * Save status for indicating to user
  */
@@ -40,6 +45,7 @@ export interface DisasterInfo {
     endDate: Date | null;
     location: string; // locationId
     description: string;
+    additionalDocumets: File[];
 }
 
 /**

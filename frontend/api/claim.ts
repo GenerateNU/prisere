@@ -104,3 +104,25 @@ export const updateClaimStatus = async (
     };
     return authWrapper<UpdateClaimStatusResponse>()(req);
 };
+
+export const uploadClaimRelatedDocuments = async (
+    claimId: string,
+    payload: UpdateClaimStatusRequest
+): Promise<UpdateClaimStatusResponse> => {
+    const req = async (token: string): Promise<UpdateClaimStatusResponse> => {
+        const client = getClient();
+        const { data, error, response } = await client.PATCH("/claims/{id}/status", {
+            headers: authHeader(token),
+            params: {
+                path: { id: claimId },
+            },
+            body: payload,
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<UpdateClaimStatusResponse>()(req);
+};

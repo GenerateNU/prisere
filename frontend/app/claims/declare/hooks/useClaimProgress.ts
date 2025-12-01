@@ -259,6 +259,8 @@ export function useClaimProgress(
         [claimId, updateURL]
     );
 
+    const saveAdditionalDocumentsToS3 = (files: File[], claimId: string) => {};
+
     // Commit disaster step (creates SelfDisaster + Claim)
     const commitDisasterStep = async (data?: Partial<DisasterInfo>) => {
         try {

@@ -4,7 +4,7 @@ import { getCompany, getCompanyLocations } from "@/api/company";
 import { getUser } from "@/api/user";
 import Progress from "@/components/progress";
 import { cn } from "@/lib/utils";
-import { ClaimStepData, ClaimStepNumber, decrementStep, incrementStep, isStep } from "@/types/claim";
+import { ClaimStepData, ClaimStepNumber, decrementStep, DisasterInfo, incrementStep, isStep } from "@/types/claim";
 import { useQuery } from "@tanstack/react-query";
 import React, { Suspense } from "react";
 import BusinessInfoStep from "./BusinessInfoStep";
@@ -34,12 +34,13 @@ function DeclareDisasterContent() {
     });
 
     // Initial form data from user/company queries
-    const initialDisasterInfo = {
+    const initialDisasterInfo: DisasterInfo = {
         name: "",
-        startDate: null as Date | null,
-        endDate: null as Date | null,
+        startDate: null,
+        endDate: null,
         location: "",
         description: "",
+        additionalDocumets: [],
     };
 
     const initialPersonalInfo = {
