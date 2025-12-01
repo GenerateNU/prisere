@@ -1,25 +1,25 @@
+import type { Relation } from "typeorm";
 import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToOne,
-    JoinColumn,
-    Unique,
-    CreateDateColumn,
-    UpdateDateColumn,
-    OneToMany,
     Check,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
     JoinTable,
     ManyToMany,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    Unique,
+    UpdateDateColumn,
 } from "typeorm";
-import type { Relation } from "typeorm";
-import { Company } from "./Company.js";
-import { FemaDisaster } from "./FemaDisaster.js";
 import { ClaimStatusType } from "../types/ClaimStatusType.js";
 import { ClaimLocation } from "./ClaimLocation.js";
-import { SelfDeclaredDisaster } from "./SelfDisaster.js";
-import { PurchaseLineItem } from "./PurchaseLineItem.js";
+import { Company } from "./Company.js";
+import { FemaDisaster } from "./FemaDisaster.js";
 import { InsurancePolicy } from "./InsurancePolicy.js";
+import { PurchaseLineItem } from "./PurchaseLineItem.js";
+import { SelfDeclaredDisaster } from "./SelfDisaster.js";
 
 @Unique(["companyId", "femaDisasterId", "selfDisasterId"])
 @Check(
@@ -29,6 +29,9 @@ import { InsurancePolicy } from "./InsurancePolicy.js";
 export class Claim {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
+
+    @Column()
+    name!: string;
 
     @Column({
         type: "enum",

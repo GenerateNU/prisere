@@ -199,6 +199,7 @@ export class ClaimTransaction implements IClaimTransaction {
 
             return result.map((claim) => ({
                 id: claim.id,
+                name: claim.name,
                 status: claim.status,
                 createdAt: claim.createdAt.toISOString(),
                 updatedAt: claim.updatedAt?.toISOString(),
@@ -477,6 +478,7 @@ export class ClaimTransaction implements IClaimTransaction {
 
             return {
                 id: claim.id,
+                name: claim.name,
                 status: claim.status,
                 createdAt: claim.createdAt.toISOString(),
                 updatedAt: claim.updatedAt?.toISOString(),
@@ -562,6 +564,7 @@ export class ClaimTransaction implements IClaimTransaction {
 
             return {
                 id: result.id,
+                name: result.name,
                 status: result.status,
                 createdAt: result.createdAt.toISOString(),
                 updatedAt: result.updatedAt?.toISOString(),
