@@ -31,10 +31,10 @@ import StartStep from "./StartStep";
  * The steps that are displayed in the progress bar
  */
 const progressSteps = [
-    { label: "Disaster Info", step: 0 },
-    { label: "Personal Info", step: 1 },
-    { label: "Business Info", step: 2 },
-    { label: "Insurer Info", step: 3 },
+    { label: "Disaster Information", step: 0 },
+    { label: "Personal Information", step: 1 },
+    { label: "Business Information", step: 2 },
+    { label: "Insurance Information", step: 3 },
     { label: "Export Report", step: 4 },
 ] satisfies { label: string; step: ClaimStepNumber }[];
 
