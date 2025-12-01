@@ -1,22 +1,18 @@
 "use client";
+import ExpenseTable from "@/app/expense-tracker/expense-table/expense-table";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { ProfileIcon } from "@/icons/profile";
+import { UploadIcon } from "@/icons/upload";
+import { cn } from "@/lib/utils";
+import { DisasterInfo } from "@/types/claim";
 import { GetCompanyLocationsResponse } from "@/types/company";
 import React from "react";
-import { FaCircle } from "react-icons/fa";
 import { validateDisasterInfo } from "./utils/validationUtils";
-
-type DisasterInfo = {
-    name: string;
-    endDate: Date | null;
-    startDate: Date | null;
-    location: string;
-    description: string;
-};
 
 type Props = {
     disasterInfo: DisasterInfo;
@@ -33,9 +29,14 @@ export default function DisasterInfoStep({
     handleStepBack,
     locations,
 }: Props) {
-    const [errors, setErrors] = React.useState<{ [key: string]: string }>({});
+    // const { data: hasData, isPending: hasDataLoading } = useQuery({
+    //     queryKey: ["company-has-data"],
+    //     queryFn: companyHasData,
+    // });
 
-    const validateForm = () => validateDisasterInfo(disasterInfo.name, disasterInfo.location, setErrors);
+    const [errors, setErrors] = React.useState<Partial<Record<keyof DisasterInfo, string>>>({});
+
+    const validateForm = () => validateDisasterInfo(disasterInfo, setErrors);
 
     const handleProceed = () => {
         if (validateForm()) {
@@ -46,46 +47,78 @@ export default function DisasterInfoStep({
     return (
         <div className="flex flex-col gap-[40px]">
             <h3 className="text-[25px] font-bold">Disaster Specific Information</h3>
-            <Card className="p-[25px] border-[1px]">
+            <Card className="p-[25px] border-none shadow-none">
                 <div className="flex flex-col gap-2">
-                    <Label className="text-[16px]">
-                        Type of claim being filed <span className="text-red-500 ml-1">*</span>
+                    <Label htmlFor="disaster-name">
+                        Name of the disaster <span className="text-red-500 ml-1">*</span>
                     </Label>
                     <Input
-                        className={`h-[58px] rounded-[10px] text-[16px] ${errors.name ? "border-red-500" : ""}`}
-                        value={disasterInfo.name}
-                        placeholder="Enter a disaster name"
-                        onChange={(e) => {
-                            setDisasterInfo({ name: e.target.value });
-                            if (errors.name) setErrors({ ...errors, name: "" });
-                        }}
+                        id="disaster-name"
+                        className="h-10 bg-white shadow-none rounded-[10px]"
+                        value={disasterInfo.name ?? ""}
+                        onChange={(e) => setDisasterInfo({ name: e.target.value })}
                     />
-                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                 </div>
                 <div className="flex flex-col gap-2">
-                    <Label className="text-[16px]">
-                        Location of incident <span className="text-red-500 ml-1">*</span>
+                    <Label>
+                        Is this disaster tied to a FEMA disaster? <span className="text-red-500 ml-1">*</span>
                     </Label>
                     <Select
-                        value={disasterInfo.location}
-                        onValueChange={(value) => {
-                            setDisasterInfo({ location: value });
-                            if (errors.location) setErrors({ ...errors, location: "" });
-                        }}
+                        onValueChange={(value) => setDisasterInfo({ isFema: value === "yes" })}
+                        value={disasterInfo.isFema ? "yes" : "no"}
                     >
-                        <SelectTrigger
-                            className={`rounded-full px-[20px] py-[8px] w-[175px] ${errors.location ? "border-red-500" : ""}`}
-                        >
-                            <SelectValue placeholder="Select location" />
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select an option" />
                         </SelectTrigger>
                         <SelectContent>
-                            {locations?.map((l) => (
-                                <SelectItem key={l.id} value={l.id} className="text-[16px]">
-                                    {l.streetAddress}, {l.city}, {l.stateProvince} {l.postalCode}{" "}
-                                </SelectItem>
-                            ))}
+                            <SelectItem value="yes">Yes</SelectItem>
+                            <SelectItem value="no">No</SelectItem>
                         </SelectContent>
                     </Select>
+                </div>
+                {/* TODO: have the select options be actual disasters that happened in time frame? */}
+                {disasterInfo.isFema && (
+                    <div className="flex flex-col gap-2">
+                        <Label htmlFor="fema-disaster-id">FEMA Disaster ID</Label>
+                        <Input
+                            id="fema-disaster-id"
+                            className="h-10 bg-white shadow-none rounded-[10px]"
+                            value={disasterInfo.femaDisasterId ?? ""}
+                            onChange={(e) => setDisasterInfo({ femaDisasterId: e.target.value })}
+                        />
+                    </div>
+                )}
+                <div className="flex flex-col gap-2">
+                    <Label className="text-[16px]">
+                        Location of incident {(locations?.length ?? 0) > 1 ? "(choose one)" : null}{" "}
+                        <span className="text-red-500 ml-1">*</span>
+                    </Label>
+                    <div className="grid grid-cols-2 gap-3">
+                        {locations?.map((l) => {
+                            return (
+                                <Card
+                                    key={l.id}
+                                    className={cn(
+                                        "py-5 px-7 cursor-pointer border-transparent hover:border-fuchsia border-2 transition-all duration-150",
+                                        disasterInfo.location === l.id && "border-fuchsia"
+                                    )}
+                                    onClick={() =>
+                                        setDisasterInfo({ location: disasterInfo.location === l.id ? undefined : l.id })
+                                    }
+                                >
+                                    <div>{l.alias} </div>
+                                    <div className="h-px bg-[#DBDBDB] w-full" />
+                                    <div className="flex flex-col">
+                                        <span>{l.streetAddress}</span>
+                                        <span>
+                                            {l.city}, {l.stateProvince} {l.postalCode}
+                                        </span>
+                                    </div>
+                                </Card>
+                            );
+                        })}
+                    </div>
+
                     {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
                 </div>
                 <div className="flex flex-col gap-2">
@@ -93,40 +126,53 @@ export default function DisasterInfoStep({
                     <Textarea
                         className="min-h-64 text-[16px]"
                         rows={5}
-                        placeholder="Begin typing or "
+                        placeholder="Begin typing"
                         value={disasterInfo.description}
                         onChange={(e) => setDisasterInfo({ description: e.target.value })}
                     />
                 </div>
             </Card>
-            <Card className="p-[25px] border-[1px]">
-                <h4 className="text-[24px] font-bold">Select Relevant Transactions</h4>
-                {/*<ExpenseTable />*/}
-            </Card>
-            <Card className="p-[25px] border-[1px] flex flex-col gap-[10px]">
+            <ExpenseTable
+                title="Select Relevant Transactions"
+                // TODO:
+                // hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false}
+                hasData={true}
+                rowOption={"collapsible"}
+                editableTags={true}
+                setSelections={(selections) => setDisasterInfo({ purchaseSelections: selections })}
+                selections={disasterInfo.purchaseSelections}
+            />
+            <Card className="p-[25px] flex flex-col gap-[10px] border-none shadow-none">
                 <h4 className="text-[24px] font-bold">Upload additional documents</h4>
                 <div className="flex flex-col gap-[16px]">
-                    <Button className="w-fit h-fit rounded-full py-[12px] px-[20px]">
-                        <Label>
-                            <FaCircle size={24} color="white" />
-                            <p>Upload from computer</p>
-                        </Label>
+                    <Button
+                        size="sm"
+                        className="h-[34px] px-2 justify-between gap-2 rounded-full bg-muted text-black text-sm hover:bg-muted/80 aria-expanded:border w-fit"
+                    >
+                        <div className="flex items-center gap-2">
+                            <UploadIcon className="size-6" />
+                            <span className="truncate">Upload from computer</span>
+                        </div>
                     </Button>
-                    <Button className="w-fit h-fit rounded-full py-[12px] px-[20px]">
-                        <Label>
-                            <FaCircle size={24} color="white" />
-                            <p>Select from business profile</p>
-                        </Label>
+                    <Button
+                        size="sm"
+                        className="h-[34px] px-2 justify-between gap-2 rounded-full bg-muted text-black text-sm hover:bg-muted/80 aria-expanded:border w-fit"
+                    >
+                        <div className="flex items-center gap-2">
+                            <ProfileIcon className="size-6" />
+                            <span className="truncate">Select from business profile</span>
+                        </div>
                     </Button>
                 </div>
             </Card>
-            <div className="flex justify-end gap-1">
-                <Button className="px-[20px] py-[12px] w-fit h-fit rounded-50 text-[16px]" onClick={handleStepBack}>
+            <div className="flex items-center justify-end gap-3 w-full">
+                <Button onClick={handleStepBack} className="text-sm bg-light-fuchsia text-fuchsia w-[70px]" size="lg">
                     Back
                 </Button>
                 <Button
-                    className="px-[20px] py-[12px] w-fit h-fit rounded-50 text-[16px] text-white bg-[#2e2f2d]"
+                    size="lg"
                     onClick={handleProceed}
+                    className="bg-fuchsia text-white px-[20px] py-[12px] w-[230px] h-[42px] text-[14px] rounded-50"
                 >
                     Proceed to Personal Information
                 </Button>

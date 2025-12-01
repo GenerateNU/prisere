@@ -4,7 +4,17 @@ import { getCompany, getCompanyLocations } from "@/api/company";
 import { getUser } from "@/api/user";
 import Progress from "@/components/progress";
 import { cn } from "@/lib/utils";
-import { ClaimStepData, ClaimStepNumber, decrementStep, incrementStep, isStep } from "@/types/claim";
+import {
+    BusinessInfo,
+    ClaimStepData,
+    ClaimStepNumber,
+    decrementStep,
+    DisasterInfo,
+    incrementStep,
+    InsurerInfo,
+    isStep,
+    PersonalInfo,
+} from "@/types/claim";
 import { useQuery } from "@tanstack/react-query";
 import React, { Suspense } from "react";
 import BusinessInfoStep from "./BusinessInfoStep";
@@ -16,6 +26,17 @@ import IncidentDateStep from "./IncidentDateStep";
 import InsurerInfoStep from "./InsurerInfoStep";
 import PersonalInfoStep from "./PersonalInfoStep";
 import StartStep from "./StartStep";
+
+/**
+ * The steps that are displayed in the progress bar
+ */
+const progressSteps = [
+    { label: "Disaster Info", step: 0 },
+    { label: "Personal Info", step: 1 },
+    { label: "Business Info", step: 2 },
+    { label: "Insurer Info", step: 3 },
+    { label: "Export Report", step: 4 },
+] satisfies { label: string; step: ClaimStepNumber }[];
 
 function DeclareDisasterContent() {
     const { data: businessInfoData, isSuccess: businessInfoSuccess } = useQuery({
@@ -36,32 +57,36 @@ function DeclareDisasterContent() {
     // Initial form data from user/company queries
     const initialDisasterInfo = {
         name: "",
-        startDate: null as Date | null,
-        endDate: null as Date | null,
+        startDate: null,
+        endDate: null,
         location: "",
         description: "",
-    };
+        purchaseSelections: {
+            fullPurchaseIds: [],
+            partialLineItemIds: [],
+        },
+        isFema: false,
+    } satisfies DisasterInfo;
 
     const initialPersonalInfo = {
         firstName: userInfoData?.firstName || "",
         lastName: userInfoData?.lastName || "",
         email: userInfoData?.email || "",
         phone: userInfoData?.phoneNumber || "",
-    };
+    } satisfies PersonalInfo;
 
     const initialBusinessInfo = {
         businessName: businessInfoData?.name || "",
         businessOwner: businessInfoData?.businessOwnerFullName || "",
         businessType: businessInfoData?.companyType || "",
-    };
+    } satisfies BusinessInfo;
 
     const initialInsurerInfo = {
         name: "test",
-    };
+    } satisfies InsurerInfo;
 
     // Use the claim progress hook
     const {
-        claimId,
         step,
         saveStatus,
         disasterInfo,
@@ -209,37 +234,23 @@ function DeclareDisasterContent() {
     ] satisfies { step: ClaimStepNumber; render: React.ReactNode }[];
 
     const currentStep = steps.find((s) => s.step === step);
-    const claimReportSteps = [
-        { label: "Disaster Info", step: 0 },
-        { label: "Personal Info", step: 1 },
-        { label: "Business Info", step: 2 },
-        { label: "Insurer Info", step: 3 },
-        { label: "Export Report", step: 4 },
-    ] satisfies { label: string; step: ClaimStepNumber }[];
 
     return (
-        <div className={cn(`flex flex-col px-[20%] pt-[70px] min-h-screen pb-8`, step === 1 && "justify-center")}>
+        <div
+            className={cn(
+                `bg-slate flex flex-col px-[20%] pt-[70px] min-h-screen pb-8`,
+                step === 1 && "justify-center"
+            )}
+        >
             {step > -1 && step !== 5 && (
                 <div className="">
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-[40px] font-bold">Declare Disaster</h2>
                         <SaveStatusIndicator status={saveStatus} />
                     </div>
-                    <Progress progress={step} items={claimReportSteps} />
-                </div>
-            )}
-            {claimId && step >= 0 && (
-                <div className="mb-4">
-                    <p className="text-sm text-gray-500">
-                        {step > 0 && "Resuming claim - "}Claim ID: {claimId.substring(0, 8)}...
-                    </p>
+                    <Progress progress={step} items={progressSteps} />
                 </div>
             )}
             {currentStep?.render}
-            {/**
-             * WHEN ADDING THE TABLE TO LINK PURCHASES TO CLAIMS USE THIS:
-             * <ExpenseTable title={"Select Relevant Transactions"} rowOption={'checkbox'} editableTags={false}/>;
-             */}
         </div>
     );
 }
