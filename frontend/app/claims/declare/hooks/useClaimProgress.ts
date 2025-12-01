@@ -222,7 +222,7 @@ export function useClaimProgress(
                         setInsurerInfoState((prev) => {
                             const temp = tempData.insurerInfo;
                             return {
-                                name: temp.name && temp.name.trim() !== "" ? temp.name : prev.name,
+                                id: temp.id ? temp.id : prev.id,
                             };
                         });
                     }
@@ -510,7 +510,7 @@ export function useClaimProgress(
             // Update claim with insurance policy if provided
             await updateClaimStatus(claimId, {
                 status: "IN_PROGRESS_EXPORT",
-                // insurancePolicyId can be added here if we have it
+                insurancePolicyId: insurerInfo.id,
             });
             setStatus("IN_PROGRESS_EXPORT");
 

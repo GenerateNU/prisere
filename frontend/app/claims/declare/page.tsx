@@ -23,7 +23,7 @@ import DisasterInfoStep from "./DisasterInfoStep";
 import ExportStep from "./ExportStep";
 import { useClaimProgress } from "./hooks/useClaimProgress";
 import IncidentDateStep from "./IncidentDateStep";
-import InsurerInfoStep from "./InsurerInfoStep";
+import InsuranceInfoStep from "./InsuranceInfoStep";
 import PersonalInfoStep from "./PersonalInfoStep";
 import StartStep from "./StartStep";
 
@@ -82,7 +82,7 @@ function DeclareDisasterContent() {
     } satisfies BusinessInfo;
 
     const initialInsurerInfo = {
-        name: "test",
+        id: "",
     } satisfies InsurerInfo;
 
     // Use the claim progress hook
@@ -218,7 +218,7 @@ function DeclareDisasterContent() {
         {
             step: 3,
             render: (
-                <InsurerInfoStep
+                <InsuranceInfoStep
                     insurerInfo={insurerInfo}
                     setInsurerInfo={setInsurerInfo}
                     handleStepForward={(info) => handleStepForward(3, { insurerInfo: info })}
