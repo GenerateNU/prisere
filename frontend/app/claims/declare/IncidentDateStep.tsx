@@ -1,12 +1,12 @@
 "use client";
 
-import * as React from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
+import * as React from "react";
 import { isValidDate, validateAndSetDate } from "./utils/validationUtils";
 
 type Props = {
@@ -105,13 +105,16 @@ export default function IncidentDateStep({
 
     return (
         <div className="flex flex-col items-center justify-center h-full gap-8 self-center">
-            <div className="w-full max-w-md">
-                <h3 className="text-4xl font-bold mb-8">When did the disaster occur?</h3>
+            <div className="w-full max-w-md flex flex-col gap-8">
+                <div className="flex flex-col gap-5">
+                    <h3 className="text-4xl font-bold">When did the disaster occur?</h3>
+                    <p>If you are currently still collecting expenses for this disaster, leave the end date blank.</p>
+                </div>
 
                 {/* Start Date */}
-                <div className="flex flex-col gap-3 mb-6">
+                <div className="flex flex-col gap-3">
                     <Label htmlFor="start-date" className="px-1 text-[16px]">
-                        Incident Start Date<span className="text-red-500 ml-1">*</span>
+                        Start Date<span className="text-red-500 ml-1">*</span>
                     </Label>
                     <div className="relative flex gap-1">
                         <Input
@@ -186,7 +189,7 @@ export default function IncidentDateStep({
                 {/* End Date */}
                 <div className="flex flex-col gap-3">
                     <Label htmlFor="end-date" className="px-1 text-[16px]">
-                        Incident End Date
+                        End Date
                     </Label>
                     <div className="relative flex gap-1">
                         <Input
@@ -259,16 +262,16 @@ export default function IncidentDateStep({
                 </div>
             </div>
 
-            <div className="flex flex-col items-center gap-[20px]">
+            <div className="flex items-center justify-end gap-3 w-full">
+                <Button onClick={handleStepBack} className="text-sm bg-light-fuchsia text-fuchsia w-[70px]" size="lg">
+                    Back
+                </Button>
                 <Button
                     onClick={handleProceed}
-                    className="px-[20px] py-[12px] w-[170px] h-[42px] text-[14px] rounded-50"
+                    className="bg-fuchsia text-white px-[20px] py-[12px] w-[170px] h-[42px] text-[14px] rounded-50"
                     size="lg"
                 >
-                    Next
-                </Button>
-                <Button onClick={handleStepBack} variant="link" className="text-base underline text-[19px] h-fit p-0">
-                    Previous
+                    Proceed to filing report
                 </Button>
             </div>
         </div>

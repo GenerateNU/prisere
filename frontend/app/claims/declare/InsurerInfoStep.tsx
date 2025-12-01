@@ -11,16 +11,13 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { InsurerInfo } from "@/types/claim";
 import { useState } from "react";
 
-type insurerInfo = {
-    name: string;
-};
-
 type Props = {
-    insurerInfo: insurerInfo;
-    setInsurerInfo: (info: Partial<insurerInfo>) => void;
-    handleStepForward: (data: Partial<insurerInfo>) => void;
+    insurerInfo: InsurerInfo;
+    setInsurerInfo: (info: Partial<InsurerInfo>) => void;
+    handleStepForward: (data: Partial<InsurerInfo>) => void;
     handleStepBack: () => void;
 };
 

@@ -6,15 +6,10 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BusinessInfo } from "@/types/claim";
 import { CompanyTypes, GetCompanyLocationsResponse } from "@/types/company";
 import React from "react";
 import { validateBusinessInfo } from "./utils/validationUtils";
-
-type BusinessInfo = {
-    businessName: string;
-    businessOwner: string;
-    businessType: string;
-};
 
 type Props = {
     businessInfo: BusinessInfo;

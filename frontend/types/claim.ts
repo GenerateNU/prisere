@@ -26,21 +26,41 @@ export type UpdateClaimStatusRequest = NonNullable<
 export type UpdateClaimStatusResponse =
     paths["/claims/{id}/status"]["patch"]["responses"][200]["content"]["application/json"];
 
+export type LinkLineItemToClaimRequest = NonNullable<
+    paths["/claims/line-item"]["post"]["requestBody"]
+>["content"]["application/json"];
+export type LinkLineItemToClaimResponse =
+    paths["/claims/line-item"]["post"]["responses"][201]["content"]["application/json"];
+
+export type LinkPurchaseToClaimRequest = NonNullable<
+    paths["/claims/purchase"]["post"]["requestBody"]
+>["content"]["application/json"];
+export type LinkPurchaseToClaimResponse =
+    paths["/claims/purchase"]["post"]["responses"][201]["content"]["application/json"];
 /**
  * Save status for indicating to user
  */
 export type SaveStatus = "idle" | "saving" | "saved" | "error";
 
 /**
+ * Selection of purchases and line items
+ */
+export interface PurchaseSelections {
+    fullPurchaseIds: string[]; // Purchase IDs where all line items are selected
+    partialLineItemIds: string[]; // Individual line item IDs (excluding those in full purchases)
+}
+
+/**
  * Disaster info for step 0
  */
-export interface DisasterInfo {
+export type DisasterInfo = {
     name: string;
     startDate: Date | null;
     endDate: Date | null;
     location: string; // locationId
     description: string;
-}
+    purchaseSelections: PurchaseSelections;
+} & ({ isFema: false; femaDisasterId?: never } | { isFema: true; femaDisasterId: string });
 
 /**
  * Personal info for step 1
@@ -71,10 +91,13 @@ export interface InsurerInfo {
 const MIN_STEP = -2;
 const MAX_STEP = 5;
 
+export const CLAIM_STEPS = [MIN_STEP, -1, 0, 1, 2, 3, 4, MAX_STEP] as const;
+export type ClaimStep = (typeof CLAIM_STEPS)[number];
+
 /**
  * Map of claim step numbers to their corresponding data types
  */
-export interface ClaimStepDataMap {
+export type ClaimStepDataMap = {
     [MIN_STEP]: null;
     [-1]: null;
     0: { disasterInfo: Partial<DisasterInfo> };
@@ -83,7 +106,7 @@ export interface ClaimStepDataMap {
     3: { insurerInfo: Partial<InsurerInfo> };
     4: null;
     [MAX_STEP]: null;
-}
+};
 
 /**
  * Valid step numbers
