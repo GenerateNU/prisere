@@ -25,6 +25,7 @@ export const ClaimSchema = z.object({
     selfDisaster: GetSelfDisasterForCompanyResponseSchema.optional(),
     insurancePolicy: SingleInsurancePolicyResponseSchema.optional(),
     claimLocations: z.array(LocationAddressSchema).optional(),
+    purchaseLineItemIds: z.array(z.string()),
 });
 
 export const ClaimSchemaResponse = ClaimSchema.extend({
