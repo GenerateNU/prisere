@@ -4,7 +4,6 @@ import { IdCardIcon } from "@/icons/id-card";
 import { ImageIcon } from "@/icons/image";
 import { TableIcon } from "@/icons/table";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 type StartProps = {
     handleStepForward: () => void;
@@ -15,7 +14,6 @@ function Icon({ children }: { children: React.ReactNode }) {
 }
 
 export default function StartStep({ handleStepForward }: StartProps) {
-    const router = useRouter();
     return (
         <div className="flex justify-center items-center h-full mt-8">
             <div className="flex flex-col items-center justify-center gap-9 w-[500px] h-full">
