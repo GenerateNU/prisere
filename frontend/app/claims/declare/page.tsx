@@ -78,7 +78,7 @@ function DeclareDisasterContent() {
     const initialBusinessInfo = {
         businessName: businessInfoData?.name || "",
         businessOwner: businessInfoData?.businessOwnerFullName || "",
-        businessType: businessInfoData?.companyType || "",
+        businessType: businessInfoData?.companyType || "LLC",
     } satisfies BusinessInfo;
 
     const initialInsurerInfo = {
@@ -212,7 +212,6 @@ function DeclareDisasterContent() {
                     setBusinessInfo={setBusinessInfo}
                     handleStepForward={(info) => handleStepForward(2, { businessInfo: info })}
                     handleStepBack={handleStepBack}
-                    locations={companyLocations}
                 />
             ),
         },
