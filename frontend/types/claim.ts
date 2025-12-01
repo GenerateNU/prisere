@@ -1,4 +1,5 @@
 import { paths } from "@/schema";
+import { CompanyTypesEnum } from "./company";
 
 export type CreateClaimRequest = NonNullable<paths["/claims"]["post"]["requestBody"]>["content"]["application/json"];
 export type CreateClaimResponse = paths["/claims"]["post"]["responses"][201]["content"]["application/json"];
@@ -78,7 +79,7 @@ export interface PersonalInfo {
 export interface BusinessInfo {
     businessName: string;
     businessOwner: string;
-    businessType: string;
+    businessType: CompanyTypesEnum;
 }
 
 /**
