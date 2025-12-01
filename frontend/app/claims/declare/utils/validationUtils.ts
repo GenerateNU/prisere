@@ -1,4 +1,4 @@
-import { DisasterInfo } from "@/types/claim";
+import { DisasterInfo, PersonalInfo } from "@/types/claim";
 
 export const isValidDate = (dateString: string, dateObj: Date): boolean => {
     // Check MM/DD/YYYY format
@@ -150,10 +150,7 @@ export const validateDisasterInfo = (
 };
 
 export const validatePersonalInfo = (
-    firstName: string,
-    lastName: string,
-    email: string,
-    phone: string,
+    { firstName, lastName, phone, email }: PersonalInfo,
     setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>
 ) => {
     const newErrors: { [key: string]: string } = {};
