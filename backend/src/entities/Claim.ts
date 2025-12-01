@@ -20,6 +20,7 @@ import { ClaimLocation } from "./ClaimLocation.js";
 import { SelfDeclaredDisaster } from "./SelfDisaster.js";
 import { PurchaseLineItem } from "./PurchaseLineItem.js";
 import { InsurancePolicy } from "./InsurancePolicy.js";
+import { Document } from "./Document.js";
 
 @Unique(["companyId", "femaDisasterId", "selfDisasterId"])
 @Check(
@@ -80,4 +81,12 @@ export class Claim {
     @ManyToOne(() => InsurancePolicy, (ip) => ip.id)
     @JoinColumn({ name: "insurancePolicyId" })
     insurancePolicy!: InsurancePolicy;
+
+    // @ManyToMany(() => PurchaseLineItem)
+    // @JoinTable({
+    //     name: "claim_uploaded_documents",
+    //     joinColumn: { name: "claimId" },
+    //     inverseJoinColumn: { name: "documentId" },
+    // })
+    // documents!: Document[];
 }

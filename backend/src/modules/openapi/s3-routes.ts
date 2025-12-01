@@ -21,11 +21,11 @@ export const addOpenApiS3Routes = (openApi: OpenAPIHono, db: DataSource): OpenAP
     const s3Service = new S3Service(db, documentTransaction);
     const s3Controller = new S3Controller(s3Service);
 
-    openApi.openapi(getUploadUrlRoute, (ctx) => s3Controller.getUploadUrl(ctx) as any);
-    openApi.openapi(confirmUploadRoute, (ctx) => s3Controller.confirmUpload(ctx) as any);
-    openApi.openapi(getAllDocumentsRoute, (ctx) => s3Controller.getAllDocuments(ctx) as any);
-    openApi.openapi(deleteDocumentRoute, (ctx) => s3Controller.deleteDocument(ctx) as any);
-    openApi.openapi(updateDocumentCategoryRoute, (ctx) => s3Controller.updateDocumentCategory(ctx) as any);
+    openApi.openapi(getUploadUrlRoute, (ctx) => s3Controller.getUploadUrl(ctx));
+    openApi.openapi(confirmUploadRoute, (ctx) => s3Controller.confirmUpload(ctx));
+    openApi.openapi(getAllDocumentsRoute, (ctx) => s3Controller.getAllDocuments(ctx));
+    openApi.openapi(deleteDocumentRoute, (ctx) => s3Controller.deleteDocument(ctx));
+    openApi.openapi(updateDocumentCategoryRoute, (ctx) => s3Controller.updateDocumentCategory(ctx));
 
     return openApi;
 };
@@ -43,6 +43,7 @@ const getUploadUrlRoute = createRoute({
                     schema: GetUploadUrlRequestSchema,
                 },
             },
+            required: true,
         },
     },
     responses: {
@@ -95,6 +96,7 @@ const confirmUploadRoute = createRoute({
                     schema: ConfirmUploadRequestSchema,
                 },
             },
+            required: true,
         },
     },
     responses: {
@@ -196,6 +198,7 @@ const deleteDocumentRoute = createRoute({
                     schema: DeleteDocumentRequestSchema,
                 },
             },
+            required: true,
         },
     },
     responses: {
@@ -242,6 +245,7 @@ const updateDocumentCategoryRoute = createRoute({
                     }),
                 },
             },
+            required: true,
         },
     },
     responses: {

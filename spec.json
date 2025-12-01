@@ -9880,6 +9880,7 @@
           "S3"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -10013,6 +10014,7 @@
           "S3"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -10682,6 +10684,7 @@
           "S3"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -10770,6 +10773,7 @@
           "S3"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
