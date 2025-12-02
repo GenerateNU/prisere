@@ -16,6 +16,7 @@ import { IDocumentTransaction } from "../documents/transaction";
 import { ClaimTransaction } from "../claim/transaction";
 import { Touchscreen } from "puppeteer";
 import { isExternalModule } from "typescript";
+import { Claim } from "../../entities/Claim";
 
 const S3_BUCKET_NAME = process.env.OBJECTS_STORAGE_BUCKET_NAME;
 const PRESIGNED_URL_EXPIRY = 3600; // 1 hour
@@ -89,11 +90,13 @@ export interface IS3Service {
     ): Promise<DocumentWithUrl[] | null>;
 
     updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void>;
+
+    getClaimIdFromSelfDisaster(selfDisasterId: string): Promise<string>;
 }
 
 export class S3Service implements IS3Service {
     private client: S3Client;
-    private bucketName: string | undefined; // undefined if not in env vars
+    private bucketName: string | undefined;
     private db: DataSource;
     private documentTransaction: IDocumentTransaction;
 
@@ -132,7 +135,7 @@ export class S3Service implements IS3Service {
                 Key: key,
                 ContentType: contentType,
                 Metadata: metadata,
-                ContentEncoding: "gzip",
+                // ContentEncoding: "gzip",
             });
 
             const url = await getSignedUrl(this.client, command, { expiresIn });
@@ -520,7 +523,7 @@ export class S3Service implements IS3Service {
 
             logMessageToFile(`Upload confirmed for: ${key}`);
 
-            await this.documentTransaction.upsertDocument({
+            const upsertedDocument = await this.documentTransaction.upsertDocument({
                 key: key,
                 downloadUrl: url,
                 s3DocumentId: documentId,
@@ -529,10 +532,10 @@ export class S3Service implements IS3Service {
                 category: category ?? undefined,
             });
 
-            //If a claim exists, link it to the document
-            if (claimId) {
+            //If a claim and document exists, link it to the document
+            if (claimId && upsertedDocument) {
                 const claimTransaction = new ClaimTransaction(this.db);
-                await claimTransaction.linkClaimToDocument(claimId, documentId);
+                await claimTransaction.linkClaimToDocument(claimId, upsertedDocument?.id);
             }
 
             return {
@@ -587,5 +590,15 @@ export class S3Service implements IS3Service {
             const errorText = await response.text();
             throw new Error(`Upload failed: ${response.status} ${response.statusText}. ${errorText}`);
         }
+    }
+
+    async getClaimIdFromSelfDisaster(selfDisasterId: string): Promise<string> {
+        return (
+            await this.db.manager.findOneOrFail(Claim, {
+                where: {
+                    selfDisasterId: selfDisasterId,
+                },
+            })
+        ).id;
     }
 }

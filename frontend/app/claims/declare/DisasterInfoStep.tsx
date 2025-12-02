@@ -131,10 +131,7 @@ export default function DisasterInfoStep({
             <Modal isOpen={isUploadModalOpen} onClose={closeUploadModal}>
                 <UploadDocument
                     handleUploadFiles={(files: File[]) => {
-<<<<<<< Updated upstream
-=======
                         closeUploadModal();
->>>>>>> Stashed changes
                         setDisasterInfo({ additionalDocumets: files });
                     }}
                 />

@@ -6265,7 +6265,6 @@ export interface paths {
                                     createdAt: string;
                                     updatedAt: string;
                                 };
-<<<<<<< Updated upstream
                                 claim?: {
                                     id: string;
                                     /**
@@ -6273,6 +6272,7 @@ export interface paths {
                                      * @enum {string}
                                      */
                                     status: "ACTIVE" | "FILED" | "IN_PROGRESS_DISASTER" | "IN_PROGRESS_PERSONAL" | "IN_PROGRESS_BUSINESS" | "IN_PROGRESS_INSURANCE" | "IN_PROGRESS_EXPORT";
+                                    /** Format: date-time */
                                     createdAt: string;
                                     /** Format: date-time */
                                     updatedAt?: string;
@@ -6325,80 +6325,7 @@ export interface paths {
                                         lat: number;
                                         long: number;
                                     }[];
-                                    lastModified?: string;
-                                } | null;
-=======
-                                claim?:
-                                    | {
-                                          id: string;
-                                          /**
-                                           * @default ACTIVE
-                                           * @enum {string}
-                                           */
-                                          status:
-                                              | "ACTIVE"
-                                              | "FILED"
-                                              | "IN_PROGRESS_DISASTER"
-                                              | "IN_PROGRESS_PERSONAL"
-                                              | "IN_PROGRESS_BUSINESS"
-                                              | "IN_PROGRESS_INSURANCE"
-                                              | "IN_PROGRESS_EXPORT";
-                                          /** Format: date-time */
-                                          createdAt: string;
-                                          /** Format: date-time */
-                                          updatedAt?: string;
-                                          femaDisaster?: {
-                                              /** Format: uuid */
-                                              id: string;
-                                              disasterNumber: number;
-                                              fipsStateCode: number;
-                                              declarationDate: string;
-                                              incidentBeginDate?: string | null;
-                                              incidentEndDate?: string | null;
-                                              fipsCountyCode: number;
-                                              declarationType: string;
-                                              designatedArea: string;
-                                              designatedIncidentTypes: string | null;
-                                          };
-                                          selfDisaster?: {
-                                              id: string;
-                                              name: string;
-                                              description: string;
-                                              startDate: string;
-                                              endDate?: string;
-                                              createdAt: string;
-                                              updatedAt: string;
-                                          };
-                                          insurancePolicy?: {
-                                              id: string;
-                                              policyName: string;
-                                              policyHolderFirstName: string;
-                                              policyHolderLastName: string;
-                                              insuranceCompanyName: string;
-                                              policyNumber: string;
-                                              insuranceType: string;
-                                              updatedAt: string;
-                                              createdAt: string;
-                                          };
-                                          claimLocations?: {
-                                              id: string;
-                                              alias: string;
-                                              country: string;
-                                              stateProvince: string;
-                                              city: string;
-                                              streetAddress: string;
-                                              postalCode: string;
-                                              county?: string;
-                                              /** Format: uuid */
-                                              companyId: string;
-                                              fipsStateCode: number;
-                                              fipsCountyCode: number;
-                                              lat: number;
-                                              long: number;
-                                          }[];
-                                      }[]
-                                    | null;
->>>>>>> Stashed changes
+                                }[] | null;
                             };
                             downloadUrl: string;
                         }[];

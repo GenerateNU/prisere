@@ -12,6 +12,7 @@ import {
     GetUploadUrlResponseSchema,
     DeleteDocumentResponseSchema,
     DeleteDocumentRequestSchema,
+    ConfirmUploadForSelfDisasterRequestSchema,
 } from "../../types/S3Types";
 import { DocumentTransaction } from "../documents/transaction";
 import { DocumentCategories, DocumentWithUrlSchema } from "../../types/DocumentType";
@@ -26,6 +27,7 @@ export const addOpenApiS3Routes = (openApi: OpenAPIHono, db: DataSource): OpenAP
     openApi.openapi(getAllDocumentsRoute, (ctx) => s3Controller.getAllDocuments(ctx));
     openApi.openapi(deleteDocumentRoute, (ctx) => s3Controller.deleteDocument(ctx));
     openApi.openapi(updateDocumentCategoryRoute, (ctx) => s3Controller.updateDocumentCategory(ctx));
+    // openApi.openapi(confirmUploadForSelfDisasterRoute, (ctx) => s3Controller.confirmUploadForSelfDisaster(ctx));
 
     return openApi;
 };
@@ -94,6 +96,67 @@ const confirmUploadRoute = createRoute({
             content: {
                 "application/json": {
                     schema: ConfirmUploadRequestSchema,
+                },
+            },
+            required: true,
+        },
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: UploadResultSchema,
+                },
+            },
+            description: "Upload confirmed successfully",
+        },
+        400: {
+            content: {
+                "application/json": {
+                    schema: ErrorResponseSchema,
+                },
+            },
+            description: "Invalid request - missing or invalid parameters",
+        },
+        401: {
+            content: {
+                "application/json": {
+                    schema: ErrorResponseSchema,
+                },
+            },
+            description: "User authentication required",
+        },
+        404: {
+            content: {
+                "application/json": {
+                    schema: ErrorResponseSchema,
+                },
+            },
+            description: "File not found in S3",
+        },
+        500: {
+            content: {
+                "application/json": {
+                    schema: ErrorResponseSchema,
+                },
+            },
+            description: "Internal server error",
+        },
+    },
+    tags: ["S3"],
+});
+
+const confirmUploadForSelfDisasterRoute = createRoute({
+    method: "post",
+    path: "/confirmUpload/selfDisaster",
+    summary: "Confirm document upload completion for a document related to a self declared disaster",
+    description:
+        "Verifies that a file was successfully uploaded to S3 and returns file details including a presigned download URL and associates the document with the claim of the given self disaster.",
+    request: {
+        body: {
+            content: {
+                "application/json": {
+                    schema: ConfirmUploadForSelfDisasterRequestSchema,
                 },
             },
             required: true,

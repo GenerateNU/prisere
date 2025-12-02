@@ -1,6 +1,7 @@
 import { Context, TypedResponse } from "hono";
 import { IS3Service } from "./service";
 import {
+    ConfirmUploadForSelfDisasterRequest,
     ConfirmUploadRequest,
     DocumentTypes,
     GetUploadUrlRequest,
@@ -13,13 +14,121 @@ import { ControllerResponse } from "../../utilities/response";
 export interface IS3Controller {
     getUploadUrl(ctx: Context): ControllerResponse<TypedResponse<GetUploadUrlResponse, 200>>;
     confirmUpload(ctx: Context): ControllerResponse<TypedResponse<UploadResult, 200>>;
+    confirmUploadForSelfDisaster(ctx: Context): ControllerResponse<TypedResponse<UploadResult, 200>>;
     getAllDocuments(ctx: Context): ControllerResponse<TypedResponse<DocumentWithUrl[], 200>>;
     deleteDocument(ctx: Context): ControllerResponse<TypedResponse<{ success: boolean }, 200>>;
     updateDocumentCategory(ctx: Context): ControllerResponse<TypedResponse<{ success: boolean }, 200>>;
 }
 
+interface ConfirmUploadParams {
+    key: string;
+    documentId: string;
+    documentType: DocumentTypes;
+    claimId?: string;
+    userId: string;
+    companyId: string;
+    category?: DocumentCategories;
+}
+
 export class S3Controller implements IS3Controller {
     constructor(private service: IS3Service) {}
+
+    private async handleConfirmUpload(
+        ctx: Context,
+        params: ConfirmUploadParams
+    ): ControllerResponse<TypedResponse<UploadResult, 200>> {
+        const { key, documentId, documentType, claimId, userId, companyId, category } = params;
+
+        // Validate required fields
+        if (!key || !documentId || !documentType) {
+            return ctx.json({ error: "Missing required fields: key, documentId, or documentType" }, 400);
+        }
+
+        if (!userId) {
+            return ctx.json({ error: "User authentication required" }, 400);
+        }
+
+        if (category && !Object.values(DocumentCategories).includes(category)) {
+            return ctx.json(
+                { error: `Invalid category. Must be one of: ${Object.values(DocumentCategories).join(", ")}` },
+                400
+            );
+        }
+
+        const response = await this.service.confirmUpload({
+            key,
+            documentId,
+            documentType,
+            claimId,
+            userId,
+            companyId,
+            category: category || undefined,
+        });
+
+        return ctx.json(response, 200);
+    }
+
+    async confirmUpload(ctx: Context): ControllerResponse<TypedResponse<UploadResult, 200>> {
+        try {
+            const body = await ctx.req.json<ConfirmUploadRequest>();
+            const companyId = ctx.get("companyId");
+            const userId = ctx.get("userId") || ctx.get("user")?.id;
+
+            return this.handleConfirmUpload(ctx, {
+                key: body.key,
+                documentId: body.documentId,
+                documentType: body.documentType,
+                claimId: body.claimId,
+                userId,
+                companyId,
+                category: body.category as DocumentCategories,
+            });
+        } catch (error) {
+            console.error("Error confirming upload:", error);
+            return ctx.json({ error: "An error occurred while confirming the upload." }, 500);
+        }
+    }
+
+    async confirmUploadForSelfDisaster(ctx: Context): ControllerResponse<TypedResponse<UploadResult, 200>> {
+        try {
+            const body = await ctx.req.json<ConfirmUploadForSelfDisasterRequest>();
+            const companyId = ctx.get("companyId");
+            const userId = ctx.get("userId") || ctx.get("user")?.id;
+
+            // Get claimId from selfDisasterId
+            const claimId = await this.service.getClaimIdFromSelfDisaster(body.selfDisasterId);
+
+            return this.handleConfirmUpload(ctx, {
+                key: body.key,
+                documentId: body.documentId,
+                documentType: body.documentType,
+                claimId,
+                userId,
+                companyId,
+                category: body.category as DocumentCategories,
+            });
+        } catch (error) {
+            console.error("Error confirming upload for self disaster:", error);
+            return ctx.json({ error: "An error occurred while confirming the upload." }, 500);
+        }
+    }
+
+    async confirmUploadForSelfDisastser(ctx: Context): ControllerResponse<TypedResponse<UploadResult, 200>> {
+        const body = await ctx.req.json<ConfirmUploadForSelfDisasterRequest>();
+        const { selfDisasterId } = body;
+        const companyId = ctx.get("companyId");
+        const userId = ctx.get("userId") || ctx.get("user")?.id;
+
+        const claimId = await this.service.getClaimIdFromSelfDisaster(selfDisasterId);
+
+        return this.handleConfirmUpload(ctx, {
+            ...body,
+            category: body.category || undefined,
+            claimId: claimId,
+            companyId: companyId,
+            userId: userId,
+        });
+    }
 
     async deleteDocument(ctx: Context): ControllerResponse<TypedResponse<{ success: boolean }, 200>> {
         try {
@@ -92,57 +201,6 @@ export class S3Controller implements IS3Controller {
             console.error("Error generating upload URL:", error);
             const errorResponse = {
                 error: "An error occurred while generating the upload URL.",
-            };
-            return ctx.json(errorResponse, 500);
-        }
-    }
-
-    async confirmUpload(ctx: Context): ControllerResponse<TypedResponse<UploadResult, 200>> {
-        try {
-            const body = await ctx.req.json<ConfirmUploadRequest>();
-            const companyId = ctx.get("companyId");
-            const { key, documentId, documentType, claimId, category } = body;
-
-            // Validate required fields
-            if (!key || !documentId || !documentType) {
-                const errorResponse = {
-                    error: "Missing required fields: key, documentId, or documentType",
-                };
-                return ctx.json(errorResponse, 400);
-            }
-
-            // Get user ID from context
-            const userId = ctx.get("userId") || ctx.get("user")?.id;
-            if (!userId) {
-                const errorResponse = {
-                    error: "User authentication required",
-                };
-                return ctx.json(errorResponse, 400);
-            }
-
-            if (category && !Object.values(DocumentCategories).includes(category as DocumentCategories)) {
-                const errorResponse = {
-                    error: `Invalid category. Must be one of: ${Object.values(DocumentCategories).join(", ")}`,
-                };
-                return ctx.json(errorResponse, 400);
-            }
-
-            // Verify upload and get file info
-            const response = await this.service.confirmUpload({
-                key,
-                documentId,
-                documentType,
-                claimId,
-                userId,
-                companyId,
-                category: category || undefined,
-            });
-
-            return ctx.json(response, 200);
-        } catch (error) {
-            console.error("Error confirming upload:", error);
-            const errorResponse = {
-                error: "An error occurred while confirming the upload.",
             };
             return ctx.json(errorResponse, 500);
         }

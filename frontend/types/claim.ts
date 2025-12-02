@@ -26,12 +26,6 @@ export type UpdateClaimStatusRequest = NonNullable<
 export type UpdateClaimStatusResponse =
     paths["/claims/{id}/status"]["patch"]["responses"][200]["content"]["application/json"];
 
-<<<<<<< Updated upstream
-// export type uploadClaimRelatedDocumentsRequest =
-//     paths["/s3/getUploadUrl"]["patch"]["requestBody"][200]["content"]["application/json"];
-// export type uploadClaimRelatedDocumentsResponse =
-//     paths["/s3/getUploadUrl"]["patch"]["responses"][200]["content"]["application/json"];
-=======
 export type UploadClaimRelatedDocumentsRequest =
     paths["/s3/getUploadUrl"]["post"]["requestBody"]["content"]["application/json"];
 export type UploadClaimRelatedDocumentsResponse =
@@ -41,7 +35,6 @@ export type ConfirmDocumentUploadRequest =
     paths["/s3/confirmUpload"]["post"]["requestBody"]["content"]["application/json"];
 export type ConfirmDocumentUploadResponse =
     paths["/s3/confirmUpload"]["post"]["responses"][200]["content"]["application/json"];
->>>>>>> Stashed changes
 
 /**
  * Save status for indicating to user

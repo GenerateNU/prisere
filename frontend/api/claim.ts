@@ -109,26 +109,25 @@ export const updateClaimStatus = async (
     return authWrapper<UpdateClaimStatusResponse>()(req);
 };
 
-<<<<<<< Updated upstream
-export const uploadClaimRelatedDocuments = async (
-    claimId: string,
-    payload: UpdateClaimStatusRequest
-): Promise<UpdateClaimStatusResponse> => {
-    const req = async (token: string): Promise<UpdateClaimStatusResponse> => {
-        const client = getClient();
-        const { data, error, response } = await client.PATCH("/claims/{id}/status", {
-            headers: authHeader(token),
-            params: {
-                path: { id: claimId },
-            },
-            body: payload,
-=======
 export const uploadAndConfirmDocumentRelation = async (
     claimId: string,
-    payload: Omit<UploadClaimRelatedDocumentsRequest, "claimId" | "documentType">
+    payload: Omit<UploadClaimRelatedDocumentsRequest, "claimId" | "documentType">,
+    file: File
 ) => {
     const upload = await uploadClaimRelatedDocuments(claimId, payload);
-    await conformUploadedDocument(claimId, {
+
+    const response = await fetch(upload.uploadUrl, {
+        method: "PUT",
+        body: file,
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Failed to upload file to S3:", response.status, errorText);
+        throw new Error(`S3 upload failed with status ${response.status}: ${errorText}`);
+    }
+
+    const resp = await conformUploadedDocument(claimId, {
         documentId: upload.documentId,
         key: upload.key,
         claimId: claimId,
@@ -145,17 +144,14 @@ export const uploadClaimRelatedDocuments = async (
         const { data, error, response } = await client.POST("/s3/getUploadUrl", {
             headers: authHeader(token),
             body: { ...payload, claimId: claimId, documentType: "CLAIM" },
->>>>>>> Stashed changes
         });
         if (response.ok) {
             return data!;
         } else {
+            console.log(JSON.stringify(error));
             throw Error(error?.error);
         }
     };
-<<<<<<< Updated upstream
-    return authWrapper<UpdateClaimStatusResponse>()(req);
-=======
     return authWrapper<UploadClaimRelatedDocumentsResponse>()(req);
 };
 
@@ -176,5 +172,4 @@ export const conformUploadedDocument = async (
         }
     };
     return authWrapper<ConfirmDocumentUploadResponse>()(req);
->>>>>>> Stashed changes
 };

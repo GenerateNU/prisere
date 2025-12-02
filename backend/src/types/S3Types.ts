@@ -24,6 +24,14 @@ export const ConfirmUploadRequestSchema = z.object({
     category: z.enum(DocumentCategories).nullable(),
 });
 
+export const ConfirmUploadForSelfDisasterRequestSchema = z.object({
+    key: z.string().min(1).describe("S3 key of the uploaded file"),
+    documentId: z.string().min(1).describe("Document ID returned from getUploadUrl"),
+    documentType: z.enum(DocumentTypes).default(DocumentTypes.GENERAL_BUSINESS),
+    selfDisasterId: z.string().describe("The self disaster for this Upload"),
+    category: z.enum(DocumentCategories).nullable(),
+});
+
 export const UploadResultSchema = z.object({
     key: z.string().describe("S3 key of the uploaded file"),
     url: z.string().url().describe("Presigned download URL for the file"),
@@ -108,5 +116,6 @@ export type UploadResponse = z.infer<typeof UploadResponseSchema>;
 export type GetUploadUrlRequest = z.infer<typeof GetUploadUrlRequestSchema>;
 export type GetUploadUrlResponse = z.infer<typeof GetUploadUrlResponseSchema>;
 export type ConfirmUploadRequest = z.infer<typeof ConfirmUploadRequestSchema>;
+export type ConfirmUploadForSelfDisasterRequest = z.infer<typeof ConfirmUploadForSelfDisasterRequestSchema>;
 export type DeleteDocumentRequest = z.infer<typeof DeleteDocumentRequestSchema>;
 export type DeleteDocumentResponse = z.infer<typeof DeleteDocumentResponseSchema>;

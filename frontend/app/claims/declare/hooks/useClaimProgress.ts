@@ -1,7 +1,6 @@
-<<<<<<< Updated upstream
 "use client";
 
-import { createClaim, getClaimById, updateClaimStatus } from "@/api/claim";
+import { createClaim, getClaimById, updateClaimStatus, uploadAndConfirmDocumentRelation } from "@/api/claim";
 import { createClaimLocationLink } from "@/api/claim-location";
 import { createSelfDisaster, updateSelfDisaster } from "@/api/self-disaster";
 import { getUser, updateUserInfo } from "@/api/user";
@@ -15,6 +14,7 @@ import {
     isStep,
     PersonalInfo,
     SaveStatus,
+    UploadClaimRelatedDocumentsRequest,
 } from "@/types/claim";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -260,7 +260,16 @@ export function useClaimProgress(
         [claimId, updateURL]
     );
 
-    const saveAdditionalDocumentsToS3 = (files: File[], claimId: string) => {};
+    const saveAdditionalDocumentsToS3 = async (files: File[], claimId: string) => {
+        const transformedPayloads: Omit<UploadClaimRelatedDocumentsRequest, "claimId" | "documentType">[] = files.map(
+            (file) => ({ fileName: file.name, fileType: file.type })
+        );
+
+        for (let payloadIdx = 0; payloadIdx < transformedPayloads.length; payloadIdx++) {
+            const payload = transformedPayloads[payloadIdx];
+            await uploadAndConfirmDocumentRelation(claimId, payload, files[payloadIdx]);
+        }
+    };
 
     // Commit disaster step (creates SelfDisaster + Claim)
     const commitDisasterStep = async (data?: Partial<DisasterInfo>) => {
@@ -279,6 +288,10 @@ export function useClaimProgress(
                     startDate: dataToUse.startDate?.toISOString().split("T")[0],
                     endDate: dataToUse.endDate?.toISOString().split("T")[0],
                 });
+
+                if (dataToUse.additionalDocumets.length > 0) {
+                    await saveAdditionalDocumentsToS3(dataToUse.additionalDocumets, selfDisasterIdRef.current);
+                }
             } else {
                 // Create new
                 const selfDisaster = await createSelfDisaster({
@@ -289,6 +302,10 @@ export function useClaimProgress(
                     endDate: dataToUse.endDate?.toISOString().split("T")[0],
                 });
                 selfDisasterIdRef.current = selfDisaster.id;
+
+                if (dataToUse.additionalDocumets.length > 0) {
+                    await saveAdditionalDocumentsToS3(dataToUse.additionalDocumets, selfDisaster.id);
+                }
 
                 // Create claim
                 const newClaim = await createClaim({
@@ -498,5 +515,3 @@ export function useClaimProgress(
         clearClaimDraft,
     };
 }
-=======
->>>>>>> Stashed changes
