@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { GetCompanyLocationsResponse } from "@/types/company";
 import React from "react";
 import { validateDisasterInfo } from "./utils/validationUtils";
-import { CloudCheck, CloudIcon, CloudUploadIcon, UploadIcon, UserIcon } from "lucide-react";
+import { CloudCheck, UploadIcon, UserIcon } from "lucide-react";
 import { useModal } from "@/components/ui/modal/useModal";
 import { Modal } from "@/components/ui/modal/Modal";
 import { UploadDocument } from "./UploadDocument";
