@@ -1,12 +1,13 @@
+import { cn } from "@/lib/utils";
 import { CreateLocationRequest, UpdateLocationRequest } from "@/types/location";
-import { Button } from "./ui/button";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
 import React from "react";
-import { Card } from "./ui/card";
-import { IoCheckmark } from "react-icons/io5";
 import { FiEdit } from "react-icons/fi";
 import { HiOutlineTrash } from "react-icons/hi2";
+import { IoCheckmark } from "react-icons/io5";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 
 interface LocationEditorProps {
     location: CreateLocationRequest | UpdateLocationRequest;
@@ -16,10 +17,14 @@ interface LocationEditorProps {
     onExpand: () => void;
     onCollapse: () => void;
     saveError?: string | null;
+    isSelected?: boolean;
+    onClick?: () => void;
 }
 
 export default function LocationEditor({
     location,
+    isSelected,
+    onClick,
     setLocation,
     removeLocation,
     isExpanded,
@@ -45,7 +50,14 @@ export default function LocationEditor({
     };
 
     return (
-        <Card className="w-full mb-[16px] px-[28px] py-[20px]">
+        <Card
+            className={cn(
+                "w-full mb-[16px] px-[28px] py-[20px] border border-transparent",
+                isSelected && "border-fuchsia",
+                onClick && "cursor-pointer"
+            )}
+            onClick={onClick}
+        >
             <div className="flex items-center justify-between">
                 <div className="flex gap-[10px] items-center w-3/4">
                     {!isExpanded ? (

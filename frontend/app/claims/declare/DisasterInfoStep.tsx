@@ -1,5 +1,6 @@
 "use client";
 import { companyHasData } from "@/api/company";
+import LocationsCard from "@/app/business-profile/overview/LocationsCard";
 import ExpenseTable from "@/app/expense-tracker/expense-table/expense-table";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { ProfileIcon } from "@/icons/profile";
 import { UploadIcon } from "@/icons/upload";
-import { cn } from "@/lib/utils";
 import { DisasterInfo } from "@/types/claim";
 import { GetCompanyLocationsResponse } from "@/types/company";
 import { useQuery } from "@tanstack/react-query";
@@ -95,31 +95,14 @@ export default function DisasterInfoStep({
                         Location of incident {(locations?.length ?? 0) > 1 ? "(choose one)" : null}{" "}
                         <span className="text-red-500 ml-1">*</span>
                     </Label>
-                    <div className="grid grid-cols-2 gap-3">
-                        {locations?.map((l) => {
-                            return (
-                                <Card
-                                    key={l.id}
-                                    className={cn(
-                                        "py-5 px-7 cursor-pointer border-transparent hover:border-fuchsia border-2 transition-all duration-150",
-                                        disasterInfo.location === l.id && "border-fuchsia"
-                                    )}
-                                    onClick={() =>
-                                        setDisasterInfo({ location: disasterInfo.location === l.id ? undefined : l.id })
-                                    }
-                                >
-                                    <div>{l.alias} </div>
-                                    <div className="h-px bg-[#DBDBDB] w-full" />
-                                    <div className="flex flex-col">
-                                        <span>{l.streetAddress}</span>
-                                        <span>
-                                            {l.city}, {l.stateProvince} {l.postalCode}
-                                        </span>
-                                    </div>
-                                </Card>
-                            );
-                        })}
-                    </div>
+                    <LocationsCard
+                        onLocationSelect={(locationId) =>
+                            disasterInfo.location === locationId
+                                ? setDisasterInfo({ location: undefined })
+                                : setDisasterInfo({ location: locationId })
+                        }
+                        locationSelected={disasterInfo.location}
+                    />
 
                     {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
                 </div>
