@@ -33,7 +33,6 @@ export class DocumentTransaction implements IDocumentTransaction {
             document.category = payload.category || undefined;
             document.userId = payload.userId;
             document.companyId = payload.companyId;
-            document.claimId = payload.claimId;
             document.lastModified = new Date().toISOString();
         } else {
             document = repository.create({
@@ -42,7 +41,6 @@ export class DocumentTransaction implements IDocumentTransaction {
                 category: payload.category || undefined,
                 userId: payload.userId,
                 companyId: payload.companyId,
-                claimId: payload.claimId,
                 createdAt: new Date().toISOString(),
                 lastModified: new Date().toISOString(),
             });

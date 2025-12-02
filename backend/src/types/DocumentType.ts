@@ -19,7 +19,7 @@ export const DocumentSchema = z.object({
     lastModified: z.string().optional().nullable(),
     user: UserSchema.optional(),
     company: CompanySchema,
-    claim: ClaimSchemaResponse.optional().nullable(),
+    claim: z.array(ClaimSchemaResponse).nullable().optional(),
 });
 
 export const DocumentWithUrlSchema = z.object({
@@ -36,7 +36,6 @@ export const UpsertDocumentSchema = z.object({
     lastModified: z.date().optional().nullable(),
     userId: z.string().optional(),
     companyId: z.string(),
-    claimId: z.string().optional(),
 });
 
 export const DocumentResponseSchema = DocumentSchema.extend({

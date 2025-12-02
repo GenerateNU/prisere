@@ -135,7 +135,7 @@ export class S3Controller implements IS3Controller {
                 claimId,
                 userId,
                 companyId,
-                category: category as DocumentCategories | undefined,
+                category: category || undefined,
             });
 
             return ctx.json(response, 200);

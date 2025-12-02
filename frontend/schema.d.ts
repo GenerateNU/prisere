@@ -311,7 +311,9 @@ export interface paths {
                                 source: string;
                                 externalId: string;
                                 companyId: string;
+                                /** Format: date-time */
                                 createdAt: string;
+                                /** Format: date-time */
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
@@ -397,7 +399,9 @@ export interface paths {
                                 source: string;
                                 externalId: string;
                                 companyId: string;
+                                /** Format: date-time */
                                 createdAt: string;
+                                /** Format: date-time */
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
@@ -485,7 +489,9 @@ export interface paths {
                                 source: string;
                                 externalId: string;
                                 companyId: string;
+                                /** Format: date-time */
                                 createdAt: string;
+                                /** Format: date-time */
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
@@ -578,7 +584,9 @@ export interface paths {
                                 source: string;
                                 externalId: string;
                                 companyId: string;
+                                /** Format: date-time */
                                 createdAt: string;
+                                /** Format: date-time */
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
@@ -671,7 +679,9 @@ export interface paths {
                                 source: string;
                                 externalId: string;
                                 companyId: string;
+                                /** Format: date-time */
                                 createdAt: string;
+                                /** Format: date-time */
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
@@ -1628,7 +1638,9 @@ export interface paths {
                                         source: string;
                                         externalId: string;
                                         companyId: string;
+                                        /** Format: date-time */
                                         createdAt: string;
+                                        /** Format: date-time */
                                         updatedAt: string;
                                         importTime?: string;
                                     }[];
@@ -4166,6 +4178,84 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Creates a link between a claim and a document
+         * @description Creates a link between a claim with a given id and the document with the given id
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        businessDocumentId: string;
+                        claimId: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Links added successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            businessDocumentId: string;
+                            claimId: string;
+                        };
+                    };
+                };
+                /** @description Link Creation Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Claim or purchase line items not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Link Creation Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/claim-locations": {
         parameters: {
             query?: never;
@@ -6162,7 +6252,9 @@ export interface paths {
                                         source: string;
                                         externalId: string;
                                         companyId: string;
+                                        /** Format: date-time */
                                         createdAt: string;
+                                        /** Format: date-time */
                                         updatedAt: string;
                                         importTime?: string;
                                     }[];
@@ -6173,6 +6265,7 @@ export interface paths {
                                     createdAt: string;
                                     updatedAt: string;
                                 };
+<<<<<<< Updated upstream
                                 claim?: {
                                     id: string;
                                     /**
@@ -6234,6 +6327,78 @@ export interface paths {
                                     }[];
                                     lastModified?: string;
                                 } | null;
+=======
+                                claim?:
+                                    | {
+                                          id: string;
+                                          /**
+                                           * @default ACTIVE
+                                           * @enum {string}
+                                           */
+                                          status:
+                                              | "ACTIVE"
+                                              | "FILED"
+                                              | "IN_PROGRESS_DISASTER"
+                                              | "IN_PROGRESS_PERSONAL"
+                                              | "IN_PROGRESS_BUSINESS"
+                                              | "IN_PROGRESS_INSURANCE"
+                                              | "IN_PROGRESS_EXPORT";
+                                          /** Format: date-time */
+                                          createdAt: string;
+                                          /** Format: date-time */
+                                          updatedAt?: string;
+                                          femaDisaster?: {
+                                              /** Format: uuid */
+                                              id: string;
+                                              disasterNumber: number;
+                                              fipsStateCode: number;
+                                              declarationDate: string;
+                                              incidentBeginDate?: string | null;
+                                              incidentEndDate?: string | null;
+                                              fipsCountyCode: number;
+                                              declarationType: string;
+                                              designatedArea: string;
+                                              designatedIncidentTypes: string | null;
+                                          };
+                                          selfDisaster?: {
+                                              id: string;
+                                              name: string;
+                                              description: string;
+                                              startDate: string;
+                                              endDate?: string;
+                                              createdAt: string;
+                                              updatedAt: string;
+                                          };
+                                          insurancePolicy?: {
+                                              id: string;
+                                              policyName: string;
+                                              policyHolderFirstName: string;
+                                              policyHolderLastName: string;
+                                              insuranceCompanyName: string;
+                                              policyNumber: string;
+                                              insuranceType: string;
+                                              updatedAt: string;
+                                              createdAt: string;
+                                          };
+                                          claimLocations?: {
+                                              id: string;
+                                              alias: string;
+                                              country: string;
+                                              stateProvince: string;
+                                              city: string;
+                                              streetAddress: string;
+                                              postalCode: string;
+                                              county?: string;
+                                              /** Format: uuid */
+                                              companyId: string;
+                                              fipsStateCode: number;
+                                              fipsCountyCode: number;
+                                              lat: number;
+                                              long: number;
+                                          }[];
+                                      }[]
+                                    | null;
+>>>>>>> Stashed changes
                             };
                             downloadUrl: string;
                         }[];

@@ -1,5 +1,7 @@
 "use server";
 import {
+    ConfirmDocumentUploadRequest,
+    ConfirmDocumentUploadResponse,
     CreateClaimRequest,
     CreateClaimResponse,
     GetClaimByIdResponse,
@@ -7,6 +9,8 @@ import {
     GetCompanyClaimResponse,
     UpdateClaimStatusRequest,
     UpdateClaimStatusResponse,
+    UploadClaimRelatedDocumentsRequest,
+    UploadClaimRelatedDocumentsResponse,
 } from "@/types/claim";
 import { authHeader, authWrapper, getClient } from "./client";
 
@@ -105,6 +109,7 @@ export const updateClaimStatus = async (
     return authWrapper<UpdateClaimStatusResponse>()(req);
 };
 
+<<<<<<< Updated upstream
 export const uploadClaimRelatedDocuments = async (
     claimId: string,
     payload: UpdateClaimStatusRequest
@@ -117,6 +122,30 @@ export const uploadClaimRelatedDocuments = async (
                 path: { id: claimId },
             },
             body: payload,
+=======
+export const uploadAndConfirmDocumentRelation = async (
+    claimId: string,
+    payload: Omit<UploadClaimRelatedDocumentsRequest, "claimId" | "documentType">
+) => {
+    const upload = await uploadClaimRelatedDocuments(claimId, payload);
+    await conformUploadedDocument(claimId, {
+        documentId: upload.documentId,
+        key: upload.key,
+        claimId: claimId,
+        category: null,
+    });
+};
+
+export const uploadClaimRelatedDocuments = async (
+    claimId: string,
+    payload: Omit<UploadClaimRelatedDocumentsRequest, "claimId" | "documentType">
+): Promise<UploadClaimRelatedDocumentsResponse> => {
+    const req = async (token: string): Promise<UploadClaimRelatedDocumentsResponse> => {
+        const client = getClient();
+        const { data, error, response } = await client.POST("/s3/getUploadUrl", {
+            headers: authHeader(token),
+            body: { ...payload, claimId: claimId, documentType: "CLAIM" },
+>>>>>>> Stashed changes
         });
         if (response.ok) {
             return data!;
@@ -124,5 +153,28 @@ export const uploadClaimRelatedDocuments = async (
             throw Error(error?.error);
         }
     };
+<<<<<<< Updated upstream
     return authWrapper<UpdateClaimStatusResponse>()(req);
+=======
+    return authWrapper<UploadClaimRelatedDocumentsResponse>()(req);
+};
+
+export const conformUploadedDocument = async (
+    claimId: string,
+    payload: ConfirmDocumentUploadRequest
+): Promise<ConfirmDocumentUploadResponse> => {
+    const req = async (token: string): Promise<ConfirmDocumentUploadResponse> => {
+        const client = getClient();
+        const { data, error, response } = await client.POST("/s3/confirmUpload", {
+            headers: authHeader(token),
+            body: { ...payload, claimId: claimId, documentType: "CLAIM" },
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<ConfirmDocumentUploadResponse>()(req);
+>>>>>>> Stashed changes
 };

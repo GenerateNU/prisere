@@ -40,6 +40,7 @@
     "jsonwebtoken": "^9.0.2",
     "node-cron": "^4.2.1",
     "papaparse": "^5.5.3",
+    "pdf-lib": "^1.17.1",
     "pdf-parse": "^2.4.5",
     "pg": "^8.16.3",
     "pg-mem": "^3.0.5",

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import type { Relation } from "typeorm";
 import { User } from "./User";
 import { Company } from "./Company";
@@ -43,10 +43,6 @@ export class Document {
     @JoinColumn({ name: "companyId" })
     company!: Relation<Company>;
 
-    @Column({ name: "claimId", nullable: true })
-    claimId?: string;
-
-    @OneToOne(() => Claim)
-    @JoinColumn({ name: "claimId" })
-    claim?: Relation<Claim>;
+    @ManyToMany(() => Claim, (claim) => claim.documents)
+    claims?: Relation<Claim>[];
 }

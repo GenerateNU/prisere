@@ -12,6 +12,7 @@ import {
     Line,
     renderToBuffer,
 } from "@react-pdf/renderer";
+import { PDFDocument } from "pdf-lib";
 import { ClaimData } from "../types";
 import { getIncidentTypeMeanings } from "../../../utilities/incident_code_meanings";
 import { FinancialChart } from "./render-chart";
@@ -301,4 +302,41 @@ export async function generatePdfToFile(claimData: ClaimData): Promise<void> {
 export async function generatePdfToBuffer(claimData: ClaimData): Promise<Buffer> {
     const pdfBuffer = await renderToBuffer(<ClaimPDF data={claimData} />);
     return Buffer.isBuffer(pdfBuffer) ? pdfBuffer : Buffer.from(pdfBuffer);
+}
+
+async function fetchPdfFromUrl(url: string): Promise<Uint8Array> {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch PDF from ${url}: ${response.statusText}`);
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    return new Uint8Array(arrayBuffer);
+}
+
+export async function generatePdfWithAttachments(claimData: ClaimData, presignedURLs: string[]): Promise<Buffer> {
+    // Generate your main PDF
+    const mainPdfBuffer = await generatePdfToBuffer(claimData);
+
+    // Load the main PDF with pdf-lib
+    const mainPdfDoc = await PDFDocument.load(mainPdfBuffer);
+
+    // Fetch and append each PDF from S3
+    for (const url of presignedURLs) {
+        const attachmentBuffer = await fetchPdfFromUrl(url);
+        const attachmentPdfDoc = await PDFDocument.load(attachmentBuffer);
+
+        // Copy all pages from the attachment
+        const copiedPages = await mainPdfDoc.copyPages(attachmentPdfDoc, attachmentPdfDoc.getPageIndices());
+
+        // Add each page to the main document
+        copiedPages.forEach((page) => {
+            mainPdfDoc.addPage(page);
+        });
+    }
+
+    // Save the merged PDF
+    const mergedPdfBytes = await mainPdfDoc.save();
+    return Buffer.from(mergedPdfBytes);
 }

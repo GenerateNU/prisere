@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 "use client";
 
 import { createClaim, getClaimById, updateClaimStatus } from "@/api/claim";
@@ -497,3 +498,5 @@ export function useClaimProgress(
         clearClaimDraft,
     };
 }
+=======
+>>>>>>> Stashed changes

@@ -23,6 +23,7 @@ export const claimRoutes = (db: DataSource): Hono => {
     claim.get("/:id/line-item", (ctx) => claimController.getLinkedPurchaseLineItems(ctx));
     claim.delete("/:claimId/line-item/:lineItemId", (ctx) => claimController.deletePurchaseLineItem(ctx));
     claim.get("/:id/pdf", (ctx) => claimController.createClaimPDF(ctx));
+    claim.post("/document", (ctx) => claimController.linkClaimToBusinessDocument(ctx));
 
     return claim;
 };

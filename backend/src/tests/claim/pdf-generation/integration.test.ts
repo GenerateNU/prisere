@@ -101,33 +101,6 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
             expect(data.url).toContain("https://test-bucket.s3.amazonaws.com/");
         });
 
-        test("GET /claims/{id}/pdf - Creates document record in database", async () => {
-            const claimId = "0174375f-e7c4-4862-bb9f-f58318bb2e7d";
-
-            const response = await app.request(TESTING_PREFIX + `/claims/${claimId}/pdf`, {
-                method: "GET",
-                headers: {
-                    companyId: "5667a729-f000-4190-b4ee-7957badca27b",
-                    userId: "0199e103-5452-76d7-8d4d-92e70c641bdb",
-                },
-            });
-
-            expect(response.status).toBe(200);
-
-            // Verify document was saved to database
-            const docRepo = testAppDataSource.getRepository(Document);
-            /* eslint-disable @typescript-eslint/no-unused-vars */
-            const savedDoc = await docRepo.findOne({
-                where: { claimId: claimId },
-            });
-
-            // expect(savedDoc).not.toBeNull();
-            // expect(savedDoc!.key).toBeDefined();
-            // expect(savedDoc!.key).toContain(`claims/`);
-            // expect(savedDoc!.key).toContain(claimId);
-            // expect(savedDoc!.downloadUrl).toBeDefined();
-        });
-
         test("GET /claims/{id}/pdf - Passes correct claim ID", async () => {
             const testClaimId = "2c24c901-38e4-4a35-a1c6-140ce64edf2a";
 

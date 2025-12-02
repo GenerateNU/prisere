@@ -152,7 +152,13 @@ export const UploadDocument = ({ handleUploadFiles }: UploadDocumentProps) => {
 
             <Button
                 variant={"outline"}
+<<<<<<< Updated upstream
                 onClick={async () => handleUploadFiles(stagedFiles)}
+=======
+                onClick={async () => {
+                    handleUploadFiles(stagedFiles);
+                }}
+>>>>>>> Stashed changes
                 disabled={stagedFiles.length === 0}
                 className={`w-full py-3 px-4 rounded-lg`}
             >
