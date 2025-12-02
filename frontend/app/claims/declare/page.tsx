@@ -3,6 +3,7 @@
 import { getCompany, getCompanyLocations } from "@/api/company";
 import { getUser } from "@/api/user";
 import Progress from "@/components/progress";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
     BusinessInfo,
@@ -16,6 +17,8 @@ import {
     PersonalInfo,
 } from "@/types/claim";
 import { useQuery } from "@tanstack/react-query";
+import { CheckIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { Suspense } from "react";
 import BusinessInfoStep from "./BusinessInfoStep";
 import { SaveStatusIndicator } from "./components/SaveStatusIndicator";
@@ -39,6 +42,7 @@ const progressSteps = [
 ] satisfies { label: string; step: ClaimStepNumber }[];
 
 function DeclareDisasterContent() {
+    const router = useRouter();
     const { data: businessInfoData, isSuccess: businessInfoSuccess } = useQuery({
         queryKey: ["businessInfo"],
         queryFn: getCompany,
@@ -87,6 +91,7 @@ function DeclareDisasterContent() {
 
     // Use the claim progress hook
     const {
+        claimId,
         step,
         saveStatus,
         disasterInfo,
@@ -159,6 +164,34 @@ function DeclareDisasterContent() {
 
     const handleStepBack = () => {
         setStep(decrementStep(step));
+    };
+
+    const handleSaveAndClose = async () => {
+        try {
+            // Save current step's data based on which step we're on
+            if (step === 0) {
+                // Disaster info step - commit disaster step (creates claim if needed)
+                await commitDisasterStep();
+            } else if (step === 1 && claimId) {
+                // Personal info step
+                await commitPersonalStep();
+            } else if (step === 2 && claimId) {
+                // Business info step
+                await commitBusinessStep();
+            } else if (step === 3 && claimId) {
+                // Insurance info step
+                await commitInsurerStep();
+            }
+            // Step 4 (Export) doesn't need saving as it's already saved
+            // Step -1 and -2 don't have data to save yet
+
+            // Redirect to claims page
+            router.push("/claims");
+        } catch (error) {
+            console.error("Error saving and closing:", error);
+            // Still redirect even if there's an error
+            router.push("/claims");
+        }
     };
 
     const steps = [
@@ -245,6 +278,15 @@ function DeclareDisasterContent() {
                 <div className="">
                     <div className="flex justify-between items-center mb-4">
                         <SaveStatusIndicator status={saveStatus} />
+                        <Button
+                            className="text-sm bg-light-fuchsia text-fuchsia w-fit py-2 px-3 ml-auto hover:bg-light-fuchsia/80"
+                            size="lg"
+                            onClick={handleSaveAndClose}
+                            disabled={saveStatus === "saving"}
+                        >
+                            Save and Close
+                            <CheckIcon className="size-5" />
+                        </Button>
                     </div>
                     <Progress progress={step} items={progressSteps} />
                 </div>
