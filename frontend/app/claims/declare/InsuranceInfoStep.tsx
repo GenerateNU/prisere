@@ -1,6 +1,6 @@
 "use client";
 
-import { getInsurancePolicies } from "@/api/insurance";
+import InsuranceCard from "@/app/business-profile/overview/InsuranceCard";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -13,10 +13,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { InsurerInfo } from "@/types/claim";
-import { InsurancePolicy } from "@/types/insurance-policy";
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 type Props = {
@@ -27,11 +24,6 @@ type Props = {
 };
 
 export default function InsurerInfoStep({ insurerInfo, setInsurerInfo, handleStepForward, handleStepBack }: Props) {
-    const { data: insurancePolicies, isLoading: isInsuranceLoading } = useQuery({
-        queryKey: ["insuranceInfo"],
-        queryFn: getInsurancePolicies,
-    });
-
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
     const handleNext = () => {
@@ -43,6 +35,14 @@ export default function InsurerInfoStep({ insurerInfo, setInsurerInfo, handleSte
         handleStepForward(insurerInfo);
     };
 
+    const handleInsuranceSelect = (insuranceId: string) => {
+        if (insuranceId === insurerInfo.id) {
+            setInsurerInfo({ id: undefined });
+        } else {
+            setInsurerInfo({ id: insuranceId });
+        }
+    };
+
     return (
         <div>
             <h3 className="text-[30px] font-bold mb-8">Insurance Information</h3>
@@ -52,26 +52,7 @@ export default function InsurerInfoStep({ insurerInfo, setInsurerInfo, handleSte
                     We know that you might have different insurance coverage for different locations. Please select
                     which insurance applies to this specific claim report.
                 </p>
-                <div className="grid grid-cols-2 gap-4">
-                    {isInsuranceLoading ? null : insurancePolicies?.length ? (
-                        insurancePolicies?.map((i) => {
-                            return (
-                                <InsuranceCard
-                                    key={i.id}
-                                    data={i}
-                                    isSelected={insurerInfo.id === i.id}
-                                    onClick={(data) =>
-                                        insurerInfo.id === i.id
-                                            ? setInsurerInfo({ id: "" })
-                                            : setInsurerInfo({ id: data.id })
-                                    }
-                                />
-                            );
-                        })
-                    ) : (
-                        <div className="font-bold text-xl">No insurance policies found</div>
-                    )}
-                </div>
+                <InsuranceCard insuranceSelected={insurerInfo.id} onInsuranceSelect={handleInsuranceSelect} />
             </Card>
             <div className="flex items-center justify-end gap-3 w-full">
                 <Button onClick={handleStepBack} className="text-sm bg-light-fuchsia text-fuchsia w-[70px]" size="lg">
@@ -107,43 +88,43 @@ export default function InsurerInfoStep({ insurerInfo, setInsurerInfo, handleSte
     );
 }
 
-function InsuranceCard({
-    data,
-    isSelected,
-    onClick,
-}: {
-    data: InsurancePolicy;
-    isSelected: boolean;
-    onClick: (policy: InsurancePolicy) => void;
-}) {
-    return (
-        <div
-            className={cn(
-                "rounded-[10px] border border-gray px-7 py-5 flex flex-col gap-3 cursor-pointer hover:border-fuchsia transition-all duration-150",
-                isSelected && "border-fuchsia"
-            )}
-            onClick={() => onClick(data)}
-        >
-            <div className="font-bold">
-                {/* TODO: edit button */}
-                {data.policyName}
-            </div>
-            <div className="w-full h-px bg-gray" />
-            <div className="grid grid-cols-2 gap-x-10 gap-y-5">
-                <InfoBlock label="Insurance Company" value={data.insuranceCompanyName} />
-                <InfoBlock label="Insurance Type" value={data.insuranceType} />
-                <InfoBlock label="Insured Name" value={`${data.policyHolderFirstName} ${data.policyHolderLastName}`} />
-                <InfoBlock label="Policy Number" value={data.policyNumber} />
-            </div>
-        </div>
-    );
-}
+// function InsuranceCard({
+//     data,
+//     isSelected,
+//     onClick,
+// }: {
+//     data: InsurancePolicy;
+//     isSelected: boolean;
+//     onClick: (policy: InsurancePolicy) => void;
+// }) {
+//     return (
+//         <div
+//             className={cn(
+//                 "rounded-[10px] border border-gray px-7 py-5 flex flex-col gap-3 cursor-pointer hover:border-fuchsia transition-all duration-150",
+//                 isSelected && "border-fuchsia"
+//             )}
+//             onClick={() => onClick(data)}
+//         >
+//             <div className="font-bold">
+//                 {/* TODO: edit button */}
+//                 {data.policyName}
+//             </div>
+//             <div className="w-full h-px bg-gray" />
+//             <div className="grid grid-cols-2 gap-x-10 gap-y-5">
+//                 <InfoBlock label="Insurance Company" value={data.insuranceCompanyName} />
+//                 <InfoBlock label="Insurance Type" value={data.insuranceType} />
+//                 <InfoBlock label="Insured Name" value={`${data.policyHolderFirstName} ${data.policyHolderLastName}`} />
+//                 <InfoBlock label="Policy Number" value={data.policyNumber} />
+//             </div>
+//         </div>
+//     );
+// }
 
-function InfoBlock({ label, value }: { label: string; value: string }) {
-    return (
-        <div>
-            <div className="font-bold">{label}</div>
-            <div className="">{value}</div>
-        </div>
-    );
-}
+// function InfoBlock({ label, value }: { label: string; value: string }) {
+//     return (
+//         <div>
+//             <div className="font-bold">{label}</div>
+//             <div className="">{value}</div>
+//         </div>
+//     );
+// }
