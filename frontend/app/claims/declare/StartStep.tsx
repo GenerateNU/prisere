@@ -1,9 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { IdCardIcon } from "@/icons/id-card";
-import { ImageIcon } from "@/icons/image";
-import { TableIcon } from "@/icons/table";
 import Link from "next/link";
+import { AiOutlinePicture } from "react-icons/ai";
+import { LuTable } from "react-icons/lu";
+import { PiIdentificationCard } from "react-icons/pi";
 
 type StartProps = {
     handleStepForward: () => void;
@@ -33,7 +33,7 @@ export default function StartStep({ handleStepForward }: StartProps) {
                     <li>
                         <div className="flex text-[15px] w-[330px] h-[65px] items-center gap-[10px] rounded-[20px] border-[1px] border-[#bfbfbf] p-[10px]">
                             <Icon>
-                                <TableIcon />
+                                <LuTable size={16} />
                             </Icon>
                             Update disaster related expenses
                         </div>
@@ -41,7 +41,7 @@ export default function StartStep({ handleStepForward }: StartProps) {
                     <li>
                         <div className="flex text-[15px] w-[330px] h-[65px] items-center gap-[10px] rounded-[20px] border-[1px] border-[#bfbfbf] p-[10px]">
                             <Icon>
-                                <IdCardIcon />
+                                <PiIdentificationCard size={16} />
                             </Icon>
                             Insurance information
                         </div>
@@ -49,7 +49,7 @@ export default function StartStep({ handleStepForward }: StartProps) {
                     <li>
                         <div className="flex text-[15px] w-[330px] h-[65px] items-center gap-[10px] rounded-[20px] border-[1px] border-[#bfbfbf] p-[10px]">
                             <Icon>
-                                <ImageIcon />
+                                <AiOutlinePicture />
                             </Icon>
                             Images of damage or property loss
                         </div>

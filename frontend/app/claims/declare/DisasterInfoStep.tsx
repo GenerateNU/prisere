@@ -8,12 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ProfileIcon } from "@/icons/profile";
-import { UploadIcon } from "@/icons/upload";
 import { DisasterInfo } from "@/types/claim";
 import { GetCompanyLocationsResponse } from "@/types/company";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
+import { IoPersonOutline } from "react-icons/io5";
+import { PiUploadSimpleLight } from "react-icons/pi";
 import { validateDisasterInfo } from "./utils/validationUtils";
 
 type Props = {
@@ -133,7 +133,7 @@ export default function DisasterInfoStep({
                         className="h-[34px] px-2 justify-between gap-2 rounded-full bg-muted text-black text-sm hover:bg-muted/80 aria-expanded:border w-fit"
                     >
                         <div className="flex items-center gap-2">
-                            <UploadIcon className="size-6" />
+                            <PiUploadSimpleLight />
                             <span className="truncate">Upload from computer</span>
                         </div>
                     </Button>
@@ -142,7 +142,7 @@ export default function DisasterInfoStep({
                         className="h-[34px] px-2 justify-between gap-2 rounded-full bg-muted text-black text-sm hover:bg-muted/80 aria-expanded:border w-fit"
                     >
                         <div className="flex items-center gap-2">
-                            <ProfileIcon className="size-6" />
+                            <IoPersonOutline />
                             <span className="truncate">Select from business profile</span>
                         </div>
                     </Button>
