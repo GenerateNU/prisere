@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
  */
 export const useLeafletLoader = () => {
     const [isLoaded, setIsLoaded] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         if (window.L) {
@@ -30,10 +30,9 @@ export const useLeafletLoader = () => {
                     script.onerror = () => reject(new Error("Failed to load Leaflet"));
                     document.head.appendChild(script);
                 });
-
                 setIsLoaded(true);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : "Failed to load Leaflet");
+            } catch (_err) {
+                setError(true);
             }
         };
 

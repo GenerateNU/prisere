@@ -33,10 +33,10 @@ export default function DashboardBody() {
             </div>
 
             {/* Two Column Grid for Revenue and Next Steps */}
-            <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
+            <div className="grid grid-cols-1 xl:grid-cols-6 gap-6">
                 {/* Left Column - Revenue & Expenses */}
-                <div className="w-full lg:col-span-4 relative">
-                    {hasData?.hasExternalData || hasData?.hasFinancialData ? (
+                <div className="w-full xl:col-span-4 relative">
+                    {hasData?.hasExternalData || hasData?.hasFinancialData || hasDataLoading ? (
                         <RevenueAndExpenses />
                     ) : (
                         <RevenueAndExpensesNoData />
@@ -44,7 +44,7 @@ export default function DashboardBody() {
                 </div>
 
                 {/* Right Column - Next Steps */}
-                <div className="w-full lg:col-span-2">
+                <div className="w-full xl:col-span-2">
                     <NextSteps bannerData={bannerData ?? { status: "no-disaster" }} />
                 </div>
             </div>
@@ -59,7 +59,7 @@ export default function DashboardBody() {
                 {/* Right Column - Net Disaster Expense */}
                 <div className="w-full lg:col-span-2">
                     {bannerData?.status === "has-claim" &&
-                        (hasData?.hasExternalData || hasData?.hasFinancialData ? (
+                        (hasData?.hasExternalData || hasData?.hasFinancialData || hasDataLoading ? (
                             <NetDisasterExpense bannerData={bannerData ?? { status: "no-disaster" }} />
                         ) : (
                             <NetDisasterExpenseNoData />
