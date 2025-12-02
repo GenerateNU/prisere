@@ -1,4 +1,5 @@
 "use client";
+import { companyHasData } from "@/api/company";
 import ExpenseTable from "@/app/expense-tracker/expense-table/expense-table";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -11,6 +12,7 @@ import { UploadIcon } from "@/icons/upload";
 import { cn } from "@/lib/utils";
 import { DisasterInfo } from "@/types/claim";
 import { GetCompanyLocationsResponse } from "@/types/company";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { validateDisasterInfo } from "./utils/validationUtils";
 
@@ -29,10 +31,10 @@ export default function DisasterInfoStep({
     handleStepBack,
     locations,
 }: Props) {
-    // const { data: hasData, isPending: hasDataLoading } = useQuery({
-    //     queryKey: ["company-has-data"],
-    //     queryFn: companyHasData,
-    // });
+    const { data: hasData } = useQuery({
+        queryKey: ["company-has-data"],
+        queryFn: companyHasData,
+    });
 
     const [errors, setErrors] = React.useState<Partial<Record<keyof DisasterInfo, string>>>({});
 
@@ -134,9 +136,7 @@ export default function DisasterInfoStep({
             </Card>
             <ExpenseTable
                 title="Select Relevant Transactions"
-                // TODO:
-                // hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false}
-                hasData={true}
+                hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false}
                 rowOption={"collapsible"}
                 editableTags={true}
                 setSelections={(selections) => setDisasterInfo({ purchaseSelections: selections })}
