@@ -11,6 +11,7 @@ import { SortByColumn } from "../../../types/purchase";
 import { getCategoriesString, getPurchaseTypeString } from "../utility-functions";
 import { SortableHeader } from "./sortable-header";
 import { CollapsibleArrow } from "@/components/table/collapsibleArrow";
+import { TABLE_HEADER_HEIGHT, TABLE_ROW_HEIGHT } from "./table-constants";
 
 export default function TableContent({
     purchases,
@@ -19,6 +20,7 @@ export default function TableContent({
     rowOption,
     editableTags,
     onRowClick,
+    allCategories,
 }: {
     purchases: UseQueryResult<PurchasesWithCount | undefined>;
     filters: FilteredPurchases;
@@ -26,6 +28,7 @@ export default function TableContent({
     rowOption: "collapsible" | "checkbox";
     editableTags: boolean;
     onRowClick?: (purchase: PurchaseWithLineItems) => void;
+    allCategories: string[];
 }) {
     const standardizedData = useMemo(
         () =>
@@ -100,7 +103,10 @@ export default function TableContent({
                     const cellVal = cell.getValue();
                     const displayVendor = cellVal.length > 20 ? `${cellVal.substring(0, 20)}...` : cellVal;
                     return (
-                        <div className={cn("flex items-center min-h-[2.25rem]", row.depth > 0 && "pl-8")}>
+                        <div
+                            className={cn("flex items-center", row.depth > 0 && "pl-8")}
+                            style={{ height: `${TABLE_ROW_HEIGHT}rem` }}
+                        >
                             {rowOption === "collapsible" ? (
                                 row.getCanExpand() ? (
                                     <CollapsibleArrow
@@ -126,7 +132,11 @@ export default function TableContent({
                 header: () => <SortableHeader column={SortByColumn.AMOUNT} filters={filters} setSort={setSort} />,
                 enableSorting: true,
                 accessorFn: (row) => row.amount / 100,
-                cell: (ctx) => <p className="text-[12px]">{`$${(ctx.getValue() as number).toLocaleString()}`}</p>,
+                cell: (ctx) => (
+                    <div className="flex items-center" style={{ height: `${TABLE_ROW_HEIGHT}rem` }}>
+                        <p className="text-xs">{`$${(ctx.getValue() as number).toLocaleString()}`}</p>
+                    </div>
+                ),
             },
             {
                 id: "category",
@@ -135,14 +145,17 @@ export default function TableContent({
                 cell: (ctx) => {
                     const row = ctx.row.original;
                     return (
-                        <CategoryLabel
-                            category={ctx.getValue() as string}
-                            updateCategory={(category, lineItemIds, removeCategory) => {
-                                categoryMutation.mutate({ category, lineItemIds, removeCategory });
-                            }}
-                            lineItemIds={row.lineItemIds}
-                            editableTags={editableTags}
-                        />
+                        <div className="flex items-center" style={{ height: `${TABLE_ROW_HEIGHT}rem` }}>
+                            <CategoryLabel
+                                category={ctx.getValue() as string}
+                                updateCategory={(category, lineItemIds, removeCategory) => {
+                                    categoryMutation.mutate({ category, lineItemIds, removeCategory });
+                                }}
+                                lineItemIds={row.lineItemIds}
+                                editableTags={editableTags}
+                                allCategories={allCategories}
+                            />
+                        </div>
                     );
                 },
             },
@@ -151,23 +164,33 @@ export default function TableContent({
                 header: () => <SortableHeader column={SortByColumn.DATE} filters={filters} setSort={setSort} />,
                 enableSorting: true,
                 accessorFn: (row) => row.date.toLocaleDateString(),
-                cell: (ctx) => <div className="text-[12px] h-[40px] flex items-center">{ctx.getValue() as string}</div>,
+                cell: (ctx) => (
+                    <div className="text-xs flex items-center" style={{ height: `${TABLE_ROW_HEIGHT}rem` }}>
+                        {ctx.getValue() as string}
+                    </div>
+                ),
             },
             {
                 id: "disasterRelated",
-                header: () => <div className="flex items-center h-[56px]">Disaster Related</div>,
+                header: () => (
+                    <div className="flex items-center" style={{ height: `${TABLE_HEADER_HEIGHT}rem` }}>
+                        Disaster Related
+                    </div>
+                ),
                 accessorFn: (row) => row.disasterRelated,
                 cell: (ctx) => {
                     const row = ctx.row.original;
                     return (
-                        <DisasterLabel
-                            disasterType={ctx.getValue()}
-                            updateDisasterType={(type, lineItemIds) => {
-                                typeMutation.mutate({ type, lineItemIds });
-                            }}
-                            lineItemIds={row.lineItemIds}
-                            editableTags={editableTags}
-                        />
+                        <div className="flex items-center" style={{ height: `${TABLE_ROW_HEIGHT}rem` }}>
+                            <DisasterLabel
+                                disasterType={ctx.getValue()}
+                                updateDisasterType={(type, lineItemIds) => {
+                                    typeMutation.mutate({ type, lineItemIds });
+                                }}
+                                lineItemIds={row.lineItemIds}
+                                editableTags={editableTags}
+                            />
+                        </div>
                     );
                 },
             },

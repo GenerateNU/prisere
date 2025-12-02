@@ -2,6 +2,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
 import { DisasterType } from "@/types/purchase";
 import { DISASTER_TYPE_COLORS, DISASTER_TYPE_LABELS, DISASTER_TYPE_LABELS_TO_CHANGE } from "@/types/disaster";
+import React from "react";
 
 interface DisasterLabelProps {
     disasterType: DisasterType;
@@ -16,46 +17,28 @@ export default function DisasterLabel({
     lineItemIds,
     editableTags,
 }: DisasterLabelProps) {
-    const displayType = DISASTER_TYPE_LABELS.get(disasterType);
-
-    if (!editableTags) {
-        return (
-            <span
-                className={`px-[8px] py-[4px] rounded-[4px] text-[12px] h-[24px] font-bold ${DISASTER_TYPE_COLORS.get(disasterType)}`}
-            >
-                {displayType}
-            </span>
-        );
+    // purchases that do not contain any line items should not have an editable disaster type tag
+    const isEditable = editableTags && lineItemIds.length > 0;
+    if (!isEditable) {
+        return <DisasterBadgeSpan type={disasterType} />;
     }
 
     return (
         <div onClick={(e) => e.stopPropagation()}>
             <Popover>
                 <PopoverTrigger asChild>
-                    <span
-                        className={`px-[8px] py-[4px] rounded-[4px] text-[12px] font-bold h-[24px] cursor-pointer ${DISASTER_TYPE_COLORS.get(disasterType)}`}
-                    >
-                        {displayType}
-                    </span>
+                    <DisasterBadgeSpan type={disasterType} clickable={true} />
                 </PopoverTrigger>
-                <PopoverContent className="w-[250px] p-0">
+                <PopoverContent className="w-64 p-0">
                     <Command>
-                        <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
-                            <span
-                                className={`flex items-center gap-1 px-[8px] py-[4px] rounded-[4px] text-[12px] font-bold mr-2 flex-shrink-0 h-[24px] ${DISASTER_TYPE_COLORS.get(disasterType)}`}
-                            >
-                                {displayType}
-                            </span>
-                            <div className="flex-1 text-sm text-gray-500 py-3">Select an option</div>
+                        <div className="flex items-center border-b px-3 py-2">
+                            <DisasterBadgeSpan type={disasterType} />
+                            <div className="flex-1 text-sm text-gray-500 ml-2">Select an option</div>
                         </div>
                         <CommandGroup>
                             {Array.from(DISASTER_TYPE_LABELS_TO_CHANGE.keys()).map((type) => (
                                 <CommandItem key={type} onSelect={() => updateDisasterType(type, lineItemIds)}>
-                                    <span
-                                        className={`px-[8px] py-[4px] rounded-[4px] text-[12px] h-[24px] font-bold ${DISASTER_TYPE_COLORS.get(type)}`}
-                                    >
-                                        {DISASTER_TYPE_LABELS.get(type)}
-                                    </span>
+                                    <DisasterBadgeSpan type={type} />
                                 </CommandItem>
                             ))}
                         </CommandGroup>
@@ -65,3 +48,26 @@ export default function DisasterLabel({
         </div>
     );
 }
+
+interface DisasterBadgeSpanProps {
+    type: DisasterType;
+    clickable?: boolean;
+    children?: React.ReactNode;
+}
+
+export const DisasterBadgeSpan = React.forwardRef<HTMLSpanElement, DisasterBadgeSpanProps>(
+    ({ type, clickable = false, children, ...props }, ref) => {
+        const baseClasses = "px-2 py-1 rounded text-xs font-bold h-6 select-none";
+        const clickableClass = clickable ? "cursor-pointer" : "";
+        const colorClass = DISASTER_TYPE_COLORS.get(type);
+        const label = DISASTER_TYPE_LABELS.get(type);
+        return (
+            <span ref={ref} {...props} className={`${baseClasses} ${clickableClass} ${colorClass}`}>
+                {label}
+                {children}
+            </span>
+        );
+    }
+);
+
+DisasterBadgeSpan.displayName = "DisasterBadgeSpan";
