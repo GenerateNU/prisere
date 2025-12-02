@@ -507,14 +507,15 @@ export function useClaimProgress(
                 setInsurerInfoState((prev) => ({ ...prev, ...data }));
             }
 
-            // Update claim with insurance policy if provided
-            await updateClaimStatus(claimId, {
-                status: "IN_PROGRESS_EXPORT",
-                insurancePolicyId: insurerInfo.id,
-            });
-            setStatus("IN_PROGRESS_EXPORT");
+            if (insurerInfo.id) {
+                // Update claim with insurance policy if provided
+                await updateClaimStatus(claimId, {
+                    status: "IN_PROGRESS_EXPORT",
+                    insurancePolicyId: insurerInfo.id,
+                });
+            }
 
-            // Clear temp data
+            setStatus("IN_PROGRESS_EXPORT");
             clearTempData(claimId);
 
             setSaveStatus("saved");

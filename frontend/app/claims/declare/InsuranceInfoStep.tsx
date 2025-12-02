@@ -27,7 +27,7 @@ type Props = {
 };
 
 export default function InsurerInfoStep({ insurerInfo, setInsurerInfo, handleStepForward, handleStepBack }: Props) {
-    const { data: insurancePolicies } = useQuery({
+    const { data: insurancePolicies, isLoading: isInsuranceLoading } = useQuery({
         queryKey: ["insuranceInfo"],
         queryFn: getInsurancePolicies,
     });
@@ -53,20 +53,24 @@ export default function InsurerInfoStep({ insurerInfo, setInsurerInfo, handleSte
                     which insurance applies to this specific claim report.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
-                    {insurancePolicies?.map((i) => {
-                        return (
-                            <InsuranceCard
-                                key={i.id}
-                                data={i}
-                                isSelected={insurerInfo.id === i.id}
-                                onClick={(data) =>
-                                    insurerInfo.id === i.id
-                                        ? setInsurerInfo({ id: "" })
-                                        : setInsurerInfo({ id: data.id })
-                                }
-                            />
-                        );
-                    })}
+                    {isInsuranceLoading ? null : insurancePolicies?.length ? (
+                        insurancePolicies?.map((i) => {
+                            return (
+                                <InsuranceCard
+                                    key={i.id}
+                                    data={i}
+                                    isSelected={insurerInfo.id === i.id}
+                                    onClick={(data) =>
+                                        insurerInfo.id === i.id
+                                            ? setInsurerInfo({ id: "" })
+                                            : setInsurerInfo({ id: data.id })
+                                    }
+                                />
+                            );
+                        })
+                    ) : (
+                        <div className="font-bold text-xl">No insurance policies found</div>
+                    )}
                 </div>
             </Card>
             <div className="flex items-center justify-end gap-3 w-full">
