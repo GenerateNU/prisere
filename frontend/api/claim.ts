@@ -1,5 +1,6 @@
 "use server";
 import {
+    CreateClaimPDFResponse,
     CreateClaimRequest,
     CreateClaimResponse,
     GetClaimByIdResponse,
@@ -137,4 +138,22 @@ export const linkPurchaseToClaim = async (claimId: string, purchaseId: string) =
         }
     };
     return authWrapper<LinkPurchaseToClaimResponse>()(req);
+};
+
+export const createClaimPDF = async (claimId: string) => {
+    const req = async (token: string) => {
+        const client = getClient();
+        const { data, error, response } = await client.GET("/claims/{id}/pdf", {
+            headers: authHeader(token),
+            params: {
+                path: { id: claimId },
+            },
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<CreateClaimPDFResponse>()(req);
 };

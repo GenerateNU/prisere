@@ -38,6 +38,9 @@ export type LinkPurchaseToClaimRequest = NonNullable<
 >["content"]["application/json"];
 export type LinkPurchaseToClaimResponse =
     paths["/claims/purchase"]["post"]["responses"][201]["content"]["application/json"];
+
+export type CreateClaimPDFResponse = paths["/claims/{id}/pdf"]["get"]["responses"][200]["content"]["application/json"];
+
 /**
  * Save status for indicating to user
  */

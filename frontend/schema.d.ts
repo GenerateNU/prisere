@@ -4167,7 +4167,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    claimId: string;
+                    id: string;
                 };
                 cookie?: never;
             };

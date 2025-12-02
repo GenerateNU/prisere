@@ -234,7 +234,7 @@ const generateClaimPDFRoute = createRoute({
     summary: "Generates the pdf for the claim with the given ID",
     description: "Compiles the necessary information from the db and builds the appropriate PDF",
     request: {
-        params: z.object({ claimId: z.uuid() }),
+        params: z.object({ id: z.uuid() }),
     },
     responses: {
         200: {

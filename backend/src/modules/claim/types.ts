@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { ClaimLocation } from "../../entities/ClaimLocation";
+import { CompanyTypesEnum } from "../../entities/Company";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import { User } from "../../entities/User";
-import { CompanyTypesEnum } from "../../entities/Company";
 
 export const ClaimPDFGenerationResponseSchema = z.object({
     url: z.url(),
@@ -62,7 +62,7 @@ export const ImpactedLocationSchema = z.object({
 
 export const RelevantExpenseSchema = z.object({
     amountCents: z.number().gte(0),
-    description: z.string(),
+    description: z.string().nullable(),
 });
 
 export const PastExpensesSchema = z.array(z.object({ year: z.number(), amountCents: z.number().gte(0) }));

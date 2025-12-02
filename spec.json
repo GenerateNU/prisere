@@ -7145,7 +7145,7 @@
               "format": "uuid"
             },
             "required": true,
-            "name": "claimId",
+            "name": "id",
             "in": "path"
           }
         ],

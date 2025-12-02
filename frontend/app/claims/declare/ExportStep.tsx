@@ -1,13 +1,25 @@
 "use client";
 
+import { createClaimPDF } from "@/api/claim";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-export default function ExportStep() {
+export default function ExportStep({ claimId }: { claimId: string | null }) {
     const [exported, setExported] = React.useState(false);
     const router = useRouter();
+
+    const handleDownloadPDF = async () => {
+        if (!claimId) {
+            return;
+        }
+
+        const { url } = await createClaimPDF(claimId);
+
+        window.open(url, "_blank");
+        setExported(true);
+    };
 
     return (
         <Card className="border-none shadow-none">
@@ -30,7 +42,7 @@ export default function ExportStep() {
                     <div className="flex flex-col items-center gap-3">
                         <Button
                             className="w-[195px] h-[34px] bg-fuchsia hover:bg-fuchsia/80 text-white"
-                            onClick={() => setExported(true)}
+                            onClick={handleDownloadPDF}
                         >
                             Download PDF
                         </Button>

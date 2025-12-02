@@ -261,7 +261,7 @@ function DeclareDisasterContent() {
         },
         {
             step: 4,
-            render: <ExportStep />,
+            render: <ExportStep claimId={claimId} />,
         },
     ] satisfies { step: ClaimStepNumber; render: React.ReactNode }[];
 
