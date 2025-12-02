@@ -82,11 +82,11 @@ export class Claim {
     @JoinColumn({ name: "insurancePolicyId" })
     insurancePolicy!: InsurancePolicy;
 
-    // @ManyToMany(() => PurchaseLineItem)
-    // @JoinTable({
-    //     name: "claim_uploaded_documents",
-    //     joinColumn: { name: "claimId" },
-    //     inverseJoinColumn: { name: "documentId" },
-    // })
-    // documents!: Document[];
+    @ManyToMany(() => PurchaseLineItem)
+    @JoinTable({
+        name: "claim_uploaded_documents",
+        joinColumn: { name: "claimId" },
+        inverseJoinColumn: { name: "documentId" },
+    })
+    documents!: Document[];
 }
