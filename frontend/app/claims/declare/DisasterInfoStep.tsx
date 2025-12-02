@@ -8,11 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { GetCompanyLocationsResponse } from "@/types/company";
 import React from "react";
 import { validateDisasterInfo } from "./utils/validationUtils";
-import { UploadIcon, UserIcon } from "lucide-react";
+import { CloudCheck, CloudIcon, CloudUploadIcon, UploadIcon, UserIcon } from "lucide-react";
 import { useModal } from "@/components/ui/modal/useModal";
 import { Modal } from "@/components/ui/modal/Modal";
 import { UploadDocument } from "./UploadDocument";
 import { DisasterInfo } from "@/types/claim";
+import { SelectBusinessDocuments } from "./SelectBusinessDocuments";
 
 type DisasterInfoStepProps = {
     disasterInfo: DisasterInfo;
@@ -109,6 +110,16 @@ export default function DisasterInfoStep({
                             <p>Upload from your computer</p>
                         </Label>
                     </Button>
+                    <div className="pl-3">
+                        {disasterInfo.additionalDocumets.map((element, idx) => (
+                            <div key={idx} className="p-1">
+                                <div className="bg-gray-200 flex flex-row items-center rounded-full w-fit">
+                                    <CloudCheck size={30} className="pl-2" />
+                                    <p className="text-sm p-3">{element.name}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                     <Button className="w-fit h-fit rounded-full py-[12px] px-[20px]">
                         <Label>
                             <UserIcon size={24} color="black" />
@@ -134,7 +145,11 @@ export default function DisasterInfoStep({
                         closeUploadModal();
                         setDisasterInfo({ additionalDocumets: files });
                     }}
+                    selectedFiles={disasterInfo.additionalDocumets}
                 />
+            </Modal>
+            <Modal isOpen={false} onClose={() => undefined} size="lg">
+                <SelectBusinessDocuments />
             </Modal>
         </div>
     );

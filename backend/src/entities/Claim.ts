@@ -89,4 +89,7 @@ export class Claim {
         inverseJoinColumn: { name: "documentId" },
     })
     documents!: Document[];
+
+    @OneToMany(() => Document, (document) => document.exportedClaim)
+    exportedDocuments?: Relation<Document>[];
 }

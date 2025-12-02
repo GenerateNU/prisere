@@ -177,7 +177,7 @@ export class ClaimService implements IClaimService {
                 key: key,
                 documentId: documentId,
                 documentType: DocumentTypes.CLAIM,
-                claimId: claimId,
+                exportedFromClaimId: claimId,
                 userId: userId,
                 companyId: companyId,
             });

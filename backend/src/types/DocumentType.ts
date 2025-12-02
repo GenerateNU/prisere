@@ -36,6 +36,7 @@ export const UpsertDocumentSchema = z.object({
     lastModified: z.date().optional().nullable(),
     userId: z.string().optional(),
     companyId: z.string(),
+    exportedClaimID: z.string().optional(),
 });
 
 export const DocumentResponseSchema = DocumentSchema.extend({

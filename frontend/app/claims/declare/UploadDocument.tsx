@@ -3,11 +3,12 @@ import { Upload, X } from "lucide-react";
 import { useState, useRef } from "react";
 
 interface UploadDocumentProps {
+    selectedFiles: File[];
     handleUploadFiles: (files: File[]) => void;
 }
 
-export const UploadDocument = ({ handleUploadFiles }: UploadDocumentProps) => {
-    const [stagedFiles, setStagedFiles] = useState<File[]>([]);
+export const UploadDocument = ({ handleUploadFiles, selectedFiles }: UploadDocumentProps) => {
+    const [stagedFiles, setStagedFiles] = useState<File[]>(selectedFiles);
     const [error, setError] = useState<string>("");
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isDragging, setIsDragging] = useState(false);
@@ -155,10 +156,9 @@ export const UploadDocument = ({ handleUploadFiles }: UploadDocumentProps) => {
                 onClick={async () => {
                     handleUploadFiles(stagedFiles);
                 }}
-                disabled={stagedFiles.length === 0}
                 className={`w-full py-3 px-4 rounded-lg`}
             >
-                Upload Documents
+                Save Selection
             </Button>
         </div>
     );

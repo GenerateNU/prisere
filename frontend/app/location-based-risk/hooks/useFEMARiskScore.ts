@@ -12,7 +12,6 @@ export function useFEMARiskScore() {
             const res = await getFemaRiskIndexData();
             setData(res);
             setLoading(false);
-            console.log(res[0].updatedAt);
         };
         fetchRiskData();
     }, []);

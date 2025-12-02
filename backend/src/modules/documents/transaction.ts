@@ -34,6 +34,7 @@ export class DocumentTransaction implements IDocumentTransaction {
             document.userId = payload.userId;
             document.companyId = payload.companyId;
             document.lastModified = new Date().toISOString();
+            document.exportedClaimID = payload.exportedClaimID;
         } else {
             document = repository.create({
                 key: payload.key,
@@ -43,6 +44,7 @@ export class DocumentTransaction implements IDocumentTransaction {
                 companyId: payload.companyId,
                 createdAt: new Date().toISOString(),
                 lastModified: new Date().toISOString(),
+                exportedClaimID: payload.exportedClaimID,
             });
         }
 

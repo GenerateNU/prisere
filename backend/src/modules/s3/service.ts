@@ -76,6 +76,7 @@ export interface IS3Service {
         documentId: string;
         documentType: DocumentTypes;
         claimId?: string;
+        exportedFromClaimId?: string;
         userId: string;
         companyId: string;
         category?: DocumentCategories;
@@ -500,11 +501,12 @@ export class S3Service implements IS3Service {
         documentId: string;
         documentType: DocumentTypes;
         claimId?: string;
+        exportedFromClaimId?: string;
         userId: string;
         companyId: string;
         category?: DocumentCategories;
     }): Promise<UploadResult> {
-        const { key, documentId, claimId, userId, companyId, category } = options;
+        const { key, documentId, claimId, exportedFromClaimId, userId, companyId, category } = options;
 
         try {
             // Verify the file exists in S3
@@ -527,6 +529,7 @@ export class S3Service implements IS3Service {
                 key: key,
                 downloadUrl: url,
                 s3DocumentId: documentId,
+                exportedClaimID: exportedFromClaimId,
                 userId: userId,
                 companyId: companyId,
                 category: category ?? undefined,

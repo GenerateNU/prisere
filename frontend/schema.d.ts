@@ -4121,7 +4121,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    claimId: string;
+                    id: string;
                 };
                 cookie?: never;
             };
@@ -6108,8 +6108,10 @@ export interface paths {
                          * @enum {string}
                          */
                         documentType?: "CLAIM" | "GENERAL_BUSINESS" | "IMAGES";
-                        /** @description Optional claim ID for claim-specific documents */
+                        /** @description Optional claim ID for documents associated with a claim */
                         claimId?: string;
+                        /** @description Optional claim ID to represent if a document was exported from a claim */
+                        exportedFromClaimId?: string;
                         /** @enum {string|null} */
                         category: "Expenses" | "Revenues" | "Insurance" | "Other" | null;
                     };
@@ -6503,6 +6505,123 @@ export interface paths {
                 };
             };
         };
+        trace?: never;
+    };
+    "/s3/confirmUpload/selfDisaster": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm document upload completion for a document related to a self declared disaster
+         * @description Verifies that a file was successfully uploaded to S3 and returns file details including a presigned download URL and associates the document with the claim of the given self disaster.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** @description S3 key of the uploaded file */
+                        key: string;
+                        /** @description Document ID returned from getUploadUrl */
+                        documentId: string;
+                        /**
+                         * @default GENERAL_BUSINESS
+                         * @enum {string}
+                         */
+                        documentType?: "CLAIM" | "GENERAL_BUSINESS" | "IMAGES";
+                        /** @description The self disaster for this Upload */
+                        selfDisasterId: string;
+                        /** @enum {string|null} */
+                        category: "Expenses" | "Revenues" | "Insurance" | "Other" | null;
+                    };
+                };
+            };
+            responses: {
+                /** @description Upload confirmed successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description S3 key of the uploaded file */
+                            key: string;
+                            /**
+                             * Format: uri
+                             * @description Presigned download URL for the file
+                             */
+                            url: string;
+                            /** @description File size in bytes */
+                            size: number;
+                            /** @description SHA-256 hash of the file */
+                            hash: string;
+                            /** @description Whether this file is a duplicate */
+                            isDuplicate?: boolean;
+                            /** @description Key of the original file if duplicate */
+                            duplicateKey?: string;
+                        };
+                    };
+                };
+                /** @description Invalid request - missing or invalid parameters */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description User authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description File not found in S3 */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
 }

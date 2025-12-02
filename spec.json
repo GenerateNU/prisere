@@ -7127,7 +7127,7 @@
               "format": "uuid"
             },
             "required": true,
-            "name": "claimId",
+            "name": "id",
             "in": "path"
           }
         ],
@@ -10147,7 +10147,11 @@
                   },
                   "claimId": {
                     "type": "string",
-                    "description": "Optional claim ID for claim-specific documents"
+                    "description": "Optional claim ID for documents associated with a claim"
+                  },
+                  "exportedFromClaimId": {
+                    "type": "string",
+                    "description": "Optional claim ID to represent if a document was exported from a claim"
                   },
                   "category": {
                     "type": "string",
@@ -10932,6 +10936,183 @@
           },
           "400": {
             "description": "Invalid request - missing documentId or category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/s3/confirmUpload/selfDisaster": {
+      "post": {
+        "summary": "Confirm document upload completion for a document related to a self declared disaster",
+        "description": "Verifies that a file was successfully uploaded to S3 and returns file details including a presigned download URL and associates the document with the claim of the given self disaster.",
+        "tags": [
+          "S3"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "S3 key of the uploaded file"
+                  },
+                  "documentId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Document ID returned from getUploadUrl"
+                  },
+                  "documentType": {
+                    "type": "string",
+                    "enum": [
+                      "CLAIM",
+                      "GENERAL_BUSINESS",
+                      "IMAGES"
+                    ],
+                    "default": "GENERAL_BUSINESS"
+                  },
+                  "selfDisasterId": {
+                    "type": "string",
+                    "description": "The self disaster for this Upload"
+                  },
+                  "category": {
+                    "type": "string",
+                    "nullable": true,
+                    "enum": [
+                      "Expenses",
+                      "Revenues",
+                      "Insurance",
+                      "Other"
+                    ]
+                  }
+                },
+                "required": [
+                  "key",
+                  "documentId",
+                  "selfDisasterId",
+                  "category"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upload confirmed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "description": "S3 key of the uploaded file"
+                    },
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "Presigned download URL for the file"
+                    },
+                    "size": {
+                      "type": "number",
+                      "description": "File size in bytes"
+                    },
+                    "hash": {
+                      "type": "string",
+                      "description": "SHA-256 hash of the file"
+                    },
+                    "isDuplicate": {
+                      "type": "boolean",
+                      "description": "Whether this file is a duplicate"
+                    },
+                    "duplicateKey": {
+                      "type": "string",
+                      "description": "Key of the original file if duplicate"
+                    }
+                  },
+                  "required": [
+                    "key",
+                    "url",
+                    "size",
+                    "hash"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing or invalid parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "File not found in S3",
             "content": {
               "application/json": {
                 "schema": {

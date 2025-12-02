@@ -4,9 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { useDownloadClaimPDF } from "./hooks/useDownloadClaimPDF";
+import { Spinner } from "@/components/ui/spinner";
 
-export default function ExportStep() {
+interface ExportStepProps {
+    claimId: string;
+}
+
+export default function ExportStep({ claimId }: ExportStepProps) {
     const [exported, setExported] = React.useState(false);
+    const { isLoading: isLoadingPDFDownload, download: downloadClaimPDF } = useDownloadClaimPDF();
     const router = useRouter();
 
     return (
@@ -25,7 +32,14 @@ export default function ExportStep() {
                         <p className="text-[18px]">Select a method to export your completed claim report PDF.</p>
                     </div>
                     <div className="flex flex-col items-center gap-2">
-                        <Button className="w-[195px] h-[45px]">Download PDF</Button>
+                        <Button
+                            onClick={async () => await downloadClaimPDF(claimId)}
+                            disabled={isLoadingPDFDownload}
+                            className="w-[195px] h-[45px]"
+                        >
+                            <p>Download PDF</p>
+                            {isLoadingPDFDownload && <Spinner />}
+                        </Button>
                         <Button className="w-[195px] h-[45px]">Email a Copy</Button>
                         <Button variant="link" className="w-[195px] h-[45px]" onClick={() => setExported(true)}>
                             Continue

@@ -1,5 +1,4 @@
-import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
-import { z } from "zod";
+import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { DataSource } from "typeorm";
 import { S3Controller } from "../s3/controller";
 import { S3Service } from "../s3/service";
@@ -27,7 +26,7 @@ export const addOpenApiS3Routes = (openApi: OpenAPIHono, db: DataSource): OpenAP
     openApi.openapi(getAllDocumentsRoute, (ctx) => s3Controller.getAllDocuments(ctx));
     openApi.openapi(deleteDocumentRoute, (ctx) => s3Controller.deleteDocument(ctx));
     openApi.openapi(updateDocumentCategoryRoute, (ctx) => s3Controller.updateDocumentCategory(ctx));
-    // openApi.openapi(confirmUploadForSelfDisasterRoute, (ctx) => s3Controller.confirmUploadForSelfDisaster(ctx));
+    openApi.openapi(confirmUploadForSelfDisasterRoute, (ctx) => s3Controller.confirmUploadForSelfDisaster(ctx));
 
     return openApi;
 };
@@ -148,7 +147,7 @@ const confirmUploadRoute = createRoute({
 
 const confirmUploadForSelfDisasterRoute = createRoute({
     method: "post",
-    path: "/confirmUpload/selfDisaster",
+    path: "/s3/confirmUpload/selfDisaster",
     summary: "Confirm document upload completion for a document related to a self declared disaster",
     description:
         "Verifies that a file was successfully uploaded to S3 and returns file details including a presigned download URL and associates the document with the claim of the given self disaster.",

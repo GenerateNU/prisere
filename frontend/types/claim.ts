@@ -36,6 +36,9 @@ export type ConfirmDocumentUploadRequest =
 export type ConfirmDocumentUploadResponse =
     paths["/s3/confirmUpload"]["post"]["responses"][200]["content"]["application/json"];
 
+export type CreatePDFForClaimResponse =
+    paths["/claims/{id}/pdf"]["get"]["responses"][200]["content"]["application/json"];
+
 /**
  * Save status for indicating to user
  */

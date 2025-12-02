@@ -303,10 +303,6 @@ export function useClaimProgress(
                 });
                 selfDisasterIdRef.current = selfDisaster.id;
 
-                if (dataToUse.additionalDocumets.length > 0) {
-                    await saveAdditionalDocumentsToS3(dataToUse.additionalDocumets, selfDisaster.id);
-                }
-
                 // Create claim
                 const newClaim = await createClaim({
                     selfDisasterId: selfDisaster.id,
@@ -314,6 +310,10 @@ export function useClaimProgress(
                 });
                 setClaimId(newClaim.id);
                 setStatus(newClaim.status);
+
+                if (dataToUse.additionalDocumets.length > 0) {
+                    await saveAdditionalDocumentsToS3(dataToUse.additionalDocumets, selfDisaster.id);
+                }
 
                 // Link location if provided
                 if (dataToUse.location) {

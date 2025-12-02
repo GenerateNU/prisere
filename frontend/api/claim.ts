@@ -4,6 +4,7 @@ import {
     ConfirmDocumentUploadResponse,
     CreateClaimRequest,
     CreateClaimResponse,
+    CreatePDFForClaimResponse,
     GetClaimByIdResponse,
     GetClaimLineItemsResponse,
     GetCompanyClaimResponse,
@@ -156,14 +157,14 @@ export const uploadClaimRelatedDocuments = async (
 };
 
 export const conformUploadedDocument = async (
-    claimId: string,
+    selfDisasterId: string,
     payload: ConfirmDocumentUploadRequest
 ): Promise<ConfirmDocumentUploadResponse> => {
     const req = async (token: string): Promise<ConfirmDocumentUploadResponse> => {
         const client = getClient();
-        const { data, error, response } = await client.POST("/s3/confirmUpload", {
+        const { data, error, response } = await client.POST("/s3/confirmUpload/selfDisaster", {
             headers: authHeader(token),
-            body: { ...payload, claimId: claimId, documentType: "CLAIM" },
+            body: { ...payload, selfDisasterId: selfDisasterId, documentType: "CLAIM" },
         });
         if (response.ok) {
             return data!;
@@ -172,4 +173,22 @@ export const conformUploadedDocument = async (
         }
     };
     return authWrapper<ConfirmDocumentUploadResponse>()(req);
+};
+
+export const fetchPDFForClaim = async (claimId: string): Promise<CreatePDFForClaimResponse> => {
+    const req = async (token: string): Promise<CreatePDFForClaimResponse> => {
+        const client = getClient();
+        const { data, error, response } = await client.GET("/claims/{id}/pdf", {
+            headers: authHeader(token),
+            params: {
+                path: { id: claimId },
+            },
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<CreatePDFForClaimResponse>()(req);
 };
