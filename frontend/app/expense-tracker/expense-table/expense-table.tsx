@@ -180,10 +180,6 @@ export function useFetchPurchases(filters: FilteredPurchases) {
     return useQuery({
         queryKey: ["purchases-for-company", filters],
         queryFn: async ({ signal }) => {
-            console.log("=== FETCH PURCHASES ===");
-            console.log("Full filters object:", filters);
-            console.log("Type filter value:", filters.type);
-            console.log("Type filter typeof:", typeof filters.type);
             const token = await getClientAuthToken();
             const client = getClient();
             const { data, error, response } = await client.GET("/purchase", {

@@ -98,7 +98,6 @@ export default function LocationsCard() {
     };
 
     const handleSave = () => {
-        console.log("HITTING HERE");
         if (editingLocationIndex === null) return;
 
         const location = locationInfo[editingLocationIndex];

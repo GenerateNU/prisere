@@ -37,15 +37,6 @@ export default function LocationRisk() {
 
     const error = leafletError || mapError || geoJsonError;
 
-    useEffect(() => {
-        console.log("Loading states:", {
-            leafletLoaded,
-            mapReady,
-            geoJsonLoading,
-            isLoading,
-        });
-    }, [isLoading]);
-
     return (
         <Card className="h-full p-[25px] border-[1px]">
             <CardTitle className="text-[25px]">

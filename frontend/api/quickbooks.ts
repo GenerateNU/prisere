@@ -10,10 +10,9 @@ export const importQuickbooksData = async (): Promise<{ success: true } | undefi
         });
         if (response.ok) {
             return data!;
-        } else if (response.status === 401) {
-            console.log("Warning: No quickbooks client");
         } else {
-            console.log("No quickbooks client");
+            // TODO: error message?
+            return undefined;
         }
     };
     return authWrapper<{ success: true } | undefined>()(req);
@@ -28,10 +27,9 @@ export const redirectToQuickbooks = async (): Promise<string | undefined> => {
 
         if (response.ok && data?.url) {
             return data.url;
-        } else if (response.status === 401) {
-            console.log("Warning: Unauthorized access to QuickBooks");
         } else {
-            console.log("Error: Unable to fetch QuickBooks URL");
+            // TODO: error message
+            return undefined;
         }
     };
 

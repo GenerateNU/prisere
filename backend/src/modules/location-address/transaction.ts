@@ -92,7 +92,6 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
 
             return newAddress;
         } catch (err) {
-            console.log(err);
             throw err;
         }
     }
