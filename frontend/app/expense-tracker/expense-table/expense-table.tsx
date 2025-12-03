@@ -100,10 +100,7 @@ export default function ExpenseTable({
                                     <IoFilterOutline className="h-4 w-4 text-black" />
                                     Filters
                                 </Button>
-                                <Button size="icon" className="h-[34px] w-8 bg-slate rounded-full border-0">
-                                    <Printer className="h-4 w-4" />
-                                </Button>
-                                <Button size="icon" className="h-[34px] w-8 bg-slate rounded-full border-0">
+                                <Button size="icon" className="h-[2.125rem] w-8 bg-slate rounded-full border-0">
                                     <FileUp className="h-4 w-4" />
                                 </Button>
                             </div>
