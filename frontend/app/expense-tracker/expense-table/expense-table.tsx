@@ -1,5 +1,4 @@
 "use client";
-import { authHeader, authWrapper, getClient, getClientAuthToken } from "@/api/client";
 import { LargeLoading } from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +16,7 @@ import PaginationControls from "./PaginationControls";
 import ResultsPerPageSelect from "./ResultsPerPageSelect";
 import ExpenseSideView from "./side-view";
 import TableContent from "./table-content";
+import { fetchAllCategories, fetchPurchases } from "@/api/purchase";
 
 interface ExpenseTableConfig {
     title: string;
@@ -196,31 +196,8 @@ export default function ExpenseTable({
 export function useFetchPurchases(filters: FilteredPurchases) {
     return useQuery({
         queryKey: ["purchases-for-company", filters],
-        queryFn: async ({ signal }) => {
-            const token = await getClientAuthToken();
-            const client = getClient();
-            const { data, error, response } = await client.GET("/purchase", {
-                params: {
-                    query: {
-                        categories: filters.categories,
-                        dateFrom: filters.dateFrom,
-                        dateTo: filters.dateTo,
-                        search: filters.search,
-                        sortBy: filters.sortBy,
-                        sortOrder: filters.sortOrder,
-                        pageNumber: filters.pageNumber,
-                        resultsPerPage: filters.resultsPerPage,
-                        type: filters.type,
-                    },
-                },
-                headers: authHeader(token),
-                signal,
-            });
-            if (response.ok) {
-                return data;
-            } else {
-                throw Error(error?.error);
-            }
+        queryFn: async () => {
+            return fetchPurchases(filters);
         },
         placeholderData: (previousData) => previousData,
     });
@@ -230,19 +207,7 @@ export function useFetchAllCategories() {
     return useQuery({
         queryKey: ["categories-for-purchases"],
         queryFn: async (): Promise<string[]> => {
-            const req = async (token: string): Promise<string[]> => {
-                const client = getClient();
-                const { data, error, response } = await client.GET("/purchase/categories", {
-                    headers: authHeader(token),
-                });
-                if (response.ok) {
-                    return data!;
-                } else {
-                    throw Error(error?.error);
-                }
-            };
-
-            return authWrapper<string[]>()(req);
+            return fetchAllCategories();
         },
     });
 }
