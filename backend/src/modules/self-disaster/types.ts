@@ -2,7 +2,6 @@ import z from "zod";
 import { FIPSCounty, FIPSState, incidentTypeString } from "../../types/fema-disaster/common";
 
 export const CreateSelfDisasterDTOSchema = z.object({
-    name: z.string().max(250).min(1),
     description: z.string(),
     startDate: z.iso.date(),
     endDate: z.iso.date().optional(),
@@ -10,7 +9,6 @@ export const CreateSelfDisasterDTOSchema = z.object({
 
 export const CreateSelfDisasterResponseSchema = z.object({
     id: z.string(),
-    name: z.string().max(250).min(1),
     description: z.string(),
     startDate: z.iso.date(),
     endDate: z.iso.date().optional(),
@@ -22,7 +20,6 @@ export type CreateSelfDisasterDTO = z.infer<typeof CreateSelfDisasterDTOSchema>;
 export type CreateSelfDisasterResponse = z.infer<typeof CreateSelfDisasterResponseSchema>;
 
 export const UpdateSelfDisasterDTOSchema = z.object({
-    name: z.string().max(250).min(1).optional(),
     description: z.string().optional(),
     startDate: z.iso.date().optional(),
     endDate: z.iso.date().optional(),
@@ -30,7 +27,6 @@ export const UpdateSelfDisasterDTOSchema = z.object({
 
 export const UpdateSelfDisasterResponseSchema = z.object({
     id: z.string(),
-    name: z.string().max(250).min(1),
     description: z.string(),
     startDate: z.iso.date(),
     endDate: z.iso.date().optional(),
@@ -51,7 +47,6 @@ export const GetDisastersForCompanyDTOSchema = z.object({
 
 export const GetSelfDisasterForCompanyResponseSchema = z.object({
     id: z.string(),
-    name: z.string().max(250).min(1),
     description: z.string(),
     startDate: z.iso.date(),
     endDate: z.iso.date().optional(),

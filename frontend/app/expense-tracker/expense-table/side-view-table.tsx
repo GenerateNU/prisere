@@ -32,12 +32,12 @@ export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineI
         columns: [
             {
                 id: "description",
-                header: "Item",
+                header: () => <span className="select-none">Item</span>,
                 accessorKey: "description",
                 cell: ({ getValue }) => {
                     const value = getValue() as string | null;
                     return (
-                        <div className="flex text-[12px] items-center min-h-[2.0rem]">
+                        <div className="flex text-xs items-center min-h-8 select-none">
                             {" "}
                             {value && value.trim().length > 0 ? value : "Unknown"}{" "}
                         </div>
@@ -49,11 +49,13 @@ export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineI
                 header: ({ column }) => <SortableHeader column={column} label="Amount" />,
                 enableSorting: true,
                 accessorFn: (row) => row.amountCents / 100,
-                cell: (ctx) => <p className="text-[12px]">{`$${(ctx.getValue() as number).toLocaleString()}`}</p>,
+                cell: (ctx) => (
+                    <p className="text-xs select-none">{`$${(ctx.getValue() as number).toLocaleString()}`}</p>
+                ),
             },
             {
                 id: "category",
-                header: "Category",
+                header: () => <span className="select-none">Category</span>,
                 accessorKey: "category",
                 cell: (ctx) => (
                     <CategoryLabel
@@ -68,11 +70,18 @@ export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineI
                 header: ({ column }) => <SortableHeader column={column} label="Date" />,
                 enableSorting: true,
                 accessorFn: (row) => new Date(row.dateCreated).toLocaleDateString(),
-                cell: (ctx) => <div className="text-[12px] h-[40px] flex items-center">{ctx.getValue() as string}</div>,
+                cell: (ctx) => (
+                    <div
+                        className="text-xs h-10 flex
+                 select-none items-center"
+                    >
+                        {ctx.getValue() as string}
+                    </div>
+                ),
             },
             {
                 id: "disasterRelated",
-                header: "Disaster Related",
+                header: () => <span className="select-none">Disaster Related</span>,
                 accessorKey: "type",
                 cell: (ctx) => <DisasterTypeTag type={ctx.getValue()} />,
             },
@@ -81,7 +90,7 @@ export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineI
 
     if (lineItems.length === 0) {
         return (
-            <div className="text-muted-foreground text-sm italic bg-muted/30 py-6 px-4 rounded-lg border border-muted">
+            <div className="text-muted-foreground text-sm italic bg-muted/30 py-6 px-4 rounded-lg border border-muted select-none">
                 No line items found for this expense.
             </div>
         );
@@ -115,7 +124,7 @@ export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineI
 function SortableHeader({ column, label }: { column: Column<PurchaseLineItem>; label: string }) {
     const handleSort = () => column.toggleSorting();
     return (
-        <button onClick={handleSort} className="flex items-center gap-2 hover:text-foreground">
+        <button onClick={handleSort} className="flex items-center gap-2 hover:text-foreground cursor-pointer">
             {column.getIsSorted() === "asc" && <ArrowUp className="h-4 w-4" />}
             {column.getIsSorted() === "desc" && <ArrowDown className="h-4 w-4" />}
             {!column.getIsSorted() && <ArrowUpDown className="h-4 w-4" />}

@@ -115,8 +115,7 @@ function ClaimPDF({ data }: { data: ClaimData }) {
     const personalInfo = [
         { label: "First Name", value: data.user.firstName },
         { label: "Last Name", value: data.user.lastName },
-        { label: "Phone Number", value: "N/A" },
-        { label: "Phone Type", value: "N/A" },
+        { label: "Phone Number", value: data.user.phoneNumber },
         { label: "Email", value: data.user.email || "N/A" },
     ];
 
@@ -124,30 +123,22 @@ function ClaimPDF({ data }: { data: ClaimData }) {
         { label: "Business Name", value: data.company.name },
         { label: "Business Owner", value: data.company.businessOwnerFullName },
         { label: "Business Type", value: data.company.companyType },
-        { label: "Seasonal", value: "No" },
-        { label: "Months of\nBusiness Activity", value: "N/A" },
+        // { label: "Seasonal", value: "No" },
+        // { label: "Months of\nBusiness Activity", value: "N/A" },
     ];
 
-    const insuranceInfo = [
-        {
-            name: "Health Policy",
-            info: [
-                { label: "Insurance\nCompany", value: "Blue Cross Blue Sheild" },
-                { label: "Insurance Type", value: "Health Insurance" },
-                { label: "Insured Name", value: "Johnny Apple Seed" },
-                { label: "Policy Number", value: "28348-2340123" },
-            ],
-        },
-        {
-            name: "Auto Policy",
-            info: [
-                { label: "Insurance\nCompany", value: "Geico" },
-                { label: "Insurance Type", value: "Auto Insurance" },
-                { label: "Insured Name", value: "Johnny Apple Seed" },
-                { label: "Policy Number", value: "22771-83269917" },
-            ],
-        },
-    ];
+    const insuranceInfo = {
+        name: data.insuranceInfo?.policyName,
+        info: [
+            { label: "Insurance\nCompany", value: data.insuranceInfo?.insuranceCompanyName },
+            { label: "Insurance Type", value: data.insuranceInfo?.insuranceType },
+            {
+                label: "Insured Name",
+                value: data.insuranceInfo?.policyHolderFirstName + " " + data.insuranceInfo?.policyHolderLastName,
+            },
+            { label: "Policy Number", value: data.insuranceInfo?.policyNumber },
+        ],
+    };
 
     const disasterInfo = data.femaDisaster
         ? [
@@ -250,23 +241,25 @@ function ClaimPDF({ data }: { data: ClaimData }) {
                     </View>
                 </View>
                 {lineBreak}
-                <View style={styles.section} wrap={false}>
-                    <Text style={styles.sectionHead}>Insurance Information</Text>
-                    <View style={styles.dataTable}>
-                        {insuranceInfo.map((item, index) => (
-                            <View key={index} style={styles.insuranceInfo}>
-                                <Text style={styles.insuranceName}>{item.name}</Text>
-                                {item.info.map((info, subIndex) => (
-                                    <View key={subIndex} style={styles.dataRow}>
-                                        <Text style={styles.dataLabel}>{info.label}</Text>
-                                        <Text style={styles.dataValue}>{info.value}</Text>
-                                    </View>
-                                ))}
+                {data.insuranceInfo && (
+                    <>
+                        <View style={styles.section} wrap={false}>
+                            <Text style={styles.sectionHead}>Insurance Information</Text>
+                            <View style={styles.dataTable}>
+                                <View key={1} style={styles.insuranceInfo}>
+                                    <Text style={styles.insuranceName}>{insuranceInfo.name}</Text>
+                                    {insuranceInfo.info.map((info, subIndex) => (
+                                        <View key={subIndex} style={styles.dataRow}>
+                                            <Text style={styles.dataLabel}>{info.label}</Text>
+                                            <Text style={styles.dataValue}>{info.value}</Text>
+                                        </View>
+                                    ))}
+                                </View>
                             </View>
-                        ))}
-                    </View>
-                </View>
-                {lineBreak}
+                        </View>
+                        {lineBreak}
+                    </>
+                )}
                 <View style={styles.section} wrap={false}>
                     <Text style={styles.sectionHead}>Disaster Specific Information</Text>
                     <View style={styles.dataTable}>
@@ -287,17 +280,21 @@ function ClaimPDF({ data }: { data: ClaimData }) {
                     <Text style={styles.sectionHead}>Extraneous Expenses</Text>
                     <View style={styles.dataTable}>
                         <View style={styles.dataRow}>
-                            <Text style={{ ...styles.dataValue, fontWeight: "bold" }}>Expense Type</Text>
-                            <Text style={{ ...styles.dataValue, fontWeight: "bold" }}>Amount</Text>
-                            <Text style={{ ...styles.dataValue, fontWeight: "bold" }}>Category</Text>
-                            <Text style={{ ...styles.dataValue, fontWeight: "bold" }}>Date</Text>
+                            <Text style={{ ...styles.dataValue, fontWeight: "bold", width: "80px" }}>Description</Text>
+                            <Text style={{ ...styles.dataValue, fontWeight: "bold", width: "80px" }}>Amount</Text>
+                            <Text style={{ ...styles.dataValue, fontWeight: "bold", width: "80px" }}>Category</Text>
+                            <Text style={{ ...styles.dataValue, fontWeight: "bold", width: "200px" }}>Date</Text>
                         </View>
                         {data.relevantExpenses.map((expense, index) => (
                             <View key={index} style={styles.dataRow}>
-                                <Text style={styles.dataValue}>{expense.description}</Text>
-                                <Text style={styles.dataValue}>{`$${(expense.amountCents / 100).toFixed(2)}`}</Text>
-                                <Text style={styles.dataValue}>Category</Text>
-                                <Text style={styles.dataValue}>02/26/25</Text>
+                                <Text style={{ ...styles.dataValue, width: "80px" }}>{expense.description}</Text>
+                                <Text
+                                    style={{ ...styles.dataValue, width: "80px" }}
+                                >{`$${(expense.amountCents / 100).toFixed(2)}`}</Text>
+                                <Text style={{ ...styles.dataValue, width: "80px" }}>{expense.category}</Text>
+                                <Text style={{ ...styles.dataValue, width: "200px" }}>
+                                    {expense.quickbooksDateCreated || expense.dateCreated}
+                                </Text>
                             </View>
                         ))}
                         {data.relevantExpenses.length === 0 && (

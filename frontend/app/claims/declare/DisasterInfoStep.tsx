@@ -1,4 +1,7 @@
 "use client";
+import { companyHasData } from "@/api/company";
+import LocationsCard from "@/app/business-profile/overview/LocationsCard";
+import ExpenseTable from "@/app/expense-tracker/expense-table/expense-table";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { GetCompanyLocationsResponse } from "@/types/company";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { validateDisasterInfo } from "./utils/validationUtils";
 import { CloudCheck, UploadIcon, UserIcon } from "lucide-react";
@@ -29,10 +33,16 @@ export default function DisasterInfoStep({
     handleStepBack,
     locations,
 }: DisasterInfoStepProps) {
-    const [errors, setErrors] = React.useState<{ [key: string]: string }>({});
     const { openModal: openUploadModal, isOpen: isUploadModalOpen, closeModal: closeUploadModal } = useModal({});
 
-    const validateForm = () => validateDisasterInfo(disasterInfo.name, disasterInfo.location, setErrors);
+    const { data: hasData } = useQuery({
+        queryKey: ["company-has-data"],
+        queryFn: companyHasData,
+    });
+
+    const [errors, setErrors] = React.useState<Partial<Record<keyof DisasterInfo, string>>>({});
+
+    const validateForm = () => validateDisasterInfo(disasterInfo, setErrors);
 
     const handleProceed = () => {
         if (validateForm()) {
@@ -43,46 +53,61 @@ export default function DisasterInfoStep({
     return (
         <div className="flex flex-col gap-[40px]">
             <h3 className="text-[25px] font-bold">Disaster Specific Information</h3>
-            <Card className="p-[25px] border-[1px]">
+            <Card className="p-[25px] border-none shadow-none">
                 <div className="flex flex-col gap-2">
-                    <Label className="text-[16px]">
-                        Type of claim being filed <span className="text-red-500 ml-1">*</span>
+                    <Label htmlFor="disaster-name">
+                        Name of the disaster <span className="text-red-500 ml-1">*</span>
                     </Label>
                     <Input
-                        className={`h-[58px] rounded-[10px] text-[16px] ${errors.name ? "border-red-500" : ""}`}
-                        value={disasterInfo.name}
-                        placeholder="Enter a disaster name"
-                        onChange={(e) => {
-                            setDisasterInfo({ name: e.target.value });
-                            if (errors.name) setErrors({ ...errors, name: "" });
-                        }}
+                        id="disaster-name"
+                        className="h-10 bg-white shadow-none rounded-[10px]"
+                        value={disasterInfo.name ?? ""}
+                        onChange={(e) => setDisasterInfo({ name: e.target.value })}
                     />
-                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                 </div>
                 <div className="flex flex-col gap-2">
-                    <Label className="text-[16px]">
-                        Location of incident <span className="text-red-500 ml-1">*</span>
+                    <Label>
+                        Is this disaster tied to a FEMA disaster? <span className="text-red-500 ml-1">*</span>
                     </Label>
                     <Select
-                        value={disasterInfo.location}
-                        onValueChange={(value) => {
-                            setDisasterInfo({ location: value });
-                            if (errors.location) setErrors({ ...errors, location: "" });
-                        }}
+                        onValueChange={(value) => setDisasterInfo({ isFema: value === "yes" })}
+                        value={disasterInfo.isFema ? "yes" : "no"}
                     >
-                        <SelectTrigger
-                            className={`rounded-full px-[20px] py-[8px] w-[175px] ${errors.location ? "border-red-500" : ""}`}
-                        >
-                            <SelectValue placeholder="Select location" />
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select an option" />
                         </SelectTrigger>
                         <SelectContent>
-                            {locations?.map((l) => (
-                                <SelectItem key={l.id} value={l.id} className="text-[16px]">
-                                    {l.streetAddress}, {l.city}, {l.stateProvince} {l.postalCode}{" "}
-                                </SelectItem>
-                            ))}
+                            <SelectItem value="yes">Yes</SelectItem>
+                            <SelectItem value="no">No</SelectItem>
                         </SelectContent>
                     </Select>
+                </div>
+                {/* TODO: have the select options be actual disasters that happened in time frame? */}
+                {disasterInfo.isFema && (
+                    <div className="flex flex-col gap-2">
+                        <Label htmlFor="fema-disaster-id">FEMA Disaster ID</Label>
+                        <Input
+                            id="fema-disaster-id"
+                            className="h-10 bg-white shadow-none rounded-[10px]"
+                            value={disasterInfo.femaDisasterId ?? ""}
+                            onChange={(e) => setDisasterInfo({ femaDisasterId: e.target.value })}
+                        />
+                    </div>
+                )}
+                <div className="flex flex-col gap-2">
+                    <Label className="text-[16px]">
+                        Location of incident {(locations?.length ?? 0) > 1 ? "(choose one)" : null}{" "}
+                        <span className="text-red-500 ml-1">*</span>
+                    </Label>
+                    <LocationsCard
+                        onLocationSelect={(locationId) =>
+                            disasterInfo.location === locationId
+                                ? setDisasterInfo({ location: undefined })
+                                : setDisasterInfo({ location: locationId })
+                        }
+                        locationSelected={disasterInfo.location}
+                    />
+
                     {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
                 </div>
                 <div className="flex flex-col gap-2">
@@ -90,17 +115,21 @@ export default function DisasterInfoStep({
                     <Textarea
                         className="min-h-64 text-[16px]"
                         rows={5}
-                        placeholder="Begin typing or "
+                        placeholder="Begin typing"
                         value={disasterInfo.description}
                         onChange={(e) => setDisasterInfo({ description: e.target.value })}
                     />
                 </div>
             </Card>
-            <Card className="p-[25px] border-[1px]">
-                <h4 className="text-[24px] font-bold">Select Relevant Transactions</h4>
-                {/*<ExpenseTable />*/}
-            </Card>
-            <Card className="p-[25px] border-[1px] flex flex-col gap-[10px]">
+            <ExpenseTable
+                title="Select Relevant Transactions"
+                hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false}
+                rowOption={"collapsible"}
+                editableTags={true}
+                setSelections={(selections) => setDisasterInfo({ purchaseSelections: selections })}
+                selections={disasterInfo.purchaseSelections}
+            />
+            <Card className="p-[25px] flex flex-col gap-[10px] border-none shadow-none">
                 <h4 className="text-[24px] font-bold">Upload additional documents</h4>
                 <div className="flex flex-col gap-[16px]">
                     <Button className="w-fit h-fit rounded-full py-[12px] px-[20px]" onClick={openUploadModal}>
@@ -110,7 +139,7 @@ export default function DisasterInfoStep({
                         </Label>
                     </Button>
                     <div className="pl-3">
-                        {disasterInfo.additionalDocumets.map((element, idx) => (
+                        {disasterInfo.additionalDocuments.map((element, idx) => (
                             <div key={idx} className="p-1">
                                 <div className="bg-gray-200 flex flex-row items-center rounded-full w-fit">
                                     <CloudCheck size={30} className="pl-2" />
@@ -127,13 +156,14 @@ export default function DisasterInfoStep({
                     </Button>
                 </div>
             </Card>
-            <div className="flex justify-end gap-1">
-                <Button className="px-[20px] py-[12px] w-fit h-fit rounded-50 text-[16px]" onClick={handleStepBack}>
+            <div className="flex items-center justify-end gap-3 w-full">
+                <Button onClick={handleStepBack} className="text-sm bg-light-fuchsia text-fuchsia w-[70px]" size="lg">
                     Back
                 </Button>
                 <Button
-                    className="px-[20px] py-[12px] w-fit h-fit rounded-50 text-[16px] text-white bg-[#2e2f2d]"
+                    size="lg"
                     onClick={handleProceed}
+                    className="bg-fuchsia text-white px-[20px] py-[12px] w-[230px] h-[42px] text-[14px] rounded-50"
                 >
                     Proceed to Personal Information
                 </Button>
@@ -142,9 +172,9 @@ export default function DisasterInfoStep({
                 <UploadDocument
                     handleUploadFiles={(files: File[]) => {
                         closeUploadModal();
-                        setDisasterInfo({ additionalDocumets: files });
+                        setDisasterInfo({ additionalDocuments: files });
                     }}
-                    selectedFiles={disasterInfo.additionalDocumets}
+                    selectedFiles={disasterInfo.additionalDocuments}
                 />
             </Modal>
         </div>

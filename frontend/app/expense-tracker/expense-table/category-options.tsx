@@ -2,17 +2,16 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { X } from "lucide-react";
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
+import React from "react";
+
+const CATEGORY_MAX_CHARS = 20;
 
 interface CategoryLabelProps {
     category: string;
     updateCategory?: (category: string, lineItems: string[], removeCategory: boolean) => void;
     lineItemIds: string[];
     editableTags: boolean;
-}
-
-interface CategoryBadgeProps extends CategoryLabelProps {
-    allCategories: string[];
+    allCategories?: string[];
 }
 
 interface CreateCategoryProps {
@@ -22,7 +21,45 @@ interface CreateCategoryProps {
     lineItemIds: string[];
 }
 
-export default function CategoryLabel({ category, updateCategory, lineItemIds, editableTags }: CategoryLabelProps) {
+interface CategoryBadgeSpanProps {
+    category: string;
+    variant?: "default" | "flex";
+    clickable?: boolean;
+    children?: React.ReactNode;
+}
+
+export const CategoryBadgeSpan = React.forwardRef<HTMLSpanElement, CategoryBadgeSpanProps>(
+    ({ category, variant = "default", clickable = false, children, ...props }, ref) => {
+        const baseClasses = "px-2 py-1 rounded text-xs font-bold h-6 select-none";
+        const variantClasses = variant === "flex" ? "flex items-center gap-1 flex-shrink-0" : "inline-block";
+        const clickableClass = clickable ? "cursor-pointer" : "";
+
+        const displayText =
+            category.length > CATEGORY_MAX_CHARS ? `${category.substring(0, CATEGORY_MAX_CHARS)}...` : category;
+
+        return (
+            <span
+                ref={ref}
+                {...props}
+                className={`${baseClasses} ${variantClasses} ${clickableClass} text-black`}
+                style={{ backgroundColor: getTagColor(category).backgroundColor }}
+            >
+                {displayText}
+                {children}
+            </span>
+        );
+    }
+);
+
+CategoryBadgeSpan.displayName = "CategoryBadgeSpan";
+
+export default function CategoryLabel({
+    category,
+    updateCategory,
+    lineItemIds,
+    editableTags,
+    allCategories,
+}: CategoryLabelProps) {
     const categories = category.length > 0 ? category.split(",") : [];
 
     if (editableTags && updateCategory && categories.length === 0) {
@@ -43,7 +80,7 @@ export default function CategoryLabel({ category, updateCategory, lineItemIds, e
                 <CategoryBadge
                     key={index}
                     category={cat}
-                    allCategories={categories}
+                    allCategories={allCategories}
                     updateCategory={updateCategory}
                     lineItemIds={lineItemIds}
                     editableTags={editableTags}
@@ -60,27 +97,14 @@ export default function CategoryLabel({ category, updateCategory, lineItemIds, e
                 <PopoverTrigger asChild>
                     <button className="text-gray-400 text-sm hover:text-gray-600 underline">+ Add category</button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-4">
-                    <div className="space-y-2">
-                        <Input
-                            type="text"
-                            placeholder="Enter category name..."
-                            value={searchValue}
-                            onChange={(e) => setSearchValue(e.target.value)}
-                            maxLength={100}
-                            inputMode="text"
-                            className="h-8 w-full rounded-full bg-muted text-black text-sm border border-border/40 px-3
-                            focus-visible:ring-1 focus-visible:ring-ring/40
-                            placeholder:text-xs placeholder:text-black
-                            [&::placeholder]:text-xs [&::placeholder]:text-black"
-                        />
-                        <Create
-                            searchValue={searchValue}
-                            setSearchValue={setSearchValue}
-                            updateCategory={updateCategory!}
-                            lineItemIds={lineItemIds}
-                        />
-                    </div>
+                <PopoverContent className="w-64 p-0">
+                    <CategoryCommand
+                        searchValue={searchValue}
+                        setSearchValue={setSearchValue}
+                        updateCategory={updateCategory!}
+                        lineItemIds={lineItemIds}
+                        allCategories={allCategories ?? []}
+                    />
                 </PopoverContent>
             </Popover>
         );
@@ -93,108 +117,119 @@ export function CategoryBadge({
     updateCategory,
     lineItemIds,
     editableTags,
-}: CategoryBadgeProps) {
+}: CategoryLabelProps) {
     const [searchValue, setSearchValue] = useState("");
-    const displayCategory = category.length > 20 ? `${category.substring(0, 20)}...` : category;
 
-    if (!editableTags || !updateCategory) {
-        return (
-            <span
-                className="px-[8px] py-[4px] rounded-[4px] text-[12px] font-bold h-[24px] inline-block"
-                style={{ backgroundColor: getTagColor(category).backgroundColor }}
-            >
-                {displayCategory}
-            </span>
-        );
+    if (!editableTags || !updateCategory || !allCategories) {
+        return <CategoryBadgeSpan category={category} />;
     }
 
     return (
         <Popover>
             <PopoverTrigger asChild>
-                <span
-                    className="px-[8px] py-[4px] rounded-[4px] text-[12px] h-[24px] font-bold cursor-pointer inline-block"
-                    style={{ backgroundColor: getTagColor(category).backgroundColor }}
-                >
-                    {displayCategory}
-                </span>
+                <CategoryBadgeSpan category={category} clickable={true} />
             </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0">
-                <Command>
-                    <div className="flex items-center gap-2 border-b bg-muted/60 px-2 py-0" cmdk-input-wrapper="">
-                        <span
-                            className="flex items-center gap-1 px-[8px] py-[4px] h-[24px] rounded-[4px] text-[12px] font-bold text-black flex-shrink-0"
-                            style={getTagColor(category)}
-                        >
-                            {category}
+            <PopoverContent className="w-64 p-0">
+                <CategoryCommand
+                    searchValue={searchValue}
+                    setSearchValue={setSearchValue}
+                    updateCategory={updateCategory}
+                    lineItemIds={lineItemIds}
+                    allCategories={allCategories}
+                    headerContent={
+                        <CategoryBadgeSpan category={category} variant="flex">
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     updateCategory(category, lineItemIds, true);
                                 }}
-                                className="hover:bg-gray-100 hover:bg-opacity-20 rounded-full p-0.5"
+                                className="hover:bg-gray-100 hover:bg-opacity-20 rounded-full p-0.5 ml-1"
                             >
-                                <X className="h-3 w-3" />
+                                <X className="h-4 w-4" strokeWidth={1.5} />
                             </button>
-                        </span>
-                        <div
-                            className="flex-1
-                            [&_[data-slot=command-input-wrapper]]:border-0
-                            [&_[data-slot=command-input-wrapper]]:px-0
-                            [&_[data-slot=command-input-wrapper]]:h-auto
-                            [&_svg]:hidden"
-                        >
-                            <CommandInput
-                                value={searchValue}
-                                onValueChange={(value) => {
-                                    if (value.length <= 100) {
-                                        setSearchValue(value);
-                                    }
-                                }}
-                                className="overflow-hidden border-0 px-0 flex-1"
-                                inputMode="text"
-                            />
-                        </div>
-                    </div>
-                    <div className="px-3 py-0.5 text-xs text-muted-foreground border-b">
-                        Select an option or create one
-                    </div>
-                    <CommandEmpty>
-                        <Create
-                            searchValue={searchValue}
-                            setSearchValue={setSearchValue}
-                            updateCategory={updateCategory}
-                            lineItemIds={lineItemIds}
-                        />
-                    </CommandEmpty>
-                    <CommandGroup>
-                        {allCategories.map((cat) => (
-                            <CommandItem
-                                key={cat}
-                                onSelect={() => updateCategory(cat, lineItemIds, false)}
-                                className="flex items-center gap-2"
-                            >
-                                <span
-                                    className="px-[8px] py-[4px] h-[24px] rounded-[4px] text-[12px] font-bold text-black"
-                                    style={getTagColor(cat)}
-                                >
-                                    {cat}
-                                </span>
-                            </CommandItem>
-                        ))}
-                    </CommandGroup>
-                </Command>
+                        </CategoryBadgeSpan>
+                    }
+                />
             </PopoverContent>
         </Popover>
     );
 }
 
+interface CategoryCommandProps {
+    searchValue: string;
+    setSearchValue: (value: string) => void;
+    updateCategory: (category: string, lineItems: string[], removeCategory: boolean) => void;
+    lineItemIds: string[];
+    allCategories: string[];
+    headerContent?: React.ReactNode;
+}
+
+function CategoryCommand({
+    searchValue,
+    setSearchValue,
+    updateCategory,
+    lineItemIds,
+    allCategories,
+    headerContent,
+}: CategoryCommandProps) {
+    return (
+        <Command>
+            <div className="flex items-center gap-2 border-b bg-muted/60 px-2 py-0" cmdk-input-wrapper="">
+                {headerContent}
+                <div
+                    className="flex-1 [&_[data-slot=command-input-wrapper]]:border-0
+                [&_[data-slot=command-input-wrapper]]:px-0 [&_[data-slot=command-input-wrapper]]:h-auto [&_svg]:hidden"
+                >
+                    <CommandInput
+                        value={searchValue}
+                        onValueChange={(value) => {
+                            if (value.length <= 100) {
+                                setSearchValue(value);
+                            }
+                        }}
+                        className="overflow-hidden border-0 px-0 flex-1"
+                        inputMode="text"
+                    />
+                </div>
+            </div>
+            <div className="px-3 py-2 text-sm text-black">Select an option or create one</div>
+            <CommandEmpty className="py-0 pb-0.5">
+                <Create
+                    searchValue={searchValue}
+                    setSearchValue={setSearchValue}
+                    updateCategory={updateCategory}
+                    lineItemIds={lineItemIds}
+                />
+            </CommandEmpty>
+            <CommandGroup>
+                {allCategories.map((cat) => (
+                    <CommandItem
+                        key={cat}
+                        onSelect={() => updateCategory(cat, lineItemIds, false)}
+                        className="flex items-center gap-2"
+                    >
+                        <CategoryBadgeSpan category={cat} />
+                    </CommandItem>
+                ))}
+            </CommandGroup>
+        </Command>
+    );
+}
+
 function Create({ searchValue, updateCategory, lineItemIds, setSearchValue }: CreateCategoryProps) {
-    const displayText = searchValue.length > 15 ? `${searchValue.substring(0, 15)}...` : searchValue;
+    const previewColor = {
+        backgroundColor: "hsl(0, 0%, 85%)",
+        color: "#000000",
+    };
+
+    const displayText =
+        searchValue.length > CATEGORY_MAX_CHARS ? `${searchValue.substring(0, CATEGORY_MAX_CHARS)}...` : searchValue;
 
     return (
         <button
             type="button"
-            className="relative mt-1 flex cursor-pointer select-none items-center rounded-sm px-2 py-0.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground"
+            className="relative w-full flex cursor-pointer select-none items-center gap-2 rounded-sm px-3 py-1.5 text-sm
+             outline-none hover:bg-accent hover:text-accent-foreground"
             onClick={() => {
                 const name = searchValue.trim();
                 if (name) {
@@ -203,7 +238,10 @@ function Create({ searchValue, updateCategory, lineItemIds, setSearchValue }: Cr
                 }
             }}
         >
-            Create {displayText}
+            <span className="text-sm text-black">Create</span>
+            <span className="px-2 py-1 rounded text-xs font-bold h-6 inline-block text-black" style={previewColor}>
+                {displayText}
+            </span>
         </button>
     );
 }

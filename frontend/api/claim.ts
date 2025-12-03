@@ -2,12 +2,14 @@
 import {
     ConfirmDocumentUploadRequest,
     ConfirmDocumentUploadResponse,
+    CreateClaimPDFResponse,
     CreateClaimRequest,
     CreateClaimResponse,
-    CreatePDFForClaimResponse,
     GetClaimByIdResponse,
     GetClaimLineItemsResponse,
     GetCompanyClaimResponse,
+    LinkLineItemToClaimResponse,
+    LinkPurchaseToClaimResponse,
     UpdateClaimStatusRequest,
     UpdateClaimStatusResponse,
     UploadClaimRelatedDocumentsRequest,
@@ -128,7 +130,7 @@ export const uploadAndConfirmDocumentRelation = async (
         throw new Error(`S3 upload failed with status ${response.status}: ${errorText}`);
     }
 
-    const resp = await conformUploadedDocument(claimId, {
+    await conformUploadedDocument(claimId, {
         documentId: upload.documentId,
         key: upload.key,
         claimId: claimId,
@@ -175,8 +177,40 @@ export const conformUploadedDocument = async (
     return authWrapper<ConfirmDocumentUploadResponse>()(req);
 };
 
-export const fetchPDFForClaim = async (claimId: string): Promise<CreatePDFForClaimResponse> => {
-    const req = async (token: string): Promise<CreatePDFForClaimResponse> => {
+export const linkLineItemToClaim = async (claimId: string, purchaseLineItemId: string) => {
+    const req = async (token: string) => {
+        const client = getClient();
+        const { data, error, response } = await client.POST("/claims/line-item", {
+            headers: authHeader(token),
+            body: { claimId, purchaseLineItemId },
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<LinkLineItemToClaimResponse>()(req);
+};
+
+export const linkPurchaseToClaim = async (claimId: string, purchaseId: string) => {
+    const req = async (token: string) => {
+        const client = getClient();
+        const { data, error, response } = await client.POST("/claims/purchase", {
+            headers: authHeader(token),
+            body: { claimId, purchaseId },
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<LinkPurchaseToClaimResponse>()(req);
+};
+
+export const createClaimPDF = async (claimId: string) => {
+    const req = async (token: string) => {
         const client = getClient();
         const { data, error, response } = await client.GET("/claims/{id}/pdf", {
             headers: authHeader(token),
@@ -190,5 +224,5 @@ export const fetchPDFForClaim = async (claimId: string): Promise<CreatePDFForCla
             throw Error(error?.error);
         }
     };
-    return authWrapper<CreatePDFForClaimResponse>()(req);
+    return authWrapper<CreateClaimPDFResponse>()(req);
 };

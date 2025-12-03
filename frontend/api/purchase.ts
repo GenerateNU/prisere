@@ -1,5 +1,11 @@
 "use server";
-import { CreatePurchaseInput, CreatePurchaseResponse, PurchaseLineItemType } from "../types/purchase";
+import {
+    CreatePurchaseInput,
+    CreatePurchaseResponse,
+    FilteredPurchases,
+    PurchaseLineItemType,
+    PurchasesWithCount,
+} from "../types/purchase";
 import { authHeader, authWrapper, getClient } from "./client";
 
 export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate: Date): Promise<{ total: number }> => {
@@ -91,4 +97,47 @@ export const createPurchaseForCompany = async (newPurchase: CreatePurchaseInput)
     };
 
     return authWrapper<CreatePurchaseResponse>()(req);
+};
+
+export const fetchPurchases = async (filters: FilteredPurchases): Promise<PurchasesWithCount> => {
+    const req = async (token: string): Promise<PurchasesWithCount> => {
+        const client = getClient();
+        const { data, error, response } = await client.GET("/purchase", {
+            params: {
+                query: {
+                    categories: filters.categories,
+                    dateFrom: filters.dateFrom,
+                    dateTo: filters.dateTo,
+                    search: filters.search,
+                    sortBy: filters.sortBy,
+                    sortOrder: filters.sortOrder,
+                    pageNumber: filters.pageNumber,
+                    resultsPerPage: filters.resultsPerPage,
+                    type: filters.type,
+                },
+            },
+            headers: authHeader(token),
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<PurchasesWithCount>()(req);
+};
+
+export const fetchAllCategories = async (): Promise<string[]> => {
+    const req = async (token: string): Promise<string[]> => {
+        const client = getClient();
+        const { data, error, response } = await client.GET("/purchase/categories", {
+            headers: authHeader(token),
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<string[]>()(req);
 };

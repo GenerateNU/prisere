@@ -1,3 +1,5 @@
+import { BusinessInfo, DisasterInfo, PersonalInfo } from "@/types/claim";
+
 export const isValidDate = (dateString: string, dateObj: Date): boolean => {
     // Check MM/DD/YYYY format
     const regex = /^\d{2}\/\d{2}\/\d{4}$/;
@@ -106,9 +108,7 @@ export const validateAndSetDate = ({
 };
 
 export const validateBusinessInfo = (
-    businessName: string,
-    businessOwner: string,
-    businessType: string,
+    { businessName, businessOwner, businessType }: BusinessInfo,
     setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>
 ) => {
     const newErrors: { [key: string]: string } = {};
@@ -130,18 +130,17 @@ export const validateBusinessInfo = (
 };
 
 export const validateDisasterInfo = (
-    name: string,
-    locationId: string,
-    setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>
+    disasterInfo: DisasterInfo,
+    setErrors: React.Dispatch<React.SetStateAction<Partial<Record<keyof DisasterInfo, string>>>>
 ) => {
-    const newErrors: { [key: string]: string } = {};
+    const newErrors: Partial<Record<keyof DisasterInfo, string>> = {};
 
-    if (!name) {
-        newErrors.name = "Name is required";
+    if (!disasterInfo.location) {
+        newErrors.location = "Location is required";
     }
 
-    if (!locationId) {
-        newErrors.location = "Location is required";
+    if (disasterInfo.isFema && !disasterInfo.femaDisasterId) {
+        newErrors.femaDisasterId = "FEMA disaster ID is required";
     }
 
     setErrors(newErrors);
@@ -149,10 +148,7 @@ export const validateDisasterInfo = (
 };
 
 export const validatePersonalInfo = (
-    firstName: string,
-    lastName: string,
-    email: string,
-    phone: string,
+    { firstName, lastName, phone, email }: PersonalInfo,
     setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>
 ) => {
     const newErrors: { [key: string]: string } = {};

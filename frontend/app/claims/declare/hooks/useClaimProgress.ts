@@ -1,15 +1,24 @@
 "use client";
 
-import { createClaim, getClaimById, updateClaimStatus, uploadAndConfirmDocumentRelation } from "@/api/claim";
+import {
+    createClaim,
+    getClaimById,
+    linkLineItemToClaim,
+    linkPurchaseToClaim,
+    updateClaimStatus,
+    uploadAndConfirmDocumentRelation,
+} from "@/api/claim";
 import { createClaimLocationLink } from "@/api/claim-location";
 import { createSelfDisaster, updateSelfDisaster } from "@/api/self-disaster";
 import { getUser, updateUserInfo } from "@/api/user";
 import {
     BusinessInfo,
+    CLAIM_STEPS,
     ClaimStatusType,
     ClaimStepData,
     ClaimStepNumber,
     DisasterInfo,
+    incrementStep,
     InsurerInfo,
     isStep,
     PersonalInfo,
@@ -17,7 +26,7 @@ import {
     UploadClaimRelatedDocumentsRequest,
 } from "@/types/claim";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
+import { parseAsNumberLiteral, useQueryState } from "nuqs";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cleanExpiredTempData, clearTempData, loadTempData, saveTempData } from "../utils/tempStorage";
 
@@ -52,8 +61,6 @@ export function useClaimProgress(
     initialInsurerInfo: InsurerInfo
 ): UseClaimProgressReturn {
     const queryClient = useQueryClient();
-    const router = useRouter();
-    const searchParams = useSearchParams();
 
     const { data: userInfoData } = useQuery({
         queryKey: ["userInfo"],
@@ -61,23 +68,21 @@ export function useClaimProgress(
     });
 
     // Get claimId and step from URL
-    const urlClaimId = searchParams.get("claimId");
-    const urlStep = parseInt(searchParams.get("step") || "-2", 10);
+    const [claimId, setClaimId] = useQueryState("claimId");
+    const [step, setStep] = useQueryState("step", parseAsNumberLiteral(CLAIM_STEPS).withDefault(-2));
 
-    const [claimId, setClaimId] = useState(urlClaimId);
     const [status, setStatus] = useState<ClaimStatusType | null>(null);
-    const [step, setStepState] = useState<ClaimStepNumber>(urlStep as ClaimStepNumber);
     const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
 
     // Form state
-    const [disasterInfo, setDisasterInfoState] = useState<DisasterInfo>(initialDisasterInfo);
-    const [personalInfo, setPersonalInfoState] = useState<PersonalInfo>(initialPersonalInfo);
-    const [businessInfo, setBusinessInfoState] = useState<BusinessInfo>(initialBusinessInfo);
-    const [insurerInfo, setInsurerInfoState] = useState<InsurerInfo>(initialInsurerInfo);
+    const [disasterInfo, setDisasterInfoState] = useState(initialDisasterInfo);
+    const [personalInfo, setPersonalInfoState] = useState(initialPersonalInfo);
+    const [businessInfo, setBusinessInfoState] = useState(initialBusinessInfo);
+    const [insurerInfo, setInsurerInfoState] = useState(initialInsurerInfo);
 
     // Refs for debouncing
     const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-    const selfDisasterIdRef = useRef<string | null>(null);
+    const selfDisasterRef = useRef<string | null>(null);
 
     // Clean expired temp data on mount
     useEffect(() => {
@@ -86,11 +91,11 @@ export function useClaimProgress(
 
     // Load existing claim if claimId in URL
     useEffect(() => {
-        if (urlClaimId) {
-            loadExistingClaim(urlClaimId);
+        if (claimId) {
+            loadExistingClaim(claimId);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [urlClaimId]);
+    }, [claimId]);
 
     // Load existing claim from backend
     const loadExistingClaim = async (id: string) => {
@@ -100,46 +105,135 @@ export function useClaimProgress(
             setStatus(claim.status);
 
             if (claim.selfDisaster) {
-                selfDisasterIdRef.current = claim.selfDisaster.id;
-                setDisasterInfoState((prev) => ({
-                    ...prev,
-                    name: claim.selfDisaster?.name || "",
+                selfDisasterRef.current = claim.selfDisaster.id;
+            }
+
+            setDisasterInfoState((prev) => {
+                const startDate = claim.femaDisaster
+                    ? // TODO: [future] move these to the claim entity rather than disaster (self or fema)
+                      claim.femaDisaster.incidentBeginDate
+                    : claim.selfDisaster?.startDate;
+
+                const endDate = claim.femaDisaster ? claim.femaDisaster.incidentEndDate : claim.selfDisaster?.endDate;
+
+                return {
+                    name: claim.name || "",
                     description: claim.selfDisaster?.description || "",
-                    startDate: claim.selfDisaster?.startDate ? new Date(claim.selfDisaster.startDate) : null,
-                    endDate: claim.selfDisaster?.endDate ? new Date(claim.selfDisaster.endDate) : null,
-                    // Restore location from claimLocations if exists
+                    startDate: startDate ? new Date(startDate) : null,
+                    endDate: endDate ? new Date(endDate) : null,
                     location:
                         claim.claimLocations && claim.claimLocations.length > 0
                             ? claim.claimLocations[0].id
                             : prev.location,
-                }));
-            }
+                    ...(claim.femaDisaster
+                        ? { isFema: true, femaDisasterId: claim.femaDisaster.id }
+                        : { isFema: false, femaDisasterId: undefined }),
+                    additionalDocuments: [],
+                    // TODO: get these from the server
+                    purchaseSelections: { fullPurchaseIds: [], partialLineItemIds: claim.purchaseLineItemIds ?? [] },
+                };
+            });
 
-            // Load temp data if exists
+            // Merge temp data with server data if it exists
             if (step >= 0 && step <= 3) {
                 const tempData = loadTempData(id, step);
                 if (tempData) {
-                    // Apply temp data, but ensure dates are Date objects if they come from disaster info
                     if (isStep(step, 0, tempData)) {
-                        const processedTempData = {
-                            ...tempData,
-                            disasterInfo: {
-                                ...tempData.disasterInfo,
-                                startDate: tempData.disasterInfo.startDate
-                                    ? tempData.disasterInfo.startDate instanceof Date
-                                        ? tempData.disasterInfo.startDate
-                                        : new Date(tempData.disasterInfo.startDate)
-                                    : null,
-                                endDate: tempData.disasterInfo.endDate
-                                    ? tempData.disasterInfo.endDate instanceof Date
-                                        ? tempData.disasterInfo.endDate
-                                        : new Date(tempData.disasterInfo.endDate)
-                                    : null,
-                            },
-                        };
-                        applyTempData(step, processedTempData);
-                    } else {
-                        applyTempData(step, tempData);
+                        // Merge disaster info intelligently
+                        setDisasterInfoState((prev) => {
+                            const temp = tempData.disasterInfo;
+                            const merged: DisasterInfo = { ...prev };
+
+                            // Prefer non-empty temp values for user-editable fields
+                            if (temp.name !== undefined && temp.name.trim() !== "") {
+                                merged.name = temp.name;
+                            }
+                            if (temp.description !== undefined && temp.description.trim() !== "") {
+                                merged.description = temp.description;
+                            }
+
+                            // Dates: prefer temp if provided
+                            if (temp.startDate !== undefined) {
+                                merged.startDate =
+                                    temp.startDate instanceof Date
+                                        ? temp.startDate
+                                        : temp.startDate
+                                          ? new Date(temp.startDate)
+                                          : null;
+                            }
+                            if (temp.endDate !== undefined) {
+                                merged.endDate =
+                                    temp.endDate instanceof Date
+                                        ? temp.endDate
+                                        : temp.endDate
+                                          ? new Date(temp.endDate)
+                                          : null;
+                            }
+
+                            // Location: prefer temp if set
+                            if (temp.location !== undefined && temp.location !== "") {
+                                merged.location = temp.location;
+                            }
+
+                            // Purchase selections: merge arrays (union)
+                            if (temp.purchaseSelections) {
+                                merged.purchaseSelections = {
+                                    fullPurchaseIds: Array.from(
+                                        new Set([
+                                            ...prev.purchaseSelections.fullPurchaseIds,
+                                            ...temp.purchaseSelections.fullPurchaseIds,
+                                        ])
+                                    ),
+                                    partialLineItemIds: Array.from(
+                                        new Set([
+                                            ...prev.purchaseSelections.partialLineItemIds,
+                                            ...temp.purchaseSelections.partialLineItemIds,
+                                        ])
+                                    ),
+                                };
+                            }
+
+                            return merged;
+                        });
+                    } else if (isStep(step, 1, tempData)) {
+                        // Merge personal info
+                        setPersonalInfoState((prev) => {
+                            const temp = tempData.personalInfo;
+                            return {
+                                firstName:
+                                    temp.firstName && temp.firstName.trim() !== "" ? temp.firstName : prev.firstName,
+                                lastName: temp.lastName && temp.lastName.trim() !== "" ? temp.lastName : prev.lastName,
+                                email: temp.email && temp.email.trim() !== "" ? temp.email : prev.email,
+                                phone: temp.phone && temp.phone.trim() !== "" ? temp.phone : prev.phone,
+                            };
+                        });
+                    } else if (isStep(step, 2, tempData)) {
+                        // Merge business info
+                        setBusinessInfoState((prev) => {
+                            const temp = tempData.businessInfo;
+                            return {
+                                businessName:
+                                    temp.businessName && temp.businessName.trim() !== ""
+                                        ? temp.businessName
+                                        : prev.businessName,
+                                businessOwner:
+                                    temp.businessOwner && temp.businessOwner.trim() !== ""
+                                        ? temp.businessOwner
+                                        : prev.businessOwner,
+                                businessType:
+                                    temp.businessType && temp.businessType.trim() !== ""
+                                        ? temp.businessType
+                                        : prev.businessType,
+                            };
+                        });
+                    } else if (isStep(step, 3, tempData)) {
+                        // Merge insurer info
+                        setInsurerInfoState((prev) => {
+                            const temp = tempData.insurerInfo;
+                            return {
+                                id: temp.id ? temp.id : prev.id,
+                            };
+                        });
                     }
                 }
             }
@@ -148,32 +242,6 @@ export function useClaimProgress(
             setSaveStatus("error");
         }
     };
-
-    // Apply temp data to form state
-    const applyTempData = <T extends ClaimStepNumber>(step: T, tempData: ClaimStepData<T>) => {
-        if (isStep(step, 0, tempData)) {
-            setDisasterInfoState((prev) => ({ ...prev, ...tempData.disasterInfo }));
-        } else if (isStep(step, 1, tempData)) {
-            setPersonalInfoState((prev) => ({ ...prev, ...tempData.personalInfo }));
-        } else if (isStep(step, 2, tempData)) {
-            setBusinessInfoState((prev) => ({ ...prev, ...tempData.businessInfo }));
-        } else if (isStep(step, 3, tempData)) {
-            setInsurerInfoState((prev) => ({ ...prev, ...tempData.insurerInfo }));
-        }
-    };
-
-    // Update URL with current state
-    const updateURL = useCallback(
-        (newClaimId: string | null, newStep: number) => {
-            const params = new URLSearchParams();
-            if (newClaimId) {
-                params.set("claimId", newClaimId);
-            }
-            params.set("step", newStep.toString());
-            router.push(`/claims/declare?${params.toString()}`, { scroll: false });
-        },
-        [router]
-    );
 
     // Debounced save to localStorage
     const debouncedSave = useCallback(
@@ -196,14 +264,14 @@ export function useClaimProgress(
                 }, 2000);
             }, DEBOUNCE_DELAY);
         },
-        [claimId, step]
+        [claimId]
     );
 
     // Setters with auto-save
     const setDisasterInfo = useCallback(
         (info: Partial<DisasterInfo>) => {
             setDisasterInfoState((prev) => {
-                const updated = { ...prev, ...info };
+                const updated = { ...prev, ...info } as DisasterInfo;
                 if (claimId && step === 0) {
                     debouncedSave(step, { disasterInfo: updated });
                 }
@@ -252,14 +320,7 @@ export function useClaimProgress(
         [claimId, step, debouncedSave]
     );
 
-    const setStep = useCallback(
-        (newStep: ClaimStepNumber) => {
-            setStepState(newStep);
-            updateURL(claimId, newStep);
-        },
-        [claimId, updateURL]
-    );
-
+    // Helper to upload additional documents to S3
     const saveAdditionalDocumentsToS3 = async (files: File[], claimId: string) => {
         const transformedPayloads: Omit<UploadClaimRelatedDocumentsRequest, "claimId" | "documentType">[] = files.map(
             (file) => ({ fileName: file.name, fileType: file.type })
@@ -277,69 +338,114 @@ export function useClaimProgress(
             setSaveStatus("saving");
 
             // Merge provided data with existing state
-            const dataToUse = data ? { ...disasterInfo, ...data } : disasterInfo;
+            const dataToUse = (data ? { ...disasterInfo, ...data } : disasterInfo) as DisasterInfo;
+
+            let currentClaimId = claimId;
 
             // Create or update self disaster
-            if (selfDisasterIdRef.current) {
-                // Update existing
-                await updateSelfDisaster(selfDisasterIdRef.current, {
-                    name: dataToUse.name,
+            if (selfDisasterRef.current) {
+                // Update existing self disaster
+                await updateSelfDisaster(selfDisasterRef.current, {
+                    // name: dataToUse.name,
                     description: dataToUse.description,
                     startDate: dataToUse.startDate?.toISOString().split("T")[0],
                     endDate: dataToUse.endDate?.toISOString().split("T")[0],
                 });
 
-                if (dataToUse.additionalDocumets.length > 0) {
-                    await saveAdditionalDocumentsToS3(dataToUse.additionalDocumets, selfDisasterIdRef.current);
+                // Upload additional documents if any
+                if (dataToUse.additionalDocuments?.length > 0) {
+                    await saveAdditionalDocumentsToS3(dataToUse.additionalDocuments, selfDisasterRef.current);
                 }
             } else {
-                // Create new
-                const selfDisaster = await createSelfDisaster({
-                    name: dataToUse.name,
-                    description: dataToUse.description,
-                    startDate:
-                        dataToUse.startDate?.toISOString().split("T")[0] || new Date().toISOString().split("T")[0],
-                    endDate: dataToUse.endDate?.toISOString().split("T")[0],
-                });
-                selfDisasterIdRef.current = selfDisaster.id;
+                if (dataToUse.isFema) {
+                    const newClaim = await createClaim({
+                        femaDisasterId: dataToUse.femaDisasterId,
+                        status: "IN_PROGRESS_DISASTER",
+                        name: dataToUse.name,
+                    });
 
-                // Create claim
-                const newClaim = await createClaim({
-                    selfDisasterId: selfDisaster.id,
-                    status: "IN_PROGRESS_DISASTER",
-                });
-                setClaimId(newClaim.id);
-                setStatus(newClaim.status);
+                    setClaimId(newClaim.id);
+                    currentClaimId = newClaim.id;
+                    selfDisasterRef.current = null;
+                    setStatus(newClaim.status);
 
-                if (dataToUse.additionalDocumets.length > 0) {
-                    await saveAdditionalDocumentsToS3(dataToUse.additionalDocumets, selfDisaster.id);
-                }
-
-                // Link location if provided
-                if (dataToUse.location) {
                     await createClaimLocationLink({
                         claimId: newClaim.id,
                         locationAddressId: dataToUse.location,
                     });
+                } else {
+                    const selfDisaster = await createSelfDisaster({
+                        // name: dataToUse.name,
+                        description: dataToUse.description,
+                        startDate:
+                            dataToUse.startDate?.toISOString().split("T")[0] || new Date().toISOString().split("T")[0],
+                        endDate: dataToUse.endDate?.toISOString().split("T")[0],
+                    });
+                    selfDisasterRef.current = selfDisaster.id;
+
+                    const newClaim = await createClaim({
+                        selfDisasterId: selfDisaster.id,
+                        status: "IN_PROGRESS_DISASTER",
+                        name: dataToUse.name,
+                    });
+
+                    setClaimId(newClaim.id);
+                    currentClaimId = newClaim.id;
+                    setStatus(newClaim.status);
+
+                    // Upload additional documents if any
+                    if (dataToUse.additionalDocuments?.length > 0) {
+                        await saveAdditionalDocumentsToS3(dataToUse.additionalDocuments, selfDisaster.id);
+                    }
+
+                    // Link location if provided
+                    if (dataToUse.location) {
+                        await createClaimLocationLink({
+                            claimId: newClaim.id,
+                            locationAddressId: dataToUse.location,
+                        });
+                    }
                 }
 
                 // Update URL with new claimId
-                updateURL(newClaim.id, step + 1);
+                setStep(incrementStep(step));
+            }
+
+            // Link selected purchases and line items to claim
+            if (
+                currentClaimId &&
+                (dataToUse.purchaseSelections.fullPurchaseIds.length > 0 ||
+                    dataToUse.purchaseSelections.partialLineItemIds.length > 0)
+            ) {
+                const { fullPurchaseIds, partialLineItemIds } = dataToUse.purchaseSelections;
+
+                // Link full purchases
+                const purchasePromises = fullPurchaseIds.map((purchaseId) =>
+                    linkPurchaseToClaim(currentClaimId!, purchaseId)
+                );
+
+                // Link individual line items
+                const lineItemPromises = partialLineItemIds.map((lineItemId) =>
+                    linkLineItemToClaim(currentClaimId!, lineItemId)
+                );
+
+                // Execute all API calls in parallel
+                await Promise.all([...purchasePromises, ...lineItemPromises]);
             }
 
             // Update state with committed data
             if (data) {
-                setDisasterInfoState((prev) => ({ ...prev, ...data }));
+                setDisasterInfoState((prev) => ({ ...prev, ...data }) as DisasterInfo);
             }
 
             // Clear temp data for this step
-            if (claimId) {
-                clearTempData(claimId);
+            if (currentClaimId) {
+                clearTempData(currentClaimId);
             }
 
             // Update claim status to next step
-            if (claimId) {
-                await updateClaimStatus(claimId, {
+            if (currentClaimId) {
+                await updateClaimStatus(currentClaimId, {
                     status: "IN_PROGRESS_PERSONAL",
                 });
                 setStatus("IN_PROGRESS_PERSONAL");
@@ -435,14 +541,15 @@ export function useClaimProgress(
                 setInsurerInfoState((prev) => ({ ...prev, ...data }));
             }
 
-            // Update claim with insurance policy if provided
-            await updateClaimStatus(claimId, {
-                status: "IN_PROGRESS_EXPORT",
-                // insurancePolicyId can be added here if we have it
-            });
-            setStatus("IN_PROGRESS_EXPORT");
+            if (insurerInfo.id) {
+                // Update claim with insurance policy if provided
+                await updateClaimStatus(claimId, {
+                    status: "IN_PROGRESS_EXPORT",
+                    insurancePolicyId: insurerInfo.id,
+                });
+            }
 
-            // Clear temp data
+            setStatus("IN_PROGRESS_EXPORT");
             clearTempData(claimId);
 
             setSaveStatus("saved");
@@ -457,7 +564,6 @@ export function useClaimProgress(
     const finalizeClaimSubmission = async () => {
         try {
             if (!claimId) return;
-
             setSaveStatus("saving");
 
             // Update claim status to FILED
@@ -484,13 +590,12 @@ export function useClaimProgress(
         }
         setClaimId(null);
         setStatus(null);
-        setStepState(-2);
+        setStep(-2);
         setDisasterInfoState(initialDisasterInfo);
         setPersonalInfoState(initialPersonalInfo);
         setBusinessInfoState(initialBusinessInfo);
         setInsurerInfoState(initialInsurerInfo);
-        selfDisasterIdRef.current = null;
-        router.push("/claims/declare");
+        selfDisasterRef.current = null;
     };
 
     return {

@@ -22,11 +22,13 @@ import { ClaimService, IClaimService } from "../claim/service";
 import { ClaimTransaction, IClaimTransaction } from "../claim/transaction";
 import { ClaimPDFGenerationResponseSchema, LinkBusinessDocumentToClaimRequestSchema } from "../claim/types";
 import { DocumentTransaction, IDocumentTransaction } from "../documents/transaction";
+import { CompanyTransaction, ICompanyTransaction } from "../company/transaction";
 
 export const createOpenAPIClaimRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const claimTransaction: IClaimTransaction = new ClaimTransaction(db);
     const documentTransaction: IDocumentTransaction = new DocumentTransaction(db);
-    const claimService: IClaimService = new ClaimService(claimTransaction, documentTransaction, db);
+    const companyTransaction: ICompanyTransaction = new CompanyTransaction(db);
+    const claimService: IClaimService = new ClaimService(claimTransaction, documentTransaction, companyTransaction, db);
     const claimController: IClaimController = new ClaimController(claimService);
 
     openApi.openapi(createClaimRoute, (ctx) => claimController.createClaim(ctx));

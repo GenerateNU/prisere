@@ -3,9 +3,22 @@
 import { getCompany, getCompanyLocations } from "@/api/company";
 import { getUser } from "@/api/user";
 import Progress from "@/components/progress";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ClaimStepData, ClaimStepNumber, decrementStep, DisasterInfo, incrementStep, isStep } from "@/types/claim";
+import {
+    BusinessInfo,
+    ClaimStepData,
+    ClaimStepNumber,
+    decrementStep,
+    DisasterInfo,
+    incrementStep,
+    InsurerInfo,
+    isStep,
+    PersonalInfo,
+} from "@/types/claim";
 import { useQuery } from "@tanstack/react-query";
+import { CheckIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { Suspense } from "react";
 import BusinessInfoStep from "./BusinessInfoStep";
 import { SaveStatusIndicator } from "./components/SaveStatusIndicator";
@@ -13,11 +26,23 @@ import DisasterInfoStep from "./DisasterInfoStep";
 import ExportStep from "./ExportStep";
 import { useClaimProgress } from "./hooks/useClaimProgress";
 import IncidentDateStep from "./IncidentDateStep";
-import InsurerInfoStep from "./InsurerInfoStep";
+import InsuranceInfoStep from "./InsuranceInfoStep";
 import PersonalInfoStep from "./PersonalInfoStep";
 import StartStep from "./StartStep";
 
+/**
+ * The steps that are displayed in the progress bar
+ */
+const progressSteps = [
+    { label: "Disaster Information", step: 0 },
+    { label: "Personal Information", step: 1 },
+    { label: "Business Information", step: 2 },
+    { label: "Insurance Information", step: 3 },
+    { label: "Export Report", step: 4 },
+] satisfies { label: string; step: ClaimStepNumber }[];
+
 function DeclareDisasterContent() {
+    const router = useRouter();
     const { data: businessInfoData, isSuccess: businessInfoSuccess } = useQuery({
         queryKey: ["businessInfo"],
         queryFn: getCompany,
@@ -40,25 +65,30 @@ function DeclareDisasterContent() {
         endDate: null,
         location: "",
         description: "",
-        additionalDocumets: [],
-    };
+        additionalDocuments: [],
+        purchaseSelections: {
+            fullPurchaseIds: [],
+            partialLineItemIds: [],
+        },
+        isFema: false,
+    } satisfies DisasterInfo;
 
     const initialPersonalInfo = {
         firstName: userInfoData?.firstName || "",
         lastName: userInfoData?.lastName || "",
         email: userInfoData?.email || "",
         phone: userInfoData?.phoneNumber || "",
-    };
+    } satisfies PersonalInfo;
 
     const initialBusinessInfo = {
         businessName: businessInfoData?.name || "",
         businessOwner: businessInfoData?.businessOwnerFullName || "",
-        businessType: businessInfoData?.companyType || "",
-    };
+        businessType: businessInfoData?.companyType || "LLC",
+    } satisfies BusinessInfo;
 
     const initialInsurerInfo = {
-        name: "test",
-    };
+        id: "",
+    } satisfies InsurerInfo;
 
     // Use the claim progress hook
     const {
@@ -127,7 +157,7 @@ function DeclareDisasterContent() {
         } else if (isStep(step, 4, validatedData)) {
             // Finalize submission
             await finalizeClaimSubmission();
-            setStep(5);
+            router.push("/claims");
         } else {
             setStep(incrementStep(step));
         }
@@ -135,6 +165,34 @@ function DeclareDisasterContent() {
 
     const handleStepBack = () => {
         setStep(decrementStep(step));
+    };
+
+    const handleSaveAndClose = async () => {
+        try {
+            // Save current step's data based on which step we're on
+            if (step === 0) {
+                // Disaster info step - commit disaster step (creates claim if needed)
+                await commitDisasterStep();
+            } else if (step === 1 && claimId) {
+                // Personal info step
+                await commitPersonalStep();
+            } else if (step === 2 && claimId) {
+                // Business info step
+                await commitBusinessStep();
+            } else if (step === 3 && claimId) {
+                // Insurance info step
+                await commitInsurerStep();
+            }
+            // Step 4 (Export) doesn't need saving as it's already saved
+            // Step -1 and -2 don't have data to save yet
+
+            // Redirect to claims page
+            router.push("/claims");
+        } catch (error) {
+            console.error("Error saving and closing:", error);
+            // Still redirect even if there's an error
+            router.push("/claims");
+        }
     };
 
     const steps = [
@@ -188,14 +246,13 @@ function DeclareDisasterContent() {
                     setBusinessInfo={setBusinessInfo}
                     handleStepForward={(info) => handleStepForward(2, { businessInfo: info })}
                     handleStepBack={handleStepBack}
-                    locations={companyLocations}
                 />
             ),
         },
         {
             step: 3,
             render: (
-                <InsurerInfoStep
+                <InsuranceInfoStep
                     insurerInfo={insurerInfo}
                     setInsurerInfo={setInsurerInfo}
                     handleStepForward={(info) => handleStepForward(3, { insurerInfo: info })}
@@ -205,42 +262,37 @@ function DeclareDisasterContent() {
         },
         {
             step: 4,
-            render: <ExportStep claimId={claimId || "none"} />,
+            render: <ExportStep claimId={claimId} handleStepForward={() => handleStepForward(4, null)} />,
         },
     ] satisfies { step: ClaimStepNumber; render: React.ReactNode }[];
 
     const currentStep = steps.find((s) => s.step === step);
-    const claimReportSteps = [
-        { label: "Disaster Info", step: 0 },
-        { label: "Personal Info", step: 1 },
-        { label: "Business Info", step: 2 },
-        { label: "Insurer Info", step: 3 },
-        { label: "Export Report", step: 4 },
-    ] satisfies { label: string; step: ClaimStepNumber }[];
 
     return (
-        <div className={cn(`flex flex-col px-[20%] pt-[70px] min-h-screen pb-8`, step === 1 && "justify-center")}>
+        <div
+            className={cn(
+                `bg-slate flex flex-col px-[20%] pt-[70px] min-h-screen pb-8`,
+                step === 1 && "justify-center"
+            )}
+        >
             {step > -1 && step !== 5 && (
                 <div className="">
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-[40px] font-bold">Declare Disaster</h2>
                         <SaveStatusIndicator status={saveStatus} />
+                        <Button
+                            className="text-sm bg-light-fuchsia text-fuchsia w-fit py-2 px-3 ml-auto hover:bg-light-fuchsia/80"
+                            size="lg"
+                            onClick={handleSaveAndClose}
+                            disabled={saveStatus === "saving"}
+                        >
+                            Save and Close
+                            <CheckIcon className="size-5" />
+                        </Button>
                     </div>
-                    <Progress progress={step} items={claimReportSteps} />
-                </div>
-            )}
-            {claimId && step >= 0 && (
-                <div className="mb-4">
-                    <p className="text-sm text-gray-500">
-                        {step > 0 && "Resuming claim - "}Claim ID: {claimId.substring(0, 8)}...
-                    </p>
+                    <Progress progress={step} items={progressSteps} />
                 </div>
             )}
             {currentStep?.render}
-            {/**
-             * WHEN ADDING THE TABLE TO LINK PURCHASES TO CLAIMS USE THIS:
-             * <ExpenseTable title={"Select Relevant Transactions"} rowOption={'checkbox'} editableTags={false}/>;
-             */}
         </div>
     );
 }

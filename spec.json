@@ -1388,6 +1388,11 @@
                       "type": "string",
                       "minLength": 1
                     },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 250
+                    },
                     "status": {
                       "type": "string",
                       "enum": [
@@ -1469,11 +1474,6 @@
                         "id": {
                           "type": "string"
                         },
-                        "name": {
-                          "type": "string",
-                          "minLength": 1,
-                          "maxLength": 250
-                        },
                         "description": {
                           "type": "string"
                         },
@@ -1496,7 +1496,6 @@
                       },
                       "required": [
                         "id",
-                        "name",
                         "description",
                         "startDate",
                         "createdAt",
@@ -1611,11 +1610,19 @@
                           "long"
                         ]
                       }
+                    },
+                    "purchaseLineItemIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
                     }
                   },
                   "required": [
                     "id",
-                    "createdAt"
+                    "name",
+                    "createdAt",
+                    "purchaseLineItemIds"
                   ]
                 }
               }
@@ -5398,8 +5405,16 @@
                       "IN_PROGRESS_EXPORT"
                     ],
                     "default": "ACTIVE"
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 250
                   }
-                }
+                },
+                "required": [
+                  "name"
+                ]
               }
             }
           }
@@ -5495,11 +5510,6 @@
                         "id": {
                           "type": "string"
                         },
-                        "name": {
-                          "type": "string",
-                          "minLength": 1,
-                          "maxLength": 250
-                        },
                         "description": {
                           "type": "string"
                         },
@@ -5522,7 +5532,6 @@
                       },
                       "required": [
                         "id",
-                        "name",
                         "description",
                         "startDate",
                         "createdAt",
@@ -5707,6 +5716,11 @@
                         "type": "string",
                         "minLength": 1
                       },
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 250
+                      },
                       "status": {
                         "type": "string",
                         "enum": [
@@ -5788,11 +5802,6 @@
                           "id": {
                             "type": "string"
                           },
-                          "name": {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 250
-                          },
                           "description": {
                             "type": "string"
                           },
@@ -5815,7 +5824,6 @@
                         },
                         "required": [
                           "id",
-                          "name",
                           "description",
                           "startDate",
                           "createdAt",
@@ -5930,11 +5938,19 @@
                             "long"
                           ]
                         }
+                      },
+                      "purchaseLineItemIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
                       }
                     },
                     "required": [
                       "id",
-                      "createdAt"
+                      "name",
+                      "createdAt",
+                      "purchaseLineItemIds"
                     ]
                   }
                 }
@@ -6012,6 +6028,11 @@
                     "id": {
                       "type": "string",
                       "minLength": 1
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 250
                     },
                     "status": {
                       "type": "string",
@@ -6094,11 +6115,6 @@
                         "id": {
                           "type": "string"
                         },
-                        "name": {
-                          "type": "string",
-                          "minLength": 1,
-                          "maxLength": 250
-                        },
                         "description": {
                           "type": "string"
                         },
@@ -6121,7 +6137,6 @@
                       },
                       "required": [
                         "id",
-                        "name",
                         "description",
                         "startDate",
                         "createdAt",
@@ -6236,11 +6251,19 @@
                           "long"
                         ]
                       }
+                    },
+                    "purchaseLineItemIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
                     }
                   },
                   "required": [
                     "id",
-                    "createdAt"
+                    "name",
+                    "createdAt",
+                    "purchaseLineItemIds"
                   ]
                 }
               }
@@ -6422,6 +6445,11 @@
                       "type": "string",
                       "minLength": 1
                     },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 250
+                    },
                     "status": {
                       "type": "string",
                       "enum": [
@@ -6503,11 +6531,6 @@
                         "id": {
                           "type": "string"
                         },
-                        "name": {
-                          "type": "string",
-                          "minLength": 1,
-                          "maxLength": 250
-                        },
                         "description": {
                           "type": "string"
                         },
@@ -6530,7 +6553,6 @@
                       },
                       "required": [
                         "id",
-                        "name",
                         "description",
                         "startDate",
                         "createdAt",
@@ -6645,11 +6667,19 @@
                           "long"
                         ]
                       }
+                    },
+                    "purchaseLineItemIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
                     }
                   },
                   "required": [
                     "id",
-                    "createdAt"
+                    "name",
+                    "createdAt",
+                    "purchaseLineItemIds"
                   ]
                 }
               }
@@ -7264,7 +7294,7 @@
             }
           },
           "404": {
-            "description": "Claim or purchase line items not found"
+            "description": "Claim or document not found"
           },
           "500": {
             "description": "Link Creation Errors",
@@ -8802,11 +8832,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 250
-                  },
                   "description": {
                     "type": "string"
                   },
@@ -8820,7 +8845,6 @@
                   }
                 },
                 "required": [
-                  "name",
                   "description",
                   "startDate"
                 ]
@@ -8838,11 +8862,6 @@
                   "properties": {
                     "id": {
                       "type": "string"
-                    },
-                    "name": {
-                      "type": "string",
-                      "minLength": 1,
-                      "maxLength": 250
                     },
                     "description": {
                       "type": "string"
@@ -8866,7 +8885,6 @@
                   },
                   "required": [
                     "id",
-                    "name",
                     "description",
                     "startDate",
                     "createdAt",
@@ -8941,11 +8959,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 250
-                  },
                   "description": {
                     "type": "string"
                   },
@@ -8973,11 +8986,6 @@
                     "id": {
                       "type": "string"
                     },
-                    "name": {
-                      "type": "string",
-                      "minLength": 1,
-                      "maxLength": 250
-                    },
                     "description": {
                       "type": "string"
                     },
@@ -9000,7 +9008,6 @@
                   },
                   "required": [
                     "id",
-                    "name",
                     "description",
                     "startDate",
                     "createdAt",
@@ -10502,6 +10509,11 @@
                                   "type": "string",
                                   "minLength": 1
                                 },
+                                "name": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 250
+                                },
                                 "status": {
                                   "type": "string",
                                   "enum": [
@@ -10721,11 +10733,19 @@
                                       "long"
                                     ]
                                   }
+                                },
+                                "purchaseLineItemIds": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
                                 }
                               },
                               "required": [
                                 "id",
-                                "createdAt"
+                                "name",
+                                "createdAt",
+                                "purchaseLineItemIds"
                               ]
                             }
                           }

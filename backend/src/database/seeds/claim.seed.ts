@@ -7,6 +7,7 @@ const seededClaims = [
     {
         // Claim 1 - NEU to Disaster 1
         id: "4b3a2f1e-0d9c-8b7a-6f5e-4d3c2b1a0f9e",
+        name: "Claim 1",
         createdAt: new Date(),
         updatedAt: new Date(),
         companyId: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
@@ -16,6 +17,7 @@ const seededClaims = [
     {
         // Claim 2 - NEU to Disaster 4
         id: "7e8f9a0b-1c2d-3e4f-5a6b-7c8d9e0f1a2b",
+        name: "Claim 2",
         createdAt: new Date(),
         updatedAt: new Date(),
         companyId: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
@@ -25,6 +27,7 @@ const seededClaims = [
     {
         // Claim 3 - Big Corp to Disaster 5
         id: "0c1d2e3f-4a5b-6c7d-8e9f-0a1b2c3d4e5f",
+        name: "Claim 3",
         createdAt: new Date(),
         updatedAt: new Date(),
         companyId: "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
@@ -34,6 +37,7 @@ const seededClaims = [
     {
         // Claim 4 - Small LLC to Disaster 3
         id: "3f4e5d6c-7b8a-9f0e-1d2c-3b4a5f6e7d8c",
+        name: "Claim 4",
         createdAt: new Date(),
         updatedAt: new Date(),
         companyId: "0b6d17e5-37fa-4fe6-bca5-1a18051ae222",
@@ -43,6 +47,7 @@ const seededClaims = [
     {
         // Claim 5 - Business to Disaster 3
         id: "bdf8bcfe-23e1-41b6-ba4f-e846efbaaebe",
+        name: "Claim 5",
         createdAt: new Date(),
         updatedAt: new Date(),
         companyId: "7f8e9d0c-1b2a-3c4d-5e6f-7a8b9c0d1e2f",

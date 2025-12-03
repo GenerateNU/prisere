@@ -199,11 +199,13 @@ export class ClaimTransaction implements IClaimTransaction {
                     claimLocations: {
                         locationAddress: true,
                     },
+                    purchaseLineItems: true,
                 },
             });
 
             return result.map((claim) => ({
                 id: claim.id,
+                name: claim.name,
                 status: claim.status,
                 createdAt: claim.createdAt.toISOString(),
                 updatedAt: claim.updatedAt?.toISOString(),
@@ -235,6 +237,7 @@ export class ClaimTransaction implements IClaimTransaction {
                 claimLocations: claim.claimLocations
                     ?.map((cl) => cl.locationAddress)
                     .filter((loc) => loc !== null && loc !== undefined),
+                purchaseLineItemIds: claim.purchaseLineItems?.map((item) => item.id) ?? [],
             }));
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
@@ -260,6 +263,19 @@ export class ClaimTransaction implements IClaimTransaction {
 
     async linkClaimToLineItem(payload: LinkClaimToLineItemDTO): Promise<LinkClaimToLineItemResponse | null> {
         try {
+            const existingLink = await this.db.manager
+                .createQueryBuilder()
+                .from("claim_purchase_line_items", "bridge")
+                .where("bridge.claimId = :claimId", { claimId: payload.claimId })
+                .andWhere("bridge.purchaseLineItemId = :purchaseLineItemId", {
+                    purchaseLineItemId: payload.purchaseLineItemId,
+                })
+                .getRawOne();
+
+            if (existingLink) {
+                return payload;
+            }
+
             await this.db.manager
                 .createQueryBuilder()
                 .relation(Claim, "purchaseLineItems")
@@ -357,6 +373,7 @@ export class ClaimTransaction implements IClaimTransaction {
                 claimLocations: {
                     locationAddress: true,
                 },
+                purchaseLineItems: true,
             },
         });
         if (claim) {
@@ -391,7 +408,8 @@ export class ClaimTransaction implements IClaimTransaction {
                     : undefined,
                 claimLocations: claim.claimLocations
                     ?.map((cl) => cl.locationAddress)
-                    .filter((loc): loc is NonNullable<typeof loc> => loc !== null && loc !== undefined),
+                    .filter((loc) => loc !== null && loc !== undefined),
+                purchaseLineItemIds: claim.purchaseLineItems?.map((item) => item.id) ?? [],
             };
         }
         return null;
@@ -408,6 +426,7 @@ export class ClaimTransaction implements IClaimTransaction {
                     locationAddress: true,
                 },
                 purchaseLineItems: true,
+                insurancePolicy: true,
             },
         });
 
@@ -459,6 +478,7 @@ export class ClaimTransaction implements IClaimTransaction {
             averageIncome: incomeLastThreeYears / 3,
             pastRevenues: revenues,
             pastPurchases: purchases,
+            insuranceInfo: claimInfo.insurancePolicy || undefined,
         };
     }
 
@@ -473,6 +493,7 @@ export class ClaimTransaction implements IClaimTransaction {
                     claimLocations: {
                         locationAddress: true,
                     },
+                    purchaseLineItems: true,
                 },
             });
 
@@ -482,6 +503,7 @@ export class ClaimTransaction implements IClaimTransaction {
 
             return {
                 id: claim.id,
+                name: claim.name,
                 status: claim.status,
                 createdAt: claim.createdAt.toISOString(),
                 updatedAt: claim.updatedAt?.toISOString(),
@@ -512,6 +534,7 @@ export class ClaimTransaction implements IClaimTransaction {
                 claimLocations: claim.claimLocations
                     ?.map((cl) => cl.locationAddress)
                     .filter((loc) => loc !== null && loc !== undefined),
+                purchaseLineItemIds: claim.purchaseLineItems?.map((item) => item.id) ?? [],
             };
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
@@ -531,6 +554,7 @@ export class ClaimTransaction implements IClaimTransaction {
                     femaDisaster: true,
                     selfDisaster: true,
                     insurancePolicy: true,
+                    purchaseLineItems: true,
                 },
             });
 
@@ -567,6 +591,7 @@ export class ClaimTransaction implements IClaimTransaction {
 
             return {
                 id: result.id,
+                name: result.name,
                 status: result.status,
                 createdAt: result.createdAt.toISOString(),
                 updatedAt: result.updatedAt?.toISOString(),
@@ -597,6 +622,7 @@ export class ClaimTransaction implements IClaimTransaction {
                 claimLocations: result.claimLocations
                     ?.map((cl) => cl.locationAddress)
                     .filter((loc) => loc !== null && loc !== undefined),
+                purchaseLineItemIds: result.purchaseLineItems?.map((item) => item.id) ?? [],
             };
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
