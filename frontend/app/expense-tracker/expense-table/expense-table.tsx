@@ -5,7 +5,7 @@ import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from
 import { PurchaseSelections } from "@/types/claim";
 import { FilteredPurchases, PurchaseLineItemType, PurchaseWithLineItems } from "@/types/purchase";
 import { useQuery } from "@tanstack/react-query";
-import { FileUp, Printer, Loader2 } from "lucide-react";
+import { FileUp, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { FaExclamation } from "react-icons/fa6";
 import { IoFilterOutline } from "react-icons/io5";

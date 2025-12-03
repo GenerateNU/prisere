@@ -5,7 +5,7 @@ import {
     FilteredPurchases,
     PurchaseLineItemType,
     PurchasesWithCount,
-    PurchaseWithLineItems
+    PurchaseWithLineItems,
 } from "../types/purchase";
 import { authHeader, authWrapper, getClient } from "./client";
 
