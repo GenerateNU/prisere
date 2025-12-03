@@ -69,7 +69,7 @@ export default function DisasterStatusBanner({ bannerData }: DisasterStatusBanne
     if (bannerData.status === "has-claim" && bannerData.claim) {
         const status = bannerData.claim.status;
         const progressStep = ClaimInProgressIndexMapping[status as keyof typeof ClaimInProgressIndexMapping] ?? 5;
-        return <ClaimInProgress step={progressStep} />;
+        return <ClaimInProgress step={progressStep} claimId={bannerData.claim.id} />;
     }
 
     return null;
