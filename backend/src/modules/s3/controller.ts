@@ -38,7 +38,7 @@ export class S3Controller implements IS3Controller {
         ctx: Context,
         params: ConfirmUploadParams
     ): ControllerResponse<TypedResponse<UploadResult, 200>> {
-        const { key, documentId, documentType, claimId, exportedFromClaimId, userId, companyId, category } = params;
+        const { key, documentId, documentType, claimId, userId, companyId, category } = params;
 
         // Validate required fields
         if (!key || !documentId || !documentType) {

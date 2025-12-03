@@ -6,7 +6,6 @@ import { startTestApp } from "../../setup-tests";
 import { TESTING_PREFIX } from "../../../utilities/constants";
 import { S3Service } from "../../../modules/s3/service";
 import { initPdfTestData } from "./setup";
-import { Document } from "../../../entities/Document";
 
 describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
     let app: Hono;

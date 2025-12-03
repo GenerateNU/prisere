@@ -318,17 +318,6 @@ export async function generatePdfToBuffer(claimData: ClaimData): Promise<Buffer>
     return Buffer.isBuffer(pdfBuffer) ? pdfBuffer : Buffer.from(pdfBuffer);
 }
 
-async function fetchPdfFromUrl(url: string): Promise<Uint8Array> {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-        throw new Error(`Failed to fetch PDF from ${url}: ${response.statusText}`);
-    }
-
-    const arrayBuffer = await response.arrayBuffer();
-    return new Uint8Array(arrayBuffer);
-}
-
 export async function generatePdfWithAttachments(claimData: ClaimData, presignedURLs: string[]): Promise<Buffer> {
     const mainPdfBuffer = await generatePdfToBuffer(claimData);
     const mainPdfDoc = await PDFDocument.load(mainPdfBuffer);

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ModalProps, ModalSize } from "./Modal";
+import { ModalProps } from "./Modal";
 
 interface IUseModal {
     onClose?: () => void;

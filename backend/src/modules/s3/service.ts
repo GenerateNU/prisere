@@ -14,8 +14,6 @@ import { DocumentCategories, DocumentWithUrl } from "../../types/DocumentType";
 import { Document } from "../../entities/Document";
 import { IDocumentTransaction } from "../documents/transaction";
 import { ClaimTransaction } from "../claim/transaction";
-import { Touchscreen } from "puppeteer";
-import { isExternalModule } from "typescript";
 import { Claim } from "../../entities/Claim";
 
 const S3_BUCKET_NAME = process.env.OBJECTS_STORAGE_BUCKET_NAME;
@@ -233,6 +231,7 @@ export class S3Service implements IS3Service {
                                 claim: doc.claims
                                     ? doc.claims.map((claim) => ({
                                           ...claim,
+                                          name: claim.name,
                                           createdAt: claim.createdAt.toISOString(),
                                           updatedAt: claim.updatedAt?.toISOString(),
                                           claimLocations: claim.claimLocations
@@ -243,6 +242,8 @@ export class S3Service implements IS3Service {
                                               createdAt: claim.insurancePolicy.createdAt.toISOString(),
                                               updatedAt: claim.insurancePolicy.updatedAt.toISOString(),
                                           },
+                                          purchaseLineItemIds:
+                                              claim.purchaseLineItems.map((element) => element.id) || [],
                                           femaDisaster: claim.femaDisaster
                                               ? {
                                                     ...claim.femaDisaster,
@@ -255,6 +256,7 @@ export class S3Service implements IS3Service {
                                           selfDisaster: claim.selfDisaster
                                               ? {
                                                     ...claim.selfDisaster,
+                                                    name: claim.name,
                                                     startDate: claim.selfDisaster.startDate.toISOString(),
                                                     endDate: claim.selfDisaster.endDate?.toISOString(),
                                                     createdAt: claim.selfDisaster.createdAt.toISOString(),
@@ -276,8 +278,10 @@ export class S3Service implements IS3Service {
                                 category: doc.category,
                                 createdAt: doc.createdAt,
                                 lastModified: doc.lastModified || null,
+                                purchaseLineItemIds: [],
                                 company: {
                                     ...doc.company,
+                                    name: doc.company.name,
                                     createdAt: doc.company.createdAt.toISOString(),
                                     updatedAt: doc.company.updatedAt.toISOString(),
                                     externals: doc.company.externals.map((external) => ({
@@ -295,6 +299,7 @@ export class S3Service implements IS3Service {
                                 claim: doc.claims
                                     ? doc.claims.map((claim) => ({
                                           ...claim,
+                                          name: claim.name,
                                           createdAt: claim.createdAt.toISOString(),
                                           updatedAt: claim.updatedAt?.toISOString(),
                                           claimLocations: claim.claimLocations
@@ -314,9 +319,12 @@ export class S3Service implements IS3Service {
                                                     incidentEndDate: claim.femaDisaster.incidentEndDate?.toISOString(),
                                                 }
                                               : undefined,
+                                          purchaseLineItemIds:
+                                              claim.purchaseLineItems.map((element) => element.id) || [],
                                           selfDisaster: claim.selfDisaster
                                               ? {
                                                     ...claim.selfDisaster,
+                                                    name: claim.name,
                                                     startDate: claim.selfDisaster.startDate.toISOString(),
                                                     endDate: claim.selfDisaster.endDate?.toISOString(),
                                                     createdAt: claim.selfDisaster.createdAt.toISOString(),
