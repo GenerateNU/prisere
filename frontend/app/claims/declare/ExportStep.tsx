@@ -14,7 +14,7 @@ type Props = {
 
 export default function ExportStep({ claimId, handleStepForward }: Props) {
     const [exported, setExported] = React.useState(false);
-    const [error, setError] = React.useState<String | null>(null);
+    const [error, setError] = React.useState<string | null>(null);
     const router = useRouter();
 
     const { mutate: updateBusinessMutate } = useMutation({
