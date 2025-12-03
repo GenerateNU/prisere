@@ -13,12 +13,13 @@ export type ClaimStatusType =
     paths["/claims/{id}/status"]["patch"]["responses"][200]["content"]["application/json"]["status"];
 
 export const ClaimInProgressIndexMapping = {
+    ACTIVE: 0,
     IN_PROGRESS_DISASTER: 1,
     IN_PROGRESS_PERSONAL: 2,
     IN_PROGRESS_BUSINESS: 3,
     IN_PROGRESS_INSURANCE: 4,
     IN_PROGRESS_EXPORT: 5,
-} as const satisfies Partial<Record<ClaimStatusType, number>>;
+} as const satisfies Record<Exclude<ClaimStatusType, "FILED">, number>;
 
 export type GetClaimByIdResponse = paths["/claims/{id}"]["get"]["responses"][200]["content"]["application/json"];
 export type UpdateClaimStatusRequest = NonNullable<

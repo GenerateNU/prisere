@@ -1,18 +1,24 @@
-import React from "react";
+import { cn } from "@/lib/utils";
 import { IoCheckmark } from "react-icons/io5";
 
 type Step = {
-    label: string;
+    label?: string;
     step: number;
 };
 
 interface ProgressProps {
     progress: number;
     items: Step[];
+    className?: string;
 }
-const Progress = ({ progress, items }: ProgressProps) => {
+const Progress = ({ progress, items, className }: ProgressProps) => {
     return (
-        <div className="h-[84px] flex items-center justify-center self-center justify-self-center mb-[40px] w-full gap-[30px]">
+        <div
+            className={cn(
+                "h-[84px] flex items-center justify-center self-center justify-self-center mb-[40px] w-full gap-[30px]",
+                className
+            )}
+        >
             {items.map((item, index) => (
                 <div key={index} className="flex flex-row items-center justify-center gap-[30px]">
                     <div className={`flex flex-col items-center gap-2 w-fit `}>
@@ -27,16 +33,22 @@ const Progress = ({ progress, items }: ProgressProps) => {
                                 <p className="text-[20px] text-[var(--fuchsia)]">{index + 1}</p>
                             )}
                         </div>
-                        <p
-                            className={`text-[16px] ${progress === item.step && "font-bold"} text-center whitespace-nowrap`}
-                        >
-                            {" "}
-                            {item.label}{" "}
-                        </p>
+                        {item.label ? (
+                            <p
+                                className={`text-[16px] ${progress === item.step && "font-bold"} text-center whitespace-nowrap`}
+                            >
+                                {" "}
+                                {item.label}{" "}
+                            </p>
+                        ) : null}
                     </div>
                     {index !== items.length - 1 && (
                         <hr
-                            className={`flex-grow bg-[var(--fuchsia)] mb-[30px] h-[3px] min-w-[70px] rounded-full ${item.step >= progress ? "opacity-50" : ""} h-[1px] w-full border-none`}
+                            className={cn(
+                                `flex-grow bg-[var(--fuchsia)] h-[3px] min-w-[70px] rounded-full w-full border-none opacity-50`,
+                                item.label && "mb-[30px]",
+                                item.step < progress && "opacity-100"
+                            )}
                         />
                     )}
                 </div>
