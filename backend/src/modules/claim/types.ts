@@ -68,7 +68,7 @@ export const ImpactedLocationSchema = z.object({
 export const RelevantExpenseSchema = z.object({
     amountCents: z.number().gte(0),
     description: z.string().nullable(),
-    category: z.string().nonempty().max(LINE_ITEM_CATEGORY_CHARS),
+    category: z.string().nonempty().max(LINE_ITEM_CATEGORY_CHARS).optional(),
     dateCreated: z.iso.datetime(),
     quickbooksDateCreated: z.iso.datetime().optional(),
 });
