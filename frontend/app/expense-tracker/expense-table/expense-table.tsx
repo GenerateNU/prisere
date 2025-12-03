@@ -7,7 +7,7 @@ import { PurchaseSelections } from "@/types/claim";
 import { FilteredPurchases, PurchaseLineItemType, PurchaseWithLineItems } from "@/types/purchase";
 import { useQuery } from "@tanstack/react-query";
 import { FileUp, Printer } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaExclamation } from "react-icons/fa6";
 import { IoFilterOutline } from "react-icons/io5";
 import { SortByColumn } from "../../../types/purchase";
@@ -49,15 +49,21 @@ export default function ExpenseTable({
     }, [filterPending]);
     const [selectedPurchase, setSelectedPurchase] = useState<PurchaseWithLineItems | null>(null);
 
-    const updateFilter = (field: string) => (value: unknown) => {
-        if (setFilterPending) setFilterPending(false);
-        setFilters((prev) => ({ ...prev, [field]: value }));
-    };
+    const updateFilter = useCallback(
+        (field: string) => (value: unknown) => {
+            if (setFilterPending) setFilterPending(false);
+            setFilters((prev) => ({ ...prev, [field]: value }));
+        },
+        [setFilterPending]
+    );
 
-    const setSort = (column: SortByColumn, order?: "ASC" | "DESC") => {
-        updateFilter("sortBy")(column);
-        updateFilter("sortOrder")(order);
-    };
+    const setSort = useCallback(
+        (column: SortByColumn, order?: "ASC" | "DESC") => {
+            updateFilter("sortBy")(column);
+            updateFilter("sortOrder")(order);
+        },
+        [updateFilter]
+    );
 
     const removeType = () => {
         updateFilter("type")(undefined);
@@ -125,16 +131,20 @@ export default function ExpenseTable({
                                 clearFilters={clearFilters}
                             />
                         </div>
-                        <TableContent
-                            purchases={purchases}
-                            filters={filters}
-                            setSort={setSort}
-                            rowOption={rowOption}
-                            editableTags={editableTags}
-                            onRowClick={(purchase) => setSelectedPurchase(purchase)}
-                            selections={selections}
+                        <div>
+                            <TableContent
+                                purchases={purchases}
+                                filters={filters}
+                                setSort={setSort}
+                                rowOption={rowOption}
+                                editableTags={editableTags}
+                                onRowClick={(purchase) => setSelectedPurchase(purchase)}
+                                allCategories={categories.data ? categories.data : []}
+                                selections={selections}
                             setSelections={setSelections}
                         />
+                        </div>
+
                         <ExpenseSideView
                             purchase={selectedPurchase}
                             open={!!selectedPurchase}
@@ -212,6 +222,7 @@ export function useFetchPurchases(filters: FilteredPurchases) {
                 throw Error(error?.error);
             }
         },
+        placeholderData: (previousData) => previousData,
     });
 }
 
