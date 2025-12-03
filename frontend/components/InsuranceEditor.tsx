@@ -1,13 +1,14 @@
-import { Button } from "./ui/button";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
-import React from "react";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { CreateInsurancePolicyRequest, UpdateInsurancePolicyRequest } from "@/types/insurance-policy";
-import { HiOutlineTrash } from "react-icons/hi2";
+import React from "react";
 import { FiEdit } from "react-icons/fi";
-import { Card } from "./ui/card";
+import { HiOutlineTrash } from "react-icons/hi2";
 import { IoCheckmark } from "react-icons/io5";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 
 interface InsuranceEditorProps {
     insurance: CreateInsurancePolicyRequest | UpdateInsurancePolicyRequest;
@@ -17,10 +18,14 @@ interface InsuranceEditorProps {
     onExpand: () => void;
     onCollapse: () => void;
     saveError?: string | null;
+    isSelected?: boolean;
+    onClick?: () => void;
 }
 
 export default function InsuranceEditor({
     insurance,
+    isSelected,
+    onClick,
     setInsurance,
     removeInsurance,
     isExpanded,
@@ -55,7 +60,14 @@ export default function InsuranceEditor({
     };
 
     return (
-        <Card className="w-full mb-[16px] px-[28px] py-[20px] gap-[16px]">
+        <Card
+            className={cn(
+                "w-full mb-[16px] px-[28px] py-[20px] gap-[16px] border border-transparent",
+                isSelected && "border-fuchsia",
+                onClick && "cursor-pointer"
+            )}
+            onClick={onClick}
+        >
             <div className="flex justify-between items-center">
                 <div className="w-3/4 flex gap-[10px] items-center">
                     {!isExpanded ? (

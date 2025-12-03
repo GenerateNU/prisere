@@ -1,10 +1,13 @@
 "use server";
 import {
+    CreateClaimPDFResponse,
     CreateClaimRequest,
     CreateClaimResponse,
     GetClaimByIdResponse,
     GetClaimLineItemsResponse,
     GetCompanyClaimResponse,
+    LinkLineItemToClaimResponse,
+    LinkPurchaseToClaimResponse,
     UpdateClaimStatusRequest,
     UpdateClaimStatusResponse,
 } from "@/types/claim";
@@ -103,4 +106,54 @@ export const updateClaimStatus = async (
         }
     };
     return authWrapper<UpdateClaimStatusResponse>()(req);
+};
+
+export const linkLineItemToClaim = async (claimId: string, purchaseLineItemId: string) => {
+    const req = async (token: string) => {
+        const client = getClient();
+        const { data, error, response } = await client.POST("/claims/line-item", {
+            headers: authHeader(token),
+            body: { claimId, purchaseLineItemId },
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<LinkLineItemToClaimResponse>()(req);
+};
+
+export const linkPurchaseToClaim = async (claimId: string, purchaseId: string) => {
+    const req = async (token: string) => {
+        const client = getClient();
+        const { data, error, response } = await client.POST("/claims/purchase", {
+            headers: authHeader(token),
+            body: { claimId, purchaseId },
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<LinkPurchaseToClaimResponse>()(req);
+};
+
+export const createClaimPDF = async (claimId: string) => {
+    const req = async (token: string) => {
+        const client = getClient();
+        const { data, error, response } = await client.GET("/claims/{id}/pdf", {
+            headers: authHeader(token),
+            params: {
+                path: { id: claimId },
+            },
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<CreateClaimPDFResponse>()(req);
 };

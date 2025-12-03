@@ -1,10 +1,11 @@
 "use client";
-import { PT_Sans } from "next/font/google";
-import "./globals.css";
-import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import NavBar from "./NavBar";
+import { PT_Sans } from "next/font/google";
 import { usePathname } from "next/navigation";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { useState } from "react";
+import "./globals.css";
+import NavBar from "./NavBar";
 
 const ptSans = PT_Sans({
     weight: ["400", "700"],
@@ -38,8 +39,10 @@ export default function RootLayout({
                 <div>
                     {!hideNavbar && <NavBar />}
                     <main className={!hideNavbar ? "ml-[300px]" : ""}>
-                        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-                        <div id="portal-root" />
+                        <NuqsAdapter>
+                            <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+                            <div id="portal-root" />
+                        </NuqsAdapter>
                     </main>
                 </div>
             </body>

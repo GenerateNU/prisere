@@ -1,15 +1,17 @@
-import { flexRender, Table as ReactTable } from "@tanstack/react-table";
-import { Table as CTable, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { flexRender, Table as ReactTable, Row } from "@tanstack/react-table";
 import { Spinner } from "../ui/spinner";
+import { Table as CTable, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
 export function Table<T>({
     table,
     isLoading = false,
     onRowClick,
+    getRowClassName,
 }: {
     table: ReactTable<T>;
     isLoading?: boolean;
     onRowClick?: (row: T) => void;
+    getRowClassName?: (row: Row<T>) => string;
 }) {
     return (
         <CTable>
@@ -45,6 +47,7 @@ export function Table<T>({
                             className={[
                                 onRowClick ? "cursor-pointer hover:bg-muted/50" : "",
                                 row.depth > 0 ? "bg-muted/100" : "",
+                                getRowClassName?.(row) ?? "",
                             ].join(" ")}
                         >
                             {row.getVisibleCells().map((cell) => (

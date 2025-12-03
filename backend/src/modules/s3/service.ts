@@ -511,6 +511,7 @@ export class S3Service implements IS3Service {
     async uploadBufferToS3(uploadUrl: string, file: Buffer): Promise<void> {
         const body = Bun.gzipSync(new Uint8Array(file));
         const headers: HeadersInit = {
+            "Content-Type": "application/pdf",
             "Content-Encoding": "gzip",
         };
 
