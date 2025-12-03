@@ -83,9 +83,12 @@ export default function DisasterEmail({ message }: DisasterEmailProps) {
                             </table>
 
                             <Text className="text-[15px] leading-6 mb-8">
-                                Please review this alert and take necessary precautions. Please register with FEMA as soon as possible
-                                at{" "}
-                                <a href="https://www.disasterassistance.gov/" className="font-semibold underline text-black">
+                                Please review this alert and take necessary precautions. Please register with FEMA as
+                                soon as possible at{" "}
+                                <a
+                                    href="https://www.disasterassistance.gov/"
+                                    className="font-semibold underline text-black"
+                                >
                                     DisasterAssistance.gov
                                 </a>
                                 . See more information at{" "}
