@@ -814,6 +814,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             id: string;
+                            name: string;
                             /**
                              * @default ACTIVE
                              * @enum {string}
@@ -845,7 +846,6 @@ export interface paths {
                             };
                             selfDisaster?: {
                                 id: string;
-                                name: string;
                                 description: string;
                                 /** Format: date */
                                 startDate: string;
@@ -885,6 +885,7 @@ export interface paths {
                                 lat: number;
                                 long: number;
                             }[];
+                            purchaseLineItemIds: string[];
                         } | null;
                     };
                 };
@@ -3219,6 +3220,7 @@ export interface paths {
                             | "IN_PROGRESS_BUSINESS"
                             | "IN_PROGRESS_INSURANCE"
                             | "IN_PROGRESS_EXPORT";
+                        name: string;
                     };
                 };
             };
@@ -3260,7 +3262,6 @@ export interface paths {
                             };
                             selfDisaster?: {
                                 id: string;
-                                name: string;
                                 description: string;
                                 /** Format: date */
                                 startDate: string;
@@ -3361,6 +3362,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             id: string;
+                            name: string;
                             /**
                              * @default ACTIVE
                              * @enum {string}
@@ -3392,7 +3394,6 @@ export interface paths {
                             };
                             selfDisaster?: {
                                 id: string;
-                                name: string;
                                 description: string;
                                 /** Format: date */
                                 startDate: string;
@@ -3432,6 +3433,7 @@ export interface paths {
                                 lat: number;
                                 long: number;
                             }[];
+                            purchaseLineItemIds: string[];
                         }[];
                     };
                 };
@@ -3504,6 +3506,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             id: string;
+                            name: string;
                             /**
                              * @default ACTIVE
                              * @enum {string}
@@ -3535,7 +3538,6 @@ export interface paths {
                             };
                             selfDisaster?: {
                                 id: string;
-                                name: string;
                                 description: string;
                                 /** Format: date */
                                 startDate: string;
@@ -3575,6 +3577,7 @@ export interface paths {
                                 lat: number;
                                 long: number;
                             }[];
+                            purchaseLineItemIds: string[];
                         };
                     };
                 };
@@ -3717,6 +3720,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             id: string;
+                            name: string;
                             /**
                              * @default ACTIVE
                              * @enum {string}
@@ -3748,7 +3752,6 @@ export interface paths {
                             };
                             selfDisaster?: {
                                 id: string;
-                                name: string;
                                 description: string;
                                 /** Format: date */
                                 startDate: string;
@@ -3788,6 +3791,7 @@ export interface paths {
                                 lat: number;
                                 long: number;
                             }[];
+                            purchaseLineItemIds: string[];
                         };
                     };
                 };
@@ -4163,7 +4167,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    claimId: string;
+                    id: string;
                 };
                 cookie?: never;
             };
@@ -5214,7 +5218,6 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        name: string;
                         description: string;
                         /** Format: date */
                         startDate: string;
@@ -5232,7 +5235,6 @@ export interface paths {
                     content: {
                         "application/json": {
                             id: string;
-                            name: string;
                             description: string;
                             /** Format: date */
                             startDate: string;
@@ -5351,7 +5353,6 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        name?: string;
                         description?: string;
                         /** Format: date */
                         startDate?: string;
@@ -5369,7 +5370,6 @@ export interface paths {
                     content: {
                         "application/json": {
                             id: string;
-                            name: string;
                             description: string;
                             /** Format: date */
                             startDate: string;
@@ -6229,6 +6229,7 @@ export interface paths {
                                 };
                                 claim?: {
                                     id: string;
+                                    name: string;
                                     /**
                                      * @default ACTIVE
                                      * @enum {string}
@@ -6293,6 +6294,7 @@ export interface paths {
                                         lat: number;
                                         long: number;
                                     }[];
+                                    purchaseLineItemIds: string[];
                                     lastModified?: string;
                                 } | null;
                             };

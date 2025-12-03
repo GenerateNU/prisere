@@ -6,12 +6,18 @@ import LocationEditor from "@/components/LocationEditor";
 import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { CreateLocationRequest, UpdateLocationRequest } from "@/types/location";
+import { CreateLocationRequest, Location, UpdateLocationRequest } from "@/types/location";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
 
-export default function LocationsCard() {
+export default function LocationsCard({
+    locationSelected,
+    onLocationSelect,
+}: {
+    locationSelected?: Location["id"] | null;
+    onLocationSelect?: (locationId: Location["id"]) => void;
+}) {
     const [locationInfo, setLocationInfo] = useState<(CreateLocationRequest | UpdateLocationRequest)[]>([]);
     const [editingLocationIndex, setEditingLocationIndex] = useState<number | null>(null);
     const [saveError, setSaveError] = useState<string | null>(null);
@@ -140,6 +146,12 @@ export default function LocationsCard() {
                             <div key={index}>
                                 <LocationEditor
                                     location={location}
+                                    isSelected={"id" in location && locationSelected === location.id}
+                                    onClick={
+                                        onLocationSelect && "id" in location
+                                            ? () => onLocationSelect(location.id)
+                                            : undefined
+                                    }
                                     setLocation={(loc) => updateLocation(index, loc)}
                                     removeLocation={() => removeLocation(index)}
                                     isExpanded={editingLocationIndex === index}

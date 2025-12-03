@@ -1,21 +1,22 @@
 "use client";
+import { LargeLoading } from "@/components/loading";
+import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { PurchaseSelections } from "@/types/claim";
 import { FilteredPurchases, PurchaseLineItemType, PurchaseWithLineItems } from "@/types/purchase";
-import { FileUp, Loader2 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { FileUp, Printer, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { FaExclamation } from "react-icons/fa6";
+import { IoFilterOutline } from "react-icons/io5";
+import { SortByColumn } from "../../../types/purchase";
+import { FilterDisplay } from "./filter-display-bar";
 import { Filters } from "./filters";
 import PaginationControls from "./PaginationControls";
 import ResultsPerPageSelect from "./ResultsPerPageSelect";
-import { Button } from "@/components/ui/button";
-import { SortByColumn } from "../../../types/purchase";
-import { FilterDisplay } from "./filter-display-bar";
-import TableContent from "./table-content";
-import { getClientAuthToken, getClient, authHeader, authWrapper } from "@/api/client";
-import { useQuery } from "@tanstack/react-query";
 import ExpenseSideView from "./side-view";
-import { LargeLoading } from "@/components/loading";
-import { FaExclamation } from "react-icons/fa6";
-import { IoFilterOutline } from "react-icons/io5";
+import TableContent from "./table-content";
+import { fetchAllCategories, fetchPurchases } from "@/api/purchase";
 import { handleExportClick } from "./export";
 
 interface ExpenseTableConfig {
@@ -25,6 +26,8 @@ interface ExpenseTableConfig {
     filterPending?: boolean;
     hasData: boolean;
     setFilterPending?: (fp: boolean) => void;
+    selections?: PurchaseSelections;
+    setSelections?: (selections: PurchaseSelections) => void;
 }
 
 export default function ExpenseTable({
@@ -34,6 +37,8 @@ export default function ExpenseTable({
     filterPending = false,
     setFilterPending,
     hasData,
+    selections,
+    setSelections,
 }: ExpenseTableConfig) {
     const [filters, setFilters] = useState<FilteredPurchases>({ pageNumber: 0, resultsPerPage: 5 });
     const [showFilters, setShowFilters] = useState(true);
@@ -125,7 +130,7 @@ export default function ExpenseTable({
                                 onFilterChange={updateFilter}
                                 allCategories={categories.data ?? []}
                                 selectedCategories={filters.categories ?? []}
-                            ></Filters>
+                            />
                         )}
                         <div className="">
                             <FilterDisplay
@@ -145,6 +150,8 @@ export default function ExpenseTable({
                                 editableTags={editableTags}
                                 onRowClick={(purchase) => setSelectedPurchase(purchase)}
                                 allCategories={categories.data ? categories.data : []}
+                                selections={selections}
+                                setSelections={setSelections}
                             />
                         </div>
 
@@ -199,31 +206,8 @@ export default function ExpenseTable({
 export function useFetchPurchases(filters: FilteredPurchases) {
     return useQuery({
         queryKey: ["purchases-for-company", filters],
-        queryFn: async ({ signal }) => {
-            const token = await getClientAuthToken();
-            const client = getClient();
-            const { data, error, response } = await client.GET("/purchase", {
-                params: {
-                    query: {
-                        categories: filters.categories,
-                        dateFrom: filters.dateFrom,
-                        dateTo: filters.dateTo,
-                        search: filters.search,
-                        sortBy: filters.sortBy,
-                        sortOrder: filters.sortOrder,
-                        pageNumber: filters.pageNumber,
-                        resultsPerPage: filters.resultsPerPage,
-                        type: filters.type,
-                    },
-                },
-                headers: authHeader(token),
-                signal,
-            });
-            if (response.ok) {
-                return data;
-            } else {
-                throw Error(error?.error);
-            }
+        queryFn: async () => {
+            return fetchPurchases(filters);
         },
         placeholderData: (previousData) => previousData,
     });
@@ -233,19 +217,7 @@ export function useFetchAllCategories() {
     return useQuery({
         queryKey: ["categories-for-purchases"],
         queryFn: async (): Promise<string[]> => {
-            const req = async (token: string): Promise<string[]> => {
-                const client = getClient();
-                const { data, error, response } = await client.GET("/purchase/categories", {
-                    headers: authHeader(token),
-                });
-                if (response.ok) {
-                    return data!;
-                } else {
-                    throw Error(error?.error);
-                }
-            };
-
-            return authWrapper<string[]>()(req);
+            return fetchAllCategories();
         },
     });
 }

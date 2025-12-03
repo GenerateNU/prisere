@@ -10,12 +10,18 @@ import InsuranceEditor from "@/components/InsuranceEditor";
 import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { CreateInsurancePolicyRequest, UpdateInsurancePolicyRequest } from "@/types/insurance-policy";
+import { CreateInsurancePolicyRequest, InsurancePolicy, UpdateInsurancePolicyRequest } from "@/types/insurance-policy";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
 
-export default function InsuranceCard() {
+export default function InsuranceCard({
+    insuranceSelected,
+    onInsuranceSelect,
+}: {
+    insuranceSelected?: InsurancePolicy["id"] | null;
+    onInsuranceSelect?: (insuranceId: InsurancePolicy["id"]) => void;
+}) {
     const [insuranceInfo, setInsuranceInfo] = useState<(UpdateInsurancePolicyRequest | CreateInsurancePolicyRequest)[]>(
         []
     );
@@ -121,6 +127,12 @@ export default function InsuranceCard() {
                             <div key={index} className="w-1/2">
                                 <InsuranceEditor
                                     insurance={insurance}
+                                    isSelected={"id" in insurance && insuranceSelected === insurance.id}
+                                    onClick={
+                                        onInsuranceSelect && "id" in insurance
+                                            ? () => onInsuranceSelect(insurance.id)
+                                            : undefined
+                                    }
                                     setInsurance={(i) => updateInsurance(index, i)}
                                     removeInsurance={() => removeInsurance(index)}
                                     isExpanded={editingInsuranceIndex === index}

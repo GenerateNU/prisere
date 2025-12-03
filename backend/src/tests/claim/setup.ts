@@ -1,16 +1,16 @@
 import { DataSource } from "typeorm";
+import { SeederFactoryManager } from "typeorm-extension";
+import CompanySeeder from "../../database/seeds/company.seed";
+import { DisasterSeeder, seededDisasters } from "../../database/seeds/disaster.seed";
+import { seededSelfDisasters, SelfDisasterSeeder } from "../../database/seeds/selfDisaster.seed";
 import { Company, CompanyTypesEnum } from "../../entities/Company";
 import { FemaDisaster } from "../../entities/FemaDisaster";
 import { ClaimStatusType } from "../../types/ClaimStatusType";
-import { seededSelfDisasters, SelfDisasterSeeder } from "../../database/seeds/selfDisaster.seed";
-import CompanySeeder from "../../database/seeds/company.seed";
-import { SeederFactoryManager } from "typeorm-extension";
-import { DisasterSeeder } from "../../database/seeds/disaster.seed";
-import { seededDisasters } from "../../database/seeds/disaster.seed"; // Change this import
 
 export const insertedClaims = [
     {
         id: "0174375f-e7c4-4862-bb9f-f58318bb2e7d",
+        name: "Claim 1",
         selfDisasterId: seededSelfDisasters[0].id,
         companyId: "5667a729-f000-4190-b4ee-7957badca27b",
         status: ClaimStatusType.ACTIVE,
@@ -19,6 +19,7 @@ export const insertedClaims = [
     },
     {
         id: "5efc380b-e527-4b8d-a784-5c2cc68eba87",
+        name: "Claim 2",
         selfDisasterId: "bf2b32dd-c927-440b-8002-84906db3c783",
         companyId: "c0ce685a-27d8-4183-90ff-31f294b2c6da",
         status: ClaimStatusType.ACTIVE,
@@ -27,6 +28,7 @@ export const insertedClaims = [
     },
     {
         id: "37d07be0-4e09-4e70-a395-c1464f408c1f",
+        name: "Claim 3",
         femaDisasterId: seededDisasters[0].id,
         companyId: "5667a729-f000-4190-b4ee-7957badca27b",
         status: ClaimStatusType.ACTIVE,
@@ -35,6 +37,7 @@ export const insertedClaims = [
     },
     {
         id: "2c24c901-38e4-4a35-a1c6-140ce64edf2a",
+        name: "Claim 4",
         femaDisasterId: seededDisasters[1].id,
         companyId: "a1a542da-0abe-4531-9386-8919c9f86369",
         status: ClaimStatusType.IN_PROGRESS_BUSINESS,

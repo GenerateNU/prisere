@@ -55,9 +55,6 @@ export class SelfDisasterTransaction implements ISelfDisasterTransaction {
         }
 
         // Update only provided fields
-        if (payload.name !== undefined) {
-            disaster.name = payload.name;
-        }
         if (payload.description !== undefined) {
             disaster.description = payload.description;
         }

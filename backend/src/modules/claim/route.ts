@@ -4,13 +4,15 @@ import { ClaimController, IClaimController } from "./controller";
 import { DocumentTransaction, IDocumentTransaction } from "../documents/transaction";
 import { ClaimService, IClaimService } from "./service";
 import { ClaimTransaction, IClaimTransaction } from "./transaction";
+import { CompanyTransaction, ICompanyTransaction } from "../company/transaction";
 
 export const claimRoutes = (db: DataSource): Hono => {
     const claim = new Hono();
 
     const claimTransaction: IClaimTransaction = new ClaimTransaction(db);
     const documentTransaction: IDocumentTransaction = new DocumentTransaction(db);
-    const claimService: IClaimService = new ClaimService(claimTransaction, documentTransaction, db);
+    const companyTransaction: ICompanyTransaction = new CompanyTransaction(db);
+    const claimService: IClaimService = new ClaimService(claimTransaction, documentTransaction, companyTransaction, db);
     const claimController: IClaimController = new ClaimController(claimService);
 
     claim.get("/company", (ctx) => claimController.getClaimByCompanyId(ctx));
