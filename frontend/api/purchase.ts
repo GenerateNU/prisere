@@ -1,5 +1,11 @@
 "use server";
-import { CreatePurchaseInput, CreatePurchaseResponse, FilteredPurchases, PurchaseLineItemType, PurchaseWithLineItems } from "../types/purchase";
+import {
+    CreatePurchaseInput,
+    CreatePurchaseResponse,
+    FilteredPurchases,
+    PurchaseLineItemType,
+    PurchaseWithLineItems,
+} from "../types/purchase";
 import { authHeader, authWrapper, getClient } from "./client";
 
 export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate: Date): Promise<{ total: number }> => {
@@ -93,8 +99,10 @@ export const createPurchaseForCompany = async (newPurchase: CreatePurchaseInput)
     return authWrapper<CreatePurchaseResponse>()(req);
 };
 
-export const getAllPurchasesForExport =
-    async (filters: FilteredPurchases, total: number): Promise<PurchaseWithLineItems[]> => {
+export const getAllPurchasesForExport = async (
+    filters: FilteredPurchases,
+    total: number
+): Promise<PurchaseWithLineItems[]> => {
     const req = async (token: string): Promise<PurchaseWithLineItems[]> => {
         const client = getClient();
         const { data, error, response } = await client.GET("/purchase", {
