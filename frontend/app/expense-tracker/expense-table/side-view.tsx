@@ -2,10 +2,10 @@
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { getPurchaseTypeString, getCategoriesString } from "../utility-functions";
-import { CategoryBadge } from "./category-options";
+import { CategoryBadgeSpan } from "./category-options";
 import { DisasterType, PurchaseWithLineItems } from "@/types/purchase";
 import SideViewTable from "./side-view-table";
-import { DISASTER_TYPE_COLORS, DISASTER_TYPE_LABELS } from "@/types/disaster";
+import { DisasterBadgeSpan } from "./disaster-options";
 
 interface SideViewProps {
     purchase: PurchaseWithLineItems | null;
@@ -19,7 +19,7 @@ export default function ExpenseSideView({ purchase, open, onOpenChange }: SideVi
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent className="w-full sm:max-w-3xl overflow-y-auto">
-                <SheetHeader className="pt-[8%] px-[4.5%]">
+                <SheetHeader className="pt-13 px-6">
                     <SheetTitle className="text-2xl">{purchase.vendor ? purchase.vendor : "Unknown Vendor"}</SheetTitle>
                 </SheetHeader>
 
@@ -47,7 +47,7 @@ export default function ExpenseSideView({ purchase, open, onOpenChange }: SideVi
 
 function DetailRow({ label, value }: { label: string; value: React.ReactNode }) {
     return (
-        <div className="grid grid-cols-[1fr_3fr] gap-4 px-[5%]">
+        <div className="grid grid-cols-[1fr_3fr] gap-4 px-6 select-none">
             <span className="text-muted-foreground">{label}</span>
             <div>{value}</div>
         </div>
@@ -60,30 +60,17 @@ function categoryTagsMainPurchase(category?: string) {
     }
     const categories = category.length > 0 ? category.split(",") : [];
     return (
-        <>
+        <div className="inline-flex flex-wrap items-center gap-1 select-none">
             {categories.slice(0, 3).map((cat, index) => (
-                <CategoryBadge
-                    key={index}
-                    category={cat}
-                    allCategories={categories}
-                    lineItemIds={[]}
-                    editableTags={false}
-                />
+                <CategoryBadgeSpan key={index} category={cat} />
             ))}
-        </>
+        </div>
     );
 }
 
 export function DisasterTypeTag({ type }: { type: DisasterType | null }) {
     if (!type) {
-        return <p> Purchase type not available </p>;
+        return <p className="select-none"> Purchase type not available </p>;
     }
-    const displayType = DISASTER_TYPE_LABELS.get(type);
-    return (
-        <span
-            className={`px-[8px] py-[4px] rounded-[4px] text-[12px] font-bold cursor-pointer ${DISASTER_TYPE_COLORS.get(type)}`}
-        >
-            {displayType}
-        </span>
-    );
+    return <DisasterBadgeSpan type={type} />;
 }

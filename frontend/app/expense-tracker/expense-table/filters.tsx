@@ -6,10 +6,9 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import { PurchaseLineItemType } from "@/types/purchase";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { Calendar as CalendarIcon, Search, ChevronDown } from "lucide-react";
 import { WiRainMix } from "react-icons/wi";
@@ -43,7 +42,12 @@ export function Filters({
         onFilterChange("categories")(categories);
     };
 
-    const onSearchChange = (search: string) => onFilterChange("search")(search);
+    const onSearchChange = useCallback(
+        (search: string) => {
+            onFilterChange("search")(search);
+        },
+        [onFilterChange]
+    );
 
     return (
         <div className="flex w-full flex-wrap gap-3 mb-4">
@@ -248,23 +252,25 @@ function CategoryFilter({
 }
 
 function SearchBy({ onSearchChange }: { onSearchChange: (search: string) => void }) {
+    const [searchValue, setSearchValue] = useState("");
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            onSearchChange(searchValue);
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [searchValue, onSearchChange]);
+
     return (
         <div className="relative w-full">
             <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-600" />
-            <Input
-                className="
-          !h-8
-          !pl-8 !pr-3
-          !rounded-full
-          !bg-muted
-          !text-black !text-sm
-          placeholder:!text-sm placeholder:text-black
-          border-none
-          !h-[32px]
-        "
+            <input
                 type="search"
                 placeholder="Search By..."
-                onChange={(e) => onSearchChange(e.target.value)}
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                className="h-8 w-full pl-8 pr-3 rounded-full bg-muted text-black text-sm
+                placeholder:text-sm placeholder:text-black border-0 outline-none"
             />
         </div>
     );

@@ -1,22 +1,19 @@
+import type { Relation } from "typeorm";
 import {
-    Entity,
     Column,
+    CreateDateColumn,
+    Entity,
     JoinColumn,
     ManyToOne,
-    CreateDateColumn,
-    UpdateDateColumn,
     PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from "typeorm";
-import type { Relation } from "typeorm";
 import { Company } from "./Company";
 
 @Entity("self_declared_disaster")
 export class SelfDeclaredDisaster {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
-
-    @Column()
-    name!: string;
 
     @Column()
     companyId!: string;

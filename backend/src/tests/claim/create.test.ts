@@ -1,15 +1,15 @@
+import { afterEach, beforeAll, describe, expect, test } from "bun:test";
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, afterEach } from "bun:test";
-import { startTestApp } from "../setup-tests";
-import { IBackup } from "pg-mem";
-import { initTestData } from "./setup";
-import { DataSource } from "typeorm";
 import { beforeEach } from "node:test";
-import { ClaimStatusType } from "../../types/ClaimStatusType";
-import { seededCompanies } from "../../database/seeds/company.seed";
-import { TESTING_PREFIX } from "../../utilities/constants";
+import { IBackup } from "pg-mem";
+import { DataSource } from "typeorm";
 import { SeederFactoryManager } from "typeorm-extension";
+import { seededCompanies } from "../../database/seeds/company.seed";
 import { insurancePolicySeedData, InsurancePolicySeeder } from "../../database/seeds/insurancePolicy.seed";
+import { ClaimStatusType } from "../../types/ClaimStatusType";
+import { TESTING_PREFIX } from "../../utilities/constants";
+import { startTestApp } from "../setup-tests";
+import { initTestData } from "./setup";
 
 describe("POST /claims", () => {
     let app: Hono;
@@ -39,6 +39,7 @@ describe("POST /claims", () => {
         const requestBody = {
             femaDisasterId: "2aa52e71-5f89-4efe-a820-1bfc65ded6ec",
             insurancePolicyId: insurancePolicySeedData[0].id,
+            name: "Claim 1",
         };
 
         const response = await app.request(TESTING_PREFIX + "/claims", {
@@ -79,6 +80,7 @@ describe("POST /claims", () => {
     test("POST /claims - Success", async () => {
         const requestBody = {
             selfDisasterId: "ba5735c4-fbd1-4f7d-97c1-bf5af2a3f533",
+            name: "Claim 1",
         };
         const companyId = seededCompanies[0].id;
 
@@ -118,6 +120,7 @@ describe("POST /claims", () => {
         const requestBody = {
             selfDisasterId: "ba5735c4-fbd1-4f7d-97c1-bf5af2a3f533",
             status: ClaimStatusType.IN_PROGRESS_BUSINESS,
+            name: "Claim 1",
         };
         const companyId = seededCompanies[0].id;
 
@@ -160,6 +163,7 @@ describe("POST /claims", () => {
         const companyId = "a1a542da-0abe-4531-9386-8919c9f86369";
         const requestBody2 = {
             femaDisasterId: "47f0c515-2efc-49c3-abb8-623f48817950",
+            name: "Claim 1",
         };
 
         const response2 = await app.request(TESTING_PREFIX + "/claims", {
@@ -184,6 +188,7 @@ describe("POST /claims", () => {
         const companyId = "c290f1ee-6c54-4b01-90e6-d701748f0851";
         const requestBody = {
             femaDisasterId: "2aa52e71-5f89-4efe-a820-1bfc65ded6ec",
+            name: "Claim 1",
         };
 
         const response = await app.request(TESTING_PREFIX + "/claims", {
@@ -201,6 +206,7 @@ describe("POST /claims", () => {
     test("POST /claims - DisasterID doesnt exist", async () => {
         const requestBody = {
             femaDisasterId: "2aa52e71-5f89-4efe-a820-1bfc65ded6e2",
+            name: "Claim 1",
         };
 
         const response = await app.request(TESTING_PREFIX + "/claims", {
@@ -231,6 +237,7 @@ describe("POST /claims", () => {
     test("POST /claims - Empty Fields", async () => {
         const requestBody = {
             disasterId: "",
+            name: "",
         };
 
         const response = await app.request(TESTING_PREFIX + "/claims", {

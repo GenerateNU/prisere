@@ -1,12 +1,12 @@
+import { afterEach, beforeAll, describe, expect, test } from "bun:test";
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, afterEach } from "bun:test";
-import { startTestApp } from "../setup-tests";
+import { beforeEach } from "node:test";
 import { IBackup } from "pg-mem";
 import { DataSource } from "typeorm";
-import { beforeEach } from "node:test";
-import CompanySeeder, { seededCompanies } from "../../database/seeds/company.seed";
 import { SeederFactoryManager } from "typeorm-extension";
+import CompanySeeder, { seededCompanies } from "../../database/seeds/company.seed";
 import { TESTING_PREFIX } from "../../utilities/constants";
+import { startTestApp } from "../setup-tests";
 
 describe("POST /disasters/self", () => {
     let app: Hono;
@@ -31,7 +31,7 @@ describe("POST /disasters/self", () => {
 
     test("POST /disaster/self - Success", async () => {
         const requestBody = {
-            name: "Test Disaster",
+            // name: "Test Disaster",
             description: "This is my desc.",
             startDate: new Date().toISOString().split("T")[0],
             endDate: undefined,
@@ -48,7 +48,6 @@ describe("POST /disasters/self", () => {
 
         expect(response.status).toBe(201);
         const body = await response.json();
-        expect(body.name).toBe(requestBody.name);
         expect(body.description).toBe(requestBody.description);
         expect(body.companyId).toBe(seededCompanies[0].id);
         expect(body.createdAt).toBeDefined();

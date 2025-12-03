@@ -1,14 +1,14 @@
 import { DataSource } from "typeorm";
+import { Claim } from "../../../entities/Claim";
+import { ClaimLocation } from "../../../entities/ClaimLocation";
 import { Company, CompanyTypesEnum } from "../../../entities/Company";
-import { User } from "../../../entities/User";
 import { FemaDisaster } from "../../../entities/FemaDisaster";
-import { SelfDeclaredDisaster } from "../../../entities/SelfDisaster";
 import { LocationAddress } from "../../../entities/LocationAddress";
 import { Purchase } from "../../../entities/Purchase";
 import { PurchaseLineItem, PurchaseLineItemType } from "../../../entities/PurchaseLineItem";
-import { Claim } from "../../../entities/Claim";
+import { SelfDeclaredDisaster } from "../../../entities/SelfDisaster";
+import { User } from "../../../entities/User";
 import { ClaimStatusType } from "../../../types/ClaimStatusType";
-import { ClaimLocation } from "../../../entities/ClaimLocation";
 
 export const initPdfTestData = async (dataSource: DataSource) => {
     // 1. Insert Companies
@@ -83,7 +83,6 @@ export const initPdfTestData = async (dataSource: DataSource) => {
     await selfDisasterRepository.insert([
         {
             id: "ba5735c4-fbd1-4f7d-97c1-bf5af2a3f533",
-            name: "Office Fire Incident",
             companyId: "5667a729-f000-4190-b4ee-7957badca27b",
             description: "Fire in main office building",
             startDate: new Date("2024-02-01T00:00:00Z"),
@@ -200,6 +199,7 @@ export const initPdfTestData = async (dataSource: DataSource) => {
     await claimRepository.insert([
         {
             id: "0174375f-e7c4-4862-bb9f-f58318bb2e7d",
+            name: "Claim 1",
             companyId: "5667a729-f000-4190-b4ee-7957badca27b",
             selfDisasterId: "ba5735c4-fbd1-4f7d-97c1-bf5af2a3f533",
             status: ClaimStatusType.ACTIVE,
@@ -208,6 +208,7 @@ export const initPdfTestData = async (dataSource: DataSource) => {
         },
         {
             id: "37d07be0-4e09-4e70-a395-c1464f408c1f",
+            name: "Claim 3",
             companyId: "5667a729-f000-4190-b4ee-7957badca27b",
             femaDisasterId: "11111111-1111-1111-1111-111111111111",
             status: ClaimStatusType.ACTIVE,
@@ -216,6 +217,7 @@ export const initPdfTestData = async (dataSource: DataSource) => {
         },
         {
             id: "2c24c901-38e4-4a35-a1c6-140ce64edf2a",
+            name: "Claim 4",
             companyId: "a1a542da-0abe-4531-9386-8919c9f86369",
             femaDisasterId: "22222222-2222-2222-2222-222222222222",
             status: ClaimStatusType.ACTIVE,
