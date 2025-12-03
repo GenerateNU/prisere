@@ -141,8 +141,8 @@ export default function ExpenseTable({
                                 onRowClick={(purchase) => setSelectedPurchase(purchase)}
                                 allCategories={categories.data ? categories.data : []}
                                 selections={selections}
-                            setSelections={setSelections}
-                        />
+                                setSelections={setSelections}
+                            />
                         </div>
 
                         <ExpenseSideView

@@ -473,7 +473,7 @@ export class ClaimTransaction implements IClaimTransaction {
             averageIncome: incomeLastThreeYears / 3,
             pastRevenues: revenues,
             pastPurchases: purchases,
-            insuranceInfo: claimInfo.insurancePolicy || undefined
+            insuranceInfo: claimInfo.insurancePolicy || undefined,
         };
     }
 

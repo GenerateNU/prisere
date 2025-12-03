@@ -156,7 +156,7 @@ function DeclareDisasterContent() {
         } else if (isStep(step, 4, validatedData)) {
             // Finalize submission
             await finalizeClaimSubmission();
-            router.push("/claims")
+            router.push("/claims");
         } else {
             setStep(incrementStep(step));
         }

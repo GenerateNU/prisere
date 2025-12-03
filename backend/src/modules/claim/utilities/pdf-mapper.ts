@@ -55,13 +55,13 @@ function parseRelevantExpenses(purchaseLineItems?: PurchaseLineItem[]) {
         return [];
     }
 
-    return purchaseLineItems.map((li) => RelevantExpenseSchema.parse(
-        {
+    return purchaseLineItems.map((li) =>
+        RelevantExpenseSchema.parse({
             ...li,
             quickbooksDateCreated: li.quickbooksDateCreated?.toISOString(),
             dateCreated: li.dateCreated.toISOString(),
-        }
-    ));
+        })
+    );
 }
 
 function parseInsuranceInfo(info: InsurancePolicy) {

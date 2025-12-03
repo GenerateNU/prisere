@@ -3,16 +3,14 @@
 import { createClaimPDF } from "@/api/claim";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { InsurerInfo } from "@/types/claim";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 type Props = {
-    claimId: string | null
+    claimId: string | null;
     handleStepForward: () => void;
 };
-
 
 export default function ExportStep({ claimId, handleStepForward }: Props) {
     const [exported, setExported] = React.useState(false);
@@ -22,8 +20,8 @@ export default function ExportStep({ claimId, handleStepForward }: Props) {
     const { mutate: updateBusinessMutate } = useMutation({
         mutationFn: async () => {
             const result = await createClaimPDF(claimId!);
-            console.log(result.url)
-            return result.url; 
+            console.log(result.url);
+            return result.url;
         },
         onError: (error: Error) => {
             setError(error.message);
@@ -32,8 +30,7 @@ export default function ExportStep({ claimId, handleStepForward }: Props) {
             window.open(url, "_blank");
             setExported(true);
             handleStepForward();
-        }
-
+        },
     });
 
     return (

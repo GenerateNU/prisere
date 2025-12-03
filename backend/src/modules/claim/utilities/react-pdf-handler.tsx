@@ -114,7 +114,10 @@ function ClaimPDF({ data }: { data: ClaimData }) {
         info: [
             { label: "Insurance\nCompany", value: data.insuranceInfo?.insuranceCompanyName },
             { label: "Insurance Type", value: data.insuranceInfo?.insuranceType },
-            { label: "Insured Name", value: data.insuranceInfo?.policyHolderFirstName + " " + data.insuranceInfo?.policyHolderLastName},
+            {
+                label: "Insured Name",
+                value: data.insuranceInfo?.policyHolderFirstName + " " + data.insuranceInfo?.policyHolderLastName,
+            },
             { label: "Policy Number", value: data.insuranceInfo?.policyNumber },
         ],
     };
@@ -220,7 +223,7 @@ function ClaimPDF({ data }: { data: ClaimData }) {
                     </View>
                 </View>
                 {lineBreak}
-                {data.insuranceInfo &&
+                {data.insuranceInfo && (
                     <>
                         <View style={styles.section} wrap={false}>
                             <Text style={styles.sectionHead}>Insurance Information</Text>
@@ -238,7 +241,7 @@ function ClaimPDF({ data }: { data: ClaimData }) {
                         </View>
                         {lineBreak}
                     </>
-                }
+                )}
                 <View style={styles.section} wrap={false}>
                     <Text style={styles.sectionHead}>Disaster Specific Information</Text>
                     <View style={styles.dataTable}>
@@ -267,9 +270,13 @@ function ClaimPDF({ data }: { data: ClaimData }) {
                         {data.relevantExpenses.map((expense, index) => (
                             <View key={index} style={styles.dataRow}>
                                 <Text style={{ ...styles.dataValue, width: "80px" }}>{expense.description}</Text>
-                                <Text style={{ ...styles.dataValue, width: "80px" }}>{`$${(expense.amountCents / 100).toFixed(2)}`}</Text>
+                                <Text
+                                    style={{ ...styles.dataValue, width: "80px" }}
+                                >{`$${(expense.amountCents / 100).toFixed(2)}`}</Text>
                                 <Text style={{ ...styles.dataValue, width: "80px" }}>{expense.category}</Text>
-                                <Text style={{ ...styles.dataValue, width: "200px" }}>{expense.quickbooksDateCreated || expense.dateCreated}</Text>
+                                <Text style={{ ...styles.dataValue, width: "200px" }}>
+                                    {expense.quickbooksDateCreated || expense.dateCreated}
+                                </Text>
                             </View>
                         ))}
                         {data.relevantExpenses.length === 0 && (
