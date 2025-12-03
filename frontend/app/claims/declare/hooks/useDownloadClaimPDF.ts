@@ -1,4 +1,4 @@
-import { fetchPDFForClaim } from "@/api/claim";
+import { createClaimPDF } from "@/api/claim";
 import { useState } from "react";
 
 export const useDownloadClaimPDF = () => {
@@ -7,7 +7,7 @@ export const useDownloadClaimPDF = () => {
     const download = async (claimId: string) => {
         setIsLoading(true);
         try {
-            const url = await fetchPDFForClaim(claimId);
+            const url = await createClaimPDF(claimId);
             downloadFileSimple(url.url);
         } catch (err) {
             setIsLoading(false);
