@@ -530,7 +530,6 @@ export function useClaimProgress(
     const finalizeClaimSubmission = async () => {
         try {
             if (!claimId) return;
-
             setSaveStatus("saving");
 
             // Update claim status to FILED

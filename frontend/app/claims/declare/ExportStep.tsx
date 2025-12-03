@@ -3,23 +3,38 @@
 import { createClaimPDF } from "@/api/claim";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { InsurerInfo } from "@/types/claim";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-export default function ExportStep({ claimId }: { claimId: string | null }) {
+type Props = {
+    claimId: string | null
+    handleStepForward: () => void;
+};
+
+
+export default function ExportStep({ claimId, handleStepForward }: Props) {
     const [exported, setExported] = React.useState(false);
+    const [error, setError] = React.useState<String | null>(null);
     const router = useRouter();
 
-    const handleDownloadPDF = async () => {
-        if (!claimId) {
-            return;
+    const { mutate: updateBusinessMutate } = useMutation({
+        mutationFn: async () => {
+            const result = await createClaimPDF(claimId!);
+            console.log(result.url)
+            return result.url; 
+        },
+        onError: (error: Error) => {
+            setError(error.message);
+        },
+        onSuccess: (url: string) => {
+            window.open(url, "_blank");
+            setExported(true);
+            handleStepForward();
         }
 
-        const { url } = await createClaimPDF(claimId);
-
-        window.open(url, "_blank");
-        setExported(true);
-    };
+    });
 
     return (
         <Card className="border-none shadow-none">
@@ -42,7 +57,7 @@ export default function ExportStep({ claimId }: { claimId: string | null }) {
                     <div className="flex flex-col items-center gap-3">
                         <Button
                             className="w-[195px] h-[34px] bg-fuchsia hover:bg-fuchsia/80 text-white"
-                            onClick={handleDownloadPDF}
+                            onClick={() => updateBusinessMutate()}
                         >
                             Download PDF
                         </Button>
@@ -53,6 +68,7 @@ export default function ExportStep({ claimId }: { claimId: string | null }) {
                             Email a Copy
                         </Button>
                     </div>
+                    {error && <p className="text-red-500 text-sm px-1"> {error}</p>}
                 </div>
             )}
         </Card>

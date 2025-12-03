@@ -156,7 +156,7 @@ function DeclareDisasterContent() {
         } else if (isStep(step, 4, validatedData)) {
             // Finalize submission
             await finalizeClaimSubmission();
-            setStep(5);
+            router.push("/claims")
         } else {
             setStep(incrementStep(step));
         }
@@ -261,7 +261,7 @@ function DeclareDisasterContent() {
         },
         {
             step: 4,
-            render: <ExportStep claimId={claimId} />,
+            render: <ExportStep claimId={claimId} handleStepForward={() => handleStepForward(4, null)} />,
         },
     ] satisfies { step: ClaimStepNumber; render: React.ReactNode }[];
 
