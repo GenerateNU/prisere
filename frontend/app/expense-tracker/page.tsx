@@ -31,6 +31,8 @@ export default function ExpenseTracker() {
         queryFn: getDashboardBannerData,
     });
 
+    const showLoading = hasData?.hasExternalData || hasData?.hasFinancialData || hasDataLoading;
+
     let claimId = "";
     if (bannerData && bannerData.status === "has-claim" && bannerData.claim) {
         // If claim is an array, use [0] to get the first claim
@@ -120,7 +122,7 @@ export default function ExpenseTracker() {
             <div className="flex flex-col w-full gap-[16px]">
                 <div className="flex gap-[16px] h-[364px]">
                     <div className="w-[60%]">
-                        {hasData?.hasExternalData || hasData?.hasFinancialData ? (
+                        {showLoading ? (
                             netDisasterVisisble ? (
                                 <NetDisasterExpense
                                     bannerData={bannerData ?? { status: "no-disaster" }}
@@ -141,7 +143,7 @@ export default function ExpenseTracker() {
                         )}
                     </div>
                     <div className="w-full">
-                        {hasData ? <RevenueAndExpenses onDashboard={false} /> : <RevenueAndExpensesNoData />}
+                        {showLoading ? <RevenueAndExpenses onDashboard={false} /> : <RevenueAndExpensesNoData />}
                     </div>
                 </div>
                 <ExpenseTable
@@ -150,7 +152,7 @@ export default function ExpenseTracker() {
                     editableTags={true}
                     filterPending={filterPending}
                     setFilterPending={(fp: boolean) => setFilterPending(fp)}
-                    hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false}
+                    hasData={showLoading ?? false}
                 />
             </div>
             <TransactionImportModal isOpen={importModalOpen} onClose={onCloseImportModal} />

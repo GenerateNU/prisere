@@ -1,15 +1,19 @@
 import { flexRender, Table as ReactTable, Row } from "@tanstack/react-table";
 import { Spinner } from "../ui/spinner";
 import { Table as CTable, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import ErrorDisplay from "../ErrorDisplay";
+import Loading, { LargeLoading } from "../loading";
 
 export function Table<T>({
     table,
     isLoading = false,
+    error = null,
     onRowClick,
     getRowClassName,
 }: {
     table: ReactTable<T>;
     isLoading?: boolean;
+    error?: Error | null;
     onRowClick?: (row: T) => void;
     getRowClassName?: (row: Row<T>) => string;
 }) {
@@ -31,9 +35,19 @@ export function Table<T>({
             {isLoading ? (
                 <TableBody>
                     <TableRow>
+                        <TableCell colSpan={table.getAllColumns().length} className="text-center">
+                            <div className="flex items-center justify-center w-full h-full">
+                                <Loading lines={2}/>
+                            </div>
+                        </TableCell>
+                    </TableRow>
+                </TableBody>
+            ) : error ? (
+                <TableBody>
+                    <TableRow>
                         <TableCell colSpan={table.getAllColumns().length} className="text-center py-10">
                             <div className="flex items-center justify-center w-full">
-                                <Spinner />
+                                <ErrorDisplay />
                             </div>
                         </TableCell>
                     </TableRow>
