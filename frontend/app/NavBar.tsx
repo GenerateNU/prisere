@@ -20,7 +20,7 @@ export default function NavBar() {
         { name: "Dashboard", href: "/", icon: <LuLayoutDashboard /> },
         { name: "Notifications", href: "/notifications", icon: <IoIosNotificationsOutline /> },
         { name: "Expense Tracker", href: "/expense-tracker", icon: <HiOutlineTableCells /> },
-        { name: "Claims", href: "/claims", icon: <RiFilePaperLine /> },
+        { name: "Reports", href: "/claims", icon: <RiFilePaperLine /> },
         { name: "Business Profile", href: "/business-profile", icon: <IoPersonOutline /> },
     ];
 
@@ -33,7 +33,7 @@ export default function NavBar() {
                 <div className="flex flex-col gap-5">
                     {navigationItems.map((item) => (
                         <li className="flex flex-col gap-5" key={item.name}>
-                            <Link href={item.href} className={`rounded-lg ${pathname === item.href && "bg-[#F7DCE5]"}`}>
+                            <Link href={item.href} className={`rounded-lg`}>
                                 <div
                                     className={`flex text-lg m-1 items-center gap-3 ${pathname === item.href && "text-fuchsia"}`}
                                 >

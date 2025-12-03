@@ -50,7 +50,7 @@ export default function DashboardBody() {
             </div>
 
             {/* Two Column Grid for Location Based Risk and Net Disaster Expense */}
-            <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
+            <div className="grid grid-cols-1 xl:grid-cols-6 gap-6">
                 {/* Left Column - Location Based Risk */}
                 <div className="w-full lg:col-span-4 relative">
                     <LocationRisk />

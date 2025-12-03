@@ -76,10 +76,10 @@ export default function LocationRisk() {
                 )}
 
                 <CardContent className={`w-[100%] flex flex-row px-0 ${isLoading && "hidden"}`}>
-                    <div className={`w-[100%] flex flex-col h-[550]`}>
+                    <div className={`w-[100%] flex flex-col `}>
                         <div className="w-[100%] flex flex-row">
                             <div>
-                                <div ref={mapRef} className="w-96 h-full rounded-xl z-0" />
+                                <div ref={mapRef} className="w-96 h-[500px] rounded-xl z-0" />
                             </div>
                             <div className="w-full pl-4 flex flex-col gap-2">
                                 <RiskIndexOverviewCard

@@ -17,6 +17,9 @@ import {
 } from "@/api/business-profile";
 import { BusinessDocument, DocumentCategories } from "@/types/documents";
 import { Spinner } from "@/components/ui/spinner";
+import Loading from "@/components/loading";
+import { useQuery } from "@tanstack/react-query";
+import ErrorDisplay from "@/components/ErrorDisplay";
 
 type SortOrder = "asc" | "desc";
 
@@ -24,6 +27,7 @@ export default function ViewDocuments() {
     // Replace hardcoded documents with state
     const [documents, setDocuments] = useState<BusinessDocument[]>([]);
     const [isLoadingDocuments, setIsLoadingDocuments] = useState(true);
+    const [error, setError] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("All Categories");
     const [dateFilter, setDateFilter] = useState("All Dates");
@@ -44,9 +48,13 @@ export default function ViewDocuments() {
             setIsLoadingDocuments(true);
 
             // Fetch documents from the backend
-            const docs = await getAllDocuments();
+            const {data:docs} = useQuery({
+                queryKey: ["get-all-documents"],
+                queryFn: getAllDocuments
+            })
+
             // Transform the response into the BusinessDocument type
-            const transformedDocs: BusinessDocument[] = docs.map((doc) => {
+            const transformedDocs: BusinessDocument[] = docs!.map((doc) => {
                 // Access the nested document object
                 const { document, downloadUrl } = doc;
 
@@ -75,8 +83,7 @@ export default function ViewDocuments() {
             // Update the state with the transformed documents
             setDocuments(transformedDocs);
         } catch (error) {
-            console.error("Error loading documents:", error);
-            alert("Failed to load documents. Please try again.");
+            setError(true);
         } finally {
             setIsLoadingDocuments(false);
         }
@@ -216,7 +223,7 @@ export default function ViewDocuments() {
     };
 
     return (
-        <Card>
+        <Card className = "border-none shadow-none">
             <CardHeader className="flex justify-between">
                 <div className="flex flex-col gap-[10px]">
                     <h3 className="text-[24px]">Business Documents</h3>
@@ -255,14 +262,22 @@ export default function ViewDocuments() {
 
                 {/* Show loading state or documents */}
                 {isLoadingDocuments ? (
-                    <div className="text-center py-8 text-gray-500 flex items-center justify-center">
-                        <Spinner />
+                    <div className="py-8 flex items-center justify-center w-full">
+                        <Loading lines={2}/>
                     </div>
                 ) : documents.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
                         No documents found. Upload your first document to get started!
                     </div>
-                ) : (
+                ) : error ? 
+                (
+                    <div className="py-8 flex items-center justify-center w-full">
+                        <ErrorDisplay/>
+                    </div>
+                )
+                :
+
+                (
                     <DocumentTable
                         documents={filteredAndSortedDocuments}
                         onCategoryChange={async (documentId, newCategory) => {
