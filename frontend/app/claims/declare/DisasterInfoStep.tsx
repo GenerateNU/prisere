@@ -13,7 +13,6 @@ import { useModal } from "@/components/ui/modal/useModal";
 import { Modal } from "@/components/ui/modal/Modal";
 import { UploadDocument } from "./UploadDocument";
 import { DisasterInfo } from "@/types/claim";
-import { SelectBusinessDocuments } from "./SelectBusinessDocuments";
 
 type DisasterInfoStepProps = {
     disasterInfo: DisasterInfo;
@@ -147,9 +146,6 @@ export default function DisasterInfoStep({
                     }}
                     selectedFiles={disasterInfo.additionalDocumets}
                 />
-            </Modal>
-            <Modal isOpen={false} onClose={() => undefined} size="lg">
-                <SelectBusinessDocuments />
             </Modal>
         </div>
     );

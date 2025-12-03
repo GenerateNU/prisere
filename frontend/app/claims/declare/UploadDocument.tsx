@@ -92,7 +92,7 @@ export const UploadDocument = ({ handleUploadFiles, selectedFiles }: UploadDocum
     };
 
     return (
-        <div className="flex gap-4 flex-col">
+        <div className="flex gap-4 flex-col max-h-3/4">
             <div className="w-full flex flex-col justify-start items-center text-zinc-800 text-2xl font-bold">
                 Upload a File
                 <div className="self-stretch flex flex-col justify-start items-center gap-2 text-lg font-normal">

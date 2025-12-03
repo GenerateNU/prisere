@@ -82,7 +82,7 @@ export class Claim {
     @JoinColumn({ name: "insurancePolicyId" })
     insurancePolicy!: InsurancePolicy;
 
-    @ManyToMany(() => Document)
+    @ManyToMany(() => Document, (document) => document.claims)
     @JoinTable({
         name: "claim_uploaded_documents",
         joinColumn: { name: "claimId" },

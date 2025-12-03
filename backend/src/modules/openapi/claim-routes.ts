@@ -337,7 +337,7 @@ const createLinkClaimDocumentRoute = createRoute({
             description: "Links added successfully",
         },
         404: {
-            description: "Claim or purchase line items not found",
+            description: "Claim or document not found",
         },
         ...openApiErrorCodes("Link Creation Errors"),
     },

@@ -136,7 +136,6 @@ export class S3Service implements IS3Service {
                 Key: key,
                 ContentType: contentType,
                 Metadata: metadata,
-                // ContentEncoding: "gzip",
             });
 
             const url = await getSignedUrl(this.client, command, { expiresIn });
@@ -175,13 +174,15 @@ export class S3Service implements IS3Service {
             if (documentType === DocumentTypes.GENERAL_BUSINESS || documentType === DocumentTypes.CLAIM) {
                 dbDocuments = await repository.find({
                     where: { companyId: companyId },
-                    relations: {
-                        user: true,
-                        company: true,
-                        claims: {
-                            claimLocations: true,
-                        },
-                    },
+                    relations: [
+                        "user",
+                        "company",
+                        "claims",
+                        "claims.claimLocations",
+                        "claims.insurancePolicy",
+                        "claims.femaDisaster",
+                        "claims.selfDisaster",
+                    ],
                 });
             } else if (documentType === DocumentTypes.IMAGES) {
                 dbDocuments = await repository.find({
@@ -330,6 +331,8 @@ export class S3Service implements IS3Service {
                     }
                 })
             );
+
+            console.log("enrichedDocuments", JSON.stringify(enrichedDocuments));
 
             return enrichedDocuments;
         } catch (error) {

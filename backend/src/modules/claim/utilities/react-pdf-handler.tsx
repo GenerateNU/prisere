@@ -359,7 +359,6 @@ export async function generatePdfWithAttachments(claimData: ClaimData, presigned
     return Buffer.from(mergedPdfBytes);
 }
 
-// Helper to determine file type from URL or content-type
 function getFileTypeFromUrl(url: string): "pdf" | "image" | "unknown" {
     const urlLower = url.toLowerCase();
 
@@ -387,24 +386,21 @@ async function fetchAttachment(url: string): Promise<{ data: Uint8Array; type: "
     const arrayBuffer = await response.arrayBuffer();
     const data = new Uint8Array(arrayBuffer);
 
-    // Determine type from content-type header or URL
-    let type: "pdf" | "image";
+    let additionalDocumentType: "pdf" | "image";
 
     if (contentType.includes("application/pdf")) {
-        type = "pdf";
+        additionalDocumentType = "pdf";
     } else if (contentType.startsWith("image/")) {
-        type = "image";
+        additionalDocumentType = "image";
     } else {
-        // Fall back to URL-based detection
         const urlType = getFileTypeFromUrl(url);
-        type = urlType === "unknown" ? "pdf" : urlType; // Default to PDF if unknown
+        additionalDocumentType = urlType === "unknown" ? "pdf" : urlType;
     }
 
-    return { data, type };
+    return { data, type: additionalDocumentType };
 }
 
 async function embedImageAsPdfPage(mainPdfDoc: PDFDocument, imageData: Uint8Array, url: string): Promise<void> {
-    // Determine image type
     const urlLower = url.toLowerCase();
     let image;
 
@@ -427,8 +423,8 @@ async function embedImageAsPdfPage(mainPdfDoc: PDFDocument, imageData: Uint8Arra
 
     // Calculate dimensions to fit on A4 page with margins
     const margin = 50;
-    const pageWidth = 595.28; // A4 width in points
-    const pageHeight = 841.89; // A4 height in points
+    const pageWidth = 595.28;
+    const pageHeight = 841.89;
     const maxWidth = pageWidth - margin * 2;
     const maxHeight = pageHeight - margin * 2;
 
