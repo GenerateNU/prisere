@@ -252,7 +252,7 @@ const getTagColor = (tag: string) => {
         hash = tag.charCodeAt(i) + ((hash << 5) - hash);
     }
 
-    const hue = hash % 60;
+    const hue = hash % 360;
 
     return {
         backgroundColor: `hsl(${hue}, 60%, 85%)`,
