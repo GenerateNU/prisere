@@ -421,6 +421,7 @@ export class ClaimTransaction implements IClaimTransaction {
                     locationAddress: true,
                 },
                 purchaseLineItems: true,
+                insurancePolicy: true,
             },
         });
 
@@ -472,6 +473,7 @@ export class ClaimTransaction implements IClaimTransaction {
             averageIncome: incomeLastThreeYears / 3,
             pastRevenues: revenues,
             pastPurchases: purchases,
+            insuranceInfo: claimInfo.insurancePolicy || undefined
         };
     }
 
