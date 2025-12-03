@@ -24,6 +24,7 @@ import { DataSource } from "typeorm";
 import { DocumentTypes } from "../../types/S3Types";
 import { IDocumentTransaction } from "../documents/transaction";
 import { generatePdfToBuffer } from "./utilities/react-pdf-handler";
+import { ICompanyTransaction } from "../company/transaction";
 
 export interface IClaimService {
     createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse>;
@@ -45,11 +46,13 @@ export interface IClaimService {
 export class ClaimService implements IClaimService {
     private claimTransaction: IClaimTransaction;
     private documentTransaction: IDocumentTransaction;
+    private companyTransaction: ICompanyTransaction;
     private db: DataSource;
 
-    constructor(claimTransaction: IClaimTransaction, documentTransaction: IDocumentTransaction, db: DataSource) {
+    constructor(claimTransaction: IClaimTransaction, documentTransaction: IDocumentTransaction, companyTransaction: ICompanyTransaction, db: DataSource) {
         this.claimTransaction = claimTransaction;
         this.documentTransaction = documentTransaction;
+        this.companyTransaction = companyTransaction;
         this.db = db;
     }
 
@@ -154,9 +157,11 @@ export class ClaimService implements IClaimService {
 
             const pdfBuffer = await generatePdfToBuffer(claimData);
 
+            const company = await this.companyTransaction.getCompanyById({id: companyId});
+
             const s3 = new S3Service(this.db, this.documentTransaction);
-            const timestamp = new Date().toISOString();
-            const documentId = `${claimId}-${timestamp}`;
+            const timestamp = new Date().toISOString().split('T')[0];
+            const documentId = `${company?.name}-Claim_Export-${timestamp}.pdf`;
             const key = `claims/${companyId}/${claimId}/${documentId}`;
             const uploadResponseUrl = await s3.getPresignedUploadUrl(key);
             await s3.uploadBufferToS3(uploadResponseUrl, pdfBuffer);
