@@ -52,7 +52,7 @@ export const FemaDisasterInfoSchema = z.object({
 export const SelfDisasterInfoSchema = z.object({
     description: z.string(),
     startDate: z.date(),
-    endDate: z.date().optional(),
+    endDate: z.date().nullable().optional(),
 });
 
 export const ImpactedLocationSchema = z.object({
