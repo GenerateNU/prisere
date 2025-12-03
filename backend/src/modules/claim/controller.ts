@@ -144,7 +144,7 @@ export class ClaimController {
         async (ctx: Context): ControllerResponse<TypedResponse<ClaimPDFGenerationResponse, 200>> => {
             const userId = ctx.get("userId");
             const claimId = ctx.req.param("id");
-            const companyId = ctx.req.param("companyId");
+            const companyId = ctx.get("companyId");
 
             if (!validate(claimId)) {
                 return ctx.json({ error: "Invalid claim Id format" }, 400);
