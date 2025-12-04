@@ -9,7 +9,7 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { DocumentTypes, GetUploadUrlResponse, PdfListItem, UploadResult } from "../../types/S3Types";
 import { logMessageToFile } from "../../utilities/logger";
-import { DataSource } from "typeorm";
+import { DataSource, IsNull } from "typeorm";
 import { DocumentCategories, DocumentWithUrl } from "../../types/DocumentType";
 import { Document } from "../../entities/Document";
 import { IDocumentTransaction } from "../documents/transaction";
@@ -169,9 +169,12 @@ export class S3Service implements IS3Service {
             const repository = this.db.getRepository(Document);
             let dbDocuments: Document[];
 
-            if (documentType === DocumentTypes.GENERAL_BUSINESS || documentType === DocumentTypes.CLAIM) {
+            if (documentType === DocumentTypes.GENERAL_BUSINESS) {
                 dbDocuments = await repository.find({
-                    where: { companyId: companyId },
+                    where: {
+                        companyId: companyId,
+                        exportedClaimID: IsNull(),
+                    },
                     relations: [
                         "user",
                         "company",
@@ -216,11 +219,13 @@ export class S3Service implements IS3Service {
                                     companyType: doc.company.companyType,
                                     createdAt: doc.company.createdAt.toISOString(),
                                     updatedAt: doc.company.updatedAt.toISOString(),
-                                    externals: doc.company.externals.map((external) => ({
-                                        ...external,
-                                        createdAt: external.createdAt.toISOString(),
-                                        updatedAt: external.updatedAt.toISOString(),
-                                    })),
+                                    externals: doc.company.externals
+                                        ? doc.company.externals.map((external) => ({
+                                              ...external,
+                                              createdAt: external.createdAt.toISOString(),
+                                              updatedAt: external.updatedAt.toISOString(),
+                                          }))
+                                        : [],
                                     lastQuickBooksInvoiceImportTime:
                                         doc.company.lastQuickBooksInvoiceImportTime?.toISOString() || null,
                                     lastQuickBooksPurchaseImportTime:
@@ -242,8 +247,9 @@ export class S3Service implements IS3Service {
                                               createdAt: claim.insurancePolicy.createdAt.toISOString(),
                                               updatedAt: claim.insurancePolicy.updatedAt.toISOString(),
                                           },
-                                          purchaseLineItemIds:
-                                              claim.purchaseLineItems.map((element) => element.id) || [],
+                                          purchaseLineItemIds: claim.purchaseLineItems
+                                              ? claim.purchaseLineItems.map((element) => element.id)
+                                              : [],
                                           femaDisaster: claim.femaDisaster
                                               ? {
                                                     ...claim.femaDisaster,
@@ -284,11 +290,13 @@ export class S3Service implements IS3Service {
                                     name: doc.company.name,
                                     createdAt: doc.company.createdAt.toISOString(),
                                     updatedAt: doc.company.updatedAt.toISOString(),
-                                    externals: doc.company.externals.map((external) => ({
-                                        ...external,
-                                        createdAt: external.createdAt.toISOString(),
-                                        updatedAt: external.updatedAt.toISOString(),
-                                    })),
+                                    externals: doc.company.externals
+                                        ? doc.company.externals.map((external) => ({
+                                              ...external,
+                                              createdAt: external.createdAt.toISOString(),
+                                              updatedAt: external.updatedAt.toISOString(),
+                                          }))
+                                        : [],
 
                                     lastQuickBooksInvoiceImportTime:
                                         doc.company.lastQuickBooksInvoiceImportTime?.toISOString() || null,
@@ -319,8 +327,9 @@ export class S3Service implements IS3Service {
                                                     incidentEndDate: claim.femaDisaster.incidentEndDate?.toISOString(),
                                                 }
                                               : undefined,
-                                          purchaseLineItemIds:
-                                              claim.purchaseLineItems.map((element) => element.id) || [],
+                                          purchaseLineItemIds: claim.purchaseLineItems
+                                              ? claim.purchaseLineItems.map((element) => element.id)
+                                              : [],
                                           selfDisaster: claim.selfDisaster
                                               ? {
                                                     ...claim.selfDisaster,
@@ -339,8 +348,6 @@ export class S3Service implements IS3Service {
                     }
                 })
             );
-
-            console.log("enrichedDocuments", JSON.stringify(enrichedDocuments));
 
             return enrichedDocuments;
         } catch (error) {

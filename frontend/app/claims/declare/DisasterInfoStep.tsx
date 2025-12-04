@@ -12,7 +12,7 @@ import { GetCompanyLocationsResponse } from "@/types/company";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { validateDisasterInfo } from "./utils/validationUtils";
-import { CloudCheck, UploadIcon, UserIcon } from "lucide-react";
+import { CloudCheck, UploadIcon } from "lucide-react";
 import { useModal } from "@/components/ui/modal/useModal";
 import { Modal } from "@/components/ui/modal/Modal";
 import { UploadDocument } from "./UploadDocument";
