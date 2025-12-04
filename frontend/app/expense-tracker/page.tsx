@@ -8,7 +8,6 @@ import NetDisasterExpense, { NetDisasterExpenseNoData } from "@/components/dashb
 import { getDashboardBannerData } from "@/api/dashboard";
 import { useQuery } from "@tanstack/react-query";
 import ReviewExpenses from "./ReviewExpenses";
-import { getPurchaseLineItemsFromClaim } from "@/api/claim";
 import { PurchaseLineItemType } from "@/types/purchase";
 import { companyHasData } from "@/api/company";
 import { GoSync } from "react-icons/go";
@@ -37,13 +36,20 @@ export default function ExpenseTracker() {
         claimId = bannerData.claim.id;
     }
 
-    const purchaseLineItemsConfirmed = useQuery({
-        queryKey: ["purchaseLineItems-for-company", claimId],
-        queryFn: () => getPurchaseLineItemsFromClaim({ claimId }),
+    const confirmedExpenses = useFetchPurchases({
+        pageNumber: 0,
+        resultsPerPage: 100,
+        type: PurchaseLineItemType.EXTRANEOUS,
     });
+    const extraneousExpensesLineItems =
+        confirmedExpenses.data?.purchases
+            ?.flatMap((purchase) => purchase.lineItems)
+            .filter((lineItem) => {
+                return lineItem.type === "extraneous";
+            }) ?? [];
 
-    const expenses = purchaseLineItemsConfirmed.data
-        ? purchaseLineItemsConfirmed.data.map((purchase) => ({
+    const expenses = extraneousExpensesLineItems
+        ? extraneousExpensesLineItems.map((purchase) => ({
               name: purchase.description,
               amount: purchase.amountCents / 100.0, // convert cents to dollars
           }))
