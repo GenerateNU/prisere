@@ -65,8 +65,13 @@ export default function LocationRisk() {
                     />
                 </div>
             </CardTitle>
+            <div className="relative">
+                {(isLoading || femaRiskCountyLookup === null) && (
+                    <CardContent className="absolute inset-0 z-10 flex items-center justify-center bg-white w-[100%] border-none shadow-none p-0">
+                        <LargeLoading />
+                    </CardContent>
+                )}
 
-            <>
                 {isLoading && (
                     <CardContent
                         className={`h-[550px] w-full flex items-center justify-center bg-white border-none shadow-none p-0`}
@@ -75,40 +80,42 @@ export default function LocationRisk() {
                     </CardContent>
                 )}
 
-                <CardContent className={`w-[100%] flex flex-row px-0 ${isLoading && "hidden"}`}>
-                    <div className={`w-[100%] flex flex-col `}>
-                        <div className="w-[100%] flex flex-row">
-                            <div>
-                                <div ref={mapRef} className="w-96 h-[500px] rounded-xl z-0" />
+                {femaRiskCountyLookup !== null && (
+                    <CardContent className="w-[100%] flex flex-row px-0">
+                        <div className="w-[100%] flex flex-col">
+                            <div className="w-[100%] flex flex-row">
+                                <div>
+                                    <div ref={mapRef} className="w-96 h-full rounded-xl z-0" />
+                                </div>
+                                <div className="w-full pl-4 flex flex-col gap-2">
+                                    <RiskIndexOverviewCard
+                                        riskAttributes={femaRiskCountyLookup.get(
+                                            `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
+                                        )}
+                                        loading={isLoading}
+                                    />
+                                    <HazardIndexOverviewCard
+                                        riskAttributes={femaRiskCountyLookup.get(
+                                            `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
+                                        )}
+                                        loading={isLoading}
+                                    />
+                                </div>
                             </div>
-                            <div className="w-full pl-4 flex flex-col gap-2">
-                                <RiskIndexOverviewCard
-                                    riskAttributes={femaRiskCountyLookup.get(
-                                        `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
-                                    )}
-                                    loading={isLoading}
-                                />
-                                <HazardIndexOverviewCard
-                                    riskAttributes={femaRiskCountyLookup.get(
-                                        `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
-                                    )}
-                                    loading={isLoading}
-                                />
-                            </div>
+                            {lastUpdated && (
+                                <p className="text-sm text-gray-600 italic">
+                                    This data was last updated{" "}
+                                    {lastUpdated.toLocaleString("en-US", {
+                                        timeZone: "America/New_York",
+                                        dateStyle: "medium",
+                                        timeStyle: "short",
+                                    })}
+                                </p>
+                            )}
                         </div>
-                        {lastUpdated && (
-                            <p className="text-sm text-gray-600 italic">
-                                This data was last updated{" "}
-                                {lastUpdated.toLocaleString("en-US", {
-                                    timeZone: "America/New_York",
-                                    dateStyle: "medium",
-                                    timeStyle: "short",
-                                })}
-                            </p>
-                        )}
-                    </div>
-                </CardContent>
-            </>
+                    </CardContent>
+                )}
+            </div>
         </Card>
     );
 }

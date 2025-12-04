@@ -34,7 +34,10 @@ export const RiskIndexOverviewCard = ({ riskAttributes, loading = false }: RiskI
                 </div>
                 <div className="flex items-center flex-row justify-between">
                     <p>Community Resilience</p>
-                    <RiskPillFactory riskLevel={riskAttributes?.communityResilience || "UNDEFINED"} />
+                    <RiskPillFactory
+                        riskLevel={riskAttributes?.communityResilience || "UNDEFINED"}
+                        highLevelPositive={true}
+                    />
                 </div>
             </div>
         </Card>
