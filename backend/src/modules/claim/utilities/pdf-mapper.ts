@@ -60,6 +60,7 @@ function parseRelevantExpenses(purchaseLineItems?: PurchaseLineItem[]) {
             ...li,
             quickbooksDateCreated: li.quickbooksDateCreated?.toISOString(),
             dateCreated: li.dateCreated.toISOString(),
+            category: li.category || undefined,
         })
     );
 }

@@ -82,7 +82,6 @@ export class FemaRiskIndexService implements IFemaRiskIndexService {
     private async deleteAllFilesInFolder(folderPath: string): Promise<void> {
         try {
             if (!fs.existsSync(folderPath)) {
-                console.log(`Folder does not exist: ${folderPath}`);
                 return;
             }
 

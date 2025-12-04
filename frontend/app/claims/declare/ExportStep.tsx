@@ -5,29 +5,33 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
-type Props = {
+type ExportStepProps = {
     claimId: string | null;
     handleStepForward: () => void;
 };
 
-export default function ExportStep({ claimId, handleStepForward }: Props) {
+export default function ExportStep({ claimId, handleStepForward }: ExportStepProps) {
     const [exported, setExported] = React.useState(false);
     const [error, setError] = React.useState<string | null>(null);
+    const [isLoadingPDFDownload, setIsLoadingPDFDownload] = useState<boolean>(false);
     const router = useRouter();
 
     const { mutate: updateBusinessMutate } = useMutation({
         mutationFn: async () => {
             const result = await createClaimPDF(claimId!);
-            console.log(result.url);
+            setIsLoadingPDFDownload(true);
             return result.url;
         },
         onError: (error: Error) => {
+            setIsLoadingPDFDownload(false);
             setError(error.message);
         },
         onSuccess: (url: string) => {
             window.open(url, "_blank");
+            setIsLoadingPDFDownload(false);
             setExported(true);
             handleStepForward();
         },
@@ -51,19 +55,22 @@ export default function ExportStep({ claimId, handleStepForward }: Props) {
                         <h3 className="font-bold text-[30px]">Export Your Claim Report</h3>
                         <p>Select a method to export your completed claim report PDF.</p>
                     </div>
-                    <div className="flex flex-col items-center gap-3">
-                        <Button
-                            className="w-[195px] h-[34px] bg-fuchsia hover:bg-fuchsia/80 text-white"
-                            onClick={() => updateBusinessMutate()}
-                        >
-                            Download PDF
-                        </Button>
-                        <Button
-                            className="w-[195px] h-[34px] bg-light-fuchsia hover:bg-light-fuchsia/80 text-fuchsia"
-                            onClick={() => setExported(true)}
-                        >
-                            Email a Copy
-                        </Button>
+                    <div className="flex flex-col items-center gap-2">
+                        <div className="flex flex-col items-center gap-3">
+                            <Button
+                                className="w-[195px] h-[34px] bg-fuchsia hover:bg-fuchsia/80 text-white"
+                                onClick={() => updateBusinessMutate()}
+                            >
+                                Download PDF
+                                {isLoadingPDFDownload && <Spinner />}
+                            </Button>
+                            <Button
+                                className="w-[195px] h-[34px] bg-light-fuchsia hover:bg-light-fuchsia/80 text-fuchsia"
+                                onClick={() => setExported(true)}
+                            >
+                                Email a Copy
+                            </Button>
+                        </div>
                     </div>
                     {error && <p className="text-red-500 text-sm px-1"> {error}</p>}
                 </div>

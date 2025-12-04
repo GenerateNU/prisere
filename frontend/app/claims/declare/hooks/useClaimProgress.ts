@@ -1,6 +1,13 @@
 "use client";
 
-import { createClaim, getClaimById, linkLineItemToClaim, linkPurchaseToClaim, updateClaimStatus } from "@/api/claim";
+import {
+    createClaim,
+    getClaimById,
+    linkLineItemToClaim,
+    linkPurchaseToClaim,
+    updateClaimStatus,
+    uploadAndConfirmDocumentRelation,
+} from "@/api/claim";
 import { createClaimLocationLink } from "@/api/claim-location";
 import { createSelfDisaster, updateSelfDisaster } from "@/api/self-disaster";
 import { getUser, updateUserInfo } from "@/api/user";
@@ -16,6 +23,7 @@ import {
     isStep,
     PersonalInfo,
     SaveStatus,
+    UploadClaimRelatedDocumentsRequest,
 } from "@/types/claim";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { parseAsNumberLiteral, useQueryState } from "nuqs";
@@ -120,6 +128,7 @@ export function useClaimProgress(
                     ...(claim.femaDisaster
                         ? { isFema: true, femaDisasterId: claim.femaDisaster.id }
                         : { isFema: false, femaDisasterId: undefined }),
+                    additionalDocuments: [],
                     // TODO: get these from the server
                     purchaseSelections: { fullPurchaseIds: [], partialLineItemIds: claim.purchaseLineItemIds ?? [] },
                 };
@@ -311,6 +320,18 @@ export function useClaimProgress(
         [claimId, step, debouncedSave]
     );
 
+    // Helper to upload additional documents to S3
+    const saveAdditionalDocumentsToS3 = async (files: File[], claimId: string) => {
+        const transformedPayloads: Omit<UploadClaimRelatedDocumentsRequest, "claimId" | "documentType">[] = files.map(
+            (file) => ({ fileName: file.name, fileType: file.type })
+        );
+
+        for (let payloadIdx = 0; payloadIdx < transformedPayloads.length; payloadIdx++) {
+            const payload = transformedPayloads[payloadIdx];
+            await uploadAndConfirmDocumentRelation(claimId, payload, files[payloadIdx]);
+        }
+    };
+
     // Commit disaster step (creates SelfDisaster + Claim)
     const commitDisasterStep = async (data?: Partial<DisasterInfo>) => {
         try {
@@ -330,6 +351,11 @@ export function useClaimProgress(
                     startDate: dataToUse.startDate?.toISOString().split("T")[0],
                     endDate: dataToUse.endDate?.toISOString().split("T")[0],
                 });
+
+                // Upload additional documents if any
+                if (dataToUse.additionalDocuments?.length > 0) {
+                    await saveAdditionalDocumentsToS3(dataToUse.additionalDocuments, selfDisasterRef.current);
+                }
             } else {
                 if (dataToUse.isFema) {
                     const newClaim = await createClaim({
@@ -367,10 +393,18 @@ export function useClaimProgress(
                     currentClaimId = newClaim.id;
                     setStatus(newClaim.status);
 
-                    await createClaimLocationLink({
-                        claimId: newClaim.id,
-                        locationAddressId: dataToUse.location,
-                    });
+                    // Upload additional documents if any
+                    if (dataToUse.additionalDocuments?.length > 0) {
+                        await saveAdditionalDocumentsToS3(dataToUse.additionalDocuments, selfDisaster.id);
+                    }
+
+                    // Link location if provided
+                    if (dataToUse.location) {
+                        await createClaimLocationLink({
+                            claimId: newClaim.id,
+                            locationAddressId: dataToUse.location,
+                        });
+                    }
                 }
 
                 // Update URL with new claimId

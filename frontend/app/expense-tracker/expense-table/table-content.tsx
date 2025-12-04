@@ -214,7 +214,7 @@ export default function TableContent({
 
                     return (
                         <div
-                            className={cn("flex items-center", row.depth > 0 && "pl-8")}
+                            className={cn("flex items-center min-w-48", row.depth > 0 && "pl-8")}
                             style={{ height: `${TABLE_ROW_HEIGHT}rem` }}
                         >
                             {setSelections && selections && (
@@ -245,7 +245,7 @@ export default function TableContent({
                 enableSorting: true,
                 accessorFn: (row) => row.amount / 100,
                 cell: (ctx) => (
-                    <div className="flex items-center" style={{ height: `${TABLE_ROW_HEIGHT}rem` }}>
+                    <div className="flex items-center min-w-28" style={{ height: `${TABLE_ROW_HEIGHT}rem` }}>
                         <p className="text-xs">{`$${(ctx.getValue() as number).toLocaleString()}`}</p>
                     </div>
                 ),
@@ -257,7 +257,7 @@ export default function TableContent({
                 cell: (ctx) => {
                     const row = ctx.row.original;
                     return (
-                        <div className="flex items-center" style={{ height: `${TABLE_ROW_HEIGHT}rem` }}>
+                        <div className="flex items-center min-w-75" style={{ height: `${TABLE_ROW_HEIGHT}rem` }}>
                             <CategoryLabel
                                 category={ctx.getValue() as string}
                                 updateCategory={(category, lineItemIds, removeCategory) => {
@@ -277,7 +277,7 @@ export default function TableContent({
                 enableSorting: true,
                 accessorFn: (row) => row.date.toLocaleDateString(),
                 cell: (ctx) => (
-                    <div className="text-xs flex items-center" style={{ height: `${TABLE_ROW_HEIGHT}rem` }}>
+                    <div className="text-xs flex items-center min-w-48" style={{ height: `${TABLE_ROW_HEIGHT}rem` }}>
                         {ctx.getValue() as string}
                     </div>
                 ),
@@ -293,7 +293,7 @@ export default function TableContent({
                 cell: (ctx) => {
                     const row = ctx.row.original;
                     return (
-                        <div className="flex items-center" style={{ height: `${TABLE_ROW_HEIGHT}rem` }}>
+                        <div className="flex items-center min-w-48" style={{ height: `${TABLE_ROW_HEIGHT}rem` }}>
                             <DisasterLabel
                                 disasterType={ctx.getValue()}
                                 updateDisasterType={(type, lineItemIds) => {
@@ -321,8 +321,6 @@ export default function TableContent({
 
         return selected ? "bg-slate-100" : "";
     };
-
-    if (purchases.error) return <div>Error loading expenses</div>;
 
     return (
         <Table

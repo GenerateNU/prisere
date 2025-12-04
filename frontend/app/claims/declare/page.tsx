@@ -59,12 +59,13 @@ function DeclareDisasterContent() {
     });
 
     // Initial form data from user/company queries
-    const initialDisasterInfo = {
+    const initialDisasterInfo: DisasterInfo = {
         name: "",
         startDate: null,
         endDate: null,
         location: "",
         description: "",
+        additionalDocuments: [],
         purchaseSelections: {
             fullPurchaseIds: [],
             partialLineItemIds: [],

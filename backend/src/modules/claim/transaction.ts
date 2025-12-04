@@ -27,6 +27,7 @@ import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../pu
 import { UserTransaction } from "../user/transaction";
 import { PurchaseTransaction } from "../purchase/transaction";
 import { ClaimDataForPDF } from "./types";
+import { Document } from "../../entities/Document";
 
 export interface IClaimTransaction {
     /**
@@ -120,6 +121,10 @@ export interface IClaimTransaction {
         payload: UpdateClaimStatusDTO,
         companyId: string
     ): Promise<UpdateClaimStatusResponse | null>;
+
+    linkClaimToDocument(claimId: string, documentId: string): Promise<void>;
+
+    getAllDocumentsAssociatedWithClaim(claimId: string): Promise<Document[]>;
 }
 
 export class ClaimTransaction implements IClaimTransaction {
@@ -348,7 +353,6 @@ export class ClaimTransaction implements IClaimTransaction {
 
             return { claimId: claimId, purchaseLineItemId: lineItemId };
         } catch (error) {
-            console.log(error);
             logMessageToFile(`Transaction error: ${error}`);
             return null;
         }
@@ -623,5 +627,18 @@ export class ClaimTransaction implements IClaimTransaction {
             logMessageToFile(`Transaction error: ${error}`);
             return null;
         }
+    }
+
+    async linkClaimToDocument(claimId: string, documentId: string): Promise<void> {
+        await this.db.manager.createQueryBuilder().relation(Claim, "documents").of(claimId).add(documentId);
+    }
+
+    async getAllDocumentsAssociatedWithClaim(claimId: string): Promise<Document[]> {
+        const claim = await this.db.getRepository(Claim).findOne({
+            where: { id: claimId },
+            relations: ["documents"],
+        });
+
+        return claim?.documents || [];
     }
 }
