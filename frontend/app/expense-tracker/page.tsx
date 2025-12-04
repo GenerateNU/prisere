@@ -30,20 +30,31 @@ export default function ExpenseTracker() {
         queryFn: getDashboardBannerData,
     });
 
-    const confirmedExpenses = useFetchPurchases({
+    const exExpenses = useFetchPurchases({
         pageNumber: 0,
         resultsPerPage: 100,
         type: PurchaseLineItemType.EXTRANEOUS,
     });
-    const extraneousExpensesLineItems =
-        confirmedExpenses.data?.purchases
+    const typicalExpenses = useFetchPurchases({
+        pageNumber: 0,
+        resultsPerPage: 100,
+        type: PurchaseLineItemType.TYPICAL,
+    });
+    const exExpensesLineItems = exExpenses.data?.purchases
+        ?.flatMap((purchase) => purchase.lineItems)
+        .filter((lineItem) => {
+            return lineItem.type === "extraneous";
+        }) ?? [];
+    const typicalExpensesLineItems =
+        typicalExpenses.data?.purchases
             ?.flatMap((purchase) => purchase.lineItems)
             .filter((lineItem) => {
-                return lineItem.type === "extraneous";
+                return lineItem.type === "typical";
             }) ?? [];
 
-    const expenses = extraneousExpensesLineItems
-        ? extraneousExpensesLineItems.map((purchase) => ({
+    const lineItems = [...exExpensesLineItems, ...typicalExpensesLineItems];
+    const expenses = lineItems
+        ? lineItems.map((purchase) => ({
               name: purchase.description,
               amount: purchase.amountCents / 100.0, // convert cents to dollars
           }))
