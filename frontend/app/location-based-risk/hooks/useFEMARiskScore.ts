@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { getFemaRiskIndexData } from "@/api/fema-risk-index";
+import { getFemaRiskIndexData, refreshFemaRiskIndexData } from "@/api/fema-risk-index";
 import { FemaRisKIndexCountiesFemaDisaster } from "@/types/fema-risk-index";
 
 export function useFEMARiskScore() {
@@ -7,20 +7,29 @@ export function useFEMARiskScore() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        let retries = 0;
         const fetchRiskData = async () => {
             setLoading(true);
+            console.log("BEFORE");
             const res = await getFemaRiskIndexData();
             setData(res);
+            if (res.length === 0 && retries < 5) {
+                console.log("in");
+                await refreshFemaRiskIndexData();
+                retries++;
+                fetchRiskData();
+            }
             setLoading(false);
-            console.log(res[0].updatedAt);
         };
         fetchRiskData();
     }, []);
 
     const countyLookup = useMemo(() => {
-        return new Map<string, FemaRisKIndexCountiesFemaDisaster[number]>(
-            data.map((element) => [element.countyFipsCode, element])
-        );
+        return data
+            ? new Map<string, FemaRisKIndexCountiesFemaDisaster[number]>(
+                  data.map((element) => [element.countyFipsCode, element])
+              )
+            : null;
     }, [data]);
 
     const lastUpdated = new Date(data?.[0]?.updatedAt);

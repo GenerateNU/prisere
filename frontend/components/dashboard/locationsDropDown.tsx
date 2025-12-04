@@ -21,7 +21,7 @@ export const LocationsDropDown = ({ availableLocations, handleSelect, selectedLo
                     <div className="flex items-center gap-1">
                         <MapIcon className="h-4 w-4" />
                         <span className="truncate">
-                            {selectedLocation ? `${selectedLocation.city} - ${selectedLocation.alias}` : "N/A"}
+                            {selectedLocation ? `${selectedLocation.city} - ${selectedLocation.alias}` : ""}
                         </span>
                     </div>
                     <ChevronDown className="h-4 w-4 opacity-70" />
