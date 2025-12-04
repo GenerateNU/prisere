@@ -5,6 +5,7 @@ import {
     CreateClaimResponse,
     GetClaimByIdResponse,
     GetClaimLineItemsResponse,
+    GetCompanyClaimRequest,
     GetCompanyClaimResponse,
     LinkLineItemToClaimResponse,
     LinkPurchaseToClaimResponse,
@@ -29,11 +30,12 @@ export const createClaim = async (payload: CreateClaimRequest): Promise<CreateCl
     return authWrapper<CreateClaimResponse>()(req);
 };
 
-export const getClaims = async (): Promise<GetCompanyClaimResponse> => {
+export const getClaims = async (input: GetCompanyClaimRequest): Promise<GetCompanyClaimResponse> => {
     const req = async (token: string): Promise<GetCompanyClaimResponse> => {
         const client = getClient();
-        const { data, error, response } = await client.GET("/claims/company", {
+        const { data, error, response } = await client.POST("/claims/company", {
             headers: authHeader(token),
+            body: input,
         });
         if (response.ok) {
             return data!;

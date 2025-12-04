@@ -1,6 +1,7 @@
 import { Table } from "@/components/table";
 import { CollapsibleArrow } from "@/components/table/collapsibleArrow";
 import { Checkbox } from "@/components/ui/checkbox";
+import { TABLE_HEADER_HEIGHT, TABLE_ROW_HEIGHT } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { PurchaseSelections } from "@/types/claim";
 import { DisasterType, FilteredPurchases, PurchasesWithCount, PurchaseWithLineItems } from "@/types/purchase";
@@ -25,7 +26,6 @@ type StandardizedRow = {
     lineItems: StandardizedRow[];
     originalPurchase: PurchaseWithLineItems;
 };
-import { TABLE_HEADER_HEIGHT, TABLE_ROW_HEIGHT } from "./table-constants";
 
 export default function TableContent({
     purchases,

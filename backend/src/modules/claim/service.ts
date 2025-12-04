@@ -1,4 +1,5 @@
 import Boom from "@hapi/boom";
+import { DataSource } from "typeorm";
 import {
     CreateClaimDTO,
     CreateClaimResponse,
@@ -15,20 +16,19 @@ import {
     UpdateClaimStatusDTO,
     UpdateClaimStatusResponse,
 } from "../../types/Claim";
+import { DocumentTypes } from "../../types/S3Types";
 import { withServiceErrorHandling } from "../../utilities/error";
+import { ICompanyTransaction } from "../company/transaction";
+import { IDocumentTransaction } from "../documents/transaction";
 import { S3Service } from "../s3/service";
 import { IClaimTransaction } from "./transaction";
-import { ClaimData, ClaimDataForPDF, ClaimPDFGenerationResponse } from "./types";
+import { ClaimData, ClaimDataForPDF, ClaimPDFGenerationResponse, GetClaimsByCompanyInput } from "./types";
 import { restructureClaimDataForPdf } from "./utilities/pdf-mapper";
-import { DataSource } from "typeorm";
-import { DocumentTypes } from "../../types/S3Types";
-import { IDocumentTransaction } from "../documents/transaction";
 import { generatePdfToBuffer } from "./utilities/react-pdf-handler";
-import { ICompanyTransaction } from "../company/transaction";
 
 export interface IClaimService {
     createClaim(payload: CreateClaimDTO, companyId: string): Promise<CreateClaimResponse>;
-    getClaimsByCompanyId(companyId: string): Promise<GetClaimsByCompanyIdResponse>;
+    getClaimsByCompanyId(companyId: string, input: GetClaimsByCompanyInput): Promise<GetClaimsByCompanyIdResponse>;
     deleteClaim(payload: DeleteClaimDTO, companyId: string): Promise<DeleteClaimResponse>;
     linkClaimToLineItem(payload: LinkClaimToLineItemDTO): Promise<LinkClaimToLineItemResponse>;
     linkClaimToPurchaseItems(payload: LinkClaimToPurchaseDTO): Promise<LinkClaimToPurchaseResponse>;
@@ -81,12 +81,12 @@ export class ClaimService implements IClaimService {
     );
 
     getClaimsByCompanyId = withServiceErrorHandling(
-        async (companyId: string): Promise<GetClaimsByCompanyIdResponse> => {
-            const claim = await this.claimTransaction.getClaimsByCompanyId(companyId);
-            if (!claim) {
+        async (companyId: string, input: GetClaimsByCompanyInput): Promise<GetClaimsByCompanyIdResponse> => {
+            const claims = await this.claimTransaction.getClaimsByCompanyId(companyId, input);
+            if (!claims) {
                 throw new Error("Claim not found");
             }
-            return claim;
+            return claims;
         }
     );
 

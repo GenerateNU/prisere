@@ -1,11 +1,11 @@
+import { afterEach, beforeAll, describe, expect, test } from "bun:test";
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, afterEach } from "bun:test";
-import { startTestApp } from "../setup-tests";
-import { IBackup } from "pg-mem";
-import { initTestData } from "./setup";
-import { DataSource } from "typeorm";
 import { beforeEach } from "node:test";
+import { IBackup } from "pg-mem";
+import { DataSource } from "typeorm";
 import { TESTING_PREFIX } from "../../utilities/constants";
+import { startTestApp } from "../setup-tests";
+import { initTestData } from "./setup";
 
 describe("DELETE /claims/:id", () => {
     let app: Hono;
@@ -29,15 +29,20 @@ describe("DELETE /claims/:id", () => {
 
     test("DELETE /claims - Successful Delete", async () => {
         const getResponseBefore = await app.request(TESTING_PREFIX + "/claims/company", {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 companyId: "5667a729-f000-4190-b4ee-7957badca27b",
             },
+            body: JSON.stringify({
+                filters: {},
+                page: 0,
+                resultsPerPage: 10,
+            }),
         });
         const getBodyBefore = await getResponseBefore.json();
 
-        expect(getBodyBefore.length).toBe(2);
+        expect(getBodyBefore.data.length).toBe(2);
 
         const response = await app.request(TESTING_PREFIX + "/claims/0174375f-e7c4-4862-bb9f-f58318bb2e7d", {
             method: "DELETE",
@@ -52,15 +57,20 @@ describe("DELETE /claims/:id", () => {
         expect(body.id).toBe("0174375f-e7c4-4862-bb9f-f58318bb2e7d");
 
         const getResponseAfter = await app.request(TESTING_PREFIX + "/claims/company", {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 companyId: "5667a729-f000-4190-b4ee-7957badca27b",
             },
+            body: JSON.stringify({
+                filters: {},
+                page: 0,
+                resultsPerPage: 10,
+            }),
         });
         const getBodyAfter = await getResponseAfter.json();
 
-        expect(getBodyAfter.length).toBe(1);
+        expect(getBodyAfter.data.length).toBe(1);
     });
 
     test("DELETE /claims - Deleting a claim that doesnt exist", async () => {

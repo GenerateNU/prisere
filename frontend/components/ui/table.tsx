@@ -71,5 +71,19 @@ function TableCaption({ className, ...props }: React.ComponentProps<"caption">) 
         <caption data-slot="table-caption" className={cn("text-muted-foreground mt-4 text-sm", className)} {...props} />
     );
 }
+// in rem:
+const TABLE_ROW_HEIGHT = 2.5;
+const TABLE_HEADER_HEIGHT = 3.5;
 
-export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption };
+export {
+    Table,
+    TABLE_HEADER_HEIGHT,
+    TABLE_ROW_HEIGHT,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+};

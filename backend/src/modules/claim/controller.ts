@@ -18,7 +18,7 @@ import {
 import { withControllerErrorHandling } from "../../utilities/error";
 import { ControllerResponse } from "../../utilities/response";
 import { IClaimService } from "./service";
-import { ClaimPDFGenerationResponse } from "./types";
+import { ClaimPDFGenerationResponse, GetClaimsByCompanyInputSchema } from "./types";
 
 export interface IClaimController {
     getClaimByCompanyId(_ctx: Context): ControllerResponse<TypedResponse<GetClaimsByCompanyIdResponse, 200>>;
@@ -35,7 +35,7 @@ export interface IClaimController {
     updateClaimStatus(_ctx: Context): ControllerResponse<TypedResponse<UpdateClaimStatusResponse, 200>>;
 }
 
-export class ClaimController {
+export class ClaimController implements IClaimController {
     private claimService: IClaimService;
 
     constructor(service: IClaimService) {
@@ -49,7 +49,10 @@ export class ClaimController {
                 return ctx.json({ error: "Invalid company ID format" }, 400);
             }
 
-            const claimResponse = await this.claimService.getClaimsByCompanyId(id);
+            const json = await ctx.req.json();
+            const input = GetClaimsByCompanyInputSchema.parse(json);
+
+            const claimResponse = await this.claimService.getClaimsByCompanyId(id, input);
 
             return ctx.json(claimResponse, 200);
         }

@@ -5684,263 +5684,327 @@
       }
     },
     "/claims/company": {
-      "get": {
+      "post": {
         "summary": "Gets all the claims associated with a company",
         "description": "Gets all the claims for a company using a company ID",
         "tags": [
           "Claims"
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "filters": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "object",
+                        "properties": {
+                          "from": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "to": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      },
+                      "search": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "page": {
+                    "type": "number"
+                  },
+                  "resultsPerPage": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "filters",
+                  "page",
+                  "resultsPerPage"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Claims fetched successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "minLength": 1
-                      },
-                      "name": {
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 250
-                      },
-                      "status": {
-                        "type": "string",
-                        "enum": [
-                          "ACTIVE",
-                          "FILED",
-                          "IN_PROGRESS_DISASTER",
-                          "IN_PROGRESS_PERSONAL",
-                          "IN_PROGRESS_BUSINESS",
-                          "IN_PROGRESS_INSURANCE",
-                          "IN_PROGRESS_EXPORT"
-                        ],
-                        "default": "ACTIVE"
-                      },
-                      "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
-                      },
-                      "updatedAt": {
-                        "type": "string",
-                        "format": "date-time"
-                      },
-                      "femaDisaster": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
                         "type": "object",
                         "properties": {
                           "id": {
                             "type": "string",
-                            "format": "uuid"
+                            "minLength": 1
                           },
-                          "disasterNumber": {
-                            "type": "number"
-                          },
-                          "fipsStateCode": {
-                            "type": "number",
-                            "minimum": 0,
-                            "maximum": 56
-                          },
-                          "declarationDate": {
-                            "type": "string"
-                          },
-                          "incidentBeginDate": {
-                            "type": "string"
-                          },
-                          "incidentEndDate": {
-                            "type": "string"
-                          },
-                          "fipsCountyCode": {
-                            "type": "number",
-                            "minimum": 0,
-                            "maximum": 1000,
-                            "exclusiveMaximum": true
-                          },
-                          "declarationType": {
+                          "name": {
                             "type": "string",
-                            "minLength": 2,
-                            "maxLength": 2
+                            "minLength": 1,
+                            "maxLength": 250
                           },
-                          "designatedArea": {
-                            "type": "string"
-                          },
-                          "designatedIncidentTypes": {
+                          "status": {
                             "type": "string",
-                            "nullable": true
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "disasterNumber",
-                          "fipsStateCode",
-                          "declarationDate",
-                          "fipsCountyCode",
-                          "declarationType",
-                          "designatedArea",
-                          "designatedIncidentTypes"
-                        ]
-                      },
-                      "selfDisaster": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "description": {
-                            "type": "string"
-                          },
-                          "startDate": {
-                            "type": "string",
-                            "format": "date"
-                          },
-                          "endDate": {
-                            "type": "string",
-                            "format": "date"
+                            "enum": [
+                              "ACTIVE",
+                              "FILED",
+                              "IN_PROGRESS_DISASTER",
+                              "IN_PROGRESS_PERSONAL",
+                              "IN_PROGRESS_BUSINESS",
+                              "IN_PROGRESS_INSURANCE",
+                              "IN_PROGRESS_EXPORT"
+                            ],
+                            "default": "ACTIVE"
                           },
                           "createdAt": {
                             "type": "string",
-                            "format": "date"
-                          },
-                          "updatedAt": {
-                            "type": "string",
-                            "format": "date"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "description",
-                          "startDate",
-                          "createdAt",
-                          "updatedAt"
-                        ]
-                      },
-                      "insurancePolicy": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "policyName": {
-                            "type": "string"
-                          },
-                          "policyHolderFirstName": {
-                            "type": "string"
-                          },
-                          "policyHolderLastName": {
-                            "type": "string"
-                          },
-                          "insuranceCompanyName": {
-                            "type": "string"
-                          },
-                          "policyNumber": {
-                            "type": "string"
-                          },
-                          "insuranceType": {
-                            "type": "string"
+                            "format": "date-time"
                           },
                           "updatedAt": {
                             "type": "string",
                             "format": "date-time"
                           },
-                          "createdAt": {
-                            "type": "string",
-                            "format": "date-time"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "policyName",
-                          "policyHolderFirstName",
-                          "policyHolderLastName",
-                          "insuranceCompanyName",
-                          "policyNumber",
-                          "insuranceType",
-                          "updatedAt",
-                          "createdAt"
-                        ]
-                      },
-                      "claimLocations": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string"
+                          "femaDisaster": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "disasterNumber": {
+                                "type": "number"
+                              },
+                              "fipsStateCode": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 56
+                              },
+                              "declarationDate": {
+                                "type": "string"
+                              },
+                              "incidentBeginDate": {
+                                "type": "string"
+                              },
+                              "incidentEndDate": {
+                                "type": "string"
+                              },
+                              "fipsCountyCode": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 1000,
+                                "exclusiveMaximum": true
+                              },
+                              "declarationType": {
+                                "type": "string",
+                                "minLength": 2,
+                                "maxLength": 2
+                              },
+                              "designatedArea": {
+                                "type": "string"
+                              },
+                              "designatedIncidentTypes": {
+                                "type": "string",
+                                "nullable": true
+                              }
                             },
-                            "alias": {
-                              "type": "string"
+                            "required": [
+                              "id",
+                              "disasterNumber",
+                              "fipsStateCode",
+                              "declarationDate",
+                              "fipsCountyCode",
+                              "declarationType",
+                              "designatedArea",
+                              "designatedIncidentTypes"
+                            ]
+                          },
+                          "selfDisaster": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "startDate": {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              "endDate": {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "format": "date"
+                              }
                             },
-                            "country": {
-                              "type": "string"
+                            "required": [
+                              "id",
+                              "description",
+                              "startDate",
+                              "createdAt",
+                              "updatedAt"
+                            ]
+                          },
+                          "insurancePolicy": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "policyName": {
+                                "type": "string"
+                              },
+                              "policyHolderFirstName": {
+                                "type": "string"
+                              },
+                              "policyHolderLastName": {
+                                "type": "string"
+                              },
+                              "insuranceCompanyName": {
+                                "type": "string"
+                              },
+                              "policyNumber": {
+                                "type": "string"
+                              },
+                              "insuranceType": {
+                                "type": "string"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
                             },
-                            "stateProvince": {
-                              "type": "string"
-                            },
-                            "city": {
-                              "type": "string"
-                            },
-                            "streetAddress": {
-                              "type": "string"
-                            },
-                            "postalCode": {
-                              "type": "string",
-                              "minLength": 1,
-                              "pattern": "^\\d+$"
-                            },
-                            "county": {
-                              "type": "string"
-                            },
-                            "companyId": {
-                              "type": "string",
-                              "format": "uuid"
-                            },
-                            "fipsStateCode": {
-                              "type": "number"
-                            },
-                            "fipsCountyCode": {
-                              "type": "number"
-                            },
-                            "lat": {
-                              "type": "number"
-                            },
-                            "long": {
-                              "type": "number"
+                            "required": [
+                              "id",
+                              "policyName",
+                              "policyHolderFirstName",
+                              "policyHolderLastName",
+                              "insuranceCompanyName",
+                              "policyNumber",
+                              "insuranceType",
+                              "updatedAt",
+                              "createdAt"
+                            ]
+                          },
+                          "claimLocations": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "alias": {
+                                  "type": "string"
+                                },
+                                "country": {
+                                  "type": "string"
+                                },
+                                "stateProvince": {
+                                  "type": "string"
+                                },
+                                "city": {
+                                  "type": "string"
+                                },
+                                "streetAddress": {
+                                  "type": "string"
+                                },
+                                "postalCode": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "pattern": "^\\d+$"
+                                },
+                                "county": {
+                                  "type": "string"
+                                },
+                                "companyId": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                },
+                                "fipsStateCode": {
+                                  "type": "number"
+                                },
+                                "fipsCountyCode": {
+                                  "type": "number"
+                                },
+                                "lat": {
+                                  "type": "number"
+                                },
+                                "long": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "alias",
+                                "country",
+                                "stateProvince",
+                                "city",
+                                "streetAddress",
+                                "postalCode",
+                                "companyId",
+                                "fipsStateCode",
+                                "fipsCountyCode",
+                                "lat",
+                                "long"
+                              ]
                             }
                           },
-                          "required": [
-                            "id",
-                            "alias",
-                            "country",
-                            "stateProvince",
-                            "city",
-                            "streetAddress",
-                            "postalCode",
-                            "companyId",
-                            "fipsStateCode",
-                            "fipsCountyCode",
-                            "lat",
-                            "long"
-                          ]
-                        }
-                      },
-                      "purchaseLineItemIds": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
+                          "purchaseLineItemIds": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "createdAt",
+                          "purchaseLineItemIds"
+                        ]
                       }
                     },
-                    "required": [
-                      "id",
-                      "name",
-                      "createdAt",
-                      "purchaseLineItemIds"
-                    ]
-                  }
+                    "totalCount": {
+                      "type": "number"
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    },
+                    "hasPrevious": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "totalCount",
+                    "hasMore",
+                    "hasPrevious"
+                  ]
                 }
               }
             }

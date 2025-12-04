@@ -1,13 +1,15 @@
 import { z } from "zod";
-import { GetPurchaseLineItemResponseSchema } from "../modules/purchase-line-item/types";
-import { GetSelfDisasterForCompanyResponseSchema } from "../modules/self-disaster/types";
-import { ClaimStatusType } from "./ClaimStatusType";
-import { GetAllDisastersDocumentResponseSchema, GetAllDisastersResponseSchema } from "./fema-disaster";
-import { GetSelfDisasterForDocumentResponseSchema } from "../modules/self-disaster/types";
 import {
     SingleInsurancePolicyDocumentResponseSchema,
     SingleInsurancePolicyResponseSchema,
 } from "../modules/insurance-policy/types";
+import { GetPurchaseLineItemResponseSchema } from "../modules/purchase-line-item/types";
+import {
+    GetSelfDisasterForCompanyResponseSchema,
+    GetSelfDisasterForDocumentResponseSchema,
+} from "../modules/self-disaster/types";
+import { ClaimStatusType } from "./ClaimStatusType";
+import { GetAllDisastersDocumentResponseSchema, GetAllDisastersResponseSchema } from "./fema-disaster";
 import { LocationAddressSchema } from "./Location";
 /* Zod schemas for OpenAPI docs */
 
@@ -61,7 +63,12 @@ export const CreateClaimResponseSchema = stringClaimSchema;
 
 /* GET */
 
-export const GetClaimsByCompanyIdResponseSchema = z.array(ClaimSchema);
+export const GetClaimsByCompanyIdResponseSchema = z.object({
+    data: z.array(ClaimSchema),
+    totalCount: z.number(),
+    hasMore: z.boolean(),
+    hasPrevious: z.boolean(),
+});
 
 /* DELETE */
 export const DeleteClaimDTOSchema = z.object({
