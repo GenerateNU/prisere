@@ -21,7 +21,7 @@ export default function Claims() {
                     claimId={claimInProgress.id}
                 />
             ) : null}
-            <ClaimTable claimInProgress={claimInProgress?.status !== "FILED"} />
+            <ClaimTable claimInProgress={claimInProgress ? true : false} />
         </div>
     );
 }
