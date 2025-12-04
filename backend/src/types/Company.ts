@@ -10,8 +10,8 @@ export const CompanyExternalSchema = z.object({
     source: z.string(),
     externalId: z.string(),
     companyId: z.string(),
-    createdAt: z.string(),
-    updatedAt: z.string(),
+    createdAt: z.iso.datetime(),
+    updatedAt: z.iso.datetime(),
     importTime: z.string().optional(),
 });
 

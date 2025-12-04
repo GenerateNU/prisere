@@ -75,7 +75,7 @@ export default function CategoryLabel({
     }
 
     return (
-        <div className="inline-flex flex-wrap items-center gap-1" onClick={(e) => e.stopPropagation()}>
+        <div className="inline-flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
             {categories.slice(0, 3).map((cat, index) => (
                 <CategoryBadge
                     key={index}
@@ -252,7 +252,7 @@ const getTagColor = (tag: string) => {
         hash = tag.charCodeAt(i) + ((hash << 5) - hash);
     }
 
-    const hue = hash % 60;
+    const hue = hash % 360;
 
     return {
         backgroundColor: `hsl(${hue}, 60%, 85%)`,

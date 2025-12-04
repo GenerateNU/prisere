@@ -18,7 +18,11 @@ import {
 import { withControllerErrorHandling } from "../../utilities/error";
 import { ControllerResponse } from "../../utilities/response";
 import { IClaimService } from "./service";
-import { ClaimPDFGenerationResponse } from "./types";
+import {
+    ClaimPDFGenerationResponse,
+    LinkBusinessDocumentToClaimRequest,
+    LinkBusinessDocumentToClaimRequestSchema,
+} from "./types";
 
 export interface IClaimController {
     getClaimByCompanyId(_ctx: Context): ControllerResponse<TypedResponse<GetClaimsByCompanyIdResponse, 200>>;
@@ -33,14 +37,28 @@ export interface IClaimController {
     createClaimPDF(_ctx: Context): ControllerResponse<TypedResponse<ClaimPDFGenerationResponse, 200>>;
     getClaimById(_ctx: Context): ControllerResponse<TypedResponse<GetClaimByIdResponse, 200>>;
     updateClaimStatus(_ctx: Context): ControllerResponse<TypedResponse<UpdateClaimStatusResponse, 200>>;
+    linkClaimToBusinessDocument(
+        _ctx: Context
+    ): ControllerResponse<TypedResponse<LinkBusinessDocumentToClaimRequest, 200>>;
 }
 
-export class ClaimController {
+export class ClaimController implements IClaimController {
     private claimService: IClaimService;
 
     constructor(service: IClaimService) {
         this.claimService = service;
     }
+
+    linkClaimToBusinessDocument = withControllerErrorHandling(
+        async (ctx: Context): ControllerResponse<TypedResponse<LinkBusinessDocumentToClaimRequest, 200>> => {
+            const json = await ctx.req.json();
+            const payload = LinkBusinessDocumentToClaimRequestSchema.parse(json);
+
+            await this.claimService.linkClaimToBusinessDocument(payload.claimId, payload.businessDocumentId);
+
+            return ctx.json(payload, 200);
+        }
+    );
 
     getClaimByCompanyId = withControllerErrorHandling(
         async (ctx: Context): ControllerResponse<TypedResponse<GetClaimsByCompanyIdResponse, 200>> => {

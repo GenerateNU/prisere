@@ -22,8 +22,9 @@ import { ClaimData, ClaimDataForPDF, ClaimPDFGenerationResponse } from "./types"
 import { restructureClaimDataForPdf } from "./utilities/pdf-mapper";
 import { DataSource } from "typeorm";
 import { DocumentTypes } from "../../types/S3Types";
+import { DocumentTransaction } from "../documents/transaction";
+import { generatePdfWithAttachments } from "./utilities/react-pdf-handler";
 import { IDocumentTransaction } from "../documents/transaction";
-import { generatePdfToBuffer } from "./utilities/react-pdf-handler";
 import { ICompanyTransaction } from "../company/transaction";
 
 export interface IClaimService {
@@ -41,6 +42,7 @@ export interface IClaimService {
         payload: UpdateClaimStatusDTO,
         companyId: string
     ): Promise<UpdateClaimStatusResponse>;
+    linkClaimToBusinessDocument(claimId: string, documentId: string): Promise<void>;
 }
 
 export class ClaimService implements IClaimService {
@@ -59,6 +61,10 @@ export class ClaimService implements IClaimService {
         this.documentTransaction = documentTransaction;
         this.companyTransaction = companyTransaction;
         this.db = db;
+    }
+
+    async linkClaimToBusinessDocument(claimId: string, documentId: string): Promise<void> {
+        await this.claimTransaction.linkClaimToDocument(claimId, documentId);
     }
 
     createClaim = withServiceErrorHandling(
@@ -160,7 +166,15 @@ export class ClaimService implements IClaimService {
             // await generatePdfToFile(claimData);
             // return { url: "test" };
 
-            const pdfBuffer = await generatePdfToBuffer(claimData);
+            const additionalDocuments = await this.claimTransaction.getAllDocumentsAssociatedWithClaim(claimId);
+
+            const s3Service = new S3Service(this.db, new DocumentTransaction(this.db));
+
+            const urls = await Promise.all(
+                additionalDocuments.map(async (doc) => s3Service.getPresignedDownloadUrl(doc.key))
+            );
+
+            const pdfBuffer = await generatePdfWithAttachments(claimData, urls);
 
             const company = await this.companyTransaction.getCompanyById({ id: companyId });
 
@@ -174,7 +188,7 @@ export class ClaimService implements IClaimService {
                 key: key,
                 documentId: documentId,
                 documentType: DocumentTypes.CLAIM,
-                claimId: claimId,
+                exportedFromClaimId: claimId,
                 userId: userId,
                 companyId: companyId,
             });

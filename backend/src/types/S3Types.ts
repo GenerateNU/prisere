@@ -20,7 +20,19 @@ export const ConfirmUploadRequestSchema = z.object({
     key: z.string().min(1).describe("S3 key of the uploaded file"),
     documentId: z.string().min(1).describe("Document ID returned from getUploadUrl"),
     documentType: z.enum(DocumentTypes).default(DocumentTypes.GENERAL_BUSINESS),
-    claimId: z.string().optional().describe("Optional claim ID for claim-specific documents"),
+    claimId: z.string().optional().describe("Optional claim ID for documents associated with a claim"),
+    exportedFromClaimId: z
+        .string()
+        .optional()
+        .describe("Optional claim ID to represent if a document was exported from a claim"),
+    category: z.enum(DocumentCategories).nullable(),
+});
+
+export const ConfirmUploadForSelfDisasterRequestSchema = z.object({
+    key: z.string().min(1).describe("S3 key of the uploaded file"),
+    documentId: z.string().min(1).describe("Document ID returned from getUploadUrl"),
+    documentType: z.enum(DocumentTypes).default(DocumentTypes.GENERAL_BUSINESS),
+    selfDisasterId: z.string().describe("The self disaster for this Upload"),
     category: z.enum(DocumentCategories).nullable(),
 });
 
@@ -108,5 +120,6 @@ export type UploadResponse = z.infer<typeof UploadResponseSchema>;
 export type GetUploadUrlRequest = z.infer<typeof GetUploadUrlRequestSchema>;
 export type GetUploadUrlResponse = z.infer<typeof GetUploadUrlResponseSchema>;
 export type ConfirmUploadRequest = z.infer<typeof ConfirmUploadRequestSchema>;
+export type ConfirmUploadForSelfDisasterRequest = z.infer<typeof ConfirmUploadForSelfDisasterRequestSchema>;
 export type DeleteDocumentRequest = z.infer<typeof DeleteDocumentRequestSchema>;
 export type DeleteDocumentResponse = z.infer<typeof DeleteDocumentResponseSchema>;

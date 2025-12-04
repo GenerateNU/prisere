@@ -72,7 +72,7 @@ export default function LoginPage() {
                         {signupCards.map((card, index) => (
                             <div
                                 key={index}
-                                className="border border-1 border-stone-200 rounded-[20px] p-[10px] flex items-center gap-[10px]"
+                                className="border-1 border-stone-200 rounded-[20px] p-[10px] flex items-center gap-[10px]"
                             >
                                 {card.icon}
                                 <p className="text-[16px]">{card.title}</p>

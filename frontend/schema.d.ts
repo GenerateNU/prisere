@@ -311,7 +311,9 @@ export interface paths {
                                 source: string;
                                 externalId: string;
                                 companyId: string;
+                                /** Format: date-time */
                                 createdAt: string;
+                                /** Format: date-time */
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
@@ -397,7 +399,9 @@ export interface paths {
                                 source: string;
                                 externalId: string;
                                 companyId: string;
+                                /** Format: date-time */
                                 createdAt: string;
+                                /** Format: date-time */
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
@@ -485,7 +489,9 @@ export interface paths {
                                 source: string;
                                 externalId: string;
                                 companyId: string;
+                                /** Format: date-time */
                                 createdAt: string;
+                                /** Format: date-time */
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
@@ -578,7 +584,9 @@ export interface paths {
                                 source: string;
                                 externalId: string;
                                 companyId: string;
+                                /** Format: date-time */
                                 createdAt: string;
+                                /** Format: date-time */
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
@@ -671,7 +679,9 @@ export interface paths {
                                 source: string;
                                 externalId: string;
                                 companyId: string;
+                                /** Format: date-time */
                                 createdAt: string;
+                                /** Format: date-time */
                                 updatedAt: string;
                                 importTime?: string;
                             }[];
@@ -1636,7 +1646,9 @@ export interface paths {
                                         source: string;
                                         externalId: string;
                                         companyId: string;
+                                        /** Format: date-time */
                                         createdAt: string;
+                                        /** Format: date-time */
                                         updatedAt: string;
                                         importTime?: string;
                                     }[];
@@ -4224,6 +4236,84 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Creates a link between a claim and a document
+         * @description Creates a link between a claim with a given id and the document with the given id
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        businessDocumentId: string;
+                        claimId: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Links added successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            businessDocumentId: string;
+                            claimId: string;
+                        };
+                    };
+                };
+                /** @description Link Creation Errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Claim or document not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Link Creation Errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/claim-locations": {
         parameters: {
             query?: never;
@@ -5967,7 +6057,7 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
                         /** @description Original file name */
@@ -6060,7 +6150,7 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
                         /** @description S3 key of the uploaded file */
@@ -6072,8 +6162,10 @@ export interface paths {
                          * @enum {string}
                          */
                         documentType?: "CLAIM" | "GENERAL_BUSINESS" | "IMAGES";
-                        /** @description Optional claim ID for claim-specific documents */
+                        /** @description Optional claim ID for documents associated with a claim */
                         claimId?: string;
+                        /** @description Optional claim ID to represent if a document was exported from a claim */
+                        exportedFromClaimId?: string;
                         /** @enum {string|null} */
                         category: "Expenses" | "Revenues" | "Insurance" | "Other" | null;
                     };
@@ -6216,7 +6308,9 @@ export interface paths {
                                         source: string;
                                         externalId: string;
                                         companyId: string;
+                                        /** Format: date-time */
                                         createdAt: string;
+                                        /** Format: date-time */
                                         updatedAt: string;
                                         importTime?: string;
                                     }[];
@@ -6227,76 +6321,78 @@ export interface paths {
                                     createdAt: string;
                                     updatedAt: string;
                                 };
-                                claim?: {
-                                    id: string;
-                                    name: string;
-                                    /**
-                                     * @default ACTIVE
-                                     * @enum {string}
-                                     */
-                                    status:
-                                        | "ACTIVE"
-                                        | "FILED"
-                                        | "IN_PROGRESS_DISASTER"
-                                        | "IN_PROGRESS_PERSONAL"
-                                        | "IN_PROGRESS_BUSINESS"
-                                        | "IN_PROGRESS_INSURANCE"
-                                        | "IN_PROGRESS_EXPORT";
-                                    createdAt: string;
-                                    /** Format: date-time */
-                                    updatedAt?: string;
-                                    femaDisaster?: {
-                                        /** Format: uuid */
-                                        id: string;
-                                        disasterNumber: number;
-                                        fipsStateCode: number;
-                                        declarationDate: string;
-                                        incidentBeginDate?: string | null;
-                                        incidentEndDate?: string | null;
-                                        fipsCountyCode: number;
-                                        declarationType: string;
-                                        designatedArea: string;
-                                        designatedIncidentTypes: string | null;
-                                    };
-                                    selfDisaster?: {
-                                        id: string;
-                                        name: string;
-                                        description: string;
-                                        startDate: string;
-                                        endDate?: string;
-                                        createdAt: string;
-                                        updatedAt: string;
-                                    };
-                                    insurancePolicy?: {
-                                        id: string;
-                                        policyName: string;
-                                        policyHolderFirstName: string;
-                                        policyHolderLastName: string;
-                                        insuranceCompanyName: string;
-                                        policyNumber: string;
-                                        insuranceType: string;
-                                        updatedAt: string;
-                                        createdAt: string;
-                                    };
-                                    claimLocations?: {
-                                        id: string;
-                                        alias: string;
-                                        country: string;
-                                        stateProvince: string;
-                                        city: string;
-                                        streetAddress: string;
-                                        postalCode: string;
-                                        county?: string;
-                                        /** Format: uuid */
-                                        companyId: string;
-                                        fipsStateCode: number;
-                                        fipsCountyCode: number;
-                                        lat: number;
-                                        long: number;
-                                    }[];
-                                    purchaseLineItemIds: string[];
-                                    lastModified?: string;
-                                } | null;
+                                claim?:
+                                    | {
+                                          id: string;
+                                          name: string;
+                                          /**
+                                           * @default ACTIVE
+                                           * @enum {string}
+                                           */
+                                          status:
+                                              | "ACTIVE"
+                                              | "FILED"
+                                              | "IN_PROGRESS_DISASTER"
+                                              | "IN_PROGRESS_PERSONAL"
+                                              | "IN_PROGRESS_BUSINESS"
+                                              | "IN_PROGRESS_INSURANCE"
+                                              | "IN_PROGRESS_EXPORT";
+                                          /** Format: date-time */
+                                          createdAt: string;
+                                          /** Format: date-time */
+                                          updatedAt?: string;
+                                          femaDisaster?: {
+                                              /** Format: uuid */
+                                              id: string;
+                                              disasterNumber: number;
+                                              fipsStateCode: number;
+                                              declarationDate: string;
+                                              incidentBeginDate?: string | null;
+                                              incidentEndDate?: string | null;
+                                              fipsCountyCode: number;
+                                              declarationType: string;
+                                              designatedArea: string;
+                                              designatedIncidentTypes: string | null;
+                                          };
+                                          selfDisaster?: {
+                                              id: string;
+                                              name: string;
+                                              description: string;
+                                              startDate: string;
+                                              endDate?: string;
+                                              createdAt: string;
+                                              updatedAt: string;
+                                          };
+                                          insurancePolicy?: {
+                                              id: string;
+                                              policyName: string;
+                                              policyHolderFirstName: string;
+                                              policyHolderLastName: string;
+                                              insuranceCompanyName: string;
+                                              policyNumber: string;
+                                              insuranceType: string;
+                                              updatedAt: string;
+                                              createdAt: string;
+                                          };
+                                          claimLocations?: {
+                                              id: string;
+                                              alias: string;
+                                              country: string;
+                                              stateProvince: string;
+                                              city: string;
+                                              streetAddress: string;
+                                              postalCode: string;
+                                              county?: string;
+                                              /** Format: uuid */
+                                              companyId: string;
+                                              fipsStateCode: number;
+                                              fipsCountyCode: number;
+                                              lat: number;
+                                              long: number;
+                                          }[];
+                                          purchaseLineItemIds: string[];
+                                      }[]
+                                    | null;
                             };
                             downloadUrl: string;
                         }[];
@@ -6355,7 +6451,7 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
                         key: string;
@@ -6428,7 +6524,7 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
                         /** @description The database ID of the document */
@@ -6474,6 +6570,123 @@ export interface paths {
                 };
             };
         };
+        trace?: never;
+    };
+    "/s3/confirmUpload/selfDisaster": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm document upload completion for a document related to a self declared disaster
+         * @description Verifies that a file was successfully uploaded to S3 and returns file details including a presigned download URL and associates the document with the claim of the given self disaster.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** @description S3 key of the uploaded file */
+                        key: string;
+                        /** @description Document ID returned from getUploadUrl */
+                        documentId: string;
+                        /**
+                         * @default GENERAL_BUSINESS
+                         * @enum {string}
+                         */
+                        documentType?: "CLAIM" | "GENERAL_BUSINESS" | "IMAGES";
+                        /** @description The self disaster for this Upload */
+                        selfDisasterId: string;
+                        /** @enum {string|null} */
+                        category: "Expenses" | "Revenues" | "Insurance" | "Other" | null;
+                    };
+                };
+            };
+            responses: {
+                /** @description Upload confirmed successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description S3 key of the uploaded file */
+                            key: string;
+                            /**
+                             * Format: uri
+                             * @description Presigned download URL for the file
+                             */
+                            url: string;
+                            /** @description File size in bytes */
+                            size: number;
+                            /** @description SHA-256 hash of the file */
+                            hash: string;
+                            /** @description Whether this file is a duplicate */
+                            isDuplicate?: boolean;
+                            /** @description Key of the original file if duplicate */
+                            duplicateKey?: string;
+                        };
+                    };
+                };
+                /** @description Invalid request - missing or invalid parameters */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description User authentication required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description File not found in S3 */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Internal server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
 }
