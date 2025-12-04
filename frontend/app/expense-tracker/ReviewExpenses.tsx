@@ -26,7 +26,7 @@ export default function ReviewExpenses({
                 <div className="flex items-center justify-between">
                     <div className="">
                         <h2 className="text-[24px] text-nowrap font-bold">Review Expenses</h2>
-                        <p className="text-[15px] text-nowrap text-charcoal">Expenses from your current claim</p>
+                        <p className="text-[15px] text-nowrap text-charcoal">Track Disaster Related Expenses</p>
                     </div>
                     <Button
                         className="w-[35px] h-[35px] bg-[var(--slate)] self-start"

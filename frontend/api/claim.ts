@@ -1,5 +1,7 @@
 "use server";
 import {
+    ConfirmDocumentUploadRequest,
+    ConfirmDocumentUploadResponse,
     CreateClaimPDFResponse,
     CreateClaimRequest,
     CreateClaimResponse,
@@ -12,6 +14,8 @@ import {
     LinkPurchaseToClaimResponse,
     UpdateClaimStatusRequest,
     UpdateClaimStatusResponse,
+    UploadClaimRelatedDocumentsRequest,
+    UploadClaimRelatedDocumentsResponse,
 } from "@/types/claim";
 import { authHeader, authWrapper, getClient } from "./client";
 
@@ -109,6 +113,71 @@ export const updateClaimStatus = async (
         }
     };
     return authWrapper<UpdateClaimStatusResponse>()(req);
+};
+
+export const uploadAndConfirmDocumentRelation = async (
+    claimId: string,
+    payload: Omit<UploadClaimRelatedDocumentsRequest, "claimId" | "documentType">,
+    file: File
+) => {
+    const upload = await uploadClaimRelatedDocuments(claimId, payload);
+
+    const response = await fetch(upload.uploadUrl, {
+        method: "PUT",
+        body: file,
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Failed to upload file to S3:", response.status, errorText);
+        throw new Error(`S3 upload failed with status ${response.status}: ${errorText}`);
+    }
+
+    await conformUploadedDocument(claimId, {
+        documentId: upload.documentId,
+        key: upload.key,
+        claimId: claimId,
+        category: null,
+    });
+};
+
+export const uploadClaimRelatedDocuments = async (
+    claimId: string,
+    payload: Omit<UploadClaimRelatedDocumentsRequest, "claimId" | "documentType">
+): Promise<UploadClaimRelatedDocumentsResponse> => {
+    const req = async (token: string): Promise<UploadClaimRelatedDocumentsResponse> => {
+        const client = getClient();
+        const { data, error, response } = await client.POST("/s3/getUploadUrl", {
+            headers: authHeader(token),
+            body: { ...payload, claimId: claimId, documentType: "CLAIM" },
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            console.log(JSON.stringify(error));
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<UploadClaimRelatedDocumentsResponse>()(req);
+};
+
+export const conformUploadedDocument = async (
+    selfDisasterId: string,
+    payload: ConfirmDocumentUploadRequest
+): Promise<ConfirmDocumentUploadResponse> => {
+    const req = async (token: string): Promise<ConfirmDocumentUploadResponse> => {
+        const client = getClient();
+        const { data, error, response } = await client.POST("/s3/confirmUpload/selfDisaster", {
+            headers: authHeader(token),
+            body: { ...payload, selfDisasterId: selfDisasterId, documentType: "CLAIM" },
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<ConfirmDocumentUploadResponse>()(req);
 };
 
 export const linkLineItemToClaim = async (claimId: string, purchaseLineItemId: string) => {

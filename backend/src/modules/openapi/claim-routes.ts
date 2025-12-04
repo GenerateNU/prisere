@@ -20,7 +20,11 @@ import { openApiErrorCodes } from "../../utilities/error";
 import { ClaimController, IClaimController } from "../claim/controller";
 import { ClaimService, IClaimService } from "../claim/service";
 import { ClaimTransaction, IClaimTransaction } from "../claim/transaction";
-import { ClaimPDFGenerationResponseSchema, GetClaimsByCompanyInputSchema } from "../claim/types";
+import {
+    ClaimPDFGenerationResponseSchema,
+    GetClaimsByCompanyInputSchema,
+    LinkBusinessDocumentToClaimRequestSchema,
+} from "../claim/types";
 import { CompanyTransaction, ICompanyTransaction } from "../company/transaction";
 import { DocumentTransaction, IDocumentTransaction } from "../documents/transaction";
 
@@ -41,6 +45,8 @@ export const createOpenAPIClaimRoutes = (openApi: OpenAPIHono, db: DataSource): 
     openApi.openapi(getPurchaseLineItemsForClaimRoute, (ctx) => claimController.getLinkedPurchaseLineItems(ctx));
     openApi.openapi(deletePurchaseLineItemLinkRoute, (ctx) => claimController.deletePurchaseLineItem(ctx));
     openApi.openapi(generateClaimPDFRoute, (ctx) => claimController.createClaimPDF(ctx));
+    openApi.openapi(createLinkClaimDocumentRoute, (ctx) => claimController.linkClaimToBusinessDocument(ctx));
+
     return openApi;
 };
 
@@ -318,6 +324,38 @@ const updateClaimStatusRoute = createRoute({
             description: "Claim not found",
         },
         ...openApiErrorCodes("Update Claim Status Errors"),
+    },
+    tags: ["Claims"],
+});
+
+const createLinkClaimDocumentRoute = createRoute({
+    method: "post",
+    path: "/documents",
+    summary: "Creates a link between a claim and a document",
+    description: "Creates a link between a claim with a given id and the document with the given id",
+    request: {
+        body: {
+            content: {
+                "application/json": {
+                    schema: LinkBusinessDocumentToClaimRequestSchema,
+                },
+            },
+            required: true,
+        },
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: LinkBusinessDocumentToClaimRequestSchema,
+                },
+            },
+            description: "Links added successfully",
+        },
+        404: {
+            description: "Claim or document not found",
+        },
+        ...openApiErrorCodes("Link Creation Errors"),
     },
     tags: ["Claims"],
 });

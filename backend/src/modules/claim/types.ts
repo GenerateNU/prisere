@@ -28,6 +28,11 @@ export type ClaimDataForPDF = {
     insuranceInfo?: InsurancePolicy;
 };
 
+export const LinkBusinessDocumentToClaimRequestSchema = z.object({
+    businessDocumentId: z.string(),
+    claimId: z.string(),
+});
+
 export const UserInfoSchema = z.object({
     firstName: z.string(),
     lastName: z.string(),
@@ -113,3 +118,4 @@ export type SelfDisasterInfo = z.infer<typeof SelfDisasterInfoSchema>;
 export type ImpactedLocation = z.infer<typeof ImpactedLocationSchema>;
 export type RelevantExpense = z.infer<typeof RelevantExpenseSchema>;
 export type ClaimData = z.infer<typeof ClaimDataSchema>;
+export type LinkBusinessDocumentToClaimRequest = z.infer<typeof LinkBusinessDocumentToClaimRequestSchema>;

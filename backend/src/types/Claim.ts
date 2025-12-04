@@ -11,9 +11,6 @@ import {
 import { ClaimStatusType } from "./ClaimStatusType";
 import { GetAllDisastersDocumentResponseSchema, GetAllDisastersResponseSchema } from "./fema-disaster";
 import { LocationAddressSchema } from "./Location";
-/* Zod schemas for OpenAPI docs */
-
-/* Claim Schema */
 
 export const ClaimSchema = z.object({
     id: z.string().nonempty(),
@@ -32,8 +29,8 @@ export const ClaimSchemaResponse = ClaimSchema.extend({
     femaDisaster: GetAllDisastersDocumentResponseSchema.element.optional(),
     selfDisaster: GetSelfDisasterForDocumentResponseSchema.optional(),
     insurancePolicy: SingleInsurancePolicyDocumentResponseSchema.optional(),
-    createdAt: z.string(),
-    lastModified: z.string().optional(),
+    createdAt: z.iso.datetime(),
+    updatedAt: z.iso.datetime().optional(),
 });
 
 // A company might not have a claim in progress

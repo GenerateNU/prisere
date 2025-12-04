@@ -2,6 +2,7 @@ import Boom from "@hapi/boom";
 import { plainToClass } from "class-transformer";
 import { Between, DataSource, FindOptionsWhere, In, LessThan, Like, MoreThan } from "typeorm";
 import { Claim } from "../../entities/Claim";
+import { Document } from "../../entities/Document";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import {
     CreateClaimDTO,
@@ -123,6 +124,10 @@ export interface IClaimTransaction {
         payload: UpdateClaimStatusDTO,
         companyId: string
     ): Promise<UpdateClaimStatusResponse | null>;
+
+    linkClaimToDocument(claimId: string, documentId: string): Promise<void>;
+
+    getAllDocumentsAssociatedWithClaim(claimId: string): Promise<Document[]>;
 }
 
 export class ClaimTransaction implements IClaimTransaction {
@@ -654,5 +659,18 @@ export class ClaimTransaction implements IClaimTransaction {
             logMessageToFile(`Transaction error: ${error}`);
             return null;
         }
+    }
+
+    async linkClaimToDocument(claimId: string, documentId: string): Promise<void> {
+        await this.db.manager.createQueryBuilder().relation(Claim, "documents").of(claimId).add(documentId);
+    }
+
+    async getAllDocumentsAssociatedWithClaim(claimId: string): Promise<Document[]> {
+        const claim = await this.db.getRepository(Claim).findOne({
+            where: { id: claimId },
+            relations: ["documents"],
+        });
+
+        return claim?.documents || [];
     }
 }

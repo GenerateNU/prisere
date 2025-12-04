@@ -28,6 +28,18 @@ export type UpdateClaimStatusRequest = NonNullable<
 export type UpdateClaimStatusResponse =
     paths["/claims/{id}/status"]["patch"]["responses"][200]["content"]["application/json"];
 
+export type UploadClaimRelatedDocumentsRequest =
+    paths["/s3/getUploadUrl"]["post"]["requestBody"]["content"]["application/json"];
+export type UploadClaimRelatedDocumentsResponse =
+    paths["/s3/getUploadUrl"]["post"]["responses"][200]["content"]["application/json"];
+
+export type ConfirmDocumentUploadRequest =
+    paths["/s3/confirmUpload"]["post"]["requestBody"]["content"]["application/json"];
+export type ConfirmDocumentUploadResponse =
+    paths["/s3/confirmUpload"]["post"]["responses"][200]["content"]["application/json"];
+
+export type CreatePDFForClaimResponse =
+    paths["/claims/{id}/pdf"]["get"]["responses"][200]["content"]["application/json"];
 export type LinkLineItemToClaimRequest = NonNullable<
     paths["/claims/line-item"]["post"]["requestBody"]
 >["content"]["application/json"];
@@ -66,6 +78,7 @@ export type DisasterInfo = {
     endDate: Date | null;
     location: string; // locationId
     description: string;
+    additionalDocuments: File[];
     purchaseSelections: PurchaseSelections;
 } & ({ isFema: false; femaDisasterId?: never } | { isFema: true; femaDisasterId: string });
 
