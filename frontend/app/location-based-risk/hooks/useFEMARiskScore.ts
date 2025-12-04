@@ -10,11 +10,9 @@ export function useFEMARiskScore() {
         let retries = 0;
         const fetchRiskData = async () => {
             setLoading(true);
-            console.log("BEFORE");
             const res = await getFemaRiskIndexData();
             setData(res);
             if (res.length === 0 && retries < 5) {
-                console.log("in");
                 await refreshFemaRiskIndexData();
                 retries++;
                 fetchRiskData();

@@ -140,7 +140,7 @@ export default function NetDisasterExpense({ bannerData, onDashboard = true, han
                                         className="w-[14px] h-[14px] rounded-full flex-shrink-0"
                                         style={{ backgroundColor: expense.color }}
                                     />
-                                    <span className="text-md font-medium">{expense.name}</span>
+                                    <span className="text-md font-medium">{expense.name || "Unknown Item"}</span>
                                 </div>
                                 <span className="text-md font-semibold">${expense.amount.toLocaleString()}</span>
                             </div>
