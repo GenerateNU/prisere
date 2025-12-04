@@ -75,11 +75,11 @@ describe("POST /claims", () => {
         const fetchBody = await fetchResponse.json();
 
         expect(fetchResponse.status).toBe(200);
-        expect(fetchBody.data.length).toBe(2);
-        expect(fetchBody.data[1].id).toBe(body.id);
-        expect(fetchBody.data[1].femaDisaster.id).toBe(requestBody.femaDisasterId);
-        expect(fetchBody.data[1].insurancePolicy.id).toBe(requestBody.insurancePolicyId);
-        expect(fetchBody.data[1].companyId).toBe(companyId);
+        // only includes previous filed claim b/c the one just created is not filed
+        expect(fetchBody.data.length).toBe(1);
+        expect(fetchBody.data[0].status).toBe(ClaimStatusType.FILED);
+        expect(fetchBody.data[0].id).not.toBe(body.id);
+        expect(fetchBody.data[0].companyId).toBe(companyId);
     });
 
     test("POST /claims - Success", async () => {
@@ -121,10 +121,8 @@ describe("POST /claims", () => {
         const fetchBody = await fetchResponse.json();
 
         expect(fetchResponse.status).toBe(200);
-        expect(fetchBody.data.length).toBe(1);
-        expect(fetchBody.data[0].id).toBe(body.id);
-        expect(fetchBody.data[0].selfDisaster.id).toBe(requestBody.selfDisasterId);
-        expect(fetchBody.data[0].companyId).toBe(companyId);
+        expect(fetchBody.data.length).toBe(0);
+        // should not be fetching the just created claim b/c it is not filed
     });
 
     test("POST /claims - Multiple in progress claims fail", async () => {
