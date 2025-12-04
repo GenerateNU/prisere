@@ -5,6 +5,7 @@ import {
     FilteredPurchases,
     PurchaseLineItemType,
     PurchasesWithCount,
+    PurchaseWithLineItems,
 } from "../types/purchase";
 import { authHeader, authWrapper, getClient } from "./client";
 
@@ -140,4 +141,36 @@ export const fetchAllCategories = async (): Promise<string[]> => {
         }
     };
     return authWrapper<string[]>()(req);
+};
+
+export const getAllPurchasesForExport = async (
+    filters: FilteredPurchases,
+    total: number
+): Promise<PurchaseWithLineItems[]> => {
+    const req = async (token: string): Promise<PurchaseWithLineItems[]> => {
+        const client = getClient();
+        const { data, error, response } = await client.GET("/purchase", {
+            headers: authHeader(token),
+            params: {
+                query: {
+                    categories: filters.categories,
+                    dateFrom: filters.dateFrom,
+                    dateTo: filters.dateTo,
+                    search: filters.search,
+                    sortBy: filters.sortBy,
+                    sortOrder: filters.sortOrder,
+                    type: filters.type,
+                    resultsPerPage: total,
+                },
+            },
+        });
+
+        if (response.ok) {
+            return data?.purchases || [];
+        } else {
+            throw Error(error?.error);
+        }
+    };
+
+    return authWrapper<PurchaseWithLineItems[]>()(req);
 };

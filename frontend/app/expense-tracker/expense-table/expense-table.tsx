@@ -5,7 +5,7 @@ import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from
 import { PurchaseSelections } from "@/types/claim";
 import { FilteredPurchases, PurchaseLineItemType, PurchaseWithLineItems } from "@/types/purchase";
 import { useQuery } from "@tanstack/react-query";
-import { FileUp, Printer } from "lucide-react";
+import { FileUp, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { FaExclamation } from "react-icons/fa6";
 import { IoFilterOutline } from "react-icons/io5";
@@ -17,6 +17,7 @@ import ResultsPerPageSelect from "./ResultsPerPageSelect";
 import ExpenseSideView from "./side-view";
 import TableContent from "./table-content";
 import { fetchAllCategories, fetchPurchases } from "@/api/purchase";
+import { handleExportClick } from "./export";
 
 interface ExpenseTableConfig {
     title: string;
@@ -41,6 +42,7 @@ export default function ExpenseTable({
 }: ExpenseTableConfig) {
     const [filters, setFilters] = useState<FilteredPurchases>({ pageNumber: 0, resultsPerPage: 5 });
     const [showFilters, setShowFilters] = useState(true);
+    const [isExporting, setIsExporting] = useState(false);
 
     useEffect(() => {
         if (filterPending) {
@@ -105,11 +107,19 @@ export default function ExpenseTable({
                                     <IoFilterOutline className="h-4 w-4 text-black" />
                                     Filters
                                 </Button>
-                                <Button size="icon" className="h-[34px] w-8 bg-slate rounded-full border-0">
-                                    <Printer className="h-4 w-4" />
-                                </Button>
-                                <Button size="icon" className="h-[34px] w-8 bg-slate rounded-full border-0">
-                                    <FileUp className="h-4 w-4" />
+                                <Button
+                                    size="icon"
+                                    className="h-[2.125rem] w-8 bg-slate rounded-full border-0"
+                                    onClick={() =>
+                                        handleExportClick(setIsExporting, filters, purchases.data?.numPurchases)
+                                    }
+                                    disabled={isExporting || purchases.data?.numPurchases === 0}
+                                >
+                                    {isExporting ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <FileUp className="h-4 w-4" />
+                                    )}
                                 </Button>
                             </div>
                         </CardAction>
