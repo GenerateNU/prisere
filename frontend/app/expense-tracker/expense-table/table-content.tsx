@@ -322,8 +322,6 @@ export default function TableContent({
         return selected ? "bg-slate-100" : "";
     };
 
-    if (purchases.error) return <div>Error loading expenses</div>;
-
     return (
         <Table
             table={table}

@@ -1,13 +1,14 @@
 "use client";
 import { getPurchaseLineItemsFromClaim } from "@/api/claim";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { BannerData } from "@/types/user";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { BiMessageEdit } from "react-icons/bi";
 import { LargeLoading } from "../loading";
 import { FaExclamation } from "react-icons/fa6";
+import ErrorDisplay from "../ErrorDisplay";
 
 type Props = {
     bannerData: BannerData;
@@ -84,7 +85,7 @@ export default function NetDisasterExpense({ bannerData, onDashboard = true, han
 
     return (
         <Card className="w-full max-w-xl p-[24px] min-h-full border-none shadow-none">
-            <CardContent className="p-0 space-y-6">
+            <CardHeader className="p-0">
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div className="">
@@ -100,52 +101,63 @@ export default function NetDisasterExpense({ bannerData, onDashboard = true, han
                         </Button>
                     )}
                 </div>
+            </CardHeader>
+            {purchaseLineItems.isLoading ? (
+                <CardContent className="h-[200px] w-full p-0">
+                    <LargeLoading />
+                </CardContent>
+            ) : purchaseLineItems.error ? (
+                <CardContent className="h-[200px] w-full p-0">
+                    <ErrorDisplay />
+                </CardContent>
+            ) : (
+                <CardContent className="p-0 space-y-6">
+                    {/* Total Amount */}
+                    <div className="text-2xl font-bold">${totalExpense.toLocaleString()}</div>
 
-                {/* Total Amount */}
-                <div className="text-2xl font-bold">${totalExpense.toLocaleString()}</div>
-
-                {/* Stacked Bar Chart */}
-                <div
-                    className={`flex h-[29px] w-full overflow-hidden ${expensesWithPercentage.length > 1 && "gap-[4px]"}`}
-                >
-                    {expensesWithPercentage.map((expense, index) => (
-                        <div
-                            key={index}
-                            style={{
-                                flex: expense.percentage,
-                                backgroundColor: expense.color,
-                            }}
-                            className="h-full rounded-[4px]"
-                        />
-                    ))}
-                </div>
-
-                {/* Legend with amounts */}
-                <div className="space-y-3">
-                    {expensesWithPercentage.map((expense, index) => (
-                        <div key={index} className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div
-                                    className="w-[14px] h-[14px] rounded-full flex-shrink-0"
-                                    style={{ backgroundColor: expense.color }}
-                                />
-                                <span className="text-md font-medium">{expense.name}</span>
-                            </div>
-                            <span className="text-md font-semibold">${expense.amount.toLocaleString()}</span>
-                        </div>
-                    ))}
-                </div>
-
-                {onDashboard && (
-                    <div className="flex justify-center pt-4">
-                        <Link href={"/expense-tracker"} className="text-sm font-semibold no-underline">
-                            <Button className="h-10 text-sm text-white rounded-full w-fit px-6 mt-6 bg-fuchsia">
-                                See Expense Tracker
-                            </Button>
-                        </Link>
+                    {/* Stacked Bar Chart */}
+                    <div
+                        className={`flex h-[29px] w-full overflow-hidden ${expensesWithPercentage.length > 1 && "gap-[4px]"}`}
+                    >
+                        {expensesWithPercentage.map((expense, index) => (
+                            <div
+                                key={index}
+                                style={{
+                                    flex: expense.percentage,
+                                    backgroundColor: expense.color,
+                                }}
+                                className="h-full rounded-[4px]"
+                            />
+                        ))}
                     </div>
-                )}
-            </CardContent>
+
+                    {/* Legend with amounts */}
+                    <div className="space-y-3">
+                        {expensesWithPercentage.map((expense, index) => (
+                            <div key={index} className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div
+                                        className="w-[14px] h-[14px] rounded-full flex-shrink-0"
+                                        style={{ backgroundColor: expense.color }}
+                                    />
+                                    <span className="text-md font-medium">{expense.name}</span>
+                                </div>
+                                <span className="text-md font-semibold">${expense.amount.toLocaleString()}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    {onDashboard && (
+                        <div className="flex justify-center pt-4">
+                            <Link href={"/expense-tracker"} className="text-sm font-semibold no-underline">
+                                <Button className="h-10 text-sm text-white rounded-full w-fit px-6 mt-6 bg-fuchsia">
+                                    See Expense Tracker
+                                </Button>
+                            </Link>
+                        </div>
+                    )}
+                </CardContent>
+            )}
         </Card>
     );
 }
