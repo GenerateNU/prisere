@@ -9,8 +9,8 @@ export default class UserSeeder implements Seeder {
             {
                 id: "c34197fc-b944-4291-89ee-2e47ea77dc27",
                 firstName: "Zainab",
-                lastName: "Imadulla",
-                email: "zainab.imadulla@gmail.com",
+                lastName: "i",
+                email: "z@fakegmail.com",
                 phoneNumber: "1234567890",
             },
             {
@@ -23,7 +23,7 @@ export default class UserSeeder implements Seeder {
             {
                 id: "0199e103-5452-76d7-8d4d-92e70c641bdb",
                 firstName: "zahra",
-                lastName: "wibisana",
+                lastName: "w",
                 email: "zahra.wib@example.com",
                 companyId: "ffc8243b-876e-4b6d-8b80-ffc73522a838",
                 phoneNumber: "1234567890",
