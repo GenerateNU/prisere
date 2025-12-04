@@ -67,12 +67,6 @@ export default function LocationRisk() {
             </CardTitle>
             <div className="relative">
                 {(isLoading || femaRiskCountyLookup === null) && (
-                    <CardContent className="absolute inset-0 z-10 flex items-center justify-center bg-white w-[100%] border-none shadow-none p-0">
-                        <LargeLoading />
-                    </CardContent>
-                )}
-
-                {isLoading && (
                     <CardContent
                         className={`h-[550px] w-full flex items-center justify-center bg-white border-none shadow-none p-0`}
                     >
@@ -81,7 +75,7 @@ export default function LocationRisk() {
                 )}
 
                 {femaRiskCountyLookup !== null && (
-                    <CardContent className="w-[100%] flex flex-row px-0">
+                    <CardContent className={`w-[100%] flex flex-row px-0 ${isLoading && "hidden"}`}>
                         <div className="w-[100%] flex flex-col">
                             <div className="w-[100%] flex flex-row">
                                 <div>
