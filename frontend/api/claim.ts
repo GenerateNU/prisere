@@ -3,6 +3,7 @@ import {
     CreateClaimPDFResponse,
     CreateClaimRequest,
     CreateClaimResponse,
+    DeleteClaimResponse,
     GetClaimByIdResponse,
     GetClaimLineItemsResponse,
     GetCompanyClaimRequest,
@@ -158,4 +159,22 @@ export const createClaimPDF = async (claimId: string) => {
         }
     };
     return authWrapper<CreateClaimPDFResponse>()(req);
+};
+
+export const deleteClaim = async (claimId: string) => {
+    const req = async (token: string) => {
+        const client = getClient();
+        const { data, error, response } = await client.DELETE("/claims/{id}", {
+            headers: authHeader(token),
+            params: {
+                path: { id: claimId },
+            },
+        });
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error(error?.error);
+        }
+    };
+    return authWrapper<DeleteClaimResponse>()(req);
 };

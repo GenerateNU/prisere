@@ -86,7 +86,7 @@ export function useFetchClaims(filters: {
     return useQuery({
         queryKey: ["company-claims", filters],
         queryFn: async () => {
-            const data = await getClaims({
+            return getClaims({
                 filters: {
                     date: filters.date
                         ? { from: filters.date.from?.toISOString(), to: filters.date.to?.toISOString() }
@@ -96,9 +96,6 @@ export function useFetchClaims(filters: {
                 page: filters.page,
                 resultsPerPage: filters.resultsPerPage,
             });
-
-            console.log(data);
-            return data;
         },
         placeholderData: (previousData) => previousData,
     });

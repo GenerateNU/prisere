@@ -1,9 +1,19 @@
-import { createClaimPDF } from "@/api/claim";
+import { createClaimPDF, deleteClaim } from "@/api/claim";
 import { Table } from "@/components/table";
+import { Button } from "@/components/ui/button";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 import { GetCompanyClaimResponse } from "@/types/claim";
-import { UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/react-table";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useState } from "react";
 import { PiDownloadSimpleLight } from "react-icons/pi";
 import { TfiTrash } from "react-icons/tfi";
 
@@ -16,6 +26,16 @@ function IconButton({ onClick, children }: PropsWithChildren<{ onClick: () => vo
 }
 
 export default function TableContent({ claims }: { claims: UseQueryResult<GetCompanyClaimResponse | undefined> }) {
+    const [dialogToDeleteClaimId, setDialogToDeleteClaimId] = useState<string | null>(null);
+
+    const queryClient = useQueryClient();
+    const claimDelete = useMutation({
+        mutationFn: deleteClaim,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["company-claims"] });
+        },
+    });
+
     const table = useReactTable({
         getCoreRowModel: getCoreRowModel(),
         getExpandedRowModel: getExpandedRowModel(),
@@ -49,7 +69,11 @@ export default function TableContent({ claims }: { claims: UseQueryResult<GetCom
                             >
                                 <PiDownloadSimpleLight size={18} />
                             </IconButton>
-                            <IconButton onClick={() => {}}>
+                            <IconButton
+                                onClick={() => {
+                                    setDialogToDeleteClaimId(row.original.id);
+                                }}
+                            >
                                 <TfiTrash size={18} />
                             </IconButton>
                         </div>
@@ -61,5 +85,41 @@ export default function TableContent({ claims }: { claims: UseQueryResult<GetCom
 
     if (claims.error) return <div>Error loading claims</div>;
 
-    return <Table table={table} isLoading={claims.isLoading} />;
+    return (
+        <div>
+            <Table table={table} isLoading={claims.isLoading} />
+            <Dialog
+                open={!!dialogToDeleteClaimId}
+                onOpenChange={(open) => {
+                    if (open) return;
+                    setDialogToDeleteClaimId(null);
+                }}
+            >
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Delete claim</DialogTitle>
+                    </DialogHeader>
+                    <DialogDescription>Are you sure you want to delete this claim?</DialogDescription>
+                    <DialogFooter>
+                        <DialogClose asChild>
+                            <Button className="text-sm bg-light-fuchsia text-fuchsia w-[70px]" size="lg">
+                                Cancel
+                            </Button>
+                        </DialogClose>
+
+                        <Button
+                            size="lg"
+                            onClick={() => {
+                                claimDelete.mutate(dialogToDeleteClaimId!);
+                                setDialogToDeleteClaimId(null);
+                            }}
+                            className="bg-fuchsia text-white px-[20px] py-[12px] w-fit h-[42px] text-[14px] rounded-50"
+                        >
+                            Yes, delete
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </div>
+    );
 }

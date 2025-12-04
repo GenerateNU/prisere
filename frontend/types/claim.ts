@@ -42,6 +42,8 @@ export type LinkPurchaseToClaimResponse =
 
 export type CreateClaimPDFResponse = paths["/claims/{id}/pdf"]["get"]["responses"][200]["content"]["application/json"];
 
+export type DeleteClaimResponse = paths["/claims/{id}"]["delete"]["responses"][200]["content"]["application/json"];
+
 /**
  * Save status for indicating to user
  */
