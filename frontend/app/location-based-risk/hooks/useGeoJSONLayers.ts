@@ -85,7 +85,7 @@ export const useGeoJSONLayers = (
             }).addTo(map);
 
             setLoading(false);
-        } catch (err) {
+        } catch (_err) {
             setLoading(false);
             setError(true);
         }

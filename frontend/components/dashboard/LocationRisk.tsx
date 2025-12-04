@@ -101,39 +101,8 @@ export default function LocationRisk() {
                                         loading={isLoading}
                                     />
                                 </div>
-                                {/* =======
-
-            <>
-                {isLoading && (
-                    <CardContent
-                        className={`h-[550px] w-full flex items-center justify-center bg-white border-none shadow-none p-0`}
-                    >
-                        {error ? <ErrorDisplay /> : <LargeLoading />}
-                    </CardContent>
-                )}
-
-                <CardContent className={`w-[100%] flex flex-row px-0 ${isLoading && "hidden"}`}>
-                    <div className={`w-[100%] flex flex-col `}>
-                        <div className="w-[100%] flex flex-row">
-                            <div>
-                                <div ref={mapRef} className="w-96 h-[500px] rounded-xl z-0" />
                             </div>
-                            <div className="w-full pl-4 flex flex-col gap-2">
-                                <RiskIndexOverviewCard
-                                    riskAttributes={femaRiskCountyLookup.get(
-                                        `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
-                                    )}
-                                    loading={isLoading}
-                                />
-                                <HazardIndexOverviewCard
-                                    riskAttributes={femaRiskCountyLookup.get(
-                                        `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
-                                    )}
-                                    loading={isLoading}
-                                />
->>>>>>> main */}
-                            </div>
-                            {/* {lastUpdated && (
+                            {lastUpdated && (
                                 <p className="text-sm text-gray-600 italic">
                                     This data was last updated{" "}
                                     {lastUpdated.toLocaleString("en-US", {
@@ -142,7 +111,7 @@ export default function LocationRisk() {
                                         timeStyle: "short",
                                     })}
                                 </p>
-                            )} */}
+                            )}
                         </div>
                     </CardContent>
                 )}
