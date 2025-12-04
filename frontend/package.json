@@ -43,7 +43,7 @@
     "leaflet": "^1.9.4",
     "lucide-react": "^0.552.0",
     "next": "15.5.3",
-    "nuqs": "^2.7.3",
+    "nuqs": "^2.8.2",
     "openapi-fetch": "^0.14.1",
     "openapi-typescript": "^7.9.1",
     "pako": "^2.1.0",

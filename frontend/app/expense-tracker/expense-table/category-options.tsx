@@ -75,7 +75,7 @@ export default function CategoryLabel({
     }
 
     return (
-        <div className="inline-flex flex-wrap items-center gap-1" onClick={(e) => e.stopPropagation()}>
+        <div className="inline-flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
             {categories.slice(0, 3).map((cat, index) => (
                 <CategoryBadge
                     key={index}

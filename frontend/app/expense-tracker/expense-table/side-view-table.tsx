@@ -37,7 +37,7 @@ export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineI
                 cell: ({ getValue }) => {
                     const value = getValue() as string | null;
                     return (
-                        <div className="flex text-xs items-center min-h-8 select-none">
+                        <div className="flex text-xs items-center min-h-8 select-none min-w-15">
                             {" "}
                             {value && value.trim().length > 0 ? value : "Unknown"}{" "}
                         </div>
@@ -58,11 +58,13 @@ export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineI
                 header: () => <span className="select-none">Category</span>,
                 accessorKey: "category",
                 cell: (ctx) => (
-                    <CategoryLabel
-                        category={ctx.getValue() ? (ctx.getValue() as string) : ""}
-                        lineItemIds={[]}
-                        editableTags={false}
-                    />
+                    <div className="flex items-center min-w-25">
+                        <CategoryLabel
+                            category={ctx.getValue() ? (ctx.getValue() as string) : ""}
+                            lineItemIds={[]}
+                            editableTags={false}
+                        />
+                    </div>
                 ),
             },
             {
@@ -73,7 +75,7 @@ export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineI
                 cell: (ctx) => (
                     <div
                         className="text-xs h-10 flex
-                 select-none items-center"
+                 select-none items-center min-w-10"
                     >
                         {ctx.getValue() as string}
                     </div>
