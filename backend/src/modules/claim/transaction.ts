@@ -196,7 +196,7 @@ export class ClaimTransaction implements IClaimTransaction {
         { filters, page, resultsPerPage }: GetClaimsByCompanyInput
     ): Promise<GetClaimsByCompanyIdResponse | null> {
         try {
-            const options: FindOptionsWhere<Claim> = { companyId };
+            const options: FindOptionsWhere<Claim> = { companyId, status: ClaimStatusType.FILED };
 
             if (filters.date) {
                 if (filters.date.from && filters.date.to) {

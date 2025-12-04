@@ -16,7 +16,7 @@ import {
     isStep,
     PersonalInfo,
 } from "@/types/claim";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { Suspense } from "react";
@@ -111,6 +111,8 @@ function DeclareDisasterContent() {
         finalizeClaimSubmission,
     } = useClaimProgress(initialDisasterInfo, initialPersonalInfo, initialBusinessInfo, initialInsurerInfo);
 
+    const queryClient = useQueryClient();
+
     // Update local state when queries succeed
     React.useEffect(() => {
         if (businessInfoSuccess && businessInfoData) {
@@ -169,6 +171,7 @@ function DeclareDisasterContent() {
 
     const handleSaveAndClose = async () => {
         try {
+            queryClient.invalidateQueries({ queryKey: ["claim-in-progress"] });
             // Save current step's data based on which step we're on
             if (step === 0) {
                 // Disaster info step - commit disaster step (creates claim if needed)
