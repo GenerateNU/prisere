@@ -3,7 +3,7 @@ import { Banner, BannerAction, BannerTitle } from "@/components/ui/shadcn-io/ban
 import { ClaimInProgressIndexMapping } from "@/types/claim";
 import { BannerData } from "@/types/user";
 import Link from "next/link";
-import Progress from "../progress";
+import { ClaimInProgress } from "../claims/ClaimInProgress";
 
 type DisasterStatusBannerProps = {
     bannerData: BannerData;
@@ -69,35 +69,7 @@ export default function DisasterStatusBanner({ bannerData }: DisasterStatusBanne
     if (bannerData.status === "has-claim" && bannerData.claim) {
         const status = bannerData.claim.status;
         const progressStep = ClaimInProgressIndexMapping[status as keyof typeof ClaimInProgressIndexMapping] ?? 5;
-        return (
-            <Banner className="w-full px-6 pt-6 pb-2 rounded-lg bg-white border-0">
-                <div className="flex flex-row items-center w-full gap-3">
-                    <div className="flex-1">
-                        <BannerTitle className="text-lg font-semibold text-left flex-1 text-black mb-2">
-                            You have a report in progress.
-                        </BannerTitle>
-                        <p className="text-sm text-charcoal mb-4">
-                            Continue filing your claim report to ensure you maximize benefits.
-                        </p>
-                        <Progress
-                            progress={progressStep}
-                            items={[
-                                { label: "step 1", step: 1 },
-                                { label: "step 2", step: 2 },
-                                { label: "step 3", step: 3 },
-                                { label: "step 4", step: 4 },
-                                { label: "step 5", step: 5 },
-                            ]}
-                        />
-                    </div>
-                    <Link href={"/claims"} className="text-sm font-semibold">
-                        <BannerAction className="max-w-xs rounded-full hover:bg-pink bg-fuchsia text-white font-medium">
-                            Continue filing claim report
-                        </BannerAction>
-                    </Link>
-                </div>
-            </Banner>
-        );
+        return <ClaimInProgress step={progressStep} claimId={bannerData.claim.id} />;
     }
 
     return null;

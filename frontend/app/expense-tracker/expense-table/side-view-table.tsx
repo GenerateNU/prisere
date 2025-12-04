@@ -1,21 +1,21 @@
 "use client";
 
 import { Table } from "@/components/table";
+import { PurchaseLineItem } from "@/types/purchase";
 import {
-    getCoreRowModel,
-    getSortedRowModel,
-    getPaginationRowModel,
-    useReactTable,
-    SortingState,
     Column,
+    getCoreRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    SortingState,
+    useReactTable,
 } from "@tanstack/react-table";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { useState } from "react";
 import CategoryLabel from "./category-options";
-import { PurchaseLineItem } from "@/types/purchase";
 import PaginationControls from "./PaginationControls";
-import { DisasterTypeTag } from "./side-view";
-import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import ResultsPerPageSelect from "./ResultsPerPageSelect";
+import { DisasterTypeTag } from "./side-view";
 
 export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineItem[] }) {
     const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
@@ -114,7 +114,7 @@ export default function LineItemsTable({ lineItems }: { lineItems: PurchaseLineI
                     <PaginationControls
                         page={pageIndex}
                         resultsPerPage={pageSize}
-                        totalNumPurchases={totalRows}
+                        totalCount={totalRows}
                         onPageChange={(newPage) => table.setPageIndex(newPage)}
                     />
                 </div>

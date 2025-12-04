@@ -20,9 +20,13 @@ import { openApiErrorCodes } from "../../utilities/error";
 import { ClaimController, IClaimController } from "../claim/controller";
 import { ClaimService, IClaimService } from "../claim/service";
 import { ClaimTransaction, IClaimTransaction } from "../claim/transaction";
-import { ClaimPDFGenerationResponseSchema, LinkBusinessDocumentToClaimRequestSchema } from "../claim/types";
-import { DocumentTransaction, IDocumentTransaction } from "../documents/transaction";
+import {
+    ClaimPDFGenerationResponseSchema,
+    GetClaimsByCompanyInputSchema,
+    LinkBusinessDocumentToClaimRequestSchema,
+} from "../claim/types";
 import { CompanyTransaction, ICompanyTransaction } from "../company/transaction";
+import { DocumentTransaction, IDocumentTransaction } from "../documents/transaction";
 
 export const createOpenAPIClaimRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const claimTransaction: IClaimTransaction = new ClaimTransaction(db);
@@ -75,10 +79,20 @@ const createClaimRoute = createRoute({
 });
 
 const getClaimsByCompanyIdRoute = createRoute({
-    method: "get",
+    method: "post",
     path: "/claims/company",
     summary: "Gets all the claims associated with a company",
     description: "Gets all the claims for a company using a company ID",
+    request: {
+        body: {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: GetClaimsByCompanyInputSchema,
+                },
+            },
+        },
+    },
     responses: {
         200: {
             content: {

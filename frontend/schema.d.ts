@@ -3353,18 +3353,36 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        get?: never;
+        put?: never;
         /**
          * Gets all the claims associated with a company
          * @description Gets all the claims for a company using a company ID
          */
-        get: {
+        post: {
             parameters: {
                 query?: never;
                 header?: never;
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody: {
+                content: {
+                    "application/json": {
+                        filters: {
+                            date?: {
+                                /** Format: date-time */
+                                from?: string;
+                                /** Format: date-time */
+                                to?: string;
+                            };
+                            search?: string;
+                        };
+                        page: number;
+                        resultsPerPage: number;
+                    };
+                };
+            };
             responses: {
                 /** @description Claims fetched successfully */
                 200: {
@@ -3373,80 +3391,85 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            id: string;
-                            name: string;
-                            /**
-                             * @default ACTIVE
-                             * @enum {string}
-                             */
-                            status:
-                                | "ACTIVE"
-                                | "FILED"
-                                | "IN_PROGRESS_DISASTER"
-                                | "IN_PROGRESS_PERSONAL"
-                                | "IN_PROGRESS_BUSINESS"
-                                | "IN_PROGRESS_INSURANCE"
-                                | "IN_PROGRESS_EXPORT";
-                            /** Format: date-time */
-                            createdAt: string;
-                            /** Format: date-time */
-                            updatedAt?: string;
-                            femaDisaster?: {
-                                /** Format: uuid */
+                            data: {
                                 id: string;
-                                disasterNumber: number;
-                                fipsStateCode: number;
-                                declarationDate: string;
-                                incidentBeginDate?: string;
-                                incidentEndDate?: string;
-                                fipsCountyCode: number;
-                                declarationType: string;
-                                designatedArea: string;
-                                designatedIncidentTypes: string | null;
-                            };
-                            selfDisaster?: {
-                                id: string;
-                                description: string;
-                                /** Format: date */
-                                startDate: string;
-                                /** Format: date */
-                                endDate?: string;
-                                /** Format: date */
-                                createdAt: string;
-                                /** Format: date */
-                                updatedAt: string;
-                            };
-                            insurancePolicy?: {
-                                id: string;
-                                policyName: string;
-                                policyHolderFirstName: string;
-                                policyHolderLastName: string;
-                                insuranceCompanyName: string;
-                                policyNumber: string;
-                                insuranceType: string;
-                                /** Format: date-time */
-                                updatedAt: string;
+                                name: string;
+                                /**
+                                 * @default ACTIVE
+                                 * @enum {string}
+                                 */
+                                status:
+                                    | "ACTIVE"
+                                    | "FILED"
+                                    | "IN_PROGRESS_DISASTER"
+                                    | "IN_PROGRESS_PERSONAL"
+                                    | "IN_PROGRESS_BUSINESS"
+                                    | "IN_PROGRESS_INSURANCE"
+                                    | "IN_PROGRESS_EXPORT";
                                 /** Format: date-time */
                                 createdAt: string;
-                            };
-                            claimLocations?: {
-                                id: string;
-                                alias: string;
-                                country: string;
-                                stateProvince: string;
-                                city: string;
-                                streetAddress: string;
-                                postalCode: string;
-                                county?: string;
-                                /** Format: uuid */
-                                companyId: string;
-                                fipsStateCode: number;
-                                fipsCountyCode: number;
-                                lat: number;
-                                long: number;
+                                /** Format: date-time */
+                                updatedAt?: string;
+                                femaDisaster?: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    disasterNumber: number;
+                                    fipsStateCode: number;
+                                    declarationDate: string;
+                                    incidentBeginDate?: string;
+                                    incidentEndDate?: string;
+                                    fipsCountyCode: number;
+                                    declarationType: string;
+                                    designatedArea: string;
+                                    designatedIncidentTypes: string | null;
+                                };
+                                selfDisaster?: {
+                                    id: string;
+                                    description: string;
+                                    /** Format: date */
+                                    startDate: string;
+                                    /** Format: date */
+                                    endDate?: string;
+                                    /** Format: date */
+                                    createdAt: string;
+                                    /** Format: date */
+                                    updatedAt: string;
+                                };
+                                insurancePolicy?: {
+                                    id: string;
+                                    policyName: string;
+                                    policyHolderFirstName: string;
+                                    policyHolderLastName: string;
+                                    insuranceCompanyName: string;
+                                    policyNumber: string;
+                                    insuranceType: string;
+                                    /** Format: date-time */
+                                    updatedAt: string;
+                                    /** Format: date-time */
+                                    createdAt: string;
+                                };
+                                claimLocations?: {
+                                    id: string;
+                                    alias: string;
+                                    country: string;
+                                    stateProvince: string;
+                                    city: string;
+                                    streetAddress: string;
+                                    postalCode: string;
+                                    county?: string;
+                                    /** Format: uuid */
+                                    companyId: string;
+                                    fipsStateCode: number;
+                                    fipsCountyCode: number;
+                                    lat: number;
+                                    long: number;
+                                }[];
+                                purchaseLineItemIds: string[];
                             }[];
-                            purchaseLineItemIds: string[];
-                        }[];
+                            totalCount: number;
+                            hasMore: boolean;
+                            hasPrevious: boolean;
+                        };
                     };
                 };
                 /** @description Create Claims Errors */
@@ -3480,8 +3503,6 @@ export interface paths {
                 };
             };
         };
-        put?: never;
-        post?: never;
         delete?: never;
         options?: never;
         head?: never;

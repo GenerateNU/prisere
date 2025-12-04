@@ -142,7 +142,7 @@ function ClaimPDF({ data }: { data: ClaimData }) {
 
     const disasterInfo = data.femaDisaster
         ? [
-              { label: "Type of Claim", value: getIncidentTypeMeanings(data.femaDisaster.designatedIncidentTypes) },
+              { label: "Incident Type", value: getIncidentTypeMeanings(data.femaDisaster.designatedIncidentTypes) },
               { label: "Incident\nDeclaration Date", value: data.femaDisaster.declarationDate.toLocaleDateString() },
               {
                   label: "Incident\nBegin Date",

@@ -1,4 +1,5 @@
 "use client";
+import { fetchAllCategories, fetchPurchases } from "@/api/purchase";
 import { LargeLoading } from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,14 +11,13 @@ import { useCallback, useEffect, useState } from "react";
 import { FaExclamation } from "react-icons/fa6";
 import { IoFilterOutline } from "react-icons/io5";
 import { SortByColumn } from "../../../types/purchase";
+import { handleExportClick } from "./export";
 import { FilterDisplay } from "./filter-display-bar";
 import { Filters } from "./filters";
 import PaginationControls from "./PaginationControls";
 import ResultsPerPageSelect from "./ResultsPerPageSelect";
 import ExpenseSideView from "./side-view";
 import TableContent from "./table-content";
-import { fetchAllCategories, fetchPurchases } from "@/api/purchase";
-import { handleExportClick } from "./export";
 
 interface ExpenseTableConfig {
     title: string;
@@ -172,7 +172,7 @@ export default function ExpenseTable({
                                     page={filters.pageNumber}
                                     onPageChange={updateFilter("pageNumber")}
                                     resultsPerPage={filters.resultsPerPage}
-                                    totalNumPurchases={purchases.data?.numPurchases}
+                                    totalCount={purchases.data?.numPurchases ?? 0}
                                 />
                             </div>
                         </div>
