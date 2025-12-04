@@ -30,12 +30,6 @@ export default function ExpenseTracker() {
         queryFn: getDashboardBannerData,
     });
 
-    let claimId = "";
-    if (bannerData && bannerData.status === "has-claim" && bannerData.claim) {
-        // If claim is an array, use [0] to get the first claim
-        claimId = bannerData.claim.id;
-    }
-
     const confirmedExpenses = useFetchPurchases({
         pageNumber: 0,
         resultsPerPage: 100,
