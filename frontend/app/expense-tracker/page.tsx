@@ -40,11 +40,12 @@ export default function ExpenseTracker() {
         resultsPerPage: 100,
         type: PurchaseLineItemType.TYPICAL,
     });
-    const exExpensesLineItems = exExpenses.data?.purchases
-        ?.flatMap((purchase) => purchase.lineItems)
-        .filter((lineItem) => {
-            return lineItem.type === "extraneous";
-        }) ?? [];
+    const exExpensesLineItems =
+        exExpenses.data?.purchases
+            ?.flatMap((purchase) => purchase.lineItems)
+            .filter((lineItem) => {
+                return lineItem.type === "extraneous";
+            }) ?? [];
     const typicalExpensesLineItems =
         typicalExpenses.data?.purchases
             ?.flatMap((purchase) => purchase.lineItems)
