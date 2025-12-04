@@ -12,6 +12,7 @@ export function s3Routes(db: DataSource) {
 
     router.post("/getUploadUrl", (ctx) => s3Controller.getUploadUrl(ctx));
     router.post("/confirmUpload", (ctx) => s3Controller.confirmUpload(ctx));
+    router.post("/confirmUpload/selfDisaster", (ctx) => s3Controller.confirmUploadForSelfDisastser(ctx));
     router.get("/getAllDocuments", (ctx) => s3Controller.getAllDocuments(ctx));
     router.delete("/deleteDocument", (ctx) => s3Controller.deleteDocument(ctx));
     router.patch("/updateDocumentCategory", (ctx) => s3Controller.updateDocumentCategory(ctx));

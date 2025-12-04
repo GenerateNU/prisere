@@ -8,15 +8,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { DisasterInfo } from "@/types/claim";
 import { GetCompanyLocationsResponse } from "@/types/company";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { IoPersonOutline } from "react-icons/io5";
-import { PiUploadSimpleLight } from "react-icons/pi";
 import { validateDisasterInfo } from "./utils/validationUtils";
+import { CloudCheck, UploadIcon } from "lucide-react";
+import { useModal } from "@/components/ui/modal/useModal";
+import { Modal } from "@/components/ui/modal/Modal";
+import { UploadDocument } from "./UploadDocument";
+import { DisasterInfo } from "@/types/claim";
 
-type Props = {
+type DisasterInfoStepProps = {
     disasterInfo: DisasterInfo;
     setDisasterInfo: (info: Partial<DisasterInfo>) => void;
     handleStepForward: (data: Partial<DisasterInfo>) => void;
@@ -30,7 +32,9 @@ export default function DisasterInfoStep({
     handleStepForward,
     handleStepBack,
     locations,
-}: Props) {
+}: DisasterInfoStepProps) {
+    const { openModal: openUploadModal, isOpen: isUploadModalOpen, closeModal: closeUploadModal } = useModal({});
+
     const { data: hasData } = useQuery({
         queryKey: ["company-has-data"],
         queryFn: companyHasData,
@@ -128,24 +132,22 @@ export default function DisasterInfoStep({
             <Card className="p-[25px] flex flex-col gap-[10px] border-none shadow-none">
                 <h4 className="text-[24px] font-bold">Upload additional documents</h4>
                 <div className="flex flex-col gap-[16px]">
-                    <Button
-                        size="sm"
-                        className="h-[34px] px-2 justify-between gap-2 rounded-full bg-muted text-black text-sm hover:bg-muted/80 aria-expanded:border w-fit"
-                    >
-                        <div className="flex items-center gap-2">
-                            <PiUploadSimpleLight />
-                            <span className="truncate">Upload from computer</span>
-                        </div>
+                    <Button className="w-fit h-fit rounded-full py-[12px] px-[20px]" onClick={openUploadModal}>
+                        <Label>
+                            <UploadIcon size={24} color="black" />
+                            <p>Upload from your computer</p>
+                        </Label>
                     </Button>
-                    <Button
-                        size="sm"
-                        className="h-[34px] px-2 justify-between gap-2 rounded-full bg-muted text-black text-sm hover:bg-muted/80 aria-expanded:border w-fit"
-                    >
-                        <div className="flex items-center gap-2">
-                            <IoPersonOutline />
-                            <span className="truncate">Select from business profile</span>
-                        </div>
-                    </Button>
+                    <div className="pl-3">
+                        {disasterInfo.additionalDocuments.map((element, idx) => (
+                            <div key={idx} className="p-1">
+                                <div className="bg-gray-200 flex flex-row items-center rounded-full w-fit">
+                                    <CloudCheck size={30} className="pl-2" />
+                                    <p className="text-sm p-3">{element.name}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </Card>
             <div className="flex items-center justify-end gap-3 w-full">
@@ -160,6 +162,15 @@ export default function DisasterInfoStep({
                     Proceed to Personal Information
                 </Button>
             </div>
+            <Modal isOpen={isUploadModalOpen} onClose={closeUploadModal}>
+                <UploadDocument
+                    handleUploadFiles={(files: File[]) => {
+                        closeUploadModal();
+                        setDisasterInfo({ additionalDocuments: files });
+                    }}
+                    selectedFiles={disasterInfo.additionalDocuments}
+                />
+            </Modal>
         </div>
     );
 }

@@ -6,7 +6,6 @@ import { startTestApp } from "../../setup-tests";
 import { TESTING_PREFIX } from "../../../utilities/constants";
 import { S3Service } from "../../../modules/s3/service";
 import { initPdfTestData } from "./setup";
-import { Document } from "../../../entities/Document";
 
 describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
     let app: Hono;
@@ -113,19 +112,6 @@ describe("GET /claims/{id}/pdf - Generate Claim PDF", () => {
             });
 
             expect(response.status).toBe(200);
-
-            // Verify document was saved to database
-            const docRepo = testAppDataSource.getRepository(Document);
-            /* eslint-disable @typescript-eslint/no-unused-vars */
-            const savedDoc = await docRepo.findOne({
-                where: { claimId: claimId },
-            });
-
-            // expect(savedDoc).not.toBeNull();
-            // expect(savedDoc!.key).toBeDefined();
-            // expect(savedDoc!.key).toContain(`claims/`);
-            // expect(savedDoc!.key).toContain(claimId);
-            // expect(savedDoc!.downloadUrl).toBeDefined();
         });
 
         test("GET /claims/{id}/pdf - Passes correct claim ID", async () => {

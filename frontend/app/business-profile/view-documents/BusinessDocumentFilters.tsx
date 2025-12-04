@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Calendar as CalendarIcon, Search } from "lucide-react";
 import { LuShapes } from "react-icons/lu";
 
-type Props = {
+type BusinessDocumentFiltersProps = {
     dateFilter: string;
     categoryFilter: string;
     searchQuery: string;
@@ -20,7 +20,7 @@ export default function BusinessDocumentFilters({
     setDateFilter,
     setCategoryFilter,
     setSearchQuery,
-}: Props) {
+}: BusinessDocumentFiltersProps) {
     const categories = ["All Categories", "Insurance", "Revenues", "Expenses"];
     const dateOptions = ["All Dates", "Today", "This Week", "This Month", "This Year", "Custom"];
 
