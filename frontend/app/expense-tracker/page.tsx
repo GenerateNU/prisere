@@ -72,48 +72,50 @@ export default function ExpenseTracker() {
 
     return (
         <>
-        {hasDataLoading ? 
-        <div className="flex items-center justify-center h-screen">
-            <h2 className="text-[30px] font-bold">Expense Tracker</h2>
-            <Spinner/>
-        </div>
-        :
-        <div className="p-[50px] flex flex-col gap-[23px] bg-[var(--slate)] min-h-screen w-full">
-            {!hasDataLoading && (
-                <NoDataPopupWrapper hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false} />
-            )}
-            <div className="flex justify-between">
-                <h2 className="text-[30px] font-bold">Expense Tracker</h2>
-                {hasData?.hasFinancialData && (
-                    <div>
-                        <Button
-                            className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
-                            onClick={onOpenImportModal}
-                        >
-                            {" "}
-                            <FiUpload className="text-white" style={{ width: "14px" }} /> Upload CSV
-                        </Button>
-                    </div>
-                )}
-                {!hasData?.hasFinancialData && !hasData?.hasExternalData && (
-                    <div className="flex gap-[8px]">
-                        {!hasData?.hasExternalData && !hasData?.hasFinancialData && (
-                            <Button className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]">
-                                {" "}
-                                <GoSync className="text-white" style={{ width: "14px" }} />
-                                Sync Quickbooks
-                            </Button>
+            {hasDataLoading ? (
+                <div className="flex items-center justify-center h-screen">
+                    <h2 className="text-[30px] font-bold">Expense Tracker</h2>
+                    <Spinner />
+                </div>
+            ) : (
+                <div className="p-[50px] flex flex-col gap-[23px] bg-[var(--slate)] min-h-screen w-full">
+                    {!hasDataLoading && (
+                        <NoDataPopupWrapper
+                            hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false}
+                        />
+                    )}
+                    <div className="flex justify-between">
+                        <h2 className="text-[30px] font-bold">Expense Tracker</h2>
+                        {hasData?.hasFinancialData && (
+                            <div>
+                                <Button
+                                    className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
+                                    onClick={onOpenImportModal}
+                                >
+                                    {" "}
+                                    <FiUpload className="text-white" style={{ width: "14px" }} /> Upload CSV
+                                </Button>
+                            </div>
                         )}
-                        <Button
-                            className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
-                            onClick={onOpenImportModal}
-                        >
-                            {" "}
-                            <FiUpload className="text-white" style={{ width: "14px" }} /> Upload CSV
-                        </Button>
-                    </div>
-                )}
-                {/* ---import time--- 
+                        {!hasData?.hasFinancialData && !hasData?.hasExternalData && (
+                            <div className="flex gap-[8px]">
+                                {!hasData?.hasExternalData && !hasData?.hasFinancialData && (
+                                    <Button className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]">
+                                        {" "}
+                                        <GoSync className="text-white" style={{ width: "14px" }} />
+                                        Sync Quickbooks
+                                    </Button>
+                                )}
+                                <Button
+                                    className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
+                                    onClick={onOpenImportModal}
+                                >
+                                    {" "}
+                                    <FiUpload className="text-white" style={{ width: "14px" }} /> Upload CSV
+                                </Button>
+                            </div>
+                        )}
+                        {/* ---import time--- 
                 
                 {hasData?.hasFinancialData &&
                     <div className="flex justify-between">
@@ -126,46 +128,50 @@ export default function ExpenseTracker() {
                         <div className="flex gap-[8px] text-[var(--teal)] items-center"> <GoSync className="text-[var(--teal)]" />Last Synced 18 hours{true && "s"} ago</div>
                     </div>
                 } */}
-            </div>
-            <div className="flex flex-col w-full gap-[16px]">
-                <div className="flex gap-[16px] h-[364px]">
-                    <div className="w-[60%]">
-                        {showLoading ? (
-                            netDisasterVisisble ? (
-                                <NetDisasterExpense
-                                    bannerData={bannerData ?? { status: "no-disaster" }}
-                                    onDashboard={false}
-                                    handleSwitchToReview={() => setNetDisasterVisible(false)}
-                                />
-                            ) : (
-                                <ReviewExpenses
-                                    handleSwitchToNetDisaster={() => setNetDisasterVisible(true)}
-                                    lineItemsConfirmed={expenses.length}
-                                    lineItemsPending={pendingExpensesLineItems.length}
-                                    totalConfirmedExpenses={totalExpense}
-                                    filterPending={() => setFilterPending(true)}
-                                />
-                            )
-                        ) : (
-                            <NetDisasterExpenseNoData />
-                        )}
                     </div>
-                    <div className="w-full">
-                        {showLoading ? <RevenueAndExpenses onDashboard={false} /> : <RevenueAndExpensesNoData />}
+                    <div className="flex flex-col w-full gap-[16px]">
+                        <div className="flex gap-[16px] h-[364px]">
+                            <div className="w-[60%]">
+                                {showLoading ? (
+                                    netDisasterVisisble ? (
+                                        <NetDisasterExpense
+                                            bannerData={bannerData ?? { status: "no-disaster" }}
+                                            onDashboard={false}
+                                            handleSwitchToReview={() => setNetDisasterVisible(false)}
+                                        />
+                                    ) : (
+                                        <ReviewExpenses
+                                            handleSwitchToNetDisaster={() => setNetDisasterVisible(true)}
+                                            lineItemsConfirmed={expenses.length}
+                                            lineItemsPending={pendingExpensesLineItems.length}
+                                            totalConfirmedExpenses={totalExpense}
+                                            filterPending={() => setFilterPending(true)}
+                                        />
+                                    )
+                                ) : (
+                                    <NetDisasterExpenseNoData />
+                                )}
+                            </div>
+                            <div className="w-full">
+                                {showLoading ? (
+                                    <RevenueAndExpenses onDashboard={false} />
+                                ) : (
+                                    <RevenueAndExpensesNoData />
+                                )}
+                            </div>
+                        </div>
+                        <ExpenseTable
+                            title={"Business Transactions"}
+                            rowOption={"collapsible"}
+                            editableTags={true}
+                            filterPending={filterPending}
+                            setFilterPending={(fp: boolean) => setFilterPending(fp)}
+                            hasData={showLoading ?? false}
+                        />
                     </div>
+                    <TransactionImportModal isOpen={importModalOpen} onClose={onCloseImportModal} />
                 </div>
-                <ExpenseTable
-                    title={"Business Transactions"}
-                    rowOption={"collapsible"}
-                    editableTags={true}
-                    filterPending={filterPending}
-                    setFilterPending={(fp: boolean) => setFilterPending(fp)}
-                    hasData={showLoading ?? false}
-                />
-            </div>
-            <TransactionImportModal isOpen={importModalOpen} onClose={onCloseImportModal} />
-        </div>
-                    }
-                    </>
+            )}
+        </>
     );
 }

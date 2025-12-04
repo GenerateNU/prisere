@@ -68,7 +68,7 @@ function SignUpContent() {
             ) : (
                 <div className="flex justify-center items-center max-w-[1162px] gap-[30px]">
                     <Card className="w-1/2 flex-shrink-0 self-stretch p-[52px] flex flex-col justify-center items-center gap-[40px]">
-                        <Image src="/IconLogo.png" alt="Prisere Logo" width={131} height={131}/>
+                        <Image src="/IconLogo.png" alt="Prisere Logo" width={131} height={131} />
                         <div className="flex flex-col gap-[20px]">
                             <h2 className="font-bold text-[35px] text-center">Stay Prepared with Prisere.</h2>
                             <p className="text-[16px]">

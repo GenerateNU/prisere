@@ -1,8 +1,7 @@
 import { flexRender, Table as ReactTable, Row } from "@tanstack/react-table";
-import { Spinner } from "../ui/spinner";
 import { Table as CTable, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import ErrorDisplay from "../ErrorDisplay";
-import Loading, { LargeLoading } from "../loading";
+import Loading from "../loading";
 
 export function Table<T>({
     table,
@@ -37,7 +36,7 @@ export function Table<T>({
                     <TableRow>
                         <TableCell colSpan={table.getAllColumns().length} className="text-center">
                             <div className="flex items-center justify-center w-full h-full">
-                                <Loading lines={2}/>
+                                <Loading lines={2} />
                             </div>
                         </TableCell>
                     </TableRow>

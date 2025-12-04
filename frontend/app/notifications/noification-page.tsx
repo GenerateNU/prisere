@@ -77,25 +77,25 @@ export default function NotificationPage(props: NotificationProps) {
                 )}
                 <h1 className="text-charcoal text-3xl font-bold"> Notifications </h1>
             </div>
-            { isLoading ? 
-            <div className="w-full h-[80vh]">
-                <LargeLoading/>
-            </div>
-            :
-            <div className="flex flex-col gap-5">
-                {data?.pages.map((page, i) => (
-                    <div key={i} className="flex flex-col gap-5">
-                        {page.map((notification) => (
-                            <Notification key={notification.id} notification={notification} />
-                        ))}
-                    </div>
-                ))}
-                {isFetchingNextPage && <LoadingNotification />}
-                <div ref={observerTarget} className="self-center font-charcoal">
-                    {!hasNextPage && <p>No More Notifications</p>}
+            {isLoading ? (
+                <div className="w-full h-[80vh]">
+                    <LargeLoading />
                 </div>
-            </div>
-}
+            ) : (
+                <div className="flex flex-col gap-5">
+                    {data?.pages.map((page, i) => (
+                        <div key={i} className="flex flex-col gap-5">
+                            {page.map((notification) => (
+                                <Notification key={notification.id} notification={notification} />
+                            ))}
+                        </div>
+                    ))}
+                    {isFetchingNextPage && <LoadingNotification />}
+                    <div ref={observerTarget} className="self-center font-charcoal">
+                        {!hasNextPage && <p>No More Notifications</p>}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

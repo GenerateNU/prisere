@@ -16,9 +16,7 @@ import {
     uploadToS3,
 } from "@/api/business-profile";
 import { BusinessDocument, DocumentCategories } from "@/types/documents";
-import { Spinner } from "@/components/ui/spinner";
 import Loading from "@/components/loading";
-import { useQuery } from "@tanstack/react-query";
 import ErrorDisplay from "@/components/ErrorDisplay";
 
 type SortOrder = "asc" | "desc";
@@ -47,11 +45,7 @@ export default function ViewDocuments() {
         try {
             setIsLoadingDocuments(true);
 
-            // Fetch documents from the backend
-            const {data:docs} = useQuery({
-                queryKey: ["get-all-documents"],
-                queryFn: getAllDocuments
-            })
+            const docs = await getAllDocuments();
 
             // Transform the response into the BusinessDocument type
             const transformedDocs: BusinessDocument[] = docs!.map((doc) => {
@@ -82,7 +76,7 @@ export default function ViewDocuments() {
 
             // Update the state with the transformed documents
             setDocuments(transformedDocs);
-        } catch (error) {
+        } catch (_error) {
             setError(true);
         } finally {
             setIsLoadingDocuments(false);
@@ -223,7 +217,7 @@ export default function ViewDocuments() {
     };
 
     return (
-        <Card className = "border-none shadow-none">
+        <Card className="border-none shadow-none">
             <CardHeader className="flex justify-between">
                 <div className="flex flex-col gap-[10px]">
                     <h3 className="text-[24px]">Business Documents</h3>
@@ -263,21 +257,17 @@ export default function ViewDocuments() {
                 {/* Show loading state or documents */}
                 {isLoadingDocuments ? (
                     <div className="py-8 flex items-center justify-center w-full">
-                        <Loading lines={2}/>
+                        <Loading lines={2} />
                     </div>
                 ) : documents.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
                         No documents found. Upload your first document to get started!
                     </div>
-                ) : error ? 
-                (
+                ) : error ? (
                     <div className="py-8 flex items-center justify-center w-full">
-                        <ErrorDisplay/>
+                        <ErrorDisplay />
                     </div>
-                )
-                :
-
-                (
+                ) : (
                     <DocumentTable
                         documents={filteredAndSortedDocuments}
                         onCategoryChange={async (documentId, newCategory) => {

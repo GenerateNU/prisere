@@ -33,21 +33,19 @@ export default function RootLayout({
     const hideNavbar =
         pathname.includes("/login") || pathname.includes("/signup") || pathname.includes("claims/declare");
 
-        return (
-            <html lang="en">
-              <body className={`${ptSans.className} antialiased`}>
+    return (
+        <html lang="en">
+            <body className={`${ptSans.className} antialiased`}>
                 <QueryClientProvider client={queryClient}>
                     <NuqsAdapter>
-                      <div>
-                        {!hideNavbar && <NavBar />}
-                        <main className={!hideNavbar ? "ml-[300px]" : ""}>
-                          {children}
-                        </main>
-                      </div>
-                      <div id="portal-root" />
+                        <div>
+                            {!hideNavbar && <NavBar />}
+                            <main className={!hideNavbar ? "ml-[300px]" : ""}>{children}</main>
+                        </div>
+                        <div id="portal-root" />
                     </NuqsAdapter>
                 </QueryClientProvider>
-              </body>
-            </html>
-          );
+            </body>
+        </html>
+    );
 }
