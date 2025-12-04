@@ -81,19 +81,15 @@ export class LocationAddressTransactions implements ILocationAddressTransaction 
         payload: CreateLocationAddressBulkDTO,
         companyId: string
     ): Promise<LocationAddress[]> {
-        try {
-            const addresses: LocationAddress[] = payload.map((element) =>
-                plainToClass(LocationAddress, {
-                    ...element,
-                    companyId: companyId,
-                })
-            );
-            const newAddress: LocationAddress[] = await this.db.getRepository(LocationAddress).save(addresses);
+        const addresses: LocationAddress[] = payload.map((element) =>
+            plainToClass(LocationAddress, {
+                ...element,
+                companyId: companyId,
+            })
+        );
+        const newAddress: LocationAddress[] = await this.db.getRepository(LocationAddress).save(addresses);
 
-            return newAddress;
-        } catch (err) {
-            throw err;
-        }
+        return newAddress;
     }
 
     /**
