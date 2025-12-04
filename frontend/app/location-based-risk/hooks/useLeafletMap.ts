@@ -11,6 +11,7 @@ export const useLeafletMap = (
 ) => {
     const mapInstanceRef = useRef<Map | null>(null);
     const [isReady, setIsReady] = useState(false);
+    const [error, setError] = useState(false);
 
     // Initialize map
     useEffect(() => {
@@ -39,8 +40,8 @@ export const useLeafletMap = (
                 }).addTo(map);
 
                 setIsReady(true);
-            } catch (err) {
-                console.error("Error initializing map:", err);
+            } catch (_err) {
+                setError(true);
             }
         }, 50);
 
@@ -70,5 +71,6 @@ export const useLeafletMap = (
         map: mapInstanceRef.current,
         isReady,
         panTo,
+        error,
     };
 };

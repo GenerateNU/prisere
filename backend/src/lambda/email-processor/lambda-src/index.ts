@@ -15,7 +15,6 @@ export const handler = async (event: SQSEvent): Promise<SQSBatchResponse> => {
     for (const record of event.Records) {
         try {
             await processRecord(record);
-            console.log(`Successfully processed message ${record.messageId}`);
         } catch (error) {
             console.error(`Failed to process message ${record.messageId}:`, error);
 
@@ -35,13 +34,9 @@ export const handler = async (event: SQSEvent): Promise<SQSBatchResponse> => {
 async function processRecord(record: SQSRecord): Promise<void> {
     const message: DisasterEmailMessage = JSON.parse(record.body);
 
-    console.log(`Sending email to ${message.to} for disaster ${message.disasterId}`);
-
     if (!message.to || !message.firstName || !message.declarationType) {
         throw new Error("Missing required fields in message");
     }
 
     await sesService.sendDisasterEmail(message);
-
-    console.log(`Email sent successfully to ${message.to}`);
 }

@@ -26,6 +26,7 @@ export const useGeoJSONLayers = (
     const hasAddedLayersRef = useRef(false);
 
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
     const {
         data: geoJsonCountyData,
         isLoading: isLoadingGeoJsonData,
@@ -70,11 +71,10 @@ export const useGeoJSONLayers = (
             }).addTo(map);
             setLoading(false);
             hasAddedLayersRef.current = true;
-        } catch (err) {
-            setLoading(false);
-            console.error("Error adding GeoJSON layers:", err);
+        } catch (_err) {
+            setError(true);
         }
     }, [geoJsonCountyData, femaRiskCountyLookup, map]);
 
-    return { loading };
+    return { loading, error };
 };

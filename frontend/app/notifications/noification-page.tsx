@@ -7,6 +7,7 @@ import { NOTIFICATION_LIMIT } from "@/types/constants";
 import { GetNotificationsResponse } from "@/types/notifications";
 import { IoMdArrowBack } from "react-icons/io";
 import { Button } from "@/components/ui/button";
+import { LargeLoading } from "@/components/loading";
 
 interface NotificationWithBackArrow {
     backArrow: true;
@@ -21,7 +22,7 @@ type NotificationProps = NotificationWithBackArrow | NotificationWithoutBackArro
 
 export default function NotificationPage(props: NotificationProps) {
     const observerTarget = useRef(null);
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery<
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery<
         GetNotificationsResponse,
         Error,
         InfiniteData<GetNotificationsResponse>,
@@ -76,20 +77,25 @@ export default function NotificationPage(props: NotificationProps) {
                 )}
                 <h1 className="text-charcoal text-3xl font-bold"> Notifications </h1>
             </div>
-
-            <div className="flex flex-col gap-5">
-                {data?.pages.map((page, i) => (
-                    <div key={i} className="flex flex-col gap-5">
-                        {page.map((notification) => (
-                            <Notification key={notification.id} notification={notification} />
-                        ))}
-                    </div>
-                ))}
-                {isFetchingNextPage && <LoadingNotification />}
-                <div ref={observerTarget} className="self-center font-charcoal">
-                    {!hasNextPage && <p>No More Notifications</p>}
+            {isLoading ? (
+                <div className="w-full h-[80vh]">
+                    <LargeLoading />
                 </div>
-            </div>
+            ) : (
+                <div className="flex flex-col gap-5">
+                    {data?.pages.map((page, i) => (
+                        <div key={i} className="flex flex-col gap-5">
+                            {page.map((notification) => (
+                                <Notification key={notification.id} notification={notification} />
+                            ))}
+                        </div>
+                    ))}
+                    {isFetchingNextPage && <LoadingNotification />}
+                    <div ref={observerTarget} className="self-center font-charcoal">
+                        {!hasNextPage && <p>No More Notifications</p>}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -384,7 +384,6 @@ export class ClaimTransaction implements IClaimTransaction {
 
             return { claimId: claimId, purchaseLineItemId: lineItemId };
         } catch (error) {
-            console.log(error);
             logMessageToFile(`Transaction error: ${error}`);
             return null;
         }
