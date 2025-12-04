@@ -8,11 +8,14 @@ import { HiOutlineTableCells } from "react-icons/hi2";
 import { RiFilePaperLine } from "react-icons/ri";
 import { IoPersonOutline, IoSettingsOutline } from "react-icons/io5";
 import Image from "next/image";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function NavBar() {
     const pathname = usePathname();
+    const queryClient = useQueryClient();
 
     const logout = async () => {
+        queryClient.clear();
         await logoutUser();
     };
 

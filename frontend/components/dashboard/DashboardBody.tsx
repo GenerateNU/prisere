@@ -8,6 +8,7 @@ import LocationRisk from "./LocationRisk";
 import { companyHasData } from "@/api/company";
 import NoDataPopupWrapper from "./NoDataPopupWrapper";
 import { useQuery } from "@tanstack/react-query";
+import { Spinner } from "../ui/spinner";
 
 export default function DashboardBody() {
     const { data: bannerData } = useQuery({
@@ -15,12 +16,18 @@ export default function DashboardBody() {
         queryFn: getDashboardBannerData,
     });
 
-    const { data: hasData, isPending: hasDataLoading } = useQuery({
+    const { data: hasData, isLoading: hasDataLoading } = useQuery({
         queryKey: ["company-has-data"],
         queryFn: companyHasData,
     });
 
     return (
+        <>
+        {hasDataLoading ? 
+        <div className="flex items-center justify-center flex-1">
+            <Spinner/>
+        </div>
+        :
         <div className="flex flex-col gap-8">
             {/* No Data Popup - only shows when hasData is false */}
             {!hasDataLoading && (
@@ -67,5 +74,8 @@ export default function DashboardBody() {
                 </div>
             </div>
         </div>
+}
+        </>
+
     );
 }

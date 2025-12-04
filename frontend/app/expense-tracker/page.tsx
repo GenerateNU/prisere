@@ -14,6 +14,7 @@ import { companyHasData } from "@/api/company";
 import { GoSync } from "react-icons/go";
 import { FiUpload } from "react-icons/fi";
 import NoDataPopupWrapper from "@/components/dashboard/NoDataPopupWrapper";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function ExpenseTracker() {
     const [importModalOpen, setImportModalOpen] = useState<boolean>(false);
@@ -70,6 +71,13 @@ export default function ExpenseTracker() {
     );
 
     return (
+        <>
+        {hasDataLoading ? 
+        <div className="flex items-center justify-center h-screen">
+            <h2 className="text-[30px] font-bold">Expense Tracker</h2>
+            <Spinner/>
+        </div>
+        :
         <div className="p-[50px] flex flex-col gap-[23px] bg-[var(--slate)] min-h-screen w-full">
             {!hasDataLoading && (
                 <NoDataPopupWrapper hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false} />
@@ -157,5 +165,7 @@ export default function ExpenseTracker() {
             </div>
             <TransactionImportModal isOpen={importModalOpen} onClose={onCloseImportModal} />
         </div>
+                    }
+                    </>
     );
 }
