@@ -148,12 +148,6 @@ export default function DisasterInfoStep({
                             </div>
                         ))}
                     </div>
-                    <Button className="w-fit h-fit rounded-full py-[12px] px-[20px]">
-                        <Label>
-                            <UserIcon size={24} color="black" />
-                            <p>Select from business profile</p>
-                        </Label>
-                    </Button>
                 </div>
             </Card>
             <div className="flex items-center justify-end gap-3 w-full">
