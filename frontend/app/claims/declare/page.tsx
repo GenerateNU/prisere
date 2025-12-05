@@ -29,7 +29,6 @@ import IncidentDateStep from "./IncidentDateStep";
 import InsuranceInfoStep from "./InsuranceInfoStep";
 import PersonalInfoStep from "./PersonalInfoStep";
 import StartStep from "./StartStep";
-import { Card } from "@/components/ui/card";
 
 /**
  * The steps that are displayed in the progress bar
@@ -207,20 +206,16 @@ function DeclareDisasterContent() {
         {
             step: -1,
             render: (
-                <div className="flex items-center justify-center flex-1">
-                    <Card className="w-fit p-32">
-                        <IncidentDateStep
-                            incidentDate={disasterInfo.startDate}
-                            setIncidentDate={(date: Date) => {
-                                setDisasterInfo({ startDate: date });
-                            }}
-                            incidentEndDate={disasterInfo.endDate}
-                            setIncidentEndDate={(date: Date) => setDisasterInfo({ endDate: date })}
-                            handleStepForward={() => handleStepForward(-1, null)}
-                            handleStepBack={handleStepBack}
-                        />
-                    </Card>
-                </div>
+                <IncidentDateStep
+                    incidentDate={disasterInfo.startDate}
+                    setIncidentDate={(date: Date) => {
+                        setDisasterInfo({ startDate: date });
+                    }}
+                    incidentEndDate={disasterInfo.endDate}
+                    setIncidentEndDate={(date: Date) => setDisasterInfo({ endDate: date })}
+                    handleStepForward={() => handleStepForward(-1, null)}
+                    handleStepBack={handleStepBack}
+                />
             ),
         },
         {
