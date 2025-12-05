@@ -119,7 +119,7 @@ export default function LoginPage() {
                                 formAction={loginAction}
                                 variant="secondary"
                                 disabled={status.pending}
-                                className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white px-[20px] py-[12px] text-[16px]"
+                                className="max-h-[45px] w-fit bg-[var(--fuchsia)] hover:bg-pink hover:text-fuchsia text-white px-[20px] py-[12px] text-[16px]"
                             >
                                 Log In
                             </Button>

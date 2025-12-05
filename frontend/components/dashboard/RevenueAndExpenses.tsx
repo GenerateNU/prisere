@@ -169,8 +169,8 @@ export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard
                         </div>
 
                         {onDashboard && (
-                            <Link href={"/expense-tracker"} className="text-sm font-semibold underline no-underline">
-                                <Button className="h-10 text-sm text-white rounded-full w-fit px-6 mt-6 bg-fuchsia">
+                            <Link href={"/expense-tracker"} className="text-sm font-semibold underline no-underline ">
+                                <Button className="h-10 text-sm text-white rounded-full w-fit px-6 mt-6 bg-fuchsia hover:bg-pink hover:text-fuchsia">
                                     See Expense Tracker
                                 </Button>
                             </Link>

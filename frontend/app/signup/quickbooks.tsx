@@ -35,22 +35,22 @@ export default function Quickbooks({ handleNext }: QuickbooksInfoProps) {
                 <div className="w-full flex flex-col items-center">
                     <Button
                         type="button"
-                        className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white py-[12px] text-[16px]"
+                        className="group max-h-[45px] w-fit bg-[var(--fuchsia)] text-white hover:bg-pink hover:text-fuchsia py-[12px] text-[16px]"
                         style={{ paddingInline: "20px" }}
                         onClick={async () => {
                             await quickbooksAuth();
                         }}
                     >
-                        <GoSync /> Sync Quickbooks
+                        <GoSync className="group-hover:text-fuchsia" /> Sync Quickbooks
                     </Button>
                 </div>
                 <div className="w-full flex flex-col items-center">
                     <Button
                         type="button"
-                        className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white py-[12px] text-[16px]"
+                        className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white py-[12px] text-[16px] hover:bg-pink hover:text-fuchsia"
                         style={{ paddingInline: "20px" }}
                     >
-                        <FiUpload /> Upload CSV
+                        <FiUpload className="group-hover:text-fuchsia" /> Upload CSV
                     </Button>
                 </div>
                 <div className="w-full flex flex-col items-center">

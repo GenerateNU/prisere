@@ -90,22 +90,31 @@ export default function DocumentTable({
                                 <TableCell className="border-y h-[53px]">
                                     <div className="flex justify-end gap-[6px]">
                                         <Button
-                                            className="w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-[var(--slate)]"
+                                            className="group hover:bg-fuchsia hover:text-white w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-slate"
                                             onClick={() => onDownload(doc.url)}
                                         >
-                                            <FiDownload style={{ width: "14px" }} />
+                                            <FiDownload
+                                                className="group-hover:bg-fuchsia group-hover:text-white"
+                                                style={{ width: "14px" }}
+                                            />
                                         </Button>
                                         <Button
-                                            className="w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-[var(--slate)]"
+                                            className="group hover:bg-fuchsia hover:text-white w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-slate"
                                             onClick={() => onEdit(doc.documentId)}
                                         >
-                                            <SlPencil className="text-[14px]" style={{ width: "14px" }} />
+                                            <SlPencil
+                                                className="text-[14px] group-hover:bg-fuchsia group-hover:text-white"
+                                                style={{ width: "14px" }}
+                                            />
                                         </Button>
                                         <Button
-                                            className="w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-[var(--slate)]"
+                                            className="group hover:bg-fuchsia hover:text-white w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-slate"
                                             onClick={() => onDelete(doc)}
                                         >
-                                            <HiOutlineTrash className="text-[14px]" style={{ width: "14px" }} />
+                                            <HiOutlineTrash
+                                                className="text-[14px] group-hover:bg-fuchsia group-hover:text-white"
+                                                style={{ width: "14px" }}
+                                            />
                                         </Button>
                                     </div>
                                 </TableCell>

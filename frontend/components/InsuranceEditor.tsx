@@ -86,16 +86,18 @@ export default function InsuranceEditor({
                             }
                         }}
                         style={{ paddingInline: 0 }}
-                        className={`p-0 flex items-center justify-center h-[35px] w-[35px] ${isExpanded ? "bg-fuchsia" : "bg-slate"}`}
+                        className={`group p-0 flex items-center justify-center h-[35px] w-[35px] ${isExpanded ? "bg--fuchsia hover:bg-pink hover:text-fuchsia" : "bg-slate hover:bg-fuchsia hover:text-white"}`}
                     >
-                        <FiEdit className={`${isExpanded ? "text-white" : "text-black"} text-[20px]`} />
+                        <FiEdit
+                            className={`${isExpanded ? "text-white group-hover:text-fuchsia" : "text-black group-hover:text-white"} text-[20px]`}
+                        />
                     </Button>
                     <Button
                         onClick={() => removeInsurance()}
                         style={{ paddingInline: 0 }}
-                        className="p-0 flex items-center justify-center h-[35px] w-[35px] bg-slate"
+                        className="group p-0 flex items-center justify-center h-[35px] w-[35px] bg-slate hover:bg-fuchsia hover:text-white"
                     >
-                        <HiOutlineTrash className="" />
+                        <HiOutlineTrash className="hover:text-white" />
                     </Button>
                 </div>
             </div>
@@ -210,11 +212,11 @@ export default function InsuranceEditor({
                         ""
                     )}
                     <Button
-                        className="text-[14px] py-[7px] bg-pink text-fuchsia self-end w-fit h-fit flex justify-center items-center gap-[8px] hover:text-[white]"
+                        className="group text-[14px] py-[7px] bg--pink text--fuchsia hover:bg-fuchsia hover:text-white self-end w-fit h-fit flex justify-center items-center gap-[8px]"
                         onClick={handleCollapse}
                         style={{ paddingInline: "25px" }}
                     >
-                        Save and close <IoCheckmark className="text-[24px] mb-[2px]" />
+                        Save and close <IoCheckmark className="text-[24px] mb-[2px] group-hover:text-white" />
                     </Button>
                 </div>
             ) : (

@@ -92,7 +92,7 @@ export default function UserInfoPage({ email, handleNext }: UserInfoProps) {
                     type="button"
                     onClick={handleSubmit}
                     disabled={isPending}
-                    className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white px-[20px] py-[12px] text-[16px]"
+                    className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white hover:bg-pink hover:text-fuchsia px-[20px] py-[12px] text-[16px]"
                 >
                     {isPending ? <Spinner /> : <></>}
                     Next

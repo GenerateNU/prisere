@@ -93,13 +93,17 @@ export default function BusinessInfoStep({ businessInfo, setBusinessInfo, handle
                 </div>
             </Card>
             <div className="flex items-center justify-end gap-3 w-full">
-                <Button onClick={handleStepBack} className="text-sm bg-light-fuchsia text-fuchsia w-[70px]" size="lg">
+                <Button
+                    onClick={handleStepBack}
+                    className="text-sm bg-light-fuchsia text-fuchsia hover:bg-fuchsia hover:text-white w-[70px]"
+                    size="lg"
+                >
                     Back
                 </Button>
                 <Button
                     size="lg"
                     onClick={handleProceed}
-                    className="bg-fuchsia text-white px-[20px] py-[12px] w-[230px] h-[42px] text-[14px] rounded-50"
+                    className="bg-fuchsia text-white hover:bg-pink hover:text-fuchsia px-[20px] py-[12px] w-[230px] h-[42px] text-[14px] rounded-50"
                 >
                     Proceed to Insurance Information
                 </Button>
