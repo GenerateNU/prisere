@@ -280,7 +280,7 @@ function DeclareDisasterContent() {
         >
             {step > -1 && step !== 5 && (
                 <div className="">
-                    {step > 1 && (
+                    {step >= 1 && (
                         <div className="flex justify-between items-center mb-4">
                             <SaveStatusIndicator status={saveStatus} />
                             <Button
