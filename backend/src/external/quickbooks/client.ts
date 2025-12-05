@@ -9,7 +9,7 @@ import {
 } from "./types";
 
 const PROD_BASE_URL = "https://quickbooks.api.intuit.com";
-const SANDBOX_BASE_URL = "https://sandbox-quickbooks.api.intuit.com";  
+const SANDBOX_BASE_URL = "https://sandbox-quickbooks.api.intuit.com";
 
 const PROD_PRISERE_API_URL = process.env.PROD_PRISERE_API_URL;
 const DEV_PRISERE_API_URL = process.env.DEV_PRISERE_API_URL;

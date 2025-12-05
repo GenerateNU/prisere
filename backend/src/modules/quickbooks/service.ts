@@ -218,7 +218,7 @@ export class QuickbooksService implements IQuickbooksService {
         }
 
         const invoices = response.QueryResponse.Invoice;
-    
+
         const createdInvoices = await this.invoiceTransaction.createOrUpdateInvoices(
             invoices.map((i) => ({
                 companyId: user.companyId,
@@ -258,7 +258,7 @@ export class QuickbooksService implements IQuickbooksService {
                 }),
         });
         if (!response || !response.QueryResponse || !response.QueryResponse.Purchase) {
-            console.log("no purchases to import")
+            console.log("no purchases to import");
             logMessageToFile("No new purchases to import");
             return;
         }
@@ -413,9 +413,9 @@ function getPurchaseLineItems(purchase: QBPurchase) {
 }
 
 function getLastAccountName(accountPath: string | undefined): string | undefined {
-    if(!accountPath) {
+    if (!accountPath) {
         return accountPath;
     }
-    const parts = accountPath.split(':');
+    const parts = accountPath.split(":");
     return parts[parts.length - 1];
-  }
+}
