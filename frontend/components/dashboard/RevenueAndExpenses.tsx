@@ -11,6 +11,8 @@ import { FaCircle } from "react-icons/fa";
 import { LargeLoading } from "../loading";
 import { FaExclamation } from "react-icons/fa6";
 import ErrorDisplay from "../ErrorDisplay";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { useState } from "react";
 
 export function RevenueAndExpensesNoData() {
     return (
@@ -45,7 +47,7 @@ export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard
         return new Date(currentYear, currentMonth - monthsAgo, 1);
     };
 
-    const months = 6;
+    const [months, setMonths] = useState(6);
     const monthDates = Array.from({ length: months }, (_, i) => getMonth(i));
 
     const revenueQueries = useQueries({
@@ -114,8 +116,10 @@ export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard
     return (
         <Card className="h-full p-6 border-none shadow-none flex flex-col min-h-[260px]">
             <div className="flex flex-col mb-4 gap-2">
-                <CardTitle className="text-2xl font-bold">Revenue and Expenses</CardTitle>
-
+                <div className="flex justify-between items-center">
+                    <CardTitle className="text-2xl font-bold">Revenue and Expenses</CardTitle>
+                    <DateOptions onRangeChange={setMonths} />
+                </div>
                 {!isLoading && !error && (
                     <div className="flex items-center gap-2 text-sm py-1 rounded">
                         <div
@@ -205,5 +209,37 @@ export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard
                 </CardContent>
             )}
         </Card>
+    );
+}
+
+const timeRangeOptions = new Map<string, number>([
+    ["Last 3 Months", 3],
+    ["Last 6 Months", 6],
+    ["Last 9 Months", 9],
+    ["Last 1 Year", 12],
+    ["Last 2 Years", 24],
+]);
+
+export function DateOptions({ onRangeChange }: { onRangeChange: (months: number) => void }) {
+    const [selected, setSelected] = useState<string>("6");
+
+    const handleSelect = (value: string) => {
+        setSelected(value);
+        onRangeChange(Number(value));
+    };
+
+    return (
+        <Select value={selected} onValueChange={handleSelect}>
+            <SelectTrigger className="h-9 w-fit gap-2 rounded-full bg-muted text-black text-sm hover:bg-muted/80 border-none">
+                <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+                {[...timeRangeOptions].map(([label, months]) => (
+                    <SelectItem key={months} value={String(months)}>
+                        {label}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
     );
 }

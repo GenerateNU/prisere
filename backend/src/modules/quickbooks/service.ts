@@ -291,7 +291,7 @@ export class QuickbooksService implements IQuickbooksService {
             for (const val of result) {
                 if (val.type === null) {
                     const type = await classifyLineItem(val);
-                    await this.purchaseLineItemTransaction.updatePurchaseLineItemType(val.id, type);
+                    await this.purchaseLineItemTransaction.updatePurchaseLineItemType([val.id], type);
                 }
             }
 

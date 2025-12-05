@@ -78,7 +78,7 @@ const dateOptions = new Map<string, Date>([
     ["This Month", new Date(new Date().getFullYear(), new Date().getMonth(), 1)],
 ]);
 
-function DateFilter({ onDateRangeChange }: { onDateRangeChange: (range: DateRange | undefined) => void }) {
+export function DateFilter({ onDateRangeChange }: { onDateRangeChange: (range: DateRange | undefined) => void }) {
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
     const [dateRange, setDateRange] = useState<DateRange>();
     const [selected, setSelected] = useState<string>();

@@ -28,13 +28,13 @@ export const CreateOrChangePurchaseLineItemsDTOSchema = z.object({
 });
 
 export const UpdatePurchaseLineItemCategoryDTOSchema = z.object({
-    id: z.uuid(),
+    ids: z.array(z.uuid()),
     category: z.string().nonempty().max(LINE_ITEM_CATEGORY_CHARS),
     removeCategory: z.boolean(),
 });
 
 export const UpdatePurchaseLineItemTypeDTOSchema = z.object({
-    id: z.uuid(),
+    ids: z.array(z.uuid()),
     type: z.enum(PurchaseLineItemType),
 });
 
@@ -68,9 +68,11 @@ export const GetPurchaseLineItemResponseSchema = z.object({
 
 export const GetPurchaseLineItemsFromParentResponseSchema = z.array(GetPurchaseLineItemResponseSchema);
 
-export const UpdatePurchaseLineItemResponseSchema = GetPurchaseLineItemResponseSchema.extend({
-    quickbooksDateCreated: z.iso.datetime().nullable().optional(),
-});
+export const UpdatePurchaseLineItemResponseSchema = z.array(
+    GetPurchaseLineItemResponseSchema.extend({
+        quickbooksDateCreated: z.iso.datetime().nullable().optional(),
+    })
+);
 
 //Controller Responses
 export type CreateOrChangePurchaseLineItemsResponse = z.infer<typeof CreateOrChangePurchaseLineItemsResponseSchema>;

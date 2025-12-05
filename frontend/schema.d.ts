@@ -5154,8 +5154,8 @@ export interface paths {
         options?: never;
         head?: never;
         /**
-         * Updates a purchase line item's category
-         * @description Updates the category of the purchase line item with the given Id to the given category
+         * Updates purchase line items' category
+         * @description Updates the category of the purchase line items with the given Ids to the given category
          */
         patch: {
             parameters: {
@@ -5167,15 +5167,14 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        /** Format: uuid */
-                        id: string;
+                        ids: string[];
                         category: string;
                         removeCategory: boolean;
                     };
                 };
             };
             responses: {
-                /** @description Successfully updated the line item's category */
+                /** @description Successfully updated the line items' category */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -5194,7 +5193,7 @@ export interface paths {
                             lastUpdated: string;
                             /** Format: date-time */
                             quickbooksDateCreated?: string | null;
-                        };
+                        }[];
                     };
                 };
                 /** @description Error modifying purchase line item */
@@ -5237,8 +5236,8 @@ export interface paths {
         options?: never;
         head?: never;
         /**
-         * Updates a purchase line item's type
-         * @description Updates the type of the purchase line item with the given Id to the given type
+         * Updates a purchase line items' type
+         * @description Updates the type of the purchase line items with the given Ids to the given type
          */
         patch: {
             parameters: {
@@ -5250,15 +5249,14 @@ export interface paths {
             requestBody?: {
                 content: {
                     "application/json": {
-                        /** Format: uuid */
-                        id: string;
+                        ids: string[];
                         /** @enum {string} */
                         type: "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
                     };
                 };
             };
             responses: {
-                /** @description Successfully updated the line item's type */
+                /** @description Successfully updated the line items' type */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -5277,7 +5275,7 @@ export interface paths {
                             lastUpdated: string;
                             /** Format: date-time */
                             quickbooksDateCreated?: string | null;
-                        };
+                        }[];
                     };
                 };
                 /** @description Error modifying purchase line item */
