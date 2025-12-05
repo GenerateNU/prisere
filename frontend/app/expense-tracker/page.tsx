@@ -110,29 +110,29 @@ export default function ExpenseTracker() {
                         />
                     )}
                     <div className="flex justify-between">
-                            <div>
-                                <h2 className="text-[30px] font-bold">Expense Tracker</h2>
-                                {hasData?.hasExternalData && (
-                                    <div>
-                                        <div className="flex gap-[8px] text-[var(--teal)] items-center">
-                                            {" "}
-                                            <GoSync className="text-[var(--teal)]" />
-                                            Last Synced on {mostRecent?.toLocaleDateString() ?? "--/--/--"}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                            {!hasData?.hasExternalData && (
+                        <div>
+                            <h2 className="text-[30px] font-bold">Expense Tracker</h2>
+                            {hasData?.hasExternalData && (
                                 <div>
-                                    <Button
-                                        className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
-                                        onClick={onOpenImportModal}
-                                    >
+                                    <div className="flex gap-[8px] text-[var(--teal)] items-center">
                                         {" "}
-                                        <FiUpload className="text-white" style={{ width: "14px" }} /> Upload CSV
-                                    </Button>
+                                        <GoSync className="text-[var(--teal)]" />
+                                        Last Synced on {mostRecent?.toLocaleDateString() ?? "--/--/--"}
+                                    </div>
                                 </div>
                             )}
+                        </div>
+                        {!hasData?.hasExternalData && (
+                            <div>
+                                <Button
+                                    className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
+                                    onClick={onOpenImportModal}
+                                >
+                                    {" "}
+                                    <FiUpload className="text-white" style={{ width: "14px" }} /> Upload CSV
+                                </Button>
+                            </div>
+                        )}
                     </div>
                     <div className="flex flex-col w-full gap-[16px]">
                         <div className="flex gap-[16px] h-[364px]">
