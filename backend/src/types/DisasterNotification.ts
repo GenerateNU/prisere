@@ -117,7 +117,7 @@ export const DisasterEmailMessageSchema = z.object({
 export type DisasterEmailMessage = z.infer<typeof DisasterEmailMessageSchema>;
 
 export const UnreadNotificationsResponseSchema = z.object({
-    count: z.number()
-})
+    count: z.number(),
+});
 
 export type UnreadNotificationsResponse = z.infer<typeof UnreadNotificationsResponseSchema>;
