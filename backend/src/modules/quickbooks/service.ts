@@ -1,4 +1,7 @@
 import dayjs from "dayjs";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+dayjs.extend(isSameOrAfter);
+
 import { IQuickbooksClient } from "../../external/quickbooks/client";
 import { withServiceErrorHandling } from "../../utilities/error";
 import { IQuickbooksTransaction } from "./transaction";
@@ -176,11 +179,11 @@ export class QuickbooksService implements IQuickbooksService {
 
         const now = dayjs();
 
-        if (!session || !externalId || now.isSameOrAfter(session.refreshExpiryTimestamp)) {
+        if (!session || !externalId || now.isSameOrAfter(dayjs(session.refreshExpiryTimestamp))) {
             throw Boom.unauthorized("Quickbooks session is expired");
         }
 
-        if (now.isSameOrAfter(session.accessExpiryTimestamp)) {
+        if (now.isSameOrAfter(dayjs(session.accessExpiryTimestamp))) {
             session = await this.refreshQuickbooksSession({
                 refreshToken: session.refreshToken,
                 companyId: session.companyId,
@@ -198,9 +201,7 @@ export class QuickbooksService implements IQuickbooksService {
         const lastImport = user.company.lastQuickBooksInvoiceImportTime;
         const lastImportDate = lastImport ? dayjs(lastImport) : null;
 
-        const {
-            QueryResponse: { Invoice: invoices },
-        } = await this.makeRequestToQB({
+        const response = await this.makeRequestToQB({
             userId,
             request: (session) =>
                 this.qbClient.query<{ Invoice: QBInvoice[] }>({
@@ -211,11 +212,13 @@ export class QuickbooksService implements IQuickbooksService {
                         : `SELECT * FROM Invoice`,
                 }),
         });
-        if (invoices === undefined) {
+        if (!response || !response.QueryResponse || !response.QueryResponse.Invoice) {
             logMessageToFile("No new invoices to import");
             return;
         }
 
+        const invoices = response.QueryResponse.Invoice;
+    
         const createdInvoices = await this.invoiceTransaction.createOrUpdateInvoices(
             invoices.map((i) => ({
                 companyId: user.companyId,
@@ -243,9 +246,7 @@ export class QuickbooksService implements IQuickbooksService {
         const lastImport = user.company.lastQuickBooksPurchaseImportTime;
         const lastImportDate = lastImport ? dayjs(lastImport) : null;
 
-        const {
-            QueryResponse: { Purchase: purchases },
-        } = await this.makeRequestToQB({
+        const response = await this.makeRequestToQB({
             userId,
             request: (session) =>
                 this.qbClient.query<{ Purchase: QBPurchase[] }>({
@@ -256,20 +257,25 @@ export class QuickbooksService implements IQuickbooksService {
                         : `SELECT * FROM Purchase`,
                 }),
         });
-        if (purchases === undefined) {
+        if (!response || !response.QueryResponse || !response.QueryResponse.Purchase) {
+            console.log("no purchases to import")
             logMessageToFile("No new purchases to import");
             return;
         }
 
+        const purchases = response.QueryResponse.Purchase;
+
         const createdPurchases = await this.purchaseTransaction.createOrUpdatePurchase(
-            purchases.map((p) => ({
-                isRefund: p.Credit !== undefined ? p.Credit : false,
-                companyId: user.companyId,
-                totalAmountCents: Math.round(p.TotalAmt * 100),
-                quickbooksDateCreated: p.MetaData.CreateTime,
-                quickBooksId: parseInt(p.Id),
-                vendor: p.EntityRef?.type === "Vendor" ? p.EntityRef.DisplayName || p.EntityRef.GivenName : undefined,
-            }))
+            purchases.map((p) => {
+                return {
+                    isRefund: p.Credit !== undefined ? p.Credit : false,
+                    companyId: user.companyId,
+                    totalAmountCents: Math.round(p.TotalAmt * 100),
+                    quickbooksDateCreated: p.MetaData.CreateTime,
+                    quickBooksId: parseInt(p.Id),
+                    vendor: p.EntityRef?.DisplayName || p.EntityRef?.GivenName || p.EntityRef?.name || undefined,
+                };
+            })
         );
 
         const lineItemData = purchases.flatMap((i) => {
@@ -310,12 +316,12 @@ export class QuickbooksService implements IQuickbooksService {
             if (!session || !externalId) {
                 throw Boom.unauthorized("Quickbooks session not found");
             }
-            if (now.isSameOrAfter(session.refreshExpiryTimestamp)) {
+            if (now.isSameOrAfter(dayjs(session.refreshExpiryTimestamp))) {
                 // Redirect to quickbooks auth?
                 throw Boom.unauthorized("Quickbooks session is expired");
             }
 
-            if (now.isSameOrAfter(session.accessExpiryTimestamp)) {
+            if (now.isSameOrAfter(dayjs(session.accessExpiryTimestamp))) {
                 session = await this.refreshQuickbooksSession({
                     refreshToken: session.refreshToken,
                     companyId: session.companyId,

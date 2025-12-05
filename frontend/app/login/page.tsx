@@ -121,6 +121,7 @@ export default function LoginPage() {
                                 disabled={status.pending}
                                 className="max-h-[45px] w-fit bg-[var(--fuchsia)] hover:bg-pink hover:text-fuchsia text-white px-[20px] py-[12px] text-[16px]"
                             >
+                                {status.pending ? <Spinner /> : <></>}
                                 Log In
                             </Button>
                             <Button
@@ -132,7 +133,6 @@ export default function LoginPage() {
                                 disabled={status.pending}
                                 className="underline text-[12px] decoration-1 hover:text-gray-400 h-fit font-bold"
                             >
-                                {status.pending ? <Spinner /> : <></>}
                                 New User? Sign up
                             </Button>
                         </div>

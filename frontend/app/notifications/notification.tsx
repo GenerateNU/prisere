@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { RiMore2Fill } from "react-icons/ri";
 import formatDescription from "./utils";
+import { Spinner } from "@/components/ui/spinner";
 
 interface NotificationProps {
     notification: NotificationType;
@@ -14,7 +15,7 @@ interface NotificationProps {
 export default function Notification({ notification }: NotificationProps) {
     const [error, setError] = useState(false);
     const [title, setTitle] = useState(notification.notificationStatus);
-    const { mutate } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: () => updateNotificationStatus(notification.id, title == "read" ? "unread" : "read"),
         onError: () => {
             setError(false);
@@ -41,10 +42,12 @@ export default function Notification({ notification }: NotificationProps) {
                     <div className="self-end">
                         <Button
                             variant="secondary"
-                            className="rounded-sm w-fit bg-fuchsia text-white hover:bg-fuchsia/80"
+                            className="w-fit bg-fuchsia text-white hover:bg-fuchsia/80"
                             size="sm"
+                            disabled={isPending}
                             onClick={() => mutate()}
                         >
+                            {isPending ? <Spinner /> : <></>}
                             Mark as unread
                         </Button>
                         {error && <p className="text-sm text-fuchsia">Error Setting Status</p>}
