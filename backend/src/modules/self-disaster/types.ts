@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 import { FIPSCounty, FIPSState, incidentTypeString } from "../../types/fema-disaster/common";
 
 export const CreateSelfDisasterDTOSchema = z.object({

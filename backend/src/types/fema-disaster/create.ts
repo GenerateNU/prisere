@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 import { FIPSState, incidentTypeString, LABEL_TO_CODE } from "./common";
 import { ErrorResponseSchema } from "../Utils";
 

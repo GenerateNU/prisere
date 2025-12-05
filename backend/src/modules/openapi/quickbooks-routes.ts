@@ -5,7 +5,7 @@ import { QuickbooksClient } from "../../external/quickbooks/client";
 import { QuickbooksService } from "../quickbooks/service";
 import { QuickbooksController } from "../quickbooks/controller";
 import { RedirectEndpointSuccessParams } from "../../types/quickbooks";
-import z from "zod";
+import { z } from "zod";
 import { UserTransaction } from "../user/transaction";
 import { InvoiceTransaction } from "../invoice/transaction";
 import { InvoiceLineItemTransaction } from "../invoiceLineItem/transaction";
