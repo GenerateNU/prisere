@@ -122,9 +122,9 @@ export default function InsuranceCard({
                 <Loading lines={3} />
             ) : (
                 <div>
-                    <div className="flex gap-[38px]">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {insuranceInfo.map((insurance, index) => (
-                            <div key={index} className="w-1/2">
+                            <div key={index}>
                                 <InsuranceEditor
                                     insurance={insurance}
                                     isSelected={"id" in insurance && insuranceSelected === insurance.id}
@@ -149,7 +149,7 @@ export default function InsuranceCard({
                     </div>
 
                     <Button
-                            className="hover:bg-fuchsia hover:text-white w-[196px] flex items-center text-[16px] h-[34px] self-start px-[12px] py-[4px] underline bg-slate"
+                            className="w-[196px] flex items-center text-[16px] h-[34px] self-start px-[12px] py-[4px] w-fit bg-slate hover:bg-fuchsia hover:text-white"
                         onClick={addInsurance}
                     >
                         <IoAddCircleOutline /> Add an Insurance

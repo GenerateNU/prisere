@@ -41,7 +41,7 @@ export default function BusinessInfoStep({ businessInfo, setBusinessInfo, handle
                 <div className="flex flex-col gap-5 w-1/2">
                     <div className="flex flex-col gap-2">
                         <Label>
-                            Business name<span className="text-red-500 ml-1">*</span>
+                            Business Name<span className="text-red-500 ml-1">*</span>
                         </Label>
                         <Input
                             className="h-10 bg-white shadow-none rounded-[10px]"
@@ -52,7 +52,7 @@ export default function BusinessInfoStep({ businessInfo, setBusinessInfo, handle
                     </div>
                     <div className="flex flex-col gap-2">
                         <Label>
-                            Business owner<span className="text-red-500 ml-1">*</span>
+                            Business Owner<span className="text-red-500 ml-1">*</span>
                         </Label>
                         <Input
                             className="h-10 bg-white shadow-none rounded-[10px]"
@@ -63,7 +63,7 @@ export default function BusinessInfoStep({ businessInfo, setBusinessInfo, handle
                     </div>
                     <div className="flex flex-col gap-2">
                         <Label>
-                            Business type<span className="text-red-500 ml-1">*</span>
+                            Business Type<span className="text-red-500 ml-1">*</span>
                         </Label>
                         <Select
                             onValueChange={(t) => setBusinessInfo({ businessType: t as CompanyTypesEnum })}
@@ -87,7 +87,9 @@ export default function BusinessInfoStep({ businessInfo, setBusinessInfo, handle
                 <div className="flex flex-col gap-2">
                     <p className="font-bold text-[24px]">Financial History</p>
                     <p>We will use a 3 years average of your revenues and expense data for the report.</p>
-                    <RevenueAndExpenses />
+                    <div className="border border-gray-300 rounded-lg">
+                        <RevenueAndExpenses onDashboard={false} />
+                    </div>
                 </div>
             </Card>
             <div className="flex items-center justify-end gap-3 w-full">
@@ -99,7 +101,7 @@ export default function BusinessInfoStep({ businessInfo, setBusinessInfo, handle
                     onClick={handleProceed}
                     className="bg-fuchsia text-white hover:bg-pink hover:text-fuchsia px-[20px] py-[12px] w-[230px] h-[42px] text-[14px] rounded-50"
                 >
-                    Proceed to Insurer Information
+                    Proceed to Insurance Information
                 </Button>
             </div>
         </div>

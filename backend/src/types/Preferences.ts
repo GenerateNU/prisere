@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 import { USER_NOTIFICATION_FREQUENCY } from "../entities/UserPreferences";
 
 export const GetUserNotificationPreferencesRequestParams = z.object({

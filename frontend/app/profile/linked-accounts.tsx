@@ -23,7 +23,7 @@ export function LinkedAccountsSettings() {
             <div className="flex justify-between border-[0.5px] border-[#DBDBDB] rounded-2xl p-4 items-center">
                 <div className="flex items-center gap-2">
                     <QuickBooksIcon />
-                    <span>Sign in with QuickBooks</span>
+                    <span className="text-lg ">Sign in with QuickBooks</span>
                 </div>
                 <Button
                     className="bg-light-fuchsia hover:bg-fuchsia hover:text-white text-fuchsia w-40 cursor-pointer"

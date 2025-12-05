@@ -242,11 +242,13 @@ export class S3Service implements IS3Service {
                                           claimLocations: claim.claimLocations
                                               ?.map((claimLoc) => claimLoc.locationAddress)
                                               .filter((element) => element !== undefined),
-                                          insurancePolicy: {
-                                              ...claim.insurancePolicy,
-                                              createdAt: claim.insurancePolicy.createdAt.toISOString(),
-                                              updatedAt: claim.insurancePolicy.updatedAt.toISOString(),
-                                          },
+                                          insurancePolicy: claim.insurancePolicy
+                                              ? {
+                                                    ...claim.insurancePolicy,
+                                                    createdAt: claim.insurancePolicy.createdAt.toISOString(),
+                                                    updatedAt: claim.insurancePolicy.updatedAt.toISOString(),
+                                                }
+                                              : undefined,
                                           purchaseLineItemIds: claim.purchaseLineItems
                                               ? claim.purchaseLineItems.map((element) => element.id)
                                               : [],
@@ -313,11 +315,13 @@ export class S3Service implements IS3Service {
                                           claimLocations: claim.claimLocations
                                               ?.map((claimLoc) => claimLoc.locationAddress)
                                               .filter((element) => element !== undefined),
-                                          insurancePolicy: {
-                                              ...claim.insurancePolicy,
-                                              createdAt: claim.insurancePolicy.createdAt.toISOString(),
-                                              updatedAt: claim.insurancePolicy.updatedAt.toISOString(),
-                                          },
+                                          insurancePolicy: claim.insurancePolicy
+                                              ? {
+                                                    ...claim.insurancePolicy,
+                                                    createdAt: claim.insurancePolicy.createdAt.toISOString(),
+                                                    updatedAt: claim.insurancePolicy.updatedAt.toISOString(),
+                                                }
+                                              : undefined,
                                           femaDisaster: claim.femaDisaster
                                               ? {
                                                     ...claim.femaDisaster,

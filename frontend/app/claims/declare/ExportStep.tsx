@@ -7,13 +7,14 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
-
+import { useQueryClient } from "@tanstack/react-query";
 type ExportStepProps = {
     claimId: string | null;
     handleStepForward: () => void;
 };
 
 export default function ExportStep({ claimId, handleStepForward }: ExportStepProps) {
+    const queryClient = useQueryClient();
     const [exported, setExported] = React.useState(false);
     const [error, setError] = React.useState<string | null>(null);
     const [isLoadingPDFDownload, setIsLoadingPDFDownload] = useState<boolean>(false);
@@ -21,8 +22,8 @@ export default function ExportStep({ claimId, handleStepForward }: ExportStepPro
 
     const { mutate: updateBusinessMutate } = useMutation({
         mutationFn: async () => {
-            const result = await createClaimPDF(claimId!);
             setIsLoadingPDFDownload(true);
+            const result = await createClaimPDF(claimId!);
             return result.url;
         },
         onError: (error: Error) => {
@@ -31,6 +32,8 @@ export default function ExportStep({ claimId, handleStepForward }: ExportStepPro
         },
         onSuccess: (url: string) => {
             window.open(url, "_blank");
+            queryClient.invalidateQueries({ queryKey: ["banner-data"] });
+            queryClient.invalidateQueries({ queryKey: ["claim-in-progress"] });
             setIsLoadingPDFDownload(false);
             setExported(true);
             handleStepForward();
@@ -58,17 +61,11 @@ export default function ExportStep({ claimId, handleStepForward }: ExportStepPro
                     <div className="flex flex-col items-center gap-2">
                         <div className="flex flex-col items-center gap-3">
                             <Button
-                                    className="w-[195px] h-[34px] bg-fuchsia hover:bg-pink hover:text-fuchsia text-white"
+                                    className="group w-[195px] h-[34px] bg-fuchsia hover:bg-pink hover:text-fuchsia text-white"
                                 onClick={() => updateBusinessMutate()}
                             >
                                 Download PDF
-                                {isLoadingPDFDownload && <Spinner />}
-                            </Button>
-                            <Button
-                                    className="w-[195px] h-[34px] bg-pink hover:bg-fuchsia hover:text-white text-fuchsia"
-                                onClick={() => setExported(true)}
-                            >
-                                Email a Copy
+                                    {isLoadingPDFDownload && <Spinner className="group-hover:text-fuchsia" fontSize={20} />}
                             </Button>
                         </div>
                     </div>

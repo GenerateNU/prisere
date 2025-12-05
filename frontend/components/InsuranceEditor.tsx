@@ -62,7 +62,7 @@ export default function InsuranceEditor({
     return (
         <Card
             className={cn(
-                "w-full mb-[16px] px-[28px] py-[20px] gap-[16px] border border-transparent",
+                "w-full mb-[16px] px-[28px] py-[20px] gap-[16px] border shadow-none",
                 isSelected && "border-fuchsia",
                 onClick && "cursor-pointer"
             )}
@@ -70,25 +70,10 @@ export default function InsuranceEditor({
         >
             <div className="flex justify-between items-center">
                 <div className="w-3/4 flex gap-[10px] items-center">
-                    {!isExpanded ? (
+                    {!isExpanded && (
                         <p className="text-[16px] font-bold">
                             {insurance.policyName !== "" ? insurance.policyName : "Insurance Name"}
                         </p>
-                    ) : (
-                        <div className="w-full">
-                            <Label htmlFor="alias" className="text-[16px] mb-[8px]">
-                                Title <span className="text-red-500 text-[16px]">*</span>
-                            </Label>
-                            <Input
-                                id="policyName"
-                                name="policyName"
-                                type="text"
-                                value={insurance.policyName}
-                                required
-                                className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
-                                onChange={(e) => setInsurance({ ...insurance, policyName: e.target.value })}
-                            />
-                        </div>
                     )}
                 </div>
                 <div className="flex gap-[8px] self-start">
@@ -101,14 +86,14 @@ export default function InsuranceEditor({
                             }
                         }}
                         style={{ paddingInline: 0 }}
-                        className={`group p-0 flex items-center justify-center h-[35px] w-[35px] ${isExpanded ? "bg-[var(--fuchsia)] hover:bg-pink hover:text-fuchsia" : "bg-[var(--slate)] hover:bg-fuchsia hover:text-white"}`}
+                        className={`group p-0 flex items-center justify-center h-[35px] w-[35px] ${isExpanded ? "bg--fuchsia hover:bg-pink hover:text-fuchsia" : "bg--slate hover:bg-fuchsia hover:text-white"}`}
                     >
                         <FiEdit className={`${isExpanded ? "text-white group-hover:text-fuchsia" : "text-black group-hover:text-white"} text-[20px]`} />
                     </Button>
                     <Button
                         onClick={() => removeInsurance()}
                         style={{ paddingInline: 0 }}
-                        className="group p-0 flex items-center justify-center h-[35px] w-[35px] bg-[var(--slate)] hover:bg-fuchsia hover:text-white"
+                        className="group p-0 flex items-center justify-center h-[35px] w-[35px] bg--slate hover:bg-fuchsia hover:text-white"
                     >
                         <HiOutlineTrash className="hover:text-white" />
                     </Button>
@@ -117,9 +102,23 @@ export default function InsuranceEditor({
             {!isExpanded && <hr />}
             {isExpanded ? (
                 <div className="flex flex-col gap-[16px]">
+                    <div className="w-full">
+                        <Label htmlFor="alias" className="text-[16px] mb-[8px]">
+                            Title <span className="text-red-500 text-[16px] m-[-5px]">*</span>
+                        </Label>
+                        <Input
+                            id="policyName"
+                            name="policyName"
+                            type="text"
+                            value={insurance.policyName}
+                            required
+                            className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
+                            onChange={(e) => setInsurance({ ...insurance, policyName: e.target.value })}
+                        />
+                    </div>
                     <div className="flex flex-col gap-[8px] w-full">
                         <Label htmlFor="insuranceType" className="text-[16px]">
-                            Insurance Type<span className="text-red-500 text-[16px]">*</span>
+                            Insurance Type <span className="text-red-500 text-[16px] m-[-5px]">*</span>
                         </Label>
                         <Select
                             onValueChange={(value) => setInsurance({ ...insurance, insuranceType: value })}
@@ -150,7 +149,7 @@ export default function InsuranceEditor({
                     <div className="flex gap-[16px]">
                         <div className="flex flex-col gap-[8px] w-full">
                             <Label htmlFor="policyHolderLastName" className="text-[16px]">
-                                Insured First Name<span className="text-red-500 text-[16px]">*</span>
+                                Insured First Name<span className="text-red-500 text-[16px] m-[-5px]">*</span>
                             </Label>
                             <Input
                                 id="policyHolderLastName"
@@ -164,7 +163,7 @@ export default function InsuranceEditor({
                         </div>
                         <div className="flex flex-col gap-[8px] w-full">
                             <Label htmlFor="policyHolderLastName" className="text-[16px]">
-                                Insured Last Name<span className="text-red-500 text-[16px]">*</span>
+                                Insured Last Name<span className="text-red-500 text-[16px] m-[-5px]">*</span>
                             </Label>
                             <Input
                                 id="policyHolderLastName"
@@ -179,7 +178,7 @@ export default function InsuranceEditor({
                     </div>
                     <div className="flex flex-col gap-[8px] w-full">
                         <Label htmlFor="insuranceCompanyName" className="text-[16px]">
-                            Insurance Company<span className="text-red-500 text-[16px]">*</span>
+                            Insurance Company<span className="text-red-500 text-[16px] m-[-5px]">*</span>
                         </Label>
                         <Input
                             id="insuranceCompanyName"
@@ -193,7 +192,7 @@ export default function InsuranceEditor({
                     </div>
                     <div className="flex flex-col gap-[8px] w-full">
                         <Label htmlFor="state" className="text-[16px]">
-                            Policy Number<span className="text-red-500 text-[16px]">*</span>
+                            Policy Number<span className="text-red-500 text-[16px] m-[-5px]">*</span>
                         </Label>
                         <Input
                             id="state"
@@ -211,7 +210,7 @@ export default function InsuranceEditor({
                         ""
                     )}
                     <Button
-                        className="group text-[14px] py-[7px] bg-[var(--pink)] text-[var(--fuchsia)] hover:bg-fuchsia hover:text-white self-end w-fit h-fit flex justify-center items-center gap-[8px]"
+                        className="group text-[14px] py-[7px] bg--pink text--fuchsia hover:bg-fuchsia hover:text-white self-end w-fit h-fit flex justify-center items-center gap-[8px]"
                         onClick={handleCollapse}
                         style={{ paddingInline: "25px" }}
                     >

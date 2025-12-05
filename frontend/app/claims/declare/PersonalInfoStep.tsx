@@ -27,7 +27,7 @@ export default function PersonalInfoStep({ personalInfo, setPersonalInfo, handle
     };
 
     return (
-        <div className="flex flex-col gap-[40px] h-full">
+        <div className="flex flex-col gap-[40px] h-full shadow-none">
             <h3 className="text-[25px] font-bold">Personal Information</h3>
             <Card className="p-[25px] pb-[30px] border-1">
                 <div className="w-1/2 flex flex-col gap-5">

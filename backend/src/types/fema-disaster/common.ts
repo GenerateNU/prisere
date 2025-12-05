@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 
 export const FIPSState = z.number().gte(0).lte(56);
 export const FIPSCounty = z.number().gte(0).lt(1000);

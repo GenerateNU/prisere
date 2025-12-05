@@ -58,7 +58,6 @@ export default function CompanyEditor({
                     </Button>
                 </div>
             </div>
-            <hr className="mt-[-16px] mb-[-16px]" />
             {isExpanded ? (
                 <div className="flex flex-col gap-[16px]">
                     <div className="grid grid-cols-2 gap-[16px]">
