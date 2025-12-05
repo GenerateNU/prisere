@@ -119,7 +119,7 @@ export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard
                 {!isLoading && !error && (
                     <div className="flex items-center gap-2 text-sm py-1 rounded">
                         <div
-                            className={`flex items-center rounded py-1 px-2 ${percentChange >= 0 ? "bg-seafoam" : "bg-pink"}`}
+                            className={`flex items-center rounded py-1 px-2 ${percentChange >= 0 ? "bg-light-teal" : "bg-pink"}`}
                         >
                             <span className={`text-center ${percentChange >= 0 ? "text-teal" : "text-fuchsia"}`}>
                                 {percentChange >= 0 ? "+" : ""}

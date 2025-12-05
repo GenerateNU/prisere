@@ -18,6 +18,7 @@ import {
 import { BusinessDocument, DocumentCategories } from "@/types/documents";
 import Loading from "@/components/loading";
 import ErrorDisplay from "@/components/ErrorDisplay";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type SortOrder = "asc" | "desc";
 
@@ -35,6 +36,10 @@ export default function ViewDocuments() {
     const [isUploading, setIsUploading] = useState(false);
     const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
     const [uploadCategory, setUploadCategory] = useState<DocumentCategories | "">("");
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
     // Load documents on component mount
     useEffect(() => {
@@ -131,6 +136,17 @@ export default function ViewDocuments() {
 
         return sorted;
     }, [documents, searchQuery, categoryFilter, dateFilter, sortOrder]);
+
+    // Pagination calculations
+    const totalPages = Math.ceil(filteredAndSortedDocuments.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedDocuments = filteredAndSortedDocuments.slice(startIndex, endIndex);
+
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, categoryFilter, dateFilter, sortOrder]);
 
     const handleUploadClick = () => {
         setIsModalOpen(true);
@@ -229,13 +245,13 @@ export default function ViewDocuments() {
                         onClick={handleUploadClick}
                         disabled={isLoadingDocuments}
                     >
-                        <FiUpload className="text-white mr-2" /> Upload Document
+                        <FiUpload className="text-white mr-1" /> Upload Document
                     </Button>
                     <Button
                         className="bg-[var(--slate)] text-black text-[14px] h-[34px] w-fit"
                         onClick={() => setShowFilters(!showFilters)}
                     >
-                        <IoFilterOutline className="text-black mr-2" />
+                        <IoFilterOutline className="text-black mr-1" />
                         Filters
                     </Button>
                 </div>
@@ -268,39 +284,86 @@ export default function ViewDocuments() {
                         <ErrorDisplay />
                     </div>
                 ) : (
-                    <DocumentTable
-                        documents={filteredAndSortedDocuments}
-                        onCategoryChange={async (documentId, newCategory) => {
-                            try {
-                                // Update in backend first then local
-                                await updateDocumentCategory(documentId, newCategory as DocumentCategories);
+                    <>
+                        <DocumentTable
+                            documents={paginatedDocuments}
+                            onCategoryChange={async (documentId, newCategory) => {
+                                try {
+                                    // Update in backend first then local
+                                    await updateDocumentCategory(documentId, newCategory as DocumentCategories);
 
-                                setDocuments((prevDocs) =>
-                                    prevDocs.map((doc) =>
-                                        doc.documentId === documentId
-                                            ? { ...doc, category: newCategory as DocumentCategories } // ✅ Cast to proper type
-                                            : doc
-                                    )
-                                );
-                            } catch (error) {
-                                console.error("Error updating category:", error);
-                                alert(
-                                    `Failed to update category: ${error instanceof Error ? error.message : "Unknown error"}`
-                                );
-                            }
-                        }}
-                        onDownload={(url) => {
-                            window.open(url, "_blank");
-                        }}
-                        onDelete={handleDeleteClick}
-                        onEdit={() => {
-                            // TODO: Implement edit functionality
-                            alert("Edit functionality coming soon!");
-                        }}
-                        dateSort={sortOrder}
-                        setDateSort={setSortOrder}
-                        initialPending={false}
-                    />
+                                    setDocuments((prevDocs) =>
+                                        prevDocs.map((doc) =>
+                                            doc.documentId === documentId
+                                                ? { ...doc, category: newCategory as DocumentCategories }
+                                                : doc
+                                        )
+                                    );
+                                } catch (error) {
+                                    console.error("Error updating category:", error);
+                                    alert(
+                                        `Failed to update category: ${error instanceof Error ? error.message : "Unknown error"}`
+                                    );
+                                }
+                            }}
+                            onDownload={(url) => {
+                                window.open(url, "_blank");
+                            }}
+                            onDelete={handleDeleteClick}
+                            onEdit={() => {
+                                // TODO: Implement edit functionality
+                                alert("Edit functionality coming soon!");
+                            }}
+                            dateSort={sortOrder}
+                            setDateSort={setSortOrder}
+                            initialPending={false}
+                        />
+
+                        {/* Pagination Controls */}
+                        {filteredAndSortedDocuments.length > 0 && (
+                            <div className="flex items-center justify-end mt-4 px-2 gap-4">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm text-gray-600">Rows per page:</span>
+                                    <select
+                                        value={itemsPerPage}
+                                        onChange={(e) => {
+                                            setItemsPerPage(Number(e.target.value));
+                                            setCurrentPage(1);
+                                        }}
+                                        className="border-none bg-transparent text-sm text-gray-700 focus:outline-none cursor-pointer"
+                                    >
+                                        <option value={5}>5</option>
+                                        <option value={10}>10</option>
+                                        <option value={25}>25</option>
+                                        <option value={50}>50</option>
+                                    </select>
+                                </div>
+
+                                <span className="text-sm text-gray-600">
+                                    {startIndex + 1}-{Math.min(endIndex, filteredAndSortedDocuments.length)} of{" "}
+                                    {filteredAndSortedDocuments.length}
+                                </span>
+
+                                <div className="flex items-center gap-1">
+                                    <button
+                                        onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                                        disabled={currentPage === 1}
+                                        className="p-2 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                                    >
+                                        <ChevronLeft className="h-4 w-4 text-gray-600" />
+                                    </button>
+
+                                    <button
+                                        onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                                        disabled={currentPage === totalPages}
+                                        className="p-2 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                                    >
+                                        <ChevronRight className="h-4 w-4 text-gray-600" />
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </>
                 )}
             </CardContent>
 

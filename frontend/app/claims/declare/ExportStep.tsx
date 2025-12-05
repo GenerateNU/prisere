@@ -7,13 +7,14 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
-
+import { useQueryClient } from "@tanstack/react-query";
 type ExportStepProps = {
     claimId: string | null;
     handleStepForward: () => void;
 };
 
 export default function ExportStep({ claimId, handleStepForward }: ExportStepProps) {
+    const queryClient = useQueryClient();
     const [exported, setExported] = React.useState(false);
     const [error, setError] = React.useState<string | null>(null);
     const [isLoadingPDFDownload, setIsLoadingPDFDownload] = useState<boolean>(false);
@@ -31,6 +32,8 @@ export default function ExportStep({ claimId, handleStepForward }: ExportStepPro
         },
         onSuccess: (url: string) => {
             window.open(url, "_blank");
+            queryClient.invalidateQueries({ queryKey: ["banner-data"] });
+            queryClient.invalidateQueries({ queryKey: ["claim-in-progress"] });
             setIsLoadingPDFDownload(false);
             setExported(true);
             handleStepForward();
@@ -63,12 +66,6 @@ export default function ExportStep({ claimId, handleStepForward }: ExportStepPro
                             >
                                 Download PDF
                                 {isLoadingPDFDownload && <Spinner fontSize={20} />}
-                            </Button>
-                            <Button
-                                className="w-[195px] h-[34px] bg-light-fuchsia hover:bg-light-fuchsia/80 text-fuchsia"
-                                onClick={() => setExported(true)}
-                            >
-                                Email a Copy
                             </Button>
                         </div>
                     </div>

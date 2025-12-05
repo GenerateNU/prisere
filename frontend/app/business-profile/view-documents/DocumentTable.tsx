@@ -46,8 +46,8 @@ export default function DocumentTable({
     };
 
     return (
-        <div>
-            <Table className="text-sm">
+        <div className="w-full">
+            <Table className="w-full table-fixed text-sm">
                 <TableHeader>
                     <TableRow>
                         <TableHead className="">Title</TableHead>
@@ -63,16 +63,20 @@ export default function DocumentTable({
                                 Date
                             </div>
                         </TableHead>
-                        <TableHead></TableHead>
+                        <TableHead className="w-[200px]"></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {documents.length !== 0 &&
                         documents.map((doc, index) => (
                             <TableRow key={index}>
-                                <TableCell className="border-y">{doc.title}</TableCell>
-                                <TableCell className="border-y">{doc.fileType}</TableCell>
-                                <TableCell className="border-y">
+                                <TableCell className="truncate overflow-hidden whitespace-nowrap">
+                                    {doc.title}
+                                </TableCell>
+                                <TableCell className="truncate overflow-hidden whitespace-nowrap">
+                                    {doc.fileType}
+                                </TableCell>
+                                <TableCell className="truncate overflow-hidden whitespace-nowrap">
                                     <CategorySelector
                                         selectedCategory={(doc.category as DocumentCategories | null) ?? ""}
                                         onCategoryChange={(newCategory) =>
@@ -93,7 +97,7 @@ export default function DocumentTable({
                                         </Button>
                                         <Button
                                             className="w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-[var(--slate)]"
-                                            onClick={() => onEdit}
+                                            onClick={() => onEdit(doc.documentId)}
                                         >
                                             <SlPencil className="text-[14px]" style={{ width: "14px" }} />
                                         </Button>

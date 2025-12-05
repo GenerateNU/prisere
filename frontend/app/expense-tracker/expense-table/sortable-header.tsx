@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { FilteredPurchases, SortByColumn } from "../../../types/purchase";
 
 interface SortableHeaderProps {
@@ -23,10 +23,16 @@ export function SortableHeader({ column, filters, setSort }: SortableHeaderProps
     };
     return (
         <button className="flex w-full gap-2 font-medium hover:text-foreground" onClick={handleClick}>
+            {filters.sortBy === column ? (
+                filters.sortOrder === "ASC" ? (
+                    <ArrowUp className="h-4 w-4" />
+                ) : (
+                    <ArrowDown className="h-4 w-4" />
+                )
+            ) : (
+                <ArrowUpDown className="h-4 w-4" />
+            )}
             {sortColumnLabels[column]}
-            {filters.sortBy === column &&
-                filters.sortOrder &&
-                (filters.sortOrder === "ASC" ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />)}
         </button>
     );
 }
