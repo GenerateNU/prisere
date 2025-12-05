@@ -256,8 +256,8 @@ const getTagColor = (tag: string) => {
     }
     const hue = hash % 360;
     return {
-        backgroundColor: `hsla(${hue}, 60%, 85%, 0.5)`, // 50% opacity background
-        textColor: `hsl(${hue}, 60%, 20%)`, // 100% opacity text (darker shade)
-        borderColor: `hsla(${hue}, 60%, 70%, 0.5)`, // 50% opacity border
+        backgroundColor: `hsla(${hue}, 60%, 85%, 0.5)`,
+        textColor: `hsl(${hue}, 60%, 20%)`,
+        borderColor: `hsla(${hue}, 60%, 70%, 0.5)`,
     };
 };
