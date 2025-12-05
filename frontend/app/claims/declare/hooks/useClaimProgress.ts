@@ -97,6 +97,8 @@ export function useClaimProgress(
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [claimId]);
 
+    useEffect(() => console.log(disasterInfo, "disasterInfo"), [disasterInfo]);
+
     // Load existing claim from backend
     const loadExistingClaim = async (id: string) => {
         try {
@@ -129,8 +131,7 @@ export function useClaimProgress(
                         ? { isFema: true, femaDisasterId: claim.femaDisaster.id }
                         : { isFema: false, femaDisasterId: undefined }),
                     additionalDocuments: [],
-                    // TODO: get these from the server
-                    purchaseSelections: { fullPurchaseIds: [], partialLineItemIds: claim.purchaseLineItemIds ?? [] },
+                    purchaseSelections: { partialLineItemIds: claim.purchaseLineItemIds || [] },
                 };
             });
 
@@ -178,12 +179,6 @@ export function useClaimProgress(
                             // Purchase selections: merge arrays (union)
                             if (temp.purchaseSelections) {
                                 merged.purchaseSelections = {
-                                    fullPurchaseIds: Array.from(
-                                        new Set([
-                                            ...prev.purchaseSelections.fullPurchaseIds,
-                                            ...temp.purchaseSelections.fullPurchaseIds,
-                                        ])
-                                    ),
                                     partialLineItemIds: Array.from(
                                         new Set([
                                             ...prev.purchaseSelections.partialLineItemIds,
@@ -412,25 +407,13 @@ export function useClaimProgress(
             }
 
             // Link selected purchases and line items to claim
-            if (
-                currentClaimId &&
-                (dataToUse.purchaseSelections.fullPurchaseIds.length > 0 ||
-                    dataToUse.purchaseSelections.partialLineItemIds.length > 0)
-            ) {
-                const { fullPurchaseIds, partialLineItemIds } = dataToUse.purchaseSelections;
-
-                // Link full purchases
-                const purchasePromises = fullPurchaseIds.map((purchaseId) =>
-                    linkPurchaseToClaim(currentClaimId!, purchaseId)
-                );
+            if (currentClaimId && dataToUse.purchaseSelections.partialLineItemIds.length > 0) {
+                const { partialLineItemIds } = dataToUse.purchaseSelections;
 
                 // Link individual line items
-                const lineItemPromises = partialLineItemIds.map((lineItemId) =>
-                    linkLineItemToClaim(currentClaimId!, lineItemId)
+                Promise.all(
+                    partialLineItemIds.map(async (lineItemId) => linkLineItemToClaim(currentClaimId!, lineItemId))
                 );
-
-                // Execute all API calls in parallel
-                await Promise.all([...purchasePromises, ...lineItemPromises]);
             }
 
             // Update state with committed data

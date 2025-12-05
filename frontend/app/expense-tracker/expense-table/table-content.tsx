@@ -7,7 +7,7 @@ import { PurchaseSelections } from "@/types/claim";
 import { DisasterType, FilteredPurchases, PurchasesWithCount, PurchaseWithLineItems } from "@/types/purchase";
 import { useMutation, useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { getCoreRowModel, getExpandedRowModel, Row, useReactTable } from "@tanstack/react-table";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { updateCategory, updateType } from "../../../api/purchase";
 import { SortByColumn } from "../../../types/purchase";
 import { getCategoriesString, getPurchaseTypeString } from "../utility-functions";
@@ -76,76 +76,89 @@ export default function TableContent({
         [purchases.data]
     );
 
+    useEffect(() => console.log(selections, "selections"), [selections]);
+
     // Helper functions for selection logic
     const isParentSelected = (purchaseId: string): boolean => {
-        if (selections) {
-            return selections.fullPurchaseIds.includes(purchaseId);
+        if (!purchases.data || !selections) {
+            return false;
         }
-        return false;
+
+        const purchase = purchases.data.purchases.find((p) => p.id === purchaseId);
+        if (!purchase) {
+            return false;
+        }
+
+        return purchase.lineItems.every((line) => selections.partialLineItemIds.includes(line.id));
     };
 
-    const isLineItemSelected = (lineItemId: string, parentPurchaseId: string): boolean => {
-        if (selections) {
-            return (
-                selections.partialLineItemIds.includes(lineItemId) ||
-                selections.fullPurchaseIds.includes(parentPurchaseId)
-            );
+    const isParentPartiallySelected = (purchaseId: string): boolean => {
+        if (!purchases.data || !selections) {
+            return false;
         }
-        return false;
+
+        const purchase = purchases.data.purchases.find((p) => p.id === purchaseId);
+        if (!purchase) {
+            return false;
+        }
+
+        const selectedCount = purchase.lineItems.filter((line) =>
+            selections.partialLineItemIds.includes(line.id)
+        ).length;
+
+        return selectedCount > 0 && selectedCount < purchase.lineItems.length;
+    };
+
+    const isLineItemSelected = (lineItemId: string): boolean => {
+        if (!selections) {
+            return false;
+        }
+        return selections.partialLineItemIds.includes(lineItemId);
     };
 
     const toggleParent = (purchaseId: string, allLineItemIds: string[]) => {
         if (!setSelections || !selections) return;
 
-        const isSelected = selections.fullPurchaseIds.includes(purchaseId);
+        const parentSelected = isParentSelected(purchaseId);
 
-        setSelections({
-            fullPurchaseIds: isSelected
-                ? selections.fullPurchaseIds.filter((id) => id !== purchaseId)
-                : [...selections.fullPurchaseIds, purchaseId],
-            partialLineItemIds: selections.partialLineItemIds.filter((id) => !allLineItemIds.includes(id)),
-        });
+        if (parentSelected) {
+            // Deselect all line items for this purchase
+            setSelections({
+                partialLineItemIds: selections.partialLineItemIds.filter((id) => !allLineItemIds.includes(id)),
+            });
+        } else {
+            // Select all line items for this purchase (deduplicated)
+            const newIds = [...new Set([...selections.partialLineItemIds, ...allLineItemIds])].filter(Boolean);
+            setSelections({
+                partialLineItemIds: [...newIds],
+            });
+        }
     };
 
-    const toggleLineItem = (lineItemId: string, purchaseId: string, allLineItemIds: string[]) => {
+    const toggleLineItem = (lineItemId: string) => {
         if (!setSelections || !selections) return;
 
-        const isParentFullySelected = selections.fullPurchaseIds.includes(purchaseId);
-        const isLineItemPartiallySelected = selections.partialLineItemIds.includes(lineItemId);
+        console.log("TOGGLE");
+        const isSelected = selections.partialLineItemIds.includes(lineItemId);
 
-        if (isParentFullySelected) {
-            // Parent is fully selected - demote to partial selection without this line item
-            setSelections({
-                fullPurchaseIds: selections.fullPurchaseIds.filter((id) => id !== purchaseId),
-                partialLineItemIds: [
-                    ...selections.partialLineItemIds.filter((id) => !allLineItemIds.includes(id)),
-                    ...allLineItemIds.filter((id) => id !== lineItemId),
-                ],
-            });
-        } else if (isLineItemPartiallySelected) {
+        if (isSelected) {
+            console.log("off");
+
             // Unselect this line item
             setSelections({
-                ...selections,
                 partialLineItemIds: selections.partialLineItemIds.filter((id) => id !== lineItemId),
             });
         } else {
-            // Select line item
-            const newPartialIds = [...selections.partialLineItemIds, lineItemId];
+            console.log("on", selections.partialLineItemIds, lineItemId);
 
-            // Check if all line items are now selected - promote to full purchase
-            if (allLineItemIds.every((id) => newPartialIds.includes(id))) {
-                setSelections({
-                    fullPurchaseIds: [...selections.fullPurchaseIds, purchaseId],
-                    partialLineItemIds: newPartialIds.filter((id) => !allLineItemIds.includes(id)),
-                });
-            } else {
-                setSelections({
-                    ...selections,
-                    partialLineItemIds: newPartialIds,
-                });
-            }
+            // Select this line item (deduplicated)
+            const newIds = new Set([...selections.partialLineItemIds, lineItemId]);
+            setSelections({
+                partialLineItemIds: [...newIds],
+            });
         }
     };
+
     const queryClient = useQueryClient();
     const categoryMutation = useMutation({
         mutationFn: ({
@@ -192,23 +205,23 @@ export default function TableContent({
                 header: () => "Merchant",
                 accessorFn: (row) => row.vendor,
                 cell: ({ row, cell }) => {
-                    const cellVal = cell.getValue();
+                    const cellVal = cell.getValue() as string;
                     const displayVendor = cellVal.length > 20 ? `${cellVal.substring(0, 20)}...` : cellVal;
                     const canExpand = row.getCanExpand();
                     const purchaseId = row.original.id;
-                    const parentPurchaseId = row.original.originalPurchase.id;
                     const lineItemId = row.original.lineItemIds[0];
                     const allLineItemIds = row.original.originalPurchase.lineItems.map((li) => li.id);
 
-                    const isChecked = canExpand
-                        ? isParentSelected(purchaseId)
-                        : isLineItemSelected(lineItemId, parentPurchaseId);
+                    const isChecked = canExpand ? isParentSelected(purchaseId) : isLineItemSelected(lineItemId);
+
+                    const isIndeterminate = canExpand && isParentPartiallySelected(purchaseId);
 
                     const handleToggle = () => {
                         if (canExpand) {
+                            console.log(allLineItemIds, "allLineItemIds");
                             toggleParent(purchaseId, allLineItemIds);
                         } else {
-                            toggleLineItem(lineItemId, parentPurchaseId, allLineItemIds);
+                            toggleLineItem(lineItemId);
                         }
                     };
 
@@ -221,7 +234,7 @@ export default function TableContent({
                                 <div onClick={(e) => e.stopPropagation()}>
                                     <Checkbox
                                         className={cn(!row.getCanExpand() && "mr-3")}
-                                        checked={isChecked}
+                                        checked={isIndeterminate ? "indeterminate" : isChecked}
                                         onCheckedChange={handleToggle}
                                     />
                                 </div>
@@ -314,10 +327,9 @@ export default function TableContent({
 
         const canExpand = row.getCanExpand();
         const purchaseId = row.original.id;
-        const parentPurchaseId = row.original.originalPurchase.id;
         const lineItemId = row.original.lineItemIds[0];
 
-        const selected = canExpand ? isParentSelected(purchaseId) : isLineItemSelected(lineItemId, parentPurchaseId);
+        const selected = canExpand ? isParentSelected(purchaseId) : isLineItemSelected(lineItemId);
 
         return selected ? "bg-slate-100" : "";
     };

@@ -65,8 +65,7 @@ export type SaveStatus = "idle" | "saving" | "saved" | "error";
  * Selection of purchases and line items
  */
 export interface PurchaseSelections {
-    fullPurchaseIds: string[]; // Purchase IDs where all line items are selected
-    partialLineItemIds: string[]; // Individual line item IDs (excluding those in full purchases)
+    partialLineItemIds: string[];
 }
 
 /**
