@@ -2,13 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import * as React from "react";
 import { isValidDate, validateAndSetDate } from "./utils/validationUtils";
-import { Card } from "@/components/ui/card";
 
 type Props = {
     incidentDate: Date | null;
@@ -106,7 +106,7 @@ export default function IncidentDateStep({
 
     return (
         <div className="h-full flex justify-center items-center flex-col">
-            <Card className="w-full pt-32 pb-32 pl-8 pr-8">
+            <Card className="w-full pt-32 pb-32 pl-8 pr-8 shadow-none border-none">
                 <div className="flex flex-col items-center justify-center h-full gap-8 self-center">
                     <div className="w-2xl flex flex-col gap-8">
                         <div className="flex flex-col gap-5">

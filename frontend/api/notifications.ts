@@ -67,3 +67,20 @@ export const markAllNotificationsAsRead = async (): Promise<MarkAllAsReadRespons
 
     return clientAuthWrapper<MarkAllAsReadResponse>()(req);
 };
+
+export const getUserUnreadNotifications = async (): Promise<UnreadNotificationsResponse> => {
+    const req = async (token: string) => {
+        const client = getClient();
+        const { data, response } = await client.GET("/notifications/unread", {
+            headers: authHeader(token),
+        });
+
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error("Failed to get user unread notifications");
+        }
+    };
+
+    return authWrapper<UnreadNotificationsResponse>()(req);
+};

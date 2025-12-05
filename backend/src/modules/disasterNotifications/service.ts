@@ -1,21 +1,21 @@
-import { DisasterNotification } from "../../entities/DisasterNotification";
-import { IDisasterNotificationTransaction } from "./transaction";
 import Boom from "@hapi/boom";
-import { withServiceErrorHandling } from "../../utilities/error";
+import { DisasterNotification } from "../../entities/DisasterNotification";
+import { FemaDisaster } from "../../entities/FemaDisaster";
+import { LocationAddress } from "../../entities/LocationAddress";
 import {
     DisasterEmailMessage,
     GetUsersDisasterNotificationsDTO,
     NotificationTypeFilter,
 } from "../../types/DisasterNotification";
-import { FemaDisaster } from "../../entities/FemaDisaster";
-import { ILocationAddressTransaction } from "../location-address/transaction";
 import { NotificationStatus } from "../../types/NotificationEnums";
-import { LocationAddress } from "../../entities/LocationAddress";
-import { logMessageToFile } from "../../utilities/logger";
-import { IPreferenceTransaction } from "../preferences/transaction";
-import { ISQSService } from "../sqs/service";
+import { withServiceErrorHandling } from "../../utilities/error";
 import { getDeclarationTypeMeanings, getIncidentTypeMeanings } from "../../utilities/incident_code_meanings";
+import { logMessageToFile } from "../../utilities/logger";
+import { ILocationAddressTransaction } from "../location-address/transaction";
+import { IPreferenceTransaction } from "../preferences/transaction";
 import { IQuickbooksService } from "../quickbooks/service";
+import { ISQSService } from "../sqs/service";
+import { IDisasterNotificationTransaction } from "./transaction";
 
 export interface IDisasterNotificationService {
     getUserNotifications(
@@ -32,6 +32,7 @@ export interface IDisasterNotificationService {
     processNewDisasters(newDisasters: FemaDisaster[], quickbooksService: IQuickbooksService): Promise<boolean>;
     markAllAsRead(userId: string): Promise<number>;
     sendEmailNotifications(): Promise<DisasterNotification[]>;
+    getUserUnreadNotifications(userId: string): Promise<number>;
 }
 
 export class DisasterNotificationService implements IDisasterNotificationService {
@@ -206,5 +207,9 @@ export class DisasterNotificationService implements IDisasterNotificationService
             unreadNotifications.map((notification) => notification.id)
         );
         return result;
+    });
+
+    getUserUnreadNotifications = withServiceErrorHandling(async (userId: string): Promise<number> => {
+        return await this.notificationTransaction.getUserUnreadNotifications(userId);
     });
 }

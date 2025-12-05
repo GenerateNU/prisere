@@ -29,7 +29,6 @@ import IncidentDateStep from "./IncidentDateStep";
 import InsuranceInfoStep from "./InsuranceInfoStep";
 import PersonalInfoStep from "./PersonalInfoStep";
 import StartStep from "./StartStep";
-import { Card } from "@/components/ui/card";
 
 /**
  * The steps that are displayed in the progress bar
@@ -208,18 +207,16 @@ function DeclareDisasterContent() {
             step: -1,
             render: (
                 <div className="flex items-center justify-center flex-1">
-                    <Card className="w-fit p-32">
-                        <IncidentDateStep
-                            incidentDate={disasterInfo.startDate}
-                            setIncidentDate={(date: Date) => {
-                                setDisasterInfo({ startDate: date });
-                            }}
-                            incidentEndDate={disasterInfo.endDate}
-                            setIncidentEndDate={(date: Date) => setDisasterInfo({ endDate: date })}
-                            handleStepForward={() => handleStepForward(-1, null)}
-                            handleStepBack={handleStepBack}
-                        />
-                    </Card>
+                    <IncidentDateStep
+                        incidentDate={disasterInfo.startDate}
+                        setIncidentDate={(date: Date) => {
+                            setDisasterInfo({ startDate: date });
+                        }}
+                        incidentEndDate={disasterInfo.endDate}
+                        setIncidentEndDate={(date: Date) => setDisasterInfo({ endDate: date })}
+                        handleStepForward={() => handleStepForward(-1, null)}
+                        handleStepBack={handleStepBack}
+                    />
                 </div>
             ),
         },
@@ -288,15 +285,17 @@ function DeclareDisasterContent() {
                     {step >= 1 && (
                         <div className="flex justify-between items-center mb-4">
                             <SaveStatusIndicator status={saveStatus} />
-                            <Button
-                                className="text-sm bg-light-fuchsia text-fuchsia hover:bg-fuchsia hover:text-white w-fit py-2 px-3 ml-auto"
-                                size="lg"
-                                onClick={handleSaveAndClose}
-                                disabled={saveStatus === "saving"}
-                            >
-                                Save and Close
-                                <CheckIcon className="size-5" />
-                            </Button>
+                            {step > 0 && (
+                                <Button
+                                    className="text-sm bg-light-fuchsia text-fuchsia hover:bg-fuchsia hover:text-white w-fit py-2 px-3 ml-auto"
+                                    size="lg"
+                                    onClick={handleSaveAndClose}
+                                    disabled={saveStatus === "saving"}
+                                >
+                                    Save and Close
+                                    <CheckIcon className="size-5" />
+                                </Button>
+                            )}
                         </div>
                     )}
                     <Progress progress={step} items={progressSteps} />

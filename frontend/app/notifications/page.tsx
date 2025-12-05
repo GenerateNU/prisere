@@ -2,5 +2,5 @@
 import NotificationPage from "./noification-page";
 
 export default function Page() {
-    return <NotificationPage backArrow={false} />;
+    return <NotificationPage />;
 }
