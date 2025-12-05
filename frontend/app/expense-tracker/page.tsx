@@ -9,7 +9,7 @@ import { getDashboardBannerData } from "@/api/dashboard";
 import { useQuery } from "@tanstack/react-query";
 import ReviewExpenses from "./ReviewExpenses";
 import { PurchaseLineItemType } from "@/types/purchase";
-import { companyHasData } from "@/api/company";
+import { companyHasData, getCompany } from "@/api/company";
 import { GoSync } from "react-icons/go";
 import { FiUpload } from "react-icons/fi";
 import NoDataPopupWrapper from "@/components/dashboard/NoDataPopupWrapper";
@@ -26,10 +26,23 @@ export default function ExpenseTracker() {
         queryFn: companyHasData,
     });
 
+    const { data: companyLastUpdate } = useQuery({
+        queryKey: ["company-last-update"],
+        queryFn: getCompany,
+    });
+
     const { data: bannerData } = useQuery({
         queryKey: ["banner-data"],
         queryFn: getDashboardBannerData,
     });
+
+    const lastInvoice = companyLastUpdate?.lastQuickBooksInvoiceImportTime;
+    const lastPurchase = companyLastUpdate?.lastQuickBooksPurchaseImportTime;
+
+    const mostRecent =
+        lastInvoice && lastPurchase
+            ? new Date(Math.max(new Date(lastInvoice).getTime(), new Date(lastPurchase).getTime()))
+            : undefined;
 
     const showLoading = hasData?.hasExternalData || hasData?.hasFinancialData || hasDataLoading;
 
@@ -101,8 +114,19 @@ export default function ExpenseTracker() {
                         />
                     )}
                     <div className="flex justify-between">
-                        <h2 className="text-4xl font-bold">Expense Tracker</h2>
-                        {hasData?.hasFinancialData && (
+                        <div>
+                            <h2 className="text-4xl font-bold">Expense Tracker</h2>
+                            {hasData?.hasExternalData && (
+                                <div>
+                                    <div className="flex gap-[8px] text-[var(--teal)] items-center">
+                                        {" "}
+                                        <GoSync className="text-[var(--teal)]" />
+                                        Last Synced on {mostRecent?.toLocaleDateString() ?? "--/--/--"}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        {!hasData?.hasExternalData && (
                             <div>
                                 <Button
                                     className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
@@ -113,37 +137,6 @@ export default function ExpenseTracker() {
                                 </Button>
                             </div>
                         )}
-                        {!hasData?.hasFinancialData && !hasData?.hasExternalData && (
-                            <div className="flex gap-[8px]">
-                                {!hasData?.hasExternalData && !hasData?.hasFinancialData && (
-                                    <Button className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]">
-                                        {" "}
-                                        <GoSync className="text-white" style={{ width: "14px" }} />
-                                        Sync Quickbooks
-                                    </Button>
-                                )}
-                                <Button
-                                    className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
-                                    onClick={onOpenImportModal}
-                                >
-                                    {" "}
-                                    <FiUpload className="text-white" style={{ width: "14px" }} /> Upload CSV
-                                </Button>
-                            </div>
-                        )}
-                        {/* ---import time--- 
-                
-                {hasData?.hasFinancialData &&
-                    <div className="flex justify-between">
-                        <div className="flex gap-[8px] text-[var(--teal)] items-center"> <FiUpload className="text-[var(--teal)]" />Last imported 18 day{true && "s"} ago</div>
-                        <Button className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]" onClick={onOpenImportModal}> <FiUpload className="text-white" style={{ width: "14px" }} /> Upload CSV</Button>
-                    </div>
-                }
-                {hasData?.hasExternalData &&
-                    <div>
-                        <div className="flex gap-[8px] text-[var(--teal)] items-center"> <GoSync className="text-[var(--teal)]" />Last Synced 18 hours{true && "s"} ago</div>
-                    </div>
-                } */}
                     </div>
                     <div className="flex flex-col w-full gap-[16px]">
                         <div className="flex gap-[16px] h-[364px]">
