@@ -237,21 +237,21 @@ export default function ViewDocuments() {
             <CardHeader className="flex justify-between">
                 <div className="flex flex-col gap-[10px]">
                     <h3 className="text-[24px] font-bold">Business Documents</h3>
-                    <p className="text-[14px]">Upload general business documents below.</p>
+                    <p className="text-sm">Upload general business documents below.</p>
                 </div>
                 <div className="flex gap-[6px]">
                     <Button
-                        className="bg-[var(--fuchsia)] text-white text-[14px] h-[34px] w-fit"
+                        className="group bg-[var(--fuchsia)] text-white hover:bg-pink hover:text-fuchsia text-[14px] h-[34px] w-fit"
                         onClick={handleUploadClick}
                         disabled={isLoadingDocuments}
                     >
-                        <FiUpload className="text-white mr-1" /> Upload Document
+                        <FiUpload className="text-white group-hover:text-fuchsia mr-1" /> Upload Document
                     </Button>
                     <Button
-                        className="bg-[var(--slate)] text-black text-[14px] h-[34px] w-fit"
+                        className="group bg-[var(--slate)] text-black text-[14px] h-[34px] w-fit hover:bg-fuchsia hover:text-white"
                         onClick={() => setShowFilters(!showFilters)}
                     >
-                        <IoFilterOutline className="text-black mr-1" />
+                        <IoFilterOutline className="text-black mr-1 group-hover:text-white" />
                         Filters
                     </Button>
                 </div>
@@ -458,14 +458,14 @@ export default function ViewDocuments() {
                         {/* Action buttons */}
                         <div className="flex justify-end gap-3 mt-6">
                             <Button
-                                className="bg-gray-100 text-gray-700 hover:bg-gray-200 w-fit h-[40px] px-6"
+                                className="bg-slate text-black hover:bg-fuchsia hover:text-white w-fit h-[40px] px-6"
                                 onClick={() => setIsModalOpen(false)}
                                 disabled={isUploading}
                             >
                                 Cancel
                             </Button>
                             <Button
-                                className="bg-[var(--fuchsia)] text-white hover:bg-[var(--pink)] disabled:opacity-50 w-fit h-[40px] px-6"
+                                className="bg-[var(--fuchsia)] text-white hover:bg-[var(--pink)] hover:text-fuchsia disabled:opacity-50 w-fit h-[40px] px-6"
                                 onClick={handleFileUpload}
                                 disabled={!selectedFile || isUploading}
                             >
@@ -486,13 +486,13 @@ export default function ViewDocuments() {
                         </p>
                         <div className="flex justify-end gap-3">
                             <Button
-                                className="bg-gray-100 text-gray-700 hover:bg-gray-200 w-fit h-[40px] px-6"
+                                className="bg-slate text-black hover:bg-fuchsia hover:text-white w-fit h-[40px] px-6"
                                 onClick={handleCancelDelete}
                             >
                                 Cancel
                             </Button>
                             <Button
-                                className="bg-fuchsia text-white hover:bg-pink w-fit h-[40px] px-6"
+                                className="bg-fuchsia text-white hover:bg-pink hover:text-white w-fit h-[40px] px-6"
                                 onClick={handleConfirmDelete}
                             >
                                 Delete

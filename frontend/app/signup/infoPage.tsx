@@ -34,7 +34,7 @@ export default function InfoPage({
             <div className="flex flex-col justify-center items-center">
                 <Button
                     onClick={handleNext}
-                    className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white px-[20px] py-[12px] text-[16px]"
+                    className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white hover:bg-pink hover:text-fuchsia px-[20px] py-[12px] text-[16px]"
                 >
                     {buttonText}
                 </Button>

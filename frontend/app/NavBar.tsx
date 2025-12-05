@@ -64,7 +64,7 @@ export default function NavBar() {
                     className="h-[40px] flex items-center justify-start gap-3"
                 >
                     <UserIcon size={"24px"} />
-                    <p>Logout</p>
+                    <p className="text-lg">Logout</p>
                 </Link>
             </div>
         </nav>

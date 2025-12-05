@@ -81,7 +81,7 @@ export type BannerActionProps = ComponentProps<typeof Button>;
 
 export const BannerAction = ({ variant = "outline", size = "sm", className, ...props }: BannerActionProps) => (
     <Button
-        className={cn("shrink-0 bg-transparent hover:bg-background/10 hover:text-background", className)}
+        className={cn("shrink-0 hover:bg-pink hover:text-fuchsia", className)}
         size={size}
         variant={variant}
         {...props}

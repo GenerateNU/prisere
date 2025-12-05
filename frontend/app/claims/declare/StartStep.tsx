@@ -58,7 +58,7 @@ export default function StartStep({ handleStepForward }: StartProps) {
                 <div className="flex flex-col gap-3 items-center">
                     <Button
                         size={"sm"}
-                        className="bg-fuchsia text-white w-[135px] h-[35px] text-sm"
+                        className="bg-fuchsia text-white hover:bg-pink hover:text-fuchsia w-[135px] h-[35px] text-sm"
                         onClick={handleStepForward}
                     >
                         {"Let's Get Started"}

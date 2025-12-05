@@ -94,10 +94,13 @@ export default function NetDisasterExpense({ bannerData, onDashboard = true, han
                     </div>
                     {!onDashboard && handleSwitchToReview && (
                         <Button
-                            className="w-[35px] h-[35px] bg-[var(--slate)] self-start"
+                            className="group w-[35px] h-[35px] bg-[var(--slate)] self-start hover:bg-fuchsia hover:text-white"
                             onClick={handleSwitchToReview}
                         >
-                            <BiMessageEdit style={{ fontSize: "18px", width: "18px" }} />
+                            <BiMessageEdit
+                                style={{ fontSize: "18px", width: "18px" }}
+                                className="group-hover:text-white"
+                            />
                         </Button>
                     )}
                 </div>
@@ -160,7 +163,7 @@ export default function NetDisasterExpense({ bannerData, onDashboard = true, han
                     {onDashboard && (
                         <div className="flex justify-center pt-6 flex-shrink-0">
                             <Link href={"/expense-tracker"} className="text-sm font-semibold no-underline">
-                                <Button className="h-10 text-sm text-white rounded-full w-fit px-6 bg-fuchsia">
+                                <Button className="h-10 text-sm text-white rounded-full w-fit px-6 mt-6 bg-fuchsia hover:bg-pink hover:text-fuchsia">
                                     See Expense Tracker
                                 </Button>
                             </Link>

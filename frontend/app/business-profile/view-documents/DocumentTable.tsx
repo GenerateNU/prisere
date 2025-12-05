@@ -47,17 +47,14 @@ export default function DocumentTable({
 
     return (
         <div className="w-full">
-            <Table className="w-full table-fixed">
+            <Table className="w-full table-fixed text-sm">
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="text-[14px] w-[200px]">Title</TableHead>
-                        <TableHead className="text-[14px] w-[150px]">File Type</TableHead>
-                        <TableHead className="text-[14px] w-[150px]">Category</TableHead>
-                        <TableHead className="text-[14px] w-[120px]">
-                            <div
-                                className="flex items-center hover:text-slate-700 cursor-pointer"
-                                onClick={handleDateSort}
-                            >
+                        <TableHead className="">Title</TableHead>
+                        <TableHead className="">File Type</TableHead>
+                        <TableHead className="">Category</TableHead>
+                        <TableHead className="">
+                            <div className="flex items-center hover:text-slate-700" onClick={handleDateSort}>
                                 {dateSort === "asc" ? (
                                     <IoIosArrowRoundUp style={{ width: "18px", height: "18px" }} />
                                 ) : (
@@ -66,7 +63,7 @@ export default function DocumentTable({
                                 Date
                             </div>
                         </TableHead>
-                        <TableHead className="text-[14px] w-[200px]"></TableHead>
+                        <TableHead className="w-[200px]"></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -89,26 +86,35 @@ export default function DocumentTable({
                                         categoryColors={categoryColors}
                                     />
                                 </TableCell>
-                                <TableCell className="border-y text-[12px]">{doc.date.toLocaleDateString()}</TableCell>
+                                <TableCell className="border-y">{doc.date.toLocaleDateString()}</TableCell>
                                 <TableCell className="border-y h-[53px]">
                                     <div className="flex justify-end gap-[6px]">
                                         <Button
-                                            className="w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-[var(--slate)]"
+                                            className="group hover:bg-fuchsia hover:text-white w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-slate"
                                             onClick={() => onDownload(doc.url)}
                                         >
-                                            <FiDownload className="text-[14px]" style={{ width: "14px" }} />
+                                            <FiDownload
+                                                className="group-hover:bg-fuchsia group-hover:text-white"
+                                                style={{ width: "14px" }}
+                                            />
                                         </Button>
                                         <Button
-                                            className="w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-[var(--slate)]"
+                                            className="group hover:bg-fuchsia hover:text-white w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-slate"
                                             onClick={() => onEdit(doc.documentId)}
                                         >
-                                            <SlPencil className="text-[14px]" style={{ width: "14px" }} />
+                                            <SlPencil
+                                                className="text-[14px] group-hover:bg-fuchsia group-hover:text-white"
+                                                style={{ width: "14px" }}
+                                            />
                                         </Button>
                                         <Button
-                                            className="w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-[var(--slate)]"
+                                            className="group hover:bg-fuchsia hover:text-white w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-slate"
                                             onClick={() => onDelete(doc)}
                                         >
-                                            <HiOutlineTrash className="text-[14px]" style={{ width: "14px" }} />
+                                            <HiOutlineTrash
+                                                className="text-[14px] group-hover:bg-fuchsia group-hover:text-white"
+                                                style={{ width: "14px" }}
+                                            />
                                         </Button>
                                     </div>
                                 </TableCell>
@@ -118,14 +124,14 @@ export default function DocumentTable({
                 <TableFooter>
                     {documents.length === 0 && !initialPending && (
                         <TableRow>
-                            <TableCell colSpan={5} className="text-center py-[20px] text-[14px] bg-white">
+                            <TableCell colSpan={5} className="text-center py-[20px] bg-white">
                                 No documents to show
                             </TableCell>
                         </TableRow>
                     )}
                     {documents.length === 0 && initialPending && (
                         <TableRow>
-                            <TableCell colSpan={5} className="text-center py-[20px] text-[14px] bg-white">
+                            <TableCell colSpan={5} className="text-center py-[20px] bg-white">
                                 <div className="flex justify-center">
                                     <Spinner />
                                 </div>

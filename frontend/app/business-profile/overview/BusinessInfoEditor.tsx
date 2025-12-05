@@ -52,9 +52,11 @@ export default function CompanyEditor({
                     <Button
                         onClick={onExpand}
                         style={{ paddingInline: 0 }}
-                        className={`p-0 flex items-center justify-center h-[35px] w-[35px] ${isExpanded ? "bg-[var(--fuchsia)]" : "bg-[var(--slate)]"}`}
+                        className={`group p-0 flex items-center justify-center h-[35px] w-[35px] ${isExpanded ? "bg-fuchsia" : "bg-slate"} ${isExpanded ? "hover:bg-pink hover:text-fuchsia" : "hover:bg-fuchsia hover:text-white"}`}
                     >
-                        <FiEdit className={`${isExpanded ? "text-white" : "text-black"} text-[20px]`} />
+                        <FiEdit
+                            className={`${isExpanded ? "text-white" : "text-black"} ${isExpanded ? "group-hover:text-fuchsia" : "group-hover:text-white"} text-[20px]`}
+                        />
                     </Button>
                 </div>
             </div>
@@ -157,7 +159,7 @@ export default function CompanyEditor({
                         ""
                     )}
                     <Button
-                        className="relative bottom-0 right-0 text-[14px] bg-pink text-fuchsia self-end justify-self-end w-fit h-fit flex justify-center items-center gap-[8px] hover:text-[white]"
+                        className="relative bottom-0 right-0 text-[14px] bg-pink text-fuchsia self-end justify-self-end w-fit h-fit flex justify-center items-center gap-[8px] hover:text-[white] hover:bg-fuchsia"
                         onClick={handleCollapse}
                         style={{ paddingInline: "25px" }}
                     >

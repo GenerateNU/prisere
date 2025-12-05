@@ -40,7 +40,7 @@ export default function Notification({ notification }: NotificationProps) {
                             rounded="icon"
                             variant="secondary"
                             size="icon"
-                            className="text-charcoal"
+                            className="text-charcoal hover:bg-fuchsia hover:text-white"
                             aria-label="More options"
                         >
                             <RiMore2Fill />
@@ -50,7 +50,7 @@ export default function Notification({ notification }: NotificationProps) {
                         <div className="flex flex-col items-center justify-center">
                             <Button
                                 variant="secondary"
-                                className="text-charcoal rounded-sm"
+                                className="text-charcoal rounded-sm hover:bg-fuchsia hover:text-white"
                                 size="sm"
                                 onClick={() => mutate()}
                             >
@@ -80,7 +80,7 @@ export function LoadingNotification() {
                     rounded="icon"
                     variant="secondary"
                     size="icon"
-                    className="text-charcoal"
+                    className="text-charcoal hover:bg-fuchsia hover:text-white"
                     aria-label="More options"
                 >
                     <RiMore2Fill />

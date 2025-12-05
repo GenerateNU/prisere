@@ -57,13 +57,17 @@ export default function InsurerInfoStep({ insurerInfo, setInsurerInfo, handleSte
                 </div>
             </Card>
             <div className="flex items-center justify-end gap-3 w-full">
-                <Button onClick={handleStepBack} className="text-sm bg-light-fuchsia text-fuchsia w-[70px]" size="lg">
+                <Button
+                    onClick={handleStepBack}
+                    className="text-sm bg-light-fuchsia text-fuchsia hover:bg-fuchsia hover:text-white w-[70px]"
+                    size="lg"
+                >
                     Back
                 </Button>
                 <Button
                     size="lg"
                     onClick={handleNext}
-                    className="bg-fuchsia text-white px-[20px] py-[12px] w-[230px] h-[42px] text-[14px] rounded-50"
+                    className="bg-fuchsia text-white hover:bg-pink hover:text-fuchsia px-[20px] py-[12px] w-[230px] h-[42px] text-[14px] rounded-50"
                 >
                     Proceed to Exporting
                 </Button>
@@ -79,8 +83,13 @@ export default function InsurerInfoStep({ insurerInfo, setInsurerInfo, handleSte
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel className="w-1/2 h-10">Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleConfirm} className="bg-fuchsia text-white w-1/2 h-10">
+                        <AlertDialogCancel className="w-1/2 h-10 hover:bg-fuchsia hover:text-white">
+                            Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleConfirm}
+                            className="bg-fuchsia text-white w-1/2 h-10 hover:bg-pink hover:text-fuchsia"
+                        >
                             Confirm & Save
                         </AlertDialogAction>
                     </AlertDialogFooter>
