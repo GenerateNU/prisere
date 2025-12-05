@@ -52,7 +52,7 @@ export default function LocationEditor({
     return (
         <Card
             className={cn(
-                "w-full mb-[16px] px-[28px] py-[20px] border border-transparent",
+                "w-full mb-[16px] px-[28px] py-[20px] border shadow-none",
                 isSelected && "border-fuchsia",
                 onClick && "cursor-pointer"
             )}
