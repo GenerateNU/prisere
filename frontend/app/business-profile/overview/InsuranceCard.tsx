@@ -122,9 +122,9 @@ export default function InsuranceCard({
                 <Loading lines={3} />
             ) : (
                 <div>
-                    <div className="flex gap-[38px]">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {insuranceInfo.map((insurance, index) => (
-                            <div key={index} className="w-1/2">
+                            <div key={index}>
                                 <InsuranceEditor
                                     insurance={insurance}
                                     isSelected={"id" in insurance && insuranceSelected === insurance.id}
