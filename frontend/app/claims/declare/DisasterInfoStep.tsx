@@ -64,6 +64,7 @@ export default function DisasterInfoStep({
                         value={disasterInfo.name ?? ""}
                         onChange={(e) => setDisasterInfo({ name: e.target.value })}
                     />
+                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                 </div>
                 <div className="flex flex-col gap-2">
                     <Label>

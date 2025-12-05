@@ -135,6 +135,10 @@ export const validateDisasterInfo = (
 ) => {
     const newErrors: Partial<Record<keyof DisasterInfo, string>> = {};
 
+    if (!disasterInfo.name.trim()) {
+        newErrors.name = "Name is required";
+    }
+
     if (!disasterInfo.location) {
         newErrors.location = "Location is required";
     }
@@ -153,11 +157,11 @@ export const validatePersonalInfo = (
 ) => {
     const newErrors: { [key: string]: string } = {};
 
-    if (!firstName.trim()) {
+    if (!firstName.trim() || firstName.length < 1) {
         newErrors.firstName = "First name is required";
     }
 
-    if (!lastName.trim()) {
+    if (!lastName.trim() || firstName.length < 1) {
         newErrors.lastName = "Last name is required";
     }
 
