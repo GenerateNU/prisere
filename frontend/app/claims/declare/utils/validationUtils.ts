@@ -135,8 +135,8 @@ export const validateDisasterInfo = (
 ) => {
     const newErrors: Partial<Record<keyof DisasterInfo, string>> = {};
 
-    if(!disasterInfo.name.trim()) {
-        newErrors.name = "Name is required"
+    if (!disasterInfo.name.trim()) {
+        newErrors.name = "Name is required";
     }
 
     if (!disasterInfo.location) {

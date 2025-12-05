@@ -280,20 +280,20 @@ function DeclareDisasterContent() {
         >
             {step > -1 && step !== 5 && (
                 <div className="">
-                    {step > 1 &&
-                    <div className="flex justify-between items-center mb-4">
-                        <SaveStatusIndicator status={saveStatus} />
-                        <Button
-                            className="text-sm bg-light-fuchsia text-fuchsia w-fit py-2 px-3 ml-auto hover:bg-light-fuchsia/80"
-                            size="lg"
-                            onClick={handleSaveAndClose}
-                            disabled={saveStatus === "saving"}
-                        >
-                            Save and Close
-                            <CheckIcon className="size-5" />
-                        </Button>
-                    </div>
-                    }
+                    {step > 1 && (
+                        <div className="flex justify-between items-center mb-4">
+                            <SaveStatusIndicator status={saveStatus} />
+                            <Button
+                                className="text-sm bg-light-fuchsia text-fuchsia w-fit py-2 px-3 ml-auto hover:bg-light-fuchsia/80"
+                                size="lg"
+                                onClick={handleSaveAndClose}
+                                disabled={saveStatus === "saving"}
+                            >
+                                Save and Close
+                                <CheckIcon className="size-5" />
+                            </Button>
+                        </div>
+                    )}
                     <Progress progress={step} items={progressSteps} />
                 </div>
             )}
