@@ -60,25 +60,10 @@ export default function LocationEditor({
         >
             <div className="flex items-center justify-between">
                 <div className="flex gap-[10px] items-center w-3/4">
-                    {!isExpanded ? (
+                    {!isExpanded && (
                         <p className="text-[16px] font-bold">
                             {location.alias !== "" ? location.alias : "Location Name"}
                         </p>
-                    ) : (
-                        <div className="w-full">
-                            <Label htmlFor="alias" className="text-[16px] mb-[8px]">
-                                Title <span className="text-red-500 text-[16px]">*</span>
-                            </Label>
-                            <Input
-                                id="alias"
-                                name="alias"
-                                type="text"
-                                value={location.alias}
-                                required
-                                className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
-                                onChange={(e) => setLocation({ ...location, alias: e.target.value })}
-                            />
-                        </div>
                     )}
                 </div>
                 <div className="flex gap-[8px] self-start">
@@ -91,14 +76,14 @@ export default function LocationEditor({
                             }
                         }}
                         style={{ paddingInline: 0 }}
-                        className={`p-0 flex items-center justify-center h-[35px] w-[35px] ${isExpanded ? "bg-[var(--fuchsia)]" : "bg-[var(--slate)]"}`}
+                        className={`p-0 flex items-center justify-center h-[35px] w-[35px] ${isExpanded ? "bg-fuchsia" : "bg-slate"}`}
                     >
                         <FiEdit className={`${isExpanded ? "text-white" : "text-black"} text-[20px]`} />
                     </Button>
                     <Button
                         onClick={removeLocation}
                         style={{ paddingInline: 0 }}
-                        className="p-0 flex items-center justify-center h-[35px] w-[35px] bg-[var(--slate)]"
+                        className="p-0 flex items-center justify-center h-[35px] w-[35px] bg-slate"
                     >
                         <HiOutlineTrash className="" />
                     </Button>
@@ -106,10 +91,24 @@ export default function LocationEditor({
             </div>
             {!isExpanded && <hr className="mt-[-16px] mb-[-16px]" />}
             {isExpanded ? (
-                <div className="flex flex-col gap-[16px]">
+                <div className="flex flex-col gap-[16px] mt-[-16px]">
+                    <div className="w-full">
+                        <Label htmlFor="alias" className="text-[16px] mb-[8px]">
+                            Title<span className="text-red-500 text-[16px] m-[-5px]">*</span>
+                        </Label>
+                        <Input
+                            id="alias"
+                            name="alias"
+                            type="text"
+                            value={location.alias}
+                            required
+                            className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
+                            onChange={(e) => setLocation({ ...location, alias: e.target.value })}
+                        />
+                    </div>
                     <div className="flex flex-col gap-[8px] w-full">
                         <Label htmlFor="streetAddress" className="text-[16px]">
-                            Street Address<span className="text-red-500 text-[16px]">*</span>
+                            Street Address<span className="text-red-500 text-[16px] m-[-5px]">*</span>
                         </Label>
                         <Input
                             id="streetAddress"
@@ -124,7 +123,7 @@ export default function LocationEditor({
                     <div className="flex gap-[16px]">
                         <div className="flex flex-col gap-[8px] w-full">
                             <Label htmlFor="city" className="text-[16px]">
-                                City<span className="text-red-500 text-[16px]">*</span>
+                                City<span className="text-red-500 text-[16px] m-[-5px]">*</span>
                             </Label>
                             <Input
                                 id="city"
@@ -138,7 +137,7 @@ export default function LocationEditor({
                         </div>
                         <div className="flex flex-col gap-[8px] w-full">
                             <Label htmlFor="state" className="text-[16px]">
-                                State<span className="text-red-500 text-[16px]">*</span>
+                                State<span className="text-red-500 text-[16px] m-[-5px]">*</span>
                             </Label>
                             <Input
                                 id="state"
@@ -154,7 +153,7 @@ export default function LocationEditor({
                     <div className="flex gap-[16px]">
                         <div className="flex flex-col gap-[8px] w-full">
                             <Label htmlFor="country" className="text-[16px]">
-                                Country<span className="text-red-500 text-[16px]">*</span>
+                                Country<span className="text-red-500 text-[16px] m-[-5px]">*</span>
                             </Label>
                             <Input
                                 id="country"
@@ -168,7 +167,7 @@ export default function LocationEditor({
                         </div>
                         <div className="flex flex-col gap-[8px] w-full">
                             <Label htmlFor="zip" className="text-[16px]">
-                                Postal Code<span className="text-red-500 text-[16px]">*</span>
+                                Postal Code<span className="text-red-500 text-[16px] m-[-5px]">*</span>
                             </Label>
                             <Input
                                 id="zip"

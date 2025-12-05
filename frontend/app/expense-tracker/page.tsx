@@ -98,12 +98,16 @@ export default function ExpenseTracker() {
     return (
         <>
             {hasDataLoading ? (
-                <div className="flex items-center justify-center h-screen">
-                    <h2 className="text-[30px] font-bold">Expense Tracker</h2>
-                    <Spinner />
+                <div className="p-[50px] flex flex-col gap-[23px] bg-slate min-h-screen w-full">
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-4xl font-bold">Expense Tracker</h2>
+                    </div>
+                    <div className="rounded-full flex items-center justify-center flex-1">
+                        <Spinner />
+                    </div>
                 </div>
             ) : (
-                <div className="p-[50px] flex flex-col gap-[23px] bg-[var(--slate)] min-h-screen w-full">
+                <div className="p-[50px] flex flex-col gap-[23px] bg-slate min-h-screen w-full">
                     {!hasDataLoading && (
                         <NoDataPopupWrapper
                             hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false}
@@ -111,7 +115,7 @@ export default function ExpenseTracker() {
                     )}
                     <div className="flex justify-between">
                         <div>
-                            <h2 className="text-[30px] font-bold">Expense Tracker</h2>
+                            <h2 className="text-4xl font-bold">Expense Tracker</h2>
                             {hasData?.hasExternalData && (
                                 <div>
                                     <div className="flex gap-[8px] text-[var(--teal)] items-center">
