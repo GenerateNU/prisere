@@ -1,7 +1,12 @@
 "use server";
-import { MarkReadNotificationResponse, GetNotificationsResponse, NotificationFilters } from "@/types/notifications";
+import {
+    GetNotificationsResponse,
+    MarkAllAsReadResponse,
+    MarkReadNotificationResponse,
+    NotificationFilters,
+    UnreadNotificationsResponse,
+} from "@/types/notifications";
 import { authHeader, authWrapper, getClient } from "./client";
-import { MarkAllAsReadResponse } from "@/types/notifications";
 
 export const getNotifications = async (filters?: NotificationFilters): Promise<GetNotificationsResponse> => {
     const req = async (token: string): Promise<GetNotificationsResponse> => {
@@ -67,4 +72,21 @@ export const markAllNotificationsAsRead = async (): Promise<MarkAllAsReadRespons
     };
 
     return authWrapper<MarkAllAsReadResponse>()(req);
+};
+
+export const getUserUnreadNotifications = async (): Promise<UnreadNotificationsResponse> => {
+    const req = async (token: string) => {
+        const client = getClient();
+        const { data, response } = await client.GET("/notifications/unread", {
+            headers: authHeader(token),
+        });
+
+        if (response.ok) {
+            return data!;
+        } else {
+            throw Error("Failed to get user unread notifications");
+        }
+    };
+
+    return authWrapper<UnreadNotificationsResponse>()(req);
 };
