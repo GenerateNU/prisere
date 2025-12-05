@@ -151,15 +151,17 @@ export const UploadDocument = ({ handleUploadFiles, selectedFiles }: UploadDocum
                 </div>
             )}
 
-            <Button
-                variant={"outline"}
-                onClick={async () => {
-                    handleUploadFiles(stagedFiles);
-                }}
-                className={`w-full py-3 px-4 rounded-lg`}
-            >
-                Save Selection
-            </Button>
+            <div className="flex justify-center p-4">
+                <Button
+                    variant={"outline"}
+                    onClick={async () => {
+                        handleUploadFiles(stagedFiles);
+                    }}
+                    className={`py-2 px-6 rounded-full bg-[var(--fuchsia)] text-white w-fit h-fit`}
+                >
+                    Save Selection
+                </Button>
+            </div>
         </div>
     );
 };

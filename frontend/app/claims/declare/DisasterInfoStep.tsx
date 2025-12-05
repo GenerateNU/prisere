@@ -132,7 +132,10 @@ export default function DisasterInfoStep({
             <Card className="p-[25px] flex flex-col gap-[10px] border-none shadow-none">
                 <h4 className="text-[24px] font-bold">Upload additional documents</h4>
                 <div className="flex flex-col gap-[16px]">
-                    <Button className="w-fit h-fit rounded-full py-[12px] px-[20px]" onClick={openUploadModal}>
+                    <Button
+                        className="w-fit h-fit rounded-full py-[12px] px-[20px] hover:bg-gray-100"
+                        onClick={openUploadModal}
+                    >
                         <Label>
                             <UploadIcon size={24} color="black" />
                             <p>Upload from your computer</p>
@@ -141,8 +144,8 @@ export default function DisasterInfoStep({
                     <div className="pl-3">
                         {disasterInfo.additionalDocuments.map((element, idx) => (
                             <div key={idx} className="p-1">
-                                <div className="bg-gray-200 flex flex-row items-center rounded-full w-fit">
-                                    <CloudCheck size={30} className="pl-2" />
+                                <div className="bg-gray-100 flex flex-row items-center rounded-full w-fit px-2 py-0">
+                                    <CloudCheck size={28} className="pl-2" />
                                     <p className="text-sm p-3">{element.name}</p>
                                 </div>
                             </div>

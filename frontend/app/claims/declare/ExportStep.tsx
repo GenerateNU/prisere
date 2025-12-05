@@ -64,12 +64,6 @@ export default function ExportStep({ claimId, handleStepForward }: ExportStepPro
                                 Download PDF
                                 {isLoadingPDFDownload && <Spinner />}
                             </Button>
-                            <Button
-                                className="w-[195px] h-[34px] bg-light-fuchsia hover:bg-light-fuchsia/80 text-fuchsia"
-                                onClick={() => setExported(true)}
-                            >
-                                Email a Copy
-                            </Button>
                         </div>
                     </div>
                     {error && <p className="text-red-500 text-sm px-1"> {error}</p>}
