@@ -3678,6 +3678,35 @@
         }
       }
     },
+    "/notifications/unread": {
+      "get": {
+        "summary": "Get user unread notifications",
+        "description": "Retrieves the number of unread notifications for a specific user",
+        "tags": [
+          "Disaster Notifications"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved user unread notifications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "count"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/quickbooks": {
       "get": {
         "summary": "Generates an OAuth URL for the user and redirects them",

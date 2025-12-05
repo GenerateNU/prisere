@@ -1,17 +1,18 @@
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { DataSource } from "typeorm";
-import { DisasterNotificationTransaction } from "../disasterNotifications/transaction";
-import { DisasterNotificationService } from "../disasterNotifications/service";
-import { DisasterNotificationController } from "../disasterNotifications/controller";
+import { z } from "zod";
 import {
-    GetUsersDisasterNotificationsResponseSchema,
     BulkCreateNotificationsRequestSchema,
     BulkCreateNotificationsResponseSchema,
     DeleteNotificationResponseSchema,
-    MarkReadNotificationResponseSchema,
     DismissNotificationResponseSchema,
+    GetUsersDisasterNotificationsResponseSchema,
+    MarkReadNotificationResponseSchema,
+    UnreadNotificationsResponseSchema,
 } from "../../types/DisasterNotification";
-import { z } from "zod";
+import { DisasterNotificationController } from "../disasterNotifications/controller";
+import { DisasterNotificationService } from "../disasterNotifications/service";
+import { DisasterNotificationTransaction } from "../disasterNotifications/transaction";
 import { ILocationAddressTransaction, LocationAddressTransactions } from "../location-address/transaction";
 import { IPreferenceTransaction, PreferenceTransaction } from "../preferences/transaction";
 import { ISQSService, SQSService } from "../sqs/service";
@@ -317,6 +318,24 @@ export const deleteNotificationRoute = createRoute({
     tags: ["Disaster Notifications"],
 });
 
+export const getUserUnreadNotificationsRoute = createRoute({
+    method: "get",
+    path: "/notifications/unread",
+    summary: "Get user unread notifications",
+    description: "Retrieves the number of unread notifications for a specific user",
+    request: {},
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: UnreadNotificationsResponseSchema,
+                },
+            },
+            description: "Successfully retrieved user unread notifications",
+        },
+    },
+    tags: ["Disaster Notifications"],
+});
 export const addOpenApiDisasterNotificationRoutes = (openApi: OpenAPIHono, db: DataSource): OpenAPIHono => {
     const notificationTransaction = new DisasterNotificationTransaction(db);
     const locationTransaction: ILocationAddressTransaction = new LocationAddressTransactions(db);
@@ -336,6 +355,10 @@ export const addOpenApiDisasterNotificationRoutes = (openApi: OpenAPIHono, db: D
     openApi.openapi(bulkCreateNotificationsRoute, (ctx) => notificationController.bulkCreateNotifications(ctx) as any);
     openApi.openapi(deleteNotificationRoute, (ctx) => notificationController.deleteNotification(ctx) as any);
     openApi.openapi(markAllAsReadRoute, (ctx) => notificationController.markAllAsRead(ctx) as any);
+    openApi.openapi(
+        getUserUnreadNotificationsRoute,
+        (ctx) => notificationController.getUserUnreadNotifications(ctx) as any
+    );
 
     return openApi;
 };

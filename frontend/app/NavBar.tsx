@@ -1,18 +1,24 @@
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import { UserIcon } from "lucide-react";
 import { logoutUser } from "@/actions/auth";
-import { LuLayoutDashboard } from "react-icons/lu";
-import { IoIosNotificationsOutline } from "react-icons/io";
-import { HiOutlineTableCells } from "react-icons/hi2";
-import { RiFilePaperLine } from "react-icons/ri";
-import { IoPersonOutline, IoSettingsOutline } from "react-icons/io5";
+import { getUserUnreadNotifications } from "@/api/notifications";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { UserIcon } from "lucide-react";
 import Image from "next/image";
-import { useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { HiOutlineTableCells } from "react-icons/hi2";
+import { IoIosNotificationsOutline } from "react-icons/io";
+import { IoPersonOutline, IoSettingsOutline } from "react-icons/io5";
+import { LuLayoutDashboard } from "react-icons/lu";
+import { RiFilePaperLine } from "react-icons/ri";
 
 export default function NavBar() {
     const pathname = usePathname();
     const queryClient = useQueryClient();
+
+    const { data: unreadNotifications } = useQuery({
+        queryKey: ["unreadNotifications"],
+        queryFn: getUserUnreadNotifications,
+    });
 
     const logout = async () => {
         queryClient.clear();
@@ -42,6 +48,13 @@ export default function NavBar() {
                                 >
                                     {item.icon}
                                     {item.name}
+                                    {item.name === "Notifications" &&
+                                        unreadNotifications &&
+                                        unreadNotifications.count > 0 && (
+                                            <span className="text-xs bg-fuchsia text-white px-1.5 py-0.5 rounded-full">
+                                                {unreadNotifications.count}
+                                            </span>
+                                        )}
                                 </div>
                             </Link>
                             {item.name == "Notifications" && <hr className="border-grey" />}

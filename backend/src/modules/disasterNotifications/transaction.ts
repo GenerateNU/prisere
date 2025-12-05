@@ -1,12 +1,12 @@
-import { DisasterNotification } from "../../entities/DisasterNotification";
-import { DataSource, In, InsertResult } from "typeorm";
 import Boom from "@hapi/boom";
-import { logMessageToFile } from "../../utilities/logger";
+import { DataSource, In, InsertResult } from "typeorm";
 import { validate } from "uuid";
-import { GetUsersDisasterNotificationsDTO, NotificationTypeFilter } from "../../types/DisasterNotification";
-import { User } from "../../entities/User";
+import { DisasterNotification } from "../../entities/DisasterNotification";
 import { FemaDisaster } from "../../entities/FemaDisaster";
+import { User } from "../../entities/User";
+import { GetUsersDisasterNotificationsDTO, NotificationTypeFilter } from "../../types/DisasterNotification";
 import { NotificationStatus } from "../../types/NotificationEnums";
+import { logMessageToFile } from "../../utilities/logger";
 
 /**
  * Interface for disaster notification transaction operations.
@@ -58,6 +58,8 @@ export interface IDisasterNotificationTransaction {
     getUnreadNotifications(): Promise<DisasterNotification[]>;
 
     markNotificationsAsSent(notificationIds: string[]): Promise<DisasterNotification[]>;
+
+    getUserUnreadNotifications(userId: string): Promise<number>;
 }
 
 export class DisasterNotificationTransaction implements IDisasterNotificationTransaction {
@@ -304,5 +306,16 @@ export class DisasterNotificationTransaction implements IDisasterNotificationTra
         return await this.db.getRepository(DisasterNotification).find({
             where: { id: In(notificationIds) },
         });
+    }
+
+    async getUserUnreadNotifications(userId: string): Promise<number> {
+        const result = await this.db
+            .createQueryBuilder()
+            .select("COUNT(*)")
+            .from(DisasterNotification, "notifications")
+            .where("notifications.userId = :userId", { userId })
+            .andWhere("notifications.notificationStatus = :status", { status: NotificationStatus.UNREAD })
+            .getRawOne();
+        return result.count;
     }
 }

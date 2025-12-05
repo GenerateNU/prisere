@@ -1,17 +1,18 @@
 import { Context, TypedResponse } from "hono";
-import { IDisasterNotificationService } from "./service";
-import { withControllerErrorHandling } from "../../utilities/error";
 import { validate } from "uuid";
 import {
-    GetUsersDisasterNotificationsResponse,
-    GetUsersDisasterNotificationsDTOSchema,
     BulkCreateNotificationsRequestSchema,
     BulkCreateNotificationsResponse,
     DeleteNotificationResponse,
-    MarkReadNotificationResponse,
     DismissNotificationResponse,
+    GetUsersDisasterNotificationsDTOSchema,
+    GetUsersDisasterNotificationsResponse,
+    MarkReadNotificationResponse,
     NotificationTypeFilter,
+    UnreadNotificationsResponse,
 } from "../../types/DisasterNotification";
+import { withControllerErrorHandling } from "../../utilities/error";
+import { IDisasterNotificationService } from "./service";
 
 export interface IDisasterNotificationController {
     getUserNotifications(ctx: Context): Promise<TypedResponse<GetUsersDisasterNotificationsResponse> | Response>;
@@ -24,6 +25,7 @@ export interface IDisasterNotificationController {
     bulkCreateNotifications(ctx: Context): Promise<TypedResponse<BulkCreateNotificationsResponse> | Response>;
     deleteNotification(ctx: Context): Promise<TypedResponse<DeleteNotificationResponse | { error: string }> | Response>;
     markAllAsRead(ctx: Context): Promise<TypedResponse<{ success: boolean; updatedCount: number } | { error: string }>>;
+    getUserUnreadNotifications(ctx: Context): Promise<TypedResponse<UnreadNotificationsResponse> | Response>;
 }
 
 export class DisasterNotificationController implements IDisasterNotificationController {
@@ -131,6 +133,14 @@ export class DisasterNotificationController implements IDisasterNotificationCont
             }
             const success = await this.notificationService.deleteNotification(notificationId);
             return ctx.json({ success, deletedId: notificationId }, success ? 200 : 404);
+        }
+    );
+
+    getUserUnreadNotifications = withControllerErrorHandling(
+        async (ctx: Context): Promise<TypedResponse<UnreadNotificationsResponse>> => {
+            const userId = ctx.get("userId");
+            const count = await this.notificationService.getUserUnreadNotifications(userId);
+            return ctx.json({ count }, 200);
         }
     );
 }

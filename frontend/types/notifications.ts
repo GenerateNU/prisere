@@ -14,6 +14,9 @@ export type MarkUnreadNotificationResponse =
 export type MarkAllAsReadResponse =
     paths["/notifications/user/markAllAsRead"]["patch"]["responses"]["200"]["content"]["application/json"];
 
+export type UnreadNotificationsResponse =
+    paths["/notifications/unread"]["get"]["responses"]["200"]["content"]["application/json"];
+
 export type Notification = paths["/notifications"]["get"]["responses"]["200"]["content"]["application/json"][0];
 
 // Helper type for easier use
