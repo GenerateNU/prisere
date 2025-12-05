@@ -7,7 +7,7 @@ export const DISASTER_TYPE_LABELS = new Map<DisasterType, string>([
     ["typical", "Non-Disaster"],
     ["extraneous", "Disaster"],
     ["suggested extraneous", "Suggested: Disaster"],
-    ["suggested typical", "Suggested: Typical"],
+    ["suggested typical", "Suggested: Non-Disaster"],
     ["pending", "Pending"],
 ]);
 export const DISASTER_TYPE_LABELS_TO_CHANGE = new Map<DisasterType, string>([
@@ -18,6 +18,6 @@ export const DISASTER_TYPE_COLORS = new Map([
     ["typical", "bg-light-teal text-teal"],
     ["extraneous", "bg-light-fuchsia text-fuchsia"],
     ["pending", "bg-gray text-charcoal"],
-    ["suggested extraneous", "bg-yellow-100 text-yellow-800 "],
-    ["suggested typical", "bg-blue-100 text-blue-800"],
+    ["suggested extraneous", "bg-light-fuchsia text-fuchsia"],
+    ["suggested typical", "bg-light-teal text-teal"],
 ]);
