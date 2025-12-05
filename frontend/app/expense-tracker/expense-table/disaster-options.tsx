@@ -31,10 +31,10 @@ export default function DisasterLabel({
                 </PopoverTrigger>
                 <PopoverContent className="w-64 p-0">
                     <Command>
-                        <div className="flex items-center border-b px-3 py-2">
+                        <div className="flex items-center border-b px-3 py-2 bg-muted/60">
                             <DisasterBadgeSpan type={disasterType} />
-                            <div className="flex-1 text-sm text-gray-500 ml-2">Select an option</div>
                         </div>
+                        <div className="flex-1 text-sm text-black ml-2 pt-2 pb-1 px-1">Select an option</div>
                         <CommandGroup>
                             {Array.from(DISASTER_TYPE_LABELS_TO_CHANGE.keys()).map((type) => (
                                 <CommandItem key={type} onSelect={() => updateDisasterType(type, lineItemIds)}>

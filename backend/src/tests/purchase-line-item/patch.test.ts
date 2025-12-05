@@ -41,7 +41,7 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 category: "Office Supplies",
                 removeCategory: false,
             }),
@@ -49,8 +49,8 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
 
         expect(response.status).toBe(200);
         const data = await response.json();
-        expect(data.id).toBe(seededPurchaseLineItems[0].id);
-        expect(data.category).toBe("Office Supplies");
+        expect(data[0].id).toBe(seededPurchaseLineItems[0].id);
+        expect(data[0].category).toBe("Office Supplies");
 
         const updatedItem = await testAppDataSource.manager.findOne(PurchaseLineItem, {
             where: { id: seededPurchaseLineItems[0].id },
@@ -63,7 +63,7 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 category: "",
                 removeCategory: false,
             }),
@@ -77,7 +77,7 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: "invalid-uuid",
+                ids: ["invalid-uuid"],
                 category: "New Category",
                 removeCategory: false,
             }),
@@ -104,7 +104,7 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 removeCategory: false,
             }),
         });
@@ -118,7 +118,7 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 category: longCategory,
                 removeCategory: false,
             }),
@@ -142,7 +142,7 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 category: "Office & Supplies - 2024 (Q1)",
                 removeCategory: false,
             }),
@@ -150,7 +150,7 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
 
         expect(response.status).toBe(200);
         const data = await response.json();
-        expect(data.category).toBe("Office & Supplies - 2024 (Q1)");
+        expect(data[0].category).toBe("Office & Supplies - 2024 (Q1)");
     });
 
     test("PATCH /purchase/category - Multiple updates to same item", async () => {
@@ -158,7 +158,7 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 category: "First Category",
                 removeCategory: false,
             }),
@@ -168,7 +168,7 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 category: "Second Category",
                 removeCategory: false,
             }),
@@ -176,7 +176,7 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
 
         expect(response.status).toBe(200);
         const data = await response.json();
-        expect(data.category).toBe("Second Category");
+        expect(data[0].category).toBe("Second Category");
     });
 
     test("PATCH /purchase/category - Successfully updates category then removes", async () => {
@@ -184,7 +184,7 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 category: "Office Supplies",
                 removeCategory: false,
             }),
@@ -192,8 +192,8 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
 
         expect(response.status).toBe(200);
         const data = await response.json();
-        expect(data.id).toBe(seededPurchaseLineItems[0].id);
-        expect(data.category).toBe("Office Supplies");
+        expect(data[0].id).toBe(seededPurchaseLineItems[0].id);
+        expect(data[0].category).toBe("Office Supplies");
 
         const updatedItem = await testAppDataSource.manager.findOne(PurchaseLineItem, {
             where: { id: seededPurchaseLineItems[0].id },
@@ -205,7 +205,7 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 category: "Office Supplies",
                 removeCategory: true,
             }),
@@ -227,7 +227,7 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: lineItemId,
+                ids: [lineItemId],
                 category: "Keep Me",
                 removeCategory: false,
             }),
@@ -239,7 +239,7 @@ describe("PATCH /purchase/category - Update Purchase Line Item Category", () => 
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: lineItemId,
+                ids: [lineItemId],
                 category: "Other Category",
                 removeCategory: true,
             }),
@@ -287,15 +287,15 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 type: PurchaseLineItemType.EXTRANEOUS,
             }),
         });
 
         expect(response.status).toBe(200);
         const data = await response.json();
-        expect(data.id).toBe(seededPurchaseLineItems[0].id);
-        expect(data.type).toBe(PurchaseLineItemType.EXTRANEOUS);
+        expect(data[0].id).toBe(seededPurchaseLineItems[0].id);
+        expect(data[0].type).toBe(PurchaseLineItemType.EXTRANEOUS);
 
         const updatedItem = await testAppDataSource.manager.findOne(PurchaseLineItem, {
             where: { id: seededPurchaseLineItems[0].id },
@@ -308,15 +308,15 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[1].id,
+                ids: [seededPurchaseLineItems[1].id],
                 type: PurchaseLineItemType.TYPICAL,
             }),
         });
 
         expect(response.status).toBe(200);
         const data = await response.json();
-        expect(data.id).toBe(seededPurchaseLineItems[1].id);
-        expect(data.type).toBe(PurchaseLineItemType.TYPICAL);
+        expect(data[0].id).toBe(seededPurchaseLineItems[1].id);
+        expect(data[0].type).toBe(PurchaseLineItemType.TYPICAL);
 
         const updatedItem = await testAppDataSource.manager.findOne(PurchaseLineItem, {
             where: { id: seededPurchaseLineItems[1].id },
@@ -329,7 +329,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: "00000000-0000-0000-0000-000000000000",
+                ids: ["00000000-0000-0000-0000-000000000000"],
                 type: PurchaseLineItemType.TYPICAL,
             }),
         });
@@ -342,7 +342,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: "not-a-valid-uuid",
+                ids: ["not-a-valid-uuid"],
                 type: PurchaseLineItemType.TYPICAL,
             }),
         });
@@ -355,7 +355,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 type: "INVALID_TYPE",
             }),
         });
@@ -380,7 +380,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
             }),
         });
 
@@ -402,7 +402,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 type: null,
             }),
         });
@@ -415,7 +415,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 type: 123,
             }),
         });
@@ -428,7 +428,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 type: PurchaseLineItemType.TYPICAL,
             }),
         });
@@ -437,14 +437,14 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 type: PurchaseLineItemType.EXTRANEOUS,
             }),
         });
 
         expect(response.status).toBe(200);
         const data = await response.json();
-        expect(data.type).toBe(PurchaseLineItemType.EXTRANEOUS);
+        expect(data[0].type).toBe(PurchaseLineItemType.EXTRANEOUS);
     });
 
     test("PATCH /purchase/type - Update different items", async () => {
@@ -452,7 +452,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[0].id,
+                ids: [seededPurchaseLineItems[0].id],
                 type: PurchaseLineItemType.EXTRANEOUS,
             }),
         });
@@ -461,7 +461,7 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                id: seededPurchaseLineItems[1].id,
+                ids: [seededPurchaseLineItems[1].id],
                 type: PurchaseLineItemType.TYPICAL,
             }),
         });
@@ -472,9 +472,9 @@ describe("PATCH /purchase/type - Update Purchase Line Item Type", () => {
         const data1 = await response1.json();
         const data2 = await response2.json();
 
-        expect(data1.id).toBe(seededPurchaseLineItems[0].id);
-        expect(data1.type).toBe(PurchaseLineItemType.EXTRANEOUS);
-        expect(data2.id).toBe(seededPurchaseLineItems[1].id);
-        expect(data2.type).toBe(PurchaseLineItemType.TYPICAL);
+        expect(data1[0].id).toBe(seededPurchaseLineItems[0].id);
+        expect(data1[0].type).toBe(PurchaseLineItemType.EXTRANEOUS);
+        expect(data2[0].id).toBe(seededPurchaseLineItems[1].id);
+        expect(data2[0].type).toBe(PurchaseLineItemType.TYPICAL);
     });
 });

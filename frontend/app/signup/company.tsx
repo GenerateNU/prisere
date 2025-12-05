@@ -215,7 +215,9 @@ export default function Company({ handleNext: incrementNext }: CompanyInfoProps)
                         name="owner"
                         type="text"
                         className="px-[28px] py-[16px] h-[45px] rounded-[10px] placeholder:text-gray-400 placeholder:text-[16px] bg-transparent text-[16px]"
-                        onChange={(e) => setCompanyPayload({ ...companyPayload, alternateEmail: e.target.value })}
+                        onChange={(e) => {
+                            setCompanyPayload({ ...companyPayload, alternateEmail: e.target.value });
+                        }}
                     />
                     <div className="text-xs text-gray-600">
                         FEMA disaster notifications will additionally be sent to this email.

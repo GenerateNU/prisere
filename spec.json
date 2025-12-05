@@ -8610,8 +8610,8 @@
     },
     "/purchase/line/category": {
       "patch": {
-        "summary": "Updates a purchase line item's category",
-        "description": "Updates the category of the purchase line item with the given Id to the given category",
+        "summary": "Updates purchase line items' category",
+        "description": "Updates the category of the purchase line items with the given Ids to the given category",
         "tags": [
           "Purchase Line Items"
         ],
@@ -8621,9 +8621,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {
-                    "type": "string",
-                    "format": "uuid"
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
                   },
                   "category": {
                     "type": "string",
@@ -8635,7 +8638,7 @@
                   }
                 },
                 "required": [
-                  "id",
+                  "ids",
                   "category",
                   "removeCategory"
                 ]
@@ -8645,63 +8648,66 @@
         },
         "responses": {
           "200": {
-            "description": "Successfully updated the line item's category",
+            "description": "Successfully updated the line items' category",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "minLength": 1
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "quickBooksId": {
+                        "type": "number"
+                      },
+                      "purchaseId": {
+                        "type": "string"
+                      },
+                      "amountCents": {
+                        "type": "number"
+                      },
+                      "category": {
+                        "type": "string",
+                        "nullable": true,
+                        "minLength": 1
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "extraneous",
+                          "typical",
+                          "pending",
+                          "suggested extraneous",
+                          "suggested typical"
+                        ]
+                      },
+                      "dateCreated": {
+                        "type": "string"
+                      },
+                      "lastUpdated": {
+                        "type": "string"
+                      },
+                      "quickbooksDateCreated": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "date-time"
+                      }
                     },
-                    "description": {
-                      "type": "string"
-                    },
-                    "quickBooksId": {
-                      "type": "number"
-                    },
-                    "purchaseId": {
-                      "type": "string"
-                    },
-                    "amountCents": {
-                      "type": "number"
-                    },
-                    "category": {
-                      "type": "string",
-                      "nullable": true,
-                      "minLength": 1
-                    },
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "extraneous",
-                        "typical",
-                        "pending",
-                        "suggested extraneous",
-                        "suggested typical"
-                      ]
-                    },
-                    "dateCreated": {
-                      "type": "string"
-                    },
-                    "lastUpdated": {
-                      "type": "string"
-                    },
-                    "quickbooksDateCreated": {
-                      "type": "string",
-                      "nullable": true,
-                      "format": "date-time"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "purchaseId",
-                    "amountCents",
-                    "type",
-                    "dateCreated",
-                    "lastUpdated"
-                  ]
+                    "required": [
+                      "id",
+                      "purchaseId",
+                      "amountCents",
+                      "type",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
+                  }
                 }
               }
             }
@@ -8747,8 +8753,8 @@
     },
     "/purchase/line/type": {
       "patch": {
-        "summary": "Updates a purchase line item's type",
-        "description": "Updates the type of the purchase line item with the given Id to the given type",
+        "summary": "Updates a purchase line items' type",
+        "description": "Updates the type of the purchase line items with the given Ids to the given type",
         "tags": [
           "Purchase Line Items"
         ],
@@ -8758,9 +8764,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {
-                    "type": "string",
-                    "format": "uuid"
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
                   },
                   "type": {
                     "type": "string",
@@ -8774,7 +8783,7 @@
                   }
                 },
                 "required": [
-                  "id",
+                  "ids",
                   "type"
                 ]
               }
@@ -8783,63 +8792,66 @@
         },
         "responses": {
           "200": {
-            "description": "Successfully updated the line item's type",
+            "description": "Successfully updated the line items' type",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "minLength": 1
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "quickBooksId": {
+                        "type": "number"
+                      },
+                      "purchaseId": {
+                        "type": "string"
+                      },
+                      "amountCents": {
+                        "type": "number"
+                      },
+                      "category": {
+                        "type": "string",
+                        "nullable": true,
+                        "minLength": 1
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "extraneous",
+                          "typical",
+                          "pending",
+                          "suggested extraneous",
+                          "suggested typical"
+                        ]
+                      },
+                      "dateCreated": {
+                        "type": "string"
+                      },
+                      "lastUpdated": {
+                        "type": "string"
+                      },
+                      "quickbooksDateCreated": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "date-time"
+                      }
                     },
-                    "description": {
-                      "type": "string"
-                    },
-                    "quickBooksId": {
-                      "type": "number"
-                    },
-                    "purchaseId": {
-                      "type": "string"
-                    },
-                    "amountCents": {
-                      "type": "number"
-                    },
-                    "category": {
-                      "type": "string",
-                      "nullable": true,
-                      "minLength": 1
-                    },
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "extraneous",
-                        "typical",
-                        "pending",
-                        "suggested extraneous",
-                        "suggested typical"
-                      ]
-                    },
-                    "dateCreated": {
-                      "type": "string"
-                    },
-                    "lastUpdated": {
-                      "type": "string"
-                    },
-                    "quickbooksDateCreated": {
-                      "type": "string",
-                      "nullable": true,
-                      "format": "date-time"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "purchaseId",
-                    "amountCents",
-                    "type",
-                    "dateCreated",
-                    "lastUpdated"
-                  ]
+                    "required": [
+                      "id",
+                      "purchaseId",
+                      "amountCents",
+                      "type",
+                      "dateCreated",
+                      "lastUpdated"
+                    ]
+                  }
                 }
               }
             }

@@ -38,13 +38,13 @@ export default function NavBar() {
                         <li className="flex flex-col gap-5" key={item.name}>
                             <Link href={item.href} className={`rounded-lg`}>
                                 <div
-                                    className={`flex text-lg m-1 items-center gap-3 ${pathname === item.href && "text-fuchsia"}`}
+                                    className={`flex text-lg m-1 items-center hover:bg-muted rounded-lg px-3 py-2 gap-3 ${pathname === item.href && "text-fuchsia"}`}
                                 >
                                     {item.icon}
                                     {item.name}
                                 </div>
                             </Link>
-                            {item.name == "Notifications" && <hr className="border-charcoal" />}
+                            {item.name == "Notifications" && <hr className="border-grey" />}
                         </li>
                     ))}
                 </div>

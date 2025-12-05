@@ -26,6 +26,7 @@ export interface IPurchaseLineItemController {
     updatePurchaseLineItemCategory(
         ctx: Context
     ): ControllerResponse<TypedResponse<UpdatePurchaseLineItemResponse, 200>>;
+
     updatePurchaseLineItemType(ctx: Context): ControllerResponse<TypedResponse<UpdatePurchaseLineItemResponse, 200>>;
 }
 
@@ -85,7 +86,7 @@ export class PurchaseLineItemController implements IPurchaseLineItemController {
             const request = UpdatePurchaseLineItemCategoryDTOSchema.parse(json);
 
             const updated = await this.purchaseLineItemService.updatePurchaseLineItemCategory(
-                request.id,
+                request.ids,
                 request.category,
                 request.removeCategory
             );
@@ -99,7 +100,7 @@ export class PurchaseLineItemController implements IPurchaseLineItemController {
             const json = await ctx.req.json();
             const request = UpdatePurchaseLineItemTypeDTOSchema.parse(json);
 
-            const updated = await this.purchaseLineItemService.updatePurchaseLineItemType(request.id, request.type);
+            const updated = await this.purchaseLineItemService.updatePurchaseLineItemType(request.ids, request.type);
 
             return ctx.json(updated, 200);
         }

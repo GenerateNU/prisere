@@ -124,8 +124,8 @@ const getPurchaseLineItemsForPurchaseRoute = createRoute({
 const updatePurchaseLineItemCategoryRoute = createRoute({
     method: "patch",
     path: "/purchase/line/category",
-    summary: "Updates a purchase line item's category",
-    description: "Updates the category of the purchase line item with the given Id to the given category",
+    summary: "Updates purchase line items' category",
+    description: "Updates the category of the purchase line items with the given Ids to the given category",
     request: {
         body: {
             content: {
@@ -142,7 +142,7 @@ const updatePurchaseLineItemCategoryRoute = createRoute({
                     schema: UpdatePurchaseLineItemResponseSchema,
                 },
             },
-            description: "Successfully updated the line item's category",
+            description: "Successfully updated the line items' category",
         },
         ...openApiErrorCodes("Error modifying purchase line item"),
     },
@@ -152,8 +152,8 @@ const updatePurchaseLineItemCategoryRoute = createRoute({
 const updatePurchaseLineItemTypeRoute = createRoute({
     method: "patch",
     path: "/purchase/line/type",
-    summary: "Updates a purchase line item's type",
-    description: "Updates the type of the purchase line item with the given Id to the given type",
+    summary: "Updates a purchase line items' type",
+    description: "Updates the type of the purchase line items with the given Ids to the given type",
     request: {
         body: {
             content: {
@@ -170,7 +170,7 @@ const updatePurchaseLineItemTypeRoute = createRoute({
                     schema: UpdatePurchaseLineItemResponseSchema,
                 },
             },
-            description: "Successfully updated the line item's type",
+            description: "Successfully updated the line items' type",
         },
         ...openApiErrorCodes("Error modifying purchase line item"),
     },

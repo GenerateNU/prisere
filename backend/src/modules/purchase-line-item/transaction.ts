@@ -9,8 +9,12 @@ export interface IPurchaseLineItemTransaction {
     createOrUpdatePurchaseLineItems(payload: CreateOrChangePurchaseLineItemsDTO): Promise<PurchaseLineItem[]>;
     getPurchaseLineItem(id: string): Promise<PurchaseLineItem | null>;
     getPurchaseLineItemsForPurchase(purchaseId: string): Promise<PurchaseLineItem[]>;
-    updatePurchaseLineItemCategory(id: string, category: string, removeCategory: boolean): Promise<PurchaseLineItem>;
-    updatePurchaseLineItemType(id: string, type: PurchaseLineItemType): Promise<PurchaseLineItem>;
+    updatePurchaseLineItemCategory(
+        ids: string[],
+        category: string,
+        removeCategory: boolean
+    ): Promise<PurchaseLineItem[]>;
+    updatePurchaseLineItemType(ids: string[], type: PurchaseLineItemType): Promise<PurchaseLineItem[]>;
 }
 
 export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction {
@@ -68,16 +72,16 @@ export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction
     }
 
     async updatePurchaseLineItemCategory(
-        id: string,
+        ids: string[],
         category: string,
         removeCategory: boolean
-    ): Promise<PurchaseLineItem> {
+    ): Promise<PurchaseLineItem[]> {
         const qb = this.db.createQueryBuilder().update(PurchaseLineItem);
 
         if (removeCategory) {
-            qb.set({ category: null }).where("id = :id AND category = :category", { id, category });
+            qb.set({ category: null }).where("id IN (:...ids) AND category = :category", { ids, category });
         } else {
-            qb.set({ category }).where("id = :id", { id });
+            qb.set({ category }).where("id IN (:...ids)", { ids });
         }
 
         const response = await qb.returning("*").execute();
@@ -85,15 +89,15 @@ export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction
         if (!response) {
             throw Boom.notFound("Error updating the purchase line item category");
         }
-        return response.raw[0];
+        return response.raw;
     }
 
-    async updatePurchaseLineItemType(id: string, type: PurchaseLineItemType): Promise<PurchaseLineItem> {
+    async updatePurchaseLineItemType(ids: string[], type: PurchaseLineItemType): Promise<PurchaseLineItem[]> {
         const response = await this.db
             .createQueryBuilder()
             .update(PurchaseLineItem)
             .set({ type: type })
-            .where({ id })
+            .where("id IN (:...ids)", { ids })
             .returning("*")
             .execute();
 
@@ -101,6 +105,6 @@ export class PurchaseLineItemTransaction implements IPurchaseLineItemTransaction
             throw Boom.notFound("Error updating the purchase line item type");
         }
 
-        return response.raw[0];
+        return response.raw;
     }
 }
