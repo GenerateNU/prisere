@@ -217,13 +217,13 @@ function CategoryCommand({
 }
 
 function Create({ searchValue, updateCategory, lineItemIds, setSearchValue }: CreateCategoryProps) {
-    const previewColor = {
-        backgroundColor: "hsl(0, 0%, 85%)",
-        color: "#000000",
-    };
-
     const displayText =
         searchValue.length > CATEGORY_MAX_CHARS ? `${searchValue.substring(0, CATEGORY_MAX_CHARS)}...` : searchValue;
+
+    const previewColor = {
+        backgroundColor: `${displayText.length > 0 && "hsl(0, 0%, 85%)"}`,
+        color: "#000000",
+    };
 
     return (
         <button

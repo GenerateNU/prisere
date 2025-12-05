@@ -24,7 +24,7 @@ export default function ExpenseSideView({ purchase, open, onOpenChange }: SideVi
                 </SheetHeader>
 
                 <div className="space-y-4 mb-8">
-                    <DetailRow label="Amount" value={(purchase.totalAmountCents / 100).toFixed(2)} />
+                    <DetailRow label="Amount" value={"$" + (purchase.totalAmountCents / 100).toFixed(2)} />
                     <DetailRow
                         label="Category"
                         value={categoryTagsMainPurchase(getCategoriesString(purchase.lineItems))}
