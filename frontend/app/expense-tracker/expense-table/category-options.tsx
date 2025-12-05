@@ -42,7 +42,10 @@ export const CategoryBadgeSpan = React.forwardRef<HTMLSpanElement, CategoryBadge
                 ref={ref}
                 {...props}
                 className={`${baseClasses} ${variantClasses} ${clickableClass} text-black`}
-                style={{ backgroundColor: getTagColor(category).backgroundColor }}
+                style={{
+                    backgroundColor: getTagColor(category).backgroundColor,
+                    color: getTagColor(category).textColor,
+                }}
             >
                 {displayText}
                 {children}
@@ -251,12 +254,10 @@ const getTagColor = (tag: string) => {
     for (let i = 0; i < tag.length; i++) {
         hash = tag.charCodeAt(i) + ((hash << 5) - hash);
     }
-
     const hue = hash % 360;
-
     return {
-        backgroundColor: `hsl(${hue}, 60%, 85%)`,
-        color: "#000000",
-        borderColor: `hsl(${hue}, 60%, 70%)`,
+        backgroundColor: `hsla(${hue}, 60%, 85%, 0.5)`, // 50% opacity background
+        textColor: `hsl(${hue}, 60%, 20%)`, // 100% opacity text (darker shade)
+        borderColor: `hsla(${hue}, 60%, 70%, 0.5)`, // 50% opacity border
     };
 };
