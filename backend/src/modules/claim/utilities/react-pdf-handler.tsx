@@ -223,7 +223,7 @@ function ClaimPDF({ data }: { data: ClaimData }) {
                                 <View style={{ flexDirection: "row", alignItems: "baseline" }}>
                                     <Text
                                         style={{ fontSize: "17px" }}
-                                    >{`$${Math.round(data.averageIncome * 100) / 100} `}</Text>
+                                    >{`$${Math.round(data.averageIncome / 100)} `}</Text>
                                     <Text style={{ fontSize: "10px" }}>per year</Text>
                                 </View>
                             </View>
