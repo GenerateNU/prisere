@@ -101,29 +101,29 @@ export default function ExpenseTracker() {
                         {hasData?.hasFinancialData && (
                             <div>
                                 <Button
-                                    className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
+                                        className="group h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)] hover:bg-pink hover:text-fuchsia"
                                     onClick={onOpenImportModal}
                                 >
                                     {" "}
-                                    <FiUpload className="text-white" style={{ width: "14px" }} /> Upload CSV
+                                        <FiUpload className="text-white group-hover:text-fuchsia" style={{ width: "14px" }} /> Upload CSV
                                 </Button>
                             </div>
                         )}
                         {!hasData?.hasFinancialData && !hasData?.hasExternalData && (
                             <div className="flex gap-[8px]">
                                 {!hasData?.hasExternalData && !hasData?.hasFinancialData && (
-                                    <Button className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]">
+                                        <Button className="group h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)] hover:bg-pink hover:text-fuchsia">
                                         {" "}
-                                        <GoSync className="text-white" style={{ width: "14px" }} />
+                                            <GoSync className="text-white group-hover:text-fuchsia" style={{ width: "14px" }} />
                                         Sync Quickbooks
                                     </Button>
                                 )}
                                 <Button
-                                    className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
+                                        className="group h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)] hover:bg-pink hover:text-fuchsia"
                                     onClick={onOpenImportModal}
                                 >
                                     {" "}
-                                    <FiUpload className="text-white" style={{ width: "14px" }} /> Upload CSV
+                                        <FiUpload className="text-white group-hover:text-fuchsia" style={{ width: "14px" }} /> Upload CSV
                                 </Button>
                             </div>
                         )}

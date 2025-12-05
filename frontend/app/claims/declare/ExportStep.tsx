@@ -43,7 +43,7 @@ export default function ExportStep({ claimId, handleStepForward }: ExportStepPro
                 <div className="flex flex-col p-[25px] items-center justify-center gap-[56]">
                     <p className="font-bold text-[30px]">Success!</p>
                     <Button
-                        className="w-[195px] h-[34px] bg-fuchsia hover:bg-fuchsia/80 text-white"
+                        className="w-[195px] h-[34px] bg-fuchsia hover:bg-pink hover:text-fuchsia text-white"
                         onClick={() => router.push("/")}
                     >
                         Return to Dashboard
@@ -58,14 +58,14 @@ export default function ExportStep({ claimId, handleStepForward }: ExportStepPro
                     <div className="flex flex-col items-center gap-2">
                         <div className="flex flex-col items-center gap-3">
                             <Button
-                                className="w-[195px] h-[34px] bg-fuchsia hover:bg-fuchsia/80 text-white"
+                                    className="w-[195px] h-[34px] bg-fuchsia hover:bg-pink hover:text-fuchsia text-white"
                                 onClick={() => updateBusinessMutate()}
                             >
                                 Download PDF
                                 {isLoadingPDFDownload && <Spinner />}
                             </Button>
                             <Button
-                                className="w-[195px] h-[34px] bg-light-fuchsia hover:bg-light-fuchsia/80 text-fuchsia"
+                                    className="w-[195px] h-[34px] bg-pink hover:bg-fuchsia hover:text-white text-fuchsia"
                                 onClick={() => setExported(true)}
                             >
                                 Email a Copy

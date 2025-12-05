@@ -9,7 +9,7 @@ export default function BusinessRisk() {
             </CardTitle>
             <CardContent className="flex-1 p-0"></CardContent>
             <CardFooter className="p-0">
-                <Button className="h-[32px] text-[10px] rounded-[10px] w-fit">See Business Risk</Button>
+                <Button className="h-[32px] text-[10px] rounded-[10px] w-fit hover:bg-fuchsia hover:text-white">See Business Risk</Button>
             </CardFooter>
         </Card>
     );

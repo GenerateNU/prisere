@@ -40,17 +40,17 @@ export default function NoDataPopup({ isOpen, onClose }: Props) {
                     <div className="flex gap-3">
                         <Link href="/quickbooks">
                             <Button
-                                className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
+                                className="group h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)] hover:bg-pink hover:text-fuchsia"
                                 onClick={async () => {
                                     await quickbooksAuth();
                                 }}
                             >
-                                <GoSync className="text-white" style={{ width: "14px" }} /> Sync Quickbooks
+                                <GoSync className="text-white group-hover:text-fuchsia" style={{ width: "14px" }} /> Sync Quickbooks
                             </Button>
                         </Link>
                         <Link href="/upload-csv">
-                            <Button className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]">
-                                <FiUpload className="text-white" style={{ width: "14px" }} /> Upload CSV
+                            <Button className="group h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)] hover:bg-pink hover:text-fuchsia">
+                                <FiUpload className="text-white group-hover:text-fuchsia" style={{ width: "14px" }} /> Upload CSV
                             </Button>
                         </Link>
                     </div>

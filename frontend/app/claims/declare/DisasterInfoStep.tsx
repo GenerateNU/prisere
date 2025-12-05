@@ -132,9 +132,9 @@ export default function DisasterInfoStep({
             <Card className="p-[25px] flex flex-col gap-[10px] border-none shadow-none">
                 <h4 className="text-[24px] font-bold">Upload additional documents</h4>
                 <div className="flex flex-col gap-[16px]">
-                    <Button className="w-fit h-fit rounded-full py-[12px] px-[20px]" onClick={openUploadModal}>
+                    <Button className="group bg-slate hover:bg-fuchsia hover:text-white w-fit h-fit rounded-full py-[12px] px-[20px]" onClick={openUploadModal}>
                         <Label>
-                            <UploadIcon size={24} color="black" />
+                            <UploadIcon size={24} className="text-black group-hover:text-white" />
                             <p>Upload from your computer</p>
                         </Label>
                     </Button>
@@ -151,13 +151,13 @@ export default function DisasterInfoStep({
                 </div>
             </Card>
             <div className="flex items-center justify-end gap-3 w-full">
-                <Button onClick={handleStepBack} className="text-sm bg-light-fuchsia text-fuchsia w-[70px]" size="lg">
+                <Button onClick={handleStepBack} className="text-sm bg-light-fuchsia text-fuchsia hover:bg-fuchsia hover:text-white w-[70px]" size="lg">
                     Back
                 </Button>
                 <Button
                     size="lg"
                     onClick={handleProceed}
-                    className="bg-fuchsia text-white px-[20px] py-[12px] w-[230px] h-[42px] text-[14px] rounded-50"
+                    className="bg-fuchsia text-white px-[20px] py-[12px] w-[230px] h-[42px] text-[14px] rounded-50 hover:bg-pink hover:text-fuchsia"
                 >
                     Proceed to Personal Information
                 </Button>

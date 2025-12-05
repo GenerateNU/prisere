@@ -24,7 +24,7 @@ export default function DashboardWrapper({ children }: DashboardWrapperProps) {
                     <div className="flex justify-between items-center">
                         <h2 className="text-4xl font-bold">Dashboard</h2>
                         <div className="rounded-full bg-white w-10 h-10 flex items-center justify-center">
-                            <Button size={"icon"} value={"secondary"} onClick={() => setShowNotifs(true)}>
+                                <Button size={"icon"} value={"secondary"} className="hover:bg-fuchsia hover:text-white" onClick={() => setShowNotifs(true)}>
                                 <VscBellDot />
                             </Button>
                         </div>

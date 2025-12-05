@@ -128,7 +128,7 @@ function SignUpContent() {
                                     formAction={signupAction}
                                     variant="secondary"
                                     disabled={status.pending}
-                                    className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white px-[20px] py-[12px] text-[16px]"
+                                        className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white hover:bg-pink hover:text-fuchsia px-[20px] py-[12px] text-[16px]"
                                 >
                                     Sign Up
                                 </Button>

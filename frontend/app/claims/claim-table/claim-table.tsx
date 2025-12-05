@@ -32,10 +32,10 @@ export default function ClaimTable({ claimInProgress }: { claimInProgress: boole
                         <Button
                             size="sm"
                             onClick={() => setShowFilters(!showFilters)}
-                            className="h-[34px] bg-slate text-black rounded-full px-3 flex items-center gap-2 text-sm w-fit"
+                            className="group h-[34px] bg-slate hover:bg-fuchsia hover:text-white text-black rounded-full px-3 flex items-center gap-2 text-sm w-fit"
                             style={{ color: "000000" }}
                         >
-                            <IoFilterOutline className="h-4 w-4 text-black" />
+                            <IoFilterOutline className="h-4 w-4 text-black group-hover:text-white" />
                             Filters
                         </Button>
                     ) : (

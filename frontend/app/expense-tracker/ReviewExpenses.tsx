@@ -29,10 +29,10 @@ export default function ReviewExpenses({
                         <p className="text-[15px] text-nowrap text-charcoal">Track Disaster Related Expenses</p>
                     </div>
                     <Button
-                        className="w-[35px] h-[35px] bg-[var(--slate)] self-start"
+                        className="w-[35px] h-[35px] bg-[var(--slate)] hover:bg-fuchsia hover:text-white self-start"
                         onClick={handleSwitchToNetDisaster}
                     >
-                        <FaRegChartBar style={{ fontSize: "18px", width: "18px" }} />
+                        <FaRegChartBar className="hover:text-white" style={{ fontSize: "18px", width: "18px" }} />
                     </Button>
                 </div>
             </CardHeader>
@@ -68,9 +68,9 @@ export default function ReviewExpenses({
                 </div>
             </CardContent>
             <CardFooter className="p-0">
-                <Button className="h-[34px] w-fit bg-[var(--fuchsia)]" onClick={filterPending}>
-                    <FaArrowDown className="text-white" size={"10px"} style={{ strokeWidth: 0.5, width: "10px" }} />
-                    <p className="text-white text-[14px]">Go to Pending</p>
+                <Button className="group h-[34px] w-fit bg-[var(--fuchsia)] hover:bg-pink hover:text-fuchsia" onClick={filterPending}>
+                    <FaArrowDown className="text-white group-hover:text-fuchsia" size={"10px"} style={{ strokeWidth: 0.5, width: "10px" }} />
+                    <p className="text-white group-hover:text-fuchsia text-[14px]">Go to Pending</p>
                 </Button>
             </CardFooter>
         </Card>
