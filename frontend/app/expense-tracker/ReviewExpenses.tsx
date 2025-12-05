@@ -34,14 +34,12 @@ export default function ReviewExpenses({
                         <h2 className="text-[24px] text-nowrap font-bold">Review Expenses</h2>
                         <p className="text-[15px] text-nowrap text-charcoal">Track Disaster Related Expenses</p>
                     </div>
-                    {!isLoading && !error && (
-                        <Button
-                            className="w-[35px] h-[35px] bg-[var(--slate)] self-start"
-                            onClick={handleSwitchToNetDisaster}
-                        >
-                            <FaRegChartBar style={{ fontSize: "18px", width: "18px" }} />
-                        </Button>
-                    )}
+                    <Button
+                        className="w-[35px] h-[35px] bg-[var(--slate)] self-start"
+                        onClick={handleSwitchToNetDisaster}
+                    >
+                        <FaRegChartBar style={{ fontSize: "18px", width: "18px" }} />
+                    </Button>
                 </div>
             </CardHeader>
 

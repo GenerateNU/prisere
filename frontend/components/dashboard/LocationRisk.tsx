@@ -86,13 +86,11 @@ export default function LocationRisk() {
                                         riskAttributes={femaRiskCountyLookup.get(
                                             `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
                                         )}
-                                        loading={isLoading}
                                     />
                                     <HazardIndexOverviewCard
                                         riskAttributes={femaRiskCountyLookup.get(
                                             `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
                                         )}
-                                        loading={isLoading}
                                     />
                                 </div>
                             </div>
