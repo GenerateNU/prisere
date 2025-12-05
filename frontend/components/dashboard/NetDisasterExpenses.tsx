@@ -84,8 +84,8 @@ export default function NetDisasterExpense({ bannerData, onDashboard = true, han
     }));
 
     return (
-        <Card className="w-full max-w-xl p-[24px] min-h-full border-none shadow-none flex flex-col">
-            <CardHeader className="p-0">
+        <Card className="w-full max-w-xl p-[24px] border-none shadow-none flex flex-col h-full max-h-[603px]">
+            <CardHeader className="p-0 flex-shrink-0">
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div className="">
@@ -103,49 +103,62 @@ export default function NetDisasterExpense({ bannerData, onDashboard = true, han
                 </div>
             </CardHeader>
             {purchaseLineItems.isLoading ? (
-                <CardContent className="w-full p-0">
+                <CardContent className="flex-1 flex p-0">
                     <LargeLoading />
                 </CardContent>
             ) : purchaseLineItems.error ? (
-                <CardContent className="w-full p-0">
+                <CardContent className="flex-1 flex p-0">
                     <ErrorDisplay />
                 </CardContent>
             ) : (
-                <CardContent className="p-0 flex flex-col flex-1">
-                    <div className="space-y-6 flex-1 overflow-auto">
-                        {/* Total Amount */}
-                        <div className="text-2xl font-bold">${totalExpense.toLocaleString()}</div>
-                        <div
-                            className={`flex h-[29px] w-full overflow-hidden ${expensesWithPercentage.length > 1 && "gap-[4px]"}`}
-                        >
-                            {expensesWithPercentage.map((expense, index) => (
-                                <div
-                                    key={index}
-                                    style={{
-                                        flex: expense.percentage,
-                                        backgroundColor: expense.color,
-                                    }}
-                                    className="h-full rounded-[4px]"
-                                />
-                            ))}
-                        </div>
-                        <div className="space-y-3">
-                            {expensesWithPercentage.map((expense, index) => (
-                                <div key={index} className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div
-                                            className="w-[14px] h-[14px] rounded-full flex-shrink-0"
-                                            style={{ backgroundColor: expense.color }}
-                                        />
-                                        <span className="text-md font-medium">{expense.name || "Unknown Item"}</span>
+                <>
+                    <CardContent className="p-0 flex-1 overflow-y-auto pr-2 ">
+                        <div className="space-y-6">
+                            {/* Total Amount */}
+                            <div className="text-2xl font-bold">${totalExpense.toLocaleString()}</div>
+                            <div
+                                className={`flex h-[29px] w-full overflow-hidden ${expensesWithPercentage.length > 1 && "gap-[4px]"}`}
+                            >
+                                {expensesWithPercentage.map((expense, index) => (
+                                    <div
+                                        key={index}
+                                        style={{
+                                            flex: expense.percentage,
+                                            backgroundColor: expense.color,
+                                        }}
+                                        className="h-full rounded-[4px]"
+                                    />
+                                ))}
+                            </div>
+                            <div className="space-y-3">
+                                {(onDashboard ? expensesWithPercentage.slice(0, 5) : expensesWithPercentage).map(
+                                    (expense, index) => (
+                                        <div key={index} className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div
+                                                    className="w-[14px] h-[14px] rounded-full flex-shrink-0"
+                                                    style={{ backgroundColor: expense.color }}
+                                                />
+                                                <span className="text-md font-medium">
+                                                    {expense.name || "Unknown Item"}
+                                                </span>
+                                            </div>
+                                            <span className="text-md font-semibold">
+                                                ${expense.amount.toLocaleString()}
+                                            </span>
+                                        </div>
+                                    )
+                                )}
+                                {onDashboard && expensesWithPercentage.length > 5 && (
+                                    <div className="text-sm text-gray-500">
+                                        Showing 5 of {expensesWithPercentage.length}
                                     </div>
-                                    <span className="text-md font-semibold">${expense.amount.toLocaleString()}</span>
-                                </div>
-                            ))}
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    </CardContent>
                     {onDashboard && (
-                        <div className="flex justify-center pt-4">
+                        <div className="flex justify-center pt-6 flex-shrink-0">
                             <Link href={"/expense-tracker"} className="text-sm font-semibold no-underline">
                                 <Button className="h-10 text-sm text-white rounded-full w-fit px-6 bg-fuchsia">
                                     See Expense Tracker
@@ -153,7 +166,7 @@ export default function NetDisasterExpense({ bannerData, onDashboard = true, han
                             </Link>
                         </div>
                     )}
-                </CardContent>
+                </>
             )}
         </Card>
     );

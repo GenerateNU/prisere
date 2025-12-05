@@ -19,7 +19,7 @@ interface RiskIndexOverviewCardProps {
 
 export const RiskIndexOverviewCard = ({ riskAttributes, loading = false }: RiskIndexOverviewCardProps) => {
     return (
-        <Card className={`${loading && "shadow-none border-none"}`}>
+        <Card className={`"shadow-none`}>
             <div className="flex flex-col gap-4 p-4 pt-0">
                 <div className="flex flex-row justify-between">
                     <p className="font-bold">Risk Index Overview</p>
@@ -46,7 +46,7 @@ export const RiskIndexOverviewCard = ({ riskAttributes, loading = false }: RiskI
 
 export const HazardIndexOverviewCard = ({ riskAttributes, loading = false }: RiskIndexOverviewCardProps) => {
     return (
-        <Card className={`${loading && "shadow-none border-none"}`}>
+        <Card className={`shadow-none `}>
             <div className="flex flex-col gap-4 p-4 pt-0">
                 <div className="flex flex-row justify-between">
                     <p className="font-bold">Hazard Risk Rating</p>

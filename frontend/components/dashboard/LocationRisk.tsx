@@ -46,7 +46,7 @@ export default function LocationRisk() {
     }, [isLoading, map, mapReady]);
 
     return (
-        <Card className="h-full p-[25px] border-[1px]">
+        <Card className="h-full p-[25px] shadow-none border-none">
             <CardTitle className="text-[25px]">
                 <div className="flex gap-2 -top-2 items-center justify-between">
                     <div className="flex flex-row gap-2 items-center">
@@ -81,7 +81,7 @@ export default function LocationRisk() {
                                 <div>
                                     <div ref={mapRef} className="w-96 h-full rounded-xl z-0" />
                                 </div>
-                                <div className="w-full pl-4 flex flex-col gap-2">
+                                <div className="w-full pl-4 flex flex-col gap-2 shadow-none">
                                     <RiskIndexOverviewCard
                                         riskAttributes={femaRiskCountyLookup.get(
                                             `${selectedLocation?.fipsStateCode.toString().padStart(2, "0")}${selectedLocation?.fipsCountyCode.toString().padStart(3, "0")}`
