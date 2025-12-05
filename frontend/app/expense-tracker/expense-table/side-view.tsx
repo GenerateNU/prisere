@@ -17,11 +17,13 @@ export default function ExpenseSideView({ purchase, open, onOpenChange }: SideVi
     if (!purchase) return null;
 
     return (
-        <Sheet open={open} onOpenChange={onOpenChange} >
+        <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent className="w-full sm:max-w-3xl overflow-y-auto">
                 <div className="px-6 pt-10">
                     <SheetHeader className="pt-13 px-5">
-                        <SheetTitle className="text-2xl">{purchase.vendor ? purchase.vendor : "Unknown Vendor"}</SheetTitle>
+                        <SheetTitle className="text-2xl">
+                            {purchase.vendor ? purchase.vendor : "Unknown Vendor"}
+                        </SheetTitle>
                     </SheetHeader>
 
                     <div className="space-y-4 mb-8 ">
