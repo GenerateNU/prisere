@@ -47,12 +47,14 @@ export default function InsurerInfoStep({ insurerInfo, setInsurerInfo, handleSte
         <div>
             <h3 className="text-[30px] font-bold mb-8">Insurance Information</h3>
             <Card className="border-none shadow-none p-[28px] mb-10">
-                <h4 className="font-bold text-2xl">Choose which insurance applies</h4>
+                <h4 className="font-bold text-2xl mb-0">Choose which insurance applies</h4>
                 <p className="text-sm">
                     We know that you might have different insurance coverage for different locations. Please select
                     which insurance applies to this specific claim report.
                 </p>
-                <InsuranceCard insuranceSelected={insurerInfo.id} onInsuranceSelect={handleInsuranceSelect} />
+                <div className="border border-gray-300 rounded-lg">
+                    <InsuranceCard insuranceSelected={insurerInfo.id} onInsuranceSelect={handleInsuranceSelect} />
+                </div>
             </Card>
             <div className="flex items-center justify-end gap-3 w-full">
                 <Button onClick={handleStepBack} className="text-sm bg-light-fuchsia text-fuchsia w-[70px]" size="lg">
