@@ -1,6 +1,4 @@
-"use server";
-
-import { authHeader, authWrapper, getClient } from "./client";
+import { authHeader, clientAuthWrapper, getClient } from "./client";
 import { CreateClaimLocationRequest, CreateClaimLocationResponse } from "@/types/claim-location";
 
 export const createClaimLocationLink = async (
@@ -18,5 +16,5 @@ export const createClaimLocationLink = async (
             throw Error(error?.error);
         }
     };
-    return authWrapper<CreateClaimLocationResponse>()(req);
+    return clientAuthWrapper<CreateClaimLocationResponse>()(req);
 };

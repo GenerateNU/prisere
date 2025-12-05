@@ -1,5 +1,4 @@
-"use server";
-import { authHeader, authWrapper, getClient } from "./client";
+import { authHeader, clientAuthWrapper, getClient } from "./client";
 import { CreateInvoiceRequest, Invoice, TotalInvoiceSum } from "../types/invoice";
 
 export const getAllInvoicesForCompany = async (pageNumber: number, resultsPerPage: number): Promise<Invoice> => {
@@ -20,7 +19,7 @@ export const getAllInvoicesForCompany = async (pageNumber: number, resultsPerPag
             throw Error(error?.error);
         }
     };
-    return authWrapper<Invoice>()(req);
+    return clientAuthWrapper<Invoice>()(req);
 };
 
 export const sumInvoicesByCompanyAndDateRange = async (startDate: Date, endDate: Date): Promise<TotalInvoiceSum> => {
@@ -43,7 +42,7 @@ export const sumInvoicesByCompanyAndDateRange = async (startDate: Date, endDate:
         }
     };
 
-    return authWrapper<TotalInvoiceSum>()(req);
+    return clientAuthWrapper<TotalInvoiceSum>()(req);
 };
 
 export const createInvoice = async (newLineItems: CreateInvoiceRequest): Promise<Invoice> => {
@@ -61,5 +60,5 @@ export const createInvoice = async (newLineItems: CreateInvoiceRequest): Promise
         }
     };
 
-    return authWrapper<Invoice>()(req);
+    return clientAuthWrapper<Invoice>()(req);
 };

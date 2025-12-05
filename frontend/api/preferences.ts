@@ -1,7 +1,5 @@
-"use server";
-
 import { UpdateUserNotificationPreferencesDTO, UserPreferences } from "@/types/preferences";
-import { authHeader, authWrapper, getClient } from "./client";
+import { authHeader, clientAuthWrapper, getClient } from "./client";
 
 export const getUserPreferences = async () => {
     const req = async (token: string) => {
@@ -15,7 +13,7 @@ export const getUserPreferences = async () => {
             throw Error(error?.error);
         }
     };
-    return authWrapper<UserPreferences>()(req);
+    return clientAuthWrapper<UserPreferences>()(req);
 };
 
 export const updateUserPreferences = async (preferences: UpdateUserNotificationPreferencesDTO) => {
@@ -31,5 +29,5 @@ export const updateUserPreferences = async (preferences: UpdateUserNotificationP
             throw Error(error?.error);
         }
     };
-    return authWrapper<Awaited<ReturnType<typeof req>>>()(req);
+    return clientAuthWrapper<Awaited<ReturnType<typeof req>>>()(req);
 };

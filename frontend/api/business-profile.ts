@@ -1,6 +1,5 @@
-"use server";
 import { DocumentResponse, PresignedUploadResponse, DocumentCategories, DocumentTypes } from "@/types/documents";
-import { authHeader, authWrapper, getClient } from "./client";
+import { authHeader, clientAuthWrapper, getClient } from "./client";
 import { getCompany } from "./company";
 import { gzip } from "pako";
 
@@ -28,7 +27,7 @@ export const getAllDocuments = async (): Promise<DocumentResponse[]> => {
         return data;
     };
 
-    return authWrapper<DocumentResponse[]>()(req);
+    return clientAuthWrapper<DocumentResponse[]>()(req);
 };
 
 export async function getBusinessDocumentUploadUrl(
@@ -56,7 +55,7 @@ export async function getBusinessDocumentUploadUrl(
         return data;
     };
 
-    return authWrapper<PresignedUploadResponse>()(req);
+    return clientAuthWrapper<PresignedUploadResponse>()(req);
 }
 
 export async function confirmBusinessDocumentUpload(
@@ -84,7 +83,7 @@ export async function confirmBusinessDocumentUpload(
         }
     };
 
-    return authWrapper<void>()(req);
+    return clientAuthWrapper<void>()(req);
 }
 
 export async function updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void> {
@@ -101,7 +100,7 @@ export async function updateDocumentCategory(documentId: string, category: Docum
         }
     };
 
-    return authWrapper<void>()(req);
+    return clientAuthWrapper<void>()(req);
 }
 
 export async function deleteBusinessDocument(key: string, documentId: string): Promise<void> {
@@ -118,7 +117,7 @@ export async function deleteBusinessDocument(key: string, documentId: string): P
         }
     };
 
-    return authWrapper<void>()(req);
+    return clientAuthWrapper<void>()(req);
 }
 
 export async function uploadToS3(uploadUrl: string, file: File): Promise<void> {

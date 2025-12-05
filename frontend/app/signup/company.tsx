@@ -85,7 +85,8 @@ export default function Company({ handleNext: incrementNext }: CompanyInfoProps)
     } = useMutation<Company, Error, CreateCompanyRequest>({
         mutationFn: (payload: CreateCompanyRequest) => createCompany(payload),
         onError: (error: Error) => {
-            console.error("Error creating company:", error);
+            const companyError = error.message || "Error creating a company. Check required fields and try again.";
+            setCompanyError(companyError);
         },
         onSuccess: async (data: Company) => {
             await setCompanyMetadata(data.id);
