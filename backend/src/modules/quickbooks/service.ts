@@ -404,10 +404,18 @@ function getPurchaseLineItems(purchase: QBPurchase) {
                     quickBooksId: parseInt(lineItem.Id),
                     type: PurchaseLineItemType.TYPICAL, // when importing, for now we mark everything as typical
                     description: lineItem.Description,
-                    category: lineItem.AccountBasedExpenseLineDetail.AccountRef.value,
+                    category: getLastAccountName(lineItem.AccountBasedExpenseLineDetail.AccountRef.name),
                 });
         }
     }
 
     return out;
 }
+
+function getLastAccountName(accountPath: string | undefined): string | undefined {
+    if(!accountPath) {
+        return accountPath;
+    }
+    const parts = accountPath.split(':');
+    return parts[parts.length - 1];
+  }
