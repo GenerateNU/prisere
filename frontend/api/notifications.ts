@@ -1,11 +1,12 @@
+"use server";
 import {
-    MarkReadNotificationResponse,
     GetNotificationsResponse,
+    MarkAllAsReadResponse,
+    MarkReadNotificationResponse,
     NotificationFilters,
     UnreadNotificationsResponse,
 } from "@/types/notifications";
-import { authHeader, clientAuthWrapper, getClient } from "./client";
-import { MarkAllAsReadResponse } from "@/types/notifications";
+import { authHeader, authWrapper, getClient } from "./client";
 
 export const getNotifications = async (filters?: NotificationFilters): Promise<GetNotificationsResponse> => {
     const req = async (token: string): Promise<GetNotificationsResponse> => {
@@ -29,7 +30,7 @@ export const getNotifications = async (filters?: NotificationFilters): Promise<G
         }
     };
 
-    return clientAuthWrapper<GetNotificationsResponse>()(req);
+    return authWrapper<GetNotificationsResponse>()(req);
 };
 
 export const updateNotificationStatus = async (
@@ -53,7 +54,7 @@ export const updateNotificationStatus = async (
         }
     };
 
-    return clientAuthWrapper<MarkReadNotificationResponse>()(req);
+    return authWrapper<MarkReadNotificationResponse>()(req);
 };
 
 export const markAllNotificationsAsRead = async (): Promise<MarkAllAsReadResponse> => {
@@ -70,7 +71,7 @@ export const markAllNotificationsAsRead = async (): Promise<MarkAllAsReadRespons
         }
     };
 
-    return clientAuthWrapper<MarkAllAsReadResponse>()(req);
+    return authWrapper<MarkAllAsReadResponse>()(req);
 };
 
 export const getUserUnreadNotifications = async (): Promise<UnreadNotificationsResponse> => {
@@ -87,5 +88,5 @@ export const getUserUnreadNotifications = async (): Promise<UnreadNotificationsR
         }
     };
 
-    return clientAuthWrapper<UnreadNotificationsResponse>()(req);
+    return authWrapper<UnreadNotificationsResponse>()(req);
 };

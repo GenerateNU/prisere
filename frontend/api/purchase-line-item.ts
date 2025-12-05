@@ -1,5 +1,6 @@
+"use server";
 import { CreatePurchaseLineItemsRequest, CreatePurchaseLineItemsResponse } from "../types/purchase-line-items";
-import { authHeader, clientAuthWrapper, getClient } from "./client";
+import { authHeader, authWrapper, getClient } from "./client";
 
 export const createBulkPurchaseLineItems = async (
     newLineItems: CreatePurchaseLineItemsRequest
@@ -18,5 +19,5 @@ export const createBulkPurchaseLineItems = async (
         }
     };
 
-    return clientAuthWrapper<CreatePurchaseLineItemsResponse>()(req);
+    return authWrapper<CreatePurchaseLineItemsResponse>()(req);
 };

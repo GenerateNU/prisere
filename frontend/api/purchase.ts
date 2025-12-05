@@ -1,3 +1,4 @@
+"use server";
 import {
     CreatePurchaseInput,
     CreatePurchaseResponse,
@@ -6,7 +7,7 @@ import {
     PurchasesWithCount,
     PurchaseWithLineItems,
 } from "../types/purchase";
-import { authHeader, clientAuthWrapper, getClient } from "./client";
+import { authHeader, authWrapper, getClient } from "./client";
 
 export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate: Date): Promise<{ total: number }> => {
     const req = async (token: string): Promise<{ total: number }> => {
@@ -28,7 +29,7 @@ export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate
         }
     };
 
-    return clientAuthWrapper<{ total: number }>()(req);
+    return authWrapper<{ total: number }>()(req);
 };
 
 export const updateCategory = async (category: string, purchaseLineIds: string[], removeCategory: boolean) => {
@@ -48,7 +49,7 @@ export const updateCategory = async (category: string, purchaseLineIds: string[]
         }
     };
 
-    return clientAuthWrapper<void>()(req);
+    return authWrapper<void>()(req);
 };
 
 const typeMap: Record<string, PurchaseLineItemType> = {
@@ -73,7 +74,7 @@ export const updateType = async (type: typeString, purchaseLineIds: string[]) =>
         }
     };
 
-    return clientAuthWrapper<void>()(req);
+    return authWrapper<void>()(req);
 };
 
 export const createPurchaseForCompany = async (newPurchase: CreatePurchaseInput): Promise<CreatePurchaseResponse> => {
@@ -91,7 +92,7 @@ export const createPurchaseForCompany = async (newPurchase: CreatePurchaseInput)
         }
     };
 
-    return clientAuthWrapper<CreatePurchaseResponse>()(req);
+    return authWrapper<CreatePurchaseResponse>()(req);
 };
 
 export const fetchPurchases = async (filters: FilteredPurchases): Promise<PurchasesWithCount> => {
@@ -119,7 +120,7 @@ export const fetchPurchases = async (filters: FilteredPurchases): Promise<Purcha
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<PurchasesWithCount>()(req);
+    return authWrapper<PurchasesWithCount>()(req);
 };
 
 export const fetchAllCategories = async (): Promise<string[]> => {
@@ -134,7 +135,7 @@ export const fetchAllCategories = async (): Promise<string[]> => {
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<string[]>()(req);
+    return authWrapper<string[]>()(req);
 };
 
 export const getAllPurchasesForExport = async (
@@ -166,5 +167,5 @@ export const getAllPurchasesForExport = async (
         }
     };
 
-    return clientAuthWrapper<PurchaseWithLineItems[]>()(req);
+    return authWrapper<PurchaseWithLineItems[]>()(req);
 };

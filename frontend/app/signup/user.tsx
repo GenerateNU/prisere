@@ -32,9 +32,15 @@ export default function UserInfoPage({ email, handleNext }: UserInfoProps) {
 
     const [fieldError, setFieldError] = useState<string | null>(null);
 
+    const phoneRegex = /^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+
     const handleSubmit = () => {
         if (!payload.firstName || !payload.lastName || !payload.phoneNumber) {
             setFieldError("Please fill in all required fields.");
+            return;
+        }
+        if (!phoneRegex.test(payload.phoneNumber)) {
+            setFieldError("Please enter a valid phone number.");
             return;
         }
         setFieldError(null);

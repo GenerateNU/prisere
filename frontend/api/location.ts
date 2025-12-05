@@ -1,3 +1,4 @@
+"use server";
 import {
     CreateLocationBulkRequest,
     CreateLocationRequest,
@@ -7,7 +8,7 @@ import {
     UpdateLocationRequest,
     UpdateLocationResponse,
 } from "@/types/location";
-import { authHeader, clientAuthWrapper, getClient } from "./client";
+import { authHeader, authWrapper, getClient } from "./client";
 
 export const createLocation = async (payload: CreateLocationRequest): Promise<Location> => {
     const req = async (token: string): Promise<Location> => {
@@ -28,7 +29,7 @@ export const createLocation = async (payload: CreateLocationRequest): Promise<Lo
             throw apiError;
         }
     };
-    return clientAuthWrapper<Location>()(req);
+    return authWrapper<Location>()(req);
 };
 
 export const createLocationBulk = async (payload: CreateLocationBulkRequest): Promise<Location[]> => {
@@ -50,7 +51,7 @@ export const createLocationBulk = async (payload: CreateLocationBulkRequest): Pr
             throw apiError;
         }
     };
-    return clientAuthWrapper<Location[]>()(req);
+    return authWrapper<Location[]>()(req);
 };
 
 export const updateLocationAddress = async (payload: UpdateLocationRequest): Promise<UpdateLocationResponse> => {
@@ -66,7 +67,7 @@ export const updateLocationAddress = async (payload: UpdateLocationRequest): Pro
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<UpdateLocationResponse>()(req);
+    return authWrapper<UpdateLocationResponse>()(req);
 };
 
 export const updateLocationAddressBulk = async (
@@ -84,7 +85,7 @@ export const updateLocationAddressBulk = async (
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<UpdateLocationBulkResponse>()(req);
+    return authWrapper<UpdateLocationBulkResponse>()(req);
 };
 
 export const deleteLocation = async (locationId: string): Promise<void> => {
@@ -102,5 +103,5 @@ export const deleteLocation = async (locationId: string): Promise<void> => {
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<void>()(req);
+    return authWrapper<void>()(req);
 };

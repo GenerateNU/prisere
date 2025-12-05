@@ -1,3 +1,4 @@
+"use server";
 import {
     CreateInsurancePolicyBulkRequest,
     CreateInsurancePolicyRequest,
@@ -8,7 +9,7 @@ import {
     UpdateInsurancePolicyRequest,
     UpdateInsurancePolicyResponse,
 } from "@/types/insurance-policy";
-import { getClient, authHeader, clientAuthWrapper } from "./client";
+import { getClient, authHeader, authWrapper } from "./client";
 
 export const createInsurancePolicy = async (payload: CreateInsurancePolicyRequest): Promise<InsurancePolicy> => {
     const req = async (token: string): Promise<InsurancePolicy> => {
@@ -23,7 +24,7 @@ export const createInsurancePolicy = async (payload: CreateInsurancePolicyReques
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<InsurancePolicy>()(req);
+    return authWrapper<InsurancePolicy>()(req);
 };
 
 export const createInsurancePolicyBulk = async (
@@ -41,7 +42,7 @@ export const createInsurancePolicyBulk = async (
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<InsurancePolicy[]>()(req);
+    return authWrapper<InsurancePolicy[]>()(req);
 };
 
 export const getInsurancePolicies = async (): Promise<GetInsurancePoliciesResponseType> => {
@@ -56,7 +57,7 @@ export const getInsurancePolicies = async (): Promise<GetInsurancePoliciesRespon
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<GetInsurancePoliciesResponseType>()(req);
+    return authWrapper<GetInsurancePoliciesResponseType>()(req);
 };
 
 export const updateInsurancePolicy = async (
@@ -74,7 +75,7 @@ export const updateInsurancePolicy = async (
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<UpdateInsurancePolicyResponse>()(req);
+    return authWrapper<UpdateInsurancePolicyResponse>()(req);
 };
 
 export const updateInsurancePolicyBulk = async (
@@ -92,7 +93,7 @@ export const updateInsurancePolicyBulk = async (
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<UpdateInsurancePolicyBulkResponse>()(req);
+    return authWrapper<UpdateInsurancePolicyBulkResponse>()(req);
 };
 
 export const deleteInsurancePolicy = async (insurancePolicyId: string): Promise<void> => {
@@ -110,5 +111,5 @@ export const deleteInsurancePolicy = async (insurancePolicyId: string): Promise<
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<void>()(req);
+    return authWrapper<void>()(req);
 };

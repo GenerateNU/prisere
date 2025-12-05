@@ -1,3 +1,4 @@
+"use server";
 import { BannerData } from "@/types/user";
 import { getNotifications } from "./notifications";
 import { getClaimInProgress } from "./company";
