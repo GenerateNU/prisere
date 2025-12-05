@@ -23,6 +23,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 type SortOrder = "asc" | "desc";
 
 export default function ViewDocuments() {
+    // Replace hardcoded documents with state
     const [documents, setDocuments] = useState<BusinessDocument[]>([]);
     const [isLoadingDocuments, setIsLoadingDocuments] = useState(true);
     const [error, setError] = useState(false);
@@ -40,6 +41,7 @@ export default function ViewDocuments() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
 
+    // Load documents on component mount
     useEffect(() => {
         loadDocuments();
     }, []);
@@ -50,8 +52,12 @@ export default function ViewDocuments() {
 
             const docs = await getAllDocuments();
 
+            // Transform the response into the BusinessDocument type
             const transformedDocs: BusinessDocument[] = docs!.map((doc) => {
+                // Access the nested document object
                 const { document, downloadUrl } = doc;
+
+                // Extract the filename and extension from the key
                 const filename = document.key.split("/").pop() || document.id;
                 const extension = "." + (document.key.split(".").pop() || "pdf");
 
@@ -73,6 +79,7 @@ export default function ViewDocuments() {
                 };
             });
 
+            // Update the state with the transformed documents
             setDocuments(transformedDocs);
         } catch (_error) {
             setError(true);
@@ -161,17 +168,22 @@ export default function ViewDocuments() {
         setIsUploading(true);
 
         try {
+            //Get presigned upload URL from backend
             const { uploadUrl, key, documentId } = await getBusinessDocumentUploadUrl(
                 selectedFile.name,
                 selectedFile.type
             );
 
+            // Upload directly to S3
             await uploadToS3(uploadUrl, selectedFile);
+
+            // Confirm upload with backend
             await confirmBusinessDocumentUpload(key, documentId, uploadCategory || undefined);
             setIsModalOpen(false);
             setFile(null);
             setUploadCategory("");
 
+            // Refresh documents list to show the newly uploaded file
             await loadDocuments();
         } catch (error) {
             console.error("Error uploading file:", error);
@@ -189,6 +201,7 @@ export default function ViewDocuments() {
         document: null,
     });
 
+    // Add delete handler
     const handleDeleteClick = (doc: BusinessDocument) => {
         setDeleteConfirmation({
             isOpen: true,
@@ -202,10 +215,12 @@ export default function ViewDocuments() {
         try {
             await deleteBusinessDocument(deleteConfirmation.document.key, deleteConfirmation.document.documentId);
 
+            // Remove from local state
             setDocuments((prevDocs) =>
                 prevDocs.filter((doc) => doc.documentId !== deleteConfirmation.document?.documentId)
             );
 
+            // Close confirmation dialog
             setDeleteConfirmation({ isOpen: false, document: null });
         } catch (error) {
             console.error("Error deleting document:", error);
@@ -255,6 +270,7 @@ export default function ViewDocuments() {
                     </div>
                 )}
 
+                {/* Show loading state or documents */}
                 {isLoadingDocuments ? (
                     <div className="py-8 flex items-center justify-center w-full">
                         <Loading lines={2} />
@@ -273,6 +289,7 @@ export default function ViewDocuments() {
                             documents={paginatedDocuments}
                             onCategoryChange={async (documentId, newCategory) => {
                                 try {
+                                    // Update in backend first then local
                                     await updateDocumentCategory(documentId, newCategory as DocumentCategories);
 
                                     setDocuments((prevDocs) =>
@@ -294,6 +311,7 @@ export default function ViewDocuments() {
                             }}
                             onDelete={handleDeleteClick}
                             onEdit={() => {
+                                // TODO: Implement edit functionality
                                 alert("Edit functionality coming soon!");
                             }}
                             dateSort={sortOrder}
@@ -352,6 +370,7 @@ export default function ViewDocuments() {
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black/30 flex justify-center items-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-[600px] max-w-[90%] relative">
+                        {/* Close button */}
                         <button
                             onClick={() => setIsModalOpen(false)}
                             disabled={isUploading}
@@ -360,12 +379,15 @@ export default function ViewDocuments() {
                             ×
                         </button>
 
+                        {/* Title */}
                         <h2 className="text-xl font-semibold text-center mb-2">Upload a File</h2>
 
+                        {/* Subtitle */}
                         <p className="text-sm text-gray-500 text-center mb-6">
                             Upload a PDF file to store in the Business Documents table
                         </p>
 
+                        {/* Drag and drop area */}
                         <div
                             onClick={() => !isUploading && document.getElementById("file-upload")?.click()}
                             onDragOver={(e) => {
@@ -381,6 +403,7 @@ export default function ViewDocuments() {
                             }}
                             className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-gray-400 transition-colors"
                         >
+                            {/* Upload icon - replace with your own */}
                             <div className="flex justify-center mb-4">
                                 <svg
                                     width="55"
@@ -408,6 +431,7 @@ export default function ViewDocuments() {
                             />
                         </div>
 
+                        {/* File details (shown after file is selected) */}
                         {selectedFile && (
                             <div className="mt-4 p-4 bg-gray-50 rounded-md border border-gray-200">
                                 <div className="flex items-center justify-between">
@@ -431,6 +455,7 @@ export default function ViewDocuments() {
                             </div>
                         )}
 
+                        {/* Action buttons */}
                         <div className="flex justify-end gap-3 mt-6">
                             <Button
                                 className="bg-gray-100 text-gray-700 hover:bg-gray-200 w-fit h-[40px] px-6"
