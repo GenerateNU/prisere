@@ -167,7 +167,7 @@ export default function LocationsCard({
                     </div>
 
                     <Button
-                        className="w-[196px] flex items-center text-[16px] h-[34px] self-start px-[12px] py-[4px] underline bg-slate hover:text-gray-600"
+                        className="w-[196px] flex items-center text-[16px] h-[34px] self-start px-[12px] py-[4px] w-fit bg-slate hover:text-gray-600"
                         onClick={addLocation}
                     >
                         <IoAddCircleOutline /> Add a location

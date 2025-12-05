@@ -103,7 +103,7 @@ export function PersonalInfoSettings() {
                 </div>
             }
         >
-            <div className="h-px w-ful bg-[#DBDBDB] mb-3" />
+            
             {mode === "view" ? (
                 <div className="flex gap-10">
                     <InfoBlock title="First Name">{userInfoData?.firstName}</InfoBlock>
