@@ -1,4 +1,9 @@
-import { MarkReadNotificationResponse, GetNotificationsResponse, NotificationFilters } from "@/types/notifications";
+import {
+    MarkReadNotificationResponse,
+    GetNotificationsResponse,
+    NotificationFilters,
+    UnreadNotificationsResponse,
+} from "@/types/notifications";
 import { authHeader, clientAuthWrapper, getClient } from "./client";
 import { MarkAllAsReadResponse } from "@/types/notifications";
 
@@ -82,5 +87,5 @@ export const getUserUnreadNotifications = async (): Promise<UnreadNotificationsR
         }
     };
 
-    return authWrapper<UnreadNotificationsResponse>()(req);
+    return clientAuthWrapper<UnreadNotificationsResponse>()(req);
 };
