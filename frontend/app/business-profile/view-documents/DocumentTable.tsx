@@ -54,7 +54,10 @@ export default function DocumentTable({
                         <TableHead className="text-[14px] w-[150px]">File Type</TableHead>
                         <TableHead className="text-[14px] w-[150px]">Category</TableHead>
                         <TableHead className="text-[14px] w-[120px]">
-                            <div className="flex items-center hover:text-slate-700 cursor-pointer" onClick={handleDateSort}>
+                            <div
+                                className="flex items-center hover:text-slate-700 cursor-pointer"
+                                onClick={handleDateSort}
+                            >
                                 {dateSort === "asc" ? (
                                     <IoIosArrowRoundUp style={{ width: "18px", height: "18px" }} />
                                 ) : (
@@ -70,8 +73,12 @@ export default function DocumentTable({
                     {documents.length !== 0 &&
                         documents.map((doc, index) => (
                             <TableRow key={index}>
-                                <TableCell className="truncate overflow-hidden whitespace-nowrap">{doc.title}</TableCell>
-                                <TableCell className="truncate overflow-hidden whitespace-nowrap">{doc.fileType}</TableCell>
+                                <TableCell className="truncate overflow-hidden whitespace-nowrap">
+                                    {doc.title}
+                                </TableCell>
+                                <TableCell className="truncate overflow-hidden whitespace-nowrap">
+                                    {doc.fileType}
+                                </TableCell>
                                 <TableCell className="truncate overflow-hidden whitespace-nowrap">
                                     <CategorySelector
                                         selectedCategory={(doc.category as DocumentCategories | null) ?? ""}

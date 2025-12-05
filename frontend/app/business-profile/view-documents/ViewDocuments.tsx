@@ -36,7 +36,7 @@ export default function ViewDocuments() {
     const [isUploading, setIsUploading] = useState(false);
     const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
     const [uploadCategory, setUploadCategory] = useState<DocumentCategories | "">("");
-    
+
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
