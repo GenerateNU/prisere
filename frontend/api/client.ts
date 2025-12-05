@@ -37,3 +37,14 @@ export const authWrapper =
 export const getClientAuthToken = async (): Promise<string> => {
     return await getAuthToken();
 };
+
+/**
+ * Client-side: Wraps a function that needs authentication token
+ * Uses getAuthToken() which reads from browser cookies/storage
+ */
+export const clientAuthWrapper =
+    <T>() =>
+    async (fn: (token: string) => Promise<T>) => {
+        const token = await getAuthToken();
+        return fn(token);
+    };

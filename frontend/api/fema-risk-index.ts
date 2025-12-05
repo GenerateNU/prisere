@@ -1,7 +1,5 @@
-"use server";
-
 import { FemaRisKIndexCountiesFemaDisaster } from "@/types/fema-risk-index";
-import { authHeader, authWrapper, getClient } from "./client";
+import { authHeader, clientAuthWrapper, getClient } from "./client";
 
 export const getFemaRiskIndexData = async (): Promise<FemaRisKIndexCountiesFemaDisaster> => {
     const req = async (token: string): Promise<FemaRisKIndexCountiesFemaDisaster> => {
@@ -15,7 +13,7 @@ export const getFemaRiskIndexData = async (): Promise<FemaRisKIndexCountiesFemaD
             throw Error(error?.error);
         }
     };
-    return authWrapper<FemaRisKIndexCountiesFemaDisaster>()(req);
+    return clientAuthWrapper<FemaRisKIndexCountiesFemaDisaster>()(req);
 };
 
 export const refreshFemaRiskIndexData = async (): Promise<void> => {
@@ -28,5 +26,5 @@ export const refreshFemaRiskIndexData = async (): Promise<void> => {
             throw Error(error?.error);
         }
     };
-    return authWrapper<void>()(req);
+    return clientAuthWrapper<void>()(req);
 };
