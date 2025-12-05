@@ -531,6 +531,8 @@ export class ClaimTransaction implements IClaimTransaction {
                 return null;
             }
 
+            console.log(claim.purchaseLineItems, "claim.purchaseLineItems");
+
             return {
                 id: claim.id,
                 name: claim.name,
