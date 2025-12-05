@@ -19,7 +19,6 @@ export const LocationsDropDown = ({ availableLocations, handleSelect, selectedLo
                     className="h-8 w-[60%] flex gap-2 rounded-full bg-muted text-black text-[20px] border border-border/40 hover:bg-muted/80 justify-between"
                 >
                     <div className="flex items-center gap-1">
-                        <MapIcon className="h-4 w-4" />
                         <span className="truncate">
                             {selectedLocation ? `${selectedLocation.city} - ${selectedLocation.alias}` : ""}
                         </span>

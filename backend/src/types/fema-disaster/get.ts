@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod";
 import { FIPSCounty, FIPSState, incidentTypeString } from "./common";
 
 export const GetAllDisastersResponseSchema = z.array(

@@ -47,13 +47,13 @@ export default function DocumentTable({
 
     return (
         <div>
-            <Table>
+            <Table className="text-sm">
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="text-[14px]">Title</TableHead>
-                        <TableHead className="text-[14px]">File Type</TableHead>
-                        <TableHead className="text-[14px]">Category</TableHead>
-                        <TableHead className="text-[14px]">
+                        <TableHead className="">Title</TableHead>
+                        <TableHead className="">File Type</TableHead>
+                        <TableHead className="">Category</TableHead>
+                        <TableHead className="">
                             <div className="flex items-center hover:text-slate-700" onClick={handleDateSort}>
                                 {dateSort === "asc" ? (
                                     <IoIosArrowRoundUp style={{ width: "18px", height: "18px" }} />
@@ -63,16 +63,16 @@ export default function DocumentTable({
                                 Date
                             </div>
                         </TableHead>
-                        <TableHead className="text-[14px]"></TableHead>
+                        <TableHead></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {documents.length !== 0 &&
                         documents.map((doc, index) => (
                             <TableRow key={index}>
-                                <TableCell className="border-y text-[12px]">{doc.title}</TableCell>
-                                <TableCell className="border-y text-[12px]">{doc.fileType}</TableCell>
-                                <TableCell className="border-y text-[12px]">
+                                <TableCell className="border-y">{doc.title}</TableCell>
+                                <TableCell className="border-y">{doc.fileType}</TableCell>
+                                <TableCell className="border-y">
                                     <CategorySelector
                                         selectedCategory={(doc.category as DocumentCategories | null) ?? ""}
                                         onCategoryChange={(newCategory) =>
@@ -82,14 +82,14 @@ export default function DocumentTable({
                                         categoryColors={categoryColors}
                                     />
                                 </TableCell>
-                                <TableCell className="border-y text-[12px]">{doc.date.toLocaleDateString()}</TableCell>
+                                <TableCell className="border-y">{doc.date.toLocaleDateString()}</TableCell>
                                 <TableCell className="border-y h-[53px]">
                                     <div className="flex justify-end gap-[6px]">
                                         <Button
                                             className="w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-[var(--slate)]"
                                             onClick={() => onDownload(doc.url)}
                                         >
-                                            <FiDownload className="text-[14px]" style={{ width: "14px" }} />
+                                            <FiDownload style={{ width: "14px" }} />
                                         </Button>
                                         <Button
                                             className="w-[35px] h-[35px] flex items-center justify-center rounded-100 bg-[var(--slate)]"
@@ -111,14 +111,14 @@ export default function DocumentTable({
                 <TableFooter>
                     {documents.length === 0 && !initialPending && (
                         <TableRow>
-                            <TableCell colSpan={5} className="text-center py-[20px] text-[14px] bg-white">
+                            <TableCell colSpan={5} className="text-center py-[20px] bg-white">
                                 No documents to show
                             </TableCell>
                         </TableRow>
                     )}
                     {documents.length === 0 && initialPending && (
                         <TableRow>
-                            <TableCell colSpan={5} className="text-center py-[20px] text-[14px] bg-white">
+                            <TableCell colSpan={5} className="text-center py-[20px] bg-white">
                                 <div className="flex justify-center">
                                     <Spinner />
                                 </div>

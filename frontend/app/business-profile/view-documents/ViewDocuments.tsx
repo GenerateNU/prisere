@@ -220,8 +220,8 @@ export default function ViewDocuments() {
         <Card className="border-none shadow-none">
             <CardHeader className="flex justify-between">
                 <div className="flex flex-col gap-[10px]">
-                    <h3 className="text-[24px]">Business Documents</h3>
-                    <p className="text-[14px]">Upload general business documents below.</p>
+                    <h3 className="text-[24px] font-bold">Business Documents</h3>
+                    <p className="text-sm">Upload general business documents below.</p>
                 </div>
                 <div className="flex gap-[6px]">
                     <Button

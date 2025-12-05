@@ -21,8 +21,8 @@ export default function ExportStep({ claimId, handleStepForward }: ExportStepPro
 
     const { mutate: updateBusinessMutate } = useMutation({
         mutationFn: async () => {
-            const result = await createClaimPDF(claimId!);
             setIsLoadingPDFDownload(true);
+            const result = await createClaimPDF(claimId!);
             return result.url;
         },
         onError: (error: Error) => {
@@ -62,7 +62,7 @@ export default function ExportStep({ claimId, handleStepForward }: ExportStepPro
                                 onClick={() => updateBusinessMutate()}
                             >
                                 Download PDF
-                                {isLoadingPDFDownload && <Spinner />}
+                                {isLoadingPDFDownload && <Spinner fontSize={20} />}
                             </Button>
                             <Button
                                 className="w-[195px] h-[34px] bg-light-fuchsia hover:bg-light-fuchsia/80 text-fuchsia"
