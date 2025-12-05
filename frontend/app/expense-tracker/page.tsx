@@ -129,11 +129,15 @@ export default function ExpenseTracker() {
                         {!hasData?.hasExternalData && (
                             <div>
                                 <Button
-                                        className="group h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)] hover:bg-pink hover:text-fuchsia"
+                                    className="group h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)] hover:bg-pink hover:text-fuchsia"
                                     onClick={onOpenImportModal}
                                 >
                                     {" "}
-                                        <FiUpload className="text-white group-hover:text-fuchsia" style={{ width: "14px" }} /> Upload CSV
+                                    <FiUpload
+                                        className="text-white group-hover:text-fuchsia"
+                                        style={{ width: "14px" }}
+                                    />{" "}
+                                    Upload CSV
                                 </Button>
                             </div>
                         )}

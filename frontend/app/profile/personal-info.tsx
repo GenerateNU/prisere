@@ -80,7 +80,9 @@ export function PersonalInfoSettings() {
                         size="icon"
                         className={cn(
                             "group bg-slate cursor-pointer",
-                            mode === "edit" ? "bg-fuchsia hover:bg-pink hover:text-fuchsia" : "bg-slate hover:bg-fuchsia hover:text-white"
+                            mode === "edit"
+                                ? "bg-fuchsia hover:bg-pink hover:text-fuchsia"
+                                : "bg-slate hover:bg-fuchsia hover:text-white"
                         )}
                         onClick={() =>
                             setMode((prev) => {
@@ -93,10 +95,21 @@ export function PersonalInfoSettings() {
                             })
                         }
                     >
-                        <SquarePenIcon className={cn(mode === "edit" ? "text-white group-hover:text-fuchsia" : "text-black group-hover:text-white")} />
+                        <SquarePenIcon
+                            className={cn(
+                                mode === "edit"
+                                    ? "text-white group-hover:text-fuchsia"
+                                    : "text-black group-hover:text-white"
+                            )}
+                        />
                     </Button>
                     {mode == "edit" && (
-                        <Button size="icon" variant="secondary" className="group hover:bg-fuchsia hover:text-white" onClick={onDiscardChanges}>
+                        <Button
+                            size="icon"
+                            variant="secondary"
+                            className="group hover:bg-fuchsia hover:text-white"
+                            onClick={onDiscardChanges}
+                        >
                             <HiOutlineX className={"text-black group-hover:text-white"} />
                         </Button>
                     )}
@@ -136,7 +149,7 @@ export function PersonalInfoSettings() {
                     </div>
                     <div className="flex justify-end mt-4">
                         <Button
-                                className="bg-light-fuchsia hover:bg-fuchsia hover:text-white text-fuchsia w-40 cursor-pointer"
+                            className="bg-light-fuchsia hover:bg-fuchsia hover:text-white text-fuchsia w-40 cursor-pointer"
                             size="sm"
                             onClick={onSaveInfo}
                         >

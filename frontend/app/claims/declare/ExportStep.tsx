@@ -61,11 +61,11 @@ export default function ExportStep({ claimId, handleStepForward }: ExportStepPro
                     <div className="flex flex-col items-center gap-2">
                         <div className="flex flex-col items-center gap-3">
                             <Button
-                                    className="group w-[195px] h-[34px] bg-fuchsia hover:bg-pink hover:text-fuchsia text-white"
+                                className="group w-[195px] h-[34px] bg-fuchsia hover:bg-pink hover:text-fuchsia text-white"
                                 onClick={() => updateBusinessMutate()}
                             >
                                 Download PDF
-                                    {isLoadingPDFDownload && <Spinner className="group-hover:text-fuchsia" fontSize={20} />}
+                                {isLoadingPDFDownload && <Spinner className="group-hover:text-fuchsia" fontSize={20} />}
                             </Button>
                         </div>
                     </div>
