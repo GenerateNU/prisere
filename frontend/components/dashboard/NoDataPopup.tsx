@@ -3,7 +3,6 @@
 import { redirectToQuickbooks } from "@/api/quickbooks";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { FiUpload } from "react-icons/fi";
 import { GoSync } from "react-icons/go";
 
 type Props = {

@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { GoSync } from "react-icons/go";
-import { FiUpload } from "react-icons/fi";
 import { redirectToQuickbooks } from "@/api/quickbooks";
 
 interface QuickbooksInfoProps {
