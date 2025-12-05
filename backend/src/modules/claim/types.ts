@@ -1,11 +1,11 @@
 import { z } from "zod";
 import { ClaimLocation } from "../../entities/ClaimLocation";
 import { CompanyTypesEnum } from "../../entities/Company";
+import { InsurancePolicy } from "../../entities/InsurancePolicy";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import { User } from "../../entities/User";
 import { LINE_ITEM_CATEGORY_CHARS } from "../../utilities/constants";
 import { SingleInsurancePolicyResponseSchema } from "../insurance-policy/types";
-import { InsurancePolicy } from "../../entities/InsurancePolicy";
 
 export const ClaimPDFGenerationResponseSchema = z.object({
     url: z.url(),
@@ -27,6 +27,11 @@ export type ClaimDataForPDF = {
     pastPurchases: { year: number; amountCents: number }[];
     insuranceInfo?: InsurancePolicy;
 };
+
+export const LinkBusinessDocumentToClaimRequestSchema = z.object({
+    businessDocumentId: z.string(),
+    claimId: z.string(),
+});
 
 export const UserInfoSchema = z.object({
     firstName: z.string(),
@@ -89,6 +94,22 @@ export const ClaimDataSchema = z.object({
     insuranceInfo: SingleInsurancePolicyResponseSchema.optional(),
 });
 
+export const GetClaimsByCompanyInputSchema = z.object({
+    filters: z.object({
+        date: z
+            .object({
+                from: z.iso.datetime().optional(),
+                to: z.iso.datetime().optional(),
+            })
+            .optional(),
+        search: z.string().optional(),
+    }),
+    page: z.number(),
+    resultsPerPage: z.number(),
+});
+
+export type GetClaimsByCompanyInput = z.infer<typeof GetClaimsByCompanyInputSchema>;
+
 export type ClaimPDFGenerationResponse = z.infer<typeof ClaimPDFGenerationResponseSchema>;
 export type UserInfo = z.infer<typeof UserInfoSchema>;
 export type CompanyInfo = z.infer<typeof CompanyInfoSchema>;
@@ -97,3 +118,4 @@ export type SelfDisasterInfo = z.infer<typeof SelfDisasterInfoSchema>;
 export type ImpactedLocation = z.infer<typeof ImpactedLocationSchema>;
 export type RelevantExpense = z.infer<typeof RelevantExpenseSchema>;
 export type ClaimData = z.infer<typeof ClaimDataSchema>;
+export type LinkBusinessDocumentToClaimRequest = z.infer<typeof LinkBusinessDocumentToClaimRequestSchema>;

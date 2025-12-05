@@ -1,11 +1,11 @@
+import { afterEach, beforeAll, beforeEach, describe, expect, test } from "bun:test";
 import { Hono } from "hono";
-import { describe, test, expect, beforeAll, beforeEach, afterEach } from "bun:test";
-import { startTestApp } from "../setup-tests";
 import { IBackup } from "pg-mem";
-import { TESTING_PREFIX } from "../../utilities/constants";
-import { ContextVariables } from "../../types/Utils";
 import { DataSource } from "typeorm";
+import { ContextVariables } from "../../types/Utils";
+import { TESTING_PREFIX } from "../../utilities/constants";
 import { initTestData, insertedClaims } from "../claim/setup";
+import { startTestApp } from "../setup-tests";
 
 describe("Get Company's Claim in Progress", () => {
     let app: Hono<{ Variables: ContextVariables }>;
@@ -35,7 +35,7 @@ describe("Get Company's Claim in Progress", () => {
         });
         expect(response.status).toBe(200);
         const body = await response.json();
-        CompareRequestToExpected(insertedClaims[3], body);
+        CompareRequestToExpected(insertedClaims[4], body);
     });
 
     test("GET /companies/claim-in-progress - no claim exists", async () => {

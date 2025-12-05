@@ -10,6 +10,7 @@ import Link from "next/link";
 import { FaCircle } from "react-icons/fa";
 import { LargeLoading } from "../loading";
 import { FaExclamation } from "react-icons/fa6";
+import ErrorDisplay from "../ErrorDisplay";
 
 export function RevenueAndExpensesNoData() {
     return (
@@ -107,12 +108,15 @@ export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard
         },
     } satisfies ChartConfig;
 
+    const isLoading = expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading);
+    const error = expensesQueries.some((q) => q.error) || revenueQueries.some((q) => q.error);
+
     return (
-        <Card className="h-full p-6 border-none shadow-none flex flex-col">
+        <Card className="h-full p-6 border-none shadow-none flex flex-col min-h-[260px]">
             <div className="flex flex-col mb-4 gap-2">
                 <CardTitle className="text-2xl font-bold">Revenue and Expenses</CardTitle>
 
-                {!(expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading)) && (
+                {!isLoading && !error && (
                     <div className="flex items-center gap-2 text-sm py-1 rounded">
                         <div
                             className={`flex items-center rounded py-1 px-2 ${percentChange >= 0 ? "bg-light-teal" : "bg-pink"}`}
@@ -127,7 +131,11 @@ export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard
                 )}
             </div>
 
-            {expensesQueries.some((q) => q.isLoading) || revenueQueries.some((q) => q.isLoading) ? (
+            {error ? (
+                <CardContent className="p-0 flex-1 flex gap-6">
+                    <ErrorDisplay />
+                </CardContent>
+            ) : isLoading ? (
                 <CardContent className="p-0 flex-1 flex gap-6">
                     <LargeLoading />
                 </CardContent>

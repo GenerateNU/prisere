@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import type { Relation } from "typeorm";
 import { User } from "./User";
 import { Company } from "./Company";
@@ -43,10 +43,16 @@ export class Document {
     @JoinColumn({ name: "companyId" })
     company!: Relation<Company>;
 
-    @Column({ name: "claimId", nullable: true })
-    claimId?: string;
+    @ManyToMany(() => Claim, (claim) => claim.documents)
+    // The claims this document is associated with as "additional info"
+    claims?: Relation<Claim>[];
 
-    @OneToOne(() => Claim)
-    @JoinColumn({ name: "claimId" })
-    claim?: Relation<Claim>;
+    @Column({ name: "exportedClaimID", nullable: true })
+    // The claim ID this document was exported from (if this is an export)
+    exportedClaimID?: string;
+
+    @ManyToOne(() => Claim, (claim) => claim.exportedDocuments)
+    @JoinColumn({ name: "exportedClaimID" })
+    // The claim this document is an export of
+    exportedClaim?: Relation<Claim>;
 }

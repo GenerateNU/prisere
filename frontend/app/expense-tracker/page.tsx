@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ExpenseTable, { useFetchPurchases } from "./expense-table/expense-table";
 import TransactionImportModal from "./transaction-import-csv/TransactionImportModal";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { companyHasData, getCompany } from "@/api/company";
 import { GoSync } from "react-icons/go";
 import { FiUpload } from "react-icons/fi";
 import NoDataPopupWrapper from "@/components/dashboard/NoDataPopupWrapper";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function ExpenseTracker() {
     const [importModalOpen, setImportModalOpen] = useState<boolean>(false);
@@ -24,11 +25,6 @@ export default function ExpenseTracker() {
         queryKey: ["company-has-data"],
         queryFn: companyHasData,
     });
-
-    useEffect(() => {
-        console.log("external data", hasData?.hasExternalData);
-        console.log("financial data", hasData?.hasFinancialData);
-    })
 
     const { data: companyLastUpdate } = useQuery({
         queryKey: ["company-last-update"],
@@ -43,9 +39,12 @@ export default function ExpenseTracker() {
     const lastInvoice = companyLastUpdate?.lastQuickBooksInvoiceImportTime;
     const lastPurchase = companyLastUpdate?.lastQuickBooksPurchaseImportTime;
 
-    const mostRecent = lastInvoice && lastPurchase
-        ? new Date(Math.max(new Date(lastInvoice).getTime(), new Date(lastPurchase).getTime()))
-        : undefined;
+    const mostRecent =
+        lastInvoice && lastPurchase
+            ? new Date(Math.max(new Date(lastInvoice).getTime(), new Date(lastPurchase).getTime()))
+            : undefined;
+
+    const showLoading = hasData?.hasExternalData || hasData?.hasFinancialData || hasDataLoading;
 
     const exExpenses = useFetchPurchases({
         pageNumber: 0,
@@ -97,68 +96,87 @@ export default function ExpenseTracker() {
     );
 
     return (
-        <div className="p-[50px] flex flex-col gap-[23px] bg-[var(--slate)] min-h-screen w-full">
-            {!hasDataLoading && (
-                <NoDataPopupWrapper hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false} />
-            )}
-            <div className="flex justify-between">
-                <div>
+        <>
+            {hasDataLoading ? (
+                <div className="flex items-center justify-center h-screen">
                     <h2 className="text-[30px] font-bold">Expense Tracker</h2>
-                    {hasData?.hasExternalData &&
-                        <div>
-                            <div className="flex gap-[8px] text-[var(--teal)] items-center"> <GoSync className="text-[var(--teal)]" />Last Synced on {mostRecent?.toLocaleDateString() ?? "--/--/--"}</div>
+                    <Spinner />
+                </div>
+            ) : (
+                <div className="p-[50px] flex flex-col gap-[23px] bg-[var(--slate)] min-h-screen w-full">
+                    {!hasDataLoading && (
+                        <NoDataPopupWrapper
+                            hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false}
+                        />
+                    )}
+                    <div className="flex justify-between">
+                            <div>
+                                <h2 className="text-[30px] font-bold">Expense Tracker</h2>
+                                {hasData?.hasExternalData && (
+                                    <div>
+                                        <div className="flex gap-[8px] text-[var(--teal)] items-center">
+                                            {" "}
+                                            <GoSync className="text-[var(--teal)]" />
+                                            Last Synced on {mostRecent?.toLocaleDateString() ?? "--/--/--"}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            {!hasData?.hasExternalData && (
+                                <div>
+                                    <Button
+                                        className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
+                                        onClick={onOpenImportModal}
+                                    >
+                                        {" "}
+                                        <FiUpload className="text-white" style={{ width: "14px" }} /> Upload CSV
+                                    </Button>
+                                </div>
+                            )}
+                    </div>
+                    <div className="flex flex-col w-full gap-[16px]">
+                        <div className="flex gap-[16px] h-[364px]">
+                            <div className="w-[60%]">
+                                {showLoading ? (
+                                    netDisasterVisisble ? (
+                                        <NetDisasterExpense
+                                            bannerData={bannerData ?? { status: "no-disaster" }}
+                                            onDashboard={false}
+                                            handleSwitchToReview={() => setNetDisasterVisible(false)}
+                                        />
+                                    ) : (
+                                        <ReviewExpenses
+                                            handleSwitchToNetDisaster={() => setNetDisasterVisible(true)}
+                                            lineItemsConfirmed={expenses.length}
+                                            lineItemsPending={pendingExpensesLineItems.length}
+                                            totalConfirmedExpenses={totalExpense}
+                                            filterPending={() => setFilterPending(true)}
+                                        />
+                                    )
+                                ) : (
+                                    <NetDisasterExpenseNoData />
+                                )}
+                            </div>
+                            <div className="w-full">
+                                {showLoading ? (
+                                    <RevenueAndExpenses onDashboard={false} />
+                                ) : (
+                                    <RevenueAndExpensesNoData />
+                                )}
+                            </div>
                         </div>
-                    }
+                        <ExpenseTable
+                            title={"Business Transactions"}
+                            rowOption={"collapsible"}
+                            editableTags={true}
+                            filterPending={filterPending}
+                            setFilterPending={(fp: boolean) => setFilterPending(fp)}
+                            hasData={showLoading ?? false}
+                        />
+                    </div>
+                    <TransactionImportModal isOpen={importModalOpen} onClose={onCloseImportModal} />
                 </div>
-                {!hasData?.hasExternalData && (
-                    <div>
-                        <Button
-                            className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
-                            onClick={onOpenImportModal}
-                        >
-                            {" "}
-                            <FiUpload className="text-white" style={{ width: "14px" }} /> Upload CSV
-                        </Button>
-                    </div>
-                )}
-            </div>
-            <div className="flex flex-col w-full gap-[16px]">
-                <div className="flex gap-[16px] h-[364px]">
-                    <div className="w-[60%]">
-                        {hasData?.hasExternalData || hasData?.hasFinancialData ? (
-                            netDisasterVisisble ? (
-                                <NetDisasterExpense
-                                    bannerData={bannerData ?? { status: "no-disaster" }}
-                                    onDashboard={false}
-                                    handleSwitchToReview={() => setNetDisasterVisible(false)}
-                                />
-                            ) : (
-                                <ReviewExpenses
-                                    handleSwitchToNetDisaster={() => setNetDisasterVisible(true)}
-                                    lineItemsConfirmed={expenses.length}
-                                    lineItemsPending={pendingExpensesLineItems.length}
-                                    totalConfirmedExpenses={totalExpense}
-                                    filterPending={() => setFilterPending(true)}
-                                />
-                            )
-                        ) : (
-                            <NetDisasterExpenseNoData />
-                        )}
-                    </div>
-                    <div className="w-full">
-                        {hasData ? <RevenueAndExpenses onDashboard={false} /> : <RevenueAndExpensesNoData />}
-                    </div>
-                </div>
-                <ExpenseTable
-                    title={"Business Transactions"}
-                    rowOption={"collapsible"}
-                    editableTags={true}
-                    filterPending={filterPending}
-                    setFilterPending={(fp: boolean) => setFilterPending(fp)}
-                    hasData={(hasData?.hasExternalData || hasData?.hasFinancialData) ?? false}
-                />
-            </div>
-            <TransactionImportModal isOpen={importModalOpen} onClose={onCloseImportModal} />
-        </div>
+            )}
+        </>
     );
 }

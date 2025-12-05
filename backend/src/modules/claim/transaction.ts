@@ -1,7 +1,8 @@
 import Boom from "@hapi/boom";
 import { plainToClass } from "class-transformer";
-import { DataSource, In } from "typeorm";
+import { Between, DataSource, FindOptionsWhere, In, LessThan, Like, MoreThan } from "typeorm";
 import { Claim } from "../../entities/Claim";
+import { Document } from "../../entities/Document";
 import { PurchaseLineItem } from "../../entities/PurchaseLineItem";
 import {
     CreateClaimDTO,
@@ -24,9 +25,9 @@ import { ClaimStatusInProgressTypes, ClaimStatusType } from "../../types/ClaimSt
 import { logMessageToFile } from "../../utilities/logger";
 import { InvoiceTransaction } from "../invoice/transaction";
 import { IPurchaseLineItemTransaction, PurchaseLineItemTransaction } from "../purchase-line-item/transaction";
-import { UserTransaction } from "../user/transaction";
 import { PurchaseTransaction } from "../purchase/transaction";
-import { ClaimDataForPDF } from "./types";
+import { UserTransaction } from "../user/transaction";
+import { ClaimDataForPDF, GetClaimsByCompanyInput } from "./types";
 
 export interface IClaimTransaction {
     /**
@@ -41,7 +42,10 @@ export interface IClaimTransaction {
      * @param payload ID of the claim to be fetched
      * @returns Promise resolving to fetched claim or null if not found
      */
-    getClaimsByCompanyId(companyId: string): Promise<GetClaimsByCompanyIdResponse | null>;
+    getClaimsByCompanyId(
+        companyId: string,
+        input: GetClaimsByCompanyInput
+    ): Promise<GetClaimsByCompanyIdResponse | null>;
 
     /**
      * Deletes a claim by its id
@@ -120,6 +124,10 @@ export interface IClaimTransaction {
         payload: UpdateClaimStatusDTO,
         companyId: string
     ): Promise<UpdateClaimStatusResponse | null>;
+
+    linkClaimToDocument(claimId: string, documentId: string): Promise<void>;
+
+    getAllDocumentsAssociatedWithClaim(claimId: string): Promise<Document[]>;
 }
 
 export class ClaimTransaction implements IClaimTransaction {
@@ -183,10 +191,31 @@ export class ClaimTransaction implements IClaimTransaction {
         }
     }
 
-    async getClaimsByCompanyId(companyId: string): Promise<GetClaimsByCompanyIdResponse | null> {
+    async getClaimsByCompanyId(
+        companyId: string,
+        { filters, page, resultsPerPage }: GetClaimsByCompanyInput
+    ): Promise<GetClaimsByCompanyIdResponse | null> {
         try {
-            const result: Claim[] = await this.db.getRepository(Claim).find({
-                where: { companyId: companyId },
+            const options: FindOptionsWhere<Claim> = { companyId, status: ClaimStatusType.FILED };
+
+            if (filters.date) {
+                if (filters.date.from && filters.date.to) {
+                    options.createdAt = Between(new Date(filters.date.from), new Date(filters.date.to));
+                } else if (filters.date.from) {
+                    options.createdAt = MoreThan(new Date(filters.date.from));
+                } else if (filters.date.to) {
+                    options.createdAt = LessThan(new Date(filters.date.to));
+                }
+            }
+
+            if (filters.search) {
+                options.name = Like(`%${filters.search}%`);
+            }
+
+            const [result, count] = await this.db.getRepository(Claim).findAndCount({
+                where: options,
+                skip: page * resultsPerPage,
+                take: resultsPerPage,
                 relations: {
                     femaDisaster: true,
                     selfDisaster: true,
@@ -198,7 +227,7 @@ export class ClaimTransaction implements IClaimTransaction {
                 },
             });
 
-            return result.map((claim) => ({
+            const data = result.map((claim) => ({
                 id: claim.id,
                 name: claim.name,
                 status: claim.status,
@@ -234,6 +263,13 @@ export class ClaimTransaction implements IClaimTransaction {
                     .filter((loc) => loc !== null && loc !== undefined),
                 purchaseLineItemIds: claim.purchaseLineItems?.map((item) => item.id) ?? [],
             }));
+
+            return {
+                data,
+                totalCount: count,
+                hasMore: (page + 1) * resultsPerPage < count,
+                hasPrevious: page > 0,
+            };
         } catch (error) {
             logMessageToFile(`Transaction error: ${error}`);
             return null;
@@ -348,7 +384,6 @@ export class ClaimTransaction implements IClaimTransaction {
 
             return { claimId: claimId, purchaseLineItemId: lineItemId };
         } catch (error) {
-            console.log(error);
             logMessageToFile(`Transaction error: ${error}`);
             return null;
         }
@@ -623,5 +658,18 @@ export class ClaimTransaction implements IClaimTransaction {
             logMessageToFile(`Transaction error: ${error}`);
             return null;
         }
+    }
+
+    async linkClaimToDocument(claimId: string, documentId: string): Promise<void> {
+        await this.db.manager.createQueryBuilder().relation(Claim, "documents").of(claimId).add(documentId);
+    }
+
+    async getAllDocumentsAssociatedWithClaim(claimId: string): Promise<Document[]> {
+        const claim = await this.db.getRepository(Claim).findOne({
+            where: { id: claimId },
+            relations: ["documents"],
+        });
+
+        return claim?.documents || [];
     }
 }

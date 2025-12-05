@@ -18,6 +18,7 @@ import { ClaimLocation } from "./ClaimLocation.js";
 import { Company } from "./Company.js";
 import { FemaDisaster } from "./FemaDisaster.js";
 import { InsurancePolicy } from "./InsurancePolicy.js";
+import { Document } from "./Document.js";
 import { PurchaseLineItem } from "./PurchaseLineItem.js";
 import { SelfDeclaredDisaster } from "./SelfDisaster.js";
 
@@ -83,4 +84,15 @@ export class Claim {
     @ManyToOne(() => InsurancePolicy, (ip) => ip.id)
     @JoinColumn({ name: "insurancePolicyId" })
     insurancePolicy!: InsurancePolicy;
+
+    @ManyToMany(() => Document, (document) => document.claims)
+    @JoinTable({
+        name: "claim_uploaded_documents",
+        joinColumn: { name: "claimId" },
+        inverseJoinColumn: { name: "documentId" },
+    })
+    documents!: Document[];
+
+    @OneToMany(() => Document, (document) => document.exportedClaim)
+    exportedDocuments?: Relation<Document>[];
 }

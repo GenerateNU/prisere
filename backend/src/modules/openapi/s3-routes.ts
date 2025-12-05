@@ -1,5 +1,4 @@
-import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
-import { z } from "zod";
+import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { DataSource } from "typeorm";
 import { S3Controller } from "../s3/controller";
 import { S3Service } from "../s3/service";
@@ -12,6 +11,7 @@ import {
     GetUploadUrlResponseSchema,
     DeleteDocumentResponseSchema,
     DeleteDocumentRequestSchema,
+    ConfirmUploadForSelfDisasterRequestSchema,
 } from "../../types/S3Types";
 import { DocumentTransaction } from "../documents/transaction";
 import { DocumentCategories, DocumentWithUrlSchema } from "../../types/DocumentType";
@@ -21,11 +21,12 @@ export const addOpenApiS3Routes = (openApi: OpenAPIHono, db: DataSource): OpenAP
     const s3Service = new S3Service(db, documentTransaction);
     const s3Controller = new S3Controller(s3Service);
 
-    openApi.openapi(getUploadUrlRoute, (ctx) => s3Controller.getUploadUrl(ctx) as any);
-    openApi.openapi(confirmUploadRoute, (ctx) => s3Controller.confirmUpload(ctx) as any);
-    openApi.openapi(getAllDocumentsRoute, (ctx) => s3Controller.getAllDocuments(ctx) as any);
-    openApi.openapi(deleteDocumentRoute, (ctx) => s3Controller.deleteDocument(ctx) as any);
-    openApi.openapi(updateDocumentCategoryRoute, (ctx) => s3Controller.updateDocumentCategory(ctx) as any);
+    openApi.openapi(getUploadUrlRoute, (ctx) => s3Controller.getUploadUrl(ctx));
+    openApi.openapi(confirmUploadRoute, (ctx) => s3Controller.confirmUpload(ctx));
+    openApi.openapi(getAllDocumentsRoute, (ctx) => s3Controller.getAllDocuments(ctx));
+    openApi.openapi(deleteDocumentRoute, (ctx) => s3Controller.deleteDocument(ctx));
+    openApi.openapi(updateDocumentCategoryRoute, (ctx) => s3Controller.updateDocumentCategory(ctx));
+    openApi.openapi(confirmUploadForSelfDisasterRoute, (ctx) => s3Controller.confirmUploadForSelfDisaster(ctx));
 
     return openApi;
 };
@@ -43,6 +44,7 @@ const getUploadUrlRoute = createRoute({
                     schema: GetUploadUrlRequestSchema,
                 },
             },
+            required: true,
         },
     },
     responses: {
@@ -95,6 +97,68 @@ const confirmUploadRoute = createRoute({
                     schema: ConfirmUploadRequestSchema,
                 },
             },
+            required: true,
+        },
+    },
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: UploadResultSchema,
+                },
+            },
+            description: "Upload confirmed successfully",
+        },
+        400: {
+            content: {
+                "application/json": {
+                    schema: ErrorResponseSchema,
+                },
+            },
+            description: "Invalid request - missing or invalid parameters",
+        },
+        401: {
+            content: {
+                "application/json": {
+                    schema: ErrorResponseSchema,
+                },
+            },
+            description: "User authentication required",
+        },
+        404: {
+            content: {
+                "application/json": {
+                    schema: ErrorResponseSchema,
+                },
+            },
+            description: "File not found in S3",
+        },
+        500: {
+            content: {
+                "application/json": {
+                    schema: ErrorResponseSchema,
+                },
+            },
+            description: "Internal server error",
+        },
+    },
+    tags: ["S3"],
+});
+
+const confirmUploadForSelfDisasterRoute = createRoute({
+    method: "post",
+    path: "/s3/confirmUpload/selfDisaster",
+    summary: "Confirm document upload completion for a document related to a self declared disaster",
+    description:
+        "Verifies that a file was successfully uploaded to S3 and returns file details including a presigned download URL and associates the document with the claim of the given self disaster.",
+    request: {
+        body: {
+            content: {
+                "application/json": {
+                    schema: ConfirmUploadForSelfDisasterRequestSchema,
+                },
+            },
+            required: true,
         },
     },
     responses: {
@@ -196,6 +260,7 @@ const deleteDocumentRoute = createRoute({
                     schema: DeleteDocumentRequestSchema,
                 },
             },
+            required: true,
         },
     },
     responses: {
@@ -242,6 +307,7 @@ const updateDocumentCategoryRoute = createRoute({
                     }),
                 },
             },
+            required: true,
         },
     },
     responses: {

@@ -1,10 +1,10 @@
 import { Hono } from "hono";
 import { DataSource } from "typeorm";
-import { ClaimController, IClaimController } from "./controller";
+import { CompanyTransaction, ICompanyTransaction } from "../company/transaction";
 import { DocumentTransaction, IDocumentTransaction } from "../documents/transaction";
+import { ClaimController, IClaimController } from "./controller";
 import { ClaimService, IClaimService } from "./service";
 import { ClaimTransaction, IClaimTransaction } from "./transaction";
-import { CompanyTransaction, ICompanyTransaction } from "../company/transaction";
 
 export const claimRoutes = (db: DataSource): Hono => {
     const claim = new Hono();
@@ -15,7 +15,7 @@ export const claimRoutes = (db: DataSource): Hono => {
     const claimService: IClaimService = new ClaimService(claimTransaction, documentTransaction, companyTransaction, db);
     const claimController: IClaimController = new ClaimController(claimService);
 
-    claim.get("/company", (ctx) => claimController.getClaimByCompanyId(ctx));
+    claim.post("/company", (ctx) => claimController.getClaimByCompanyId(ctx));
     claim.post("/", (ctx) => claimController.createClaim(ctx));
     claim.get("/:id", (ctx) => claimController.getClaimById(ctx));
     claim.patch("/:id/status", (ctx) => claimController.updateClaimStatus(ctx));
@@ -25,6 +25,7 @@ export const claimRoutes = (db: DataSource): Hono => {
     claim.get("/:id/line-item", (ctx) => claimController.getLinkedPurchaseLineItems(ctx));
     claim.delete("/:claimId/line-item/:lineItemId", (ctx) => claimController.deletePurchaseLineItem(ctx));
     claim.get("/:id/pdf", (ctx) => claimController.createClaimPDF(ctx));
+    claim.post("/document", (ctx) => claimController.linkClaimToBusinessDocument(ctx));
 
     return claim;
 };

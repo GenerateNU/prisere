@@ -9,10 +9,12 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { DocumentTypes, GetUploadUrlResponse, PdfListItem, UploadResult } from "../../types/S3Types";
 import { logMessageToFile } from "../../utilities/logger";
-import { DataSource } from "typeorm";
+import { DataSource, IsNull } from "typeorm";
 import { DocumentCategories, DocumentWithUrl } from "../../types/DocumentType";
 import { Document } from "../../entities/Document";
 import { IDocumentTransaction } from "../documents/transaction";
+import { ClaimTransaction } from "../claim/transaction";
+import { Claim } from "../../entities/Claim";
 
 const S3_BUCKET_NAME = process.env.OBJECTS_STORAGE_BUCKET_NAME;
 const PRESIGNED_URL_EXPIRY = 3600; // 1 hour
@@ -72,6 +74,7 @@ export interface IS3Service {
         documentId: string;
         documentType: DocumentTypes;
         claimId?: string;
+        exportedFromClaimId?: string;
         userId: string;
         companyId: string;
         category?: DocumentCategories;
@@ -86,11 +89,13 @@ export interface IS3Service {
     ): Promise<DocumentWithUrl[] | null>;
 
     updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void>;
+
+    getClaimIdFromSelfDisaster(selfDisasterId: string): Promise<string>;
 }
 
 export class S3Service implements IS3Service {
     private client: S3Client;
-    private bucketName: string | undefined; // undefined if not in env vars
+    private bucketName: string | undefined;
     private db: DataSource;
     private documentTransaction: IDocumentTransaction;
 
@@ -129,7 +134,6 @@ export class S3Service implements IS3Service {
                 Key: key,
                 ContentType: contentType,
                 Metadata: metadata,
-                ContentEncoding: "gzip",
             });
 
             const url = await getSignedUrl(this.client, command, { expiresIn });
@@ -165,10 +169,21 @@ export class S3Service implements IS3Service {
             const repository = this.db.getRepository(Document);
             let dbDocuments: Document[];
 
-            if (documentType === DocumentTypes.GENERAL_BUSINESS || documentType === DocumentTypes.CLAIM) {
+            if (documentType === DocumentTypes.GENERAL_BUSINESS) {
                 dbDocuments = await repository.find({
-                    where: { companyId: companyId },
-                    relations: ["user", "company", "claim"],
+                    where: {
+                        companyId: companyId,
+                        exportedClaimID: IsNull(),
+                    },
+                    relations: [
+                        "user",
+                        "company",
+                        "claims",
+                        "claims.claimLocations",
+                        "claims.insurancePolicy",
+                        "claims.femaDisaster",
+                        "claims.selfDisaster",
+                    ],
                 });
             } else if (documentType === DocumentTypes.IMAGES) {
                 dbDocuments = await repository.find({
@@ -184,7 +199,7 @@ export class S3Service implements IS3Service {
                 return [];
             }
 
-            const enrichedDocuments = await Promise.all(
+            const enrichedDocuments: DocumentWithUrl[] = await Promise.all(
                 dbDocuments.map(async (doc) => {
                     try {
                         const downloadUrl = await this.getPresignedDownloadUrl(doc.key);
@@ -204,6 +219,13 @@ export class S3Service implements IS3Service {
                                     companyType: doc.company.companyType,
                                     createdAt: doc.company.createdAt.toISOString(),
                                     updatedAt: doc.company.updatedAt.toISOString(),
+                                    externals: doc.company.externals
+                                        ? doc.company.externals.map((external) => ({
+                                              ...external,
+                                              createdAt: external.createdAt.toISOString(),
+                                              updatedAt: external.updatedAt.toISOString(),
+                                          }))
+                                        : [],
                                     lastQuickBooksInvoiceImportTime:
                                         doc.company.lastQuickBooksInvoiceImportTime?.toISOString() || null,
                                     lastQuickBooksPurchaseImportTime:
@@ -211,21 +233,47 @@ export class S3Service implements IS3Service {
                                     alternateEmail: doc.company.alternateEmail,
                                 },
                                 user: doc.user,
-                                claim: doc.claim
-                                    ? {
-                                          id: doc.claim.id,
-                                          status: doc.claim.status,
-                                          createdAt: doc.claim.createdAt.toISOString(),
-                                          updatedAt: doc.claim.updatedAt?.toISOString(),
-                                          femaDisaster: doc.claim.femaDisaster,
-                                          selfDisaster: doc.claim.selfDisaster,
-                                          insurancePolicy: doc.claim.insurancePolicy,
-                                          claimLocations: doc.claim.claimLocations,
-                                      }
+                                claim: doc.claims
+                                    ? doc.claims.map((claim) => ({
+                                          ...claim,
+                                          name: claim.name,
+                                          createdAt: claim.createdAt.toISOString(),
+                                          updatedAt: claim.updatedAt?.toISOString(),
+                                          claimLocations: claim.claimLocations
+                                              ?.map((claimLoc) => claimLoc.locationAddress)
+                                              .filter((element) => element !== undefined),
+                                          insurancePolicy: {
+                                              ...claim.insurancePolicy,
+                                              createdAt: claim.insurancePolicy.createdAt.toISOString(),
+                                              updatedAt: claim.insurancePolicy.updatedAt.toISOString(),
+                                          },
+                                          purchaseLineItemIds: claim.purchaseLineItems
+                                              ? claim.purchaseLineItems.map((element) => element.id)
+                                              : [],
+                                          femaDisaster: claim.femaDisaster
+                                              ? {
+                                                    ...claim.femaDisaster,
+                                                    declarationDate: claim.femaDisaster.declarationDate.toISOString(),
+                                                    incidentBeginDate:
+                                                        claim.femaDisaster.incidentBeginDate?.toISOString(),
+                                                    incidentEndDate: claim.femaDisaster.incidentEndDate?.toISOString(),
+                                                }
+                                              : undefined,
+                                          selfDisaster: claim.selfDisaster
+                                              ? {
+                                                    ...claim.selfDisaster,
+                                                    name: claim.name,
+                                                    startDate: claim.selfDisaster.startDate.toISOString(),
+                                                    endDate: claim.selfDisaster.endDate?.toISOString(),
+                                                    createdAt: claim.selfDisaster.createdAt.toISOString(),
+                                                    updatedAt: claim.selfDisaster.updatedAt?.toISOString(),
+                                                }
+                                              : undefined,
+                                      }))
                                     : undefined,
                             },
                             downloadUrl,
-                        } as DocumentWithUrl;
+                        };
                     } catch (error) {
                         console.error(`Error generating URL for ${doc.key}:`, error);
                         return {
@@ -236,35 +284,67 @@ export class S3Service implements IS3Service {
                                 category: doc.category,
                                 createdAt: doc.createdAt,
                                 lastModified: doc.lastModified || null,
+                                purchaseLineItemIds: [],
                                 company: {
-                                    id: doc.company.id,
+                                    ...doc.company,
                                     name: doc.company.name,
-                                    businessOwnerFullName: doc.company.businessOwnerFullName,
-                                    companyType: doc.company.companyType,
                                     createdAt: doc.company.createdAt.toISOString(),
                                     updatedAt: doc.company.updatedAt.toISOString(),
+                                    externals: doc.company.externals
+                                        ? doc.company.externals.map((external) => ({
+                                              ...external,
+                                              createdAt: external.createdAt.toISOString(),
+                                              updatedAt: external.updatedAt.toISOString(),
+                                          }))
+                                        : [],
+
                                     lastQuickBooksInvoiceImportTime:
                                         doc.company.lastQuickBooksInvoiceImportTime?.toISOString() || null,
                                     lastQuickBooksPurchaseImportTime:
                                         doc.company.lastQuickBooksPurchaseImportTime?.toISOString() || null,
-                                    alternateEmail: doc.company.alternateEmail,
                                 },
                                 user: doc.user,
-                                claim: doc.claim
-                                    ? {
-                                          id: doc.claim.id,
-                                          status: doc.claim.status,
-                                          createdAt: doc.claim.createdAt.toISOString(),
-                                          updatedAt: doc.claim.updatedAt?.toISOString(),
-                                          femaDisaster: doc.claim.femaDisaster,
-                                          selfDisaster: doc.claim.selfDisaster,
-                                          insurancePolicy: doc.claim.insurancePolicy,
-                                          claimLocations: doc.claim.claimLocations,
-                                      }
+                                claim: doc.claims
+                                    ? doc.claims.map((claim) => ({
+                                          ...claim,
+                                          name: claim.name,
+                                          createdAt: claim.createdAt.toISOString(),
+                                          updatedAt: claim.updatedAt?.toISOString(),
+                                          claimLocations: claim.claimLocations
+                                              ?.map((claimLoc) => claimLoc.locationAddress)
+                                              .filter((element) => element !== undefined),
+                                          insurancePolicy: {
+                                              ...claim.insurancePolicy,
+                                              createdAt: claim.insurancePolicy.createdAt.toISOString(),
+                                              updatedAt: claim.insurancePolicy.updatedAt.toISOString(),
+                                          },
+                                          femaDisaster: claim.femaDisaster
+                                              ? {
+                                                    ...claim.femaDisaster,
+                                                    declarationDate: claim.femaDisaster.declarationDate.toISOString(),
+                                                    incidentBeginDate:
+                                                        claim.femaDisaster.incidentBeginDate?.toISOString(),
+                                                    incidentEndDate: claim.femaDisaster.incidentEndDate?.toISOString(),
+                                                }
+                                              : undefined,
+                                          purchaseLineItemIds: claim.purchaseLineItems
+                                              ? claim.purchaseLineItems.map((element) => element.id)
+                                              : [],
+                                          selfDisaster: claim.selfDisaster
+                                              ? {
+                                                    ...claim.selfDisaster,
+                                                    name: claim.name,
+                                                    startDate: claim.selfDisaster.startDate.toISOString(),
+                                                    endDate: claim.selfDisaster.endDate?.toISOString(),
+                                                    createdAt: claim.selfDisaster.createdAt.toISOString(),
+                                                    updatedAt: claim.selfDisaster.updatedAt?.toISOString(),
+                                                }
+                                              : undefined,
+                                      }))
                                     : undefined,
                             },
                             downloadUrl: "",
-                        } as DocumentWithUrl;
+                        };
                     }
                 })
             );
@@ -439,11 +519,12 @@ export class S3Service implements IS3Service {
         documentId: string;
         documentType: DocumentTypes;
         claimId?: string;
+        exportedFromClaimId?: string;
         userId: string;
         companyId: string;
         category?: DocumentCategories;
     }): Promise<UploadResult> {
-        const { key, documentId, claimId, userId, companyId, category } = options;
+        const { key, documentId, claimId, exportedFromClaimId, userId, companyId, category } = options;
 
         try {
             // Verify the file exists in S3
@@ -462,15 +543,21 @@ export class S3Service implements IS3Service {
 
             logMessageToFile(`Upload confirmed for: ${key}`);
 
-            this.documentTransaction.upsertDocument({
+            const upsertedDocument = await this.documentTransaction.upsertDocument({
                 key: key,
                 downloadUrl: url,
                 s3DocumentId: documentId,
+                exportedClaimID: exportedFromClaimId,
                 userId: userId,
                 companyId: companyId,
-                claimId: claimId,
                 category: category ?? undefined,
             });
+
+            //If a claim and document exists, link it to the document
+            if (claimId && upsertedDocument) {
+                const claimTransaction = new ClaimTransaction(this.db);
+                await claimTransaction.linkClaimToDocument(claimId, upsertedDocument?.id);
+            }
 
             return {
                 key,
@@ -525,5 +612,15 @@ export class S3Service implements IS3Service {
             const errorText = await response.text();
             throw new Error(`Upload failed: ${response.status} ${response.statusText}. ${errorText}`);
         }
+    }
+
+    async getClaimIdFromSelfDisaster(selfDisasterId: string): Promise<string> {
+        return (
+            await this.db.manager.findOneOrFail(Claim, {
+                where: {
+                    selfDisasterId: selfDisasterId,
+                },
+            })
+        ).id;
     }
 }

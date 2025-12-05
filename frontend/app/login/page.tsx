@@ -6,13 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { loginInitialState } from "@/types/user";
 import { Label } from "@radix-ui/react-label";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { HiOutlineTableCells } from "react-icons/hi2";
 import { RiFilePaperLine } from "react-icons/ri";
 import { WiRainMix } from "react-icons/wi";
-
 const initialState: loginInitialState = {
     success: false,
     message: "",
@@ -58,21 +58,21 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-stone mx-8">
             <div className="flex justify-center items-center max-w-[1162px] gap-[30px]">
-                <Card className="w-1/2 flex-shrink-0 self-stretch p-[52px] flex flex-col justify-center gap-[40px]">
-                    <div className="w-[131px] h-[131px] rounded-full bg-stone-200 self-start"></div>
-                    <div className="flex flex-col gap-[20px]">
-                        <h2 className="font-bold text-[35px]">Stay prepared with Prisere.</h2>
+                <Card className="w-1/2 flex-shrink-0 self-stretch p-[52px] flex flex-col justify-center items-center gap-[40px]">
+                    <Image src="/IconLogo.png" alt="Prisere Logo" width={131} height={131} />
+                    <div className="flex flex-col gap-[20px] w-full">
+                        <h2 className="font-bold text-[35px] text-center">Stay Prepared with Prisere.</h2>
                         <p className="text-[16px]">
                             Experience business continuity even amidst global disasters. With partnerships from esteemed
                             institutions and a track record recognized globally, Prisere offers unrivaled expertise in
                             disaster risk reduction and resilience.
                         </p>
                     </div>
-                    <div className="flex flex-col gap-[20px]">
+                    <div className="flex flex-col gap-[20px] w-full">
                         {signupCards.map((card, index) => (
                             <div
                                 key={index}
-                                className="border border-1 border-stone-200 rounded-[20px] p-[10px] flex items-center gap-[10px]"
+                                className="border-1 border-stone-200 rounded-[20px] p-[10px] flex items-center gap-[10px]"
                             >
                                 {card.icon}
                                 <p className="text-[16px]">{card.title}</p>

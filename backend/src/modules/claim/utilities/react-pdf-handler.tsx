@@ -12,6 +12,7 @@ import {
     Line,
     renderToBuffer,
 } from "@react-pdf/renderer";
+import { PDFDocument } from "pdf-lib";
 import { ClaimData } from "../types";
 import { getIncidentTypeMeanings } from "../../../utilities/incident_code_meanings";
 import { FinancialChart } from "./render-chart";
@@ -91,6 +92,23 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         columnGap: "16px",
     },
+    imageContainer: {
+        marginVertical: 10,
+        flexDirection: "row",
+        flexWrap: "wrap",
+        gap: 10,
+    },
+    attachmentImage: {
+        width: 200,
+        height: 150,
+        objectFit: "contain",
+    },
+    fullPageImage: {
+        width: "100%",
+        height: "auto",
+        maxHeight: 700,
+        objectFit: "contain",
+    },
 });
 
 function ClaimPDF({ data }: { data: ClaimData }) {
@@ -124,7 +142,7 @@ function ClaimPDF({ data }: { data: ClaimData }) {
 
     const disasterInfo = data.femaDisaster
         ? [
-              { label: "Type of Claim", value: getIncidentTypeMeanings(data.femaDisaster.designatedIncidentTypes) },
+              { label: "Incident Type", value: getIncidentTypeMeanings(data.femaDisaster.designatedIncidentTypes) },
               { label: "Incident\nDeclaration Date", value: data.femaDisaster.declarationDate.toLocaleDateString() },
               {
                   label: "Incident\nBegin Date",
@@ -298,4 +316,129 @@ export async function generatePdfToFile(claimData: ClaimData): Promise<void> {
 export async function generatePdfToBuffer(claimData: ClaimData): Promise<Buffer> {
     const pdfBuffer = await renderToBuffer(<ClaimPDF data={claimData} />);
     return Buffer.isBuffer(pdfBuffer) ? pdfBuffer : Buffer.from(pdfBuffer);
+}
+
+export async function generatePdfWithAttachments(claimData: ClaimData, presignedURLs: string[]): Promise<Buffer> {
+    const mainPdfBuffer = await generatePdfToBuffer(claimData);
+    const mainPdfDoc = await PDFDocument.load(mainPdfBuffer);
+
+    for (const url of presignedURLs) {
+        try {
+            const { data, type } = await fetchAttachment(url);
+
+            if (type === "pdf") {
+                const attachmentPdfDoc = await PDFDocument.load(data);
+                const copiedPages = await mainPdfDoc.copyPages(attachmentPdfDoc, attachmentPdfDoc.getPageIndices());
+                copiedPages.forEach((page) => {
+                    mainPdfDoc.addPage(page);
+                });
+            } else if (type === "image") {
+                await embedImageAsPdfPage(mainPdfDoc, data, url);
+            }
+        } catch (error) {
+            console.error(`Failed to process attachment ${url}:`, error);
+        }
+    }
+
+    // Save the merged PDF
+    const mergedPdfBytes = await mainPdfDoc.save();
+    return Buffer.from(mergedPdfBytes);
+}
+
+function getFileTypeFromUrl(url: string): "pdf" | "image" | "unknown" {
+    const urlLower = url.toLowerCase();
+
+    // Check common image extensions
+    if (/\.(jpg|jpeg|png|gif|webp|bmp|tiff?)(\?|$)/i.test(urlLower)) {
+        return "image";
+    }
+
+    // Check for PDF extension
+    if (/\.pdf(\?|$)/i.test(urlLower)) {
+        return "pdf";
+    }
+
+    return "unknown";
+}
+
+async function fetchAttachment(url: string): Promise<{ data: Uint8Array; type: "pdf" | "image" }> {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch attachment from ${url}: ${response.statusText}`);
+    }
+
+    const contentType = response.headers.get("content-type") || "";
+    const arrayBuffer = await response.arrayBuffer();
+    const data = new Uint8Array(arrayBuffer);
+
+    let additionalDocumentType: "pdf" | "image";
+
+    if (contentType.includes("application/pdf")) {
+        additionalDocumentType = "pdf";
+    } else if (contentType.startsWith("image/")) {
+        additionalDocumentType = "image";
+    } else {
+        const urlType = getFileTypeFromUrl(url);
+        additionalDocumentType = urlType === "unknown" ? "pdf" : urlType;
+    }
+
+    return { data, type: additionalDocumentType };
+}
+
+async function embedImageAsPdfPage(mainPdfDoc: PDFDocument, imageData: Uint8Array, url: string): Promise<void> {
+    const urlLower = url.toLowerCase();
+    let image;
+
+    if (/\.(png)(\?|$)/i.test(urlLower)) {
+        image = await mainPdfDoc.embedPng(imageData);
+    } else if (/\.(jpg|jpeg)(\?|$)/i.test(urlLower)) {
+        image = await mainPdfDoc.embedJpg(imageData);
+    } else {
+        // Try to detect from magic bytes
+        if (imageData[0] === 0x89 && imageData[1] === 0x50) {
+            // PNG magic bytes
+            image = await mainPdfDoc.embedPng(imageData);
+        } else if (imageData[0] === 0xff && imageData[1] === 0xd8) {
+            // JPEG magic bytes
+            image = await mainPdfDoc.embedJpg(imageData);
+        } else {
+            throw new Error(`Unsupported image format for URL: ${url}`);
+        }
+    }
+
+    // Calculate dimensions to fit on A4 page with margins
+    const margin = 50;
+    const pageWidth = 595.28;
+    const pageHeight = 841.89;
+    const maxWidth = pageWidth - margin * 2;
+    const maxHeight = pageHeight - margin * 2;
+
+    const imgDims = image.scale(1);
+    let width = imgDims.width;
+    let height = imgDims.height;
+
+    // Scale down if necessary to fit within margins
+    if (width > maxWidth) {
+        const scale = maxWidth / width;
+        width = maxWidth;
+        height = height * scale;
+    }
+    if (height > maxHeight) {
+        const scale = maxHeight / height;
+        height = maxHeight;
+        width = width * scale;
+    }
+
+    // Create a new page and draw the image centered
+    const page = mainPdfDoc.addPage([pageWidth, pageHeight]);
+    const x = (pageWidth - width) / 2;
+    const y = (pageHeight - height) / 2;
+
+    page.drawImage(image, {
+        x,
+        y,
+        width,
+        height,
+    });
 }

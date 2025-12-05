@@ -1,6 +1,4 @@
 import "reflect-metadata";
-import "./dayjs.config";
-
 import { Hono } from "hono";
 import { logger } from "hono/logger";
 import { AppDataSource } from "./typeorm-config";
@@ -61,6 +59,7 @@ const app = new Hono();
 const server = {
     port: 3001,
     fetch: app.fetch,
+    idleTimeout: 30,
 };
 
 export default server;

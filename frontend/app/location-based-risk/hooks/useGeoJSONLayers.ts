@@ -21,11 +21,10 @@ export const useGeoJSONLayers = (
             drought: string;
             wildFire: string;
         }
-    >
+    > | null
 ) => {
-    const hasAddedLayersRef = useRef(false);
-
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
     const {
         data: geoJsonCountyData,
         isLoading: isLoadingGeoJsonData,
@@ -37,16 +36,32 @@ export const useGeoJSONLayers = (
         loadGeoJson();
     }, []);
 
+    // Add a ref to store the GeoJSON layer
+    const geoJsonLayerRef = useRef<L.GeoJSON | null>(null);
+
     useEffect(() => {
-        if (!map || !window.L || !isMapReady || isLoadingGeoJsonData || !geoJsonCountyData || !femaRiskCountyLookup) {
+        console.log(JSON.stringify(femaRiskCountyLookup));
+        if (
+            !map ||
+            !window.L ||
+            !isMapReady ||
+            isLoadingGeoJsonData ||
+            !geoJsonCountyData ||
+            femaRiskCountyLookup === null ||
+            femaRiskCountyLookup.entries().reduce((acc, _) => acc + 1, 0) <= 0
+        ) {
             setLoading(true);
             return;
         }
-        if (hasAddedLayersRef.current) {
-            return;
-        }
+
         try {
-            window.L.geoJSON(geoJsonCountyData, {
+            // Clear existing GeoJSON layer if it exists
+            if (geoJsonLayerRef.current) {
+                map.removeLayer(geoJsonLayerRef.current);
+            }
+
+            // Create and store the new layer
+            geoJsonLayerRef.current = window.L.geoJSON(geoJsonCountyData, {
                 style: (feature) => ({
                     color: colorFromSevarity(
                         femaRiskCountyLookup.get(`${feature?.properties.STATEFP}${feature?.properties.COUNTYFP}`)
@@ -68,13 +83,13 @@ export const useGeoJSONLayers = (
                     }
                 },
             }).addTo(map);
+
             setLoading(false);
-            hasAddedLayersRef.current = true;
-        } catch (err) {
+        } catch (_err) {
             setLoading(false);
-            console.error("Error adding GeoJSON layers:", err);
+            setError(true);
         }
     }, [geoJsonCountyData, femaRiskCountyLookup, map]);
 
-    return { loading };
+    return { loading, error };
 };

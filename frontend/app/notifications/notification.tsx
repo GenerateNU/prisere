@@ -27,7 +27,9 @@ export default function Notification({ notification }: NotificationProps) {
     });
 
     return (
-        <div className="rounded-2xl p-6 max-w-full bg-white">
+        <div
+            className={`rounded-2xl p-6 max-w-full bg-white ${title == "unread" && "border border-md border-fuchsia"}`}
+        >
             <div className="w-full flex justify-between">
                 <h2 className="text-2xl font-bold text-charcoal-900 mb-2">
                     {getDeclarationTypeMeanings(notification.femaDisaster.declarationType)}

@@ -61,20 +61,25 @@ describe("POST /claims", () => {
         expect(body.updatedAt).toBeDefined();
 
         const fetchResponse = await app.request(TESTING_PREFIX + `/claims/company`, {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 companyId: companyId,
             },
+            body: JSON.stringify({
+                filters: {},
+                page: 0,
+                resultsPerPage: 10,
+            }),
         });
         const fetchBody = await fetchResponse.json();
 
         expect(fetchResponse.status).toBe(200);
-        expect(fetchBody.length).toBe(2);
-        expect(fetchBody[1].id).toBe(body.id);
-        expect(fetchBody[1].femaDisaster.id).toBe(requestBody.femaDisasterId);
-        expect(fetchBody[1].insurancePolicy.id).toBe(requestBody.insurancePolicyId);
-        expect(fetchBody[1].companyId).toBe(companyId);
+        // only includes previous filed claim b/c the one just created is not filed
+        expect(fetchBody.data.length).toBe(1);
+        expect(fetchBody.data[0].status).toBe(ClaimStatusType.FILED);
+        expect(fetchBody.data[0].id).not.toBe(body.id);
+        expect(fetchBody.data[0].companyId).toBe(companyId);
     });
 
     test("POST /claims - Success", async () => {
@@ -103,17 +108,21 @@ describe("POST /claims", () => {
         expect(body.updatedAt).toBeDefined();
 
         const fetchResponse = await app.request(TESTING_PREFIX + `/claims/company`, {
+            method: "POST",
             headers: {
                 companyId: companyId,
             },
+            body: JSON.stringify({
+                filters: {},
+                page: 0,
+                resultsPerPage: 10,
+            }),
         });
         const fetchBody = await fetchResponse.json();
 
         expect(fetchResponse.status).toBe(200);
-        expect(fetchBody.length).toBe(1);
-        expect(fetchBody[0].id).toBe(body.id);
-        expect(fetchBody[0].selfDisaster.id).toBe(requestBody.selfDisasterId);
-        expect(fetchBody[0].companyId).toBe(companyId);
+        expect(fetchBody.data.length).toBe(0);
+        // should not be fetching the just created claim b/c it is not filed
     });
 
     test("POST /claims - Multiple in progress claims fail", async () => {

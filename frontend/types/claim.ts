@@ -3,22 +3,23 @@ import { CompanyTypesEnum } from "./company";
 
 export type CreateClaimRequest = NonNullable<paths["/claims"]["post"]["requestBody"]>["content"]["application/json"];
 export type CreateClaimResponse = paths["/claims"]["post"]["responses"][201]["content"]["application/json"];
-export type GetCompanyClaimResponse = paths["/claims/company"]["get"]["responses"][200]["content"]["application/json"];
+export type GetCompanyClaimResponse = paths["/claims/company"]["post"]["responses"][200]["content"]["application/json"];
 export type GetClaimLineItemsResponse =
     paths["/claims/{id}/line-item"]["get"]["responses"][200]["content"]["application/json"];
-export type GetCompanyClaimRequest = paths["/claims/company"]["get"]["parameters"]["query"];
+export type GetCompanyClaimRequest = paths["/claims/company"]["post"]["requestBody"]["content"]["application/json"];
 export type GetClaimLineItemsRequest = paths["/claims/{id}/line-item"]["get"]["parameters"]["query"];
 
 export type ClaimStatusType =
     paths["/claims/{id}/status"]["patch"]["responses"][200]["content"]["application/json"]["status"];
 
 export const ClaimInProgressIndexMapping = {
+    ACTIVE: 0,
     IN_PROGRESS_DISASTER: 1,
     IN_PROGRESS_PERSONAL: 2,
     IN_PROGRESS_BUSINESS: 3,
     IN_PROGRESS_INSURANCE: 4,
     IN_PROGRESS_EXPORT: 5,
-} as const satisfies Partial<Record<ClaimStatusType, number>>;
+} as const satisfies Record<Exclude<ClaimStatusType, "FILED">, number>;
 
 export type GetClaimByIdResponse = paths["/claims/{id}"]["get"]["responses"][200]["content"]["application/json"];
 export type UpdateClaimStatusRequest = NonNullable<
@@ -27,6 +28,18 @@ export type UpdateClaimStatusRequest = NonNullable<
 export type UpdateClaimStatusResponse =
     paths["/claims/{id}/status"]["patch"]["responses"][200]["content"]["application/json"];
 
+export type UploadClaimRelatedDocumentsRequest =
+    paths["/s3/getUploadUrl"]["post"]["requestBody"]["content"]["application/json"];
+export type UploadClaimRelatedDocumentsResponse =
+    paths["/s3/getUploadUrl"]["post"]["responses"][200]["content"]["application/json"];
+
+export type ConfirmDocumentUploadRequest =
+    paths["/s3/confirmUpload"]["post"]["requestBody"]["content"]["application/json"];
+export type ConfirmDocumentUploadResponse =
+    paths["/s3/confirmUpload"]["post"]["responses"][200]["content"]["application/json"];
+
+export type CreatePDFForClaimResponse =
+    paths["/claims/{id}/pdf"]["get"]["responses"][200]["content"]["application/json"];
 export type LinkLineItemToClaimRequest = NonNullable<
     paths["/claims/line-item"]["post"]["requestBody"]
 >["content"]["application/json"];
@@ -40,6 +53,8 @@ export type LinkPurchaseToClaimResponse =
     paths["/claims/purchase"]["post"]["responses"][201]["content"]["application/json"];
 
 export type CreateClaimPDFResponse = paths["/claims/{id}/pdf"]["get"]["responses"][200]["content"]["application/json"];
+
+export type DeleteClaimResponse = paths["/claims/{id}"]["delete"]["responses"][200]["content"]["application/json"];
 
 /**
  * Save status for indicating to user
@@ -63,6 +78,7 @@ export type DisasterInfo = {
     endDate: Date | null;
     location: string; // locationId
     description: string;
+    additionalDocuments: File[];
     purchaseSelections: PurchaseSelections;
 } & ({ isFema: false; femaDisasterId?: never } | { isFema: true; femaDisasterId: string });
 
