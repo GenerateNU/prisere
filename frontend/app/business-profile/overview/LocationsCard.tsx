@@ -2,12 +2,13 @@
 
 import { getCompanyLocations } from "@/api/company";
 import { createLocation, deleteLocation, updateLocationAddress } from "@/api/location";
+import { useServerActionQuery } from "@/api/requestHandlers";
 import LocationEditor from "@/components/LocationEditor";
 import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CreateLocationRequest, Location, UpdateLocationRequest } from "@/types/location";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
 
@@ -22,7 +23,7 @@ export default function LocationsCard({
     const [editingLocationIndex, setEditingLocationIndex] = useState<number | null>(null);
     const [saveError, setSaveError] = useState<string | null>(null);
 
-    const { data: locationsQuery, isPending: locationPending } = useQuery({
+    const { data: locationsQuery, isPending: locationPending } = useServerActionQuery({
         queryKey: ["locations"],
         queryFn: getCompanyLocations,
     });

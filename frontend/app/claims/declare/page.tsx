@@ -29,6 +29,7 @@ import IncidentDateStep from "./IncidentDateStep";
 import InsuranceInfoStep from "./InsuranceInfoStep";
 import PersonalInfoStep from "./PersonalInfoStep";
 import StartStep from "./StartStep";
+import { useServerActionQuery } from "@/api/requestHandlers";
 
 /**
  * The steps that are displayed in the progress bar
@@ -43,17 +44,17 @@ const progressSteps = [
 
 function DeclareDisasterContent() {
     const router = useRouter();
-    const { data: businessInfoData, isSuccess: businessInfoSuccess } = useQuery({
+    const { data: businessInfoData, isSuccess: businessInfoSuccess } = useServerActionQuery({
         queryKey: ["businessInfo"],
         queryFn: getCompany,
     });
 
-    const { data: userInfoData, isSuccess: userInfoSuccess } = useQuery({
+    const { data: userInfoData, isSuccess: userInfoSuccess } = useServerActionQuery({
         queryKey: ["userInfo"],
         queryFn: getUser,
     });
 
-    const { data: companyLocations } = useQuery({
+    const { data: companyLocations } = useServerActionQuery({
         queryKey: ["companyLocations"],
         queryFn: getCompanyLocations,
     });

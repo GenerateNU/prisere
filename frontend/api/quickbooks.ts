@@ -1,37 +1,36 @@
 "use server";
 
 import { authHeader, authWrapper, getClient } from "./client";
+import { ServerActionResult } from "./types";
 
-export const importQuickbooksData = async (): Promise<{ success: true } | undefined> => {
-    const req = async (token: string): Promise<{ success: true } | undefined> => {
+export const importQuickbooksData = async (): Promise<ServerActionResult<{ success: true }>> => {
+    const req = async (token: string): Promise<ServerActionResult<{ success: true }>> => {
         const client = getClient();
-        const { data, response } = await client.POST("/quickbooks/importQuickbooksData", {
+        const { data, error, response } = await client.POST("/quickbooks/importQuickbooksData", {
             headers: authHeader(token),
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            // TODO: error message?
-            return undefined;
+            return { success: false, error: error?.error || "Failed to import QuickBooks data" };
         }
     };
-    return authWrapper<{ success: true } | undefined>()(req);
+    return authWrapper<ServerActionResult<{ success: true }>>()(req);
 };
 
-export const redirectToQuickbooks = async (): Promise<string | undefined> => {
-    const req = async (token: string): Promise<string | undefined> => {
+export const redirectToQuickbooks = async (): Promise<ServerActionResult<string>> => {
+    const req = async (token: string): Promise<ServerActionResult<string>> => {
         const client = getClient();
-        const { data, response } = await client.GET("/quickbooks", {
+        const { data, response, error } = await client.GET("/quickbooks", {
             headers: authHeader(token),
         });
 
         if (response.ok && data?.url) {
-            return data.url;
+            return { success: true, data: data.url };
         } else {
-            // TODO: error message
-            return undefined;
+            return { success: false, error: error || "Failed to get QuickBooks redirect URL" };
         }
     };
 
-    return authWrapper<string | undefined>()(req);
+    return authWrapper<ServerActionResult<string>>()(req);
 };

@@ -6,12 +6,13 @@ import {
     getInsurancePolicies,
     updateInsurancePolicy,
 } from "@/api/insurance";
+import { useServerActionQuery } from "@/api/requestHandlers";
 import InsuranceEditor from "@/components/InsuranceEditor";
 import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CreateInsurancePolicyRequest, InsurancePolicy, UpdateInsurancePolicyRequest } from "@/types/insurance-policy";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
 
@@ -28,7 +29,7 @@ export default function InsuranceCard({
     const [editingInsuranceIndex, setEditingInsuranceIndex] = useState<number | null>(null);
     const [saveError, setSaveError] = useState<string | null>(null);
 
-    const { data: insuranceQuery, isPending: insurancePending } = useQuery({
+    const { data: insuranceQuery, isPending: insurancePending } = useServerActionQuery({
         queryKey: ["insuranceInfo"],
         queryFn: getInsurancePolicies,
     });

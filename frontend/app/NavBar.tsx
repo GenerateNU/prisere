@@ -1,6 +1,7 @@
 import { logoutUser } from "@/actions/auth";
 import { getUserUnreadNotifications } from "@/api/notifications";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerActionQuery } from "@/api/requestHandlers";
+import { useQueryClient } from "@tanstack/react-query";
 import { UserIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,7 +16,7 @@ export default function NavBar() {
     const pathname = usePathname();
     const queryClient = useQueryClient();
 
-    const { data: unreadNotifications } = useQuery({
+    const { data: unreadNotifications } = useServerActionQuery({
         queryKey: ["unreadNotifications"],
         queryFn: getUserUnreadNotifications,
     });

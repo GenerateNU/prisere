@@ -8,6 +8,7 @@ import CompanyEditor from "./BusinessInfoEditor";
 import { getUser } from "@/api/user";
 import { Card } from "@/components/ui/card";
 import Loading from "@/components/loading";
+import { useServerActionQuery } from "@/api/requestHandlers";
 
 export default function BusinessCard() {
     const [businessInfo, setBusinessInfo] = useState<UpdateCompanyRequest>({
@@ -39,12 +40,12 @@ export default function BusinessCard() {
         }
     };
 
-    const { data: businessQuery, isPending: businessPending } = useQuery({
+    const { data: businessQuery, isPending: businessPending } = useServerActionQuery({
         queryKey: ["businessInfo"],
         queryFn: getCompany,
     });
 
-    const { data: userQuery } = useQuery({
+    const { data: userQuery } = useServerActionQuery({
         queryKey: ["userInfo"],
         queryFn: getUser,
     });

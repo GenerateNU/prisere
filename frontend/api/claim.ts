@@ -18,47 +18,50 @@ import {
     UploadClaimRelatedDocumentsResponse,
 } from "@/types/claim";
 import { authHeader, authWrapper, getClient } from "./client";
+import { ServerActionResult } from "./types";
 
-export const createClaim = async (payload: CreateClaimRequest): Promise<CreateClaimResponse> => {
-    const req = async (token: string): Promise<CreateClaimResponse> => {
+export const createClaim = async (payload: CreateClaimRequest): Promise<ServerActionResult<CreateClaimResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<CreateClaimResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.POST("/claims", {
             headers: authHeader(token),
             body: payload,
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to create claim" };
         }
     };
-    return authWrapper<CreateClaimResponse>()(req);
+    return authWrapper<ServerActionResult<CreateClaimResponse>>()(req);
 };
 
-export const getClaims = async (input: GetCompanyClaimRequest): Promise<GetCompanyClaimResponse> => {
-    const req = async (token: string): Promise<GetCompanyClaimResponse> => {
+export const getClaims = async (
+    input: GetCompanyClaimRequest
+): Promise<ServerActionResult<GetCompanyClaimResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<GetCompanyClaimResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.POST("/claims/company", {
             headers: authHeader(token),
             body: input,
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to get claims" };
         }
     };
-    return authWrapper<GetCompanyClaimResponse>()(req);
+    return authWrapper<ServerActionResult<GetCompanyClaimResponse>>()(req);
 };
 
 export const getPurchaseLineItemsFromClaim = async (params: {
     claimId: string;
-}): Promise<GetClaimLineItemsResponse> => {
-    const req = async (token: string): Promise<GetClaimLineItemsResponse> => {
+}): Promise<ServerActionResult<GetClaimLineItemsResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<GetClaimLineItemsResponse>> => {
         const client = getClient();
         const id = params.claimId;
         if (!id) {
-            return [];
+            return { success: true, data: [] };
         }
         const { data, error, response } = await client.GET(`/claims/{id}/line-item`, {
             headers: authHeader(token),
@@ -67,16 +70,16 @@ export const getPurchaseLineItemsFromClaim = async (params: {
             },
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to get purchase line items from claim" };
         }
     };
-    return authWrapper<GetClaimLineItemsResponse>()(req);
+    return authWrapper<ServerActionResult<GetClaimLineItemsResponse>>()(req);
 };
 
-export const getClaimById = async (claimId: string): Promise<GetClaimByIdResponse> => {
-    const req = async (token: string): Promise<GetClaimByIdResponse> => {
+export const getClaimById = async (claimId: string): Promise<ServerActionResult<GetClaimByIdResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<GetClaimByIdResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.GET("/claims/{id}", {
             headers: authHeader(token),
@@ -85,19 +88,19 @@ export const getClaimById = async (claimId: string): Promise<GetClaimByIdRespons
             },
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to get claim" };
         }
     };
-    return authWrapper<GetClaimByIdResponse>()(req);
+    return authWrapper<ServerActionResult<GetClaimByIdResponse>>()(req);
 };
 
 export const updateClaimStatus = async (
     claimId: string,
     payload: UpdateClaimStatusRequest
-): Promise<UpdateClaimStatusResponse> => {
-    const req = async (token: string): Promise<UpdateClaimStatusResponse> => {
+): Promise<ServerActionResult<UpdateClaimStatusResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<UpdateClaimStatusResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.PATCH("/claims/{id}/status", {
             headers: authHeader(token),
@@ -107,20 +110,26 @@ export const updateClaimStatus = async (
             body: payload,
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to update claim status" };
         }
     };
-    return authWrapper<UpdateClaimStatusResponse>()(req);
+    return authWrapper<ServerActionResult<UpdateClaimStatusResponse>>()(req);
 };
 
 export const uploadAndConfirmDocumentRelation = async (
     claimId: string,
     payload: Omit<UploadClaimRelatedDocumentsRequest, "claimId" | "documentType">,
     file: File
-) => {
-    const upload = await uploadClaimRelatedDocuments(claimId, payload);
+): Promise<ServerActionResult<void>> => {
+    const uploadResult = await uploadClaimRelatedDocuments(claimId, payload);
+
+    if (!uploadResult.success) {
+        return { success: false, error: uploadResult.error };
+    }
+
+    const upload = uploadResult.data;
 
     const response = await fetch(upload.uploadUrl, {
         method: "PUT",
@@ -130,90 +139,102 @@ export const uploadAndConfirmDocumentRelation = async (
     if (!response.ok) {
         const errorText = await response.text();
         console.error("Failed to upload file to S3:", response.status, errorText);
-        throw new Error(`S3 upload failed with status ${response.status}: ${errorText}`);
+        return { success: false, error: `S3 upload failed with status ${response.status}: ${errorText}` };
     }
 
-    await conformUploadedDocument(claimId, {
+    const confirmResult = await conformUploadedDocument(claimId, {
         documentId: upload.documentId,
         key: upload.key,
         claimId: claimId,
         category: null,
     });
+
+    if (!confirmResult.success) {
+        return { success: false, error: confirmResult.error };
+    }
+
+    return { success: true, data: undefined };
 };
 
 export const uploadClaimRelatedDocuments = async (
     claimId: string,
     payload: Omit<UploadClaimRelatedDocumentsRequest, "claimId" | "documentType">
-): Promise<UploadClaimRelatedDocumentsResponse> => {
-    const req = async (token: string): Promise<UploadClaimRelatedDocumentsResponse> => {
+): Promise<ServerActionResult<UploadClaimRelatedDocumentsResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<UploadClaimRelatedDocumentsResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.POST("/s3/getUploadUrl", {
             headers: authHeader(token),
             body: { ...payload, claimId: claimId, documentType: "CLAIM" },
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
             console.log(JSON.stringify(error));
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to upload claim related documents" };
         }
     };
-    return authWrapper<UploadClaimRelatedDocumentsResponse>()(req);
+    return authWrapper<ServerActionResult<UploadClaimRelatedDocumentsResponse>>()(req);
 };
 
 export const conformUploadedDocument = async (
     selfDisasterId: string,
     payload: ConfirmDocumentUploadRequest
-): Promise<ConfirmDocumentUploadResponse> => {
-    const req = async (token: string): Promise<ConfirmDocumentUploadResponse> => {
+): Promise<ServerActionResult<ConfirmDocumentUploadResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<ConfirmDocumentUploadResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.POST("/s3/confirmUpload/selfDisaster", {
             headers: authHeader(token),
             body: { ...payload, selfDisasterId: selfDisasterId, documentType: "CLAIM" },
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to confirm uploaded document" };
         }
     };
-    return authWrapper<ConfirmDocumentUploadResponse>()(req);
+    return authWrapper<ServerActionResult<ConfirmDocumentUploadResponse>>()(req);
 };
 
-export const linkLineItemToClaim = async (claimId: string, purchaseLineItemId: string) => {
-    const req = async (token: string) => {
+export const linkLineItemToClaim = async (
+    claimId: string,
+    purchaseLineItemId: string
+): Promise<ServerActionResult<LinkLineItemToClaimResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<LinkLineItemToClaimResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.POST("/claims/line-item", {
             headers: authHeader(token),
             body: { claimId, purchaseLineItemId },
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to link line item to claim" };
         }
     };
-    return authWrapper<LinkLineItemToClaimResponse>()(req);
+    return authWrapper<ServerActionResult<LinkLineItemToClaimResponse>>()(req);
 };
 
-export const linkPurchaseToClaim = async (claimId: string, purchaseId: string) => {
-    const req = async (token: string) => {
+export const linkPurchaseToClaim = async (
+    claimId: string,
+    purchaseId: string
+): Promise<ServerActionResult<LinkPurchaseToClaimResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<LinkPurchaseToClaimResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.POST("/claims/purchase", {
             headers: authHeader(token),
             body: { claimId, purchaseId },
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to link purchase to claim" };
         }
     };
-    return authWrapper<LinkPurchaseToClaimResponse>()(req);
+    return authWrapper<ServerActionResult<LinkPurchaseToClaimResponse>>()(req);
 };
 
-export const createClaimPDF = async (claimId: string) => {
-    const req = async (token: string) => {
+export const createClaimPDF = async (claimId: string): Promise<ServerActionResult<CreateClaimPDFResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<CreateClaimPDFResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.GET("/claims/{id}/pdf", {
             headers: authHeader(token),
@@ -222,16 +243,16 @@ export const createClaimPDF = async (claimId: string) => {
             },
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to create claim PDF" };
         }
     };
-    return authWrapper<CreateClaimPDFResponse>()(req);
+    return authWrapper<ServerActionResult<CreateClaimPDFResponse>>()(req);
 };
 
-export const deleteClaim = async (claimId: string) => {
-    const req = async (token: string) => {
+export const deleteClaim = async (claimId: string): Promise<ServerActionResult<DeleteClaimResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<DeleteClaimResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.DELETE("/claims/{id}", {
             headers: authHeader(token),
@@ -240,10 +261,10 @@ export const deleteClaim = async (claimId: string) => {
             },
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to delete claim" };
         }
     };
-    return authWrapper<DeleteClaimResponse>()(req);
+    return authWrapper<ServerActionResult<DeleteClaimResponse>>()(req);
 };

@@ -2,7 +2,7 @@
 
 import { getUserPreferences, updateUserPreferences } from "@/api/preferences";
 import { Switch } from "@/components/ui/switch";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { BellDotIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ProfileSettingsCard } from "./common";
@@ -10,7 +10,7 @@ import { ProfileSettingsCard } from "./common";
 export function NotificationSettings() {
     const [emailNotifsEnabled, setEmailNotifsEnabled] = useState(false);
 
-    const { data: userPreferencesData } = useQuery({
+    const { data: userPreferencesData } = useServerActionQuery({
         queryKey: ["userPreferences"],
         queryFn: getUserPreferences,
     });

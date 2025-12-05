@@ -8,9 +8,13 @@ import {
     PurchaseWithLineItems,
 } from "../types/purchase";
 import { authHeader, authWrapper, getClient } from "./client";
+import { ServerActionResult } from "./types";
 
-export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate: Date): Promise<{ total: number }> => {
-    const req = async (token: string): Promise<{ total: number }> => {
+export const sumPurchasesByCompanyAndDateRange = async (
+    startDate: Date,
+    endDate: Date
+): Promise<ServerActionResult<{ total: number }>> => {
+    const req = async (token: string): Promise<ServerActionResult<{ total: number }>> => {
         const client = getClient();
         const { data, error, response } = await client.GET("/purchase/bulk/totalExpenses", {
             headers: authHeader(token),
@@ -23,17 +27,21 @@ export const sumPurchasesByCompanyAndDateRange = async (startDate: Date, endDate
         });
 
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to sum purchases" };
         }
     };
 
-    return authWrapper<{ total: number }>()(req);
+    return authWrapper<ServerActionResult<{ total: number }>>()(req);
 };
 
-export const updateCategory = async (category: string, purchaseLineIds: string[], removeCategory: boolean) => {
-    const req = async (token: string) => {
+export const updateCategory = async (
+    category: string,
+    purchaseLineIds: string[],
+    removeCategory: boolean
+): Promise<ServerActionResult<void>> => {
+    const req = async (token: string): Promise<ServerActionResult<void>> => {
         const client = getClient();
         const { error, response } = await client.PATCH("/purchase/line/category", {
             headers: authHeader(token),
@@ -44,12 +52,14 @@ export const updateCategory = async (category: string, purchaseLineIds: string[]
             },
         });
 
-        if (!response.ok) {
-            throw Error(error?.error);
+        if (response.ok) {
+            return { success: true, data: undefined };
+        } else {
+            return { success: false, error: error?.error || "Failed to update category" };
         }
     };
 
-    return authWrapper<void>()(req);
+    return authWrapper<ServerActionResult<void>>()(req);
 };
 
 const typeMap: Record<string, PurchaseLineItemType> = {
@@ -59,8 +69,8 @@ const typeMap: Record<string, PurchaseLineItemType> = {
 
 type typeString = "extraneous" | "typical" | "pending" | "suggested extraneous" | "suggested typical";
 
-export const updateType = async (type: typeString, purchaseLineIds: string[]) => {
-    const req = async (token: string) => {
+export const updateType = async (type: typeString, purchaseLineIds: string[]): Promise<ServerActionResult<void>> => {
+    const req = async (token: string): Promise<ServerActionResult<void>> => {
         const client = getClient();
         const { error, response } = await client.PATCH("/purchase/line/type", {
             headers: authHeader(token),
@@ -69,16 +79,20 @@ export const updateType = async (type: typeString, purchaseLineIds: string[]) =>
                 type: typeMap[type],
             },
         });
-        if (!response.ok) {
-            throw Error(error?.error);
+        if (response.ok) {
+            return { success: true, data: undefined };
+        } else {
+            return { success: false, error: error?.error || "Failed to update type" };
         }
     };
 
-    return authWrapper<void>()(req);
+    return authWrapper<ServerActionResult<void>>()(req);
 };
 
-export const createPurchaseForCompany = async (newPurchase: CreatePurchaseInput): Promise<CreatePurchaseResponse> => {
-    const req = async (token: string): Promise<CreatePurchaseResponse> => {
+export const createPurchaseForCompany = async (
+    newPurchase: CreatePurchaseInput
+): Promise<ServerActionResult<CreatePurchaseResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<CreatePurchaseResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.POST("/purchase/bulk", {
             body: newPurchase,
@@ -86,17 +100,17 @@ export const createPurchaseForCompany = async (newPurchase: CreatePurchaseInput)
         });
 
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to create purchase" };
         }
     };
 
-    return authWrapper<CreatePurchaseResponse>()(req);
+    return authWrapper<ServerActionResult<CreatePurchaseResponse>>()(req);
 };
 
-export const fetchPurchases = async (filters: FilteredPurchases): Promise<PurchasesWithCount> => {
-    const req = async (token: string): Promise<PurchasesWithCount> => {
+export const fetchPurchases = async (filters: FilteredPurchases): Promise<ServerActionResult<PurchasesWithCount>> => {
+    const req = async (token: string): Promise<ServerActionResult<PurchasesWithCount>> => {
         const client = getClient();
         const { data, error, response } = await client.GET("/purchase", {
             params: {
@@ -115,34 +129,34 @@ export const fetchPurchases = async (filters: FilteredPurchases): Promise<Purcha
             headers: authHeader(token),
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to fetch purchases" };
         }
     };
-    return authWrapper<PurchasesWithCount>()(req);
+    return authWrapper<ServerActionResult<PurchasesWithCount>>()(req);
 };
 
-export const fetchAllCategories = async (): Promise<string[]> => {
-    const req = async (token: string): Promise<string[]> => {
+export const fetchAllCategories = async (): Promise<ServerActionResult<string[]>> => {
+    const req = async (token: string): Promise<ServerActionResult<string[]>> => {
         const client = getClient();
         const { data, error, response } = await client.GET("/purchase/categories", {
             headers: authHeader(token),
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to fetch categories" };
         }
     };
-    return authWrapper<string[]>()(req);
+    return authWrapper<ServerActionResult<string[]>>()(req);
 };
 
 export const getAllPurchasesForExport = async (
     filters: FilteredPurchases,
     total: number
-): Promise<PurchaseWithLineItems[]> => {
-    const req = async (token: string): Promise<PurchaseWithLineItems[]> => {
+): Promise<ServerActionResult<PurchaseWithLineItems[]>> => {
+    const req = async (token: string): Promise<ServerActionResult<PurchaseWithLineItems[]>> => {
         const client = getClient();
         const { data, error, response } = await client.GET("/purchase", {
             headers: authHeader(token),
@@ -161,11 +175,11 @@ export const getAllPurchasesForExport = async (
         });
 
         if (response.ok) {
-            return data?.purchases || [];
+            return { success: true, data: data?.purchases || [] };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to get purchases for export" };
         }
     };
 
-    return authWrapper<PurchaseWithLineItems[]>()(req);
+    return authWrapper<ServerActionResult<PurchaseWithLineItems[]>>()(req);
 };

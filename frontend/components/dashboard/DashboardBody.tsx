@@ -7,16 +7,16 @@ import NetDisasterExpense, { NetDisasterExpenseNoData } from "./NetDisasterExpen
 import LocationRisk from "./LocationRisk";
 import { companyHasData } from "@/api/company";
 import NoDataPopupWrapper from "./NoDataPopupWrapper";
-import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "../ui/spinner";
+import { useServerActionQuery } from "@/api/requestHandlers";
 
 export default function DashboardBody() {
-    const { data: bannerData } = useQuery({
+    const { data: bannerData } = useServerActionQuery({
         queryKey: ["banner-data"],
         queryFn: getDashboardBannerData,
     });
 
-    const { data: hasData, isLoading: hasDataLoading } = useQuery({
+    const { data: hasData, isLoading: hasDataLoading } = useServerActionQuery({
         queryKey: ["company-has-data"],
         queryFn: companyHasData,
     });

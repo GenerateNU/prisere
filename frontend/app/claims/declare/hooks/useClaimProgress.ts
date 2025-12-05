@@ -25,10 +25,11 @@ import {
     SaveStatus,
     UploadClaimRelatedDocumentsRequest,
 } from "@/types/claim";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { parseAsNumberLiteral, useQueryState } from "nuqs";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cleanExpiredTempData, clearTempData, loadTempData, saveTempData } from "../utils/tempStorage";
+import { useServerActionQuery } from "@/api/requestHandlers";
 
 interface UseClaimProgressReturn {
     claimId: string | null;
@@ -62,7 +63,7 @@ export function useClaimProgress(
 ): UseClaimProgressReturn {
     const queryClient = useQueryClient();
 
-    const { data: userInfoData } = useQuery({
+    const { data: userInfoData } = useServerActionQuery({
         queryKey: ["userInfo"],
         queryFn: getUser,
     });

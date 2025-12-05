@@ -7,9 +7,12 @@ import {
     UnreadNotificationsResponse,
 } from "@/types/notifications";
 import { authHeader, authWrapper, getClient } from "./client";
+import { ServerActionResult } from "./types";
 
-export const getNotifications = async (filters?: NotificationFilters): Promise<GetNotificationsResponse> => {
-    const req = async (token: string): Promise<GetNotificationsResponse> => {
+export const getNotifications = async (
+    filters?: NotificationFilters
+): Promise<ServerActionResult<GetNotificationsResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<GetNotificationsResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.GET("/notifications", {
             params: {
@@ -24,20 +27,20 @@ export const getNotifications = async (filters?: NotificationFilters): Promise<G
         });
 
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error || "Failed to get notifications");
+            return { success: false, error: error?.error || "Failed to get notifications" };
         }
     };
 
-    return authWrapper<GetNotificationsResponse>()(req);
+    return authWrapper<ServerActionResult<GetNotificationsResponse>>()(req);
 };
 
 export const updateNotificationStatus = async (
     notificationId: string,
     status: string
-): Promise<MarkReadNotificationResponse> => {
-    const req = async (token: string): Promise<MarkReadNotificationResponse> => {
+): Promise<ServerActionResult<MarkReadNotificationResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<MarkReadNotificationResponse>> => {
         const path = status === "read" ? "/notifications/{id}/markAsRead" : "/notifications/{id}/markUnread";
         const client = getClient();
         const { data, error, response } = await client.PATCH(path, {
@@ -48,45 +51,45 @@ export const updateNotificationStatus = async (
         });
 
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error || "Failed to update notification status");
+            return { success: false, error: error?.error || "Failed to update notification status" };
         }
     };
 
-    return authWrapper<MarkReadNotificationResponse>()(req);
+    return authWrapper<ServerActionResult<MarkReadNotificationResponse>>()(req);
 };
 
-export const markAllNotificationsAsRead = async (): Promise<MarkAllAsReadResponse> => {
-    const req = async (token: string): Promise<MarkAllAsReadResponse> => {
+export const markAllNotificationsAsRead = async (): Promise<ServerActionResult<MarkAllAsReadResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<MarkAllAsReadResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.PATCH("/notifications/user/markAllAsRead", {
             headers: authHeader(token),
         });
 
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error || "Failed to mark all as read");
+            return { success: false, error: error?.error || "Failed to mark all as read" };
         }
     };
 
-    return authWrapper<MarkAllAsReadResponse>()(req);
+    return authWrapper<ServerActionResult<MarkAllAsReadResponse>>()(req);
 };
 
-export const getUserUnreadNotifications = async (): Promise<UnreadNotificationsResponse> => {
-    const req = async (token: string) => {
+export const getUserUnreadNotifications = async (): Promise<ServerActionResult<UnreadNotificationsResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<UnreadNotificationsResponse>> => {
         const client = getClient();
-        const { data, response } = await client.GET("/notifications/unread", {
+        const { data, error, response } = await client.GET("/notifications/unread", {
             headers: authHeader(token),
         });
 
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error("Failed to get user unread notifications");
+            return { success: false, error: error || "Failed to get user unread notifications" };
         }
     };
 
-    return authWrapper<UnreadNotificationsResponse>()(req);
+    return authWrapper<ServerActionResult<UnreadNotificationsResponse>>()(req);
 };

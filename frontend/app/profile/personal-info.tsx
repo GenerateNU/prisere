@@ -4,11 +4,12 @@ import { getUser, updateUserInfo } from "@/api/user";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckIcon, SquarePenIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ProfileSettingsCard } from "./common";
 import { HiOutlineX } from "react-icons/hi";
+import { useServerActionQuery } from "@/api/requestHandlers";
 
 export function PersonalInfoSettings() {
     const queryClient = useQueryClient();
@@ -22,7 +23,7 @@ export function PersonalInfoSettings() {
         phoneNumber: "",
     });
 
-    const { data: userInfoData } = useQuery({
+    const { data: userInfoData } = useServerActionQuery({
         queryKey: ["userInfo"],
         queryFn: getUser,
     });
