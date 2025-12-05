@@ -14,6 +14,7 @@ export type QBPurchase = {
         type: string;
         DisplayName?: string;
         GivenName: string;
+        name: string;
     };
 };
 
