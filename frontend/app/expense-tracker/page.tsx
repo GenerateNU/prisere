@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ExpenseTable, { useFetchPurchases } from "./expense-table/expense-table";
 import TransactionImportModal from "./transaction-import-csv/TransactionImportModal";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,11 @@ export default function ExpenseTracker() {
         queryKey: ["company-has-data"],
         queryFn: companyHasData,
     });
+
+    useEffect(() => {
+        console.log("external data", hasData?.hasExternalData);
+        console.log("financial data", hasData?.hasFinancialData);
+    })
 
     const { data: companyLastUpdate } = useQuery({
         queryKey: ["company-last-update"],
@@ -99,32 +104,14 @@ export default function ExpenseTracker() {
             <div className="flex justify-between">
                 <div>
                     <h2 className="text-[30px] font-bold">Expense Tracker</h2>
-                    {true &&
+                    {hasData?.hasExternalData &&
                         <div>
                             <div className="flex gap-[8px] text-[var(--teal)] items-center"> <GoSync className="text-[var(--teal)]" />Last Synced on {mostRecent?.toLocaleDateString() ?? "--/--/--"}</div>
                         </div>
                     }
                 </div>
-                {hasData?.hasFinancialData && !hasData?.hasExternalData && (
+                {!hasData?.hasExternalData && (
                     <div>
-                        <Button
-                            className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
-                            onClick={onOpenImportModal}
-                        >
-                            {" "}
-                            <FiUpload className="text-white" style={{ width: "14px" }} /> Upload CSV
-                        </Button>
-                    </div>
-                )}
-                {!hasData?.hasFinancialData && !hasData?.hasExternalData && (
-                    <div className="flex gap-[8px]">
-                        {!hasData?.hasExternalData && !hasData?.hasFinancialData && (
-                            <Button className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]">
-                                {" "}
-                                <GoSync className="text-white" style={{ width: "14px" }} />
-                                Sync Quickbooks
-                            </Button>
-                        )}
                         <Button
                             className="h-[34px] w-fit text-white text-[14px] bg-[var(--fuchsia)]"
                             onClick={onOpenImportModal}
