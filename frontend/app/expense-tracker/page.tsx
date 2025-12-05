@@ -155,6 +155,8 @@ export default function ExpenseTracker() {
                                             lineItemsPending={pendingExpensesLineItems.length}
                                             totalConfirmedExpenses={totalExpense}
                                             filterPending={() => setFilterPending(true)}
+                                            isLoading={exExpenses.isLoading || typicalExpenses.isLoading}
+                                            error={!(!exExpenses.error && !typicalExpenses.error)}
                                         />
                                     )
                                 ) : (
