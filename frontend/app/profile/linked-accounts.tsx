@@ -26,7 +26,7 @@ export function LinkedAccountsSettings() {
                     <span className="text-lg ">Sign in with QuickBooks</span>
                 </div>
                 <Button
-                    className="bg-light-fuchsia hover:bg-light-fuchsia/80 text-fuchsia w-40 cursor-pointer"
+                    className="bg-light-fuchsia hover:bg-fuchsia hover:text-white text-fuchsia w-40 cursor-pointer"
                     size="sm"
                     onClick={async () => {
                         await quickbooksAuth();
@@ -38,7 +38,7 @@ export function LinkedAccountsSettings() {
 
             <Button
                 size={"sm"}
-                className="w-48 text-black mt-3"
+                className="w-48 text-black mt-3 hover:bg-fuchsia hover:text-white"
                 variant="secondary"
                 // TODO: set up CSV import
             >

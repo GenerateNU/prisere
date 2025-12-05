@@ -120,7 +120,7 @@ export default function Insurance({ handleNext: incrementProgress }: InsuranceIn
             ))}
             <Button
                 className={`w-[250px] mb-[20px] flex items-center text-[16px] h-[34px] 
-                    self-start px-[12px] py-[4px] underline bg-slate hover:text-gray-600 
+                    self-start px-[12px] py-[4px] underline bg-slate hover:bg-fuchsia hover:text-white
                     ${insurancePayload.length == 0 ? "self-center" : ""}`}
                 onClick={addInsurance}
             >
@@ -132,7 +132,7 @@ export default function Insurance({ handleNext: incrementProgress }: InsuranceIn
                     <Button
                         type="button"
                         onClick={handleNext}
-                        className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white px-[20px] py-[12px] text-[16px]"
+                        className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white px-[20px] py-[12px] text-[16px] hover:bg-pink hover:text-fuchsia"
                     >
                         {createInsurancePending ? <Spinner /> : <></>}
                         Next

@@ -270,12 +270,16 @@ export default function IncidentDateStep({
                 </div>
             </Card>
             <div className="flex items-center justify-end gap-3 w-full pt-8">
-                <Button onClick={handleStepBack} className="text-sm bg-light-fuchsia text-fuchsia w-[70px]" size="lg">
+                <Button
+                    onClick={handleStepBack}
+                    className="text-sm bg-light-fuchsia text-fuchsia w-[70px] hover:bg-fuchsia hover:text-white"
+                    size="lg"
+                >
                     Back
                 </Button>
                 <Button
                     onClick={handleProceed}
-                    className="bg-fuchsia text-white px-[20px] py-[12px] w-[170px] h-[42px] text-[14px] rounded-50"
+                    className="bg-fuchsia text-white hover:bg-pink hover:text-fuchsia px-[20px] py-[12px] w-[170px] h-[42px] text-[14px] rounded-50"
                     size="lg"
                 >
                     Proceed to filing report

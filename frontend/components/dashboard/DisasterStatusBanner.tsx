@@ -55,7 +55,7 @@ export default function DisasterStatusBanner({ bannerData }: DisasterStatusBanne
                         rel="noopener noreferrer"
                         className="self-end"
                     >
-                        <BannerAction className="px-6 py-3 rounded-full hover:bg-pink bg-fuchsia text-white whitespace-nowrap text-sm font-medium">
+                        <BannerAction className="px-6 py-3 rounded-full hover:bg-pink bg-fuchsia text-white hover:text-fuchsia whitespace-nowrap text-sm font-medium">
                             Register on FEMA&apos;s website
                             {/* Escaped quote character */}
                         </BannerAction>

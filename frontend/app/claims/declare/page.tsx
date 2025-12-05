@@ -288,7 +288,7 @@ function DeclareDisasterContent() {
                     <div className="flex justify-between items-center mb-4">
                         <SaveStatusIndicator status={saveStatus} />
                         <Button
-                            className="text-sm bg-light-fuchsia text-fuchsia w-fit py-2 px-3 ml-auto hover:bg-light-fuchsia/80"
+                            className="text-sm bg-light-fuchsia text-fuchsia hover:bg-fuchsia hover:text-white w-fit py-2 px-3 ml-auto"
                             size="lg"
                             onClick={handleSaveAndClose}
                             disabled={saveStatus === "saving"}

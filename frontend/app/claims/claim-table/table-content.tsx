@@ -19,7 +19,10 @@ import { TfiTrash } from "react-icons/tfi";
 
 function IconButton({ onClick, children }: PropsWithChildren<{ onClick: () => void }>) {
     return (
-        <button onClick={onClick} className="p-2.5 rounded-full bg-slate hover:bg-slate/80 cursor-pint">
+        <button
+            onClick={onClick}
+            className="group p-2.5 rounded-full bg-slate cursor-pint hover:bg-fuchsia hover:text-white"
+        >
             {children}
         </button>
     );
@@ -67,14 +70,14 @@ export default function TableContent({ claims }: { claims: UseQueryResult<GetCom
                                     }
                                 }}
                             >
-                                <PiDownloadSimpleLight size={18} />
+                                <PiDownloadSimpleLight className="group-hover:text-white" size={18} />
                             </IconButton>
                             <IconButton
                                 onClick={() => {
                                     setDialogToDeleteClaimId(row.original.id);
                                 }}
                             >
-                                <TfiTrash size={18} />
+                                <TfiTrash className="group-hover:text-white" size={18} />
                             </IconButton>
                         </div>
                     );
@@ -102,7 +105,10 @@ export default function TableContent({ claims }: { claims: UseQueryResult<GetCom
                     <DialogDescription>Are you sure you want to delete this claim?</DialogDescription>
                     <DialogFooter>
                         <DialogClose asChild>
-                            <Button className="text-sm bg-light-fuchsia text-fuchsia w-[70px]" size="lg">
+                            <Button
+                                className="text-sm bg-light-fuchsia text-fuchsia hover:bg-fuchsia hover:text-white w-[70px]"
+                                size="lg"
+                            >
                                 Cancel
                             </Button>
                         </DialogClose>
@@ -113,7 +119,7 @@ export default function TableContent({ claims }: { claims: UseQueryResult<GetCom
                                 claimDelete.mutate(dialogToDeleteClaimId!);
                                 setDialogToDeleteClaimId(null);
                             }}
-                            className="bg-fuchsia text-white px-[20px] py-[12px] w-fit h-[42px] text-[14px] rounded-50"
+                            className="bg-fuchsia text-white hover:bg-pink hover:text-fuchsia px-[20px] py-[12px] w-fit h-[42px] text-[14px] rounded-50"
                         >
                             Yes, delete
                         </Button>
