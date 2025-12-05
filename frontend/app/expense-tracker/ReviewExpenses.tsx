@@ -85,17 +85,17 @@ export default function ReviewExpenses({
                         </div>
                     </CardContent>
                     <CardFooter className="p-0">
-                    <Button
-                    className="group h-[34px] w-fit bg-[var(--fuchsia)] hover:bg-pink hover:text-fuchsia"
-                    onClick={filterPending}
-                >
-                    <FaArrowDown
-                        className="text-white group-hover:text-fuchsia"
-                        size={"10px"}
-                        style={{ strokeWidth: 0.5, width: "10px" }}
-                    />
-                    <p className="text-white group-hover:text-fuchsia text-[14px]">Go to Pending</p>
-                </Button>
+                        <Button
+                            className="group h-[34px] w-fit bg-[var(--fuchsia)] hover:bg-pink hover:text-fuchsia"
+                            onClick={filterPending}
+                        >
+                            <FaArrowDown
+                                className="text-white group-hover:text-fuchsia"
+                                size={"10px"}
+                                style={{ strokeWidth: 0.5, width: "10px" }}
+                            />
+                            <p className="text-white group-hover:text-fuchsia text-[14px]">Go to Pending</p>
+                        </Button>
                     </CardFooter>
                 </>
             )}
