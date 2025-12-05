@@ -4,8 +4,8 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseClient } from "@/utils/supabase/server";
 import { loginInitialState, requiredOnboardingProgress, signupInitialState } from "@/types/user";
 import { createClient } from "@supabase/supabase-js";
-import { getCompanyServerSide } from "@/api/company-server";
-import { importQuickbooksDataServerSide } from "../api/quickbooks-server";
+import { importQuickbooksData } from "@/api/quickbooks";
+import { getCompany } from "@/api/company";
 
 export async function login(prevState: loginInitialState, formData: FormData) {
     const supabase = await createSupabaseClient();
@@ -21,9 +21,9 @@ export async function login(prevState: loginInitialState, formData: FormData) {
         };
     }
 
-    const company = await getCompanyServerSide();
+    const company = await getCompany();
     if (company?.externals) {
-        importQuickbooksDataServerSide();
+        importQuickbooksData();
     }
 
     revalidatePath("/", "layout");

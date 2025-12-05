@@ -1,4 +1,6 @@
-import { authHeader, clientAuthWrapper, getClient } from "./client";
+"use server";
+
+import { authHeader, authWrapper, getClient } from "./client";
 
 export const importQuickbooksData = async (): Promise<{ success: true } | undefined> => {
     const req = async (token: string): Promise<{ success: true } | undefined> => {
@@ -9,10 +11,11 @@ export const importQuickbooksData = async (): Promise<{ success: true } | undefi
         if (response.ok) {
             return data!;
         } else {
+            // TODO: error message?
             return undefined;
         }
     };
-    return clientAuthWrapper<{ success: true } | undefined>()(req);
+    return authWrapper<{ success: true } | undefined>()(req);
 };
 
 export const redirectToQuickbooks = async (): Promise<string | undefined> => {
@@ -30,5 +33,5 @@ export const redirectToQuickbooks = async (): Promise<string | undefined> => {
         }
     };
 
-    return clientAuthWrapper<string | undefined>()(req);
+    return authWrapper<string | undefined>()(req);
 };

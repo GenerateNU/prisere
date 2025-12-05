@@ -1,3 +1,4 @@
+"use server";
 import {
     ConfirmDocumentUploadRequest,
     ConfirmDocumentUploadResponse,
@@ -16,7 +17,7 @@ import {
     UploadClaimRelatedDocumentsRequest,
     UploadClaimRelatedDocumentsResponse,
 } from "@/types/claim";
-import { authHeader, clientAuthWrapper, getClient } from "./client";
+import { authHeader, authWrapper, getClient } from "./client";
 
 export const createClaim = async (payload: CreateClaimRequest): Promise<CreateClaimResponse> => {
     const req = async (token: string): Promise<CreateClaimResponse> => {
@@ -31,7 +32,7 @@ export const createClaim = async (payload: CreateClaimRequest): Promise<CreateCl
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<CreateClaimResponse>()(req);
+    return authWrapper<CreateClaimResponse>()(req);
 };
 
 export const getClaims = async (input: GetCompanyClaimRequest): Promise<GetCompanyClaimResponse> => {
@@ -47,7 +48,7 @@ export const getClaims = async (input: GetCompanyClaimRequest): Promise<GetCompa
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<GetCompanyClaimResponse>()(req);
+    return authWrapper<GetCompanyClaimResponse>()(req);
 };
 
 export const getPurchaseLineItemsFromClaim = async (params: {
@@ -71,7 +72,7 @@ export const getPurchaseLineItemsFromClaim = async (params: {
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<GetClaimLineItemsResponse>()(req);
+    return authWrapper<GetClaimLineItemsResponse>()(req);
 };
 
 export const getClaimById = async (claimId: string): Promise<GetClaimByIdResponse> => {
@@ -89,7 +90,7 @@ export const getClaimById = async (claimId: string): Promise<GetClaimByIdRespons
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<GetClaimByIdResponse>()(req);
+    return authWrapper<GetClaimByIdResponse>()(req);
 };
 
 export const updateClaimStatus = async (
@@ -111,7 +112,7 @@ export const updateClaimStatus = async (
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<UpdateClaimStatusResponse>()(req);
+    return authWrapper<UpdateClaimStatusResponse>()(req);
 };
 
 export const uploadAndConfirmDocumentRelation = async (
@@ -157,7 +158,7 @@ export const uploadClaimRelatedDocuments = async (
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<UploadClaimRelatedDocumentsResponse>()(req);
+    return authWrapper<UploadClaimRelatedDocumentsResponse>()(req);
 };
 
 export const conformUploadedDocument = async (
@@ -176,7 +177,7 @@ export const conformUploadedDocument = async (
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<ConfirmDocumentUploadResponse>()(req);
+    return authWrapper<ConfirmDocumentUploadResponse>()(req);
 };
 
 export const linkLineItemToClaim = async (claimId: string, purchaseLineItemId: string) => {
@@ -192,7 +193,7 @@ export const linkLineItemToClaim = async (claimId: string, purchaseLineItemId: s
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<LinkLineItemToClaimResponse>()(req);
+    return authWrapper<LinkLineItemToClaimResponse>()(req);
 };
 
 export const linkPurchaseToClaim = async (claimId: string, purchaseId: string) => {
@@ -208,7 +209,7 @@ export const linkPurchaseToClaim = async (claimId: string, purchaseId: string) =
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<LinkPurchaseToClaimResponse>()(req);
+    return authWrapper<LinkPurchaseToClaimResponse>()(req);
 };
 
 export const createClaimPDF = async (claimId: string) => {
@@ -226,7 +227,7 @@ export const createClaimPDF = async (claimId: string) => {
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<CreateClaimPDFResponse>()(req);
+    return authWrapper<CreateClaimPDFResponse>()(req);
 };
 
 export const deleteClaim = async (claimId: string) => {
@@ -244,5 +245,5 @@ export const deleteClaim = async (claimId: string) => {
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<DeleteClaimResponse>()(req);
+    return authWrapper<DeleteClaimResponse>()(req);
 };

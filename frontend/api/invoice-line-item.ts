@@ -1,5 +1,6 @@
+"use server";
 import { CreateInvoiceLineItemsRequest, CreateInvoiceLineItemsResponse } from "@/types/invoice-line-items";
-import { authHeader, clientAuthWrapper, getClient } from "./client";
+import { authHeader, authWrapper, getClient } from "./client";
 
 export const createBulkInvoiceLineItems = async (
     newLineItems: CreateInvoiceLineItemsRequest
@@ -18,5 +19,5 @@ export const createBulkInvoiceLineItems = async (
         }
     };
 
-    return clientAuthWrapper<CreateInvoiceLineItemsResponse>()(req);
+    return authWrapper<CreateInvoiceLineItemsResponse>()(req);
 };

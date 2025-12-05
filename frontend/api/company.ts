@@ -1,3 +1,4 @@
+"use server";
 import {
     Company,
     CompanyHasDataResponse,
@@ -7,7 +8,7 @@ import {
     UpdateCompanyRequest,
     UpdateCompanyResponse,
 } from "@/types/company";
-import { authHeader, clientAuthWrapper, getClient } from "./client";
+import { authHeader, authWrapper, getClient } from "./client";
 
 export const createCompany = async (payload: CreateCompanyRequest): Promise<Company> => {
     const req = async (token: string): Promise<Company> => {
@@ -22,7 +23,7 @@ export const createCompany = async (payload: CreateCompanyRequest): Promise<Comp
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<Company>()(req);
+    return authWrapper<Company>()(req);
 };
 
 export const getCompanyLocations = async (): Promise<GetCompanyLocationsResponse> => {
@@ -37,7 +38,7 @@ export const getCompanyLocations = async (): Promise<GetCompanyLocationsResponse
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<GetCompanyLocationsResponse>()(req);
+    return authWrapper<GetCompanyLocationsResponse>()(req);
 };
 
 export const getCompany = async (): Promise<Company> => {
@@ -52,7 +53,7 @@ export const getCompany = async (): Promise<Company> => {
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<Company>()(req);
+    return authWrapper<Company>()(req);
 };
 
 export const getClaimInProgress = async (): Promise<GetClaimInProgressForCompanyResponse> => {
@@ -67,7 +68,7 @@ export const getClaimInProgress = async (): Promise<GetClaimInProgressForCompany
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<GetClaimInProgressForCompanyResponse>()(req);
+    return authWrapper<GetClaimInProgressForCompanyResponse>()(req);
 };
 
 export const companyHasData = async (): Promise<CompanyHasDataResponse> => {
@@ -82,7 +83,7 @@ export const companyHasData = async (): Promise<CompanyHasDataResponse> => {
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<CompanyHasDataResponse>()(req);
+    return authWrapper<CompanyHasDataResponse>()(req);
 };
 
 export const updateCompany = async (payload: UpdateCompanyRequest): Promise<UpdateCompanyResponse> => {
@@ -98,5 +99,5 @@ export const updateCompany = async (payload: UpdateCompanyRequest): Promise<Upda
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<UpdateCompanyResponse>()(req);
+    return authWrapper<UpdateCompanyResponse>()(req);
 };

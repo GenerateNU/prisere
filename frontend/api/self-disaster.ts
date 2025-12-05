@@ -1,10 +1,12 @@
+"use server";
+
 import {
     CreateSelfDisasterRequest,
     CreateSelfDisasterResponse,
     UpdateSelfDisasterRequest,
     UpdateSelfDisasterResponse,
 } from "@/types/self-disaster";
-import { authHeader, clientAuthWrapper, getClient } from "./client";
+import { authHeader, authWrapper, getClient } from "./client";
 
 export const createSelfDisaster = async (payload: CreateSelfDisasterRequest): Promise<CreateSelfDisasterResponse> => {
     const req = async (token: string): Promise<CreateSelfDisasterResponse> => {
@@ -19,7 +21,7 @@ export const createSelfDisaster = async (payload: CreateSelfDisasterRequest): Pr
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<CreateSelfDisasterResponse>()(req);
+    return authWrapper<CreateSelfDisasterResponse>()(req);
 };
 
 export const updateSelfDisaster = async (
@@ -41,5 +43,5 @@ export const updateSelfDisaster = async (
             throw Error(error?.error);
         }
     };
-    return clientAuthWrapper<UpdateSelfDisasterResponse>()(req);
+    return authWrapper<UpdateSelfDisasterResponse>()(req);
 };
