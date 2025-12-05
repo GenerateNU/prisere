@@ -1,5 +1,4 @@
 "use client";
-
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar as CalendarIcon, Search } from "lucide-react";
@@ -13,6 +12,7 @@ type BusinessDocumentFiltersProps = {
     setCategoryFilter: (value: string) => void;
     setSearchQuery: (value: string) => void;
 };
+
 export default function BusinessDocumentFilters({
     dateFilter,
     categoryFilter,
@@ -25,9 +25,10 @@ export default function BusinessDocumentFilters({
     const dateOptions = ["All Dates", "Today", "This Week", "This Month", "This Year", "Custom"];
 
     return (
-        <div className="flex justify-between">
+        <div className="flex justify-start gap-4 text-left w-full">
             <Select value={dateFilter} onValueChange={(e) => setDateFilter(e)}>
                 <SelectTrigger
+                    className="justify-between"
                     style={{
                         width: "15%",
                         height: "35px",
@@ -38,19 +39,23 @@ export default function BusinessDocumentFilters({
                         boxShadow: "none",
                     }}
                 >
-                    <CalendarIcon className="text-black stroke-1" />
-                    <SelectValue />
+                    <div className="flex items-center gap-2">
+                        <CalendarIcon className="text-black stroke-1" />
+                        <SelectValue />
+                    </div>
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent align="start">
                     {dateOptions.map((date) => (
-                        <SelectItem key={date} value={date} className="">
+                        <SelectItem key={date} value={date} className="text-left">
                             {date}
                         </SelectItem>
                     ))}
                 </SelectContent>
             </Select>
+
             <Select value={categoryFilter} onValueChange={(e) => setCategoryFilter(e)}>
                 <SelectTrigger
+                    className="justify-between"
                     style={{
                         width: "22%",
                         height: "35px",
@@ -61,17 +66,20 @@ export default function BusinessDocumentFilters({
                         boxShadow: "none",
                     }}
                 >
-                    <LuShapes className="text-black stroke-1" />
-                    <SelectValue />
+                    <div className="flex items-center gap-2">
+                        <LuShapes className="text-black stroke-1" />
+                        <SelectValue />
+                    </div>
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent align="start">
                     {categories.map((category) => (
-                        <SelectItem key={category} value={category} className="">
+                        <SelectItem key={category} value={category} className="text-left">
                             {category}
                         </SelectItem>
                     ))}
                 </SelectContent>
             </Select>
+
             <InputGroup className="w-[62%] h-[35px] text-[14px] border-none shadow-none bg-[var(--slate)] rounded-full">
                 <InputGroupInput
                     type="text"

@@ -8,7 +8,7 @@ export function ProfileSettingsCard({
     children,
 }: PropsWithChildren<{ title: string; subtitle: string; action?: React.ReactNode }>) {
     return (
-        <Card className="gap-2.5">
+        <Card className="gap-2.5 shadow-none">
             <CardHeader>
                 <h2 className="text-xl font-bold">{title}</h2>
                 {action ? <CardAction>{action}</CardAction> : null}
