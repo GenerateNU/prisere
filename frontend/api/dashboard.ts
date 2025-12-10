@@ -2,7 +2,7 @@
 import { BannerData } from "@/types/user";
 import { getNotifications } from "./notifications";
 import { getClaimInProgress } from "./company";
-import { ServerActionResult } from "./types";
+import { ServerActionResult, isServerActionError } from "./types";
 
 export const getDashboardBannerData = async (): Promise<ServerActionResult<BannerData>> => {
     const notificationsResult = await getNotifications({
@@ -12,7 +12,7 @@ export const getDashboardBannerData = async (): Promise<ServerActionResult<Banne
         status: "unread",
     });
 
-    if (!notificationsResult.success) {
+    if (isServerActionError(notificationsResult)) {
         return { success: false, error: notificationsResult.error };
     }
 
@@ -22,7 +22,7 @@ export const getDashboardBannerData = async (): Promise<ServerActionResult<Banne
         const disaster = disasterNotifications[0].femaDisaster;
         const claimResult = await getClaimInProgress();
 
-        if (!claimResult.success) {
+        if (isServerActionError(claimResult)) {
             return { success: false, error: claimResult.error };
         }
 

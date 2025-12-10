@@ -3,12 +3,12 @@ import { DocumentResponse, PresignedUploadResponse, DocumentCategories, Document
 import { authHeader, authWrapper, getClient } from "./client";
 import { getCompany } from "./company";
 import { gzip } from "pako";
-import { ServerActionResult } from "./types";
+import { ServerActionResult, isServerActionError } from "./types";
 
 export const getAllDocuments = async (): Promise<ServerActionResult<DocumentResponse[]>> => {
     const req = async (token: string): Promise<ServerActionResult<DocumentResponse[]>> => {
         const companyResult = await getCompany();
-        if (!companyResult.success) {
+        if (isServerActionError(companyResult)) {
             return { success: false, error: companyResult.error };
         }
         const companyId = companyResult.data.id;
@@ -42,7 +42,7 @@ export async function getBusinessDocumentUploadUrl(
 ): Promise<ServerActionResult<PresignedUploadResponse>> {
     const req = async (token: string): Promise<ServerActionResult<PresignedUploadResponse>> => {
         const companyResult = await getCompany();
-        if (!companyResult.success) {
+        if (isServerActionError(companyResult)) {
             return { success: false, error: companyResult.error };
         }
         const companyId = companyResult.data.id;
@@ -76,7 +76,7 @@ export async function confirmBusinessDocumentUpload(
     const req = async (token: string): Promise<ServerActionResult<void>> => {
         const client = getClient();
         const companyResult = await getCompany();
-        if (!companyResult.success) {
+        if (isServerActionError(companyResult)) {
             return { success: false, error: companyResult.error };
         }
         const companyId = companyResult.data.id;

@@ -8,6 +8,7 @@ import { createPurchaseForCompany } from "@/api/purchase";
 import { parseAndSaveTransaction } from "./helpers/parseAndSaveTransaction";
 import { collectValidationErrors } from "./helpers/collectValidationErrors";
 import { useColumnOrderSelection } from "./useColumnOrderSelection";
+import { isServerActionSuccess } from "@/api/types";
 
 export const useParseCSVForTransaction = () => {
     const [selectedFile, setSelectedFile] = useState<File | undefined>();
@@ -110,16 +111,24 @@ export const useParseCSVForTransaction = () => {
                         },
                     ],
                 });
-                parentTransactionId = purchaseResult[0]?.id || null;
+                if (isServerActionSuccess(purchaseResult)) {
+                    parentTransactionId = purchaseResult.data[0]?.id || null;
+                } else {
+                    throw new Error(purchaseResult.error);
+                }
             } else if (transactionType === "invoice") {
-                const purchaseResult = await createInvoice({
+                const invoiceResult = await createInvoice({
                     items: [
                         {
                             totalAmountCents: 0,
                         },
                     ],
                 });
-                parentTransactionId = purchaseResult[0]?.id || null;
+                if (isServerActionSuccess(invoiceResult)) {
+                    parentTransactionId = invoiceResult.data[0]?.id || null;
+                } else {
+                    throw new Error(invoiceResult.error);
+                }
             }
 
             if (!parentTransactionId) {

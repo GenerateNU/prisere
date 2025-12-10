@@ -8,7 +8,7 @@ import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CreateLocationRequest, Location, UpdateLocationRequest } from "@/types/location";
-import { useMutation } from "@tanstack/react-query";
+import { useServerActionMutation } from "@/api/requestHandlers";
 import { useEffect, useState } from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
 
@@ -28,46 +28,46 @@ export default function LocationsCard({
         queryFn: getCompanyLocations,
     });
 
-    const { mutate: updateLocationsMutate } = useMutation({
+    const { mutate: updateLocationsMutate } = useServerActionMutation({
         mutationFn: (location: UpdateLocationRequest) => updateLocationAddress(location),
         onSuccess: () => {
             setSaveError(null);
             setEditingLocationIndex(null);
         },
         onError: (error: Error) => {
-            if (error.message.includes("postalCode")) {
+            const errorMessage = String(error);
+            if (errorMessage.includes("postalCode")) {
                 setSaveError("Error updating location. Please check postal code details and try again.");
             } else {
-                const errorMessage = error.message || "Error updating location. Check required fields and try again";
-                setSaveError(errorMessage);
+                setSaveError(errorMessage || "Error updating location. Check required fields and try again");
             }
         },
     });
 
-    const { mutate: createLocationMutate } = useMutation({
+    const { mutate: createLocationMutate } = useServerActionMutation({
         mutationFn: (location: CreateLocationRequest) => createLocation(location),
         onSuccess: () => {
             setSaveError(null);
             setEditingLocationIndex(null);
         },
         onError: (error: Error) => {
-            if (error.message.includes("postalCode")) {
+            const errorMessage = String(error);
+            if (errorMessage.includes("postalCode")) {
                 setSaveError("Error creating location. Please check postal code details and try again.");
             } else {
-                const errorMessage = error.message || "Error creating location. Check required fields and try again";
-                setSaveError(errorMessage);
+                setSaveError(errorMessage || "Error creating location. Check required fields and try again");
             }
         },
     });
 
-    const { mutate: deleteLocationMutate } = useMutation({
+    const { mutate: deleteLocationMutate } = useServerActionMutation({
         mutationFn: (locationId: string) => deleteLocation(locationId),
         onSuccess: () => {
             setSaveError(null);
             setEditingLocationIndex(null);
         },
-        onError: (_error: Error) => {
-            const errorMessage = _error.message || "Error removing location. Check required fields and try again";
+        onError: (error: Error) => {
+            const errorMessage = String(error) || "Error removing location. Check required fields and try again";
             setSaveError(errorMessage);
         },
     });

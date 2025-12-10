@@ -1,8 +1,13 @@
 import {
     useMutation,
     useQuery,
+    useQueries,
+    useInfiniteQuery,
     UseQueryOptions,
     UseQueryResult,
+    UseInfiniteQueryResult,
+    InfiniteData,
+    QueryFunctionContext,
     type UseMutationOptions,
     type UseMutationResult,
     type QueryKey,
@@ -87,4 +92,78 @@ export function useServerActionQuery<TData = unknown, TError = unknown, TQueryKe
     });
 
     return query;
+}
+
+// Custom hook for useQueries that unwraps ServerActionResult
+export function useServerActionQueries<
+    TData = unknown,
+    TError = unknown,
+    TQueryKey extends QueryKey = QueryKey,
+>(options: {
+    queries: Array<
+        Omit<UseQueryOptions<ServerActionResult<TData>, TError, TData, TQueryKey>, "select"> & {
+            select?: (data: TData) => TData;
+        }
+    >;
+}) {
+    return useQueries({
+        queries: options.queries.map((queryOptions) => ({
+            ...queryOptions,
+            queryFn: queryOptions.queryFn
+                ? async (context: Parameters<QueryFunction<ServerActionResult<TData>, TQueryKey>>[0]) => {
+                      const queryFn = queryOptions.queryFn as QueryFunction<ServerActionResult<TData>, TQueryKey>;
+                      const result = await queryFn(context);
+
+                      if (isServerActionError(result)) {
+                          throw result.error as TError;
+                      }
+
+                      return result;
+                  }
+                : undefined,
+            select: (data: ServerActionResult<TData>) => {
+                if (!isServerActionError(data)) {
+                    const unwrapped = data.data;
+                    return queryOptions.select ? queryOptions.select(unwrapped) : unwrapped;
+                }
+                throw new Error("Unexpected error state");
+            },
+        })),
+    });
+}
+
+// Custom hook for useInfiniteQuery that unwraps ServerActionResult
+// Note: This hook unwraps ServerActionResult in queryFn, so getNextPageParam receives the unwrapped TData
+export function useServerActionInfiniteQuery<
+    TData = unknown,
+    TError = unknown,
+    TQueryKey extends QueryKey = QueryKey,
+    TPageParam = unknown,
+>(options: {
+    queryKey: TQueryKey;
+    queryFn: (context: { pageParam: TPageParam }) => Promise<ServerActionResult<TData>>;
+    getNextPageParam: (lastPage: TData, allPages: TData[]) => TPageParam | undefined;
+    initialPageParam: TPageParam;
+    enabled?: boolean;
+    staleTime?: number;
+    gcTime?: number;
+    refetchOnWindowFocus?: boolean;
+    refetchOnMount?: boolean;
+    refetchOnReconnect?: boolean;
+    retry?: boolean | number;
+}): UseInfiniteQueryResult<InfiniteData<TData>, TError> {
+    const { queryFn, ...restOptions } = options;
+
+    return useInfiniteQuery({
+        ...restOptions,
+        queryFn: async (context: QueryFunctionContext<TQueryKey, TPageParam>) => {
+            const result = await queryFn({ pageParam: context.pageParam as TPageParam });
+
+            if (isServerActionError(result)) {
+                throw result.error as TError;
+            }
+
+            return result.data;
+        },
+    }) as UseInfiniteQueryResult<InfiniteData<TData>, TError>;
 }

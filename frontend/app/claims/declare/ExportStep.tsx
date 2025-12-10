@@ -3,11 +3,11 @@
 import { createClaimPDF } from "@/api/claim";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useMutation } from "@tanstack/react-query";
+import { useServerActionMutation } from "@/api/requestHandlers";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
-import { useQueryClient } from "@tanstack/react-query";
 type ExportStepProps = {
     claimId: string | null;
     handleStepForward: () => void;
@@ -20,18 +20,17 @@ export default function ExportStep({ claimId, handleStepForward }: ExportStepPro
     const [isLoadingPDFDownload, setIsLoadingPDFDownload] = useState<boolean>(false);
     const router = useRouter();
 
-    const { mutate: updateBusinessMutate } = useMutation({
+    const { mutate: updateBusinessMutate } = useServerActionMutation({
         mutationFn: async () => {
             setIsLoadingPDFDownload(true);
-            const result = await createClaimPDF(claimId!);
-            return result.url;
+            return createClaimPDF(claimId!);
         },
         onError: (error: Error) => {
             setIsLoadingPDFDownload(false);
-            setError(error.message);
+            setError(String(error));
         },
-        onSuccess: (url: string) => {
-            window.open(url, "_blank");
+        onSuccess: (data) => {
+            window.open(data.url, "_blank");
             queryClient.invalidateQueries({ queryKey: ["banner-data"] });
             queryClient.invalidateQueries({ queryKey: ["claim-in-progress"] });
             setIsLoadingPDFDownload(false);

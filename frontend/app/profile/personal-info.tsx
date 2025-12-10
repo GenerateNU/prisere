@@ -4,7 +4,8 @@ import { getUser, updateUserInfo } from "@/api/user";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useServerActionMutation } from "@/api/requestHandlers";
 import { CheckIcon, SquarePenIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ProfileSettingsCard } from "./common";
@@ -39,7 +40,7 @@ export function PersonalInfoSettings() {
         }
     }, [userInfoData]);
 
-    const { mutate: updateInfoMutation } = useMutation({
+    const { mutate: updateInfoMutation } = useServerActionMutation({
         mutationFn: updateUserInfo,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["userInfo"] });

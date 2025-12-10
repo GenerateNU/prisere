@@ -4,7 +4,7 @@ import { LargeLoading } from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { PurchaseSelections } from "@/types/claim";
-import { FilteredPurchases, PurchaseLineItemType, PurchaseWithLineItems } from "@/types/purchase";
+import { FilteredPurchases, PurchaseLineItemType, PurchasesWithCount, PurchaseWithLineItems } from "@/types/purchase";
 import { FileUp, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { FaExclamation } from "react-icons/fa6";
@@ -19,6 +19,7 @@ import ExpenseSideView from "./side-view";
 import TableContent from "./table-content";
 import { useServerActionQuery } from "@/api/requestHandlers";
 import { ServerActionResult } from "@/api/types";
+import { UseQueryResult } from "@tanstack/react-query";
 
 interface ExpenseTableConfig {
     title: string;
@@ -87,7 +88,7 @@ export default function ExpenseTable({
         updateFilter("categories")([]);
     };
 
-    const purchases = useFetchPurchases(filters);
+    const purchases = useFetchPurchases(filters) as UseQueryResult<PurchasesWithCount | undefined>;
 
     const categories = useFetchAllCategories();
 

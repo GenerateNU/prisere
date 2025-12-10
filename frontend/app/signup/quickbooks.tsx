@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { GoSync } from "react-icons/go";
 import { FiUpload } from "react-icons/fi";
 import { redirectToQuickbooks } from "@/api/quickbooks";
+import { isServerActionSuccess } from "@/api/types";
 
 interface QuickbooksInfoProps {
     handleNext: () => void;
@@ -10,11 +11,11 @@ interface QuickbooksInfoProps {
 
 export default function Quickbooks({ handleNext }: QuickbooksInfoProps) {
     const quickbooksAuth = async () => {
-        const url = await redirectToQuickbooks();
-        if (url) {
-            window.location.href = url;
+        const result = await redirectToQuickbooks();
+        if (isServerActionSuccess(result)) {
+            window.location.href = result.data;
         } else {
-            console.error("Failed to retrieve QuickBooks URL");
+            console.error(result.error);
         }
     };
 

@@ -5,7 +5,8 @@ import { TABLE_HEADER_HEIGHT, TABLE_ROW_HEIGHT } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { PurchaseSelections } from "@/types/claim";
 import { DisasterType, FilteredPurchases, PurchasesWithCount, PurchaseWithLineItems } from "@/types/purchase";
-import { useMutation, useQueryClient, UseQueryResult } from "@tanstack/react-query";
+import { useServerActionMutation } from "@/api/requestHandlers";
+import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { getCoreRowModel, getExpandedRowModel, Row, useReactTable } from "@tanstack/react-table";
 import { useMemo } from "react";
 import { updateCategory, updateType } from "../../../api/purchase";
@@ -147,7 +148,7 @@ export default function TableContent({
         }
     };
     const queryClient = useQueryClient();
-    const categoryMutation = useMutation({
+    const categoryMutation = useServerActionMutation({
         mutationFn: ({
             lineItemIds,
             category,
@@ -164,7 +165,7 @@ export default function TableContent({
             queryClient.invalidateQueries({ queryKey: ["purchases-for-company"] });
         },
     });
-    const typeMutation = useMutation({
+    const typeMutation = useServerActionMutation({
         mutationFn: ({ lineItemIds, type }: { type: DisasterType; lineItemIds: string[] }) => {
             return updateType(type, lineItemIds);
         },

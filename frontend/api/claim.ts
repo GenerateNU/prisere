@@ -18,7 +18,7 @@ import {
     UploadClaimRelatedDocumentsResponse,
 } from "@/types/claim";
 import { authHeader, authWrapper, getClient } from "./client";
-import { ServerActionResult } from "./types";
+import { ServerActionResult, isServerActionError } from "./types";
 
 export const createClaim = async (payload: CreateClaimRequest): Promise<ServerActionResult<CreateClaimResponse>> => {
     const req = async (token: string): Promise<ServerActionResult<CreateClaimResponse>> => {
@@ -125,7 +125,7 @@ export const uploadAndConfirmDocumentRelation = async (
 ): Promise<ServerActionResult<void>> => {
     const uploadResult = await uploadClaimRelatedDocuments(claimId, payload);
 
-    if (!uploadResult.success) {
+    if (isServerActionError(uploadResult)) {
         return { success: false, error: uploadResult.error };
     }
 
@@ -149,7 +149,7 @@ export const uploadAndConfirmDocumentRelation = async (
         category: null,
     });
 
-    if (!confirmResult.success) {
+    if (isServerActionError(confirmResult)) {
         return { success: false, error: confirmResult.error };
     }
 

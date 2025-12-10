@@ -2,7 +2,7 @@
 
 import { getCompany, updateCompany } from "@/api/company";
 import { UpdateCompanyRequest } from "@/types/company";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useServerActionMutation } from "@/api/requestHandlers";
 import { useEffect, useState } from "react";
 import CompanyEditor from "./BusinessInfoEditor";
 import { getUser } from "@/api/user";
@@ -26,10 +26,10 @@ export default function BusinessCard() {
     const [error, setError] = useState<string | null>(null);
     const [editing, setEditing] = useState<boolean>(false);
 
-    const { mutate: updateBusinessMutate } = useMutation({
+    const { mutate: updateBusinessMutate } = useServerActionMutation({
         mutationFn: (businessInfo: UpdateCompanyRequest) => updateCompany(businessInfo),
         onError: (error: Error) => {
-            setError(error.message);
+            setError(String(error));
         },
     });
 

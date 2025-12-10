@@ -5,7 +5,6 @@ import ResultsPerPageSelect from "@/app/expense-tracker/expense-table/ResultsPer
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { BannerAction } from "@/components/ui/shadcn-io/banner";
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
@@ -13,6 +12,8 @@ import { IoFilterOutline } from "react-icons/io5";
 import { Filters } from "./filters";
 import TableContent from "./table-content";
 import { useServerActionQuery } from "@/api/requestHandlers";
+import { UseQueryResult } from "@tanstack/react-query";
+import { GetCompanyClaimResponse } from "@/types/claim";
 
 export default function ClaimTable({ claimInProgress }: { claimInProgress: boolean }) {
     const [showFilters, setShowFilters] = useState(true);
@@ -57,7 +58,7 @@ export default function ClaimTable({ claimInProgress }: { claimInProgress: boole
                         onSearchChange={setSearch}
                     />
                 )}
-                <TableContent claims={claims.data} />
+                <TableContent claims={claims as UseQueryResult<GetCompanyClaimResponse>} />
             </CardContent>
             <CardFooter>
                 <div className="w-full border-t px-4 py-2 flex justify-end">

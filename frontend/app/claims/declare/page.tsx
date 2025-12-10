@@ -16,7 +16,7 @@ import {
     isStep,
     PersonalInfo,
 } from "@/types/claim";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { CheckIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { Suspense } from "react";
