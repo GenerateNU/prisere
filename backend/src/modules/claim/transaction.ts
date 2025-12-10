@@ -323,7 +323,16 @@ export class ClaimTransaction implements IClaimTransaction {
         const purchaseLineItemTransaction: IPurchaseLineItemTransaction = new PurchaseLineItemTransaction(this.db);
         const lineItems = await purchaseLineItemTransaction.getPurchaseLineItemsForPurchase(payload.purchaseId);
 
-        const lineItemIds = lineItems.map((item) => item.id);
+        const existingClaimLineItemAssociations = (
+            await this.db.manager.findOne(Claim, {
+                where: { id: payload.claimId },
+                relations: { purchaseLineItems: true },
+            })
+        )?.purchaseLineItems.map((element) => element.id);
+
+        const lineItemIds = lineItems
+            .map((item) => item.id)
+            .filter((itemId) => !existingClaimLineItemAssociations?.includes(itemId));
 
         try {
             await this.db.manager

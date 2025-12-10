@@ -500,9 +500,9 @@ export function useClaimProgress(
                 );
 
                 // Link individual line items
-                const lineItemPromises = partialLineItemIds.map((lineItemId) =>
-                    linkLineItemToClaim(currentClaimId!, lineItemId)
-                );
+                const lineItemPromises = partialLineItemIds
+                    .filter((element) => element !== null)
+                    .map((lineItemId) => linkLineItemToClaim(currentClaimId!, lineItemId));
 
                 // Execute all API calls in parallel
                 await Promise.all([...purchasePromises, ...lineItemPromises]);
