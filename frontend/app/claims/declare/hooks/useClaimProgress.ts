@@ -3,12 +3,14 @@
 import {
     createClaim,
     getClaimById,
+    getPurchaseLineItemsFromClaim,
     linkLineItemToClaim,
     linkPurchaseToClaim,
     updateClaimStatus,
     uploadAndConfirmDocumentRelation,
 } from "@/api/claim";
 import { createClaimLocationLink } from "@/api/claim-location";
+import { fetchPurchases } from "@/api/purchase";
 import { createSelfDisaster, updateSelfDisaster } from "@/api/self-disaster";
 import { getUser, updateUserInfo } from "@/api/user";
 import {
@@ -22,6 +24,7 @@ import {
     InsurerInfo,
     isStep,
     PersonalInfo,
+    PurchaseSelections,
     SaveStatus,
     UploadClaimRelatedDocumentsRequest,
 } from "@/types/claim";
@@ -54,6 +57,63 @@ interface UseClaimProgressReturn {
 }
 
 const DEBOUNCE_DELAY = 500; // ms
+
+async function rehydratePurchaseSelections(
+    linkedLineItems: Array<{ id: string; purchaseId: string }>
+): Promise<PurchaseSelections> {
+    if (linkedLineItems.length === 0) {
+        return { fullPurchaseIds: [], partialLineItemIds: [] };
+    }
+
+    const lineItemsByPurchase = new Map<string, string[]>();
+    for (const item of linkedLineItems) {
+        const existing = lineItemsByPurchase.get(item.purchaseId) || [];
+        existing.push(item.id);
+        lineItemsByPurchase.set(item.purchaseId, existing);
+    }
+
+    const purchaseIds = Array.from(lineItemsByPurchase.keys());
+
+    const purchasesResponse = await fetchPurchases({
+        pageNumber: 0,
+        resultsPerPage: 1000,
+    });
+
+    const purchaseToAllLineItems = new Map<string, string[]>();
+    for (const purchase of purchasesResponse.purchases) {
+        purchaseToAllLineItems.set(
+            purchase.id,
+            purchase.lineItems.map((li) => li.id)
+        );
+    }
+
+    const fullPurchaseIds: string[] = [];
+    const partialLineItemIds: string[] = [];
+
+    for (const purchaseId of purchaseIds) {
+        const selectedLineItemIds = lineItemsByPurchase.get(purchaseId) || [];
+        const allLineItemIds = purchaseToAllLineItems.get(purchaseId);
+
+        if (!allLineItemIds || allLineItemIds.length === 0) {
+            partialLineItemIds.push(...selectedLineItemIds);
+            continue;
+        }
+
+        if (
+            allLineItemIds.length === selectedLineItemIds.length &&
+            allLineItemIds.every((id) => selectedLineItemIds.includes(id))
+        ) {
+            fullPurchaseIds.push(purchaseId);
+        } else {
+            partialLineItemIds.push(...selectedLineItemIds);
+        }
+    }
+
+    return {
+        fullPurchaseIds,
+        partialLineItemIds,
+    };
+}
 
 export function useClaimProgress(
     initialDisasterInfo: DisasterInfo,
@@ -114,6 +174,22 @@ export function useClaimProgress(
                 selfDisasterRef.current = claimData.selfDisaster.id;
             }
 
+            // Fetch linked purchase line items to rehydrate selections
+            let purchaseSelections: PurchaseSelections = { fullPurchaseIds: [], partialLineItemIds: [] };
+            try {
+                const linkedLineItems = await getPurchaseLineItemsFromClaim({ claimId: id });
+                if (linkedLineItems && linkedLineItems.length > 0) {
+                    purchaseSelections = await rehydratePurchaseSelections(linkedLineItems);
+                }
+            } catch (error) {
+                console.error("Error rehydrating purchase selections:", error);
+                // Fallback to using purchaseLineItemIds if rehydration fails
+                purchaseSelections = {
+                    fullPurchaseIds: [],
+                    partialLineItemIds: claim.purchaseLineItemIds ?? [],
+                };
+            }
+
             setDisasterInfoState((prev) => {
                 const startDate = claimData.femaDisaster
                     ? // TODO: [future] move these to the claim entity rather than disaster (self or fema)
@@ -137,11 +213,7 @@ export function useClaimProgress(
                         ? { isFema: true, femaDisasterId: claimData.femaDisaster.id }
                         : { isFema: false, femaDisasterId: undefined }),
                     additionalDocuments: [],
-                    // TODO: get these from the server
-                    purchaseSelections: {
-                        fullPurchaseIds: [],
-                        partialLineItemIds: claimData.purchaseLineItemIds ?? [],
-                    },
+                    purchaseSelections,
                 };
             });
 
@@ -451,9 +523,9 @@ export function useClaimProgress(
                 );
 
                 // Link individual line items
-                const lineItemPromises = partialLineItemIds.map((lineItemId) =>
-                    linkLineItemToClaim(currentClaimId!, lineItemId)
-                );
+                const lineItemPromises = partialLineItemIds
+                    .filter((element) => element !== null)
+                    .map((lineItemId) => linkLineItemToClaim(currentClaimId!, lineItemId));
 
                 // Execute all API calls in parallel
                 await Promise.all([...purchasePromises, ...lineItemPromises]);

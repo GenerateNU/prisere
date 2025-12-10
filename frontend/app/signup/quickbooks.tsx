@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { GoSync } from "react-icons/go";
-import { FiUpload } from "react-icons/fi";
 import { redirectToQuickbooks } from "@/api/quickbooks";
 import { isServerActionSuccess } from "@/api/types";
 
@@ -45,7 +44,7 @@ export default function Quickbooks({ handleNext }: QuickbooksInfoProps) {
                         <GoSync className="group-hover:text-fuchsia" /> Sync Quickbooks
                     </Button>
                 </div>
-                <div className="w-full flex flex-col items-center">
+                {/* <div className="w-full flex flex-col items-center">
                     <Button
                         type="button"
                         className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white py-[12px] text-[16px] hover:bg-pink hover:text-fuchsia"
@@ -53,7 +52,7 @@ export default function Quickbooks({ handleNext }: QuickbooksInfoProps) {
                     >
                         <FiUpload className="group-hover:text-fuchsia" /> Upload CSV
                     </Button>
-                </div>
+                </div> */}
                 <div className="w-full flex flex-col items-center">
                     <Button
                         type="button"
