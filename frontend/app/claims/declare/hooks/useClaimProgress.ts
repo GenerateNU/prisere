@@ -79,8 +79,14 @@ async function rehydratePurchaseSelections(
         resultsPerPage: 1000,
     });
 
+    if (!purchasesResponse.success) {
+        throw new Error(purchasesResponse.error);
+    }
+
+    const purchases = purchasesResponse.data;
+
     const purchaseToAllLineItems = new Map<string, string[]>();
-    for (const purchase of purchasesResponse.purchases) {
+    for (const purchase of purchases.purchases) {
         purchaseToAllLineItems.set(
             purchase.id,
             purchase.lineItems.map((li) => li.id)
@@ -178,15 +184,19 @@ export function useClaimProgress(
             let purchaseSelections: PurchaseSelections = { fullPurchaseIds: [], partialLineItemIds: [] };
             try {
                 const linkedLineItems = await getPurchaseLineItemsFromClaim({ claimId: id });
-                if (linkedLineItems && linkedLineItems.length > 0) {
-                    purchaseSelections = await rehydratePurchaseSelections(linkedLineItems);
+                if (linkedLineItems.success && linkedLineItems && linkedLineItems.data.length > 0) {
+                    purchaseSelections = await rehydratePurchaseSelections(linkedLineItems.data);
+                } else {
+                    if (!linkedLineItems.success) {
+                        throw new Error(linkedLineItems.error);
+                    }
                 }
             } catch (error) {
                 console.error("Error rehydrating purchase selections:", error);
                 // Fallback to using purchaseLineItemIds if rehydration fails
                 purchaseSelections = {
                     fullPurchaseIds: [],
-                    partialLineItemIds: claim.purchaseLineItemIds ?? [],
+                    partialLineItemIds: claimData.purchaseLineItemIds ?? [],
                 };
             }
 
