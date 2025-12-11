@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { CreateUserRequest } from "@/types/user";
-import { useMutation } from "@tanstack/react-query";
+import { useServerActionMutation } from "@/api/requestHandlers";
 import { useState } from "react";
 
 interface UserInfoProps {
@@ -20,13 +20,13 @@ export default function UserInfoPage({ email, handleNext }: UserInfoProps) {
         email: email,
         phoneNumber: "",
     });
-    const { isPending, mutate } = useMutation({
+    const { isPending, mutate } = useServerActionMutation({
         mutationFn: (payload: CreateUserRequest) => createUser(payload),
         onSuccess: () => {
             handleNext();
         },
         onError: (error: Error) => {
-            setFieldError(error.message || "An error occurred while creating the user.");
+            setFieldError(String(error) || "An error occurred while creating the user.");
         },
     });
 

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { CreateInsurancePolicyBulkRequest, CreateInsurancePolicyRequest } from "@/types/insurance-policy";
-import { useMutation } from "@tanstack/react-query";
+import { useServerActionMutation } from "@/api/requestHandlers";
 import React from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
 
@@ -24,13 +24,13 @@ export default function Insurance({ handleNext: incrementProgress }: InsuranceIn
         },
     ]);
 
-    const { mutate: bulkCreateInsurance, isPending: createInsurancePending } = useMutation({
+    const { mutate: bulkCreateInsurance, isPending: createInsurancePending } = useServerActionMutation({
         mutationFn: () => createInsurancePolicyBulk(insurancePayload),
         onSuccess: () => {
             incrementProgress();
         },
         onError: (error: Error) => {
-            setError(error.message || "An error occurred while creating insurance policies.");
+            setError(String(error) || "An error occurred while creating insurance policies.");
         },
     });
 

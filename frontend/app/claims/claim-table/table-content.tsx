@@ -11,11 +11,13 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { GetCompanyClaimResponse } from "@/types/claim";
-import { useMutation, useQueryClient, UseQueryResult } from "@tanstack/react-query";
+import { useServerActionMutation } from "@/api/requestHandlers";
+import { useQueryClient, UseQueryResult } from "@tanstack/react-query";
 import { getCoreRowModel, getExpandedRowModel, useReactTable } from "@tanstack/react-table";
 import { PropsWithChildren, useState } from "react";
 import { PiDownloadSimpleLight } from "react-icons/pi";
 import { TfiTrash } from "react-icons/tfi";
+import { isServerActionSuccess } from "@/api/types";
 
 function IconButton({ onClick, children }: PropsWithChildren<{ onClick: () => void }>) {
     return (
@@ -32,7 +34,7 @@ export default function TableContent({ claims }: { claims: UseQueryResult<GetCom
     const [dialogToDeleteClaimId, setDialogToDeleteClaimId] = useState<string | null>(null);
 
     const queryClient = useQueryClient();
-    const claimDelete = useMutation({
+    const claimDelete = useServerActionMutation({
         mutationFn: deleteClaim,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["company-claims"] });
@@ -63,8 +65,12 @@ export default function TableContent({ claims }: { claims: UseQueryResult<GetCom
                             <IconButton
                                 onClick={async () => {
                                     try {
-                                        const { url } = await createClaimPDF(row.original.id);
-                                        window.open(url, "_blank");
+                                        const result = await createClaimPDF(row.original.id);
+                                        if (isServerActionSuccess(result)) {
+                                            window.open(result.data.url, "_blank");
+                                        } else {
+                                            console.error(result.error);
+                                        }
                                     } catch (error) {
                                         console.error(error);
                                     }

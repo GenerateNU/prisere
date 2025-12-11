@@ -4,14 +4,15 @@ import { QuickBooksIcon } from "@/icons/quickbooks";
 import { CirclePlusIcon } from "lucide-react";
 import { ProfileSettingsCard } from "./common";
 import { redirectToQuickbooks } from "@/api/quickbooks";
+import { isServerActionSuccess } from "@/api/types";
 
 export function LinkedAccountsSettings() {
     const quickbooksAuth = async () => {
-        const url = await redirectToQuickbooks();
-        if (url) {
-            window.location.href = url;
+        const result = await redirectToQuickbooks();
+        if (isServerActionSuccess(result)) {
+            window.location.href = result.data;
         } else {
-            console.error("Failed to retrieve QuickBooks URL");
+            console.error(result.error);
         }
     };
 

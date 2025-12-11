@@ -3,10 +3,15 @@ import { DocumentResponse, PresignedUploadResponse, DocumentCategories, Document
 import { authHeader, authWrapper, getClient } from "./client";
 import { getCompany } from "./company";
 import { gzip } from "pako";
+import { ServerActionResult, isServerActionError } from "./types";
 
-export const getAllDocuments = async (): Promise<DocumentResponse[]> => {
-    const req = async (token: string): Promise<DocumentResponse[]> => {
-        const companyId = (await getCompany()).id;
+export const getAllDocuments = async (): Promise<ServerActionResult<DocumentResponse[]>> => {
+    const req = async (token: string): Promise<ServerActionResult<DocumentResponse[]>> => {
+        const companyResult = await getCompany();
+        if (isServerActionError(companyResult)) {
+            return { success: false, error: companyResult.error };
+        }
+        const companyId = companyResult.data.id;
         const documentType = DocumentTypes.GENERAL_BUSINESS;
 
         const client = getClient();
@@ -22,21 +27,25 @@ export const getAllDocuments = async (): Promise<DocumentResponse[]> => {
         });
 
         if (!response.ok || !data) {
-            throw new Error(error?.error || "Failed to fetch documents");
+            return { success: false, error: error?.error || "Failed to fetch documents" };
         }
 
-        return data;
+        return { success: true, data };
     };
 
-    return authWrapper<DocumentResponse[]>()(req);
+    return authWrapper<ServerActionResult<DocumentResponse[]>>()(req);
 };
 
 export async function getBusinessDocumentUploadUrl(
     fileName: string,
     fileType: string
-): Promise<PresignedUploadResponse> {
-    const req = async (token: string): Promise<PresignedUploadResponse> => {
-        const companyId = (await getCompany()).id;
+): Promise<ServerActionResult<PresignedUploadResponse>> {
+    const req = async (token: string): Promise<ServerActionResult<PresignedUploadResponse>> => {
+        const companyResult = await getCompany();
+        if (isServerActionError(companyResult)) {
+            return { success: false, error: companyResult.error };
+        }
+        const companyId = companyResult.data.id;
         const client = getClient();
 
         const { data, error, response } = await client.POST("/s3/getUploadUrl", {
@@ -50,23 +59,27 @@ export async function getBusinessDocumentUploadUrl(
         });
 
         if (!response.ok || !data) {
-            throw new Error(error?.error || "Failed to get upload URL");
+            return { success: false, error: error?.error || "Failed to get upload URL" };
         }
 
-        return data;
+        return { success: true, data };
     };
 
-    return authWrapper<PresignedUploadResponse>()(req);
+    return authWrapper<ServerActionResult<PresignedUploadResponse>>()(req);
 }
 
 export async function confirmBusinessDocumentUpload(
     key: string,
     documentId: string,
     category?: DocumentCategories
-): Promise<void> {
-    const req = async (token: string): Promise<void> => {
+): Promise<ServerActionResult<void>> {
+    const req = async (token: string): Promise<ServerActionResult<void>> => {
         const client = getClient();
-        const companyId = (await getCompany()).id;
+        const companyResult = await getCompany();
+        if (isServerActionError(companyResult)) {
+            return { success: false, error: companyResult.error };
+        }
+        const companyId = companyResult.data.id;
 
         const { error, response } = await client.POST("/s3/confirmUpload", {
             headers: authHeader(token),
@@ -80,15 +93,20 @@ export async function confirmBusinessDocumentUpload(
         });
 
         if (!response.ok) {
-            throw new Error(error?.error || "Failed to confirm upload");
+            return { success: false, error: error?.error || "Failed to confirm upload" };
         }
+
+        return { success: true, data: undefined };
     };
 
-    return authWrapper<void>()(req);
+    return authWrapper<ServerActionResult<void>>()(req);
 }
 
-export async function updateDocumentCategory(documentId: string, category: DocumentCategories): Promise<void> {
-    const req = async (token: string): Promise<void> => {
+export async function updateDocumentCategory(
+    documentId: string,
+    category: DocumentCategories
+): Promise<ServerActionResult<void>> {
+    const req = async (token: string): Promise<ServerActionResult<void>> => {
         const client = getClient();
 
         const { error, response } = await client.PATCH("/s3/updateDocumentCategory", {
@@ -97,15 +115,17 @@ export async function updateDocumentCategory(documentId: string, category: Docum
         });
 
         if (!response.ok) {
-            throw new Error(error?.error || "Failed to update category");
+            return { success: false, error: error?.error || "Failed to update category" };
         }
+
+        return { success: true, data: undefined };
     };
 
-    return authWrapper<void>()(req);
+    return authWrapper<ServerActionResult<void>>()(req);
 }
 
-export async function deleteBusinessDocument(key: string, documentId: string): Promise<void> {
-    const req = async (token: string): Promise<void> => {
+export async function deleteBusinessDocument(key: string, documentId: string): Promise<ServerActionResult<void>> {
+    const req = async (token: string): Promise<ServerActionResult<void>> => {
         const client = getClient();
 
         const { error, response } = await client.DELETE("/s3/deleteDocument", {
@@ -114,14 +134,16 @@ export async function deleteBusinessDocument(key: string, documentId: string): P
         });
 
         if (!response.ok) {
-            throw new Error(error?.error || "Failed to delete document");
+            return { success: false, error: error?.error || "Failed to delete document" };
         }
+
+        return { success: true, data: undefined };
     };
 
-    return authWrapper<void>()(req);
+    return authWrapper<ServerActionResult<void>>()(req);
 }
 
-export async function uploadToS3(uploadUrl: string, file: File): Promise<void> {
+export async function uploadToS3(uploadUrl: string, file: File): Promise<ServerActionResult<void>> {
     const arrayBuffer = await file.arrayBuffer();
     const compressed = gzip(new Uint8Array(arrayBuffer));
 
@@ -135,6 +157,8 @@ export async function uploadToS3(uploadUrl: string, file: File): Promise<void> {
     });
 
     if (!response.ok) {
-        throw new Error(`Upload failed: ${response.statusText}`);
+        return { success: false, error: `Upload failed: ${response.statusText}` };
     }
+
+    return { success: true, data: undefined };
 }

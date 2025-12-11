@@ -19,6 +19,7 @@ import { BusinessDocument, DocumentCategories } from "@/types/documents";
 import Loading from "@/components/loading";
 import ErrorDisplay from "@/components/ErrorDisplay";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { isServerActionError } from "@/api/types";
 
 type SortOrder = "asc" | "desc";
 
@@ -51,9 +52,15 @@ export default function ViewDocuments() {
             setIsLoadingDocuments(true);
 
             const docs = await getAllDocuments();
+            if (isServerActionError(docs)) {
+                console.error("Error getting documents:", docs.error);
+                setError(true);
+                return;
+            }
+            const docsData = docs.data;
 
             // Transform the response into the BusinessDocument type
-            const transformedDocs: BusinessDocument[] = docs!.map((doc) => {
+            const transformedDocs: BusinessDocument[] = docsData.map((doc) => {
                 // Access the nested document object
                 const { document, downloadUrl } = doc;
 
@@ -169,10 +176,14 @@ export default function ViewDocuments() {
 
         try {
             //Get presigned upload URL from backend
-            const { uploadUrl, key, documentId } = await getBusinessDocumentUploadUrl(
-                selectedFile.name,
-                selectedFile.type
-            );
+            const uploadUrlResponse = await getBusinessDocumentUploadUrl(selectedFile.name, selectedFile.type);
+            if (isServerActionError(uploadUrlResponse)) {
+                console.error("Error getting upload URL:", uploadUrlResponse.error);
+                alert(`Failed to get upload URL: ${uploadUrlResponse.error}`);
+                return;
+            }
+            const uploadUrlData = uploadUrlResponse.data;
+            const { uploadUrl, key, documentId } = uploadUrlData;
 
             // Upload directly to S3
             await uploadToS3(uploadUrl, selectedFile);

@@ -3,16 +3,15 @@ import { getNotifications } from "@/api/notifications";
 import { LargeLoading } from "@/components/loading";
 import { NOTIFICATION_LIMIT } from "@/types/constants";
 import { GetNotificationsResponse } from "@/types/notifications";
-import { InfiniteData, useInfiniteQuery } from "@tanstack/react-query";
+import { useServerActionInfiniteQuery } from "@/api/requestHandlers";
 import { useEffect, useRef } from "react";
 import Notification, { LoadingNotification } from "./notification";
 
 export default function NotificationPage() {
     const observerTarget = useRef(null);
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery<
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useServerActionInfiniteQuery<
         GetNotificationsResponse,
         Error,
-        InfiniteData<GetNotificationsResponse>,
         string[],
         number
     >({

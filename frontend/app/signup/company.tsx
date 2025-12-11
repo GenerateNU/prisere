@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { type Company, CompanyTypesEnum, CreateCompanyRequest, businessTypes } from "@/types/company";
 import { CreateLocationBulkRequest, CreateLocationRequest } from "@/types/location";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { useMutation } from "@tanstack/react-query";
+import { useServerActionMutation } from "@/api/requestHandlers";
 import React, { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { Card } from "@/components/ui/card";
@@ -67,13 +67,13 @@ export default function Company({ handleNext: incrementNext }: CompanyInfoProps)
         setEditingLocationIndex(null);
     };
 
-    const { isPending: isLocationPending, mutate: mutateLocation } = useMutation({
+    const { isPending: isLocationPending, mutate: mutateLocation } = useServerActionMutation({
         mutationFn: (payload: CreateLocationBulkRequest) => createLocationBulk(payload),
         onSuccess: () => {
             incrementNext();
         },
-        onError: (_error: Error) => {
-            const errorMessage = _error.message || "Error creating locations. Check required fields and try again";
+        onError: (error: Error) => {
+            const errorMessage = String(error) || "Error creating locations. Check required fields and try again";
             setLocError(errorMessage);
         },
     });
@@ -82,7 +82,7 @@ export default function Company({ handleNext: incrementNext }: CompanyInfoProps)
         isPending,
         error: companyMutateError,
         mutate,
-    } = useMutation<Company, Error, CreateCompanyRequest>({
+    } = useServerActionMutation<Company, Error, CreateCompanyRequest>({
         mutationFn: (payload: CreateCompanyRequest) => createCompany(payload),
         onError: (error: Error) => {
             console.error("Error creating company:", error);

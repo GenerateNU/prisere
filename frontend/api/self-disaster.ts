@@ -7,28 +7,31 @@ import {
     UpdateSelfDisasterResponse,
 } from "@/types/self-disaster";
 import { authHeader, authWrapper, getClient } from "./client";
+import { ServerActionResult } from "./types";
 
-export const createSelfDisaster = async (payload: CreateSelfDisasterRequest): Promise<CreateSelfDisasterResponse> => {
-    const req = async (token: string): Promise<CreateSelfDisasterResponse> => {
+export const createSelfDisaster = async (
+    payload: CreateSelfDisasterRequest
+): Promise<ServerActionResult<CreateSelfDisasterResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<CreateSelfDisasterResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.POST("/disaster/self", {
             headers: authHeader(token),
             body: payload,
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to create self disaster" };
         }
     };
-    return authWrapper<CreateSelfDisasterResponse>()(req);
+    return authWrapper<ServerActionResult<CreateSelfDisasterResponse>>()(req);
 };
 
 export const updateSelfDisaster = async (
     id: string,
     payload: UpdateSelfDisasterRequest
-): Promise<UpdateSelfDisasterResponse> => {
-    const req = async (token: string): Promise<UpdateSelfDisasterResponse> => {
+): Promise<ServerActionResult<UpdateSelfDisasterResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<UpdateSelfDisasterResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.PATCH("/disaster/self/{id}", {
             headers: authHeader(token),
@@ -38,10 +41,10 @@ export const updateSelfDisaster = async (
             body: payload,
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to update self disaster" };
         }
     };
-    return authWrapper<UpdateSelfDisasterResponse>()(req);
+    return authWrapper<ServerActionResult<UpdateSelfDisasterResponse>>()(req);
 };

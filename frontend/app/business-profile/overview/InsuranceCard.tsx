@@ -6,12 +6,13 @@ import {
     getInsurancePolicies,
     updateInsurancePolicy,
 } from "@/api/insurance";
+import { useServerActionQuery } from "@/api/requestHandlers";
 import InsuranceEditor from "@/components/InsuranceEditor";
 import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CreateInsurancePolicyRequest, InsurancePolicy, UpdateInsurancePolicyRequest } from "@/types/insurance-policy";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useServerActionMutation } from "@/api/requestHandlers";
 import { useEffect, useState } from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
 
@@ -28,42 +29,42 @@ export default function InsuranceCard({
     const [editingInsuranceIndex, setEditingInsuranceIndex] = useState<number | null>(null);
     const [saveError, setSaveError] = useState<string | null>(null);
 
-    const { data: insuranceQuery, isPending: insurancePending } = useQuery({
+    const { data: insuranceQuery, isPending: insurancePending } = useServerActionQuery({
         queryKey: ["insuranceInfo"],
         queryFn: getInsurancePolicies,
     });
 
-    const { mutate: updateInsuranceMutate } = useMutation({
+    const { mutate: updateInsuranceMutate } = useServerActionMutation({
         mutationFn: (insurance: UpdateInsurancePolicyRequest) => updateInsurancePolicy(insurance),
         onSuccess: () => {
             setSaveError(null);
             setEditingInsuranceIndex(null);
         },
         onError: (error: Error) => {
-            const errorMessage = error.message || "Error updating policy. Check required fields and try again";
+            const errorMessage = String(error) || "Error updating policy. Check required fields and try again";
             setSaveError(errorMessage);
         },
     });
 
-    const { mutate: createInsuranceMutate } = useMutation({
+    const { mutate: createInsuranceMutate } = useServerActionMutation({
         mutationFn: (insurance: CreateInsurancePolicyRequest) => createInsurancePolicy(insurance),
         onSuccess: () => {
             setSaveError(null);
             setEditingInsuranceIndex(null);
         },
         onError: (error: Error) => {
-            const errorMessage = error.message || "Error creating policy. Check required fields and try again";
+            const errorMessage = String(error) || "Error creating policy. Check required fields and try again";
             setSaveError(errorMessage);
         },
     });
 
-    const { mutate: deleteInsuranceMutate } = useMutation({
+    const { mutate: deleteInsuranceMutate } = useServerActionMutation({
         mutationFn: (insurancePolicyId: string) => deleteInsurancePolicy(insurancePolicyId),
         onSuccess: () => {
             setSaveError(null);
             setEditingInsuranceIndex(null);
         },
-        onError: (_error: Error) => {
+        onError: () => {
             setSaveError("An error occurred while deleting the insurance policy.");
         },
     });

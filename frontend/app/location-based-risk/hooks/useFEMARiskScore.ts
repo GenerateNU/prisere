@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { getFemaRiskIndexData, refreshFemaRiskIndexData } from "@/api/fema-risk-index";
 import { FemaRisKIndexCountiesFemaDisaster } from "@/types/fema-risk-index";
+import { isServerActionSuccess } from "@/api/types";
 
 export function useFEMARiskScore() {
     const [data, setData] = useState<FemaRisKIndexCountiesFemaDisaster>([]);
@@ -10,12 +11,16 @@ export function useFEMARiskScore() {
         let retries = 0;
         const fetchRiskData = async () => {
             setLoading(true);
-            const res = await getFemaRiskIndexData();
-            setData(res);
-            if (res.length === 0 && retries < 5) {
-                await refreshFemaRiskIndexData();
-                retries++;
-                fetchRiskData();
+            const result = await getFemaRiskIndexData();
+            if (isServerActionSuccess(result)) {
+                setData(result.data);
+                if (result.data.length === 0 && retries < 5) {
+                    await refreshFemaRiskIndexData();
+                    retries++;
+                    fetchRiskData();
+                }
+            } else {
+                console.error(result.error);
             }
             setLoading(false);
         };
