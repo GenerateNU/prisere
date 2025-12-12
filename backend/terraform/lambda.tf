@@ -1,3 +1,13 @@
+# Lambda Layer
+resource "aws_lambda_layer_version" "email_processor_layer" {
+  filename            = "../src/lambda/email-processor/layer.zip"
+  layer_name          = "${var.project_name}-email-processor-layer-${var.environment}"
+  compatible_runtimes = ["nodejs20.x"]
+  compatible_architectures = ["arm64"]
+  source_code_hash    = filebase64sha256("../src/lambda/email-processor/layer.zip")
+}
+
+
 # Lambda Function
 resource "aws_lambda_function" "email_processor" {
   filename         = "../src/lambda/email-processor/function.zip"
@@ -9,6 +19,8 @@ resource "aws_lambda_function" "email_processor" {
   timeout         = 30
   memory_size     = 128
   architectures   = ["arm64"]
+
+  layers = [aws_lambda_layer_version.email_processor_layer.arn]
 
   environment {
     variables = {
