@@ -4,6 +4,7 @@ import React from "react";
 
 type infoPageProps = {
     handleNext: () => void;
+    handleSkip?: () => void;
     title: string;
     description: string;
     buttonText?: string;
@@ -13,6 +14,7 @@ type infoPageProps = {
 
 export default function InfoPage({
     handleNext,
+    handleSkip,
     title,
     description,
     optional = false,
@@ -42,7 +44,7 @@ export default function InfoPage({
                     <Button
                         type="button"
                         variant="link"
-                        onClick={handleNext}
+                        onClick={handleSkip || handleNext}
                         className="underline hover:text-stone-200 h-fit w-fit text-[12px] font-bold p-0 mt-[12px]"
                     >
                         Skip for now

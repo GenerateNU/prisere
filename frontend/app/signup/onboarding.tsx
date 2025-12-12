@@ -65,6 +65,7 @@ export default function Onboarding({ email }: OnboardingProps) {
         <InfoPage
             key={4}
             handleNext={incrementProgress}
+            handleSkip={() => setProgress((prev) => prev + 2)}
             title={"Enter insurance information."}
             description="This is an optional step but will be helpful if you choose to file a claim report."
             optional={true}
