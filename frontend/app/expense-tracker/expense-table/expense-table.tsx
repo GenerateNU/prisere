@@ -4,8 +4,7 @@ import { LargeLoading } from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { PurchaseSelections } from "@/types/claim";
-import { FilteredPurchases, PurchaseLineItemType, PurchaseWithLineItems } from "@/types/purchase";
-import { useQuery } from "@tanstack/react-query";
+import { FilteredPurchases, PurchaseLineItemType, PurchasesWithCount, PurchaseWithLineItems } from "@/types/purchase";
 import { FileUp, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { FaExclamation } from "react-icons/fa6";
@@ -18,6 +17,9 @@ import PaginationControls from "./PaginationControls";
 import ResultsPerPageSelect from "./ResultsPerPageSelect";
 import ExpenseSideView from "./side-view";
 import TableContent from "./table-content";
+import { useServerActionQuery } from "@/api/requestHandlers";
+import { ServerActionResult } from "@/api/types";
+import { UseQueryResult } from "@tanstack/react-query";
 
 interface ExpenseTableConfig {
     title: string;
@@ -86,7 +88,7 @@ export default function ExpenseTable({
         updateFilter("categories")([]);
     };
 
-    const purchases = useFetchPurchases(filters);
+    const purchases = useFetchPurchases(filters) as UseQueryResult<PurchasesWithCount | undefined>;
 
     const categories = useFetchAllCategories();
 
@@ -204,7 +206,7 @@ export default function ExpenseTable({
 }
 
 export function useFetchPurchases(filters: FilteredPurchases) {
-    return useQuery({
+    return useServerActionQuery({
         queryKey: ["purchases-for-company", filters],
         queryFn: async () => {
             return fetchPurchases(filters);
@@ -214,9 +216,9 @@ export function useFetchPurchases(filters: FilteredPurchases) {
 }
 
 export function useFetchAllCategories() {
-    return useQuery({
+    return useServerActionQuery({
         queryKey: ["categories-for-purchases"],
-        queryFn: async (): Promise<string[]> => {
+        queryFn: async (): Promise<ServerActionResult<string[]>> => {
             return fetchAllCategories();
         },
     });

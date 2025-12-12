@@ -3,12 +3,12 @@ import { getPurchaseLineItemsFromClaim } from "@/api/claim";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { BannerData } from "@/types/user";
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { BiMessageEdit } from "react-icons/bi";
 import { LargeLoading } from "../loading";
 import { FaExclamation } from "react-icons/fa6";
 import ErrorDisplay from "../ErrorDisplay";
+import { useServerActionQuery } from "@/api/requestHandlers";
 
 type Props = {
     bannerData: BannerData;
@@ -62,7 +62,7 @@ export default function NetDisasterExpense({ bannerData, onDashboard = true, han
         claimId = bannerData.claim.id;
     }
 
-    const purchaseLineItems = useQuery({
+    const purchaseLineItems = useServerActionQuery({
         queryKey: ["purchaseLineItems-for-company", claimId],
         queryFn: () => getPurchaseLineItemsFromClaim({ claimId }),
     });

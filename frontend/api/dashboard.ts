@@ -2,23 +2,37 @@
 import { BannerData } from "@/types/user";
 import { getNotifications } from "./notifications";
 import { getClaimInProgress } from "./company";
-import { GetClaimInProgressForCompanyResponse } from "@/types/company";
+import { ServerActionResult, isServerActionError } from "./types";
 
-export const getDashboardBannerData = async (): Promise<BannerData> => {
-    const disasterNotifications = await getNotifications({
+export const getDashboardBannerData = async (): Promise<ServerActionResult<BannerData>> => {
+    const notificationsResult = await getNotifications({
         type: "web",
         page: 1,
         limit: 1,
         status: "unread",
     });
+
+    if (isServerActionError(notificationsResult)) {
+        return { success: false, error: notificationsResult.error };
+    }
+
+    const disasterNotifications = notificationsResult.data;
+
     if (disasterNotifications.length > 0) {
         const disaster = disasterNotifications[0].femaDisaster;
-        const claim: GetClaimInProgressForCompanyResponse = await getClaimInProgress();
+        const claimResult = await getClaimInProgress();
+
+        if (isServerActionError(claimResult)) {
+            return { success: false, error: claimResult.error };
+        }
+
+        const claim = claimResult.data;
+
         if (claim) {
-            return { status: "has-claim", disaster, claim };
+            return { success: true, data: { status: "has-claim", disaster, claim } };
         } else {
-            return { status: "no-claim", disaster };
+            return { success: true, data: { status: "no-claim", disaster } };
         }
     }
-    return { status: "no-disaster" };
+    return { success: true, data: { status: "no-disaster" } };
 };

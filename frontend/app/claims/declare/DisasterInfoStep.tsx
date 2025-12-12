@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { GetCompanyLocationsResponse } from "@/types/company";
-import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { validateDisasterInfo } from "./utils/validationUtils";
 import { CloudCheck, UploadIcon } from "lucide-react";
@@ -17,6 +16,7 @@ import { useModal } from "@/components/ui/modal/useModal";
 import { Modal } from "@/components/ui/modal/Modal";
 import { UploadDocument } from "./UploadDocument";
 import { DisasterInfo } from "@/types/claim";
+import { useServerActionQuery } from "@/api/requestHandlers";
 
 type DisasterInfoStepProps = {
     disasterInfo: DisasterInfo;
@@ -35,7 +35,7 @@ export default function DisasterInfoStep({
 }: DisasterInfoStepProps) {
     const { openModal: openUploadModal, isOpen: isUploadModalOpen, closeModal: closeUploadModal } = useModal({});
 
-    const { data: hasData } = useQuery({
+    const { data: hasData } = useServerActionQuery({
         queryKey: ["company-has-data"],
         queryFn: companyHasData,
     });

@@ -1,5 +1,6 @@
 import { createClaimPDF } from "@/api/claim";
 import { useState } from "react";
+import { isServerActionSuccess } from "@/api/types";
 
 export const useDownloadClaimPDF = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -7,8 +8,12 @@ export const useDownloadClaimPDF = () => {
     const download = async (claimId: string) => {
         setIsLoading(true);
         try {
-            const url = await createClaimPDF(claimId);
-            downloadFileSimple(url.url);
+            const result = await createClaimPDF(claimId);
+            if (isServerActionSuccess(result)) {
+                downloadFileSimple(result.data.url);
+            } else {
+                throw new Error(result.error);
+            }
         } catch (err) {
             setIsLoading(false);
             throw err;

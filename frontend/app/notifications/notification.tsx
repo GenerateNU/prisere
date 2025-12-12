@@ -3,7 +3,7 @@ import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { Notification as NotificationType } from "@/types/notifications";
 import { dateFormatter, getDeclarationTypeMeanings } from "@/utils/formatting";
-import { useMutation } from "@tanstack/react-query";
+import { useServerActionMutation } from "@/api/requestHandlers";
 import { useState } from "react";
 import { RiMore2Fill } from "react-icons/ri";
 import formatDescription from "./utils";
@@ -15,7 +15,7 @@ interface NotificationProps {
 export default function Notification({ notification }: NotificationProps) {
     const [error, setError] = useState(false);
     const [title, setTitle] = useState(notification.notificationStatus);
-    const { mutate, isPending } = useMutation({
+    const { mutate, isPending } = useServerActionMutation({
         mutationFn: () => updateNotificationStatus(notification.id, title == "read" ? "unread" : "read"),
         onError: () => {
             setError(false);

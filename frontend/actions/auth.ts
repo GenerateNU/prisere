@@ -22,7 +22,15 @@ export async function login(prevState: loginInitialState, formData: FormData) {
     }
 
     const company = await getCompany();
-    if (company?.externals) {
+    if ("error" in company) {
+        console.error("Error getting company:", company.error);
+        return {
+            success: false,
+            message: company.error || "Login failed",
+        };
+    }
+    const companyData = company.data;
+    if (companyData?.externals) {
         importQuickbooksData();
     }
 

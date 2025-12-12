@@ -3,11 +3,11 @@
 import { getClaimInProgress } from "@/api/company";
 import { ClaimInProgress } from "@/components/claims/ClaimInProgress";
 import { ClaimInProgressIndexMapping } from "@/types/claim";
-import { useQuery } from "@tanstack/react-query";
 import ClaimTable from "./claim-table/claim-table";
+import { useServerActionQuery } from "@/api/requestHandlers";
 
 export default function Claims() {
-    const { data: claimInProgress } = useQuery({
+    const { data: claimInProgress } = useServerActionQuery({
         queryKey: ["claim-in-progress"],
         queryFn: getClaimInProgress,
     });

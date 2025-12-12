@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import RevenueAndExpenses, { RevenueAndExpensesNoData } from "@/components/dashboard/RevenueAndExpenses";
 import NetDisasterExpense, { NetDisasterExpenseNoData } from "@/components/dashboard/NetDisasterExpenses";
 import { getDashboardBannerData } from "@/api/dashboard";
-import { useQuery } from "@tanstack/react-query";
 import ReviewExpenses from "./ReviewExpenses";
 import { PurchaseLineItemType } from "@/types/purchase";
 import { companyHasData, getCompany } from "@/api/company";
@@ -14,6 +13,7 @@ import { GoSync } from "react-icons/go";
 import { FiUpload } from "react-icons/fi";
 import NoDataPopupWrapper from "@/components/dashboard/NoDataPopupWrapper";
 import { Spinner } from "@/components/ui/spinner";
+import { useServerActionQuery } from "@/api/requestHandlers";
 
 export default function ExpenseTracker() {
     const [importModalOpen, setImportModalOpen] = useState<boolean>(false);
@@ -21,17 +21,17 @@ export default function ExpenseTracker() {
     const onOpenImportModal = () => setImportModalOpen(true);
     const onCloseImportModal = () => setImportModalOpen(false);
 
-    const { data: hasData, isPending: hasDataLoading } = useQuery({
+    const { data: hasData, isPending: hasDataLoading } = useServerActionQuery({
         queryKey: ["company-has-data"],
         queryFn: companyHasData,
     });
 
-    const { data: companyLastUpdate } = useQuery({
+    const { data: companyLastUpdate } = useServerActionQuery({
         queryKey: ["company-last-update"],
         queryFn: getCompany,
     });
 
-    const { data: bannerData } = useQuery({
+    const { data: bannerData } = useServerActionQuery({
         queryKey: ["banner-data"],
         queryFn: getDashboardBannerData,
     });

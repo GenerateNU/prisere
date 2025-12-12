@@ -5,46 +5,158 @@ Prisere is an all-in-one platform to empower Small-Medium Sized Businesses (SMBs
 ## Table of Contents
 
 1. [File Structure](#file-structure)
-2. [Deployments](#deployments)
+2. [Running the App](#running-the-app)
+3. [Database Management](#database-management)
+4. [Type Generation](#type-generation)
 
 ### File-Structure
 
 The template repository is laid out as follows below.
 
 ```bash
-├── .github
-│   ├── pull_request_template.md
-│   └── workflows
-│       └── backend-deploy.yml
-│       └── backend-lint.yml
-│       └── backend-test.yml
-├── backend # Backend source code
-│   └── src # main folder
-│       └── database # includes utilities for working with our database
-│           └── factories  # factories for easily creating dummy data
-│           └── seeds  # seeders for populating database with dummy data
-│       └── entities # TypeORM entities used for migrations
-│       └── migrations # Migrations created with typeORM
-│       └── modules # API endpoint files
-│       └── tests
-│       └── types
-│       └── utilities
-│       └── eslint.config.ts # configuration for eslint
-│       └── routes.ts # sets up routes for entire app
-│       └── server.ts # sets up server
-│       └── typeorm-config.ts # configuration for typeorm
-│   └── supabase # includes config for local supabase
-│       └── MIGRATION_TUTORIAL.md # guide to creating/running migrations
-│   └── .gitignore
-│   └── Dockerfile
-│   └── package.json
-│   └── README.md
-│   └── tsconfig.json
-├── CONTRIBUTING.md # Contribution documentation for engineers
-├── docker-compose.yaml
-├── frontend # Frontend source code
-├── LICENSE
-├── README.md
+.
+├── README.md                         
+├── backend                            
+│   ├── Dockerfile                     # Container configuration for backend
+│   ├── README.md                      
+│   ├── bun.lock                 
+│   ├── package.json                   # Backend dependencies and scripts
+│   ├── requirements.txt               # Python dependencies
+│   ├── src                            
+│   │   ├── database                   # Database utilities, factories, and seeds
+│   │   ├── dayjs.config.ts            # Date/time library configuration
+│   │   ├── entities                   # TypeORM entity definitions
+│   │   ├── eslint.config.ts           
+│   │   ├── external                   # Third-party integrations (Quickbooks)
+│   │   ├── lambda                     # AWS Lambda function handlers for email sending
+│   │   ├── migrations                 # Database migration files
+│   │   ├── modules                    # API endpoint modules
+│   │   ├── routes.ts                  # Route definitions and setup
+│   │   ├── server.ts                  # Express server entry point
+│   │   ├── tests                      # Backend test suites
+│   │   ├── typeorm-config.ts          
+│   │   ├── types                      # TypeScript type definitions
+│   │   └── utilities                  # Helper functions and utilities
+│   ├── supabase                       
+│   │   ├── MIGRATION_TUTORIAL.md      # Guide for database migrations
+│   │   ├── config.toml                # Supabase configuration
+│   │   └── signing_key.json           # JWT signing key for local auth
+│   ├── terraform                      
+│   │   ├── INSTRUCTIONS.md           
+│   │   ├── backend.tf                 # Backend infrastructure definitions
+│   │   ├── iam.tf                     # IAM roles and policies
+│   │   ├── lambda.tf                  # Lambda function resources
+│   │   ├── main.tf                    # Main Terraform configuration
+│   │   ├── outputs.tf                 # Output values from Terraform
+│   │   ├── s3.tf                      # S3 bucket configurations
+│   │   ├── terraform.tfvars           # Default Terraform variables
+│   │   ├── terraform.tfvars.dev       # Development environment variables
+│   │   ├── terraform.tfvars.prod      # Production environment variables
+│   │   └── variables.tf               # Variable declarations
+│   └── tsconfig.json                  
+├── bun.lock                           
+├── docker-compose.yaml                
+├── frontend                           
+│   ├── Dockerfile                     
+│   ├── README.md                      
+│   ├── actions                        
+│   │   └── auth.ts                    # Authentication server actions
+│   ├── api                            # API client layer
+│   ├── app                            # Next.js app directory (routes)
+│   ├── bun.lock                       
+│   ├── components                     # Reusable React components
+│   ├── components.json                
+│   ├── eslint.config.mjs              # ESLint configuration
+│   ├── icons                          # Custom icon components
+│   ├── lib                            
+│   │   └── utils.ts                   # Common utility functions
+│   ├── middleware.ts                  # Next.js middleware (auth, etc.)
+│   ├── next.config.ts                 # Next.js configuration
+│   ├── package-lock.json          
+│   ├── package.json                   # Frontend dependencies and scripts
+│   ├── postcss.config.mjs             
+│   ├── public                         # Static assets
+│   ├── schema.d.ts                    # Generated type definitions 
+│   ├── tsconfig.json                 
+│   ├── types                          # TypeScript type definitions
+│   └── utils                          # Frontend utility functions
+├── package-lock.json                  
+├── package.json                      
+├── spec.json                          # API specification (generated by script)
+└── tsconfig.json                      # Root TypeScript configuration
+
 ```
 
-### Deployments
+### Running the App
+To deploy the app using Docker Compose run one of the following commands:
+```bash
+MODE="dev" LOG_VOLUME_MOUNT="./backend/log" docker compose up --build --watch    # in dev more
+MODE="prod" LOG_VOLUME_MOUNT="./backend/log" docker compose up --build --watch   # in production mode
+```
+
+This will mount both the frontend and backend. `LOG_VOLUME_MOUNT` can be changed to redirect runtime logging. Note that running the backend in dev mode requires your local Supabase to be running - see [Database Management](#database-management) below for instructions.
+
+If you want to run only the backend:
+```bash
+cd backend
+bun run dev # dev mode
+# OR 
+bun run start # prod mode
+```
+ 
+If you want to run only the frontend
+```bash
+cd frontend
+bun run dev # dev mode
+# OR
+bun run start # prod mode
+```
+
+The backend will be available at [localhost:3001](http://localhost:3001/) and the frontend at [localhost:3000](http://localhost:3000/)
+
+
+### Database Management
+
+We use [Supabase](https://supabase.com/) as a PostgreSQL development platform to manage our databases combined with [TypeORM](https://typeorm.io/). 
+
+To get a Supabase instance running locally, install the Supabase CLI, make sure your Docker engine is running, and run the following commands:
+```bash
+cd backend/
+bun run supabase start
+```
+
+See your local Supabase studio at localhost:54323
+
+To migrate your local DB to match the state of prod/git, run:
+```bash
+bun run migration:dev
+```
+
+To run a migration on production (use this command with caution!), run:
+```bash
+bun run migration:prod
+```
+
+To revert a migration in either environment, run:
+```bash
+bun run migration:dev:revert
+# OR
+bun run migration:prod:revert
+```
+
+To stop your local instance of Supabase, run:
+```bash
+bun run supabase stop
+```
+
+See [MIGRATION_TUTORIAL.md](./backend/supabase/MIGRATION_TUTORIAL.md) for more information about managing migrations with TypeORM.
+
+### Type Generation
+We use OpenAPI documentation to generate types for the layer between the frontend and the backend for consistency. The development process should be as follows:
+
+1. Make changes to an api endpoint in the backend. 
+2. Update the OpenAPI routes in the associated file in the `/openapi` module.
+3. From the root directory, run `bun run gen-types` or `bun run g` to generate new `spec.json` and `schema.d.ts` files.
+4. In the `types` folder in the frontend, update imports from the `schema.d.ts` as necessary and use the types in the frontend.
+
+This ensures consistent type expectations for a safe contract between the frontend and the backend. 

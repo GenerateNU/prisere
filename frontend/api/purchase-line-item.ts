@@ -1,11 +1,12 @@
 "use server";
 import { CreatePurchaseLineItemsRequest, CreatePurchaseLineItemsResponse } from "../types/purchase-line-items";
 import { authHeader, authWrapper, getClient } from "./client";
+import { ServerActionResult } from "./types";
 
 export const createBulkPurchaseLineItems = async (
     newLineItems: CreatePurchaseLineItemsRequest
-): Promise<CreatePurchaseLineItemsResponse> => {
-    const req = async (token: string): Promise<CreatePurchaseLineItemsResponse> => {
+): Promise<ServerActionResult<CreatePurchaseLineItemsResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<CreatePurchaseLineItemsResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.POST("/purchase/line/bulk", {
             body: newLineItems,
@@ -13,11 +14,11 @@ export const createBulkPurchaseLineItems = async (
         });
 
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to create purchase line items" };
         }
     };
 
-    return authWrapper<CreatePurchaseLineItemsResponse>()(req);
+    return authWrapper<ServerActionResult<CreatePurchaseLineItemsResponse>>()(req);
 };

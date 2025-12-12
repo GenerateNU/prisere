@@ -9,87 +9,80 @@ import {
     UpdateLocationResponse,
 } from "@/types/location";
 import { authHeader, authWrapper, getClient } from "./client";
+import { ServerActionResult } from "./types";
 
-export const createLocation = async (payload: CreateLocationRequest): Promise<Location> => {
-    const req = async (token: string): Promise<Location> => {
+export const createLocation = async (payload: CreateLocationRequest): Promise<ServerActionResult<Location>> => {
+    const req = async (token: string): Promise<ServerActionResult<Location>> => {
         const client = getClient();
         const { data, error, response } = await client.POST("/location-address", {
             headers: authHeader(token),
             body: payload,
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            const apiError = new Error(error?.error || "Failed to create locations - Unkown Error") as Error & {
-                status: number;
-                statusText: string;
-            };
-            apiError.status = response.status;
-            apiError.statusText = response.statusText;
-            throw apiError;
+            return { success: false, error: error?.error || "Failed to create location" };
         }
     };
-    return authWrapper<Location>()(req);
+    return authWrapper<ServerActionResult<Location>>()(req);
 };
 
-export const createLocationBulk = async (payload: CreateLocationBulkRequest): Promise<Location[]> => {
-    const req = async (token: string): Promise<Location[]> => {
+export const createLocationBulk = async (
+    payload: CreateLocationBulkRequest
+): Promise<ServerActionResult<Location[]>> => {
+    const req = async (token: string): Promise<ServerActionResult<Location[]>> => {
         const client = getClient();
         const { data, error, response } = await client.POST("/location-address/bulk", {
             headers: authHeader(token),
             body: payload,
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            const apiError = new Error(error?.error || "Failed to create locations - Unkown Error") as Error & {
-                status: number;
-                statusText: string;
-            };
-            apiError.status = response.status;
-            apiError.statusText = response.statusText;
-            throw apiError;
+            return { success: false, error: error?.error || "Failed to create locations" };
         }
     };
-    return authWrapper<Location[]>()(req);
+    return authWrapper<ServerActionResult<Location[]>>()(req);
 };
 
-export const updateLocationAddress = async (payload: UpdateLocationRequest): Promise<UpdateLocationResponse> => {
-    const req = async (token: string): Promise<UpdateLocationResponse> => {
+export const updateLocationAddress = async (
+    payload: UpdateLocationRequest
+): Promise<ServerActionResult<UpdateLocationResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<UpdateLocationResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.PATCH("/location-address", {
             headers: authHeader(token),
             body: payload,
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to update location" };
         }
     };
-    return authWrapper<UpdateLocationResponse>()(req);
+    return authWrapper<ServerActionResult<UpdateLocationResponse>>()(req);
 };
 
 export const updateLocationAddressBulk = async (
     payload: UpdateLocationBulkRequest
-): Promise<UpdateLocationBulkResponse> => {
-    const req = async (token: string): Promise<UpdateLocationBulkResponse> => {
+): Promise<ServerActionResult<UpdateLocationBulkResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<UpdateLocationBulkResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.PATCH("/location-address/bulk", {
             headers: authHeader(token),
             body: payload,
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to update locations" };
         }
     };
-    return authWrapper<UpdateLocationBulkResponse>()(req);
+    return authWrapper<ServerActionResult<UpdateLocationBulkResponse>>()(req);
 };
 
-export const deleteLocation = async (locationId: string): Promise<void> => {
-    const req = async (token: string): Promise<void> => {
+export const deleteLocation = async (locationId: string): Promise<ServerActionResult<void>> => {
+    const req = async (token: string): Promise<ServerActionResult<void>> => {
         const client = getClient();
         const { error, response } = await client.DELETE("/location-address/{id}", {
             headers: authHeader(token),
@@ -99,9 +92,11 @@ export const deleteLocation = async (locationId: string): Promise<void> => {
                 },
             },
         });
-        if (!response.ok) {
-            throw Error(error?.error);
+        if (response.ok) {
+            return { success: true, data: undefined };
+        } else {
+            return { success: false, error: error?.error || "Failed to delete location" };
         }
     };
-    return authWrapper<void>()(req);
+    return authWrapper<ServerActionResult<void>>()(req);
 };

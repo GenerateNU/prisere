@@ -3,7 +3,7 @@ import { sumInvoicesByCompanyAndDateRange } from "@/api/invoice";
 import { sumPurchasesByCompanyAndDateRange } from "@/api/purchase";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { useQueries } from "@tanstack/react-query";
+import { useServerActionQueries } from "@/api/requestHandlers";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { ChartContainer, ChartTooltipContent, ChartTooltip, ChartConfig } from "@/components/ui/chart";
 import Link from "next/link";
@@ -50,7 +50,7 @@ export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard
     const [months, setMonths] = useState(6);
     const monthDates = Array.from({ length: months }, (_, i) => getMonth(i));
 
-    const revenueQueries = useQueries({
+    const revenueQueries = useServerActionQueries({
         queries: monthDates.map((date) => {
             const year = date.getFullYear();
             const month = date.getMonth();
@@ -64,7 +64,7 @@ export default function RevenueAndExpenses({ onDashboard = true }: { onDashboard
         }),
     });
 
-    const expensesQueries = useQueries({
+    const expensesQueries = useServerActionQueries({
         queries: monthDates.map((date) => {
             const year = date.getFullYear();
             const month = date.getMonth();

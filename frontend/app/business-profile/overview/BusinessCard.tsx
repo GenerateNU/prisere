@@ -2,12 +2,13 @@
 
 import { getCompany, updateCompany } from "@/api/company";
 import { UpdateCompanyRequest } from "@/types/company";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useServerActionMutation } from "@/api/requestHandlers";
 import { useEffect, useState } from "react";
 import CompanyEditor from "./BusinessInfoEditor";
 import { getUser } from "@/api/user";
 import { Card } from "@/components/ui/card";
 import Loading from "@/components/loading";
+import { useServerActionQuery } from "@/api/requestHandlers";
 
 export default function BusinessCard() {
     const [businessInfo, setBusinessInfo] = useState<UpdateCompanyRequest>({
@@ -25,10 +26,10 @@ export default function BusinessCard() {
     const [error, setError] = useState<string | null>(null);
     const [editing, setEditing] = useState<boolean>(false);
 
-    const { mutate: updateBusinessMutate } = useMutation({
+    const { mutate: updateBusinessMutate } = useServerActionMutation({
         mutationFn: (businessInfo: UpdateCompanyRequest) => updateCompany(businessInfo),
         onError: (error: Error) => {
-            setError(error.message);
+            setError(String(error));
         },
     });
 
@@ -39,12 +40,12 @@ export default function BusinessCard() {
         }
     };
 
-    const { data: businessQuery, isPending: businessPending } = useQuery({
+    const { data: businessQuery, isPending: businessPending } = useServerActionQuery({
         queryKey: ["businessInfo"],
         queryFn: getCompany,
     });
 
-    const { data: userQuery } = useQuery({
+    const { data: userQuery } = useServerActionQuery({
         queryKey: ["userInfo"],
         queryFn: getUser,
     });

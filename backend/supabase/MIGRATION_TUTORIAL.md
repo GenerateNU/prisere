@@ -2,6 +2,8 @@
 
 We are using a Supabase-hosted Postgres database. Our schema is relational and we handle changes by making migration scripts so that we have a changelog of the database schema history. Because we are using TypeORM a lot of this work is done for you!
 
+TypeORM will read the current state of your local database and the entities in the codebase and find the changeset between the two (any columns, tables, constraints, etc. that are different). Using the changeset, it generates a migration that, when run, will modify your local DB to match the state of the entities in the code. **Note that you should run all migrations before generating new ones to avoid duplication of migration scripts/errors in deployment**
+
 The following pathway allows you to make and test schema changes locally via migration script without affecting the shared database until you're ready. More information on local development best practices can be found in the [Supabase docs](https://supabase.com/docs/guides/cli/local-development). **Note that running the DB locally requires Docker to be installed and running.**
 
 0. Install the Supabase CLI by following directions [here](https://supabase.com/docs/guides/local-development/cli/getting-started?queryGroups=access-method&access-method=postgres&queryGroups=platform&platform=macos).

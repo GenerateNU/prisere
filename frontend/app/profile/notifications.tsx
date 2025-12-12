@@ -1,8 +1,9 @@
 "use client";
 
 import { getUserPreferences, updateUserPreferences } from "@/api/preferences";
+import { useServerActionMutation, useServerActionQuery } from "@/api/requestHandlers";
 import { Switch } from "@/components/ui/switch";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { BellDotIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ProfileSettingsCard } from "./common";
@@ -10,7 +11,7 @@ import { ProfileSettingsCard } from "./common";
 export function NotificationSettings() {
     const [emailNotifsEnabled, setEmailNotifsEnabled] = useState(false);
 
-    const { data: userPreferencesData } = useQuery({
+    const { data: userPreferencesData } = useServerActionQuery({
         queryKey: ["userPreferences"],
         queryFn: getUserPreferences,
     });
@@ -23,7 +24,7 @@ export function NotificationSettings() {
 
     const queryClient = useQueryClient();
 
-    const { mutate: updateUserPreferencesMutation } = useMutation({
+    const { mutate: updateUserPreferencesMutation } = useServerActionMutation({
         mutationFn: updateUserPreferences,
         onSuccess: (data) => {
             setEmailNotifsEnabled(data.emailEnabled);

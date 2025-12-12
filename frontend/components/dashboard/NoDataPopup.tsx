@@ -3,6 +3,7 @@
 import { redirectToQuickbooks } from "@/api/quickbooks";
 import { Button } from "@/components/ui/button";
 import { GoSync } from "react-icons/go";
+import { isServerActionSuccess } from "@/api/types";
 
 type Props = {
     isOpen: boolean;
@@ -13,11 +14,11 @@ export default function NoDataPopup({ isOpen, onClose }: Props) {
     if (!isOpen) return <></>;
 
     const quickbooksAuth = async () => {
-        const url = await redirectToQuickbooks();
-        if (url) {
-            window.open(url, "_blank");
+        const result = await redirectToQuickbooks();
+        if (isServerActionSuccess(result)) {
+            window.open(result.data, "_blank");
         } else {
-            console.error("Failed to retrieve QuickBooks URL");
+            console.error(result.error);
         }
     };
 

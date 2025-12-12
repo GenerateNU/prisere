@@ -10,94 +10,97 @@ import {
     UpdateInsurancePolicyResponse,
 } from "@/types/insurance-policy";
 import { getClient, authHeader, authWrapper } from "./client";
+import { ServerActionResult } from "./types";
 
-export const createInsurancePolicy = async (payload: CreateInsurancePolicyRequest): Promise<InsurancePolicy> => {
-    const req = async (token: string): Promise<InsurancePolicy> => {
+export const createInsurancePolicy = async (
+    payload: CreateInsurancePolicyRequest
+): Promise<ServerActionResult<InsurancePolicy>> => {
+    const req = async (token: string): Promise<ServerActionResult<InsurancePolicy>> => {
         const client = getClient();
         const { data, error, response } = await client.POST("/insurance", {
             headers: authHeader(token),
             body: payload,
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to create insurance policy" };
         }
     };
-    return authWrapper<InsurancePolicy>()(req);
+    return authWrapper<ServerActionResult<InsurancePolicy>>()(req);
 };
 
 export const createInsurancePolicyBulk = async (
     payload: CreateInsurancePolicyBulkRequest
-): Promise<InsurancePolicy[]> => {
-    const req = async (token: string): Promise<InsurancePolicy[]> => {
+): Promise<ServerActionResult<InsurancePolicy[]>> => {
+    const req = async (token: string): Promise<ServerActionResult<InsurancePolicy[]>> => {
         const client = getClient();
         const { data, error, response } = await client.POST("/insurance/bulk", {
             headers: authHeader(token),
             body: payload,
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to create insurance policies" };
         }
     };
-    return authWrapper<InsurancePolicy[]>()(req);
+    return authWrapper<ServerActionResult<InsurancePolicy[]>>()(req);
 };
 
-export const getInsurancePolicies = async (): Promise<GetInsurancePoliciesResponseType> => {
-    const req = async (token: string): Promise<GetInsurancePoliciesResponseType> => {
+export const getInsurancePolicies = async (): Promise<ServerActionResult<GetInsurancePoliciesResponseType>> => {
+    const req = async (token: string): Promise<ServerActionResult<GetInsurancePoliciesResponseType>> => {
         const client = getClient();
         const { data, error, response } = await client.GET("/insurance", {
             headers: authHeader(token),
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to get insurance policies" };
         }
     };
-    return authWrapper<GetInsurancePoliciesResponseType>()(req);
+    return authWrapper<ServerActionResult<GetInsurancePoliciesResponseType>>()(req);
 };
 
 export const updateInsurancePolicy = async (
     payload: UpdateInsurancePolicyRequest
-): Promise<UpdateInsurancePolicyResponse> => {
-    const req = async (token: string): Promise<UpdateInsurancePolicyResponse> => {
+): Promise<ServerActionResult<UpdateInsurancePolicyResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<UpdateInsurancePolicyResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.PATCH("/insurance", {
             headers: authHeader(token),
             body: payload,
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to update insurance policy" };
         }
     };
-    return authWrapper<UpdateInsurancePolicyResponse>()(req);
+    return authWrapper<ServerActionResult<UpdateInsurancePolicyResponse>>()(req);
 };
 
 export const updateInsurancePolicyBulk = async (
     payload: UpdateInsurancePolicyBulkRequest
-): Promise<UpdateInsurancePolicyBulkResponse> => {
-    const req = async (token: string): Promise<UpdateInsurancePolicyBulkResponse> => {
+): Promise<ServerActionResult<UpdateInsurancePolicyBulkResponse>> => {
+    const req = async (token: string): Promise<ServerActionResult<UpdateInsurancePolicyBulkResponse>> => {
         const client = getClient();
         const { data, error, response } = await client.PATCH("/insurance/bulk", {
             headers: authHeader(token),
             body: payload,
         });
         if (response.ok) {
-            return data!;
+            return { success: true, data: data! };
         } else {
-            throw Error(error?.error);
+            return { success: false, error: error?.error || "Failed to update insurance policies" };
         }
     };
-    return authWrapper<UpdateInsurancePolicyBulkResponse>()(req);
+    return authWrapper<ServerActionResult<UpdateInsurancePolicyBulkResponse>>()(req);
 };
 
-export const deleteInsurancePolicy = async (insurancePolicyId: string): Promise<void> => {
-    const req = async (token: string): Promise<void> => {
+export const deleteInsurancePolicy = async (insurancePolicyId: string): Promise<ServerActionResult<void>> => {
+    const req = async (token: string): Promise<ServerActionResult<void>> => {
         const client = getClient();
         const { error, response } = await client.DELETE("/insurance/{id}", {
             headers: authHeader(token),
@@ -107,9 +110,11 @@ export const deleteInsurancePolicy = async (insurancePolicyId: string): Promise<
                 },
             },
         });
-        if (!response.ok) {
-            throw Error(error?.error);
+        if (response.ok) {
+            return { success: true, data: undefined };
+        } else {
+            return { success: false, error: error?.error || "Failed to delete insurance policy" };
         }
     };
-    return authWrapper<void>()(req);
+    return authWrapper<ServerActionResult<void>>()(req);
 };

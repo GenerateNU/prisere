@@ -28,10 +28,11 @@ import {
     SaveStatus,
     UploadClaimRelatedDocumentsRequest,
 } from "@/types/claim";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { parseAsNumberLiteral, useQueryState } from "nuqs";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cleanExpiredTempData, clearTempData, loadTempData, saveTempData } from "../utils/tempStorage";
+import { useServerActionQuery } from "@/api/requestHandlers";
 
 interface UseClaimProgressReturn {
     claimId: string | null;
@@ -78,8 +79,14 @@ async function rehydratePurchaseSelections(
         resultsPerPage: 1000,
     });
 
+    if (!purchasesResponse.success) {
+        throw new Error(purchasesResponse.error);
+    }
+
+    const purchases = purchasesResponse.data;
+
     const purchaseToAllLineItems = new Map<string, string[]>();
-    for (const purchase of purchasesResponse.purchases) {
+    for (const purchase of purchases.purchases) {
         purchaseToAllLineItems.set(
             purchase.id,
             purchase.lineItems.map((li) => li.id)
@@ -122,7 +129,7 @@ export function useClaimProgress(
 ): UseClaimProgressReturn {
     const queryClient = useQueryClient();
 
-    const { data: userInfoData } = useQuery({
+    const { data: userInfoData } = useServerActionQuery({
         queryKey: ["userInfo"],
         queryFn: getUser,
     });
@@ -161,48 +168,59 @@ export function useClaimProgress(
     const loadExistingClaim = async (id: string) => {
         try {
             const claim = await getClaimById(id);
-            setClaimId(claim.id);
-            setStatus(claim.status);
+            if ("error" in claim) {
+                console.error("Error loading claim:", claim.error);
+                return;
+            }
+            const claimData = claim.data;
+            setClaimId(claimData.id);
+            setStatus(claimData.status);
 
-            if (claim.selfDisaster) {
-                selfDisasterRef.current = claim.selfDisaster.id;
+            if (claimData.selfDisaster) {
+                selfDisasterRef.current = claimData.selfDisaster.id;
             }
 
             // Fetch linked purchase line items to rehydrate selections
             let purchaseSelections: PurchaseSelections = { fullPurchaseIds: [], partialLineItemIds: [] };
             try {
                 const linkedLineItems = await getPurchaseLineItemsFromClaim({ claimId: id });
-                if (linkedLineItems && linkedLineItems.length > 0) {
-                    purchaseSelections = await rehydratePurchaseSelections(linkedLineItems);
+                if (linkedLineItems.success && linkedLineItems && linkedLineItems.data.length > 0) {
+                    purchaseSelections = await rehydratePurchaseSelections(linkedLineItems.data);
+                } else {
+                    if (!linkedLineItems.success) {
+                        throw new Error(linkedLineItems.error);
+                    }
                 }
             } catch (error) {
                 console.error("Error rehydrating purchase selections:", error);
                 // Fallback to using purchaseLineItemIds if rehydration fails
                 purchaseSelections = {
                     fullPurchaseIds: [],
-                    partialLineItemIds: claim.purchaseLineItemIds ?? [],
+                    partialLineItemIds: claimData.purchaseLineItemIds ?? [],
                 };
             }
 
             setDisasterInfoState((prev) => {
-                const startDate = claim.femaDisaster
+                const startDate = claimData.femaDisaster
                     ? // TODO: [future] move these to the claim entity rather than disaster (self or fema)
-                      claim.femaDisaster.incidentBeginDate
-                    : claim.selfDisaster?.startDate;
+                      claimData.femaDisaster.incidentBeginDate
+                    : claimData.selfDisaster?.startDate;
 
-                const endDate = claim.femaDisaster ? claim.femaDisaster.incidentEndDate : claim.selfDisaster?.endDate;
+                const endDate = claimData.femaDisaster
+                    ? claimData.femaDisaster.incidentEndDate
+                    : claimData.selfDisaster?.endDate;
 
                 return {
-                    name: claim.name || "",
-                    description: claim.selfDisaster?.description || "",
+                    name: claimData.name || "",
+                    description: claimData.selfDisaster?.description || "",
                     startDate: startDate ? new Date(startDate) : null,
                     endDate: endDate ? new Date(endDate) : null,
                     location:
-                        claim.claimLocations && claim.claimLocations.length > 0
-                            ? claim.claimLocations[0].id
+                        claimData.claimLocations && claimData.claimLocations.length > 0
+                            ? claimData.claimLocations[0].id
                             : prev.location,
-                    ...(claim.femaDisaster
-                        ? { isFema: true, femaDisasterId: claim.femaDisaster.id }
+                    ...(claimData.femaDisaster
+                        ? { isFema: true, femaDisasterId: claimData.femaDisaster.id }
                         : { isFema: false, femaDisasterId: undefined }),
                     additionalDocuments: [],
                     purchaseSelections,
@@ -438,14 +456,19 @@ export function useClaimProgress(
                         status: "IN_PROGRESS_DISASTER",
                         name: dataToUse.name,
                     });
+                    if ("error" in newClaim) {
+                        console.error("Error creating claim:", newClaim.error);
+                        return;
+                    }
+                    const newClaimData = newClaim.data;
 
-                    setClaimId(newClaim.id);
-                    currentClaimId = newClaim.id;
+                    setClaimId(newClaimData.id);
+                    currentClaimId = newClaimData.id;
                     selfDisasterRef.current = null;
-                    setStatus(newClaim.status);
+                    setStatus(newClaimData.status);
 
                     await createClaimLocationLink({
-                        claimId: newClaim.id,
+                        claimId: newClaimData.id,
                         locationAddressId: dataToUse.location,
                     });
                 } else {
@@ -456,27 +479,37 @@ export function useClaimProgress(
                             dataToUse.startDate?.toISOString().split("T")[0] || new Date().toISOString().split("T")[0],
                         endDate: dataToUse.endDate?.toISOString().split("T")[0],
                     });
-                    selfDisasterRef.current = selfDisaster.id;
+                    if ("error" in selfDisaster) {
+                        console.error("Error creating self disaster:", selfDisaster.error);
+                        return;
+                    }
+                    const selfDisasterData = selfDisaster.data;
+                    selfDisasterRef.current = selfDisasterData.id;
 
                     const newClaim = await createClaim({
-                        selfDisasterId: selfDisaster.id,
+                        selfDisasterId: selfDisasterData.id,
                         status: "IN_PROGRESS_DISASTER",
                         name: dataToUse.name,
                     });
+                    if ("error" in newClaim) {
+                        console.error("Error creating claim:", newClaim.error);
+                        return;
+                    }
+                    const newClaimData = newClaim.data;
 
-                    setClaimId(newClaim.id);
-                    currentClaimId = newClaim.id;
-                    setStatus(newClaim.status);
+                    setClaimId(newClaimData.id);
+                    currentClaimId = newClaimData.id;
+                    setStatus(newClaimData.status);
 
                     // Upload additional documents if any
                     if (dataToUse.additionalDocuments?.length > 0) {
-                        await saveAdditionalDocumentsToS3(dataToUse.additionalDocuments, selfDisaster.id);
+                        await saveAdditionalDocumentsToS3(dataToUse.additionalDocuments, selfDisasterData.id);
                     }
 
                     // Link location if provided
                     if (dataToUse.location) {
                         await createClaimLocationLink({
-                            claimId: newClaim.id,
+                            claimId: newClaimData.id,
                             locationAddressId: dataToUse.location,
                         });
                     }

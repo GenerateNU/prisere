@@ -2,6 +2,7 @@ import { FilteredPurchases, PurchaseWithLineItems } from "@/types/purchase";
 import Papa from "papaparse";
 import { DISASTER_TYPE_LABELS } from "@/types/disaster";
 import { getAllPurchasesForExport } from "@/api/purchase";
+import { isServerActionSuccess } from "@/api/types";
 
 const handleCSVCreation = (purchases: PurchaseWithLineItems[]) => {
     const data = purchases.flatMap((p) => {
@@ -47,8 +48,12 @@ export const handleExportClick = async (
 ) => {
     if (total) {
         setIsExporting(true);
-        const allPurchases = await getAllPurchasesForExport(filters, total);
-        handleCSVCreation(allPurchases);
+        const result = await getAllPurchasesForExport(filters, total);
+        if (isServerActionSuccess(result)) {
+            handleCSVCreation(result.data);
+        } else {
+            console.error(result.error);
+        }
         setIsExporting(false);
     }
 };

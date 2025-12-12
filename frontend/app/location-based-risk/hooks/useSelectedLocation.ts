@@ -1,6 +1,7 @@
 import { getCompanyLocations } from "@/api/company";
 import { GetCompanyLocationsResponse } from "@/types/company";
 import { useEffect, useState } from "react";
+import { isServerActionSuccess } from "@/api/types";
 
 export const useSelectedLocation = () => {
     const [selectedLocation, setSelectedLocation] = useState<GetCompanyLocationsResponse[number] | undefined>();
@@ -9,8 +10,12 @@ export const useSelectedLocation = () => {
     useEffect(() => {
         const fetchAndSaveLocations = async () => {
             const result = await getCompanyLocations();
-            setAvailableLocations(result);
-            setSelectedLocation(result[0]);
+            if (isServerActionSuccess(result)) {
+                setAvailableLocations(result.data);
+                setSelectedLocation(result.data[0]);
+            } else {
+                console.error(result.error);
+            }
         };
         fetchAndSaveLocations();
     }, []);
