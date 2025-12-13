@@ -91,6 +91,7 @@ describe("inserting purcahse data", () => {
                             AccountBasedExpenseLineDetail: {
                                 AccountRef: {
                                     value: "acc-ref",
+                                    name: "category",
                                 },
                             },
                             Amount: 5.5,
@@ -101,6 +102,7 @@ describe("inserting purcahse data", () => {
                     Credit: true,
                     EntityRef: {
                         type: "Vendor",
+                        name: "name",
                         DisplayName: "Testing Display Name",
                         GivenName: "Testing given name",
                     },
@@ -143,7 +145,7 @@ describe("inserting purcahse data", () => {
             quickBooksId: 2,
             amountCents: 550,
             purchaseId: purchases[0].id,
-            category: "acc-ref",
+            category: "category",
             description: "Testing description 2",
             quickbooksDateCreated: new Date(now),
             type: PurchaseLineItemType.TYPICAL,
@@ -226,7 +228,7 @@ describe("inserting purcahse data", () => {
             quickBooksId: 2,
             amountCents: 550,
             purchaseId: purchases[0].id,
-            category: "acc-ref",
+            category: null,
             description: "Testing description 2",
             quickbooksDateCreated: new Date(now),
             type: PurchaseLineItemType.TYPICAL,
@@ -271,6 +273,7 @@ describe("inserting purcahse data", () => {
                     ],
                     EntityRef: {
                         type: "Vendor",
+                        name: "name",
                         GivenName: "Testing Given Name",
                     },
                 },
@@ -318,9 +321,10 @@ describe("inserting purcahse data", () => {
                         },
                     ],
                     EntityRef: {
-                        type: "other",
-                        DisplayName: "SHOULD NOT EXIST",
-                        GivenName: "SHOULD NOT EXIST",
+                        type: "vendor",
+                        name: "name",
+                        DisplayName: "name",
+                        GivenName: "name",
                     },
                 },
             ],
@@ -339,7 +343,7 @@ describe("inserting purcahse data", () => {
             id: expect.anything(),
             dateCreated: expect.anything(),
             lastUpdated: expect.anything(),
-            vendor: null,
+            vendor: "name",
         });
 
         const lineItemsAfter = await db
@@ -363,7 +367,7 @@ describe("inserting purcahse data", () => {
             quickBooksId: 2,
             amountCents: 550,
             purchaseId: purchasesAfter[0].id,
-            category: "acc-ref",
+            category: null,
             description: "Testing description 2",
             quickbooksDateCreated: new Date(oneDayAgo),
             type: PurchaseLineItemType.TYPICAL,

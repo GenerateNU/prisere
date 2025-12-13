@@ -130,6 +130,7 @@ function SignUpContent() {
                                     disabled={status.pending}
                                     className="max-h-[45px] w-fit bg-[var(--fuchsia)] text-white hover:bg-pink hover:text-fuchsia px-[20px] py-[12px] text-[16px]"
                                 >
+                                    {status.pending ? <Spinner /> : <></>}
                                     Sign Up
                                 </Button>
                                 <Button
@@ -141,7 +142,6 @@ function SignUpContent() {
                                     disabled={status.pending}
                                     className="underline text-[12px] decoration-1 hover:text-gray-400 h-fit text-bold"
                                 >
-                                    {status.pending ? <Spinner /> : <></>}
                                     Already have an account? Log In
                                 </Button>
                             </div>
